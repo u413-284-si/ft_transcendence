@@ -20,23 +20,23 @@ services:
     networks:
       - pong-network
 
-  database:
-    build: database/.
-    image: 
-    container_name: database
-    init: true
-    security_opt:
-      - no-new-privileges:true
-    deploy:
-      restart_policy:
-        condition: always
-        window: 120s
-    env_file:
-      - ./.env
-    volumes:
-      - backend/data:/data
-    networks:
-      - pong-network
+  # database:
+  #   build: database/.
+  #   image: 
+  #   container_name: database
+  #   init: true
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   deploy:
+  #     restart_policy:
+  #       condition: always
+  #       window: 120s
+  #   env_file:
+  #     - ./.env
+  #   volumes:
+  #     - backend/data:/data
+  #   networks:
+  #     - pong-network
 
 networks:
   pong-network:
