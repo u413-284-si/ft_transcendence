@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "env": "^0.0.2",
-    "fastify": "^5.2.1"
+    "env-schema": "^6.0.0",
+    "fastify": "^4.28.1"
   }
 }
