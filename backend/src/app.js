@@ -1,14 +1,13 @@
 import Fastify from "fastify";
 import env from "./config/env.js";
 import logger from "./config/logger.js";
+import routes from "./routes/routes.js";
 
 const fastify = Fastify({
   logger: logger,
 });
 
-fastify.get("/", function handler(request, reply) {
-  return { message: "Pong game" };
-});
+await fastify.register(routes);
 
 fastify.listen({ port: env.port }, (err, address) => {
   if (err) {
