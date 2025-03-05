@@ -27,6 +27,12 @@ const usernameSchema = {
 
 const validateUsername = ajv.compile(usernameSchema);
 
+/**
+ * Controller function to add a new user
+ * @param {Object} request - Fastify request object
+ * @param {Object} reply - Fastify reply object
+ * @returns {Promise<void>}
+ */
 export async function addUser(request, reply) {
   const { username } = request.body;
 
@@ -46,5 +52,25 @@ export async function addUser(request, reply) {
   } catch (err) {
     request.log.error(err);
     reply.code(500).send({ error: "Failed to add user" });
+  }
+}
+
+/**
+ * Controller function to retrieve all users
+ * @param {Object} request - Fastify request object
+ * @param {Object} reply - Fastify reply object
+ * @returns {Promise<void>}
+ */
+export async function getUsers(request, reply) {
+  try {
+    const stmt = request.server.db.prepare("SELECT * FROM users");
+    const users = stmt.all();
+
+    // Respond with the list of users
+    reply.code(200).send(users);
+  } catch (err) {
+    // Log the error and respond with a 500 status code
+    request.log.error(err);
+    reply.code(500).send({ error: "Failed to retrieve users" });
   }
 }
