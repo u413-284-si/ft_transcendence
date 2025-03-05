@@ -45,8 +45,8 @@ export async function addUser(request, reply) {
   }
 
   try {
-    const stmt = request.server.db.prepare("INSERT INTO users (username) VALUES (?)");
-    const info = stmt.run(username);
+    const insertStatement = request.server.db.prepare("INSERT INTO users (username) VALUES (?)");
+    const info = insertStatement.run(username);
 
     reply.code(201).send({ id: info.lastInsertRowid, username });
   } catch (err) {
@@ -63,8 +63,8 @@ export async function addUser(request, reply) {
  */
 export async function getUsers(request, reply) {
   try {
-    const stmt = request.server.db.prepare("SELECT * FROM users");
-    const users = stmt.all();
+    const selectStatement = request.server.db.prepare("SELECT * FROM users");
+    const users = selectStatement.all();
 
     // Respond with the list of users
     reply.code(200).send(users);
@@ -94,10 +94,10 @@ export async function editUser(request, reply) {
   }
 
 	try {
-		const stmt = request.server.db.prepare(
+		const updateStatement = request.server.db.prepare(
     "UPDATE users SET username = ? WHERE id = ?"
   );
-	const info = stmt.run(username, id);
+	const info = updateStatement.run(username, id);
 
 	if (info.changes === 0) {
 		return reply.code(404).send({ error: "User not found" });
@@ -109,4 +109,30 @@ export async function editUser(request, reply) {
 		request.log.error(err);
 		reply.code(500).send({ error: "Failed to update user" });
 	}
+}
+
+/**
+ * Controller function to delete a user
+ * @param {Object} request - Fastify request object
+ * @param {Object} reply - Fastify reply object
+ * @returns {Promise<void>}
+ */
+export async function deleteUser(request, reply) {
+  const { id } = request.params;
+
+  try {
+    const deleteStatement = request.server.db.prepare(
+      "DELETE FROM users WHERE id = ?"
+    );
+    const info = deleteStatement.run(id);
+
+    if (info.changes === 0) {
+      return reply.code(404).send({ error: "User not found" });
+    }
+
+    reply.code(200).send({ message: "User deleted successfully" });
+  } catch (err) {
+    request.log.error(err);
+    reply.code(500).send({ error: "Failed to delete user" });
+  }
 }
