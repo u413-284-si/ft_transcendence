@@ -5,6 +5,7 @@ import routes from "./routes/routes.js";
 import dbConnector from "./config/db.js";
 import fastifyFormbody from "@fastify/formbody";
 
+
 const fastify = Fastify({
   logger: {
 		level: "info",
@@ -13,7 +14,6 @@ const fastify = Fastify({
 		}
 	}
 });
-
 
 fastify.register(dbConnector);
 await fastify.register(fastifyFormbody);
