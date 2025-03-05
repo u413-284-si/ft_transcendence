@@ -4,6 +4,9 @@ import logger from "./config/logger.js";
 import routes from "./routes/routes.js";
 import dbConnector from "./config/db.js";
 import fastifyFormbody from "@fastify/formbody";
+import fastifyHelmet from "@fastify/helmet";
+import fastifyCompress from "@fastify/compress";
+import fastifyGracefulShutdown from "fastify-graceful-shutdown";
 
 
 const fastify = Fastify({
@@ -16,6 +19,9 @@ const fastify = Fastify({
 });
 
 fastify.register(dbConnector);
+await fastify.register(fastifyHelmet);
+await fastify.register(fastifyCompress);
+await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
 await fastify.register(routes);
 
