@@ -74,3 +74,39 @@ export async function getUsers(request, reply) {
     reply.code(500).send({ error: "Failed to retrieve users" });
   }
 }
+
+/**
+ * Controller function to edit a user
+ * @param {Object} request - Fastify request object
+ * @param {Object} reply - Fastify reply object
+ * @returns {Promise<void>}
+ */
+export async function editUser(request, reply) {
+	const { username } = request.body;
+	const { id } = request.params;
+
+	const valid = validateUsername({ username });
+  if (!valid) {
+    return reply.status(400).send({
+      error: "Invalid input",
+      details: validateUsername.errors,
+    });
+  }
+
+	try {
+		const stmt = request.server.db.prepare(
+    "UPDATE users SET username = ? WHERE id = ?"
+  );
+	const info = stmt.run(username, id);
+
+	if (info.changes === 0) {
+		return reply.code(404).send({ error: "User not found" });
+	}
+
+	reply.code(200).send({ id, username });
+	}
+	catch (err) {
+		request.log.error(err);
+		reply.code(500).send({ error: "Failed to update user" });
+	}
+}
