@@ -2,6 +2,15 @@ import Ajv from "ajv";
 
 const ajv = new Ajv();
 
+/**
+ * The pattern for the username is:
+ * - At least 1 character
+ * - At most 100 characters
+ * - No whitespaces
+ * - Allows lowercase and uppercase letters
+ * - Allows numbers
+ * - Allows special characters: !@#$%^&*(),.?":{}|<>
+ */
 const usernameSchema = {
   type: "object",
   properties: {
