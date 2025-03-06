@@ -1,6 +1,6 @@
 # Variables
 DOCKER_COMPOSE_FILE = docker-compose.yml
-PROJECT_NAME = fr_transcendence
+PROJECT_NAME = ft_transcendence
 VERBOSE = 0
 
 # Verbosity
