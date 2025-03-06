@@ -25,7 +25,7 @@ await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
 await fastify.register(routes);
 
-fastify.listen({ port: env.port }, (err, address) => {
+fastify.listen({ host: '0.0.0.0', port: env.port }, (err, address) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
