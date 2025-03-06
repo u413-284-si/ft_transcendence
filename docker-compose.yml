@@ -7,16 +7,12 @@ services:
     init: true
     security_opt:
       - no-new-privileges:true
-    depends_on:
-      - database
     ports:
-      - 4000:4000
+      - "4000:4000"
     deploy:
       restart_policy:
         condition: always
         window: 120s
-    volumes:
-      - backend/data:/data
     networks:
       - pong-network
 
