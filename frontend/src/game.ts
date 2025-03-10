@@ -16,7 +16,8 @@ let player1Score = 0;
 let player2Score = 0;
 const winningScore = 10;
 let gameOver = false;
-let gameStarted = false; // New flag for start screen
+let gameStarted = false;
+let username = localStorage.getItem("username") || "";
 
 // Key states
 const keys: { [key: string]: boolean } = {};
@@ -27,11 +28,79 @@ document.addEventListener("keyup", (event) => (keys[event.key] = false));
 
 // Start the game when the Enter key is pressed
 document.addEventListener("keydown", (event) => {
-    if (!gameStarted && event.key === "Enter") {
-        gameStarted = true;
-        resetGame();
+    if (!gameStarted && event.key === "Enter" && username) {
+        startGame();
     }
 });
+
+function drawStartScreen() {
+	ctx.fillStyle = "white";
+	ctx.font = "40px Arial";
+	ctx.fillText("Pong Game", canvas.width / 2 - 100, canvas.height / 2 - 60);
+
+	ctx.font = "20px Arial";
+	ctx.fillText("Enter Username:", canvas.width / 2 - 80, canvas.height / 2 - 20);
+
+	let input = document.getElementById("usernameInput") as HTMLInputElement;
+    if (!input) {
+        input = document.createElement("input");
+        input.id = "usernameInput";
+        input.type = "text";
+        input.placeholder = "Enter your username";
+        input.style.position = "absolute";
+        input.style.transform = "translate(-50%, -50%)";
+        input.style.top = "50%";
+        input.style.left = "50%";
+        input.style.fontSize = "18px";
+        input.style.padding = "10px";
+        document.body.appendChild(input);
+    }
+
+    let button = document.getElementById("registerButton") as HTMLButtonElement;
+    if (!button) {
+        button = document.createElement("button");
+        button.id = "registerButton";
+        button.innerText = "Register";
+        button.style.position = "absolute";
+        button.style.transform = "translate(-50%, -50%)";
+        button.style.top = "calc(50% + 40px)";
+        button.style.left = "50%";
+        button.style.fontSize = "18px";
+        button.style.padding = "10px 20px";
+        button.onclick = registerUser;
+        document.body.appendChild(button);
+    }
+}
+
+function registerUser() {
+	const input = document.getElementById("usernameInput") as HTMLInputElement;
+	const user = input.value.trim();
+	if (!user) return alert("Please enter a username");
+
+	fetch("http://localhost:4000/user/add", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ username: user }),
+	})
+			.then((res) => res.json())
+			.then((data) => {
+					if (data.success) {
+							localStorage.setItem("username", user);
+							username = user;
+							startGame();
+					} else {
+							alert(data.message);
+					}
+			})
+			.catch((err) => console.error("Registration failed:", err));
+}
+
+function startGame() {
+	gameStarted = true;
+	resetGame();
+	document.getElementById("usernameInput")?.remove();
+	document.getElementById("registerButton")?.remove();
+}
 
 function update() {
     if (gameOver || !gameStarted) return; // Stop game when someone wins or game hasn't started yet
@@ -127,16 +196,7 @@ function draw() {
     }
 }
 
-function drawStartScreen() {
-    ctx.fillStyle = "white";
-    ctx.font = "40px Arial";
-    ctx.fillText("Pong Game", canvas.width / 2 - 100, canvas.height / 2 - 40);
 
-    ctx.font = "20px Arial";
-    ctx.fillText("Player 1: W/S", canvas.width / 2 - 60, canvas.height / 2);
-    ctx.fillText("Player 2: Arrow Up/Down", canvas.width / 2 - 90, canvas.height / 2 + 30);
-    ctx.fillText("Press ENTER to Start", canvas.width / 2 - 90, canvas.height / 2 + 60);
-}
 
 function gameLoop() {
     update();
