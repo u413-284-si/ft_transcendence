@@ -176,6 +176,13 @@ function resetGame() {
     resetBall();
 }
 
+function shortenName(name: string, maxLength: number = 10): string {
+	if (name.length > maxLength) {
+			return name.slice(0, maxLength) + "."; // Trim the name and add '...'
+	}
+	return name;
+}
+
 function draw() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -196,12 +203,18 @@ function draw() {
     ctx.fillRect(10, paddle1Y, paddleWidth, paddleHeight);
     ctx.fillRect(canvas.width - 20, paddle2Y, paddleWidth, paddleHeight);
 
-    // Draw scores
+    // Draw player names and scores
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
-    ctx.fillText(player1Score.toString(), canvas.width / 4, 50);
-    ctx.fillText(player2Score.toString(), (canvas.width * 3) / 4, 50);
 
+    // Player 1 name and score
+		const player1Text = shortenName(player1 || "Player 1") + ":" + " " + player1Score.toString();
+    ctx.fillText(player1Text, canvas.width / 4 - 80, 50);
+
+    // Player 2 name and score
+		const player2Text = shortenName(player2 || "Player 2") + ":" + " " + player2Score.toString();
+		ctx.fillText(player2Text, (canvas.width * 3) / 4 - 80, 50);
+		
     // Display winner message if game is over
     if (gameOver) {
         ctx.fillStyle = "yellow";
