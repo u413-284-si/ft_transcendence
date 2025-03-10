@@ -17,7 +17,8 @@ let player2Score = 0;
 const winningScore = 10;
 let gameOver = false;
 let gameStarted = false;
-let username = localStorage.getItem("username") || "";
+let player1 = "";
+let player2 = "";
 
 // Key states
 const keys: { [key: string]: boolean } = {};
@@ -28,7 +29,7 @@ document.addEventListener("keyup", (event) => (keys[event.key] = false));
 
 // Start the game when the Enter key is pressed
 document.addEventListener("keydown", (event) => {
-    if (!gameStarted && event.key === "Enter" && username) {
+    if (!gameStarted && event.key === "Enter" && player1 && player2) {
         startGame();
     }
 });
@@ -38,44 +39,50 @@ function drawStartScreen() {
 	ctx.font = "40px Arial";
 	ctx.fillText("Pong Game", canvas.width / 2 - 100, canvas.height / 2 - 60);
 
-	ctx.font = "20px Arial";
-	ctx.fillText("Enter Username:", canvas.width / 2 - 80, canvas.height / 2 - 20);
-
-	let input = document.getElementById("usernameInput") as HTMLInputElement;
-    if (!input) {
-        input = document.createElement("input");
-        input.id = "usernameInput";
-        input.type = "text";
-        input.placeholder = "Enter your username";
-        input.style.position = "absolute";
-        input.style.transform = "translate(-50%, -50%)";
-        input.style.top = "50%";
-        input.style.left = "50%";
-        input.style.fontSize = "18px";
-        input.style.padding = "10px";
-        document.body.appendChild(input);
-    }
-
-    let button = document.getElementById("registerButton") as HTMLButtonElement;
-    if (!button) {
-        button = document.createElement("button");
-        button.id = "registerButton";
-        button.innerText = "Register";
-        button.style.position = "absolute";
-        button.style.transform = "translate(-50%, -50%)";
-        button.style.top = "calc(50% + 40px)";
-        button.style.left = "50%";
-        button.style.fontSize = "18px";
-        button.style.padding = "10px 20px";
-        button.onclick = registerUser;
-        document.body.appendChild(button);
-    }
+	createInputField("usernameInput1", "Player 1", "50%");
+	createInputField("usernameInput2", "Player 2", "60%");
+	createRegisterButton("registerButton1", "Register Player 1", "53%", 1);
+	createRegisterButton("registerButton2", "Register Player 2", "63%", 2);
 }
 
-function registerUser() {
-	const input = document.getElementById("usernameInput") as HTMLInputElement;
+function createInputField(id: string, placeholder: string, top: string) {
+	let input = document.getElementById(id) as HTMLInputElement;
+	if (!input) {
+			input = document.createElement("input");
+			input.id = id;
+			input.type = "text";
+			input.placeholder = placeholder;
+			input.style.position = "absolute";
+			input.style.transform = "translate(-50%, -50%)";
+			input.style.top = top;
+			input.style.left = "50%";
+			input.style.fontSize = "18px";
+			input.style.padding = "10px";
+			document.body.appendChild(input);
+	}
+}
+
+function createRegisterButton(id: string, text: string, top: string, playerNum: number) {
+	let button = document.getElementById(id) as HTMLButtonElement;
+	if (!button) {
+			button = document.createElement("button");
+			button.id = id;
+			button.innerText = text;
+			button.style.position = "absolute";
+			button.style.transform = "translate(-50%, -50%)";
+			button.style.top = top;
+			button.style.left = "50%";
+			button.style.fontSize = "18px";
+			button.style.padding = "10px 20px";
+			button.onclick = () => registerUser(playerNum);
+			document.body.appendChild(button);
+	}
+}
+
+function registerUser(playerNum: number) {
+	const input = document.getElementById(`usernameInput${playerNum}`) as HTMLInputElement;
 	const user = input.value.trim();
-	if (!user) return alert("Please enter a username");
+	if (!user) return alert(`Please enter a username for Player ${playerNum}`);
 
 	fetch("http://localhost:4000/user/add", {
 			method: "POST",
@@ -85,9 +92,11 @@ function registerUser() {
 			.then((res) => res.json())
 			.then((data) => {
 					if (data.success) {
-							localStorage.setItem("username", user);
-							username = user;
-							startGame();
+							if (playerNum === 1)
+								player1 = user;
+            	else 
+								player2 = user;
+            	checkBothPlayersRegistered();
 					} else {
 							alert(data.message);
 					}
@@ -95,11 +104,19 @@ function registerUser() {
 			.catch((err) => console.error("Registration failed:", err));
 }
 
+function checkBothPlayersRegistered() {
+	if (player1 && player2) {
+			startGame();
+	}
+}
+
 function startGame() {
 	gameStarted = true;
 	resetGame();
-	document.getElementById("usernameInput")?.remove();
-	document.getElementById("registerButton")?.remove();
+	document.getElementById("usernameInput1")?.remove();
+	document.getElementById("usernameInput2")?.remove();
+	document.getElementById("registerButton1")?.remove();
+	document.getElementById("registerButton2")?.remove();
 }
 
 function update() {
@@ -195,8 +212,6 @@ function draw() {
         ctx.fillText("Press ENTER to Restart", canvas.width / 2 - 100, canvas.height / 2 + 40);
     }
 }
-
-
 
 function gameLoop() {
     update();
