@@ -48,10 +48,10 @@ export async function addUser(request, reply) {
     const insertStatement = request.server.db.prepare("INSERT INTO users (username) VALUES (?)");
     const info = insertStatement.run(username);
 
-    reply.code(201).send({ id: info.lastInsertRowid, username });
+    reply.code(201).send({ success: true, message: "User registered" });
   } catch (err) {
     request.log.error(err);
-    reply.code(500).send({ error: "Failed to add user" });
+    reply.code(500).send({ success: false, error: "Failed to add user" });
   }
 }
 
