@@ -79,29 +79,39 @@ function createRegisterButton(id: string, text: string, top: string, playerNum: 
 	}
 }
 
-function registerUser(playerNum: number) {
+async function registerUser(playerNum: number) {
 	const input = document.getElementById(`usernameInput${playerNum}`) as HTMLInputElement;
 	const user = input.value.trim();
 	if (!user) return alert(`Please enter a username for Player ${playerNum}`);
 
-	fetch("http://localhost:4000/user/add", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ username: user }),
-	})
-			.then((res) => res.json())
-			.then((data) => {
-					if (data.success) {
-							if (playerNum === 1)
-								player1 = user;
-            	else 
-								player2 = user;
-            	checkBothPlayersRegistered();
-					} else {
-							alert(data.message);
-					}
-			})
-			.catch((err) => console.error("Registration failed:", err));
+	try {
+		// Check if the username already exists
+		const checkResponse = await fetch(`http://localhost:4000/user/get?username=${encodeURIComponent(user)}`);
+		const checkData = await checkResponse.json();
+		
+		if (checkData.exists) {
+				alert(`Username "${user}" is already taken. Please choose another.`);
+				return;
+		}
+
+		// Register the user since it's not taken
+		const registerResponse = await fetch("http://localhost:4000/user/add", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ username: user }),
+		});
+		const registerData = await registerResponse.json();
+
+		if (registerData.success) {
+				if (playerNum === 1) player1 = user;
+				else player2 = user;
+				checkBothPlayersRegistered();
+		} else {
+				alert(registerData.error);
+		}
+	} catch (err) {
+			console.error("Registration failed:", err);
+	}
 }
 
 function checkBothPlayersRegistered() {

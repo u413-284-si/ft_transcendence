@@ -56,6 +56,31 @@ export async function addUser(request, reply) {
 }
 
 /**
+ * Controller function to retrieve in query specified user
+ * @param {Object} request - Fastify request object
+ * @param {Object} reply - Fastify reply object
+ * @returns {Promise<void>}
+ */
+export async function getUser(request, reply) {
+	const { username } = request.query;
+
+	try {
+		const selectStatement = request.server.db.prepare(
+			"SELECT * FROM users WHERE username = ?"
+		);
+		const user = selectStatement.get(username);
+		if (!user) {
+			return reply.code(404).send({ exists: !!user, error: "User not found" });
+		}
+
+		reply.code(200).send({ exists: !!user, user });
+	} catch (err) {
+		request.log.error(err);
+		reply.code(500).send({ exists: !!user, error: "Failed to retrieve user" });
+	}
+}
+
+/**
  * Controller function to retrieve all users
  * @param {Object} request - Fastify request object
  * @param {Object} reply - Fastify reply object
