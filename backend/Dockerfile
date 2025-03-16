@@ -4,7 +4,7 @@ WORKDIR /app
 ENV NODE_ENV development
 
 # Can be removed after development
-RUN apt update && apt upgrade && apt install -y \
+RUN apt update && apt upgrade -y && apt install -y \
 		curl
 
 # Copy package.json and package-lock.json

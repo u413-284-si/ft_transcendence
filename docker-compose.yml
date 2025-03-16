@@ -16,23 +16,25 @@ services:
     networks:
       - pong-network
 
-  # database:
-  #   build: database/.
-  #   image: 
-  #   container_name: database
-  #   init: true
-  #   security_opt:
-  #     - no-new-privileges:true
-  #   deploy:
-  #     restart_policy:
-  #       condition: always
-  #       window: 120s
-  #   env_file:
-  #     - ./.env
-  #   volumes:
-  #     - backend/data:/data
-  #   networks:
-  #     - pong-network
+  frontend-dev:
+    build: frontend/.
+    image: frontend-dev
+    container_name: frontend-dev
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "8080:8080"
+    deploy:
+      restart_policy:
+        condition: always
+        window: 120s
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+    networks:
+      - pong-network
 
 networks:
   pong-network:
