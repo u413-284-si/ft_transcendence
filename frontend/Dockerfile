@@ -1,12 +1,9 @@
-FROM node:slim
+FROM nginx:alpine
 
-WORKDIR /app
+WORKDIR /var/www/html
 
-# Copy package.json and package-lock.json
-COPY package*.json /app
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
-RUN npm install
+COPY ./index.html .
 
-RUN npm install -g http-server
-
-CMD [ "npm", "start" ]
+CMD ["nginx", "-g", "daemon off;"]

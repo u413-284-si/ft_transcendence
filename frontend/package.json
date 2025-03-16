@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "npx @tailwindcss/cli -i ./src/css/input.css -o ./src/css/styles.css --watch",
-		"dep": "npx madge --circular --extensions ts ./src",
-		"start": "http-server -c-1 --proxy http://localhost:4000?"
+    "style": "npx @tailwindcss/cli -i ./src/css/input.css -o ./src/css/styles.css --watch",
+		"dep": "npx madge --circular --extensions ts ./src"
   },
   "keywords": [],
   "author": "",
