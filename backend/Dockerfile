@@ -16,8 +16,5 @@ RUN npm install --only=production
 # Copy the rest of the application code
 COPY src /app/src
 COPY .env /app
-COPY --chmod=755 tools/docker-entrypoint.sh /usr/local/bin/
-
-ENTRYPOINT [ "docker-entrypoint.sh" ]
 
 CMD [ "node", "src/app.js" ]
