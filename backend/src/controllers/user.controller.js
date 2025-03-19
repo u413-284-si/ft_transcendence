@@ -48,11 +48,36 @@ export async function addUser(request, reply) {
     const insertStatement = request.server.db.prepare("INSERT INTO users (username) VALUES (?)");
     const info = insertStatement.run(username);
 
-    reply.code(201).send({ id: info.lastInsertRowid, username });
+    reply.code(201).send({ success: true, message: "User registered" });
   } catch (err) {
     request.log.error(err);
-    reply.code(500).send({ error: "Failed to add user" });
+    reply.code(500).send({ success: false, error: "Failed to add user" });
   }
+}
+
+/**
+ * Controller function to retrieve in query specified user
+ * @param {Object} request - Fastify request object
+ * @param {Object} reply - Fastify reply object
+ * @returns {Promise<void>}
+ */
+export async function getUser(request, reply) {
+	const { username } = request.query;
+
+	try {
+		const selectStatement = request.server.db.prepare(
+			"SELECT * FROM users WHERE username = ?"
+		);
+		const user = selectStatement.get(username);
+		if (!user) {
+			return reply.code(404).send({ exists: !!user, error: "User not found" });
+		}
+
+		reply.code(200).send({ exists: !!user, user });
+	} catch (err) {
+		request.log.error(err);
+		reply.code(500).send({ exists: !!user, error: "Failed to retrieve user" });
+	}
 }
 
 /**
