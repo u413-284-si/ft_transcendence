@@ -1,18 +1,17 @@
 {
-	"devDependencies": {
-		"typescript": "^5.8.2"
-	},
 	"name": "ft_transcendence",
 	"description": "ft_transcendence is a multiplayer game designed as a single page application bringing back the Classic Pong game in all its glory!",
 	"version": "1.0.0",
-	"type:": "module",
 	"main": "app.js",
+	"type": "module",
 	"scripts": {
 		"style": "npx @tailwindcss/cli -i ./frontend/src/css/input.css -o ./frontend/public/css/styles.css",
 		"dep": "npx madge --circular --extensions ts ./src",
 		"build": "npx tsc --project ./frontend/tsconfig.json",
 		"start": "node ./backend/src/app.js",
-		"watch": "nodemon --watch ./backend/src --watch ./frontend/src -e ts,js,css --exec \"npm run style && npm run build && npm run start\""
+		"watch-frontend": "nodemon --watch ./frontend/src --ext ts --exec \"npm run style && npm run build && npm run start\"",
+		"watch-backend": "nodemon --watch ./backend/src --ext js --exec \"npm run start\"",
+		"watch": "nodemon --watch ./frontend/src --watch ./backend/src  --ext ts,js --exec \"npm run style && npm run build && npm run start\""
 	},
 	"repository": {
 		"type": "git",
