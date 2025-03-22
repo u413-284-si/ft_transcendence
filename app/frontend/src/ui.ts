@@ -6,7 +6,7 @@ import { startGame } from "./game.js";
 export function drawStartScreen(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
 	ctx.fillStyle = "white";
 	ctx.font = "40px Arial";
-	ctx.fillText("Pong Game", canvas.width / 2 - 100, canvas.height / 2 - 60);
+	ctx.fillText("Pong Game!", canvas.width / 2 - 100, canvas.height / 2 - 60);
 
 	createInputField("usernameInput1", "Player 1", "50%");
 	createInputField("usernameInput2", "Player 2", "60%");
@@ -50,6 +50,6 @@ function createRegisterButton(id: string, text: string, top: string, playerNum: 
 
 function checkBothPlayersRegistered() {
 	if (GameState.player1 && GameState.player2) {
-			startGame();
+		startGame();
 	}
 }

@@ -46,6 +46,11 @@ help:
 up:
 	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d
 
+# Watches for changes in files and rebuilds containers
+PHONY: watch
+watch:
+	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up --watch
+
 # Stops containers and removes containers, networks, volumes, and images created by up
 .PHONY: down
 down:
@@ -54,7 +59,12 @@ down:
 # Services are built once and then tagged
 .PHONY: build
 build:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build
+	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build 
+
+# Services are built once and then tagged without cache
+.PHONY: buildnc
+buildnc:
+	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build  --no-cache
 
 # Starts existing containers for a service
 .PHONY: start
