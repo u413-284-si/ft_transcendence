@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = "file:/app/db/pong.db"
+}
+
+model User {
+    id         Int      @id @default(autoincrement())
+    username   String   @unique
+    email      String   @unique
+    avatar     String? // Store the file path or URL
+    dateJoined DateTime @default(now())
+
+    authentication Authentication?
+    stats          UserStats?
+    accountStatus  AccountStatus?
+    friends        Friends[]       @relation("fk_User_UserID")
+    friendsOf      Friends[]       @relation("fk_User_FriendID")
+    match          Match[]
+    tournament     Tournament[]
+
+    @@map("users") // Maps to users table in the database
+}
+
+model Authentication {
+    id                     Int     @id @default(autoincrement())
+    userId                 Int     @unique
+    password               String?
+    has2FA                 Boolean @default(false)
+    totpSecret             String?
+    oauthProvider          String?
+    emailVerificationToken String?
+    emailVerified          Boolean @default(false)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("authentications")
+}
+
+model UserStats {
+    id            Int   @id @default(autoincrement())
+    userId        Int   @unique
+    matchesPlayed Int   @default(0)
+    matchesWon    Int   @default(0)
+    matchesLost   Int   @default(0)
+    winRate       Float @default(0.0)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("user_stats")
+}
+
+model AccountStatus {
+    id             Int       @id @default(autoincrement())
+    userId         Int       @unique
+    lastLogin      DateTime?
+    lastActivity   DateTime  @default(now())
+    accountDeleted Boolean   @default(false)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("account_status")
+}
+
+model Friends {
+    userId   Int
+    friendId Int
+
+    user   User @relation("fk_User_UserID", fields: [userId], references: [id], onDelete: Cascade)
+    friend User @relation("fk_User_FriendID", fields: [friendId], references: [id], onDelete: Cascade)
+
+    @@id([userId, friendId]) // Composite primary key for many-to-many relationship
+    @@map("friends")
+}
+
+model Match {
+    id               Int         @id @default(autoincrement())
+    playerId         Int
+    playerNickname   String
+    opponentNickname String?
+    tournamentId     Int?
+    playerScore      Int
+    opponentScore    Int
+    status           MatchStatus @default(NOT_PLAYED)
+    date             DateTime?
+
+    player     User        @relation(fields: [playerId], references: [id])
+    tournament Tournament? @relation(fields: [tournamentId], references: [id])
+
+    @@map("matches")
+}
+
+model Tournament {
+    id         Int              @id @default(autoincrement())
+    name       String
+    maxPlayers Int              @default(16)
+    isPrivate  Boolean          @default(false)
+    status     TournamentStatus @default(CREATED)
+    adminId    Int
+
+    admin   User    @relation(fields: [adminId], references: [id])
+    matches Match[]
+
+    @@map("tournaments")
+}
+
+enum MatchStatus {
+    NOT_PLAYED
+    IN_PROGRESS
+    FINISHED
+}
+
+enum TournamentStatus {
+    CREATED
+    IN_PROGRESS
+    FINISHED
+}
