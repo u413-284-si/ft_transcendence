@@ -14,7 +14,7 @@ services:
         condition: always
         window: 120s
     volumes:
-      - ./backend/db:/app/db
+      - db:/app/db
     networks:
       - pong-network
 
@@ -41,3 +41,6 @@ services:
 
 networks:
   pong-network:
+
+volumes:
+  db:
