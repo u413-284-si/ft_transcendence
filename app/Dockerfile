@@ -5,7 +5,7 @@ ENV NODE_ENV development
 
 # Can be removed after development
 RUN apt update && apt upgrade -y && apt install -y \
-		curl
+	curl
 
 # Copy package.json and package-lock.json
 COPY package*.json /app
@@ -14,7 +14,7 @@ COPY package*.json /app
 RUN npm install --only=production
 
 # Copy the rest of the application code
-COPY src /app/src
-COPY .env /app
+COPY ./backend /app/backend
+COPY ./frontend /app/frontend
 
-CMD [ "node", "src/app.js" ]
+CMD [ "node", "backend/src/app.js" ]

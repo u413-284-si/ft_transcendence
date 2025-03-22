@@ -1,9 +1,8 @@
-
 services:
-  backend:
-    build: backend/.
-    image: backend
-    container_name: backend
+  app:
+    build: ./app
+    image: app
+    container_name: app
     init: true
     security_opt:
       - no-new-privileges:true
@@ -19,30 +18,30 @@ services:
         target: /app/db
     networks:
       - pong-network
-
-  frontend:
-    build: frontend/.
-    image: frontend
-    container_name: frontend
-    init: true
-    security_opt:
-      - no-new-privileges:true
-    ports:
-      - "80:80"
-    deploy:
-      restart_policy:
-        condition: always
-        window: 120s
-    volumes:
-      - ./frontend/src:/var/www/html/src
-      - ./frontend/dist:/var/www/html/dist
-    depends_on:
-      - backend
-    networks:
-      - pong-network
+  # frontend:
+  #   build: frontend/.
+  #   image: frontend
+  #   container_name: frontend
+  #   init: true
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   ports:
+  #     - "80:80"
+  #   deploy:
+  #     restart_policy:
+  #       condition: always
+  #       window: 120s
+  #   volumes:
+  #     - ./frontend/src:/var/www/html/src
+  #     - ./frontend/dist:/var/www/html/dist
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - pong-network
 
 networks:
   pong-network:
+
 
 volumes:
   db:

@@ -1,9 +1,13 @@
-import { getRoot } from "../controllers/root.controller.js";
-import { addUser, getUser, getUsers , editUser, deleteUser} from "../controllers/user.controller.js";
+import { addUser, getUser, getUsers, editUser, deleteUser } from "../controllers/user.controller.js";
 import errorHandler from "../middleware/error.js";
 
-export default async function routes(fastify, options) {
-  fastify.get("/", getRoot);
+export async function staticRoutes(fastify) {
+	fastify.get("/", (req, reply) => {
+		reply.sendFile("index.html");
+	});
+}
+
+export async function routes(fastify, options) {
 
 	fastify.register(
 		async function (userRoutes) {
@@ -15,6 +19,6 @@ export default async function routes(fastify, options) {
 		},
 		{ prefix: "/user" }
 	);
-	
+
 	fastify.setErrorHandler(errorHandler);
 }
