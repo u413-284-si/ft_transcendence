@@ -3,6 +3,17 @@ services:
     build: ./app
     image: app
     container_name: app
+    command: [ "npm", "run", "watch" ]
+    develop:
+      watch:
+        - action: sync
+          path: ./app/frontend
+          target: ./app/frontend
+        - action: sync
+          path: ./app/backend
+          target: ./app/backend
+        - action: rebuild
+          path: ./app/package.json
     init: true
     security_opt:
       - no-new-privileges:true

@@ -50,6 +50,6 @@ function createRegisterButton(id: string, text: string, top: string, playerNum: 
 
 function checkBothPlayersRegistered() {
 	if (GameState.player1 && GameState.player2) {
-			startGame();
+		startGame();
 	}
 }

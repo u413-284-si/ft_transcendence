@@ -54,7 +54,7 @@ down:
 # Services are built once and then tagged
 .PHONY: build
 build:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build
+	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build --no-cache
 
 # Starts existing containers for a service
 .PHONY: start
