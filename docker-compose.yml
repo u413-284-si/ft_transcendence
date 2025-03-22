@@ -14,7 +14,9 @@ services:
         condition: always
         window: 120s
     volumes:
-      - db:/app/db
+      - type: volume
+        source: db
+        target: /app/db
     networks:
       - pong-network
 
