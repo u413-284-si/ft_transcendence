@@ -2,7 +2,9 @@ import Ajv from "ajv";
 import { PrismaClient } from "@prisma/client";
 
 const ajv = new Ajv();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+	log: ["query", "info", "warn", "error"],
+});
 
 /**
  * The pattern for the username is:
@@ -73,10 +75,11 @@ export async function getUser(request, reply) {
 	const { username } = request.query;
 
 	try {
-		const selectStatement = request.server.db.prepare(
-			"SELECT * FROM users WHERE username = ?"
-		);
-		const user = selectStatement.get(username);
+		const user = await prisma.user.findUnique({
+			where: {
+				username
+			}
+		})
 		if (!user) {
 			return reply.code(404).send({ exists: !!user, error: "User not found" });
 		}
@@ -96,8 +99,7 @@ export async function getUser(request, reply) {
  */
 export async function getUsers(request, reply) {
 	try {
-		const selectStatement = request.server.db.prepare("SELECT * FROM users");
-		const users = selectStatement.all();
+		const users = await prisma.user.findMany();
 
 		// Respond with the list of users
 		reply.code(200).send(users);
@@ -116,7 +118,9 @@ export async function getUsers(request, reply) {
  */
 export async function editUser(request, reply) {
 	const { username } = request.body;
-	const { id } = request.params;
+	const id = parseInt(request.params.id, 10);
+	if (isNaN(id))
+		return reply.status(400).send({ error: "Invalid user id" });
 
 	const valid = validateUsername({ username });
 	if (!valid) {
@@ -127,20 +131,22 @@ export async function editUser(request, reply) {
 	}
 
 	try {
-		const updateStatement = request.server.db.prepare(
-			"UPDATE users SET username = ? WHERE id = ?"
-		);
-		const info = updateStatement.run(username, id);
+		const user = await prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				username: username
+			}
+		})
 
-		if (info.changes === 0) {
-			return reply.code(404).send({ error: "User not found" });
-		}
-
-		reply.code(200).send({ id, username });
+		reply.code(200).send(user);
 	}
 	catch (err) {
-		request.log.error(err);
-		reply.code(500).send({ error: "Failed to update user" });
+		if (err.code === "P2025")
+			return reply.code(404).send({ error: "User not found" });
+		else
+			return reply.code(500).send({ error: "Failed to update user" });
 	}
 }
 
@@ -151,17 +157,16 @@ export async function editUser(request, reply) {
  * @returns {Promise<void>}
  */
 export async function deleteUser(request, reply) {
-	const { id } = request.params;
+	const id = parseInt(request.params.id, 10);
+	if (isNaN(id))
+		return reply.status(400).send({ error: "Invalid user id" });
 
 	try {
-		const deleteStatement = request.server.db.prepare(
-			"DELETE FROM users WHERE id = ?"
-		);
-		const info = deleteStatement.run(id);
-
-		if (info.changes === 0) {
-			return reply.code(404).send({ error: "User not found" });
-		}
+		const user = await prisma.user.delete({
+			where: {
+				id: id
+			}
+		})
 
 		reply.code(200).send({ message: "User deleted successfully" });
 	} catch (err) {
