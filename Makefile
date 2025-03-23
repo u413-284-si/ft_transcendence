@@ -79,7 +79,7 @@ stop:
 # View output from the services
 .PHONY: logs
 logs:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) logs
+	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) logs -f
 
 # List the services
 .PHONY: ps
