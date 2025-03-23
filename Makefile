@@ -89,7 +89,7 @@ ps:
 # Remove stopped containers, networks, and volumes
 .PHONY: clean
 clean:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) down -v --remove-orphans
+	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) down -v --remove-orphans --rmi all
 
 # Restart the services
 .PHONY: restart

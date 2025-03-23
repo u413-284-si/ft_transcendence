@@ -52,7 +52,10 @@ export async function addUser(request, reply) {
 		const user = await prisma.user.create({
 			data: {
 				username,
-				dateJoined: new Date()
+				dateJoined: new Date(),
+				authentication: { create: {} },
+				stats: { create: {} },
+				accountStatus: { create: {} }
 			}
 		})
 		// const insertStatement = request.server.db.prepare("INSERT INTO users (username) VALUES (?)");
@@ -99,7 +102,13 @@ export async function getUser(request, reply) {
  */
 export async function getUsers(request, reply) {
 	try {
-		const users = await prisma.user.findMany();
+		const users = await prisma.user.findMany({
+			include: {
+				stats: true,
+				authentication: true,
+				accountStatus: true
+			}
+		});
 
 		// Respond with the list of users
 		reply.code(200).send(users);
