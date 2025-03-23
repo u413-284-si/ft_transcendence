@@ -1,15 +1,37 @@
 import { GameState } from "./config.js";
-import { updatePaddlePositions } from "./input.js";
+import { updatePaddlePositions, setupInputListeners } from "./input.js";
 import { canvas } from "./init.js";
+import { draw } from "./draw.js";
+
+export function renderGame() {
+
+	setupInputListeners();
+
+	const nickname1: string = (document.getElementById("nickname1") as HTMLInputElement).value.trim();
+	const nickname2: string = (document.getElementById("nickname2") as HTMLInputElement).value.trim();
+
+	if (!nickname1 || !nickname2)
+		return alert("Please enter a nickname for both players.");
+
+	GameState.player1 = nickname1;
+	GameState.player2 = nickname2;
+	// const input = document.getElementById(`usernameInput${playerNum}`) as HTMLInputElement;
+
+	startGame();
+	gameLoop();
+}
+
+function gameLoop() {
+	update();
+	draw();
+	requestAnimationFrame(gameLoop);
+}
 
 export function startGame() {
 	GameState.gameOver = false;
 	GameState.gameStarted = true;
 	resetGame();
-	document.getElementById("usernameInput1")?.remove();
-	document.getElementById("usernameInput2")?.remove();
-	document.getElementById("registerButton1")?.remove();
-	document.getElementById("registerButton2")?.remove();
+	document.getElementById("register-form")?.remove();
 }
 
 function resetGame() {
@@ -40,9 +62,9 @@ export function update() {
 	// Ball collision with paddles
 	if (
 		(GameState.ballX <= 20 && GameState.ballY >= GameState.paddle1Y
-		&& GameState.ballY <= GameState.paddle1Y + GameState.paddleHeight) ||
+			&& GameState.ballY <= GameState.paddle1Y + GameState.paddleHeight) ||
 		(GameState.ballX >= canvas.width - 20 && GameState.ballY >= GameState.paddle2Y
-		&& GameState.ballY <= GameState.paddle2Y + GameState.paddleHeight)
+			&& GameState.ballY <= GameState.paddle2Y + GameState.paddleHeight)
 	) {
 		GameState.ballSpeedX *= -1; // Reverse ball direction
 	}

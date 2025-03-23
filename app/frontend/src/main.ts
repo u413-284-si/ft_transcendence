@@ -1,7 +1,3 @@
-import { GameState } from "./config.js";
-import { setupInputListeners } from "./input.js";
-import { startGame, update } from "./game.js";
-import { draw } from "./draw.js";
 import Home from "./views/Home.js";
 import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
@@ -38,8 +34,7 @@ const router = async () => {
 	}
 
 	const view = new match.route.view();
-	document.querySelector("#app")!.innerHTML = await view.getHTML();
-	document.getElementById("start-button")?.addEventListener("click", test);
+	await view.render();
 };
 
 window.addEventListener("popstate", router);
@@ -56,11 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	})
 	router();
 });
-
-function test() {
-	console.log("test");
-}
-
 
 // function gameLoop() {
 // 	update();

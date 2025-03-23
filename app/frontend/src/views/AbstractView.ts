@@ -6,7 +6,15 @@ export default class {
 		document.title = title;
 	}
 
-	async getHTML() {
+	async createHTML() {
 		return "";
+	}
+
+	async updateHTML() {
+		document.querySelector("#app")!.innerHTML = await this.createHTML();
+	}
+
+	async render() {
+
 	}
 }

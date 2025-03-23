@@ -6,10 +6,14 @@ export default class extends AbstractView {
 		this.setTitle("New Tournament");
 	}
 
-	async getHTML() {
+	async createHTML() {
 		return `
 			<h1>New Tournament</h1>
 			<p>This is the New Tournament page</p>
 			`;
+	}
+
+	async render() {
+		await this.updateHTML();
 	}
 }

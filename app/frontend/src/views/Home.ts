@@ -6,10 +6,14 @@ export default class extends AbstractView {
 		this.setTitle("Home");
 	}
 
-	async getHTML() {
+	async createHTML() {
 		return `
 			<h1>Home</h1>
 			<p>This is the home page</p>
 			`;
+	}
+
+	async render() {
+		await this.updateHTML();
 	}
 }
