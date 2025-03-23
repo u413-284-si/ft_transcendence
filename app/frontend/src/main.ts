@@ -39,6 +39,7 @@ const router = async () => {
 
 	const view = new match.route.view();
 	document.querySelector("#app")!.innerHTML = await view.getHTML();
+	document.getElementById("start-button")?.addEventListener("click", test);
 };
 
 window.addEventListener("popstate", router);
@@ -55,6 +56,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	})
 	router();
 });
+
+function test() {
+	console.log("test");
+}
+
 
 // function gameLoop() {
 // 	update();
