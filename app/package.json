@@ -13,7 +13,7 @@
 		"watch-backend": "nodemon --watch ./backend/src --ext js --exec \"npm run start\"",
 		"watch": "nodemon --watch ./frontend/src --watch ./backend/src  --ext ts,js --exec \"npm run style && npm run build && npm run start\"",
 		"db-init": "npx prisma migrate dev --name init --schema=./backend/prisma/schema.prisma",
-		"dev": "npm run style && npm run build && npm run db-init && npm run watch"
+		"dev": "npm run db-init && npm run watch"
 	},
 	"repository": {
 		"type": "git",
