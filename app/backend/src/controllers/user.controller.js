@@ -1,6 +1,10 @@
 import Ajv from "ajv";
+import { PrismaClient } from "@prisma/client";
 
 const ajv = new Ajv();
+const prisma = new PrismaClient({
+	log: ["query", "info", "warn", "error"],
+});
 
 /**
  * The pattern for the username is:
@@ -12,17 +16,17 @@ const ajv = new Ajv();
  * - Allows special characters: !@#$%^&*(),.?":{}|<>
  */
 const usernameSchema = {
-  type: "object",
-  properties: {
-    username: {
-      type: "string",
-      minLength: 1,
-      maxLength: 100,
-      pattern: "^(?!.*\\s)(?=.*[a-zA-Z0-9!@#$%^&*(),.?\":{}|<>]).+$"
-    }
-  },
-  required: ["username"],
-  additionalProperties: false,
+	type: "object",
+	properties: {
+		username: {
+			type: "string",
+			minLength: 1,
+			maxLength: 100,
+			pattern: "^(?!.*\\s)(?=.*[a-zA-Z0-9!@#$%^&*(),.?\":{}|<>]).+$"
+		}
+	},
+	required: ["username"],
+	additionalProperties: false,
 };
 
 const validateUsername = ajv.compile(usernameSchema);
@@ -34,25 +38,34 @@ const validateUsername = ajv.compile(usernameSchema);
  * @returns {Promise<void>}
  */
 export async function addUser(request, reply) {
-  const { username } = request.body;
+	const { username } = request.body;
 
 	const valid = validateUsername({ username });
-  if (!valid) {
-    return reply.status(400).send({
-      error: "Invalid input",
-      details: validateUsername.errors,
-    });
-  }
+	if (!valid) {
+		return reply.status(400).send({
+			error: "Invalid input",
+			details: validateUsername.errors,
+		});
+	}
 
-  try {
-    const insertStatement = request.server.db.prepare("INSERT INTO users (username) VALUES (?)");
-    const info = insertStatement.run(username);
+	try {
+		const user = await prisma.user.create({
+			data: {
+				username,
+				dateJoined: new Date(),
+				authentication: { create: {} },
+				stats: { create: {} },
+				accountStatus: { create: {} }
+			}
+		})
+		// const insertStatement = request.server.db.prepare("INSERT INTO users (username) VALUES (?)");
+		// const info = insertStatement.run(username);
 
-    reply.code(201).send({ success: true, message: "User registered" });
-  } catch (err) {
-    request.log.error(err);
-    reply.code(500).send({ success: false, error: "Failed to add user" });
-  }
+		reply.code(201).send({ success: true, message: "User registered" });
+	} catch (err) {
+		request.log.error(err);
+		reply.code(500).send({ success: false, error: "Failed to add user" });
+	}
 }
 
 /**
@@ -65,10 +78,11 @@ export async function getUser(request, reply) {
 	const { username } = request.query;
 
 	try {
-		const selectStatement = request.server.db.prepare(
-			"SELECT * FROM users WHERE username = ?"
-		);
-		const user = selectStatement.get(username);
+		const user = await prisma.user.findUnique({
+			where: {
+				username
+			}
+		})
 		if (!user) {
 			return reply.code(404).send({ exists: !!user, error: "User not found" });
 		}
@@ -87,17 +101,22 @@ export async function getUser(request, reply) {
  * @returns {Promise<void>}
  */
 export async function getUsers(request, reply) {
-  try {
-    const selectStatement = request.server.db.prepare("SELECT * FROM users");
-    const users = selectStatement.all();
+	try {
+		const users = await prisma.user.findMany({
+			include: {
+				stats: true,
+				authentication: true,
+				accountStatus: true
+			}
+		});
 
-    // Respond with the list of users
-    reply.code(200).send(users);
-  } catch (err) {
-    // Log the error and respond with a 500 status code
-    request.log.error(err);
-    reply.code(500).send({ error: "Failed to retrieve users" });
-  }
+		// Respond with the list of users
+		reply.code(200).send(users);
+	} catch (err) {
+		// Log the error and respond with a 500 status code
+		request.log.error(err);
+		reply.code(500).send({ error: "Failed to retrieve users" });
+	}
 }
 
 /**
@@ -108,31 +127,35 @@ export async function getUsers(request, reply) {
  */
 export async function editUser(request, reply) {
 	const { username } = request.body;
-	const { id } = request.params;
+	const id = parseInt(request.params.id, 10);
+	if (isNaN(id))
+		return reply.status(400).send({ error: "Invalid user id" });
 
 	const valid = validateUsername({ username });
-  if (!valid) {
-    return reply.status(400).send({
-      error: "Invalid input",
-      details: validateUsername.errors,
-    });
-  }
+	if (!valid) {
+		return reply.status(400).send({
+			error: "Invalid input",
+			details: validateUsername.errors,
+		});
+	}
 
 	try {
-		const updateStatement = request.server.db.prepare(
-    "UPDATE users SET username = ? WHERE id = ?"
-  );
-	const info = updateStatement.run(username, id);
+		const user = await prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				username: username
+			}
+		})
 
-	if (info.changes === 0) {
-		return reply.code(404).send({ error: "User not found" });
-	}
-
-	reply.code(200).send({ id, username });
+		reply.code(200).send(user);
 	}
 	catch (err) {
-		request.log.error(err);
-		reply.code(500).send({ error: "Failed to update user" });
+		if (err.code === "P2025")
+			return reply.code(404).send({ error: "User not found" });
+		else
+			return reply.code(500).send({ error: "Failed to update user" });
 	}
 }
 
@@ -143,21 +166,20 @@ export async function editUser(request, reply) {
  * @returns {Promise<void>}
  */
 export async function deleteUser(request, reply) {
-  const { id } = request.params;
+	const id = parseInt(request.params.id, 10);
+	if (isNaN(id))
+		return reply.status(400).send({ error: "Invalid user id" });
 
-  try {
-    const deleteStatement = request.server.db.prepare(
-      "DELETE FROM users WHERE id = ?"
-    );
-    const info = deleteStatement.run(id);
+	try {
+		const user = await prisma.user.delete({
+			where: {
+				id: id
+			}
+		})
 
-    if (info.changes === 0) {
-      return reply.code(404).send({ error: "User not found" });
-    }
-
-    reply.code(200).send({ message: "User deleted successfully" });
-  } catch (err) {
-    request.log.error(err);
-    reply.code(500).send({ error: "Failed to delete user" });
-  }
+		reply.code(200).send({ message: "User deleted successfully" });
+	} catch (err) {
+		request.log.error(err);
+		reply.code(500).send({ error: "Failed to delete user" });
+	}
 }

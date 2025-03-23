@@ -27,6 +27,7 @@ function createInputField(id: string, placeholder: string, top: string) {
 		input.style.left = "50%";
 		input.style.fontSize = "18px";
 		input.style.padding = "10px";
+		input.style.color = "white";
 		document.body.appendChild(input);
 	}
 }
@@ -43,6 +44,7 @@ function createRegisterButton(id: string, text: string, top: string, playerNum: 
 		button.style.left = "50%";
 		button.style.fontSize = "18px";
 		button.style.padding = "10px 20px";
+		button.style.color = "white";
 		button.onclick = () => registerUser(playerNum).then(checkBothPlayersRegistered);
 		document.body.appendChild(button);
 	}

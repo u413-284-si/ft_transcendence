@@ -1,9 +1,8 @@
 services:
   app:
     build: ./app
-    image: app
     container_name: app
-    command: [ "npm", "run", "watch" ]
+    command: [ "npm", "run", "dev" ]
     develop:
       watch:
         - action: sync
