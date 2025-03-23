@@ -20,7 +20,7 @@ const fastify = Fastify({
 	}
 });
 
-fastify.register(dbConnector);
+// fastify.register(dbConnector);
 await fastify.register(fastifyCors);
 await fastify.register(fastifyHelmet);
 await fastify.register(fastifyCompress);
