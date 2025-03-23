@@ -1,7 +1,6 @@
 services:
   app:
     build: ./app
-    image: app
     container_name: app
     command: [ "npm", "run", "dev" ]
     develop:
