@@ -1,9 +1,10 @@
 import { GameState } from "./config.js";
 import { updatePaddlePositions, setupInputListeners } from "./input.js";
-import { canvas } from "./init.js";
 import { draw } from "./draw.js";
 
 export function renderGame() {
+	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+	const ctx = canvas.getContext("2d")!;
 
 	setupInputListeners();
 
@@ -17,39 +18,41 @@ export function renderGame() {
 	GameState.player2 = nickname2;
 	// const input = document.getElementById(`usernameInput${playerNum}`) as HTMLInputElement;
 
-	startGame();
-	gameLoop();
+	startGame(canvas);
+	gameLoop(canvas, ctx);
 }
 
-function gameLoop() {
-	update();
-	draw();
-	requestAnimationFrame(gameLoop);
+function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+	update(canvas);
+	draw(canvas, ctx);
+	requestAnimationFrame(() => gameLoop(canvas, ctx));
 }
 
-export function startGame() {
+export function startGame(canvas: HTMLCanvasElement) {
 	GameState.gameOver = false;
 	GameState.gameStarted = true;
-	resetGame();
+	GameState.initialize(canvas.width, canvas.height);
+
+	resetGame(canvas);
 	document.getElementById("register-form")?.remove();
 }
 
-function resetGame() {
+function resetGame(canvas: HTMLCanvasElement) {
 	GameState.player1Score = 0;
 	GameState.player2Score = 0;
-	resetBall();
+	resetBall(canvas);
 }
 
-function resetBall() {
+function resetBall(canvas: HTMLCanvasElement) {
 	GameState.ballX = canvas.width / 2;
 	GameState.ballY = canvas.height / 2;
 	GameState.ballSpeedX *= -1; // Change direction after scoring
 }
 
-export function update() {
+export function update(canvas: HTMLCanvasElement) {
 	if (GameState.gameOver || !GameState.gameStarted) return;
 
-	updatePaddlePositions();
+	updatePaddlePositions(canvas);
 
 	// Move the ball
 	GameState.ballX += GameState.ballSpeedX;
@@ -73,13 +76,13 @@ export function update() {
 	if (GameState.ballX <= 0) {
 		GameState.player2Score++;
 		checkWinner();
-		resetBall();
+		resetBall(canvas);
 	}
 
 	if (GameState.ballX >= canvas.width) {
 		GameState.player1Score++;
 		checkWinner();
-		resetBall();
+		resetBall(canvas);
 	}
 }
 
