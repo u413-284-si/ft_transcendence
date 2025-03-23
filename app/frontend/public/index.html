@@ -5,12 +5,21 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Pong Game</title>
-	<script type="module" defer src="dist/main.js"></script>
 	<link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body class="bg-gray-900 flex items-center justify-center h-screen">
-	<canvas id="gameCanvas" width="800" height="400" class="border-4 border-white"></canvas>
+<!-- <body class="bg-gray-900 flex items-center justify-center h-screen"> -->
+
+<body>
+	<nav class="nav">
+		<a href="/" class="nav__link" data-link>Home</a>
+		<a href="/newGame" class="nav__link" data-link>New Game</a>
+		<a href="/newTournament" class="nav__link" data-link>New Tournament</a>
+		<a href="/stats" class="nav__link" data-link>Stats</a>
+		<a href="/settings" class="nav__link" data-link>Settings</a>
+	</nav>
+	<div id="app"></div>
+	<script type="module" defer src="dist/main.js"></script>
 </body>
 
 </html>

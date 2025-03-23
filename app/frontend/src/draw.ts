@@ -1,19 +1,12 @@
 import { GameState } from "./config.js";
-import { canvas, ctx } from "./init.js";
-import { drawStartScreen } from "./ui.js";
 
-export function draw() {
+export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	if (!GameState.gameStarted) {
-		drawStartScreen(ctx, canvas);
-		return;
-	}
-
-	drawBall();
-	drawPaddles();
-	drawScores();
+	drawBall(ctx);
+	drawPaddles(canvas, ctx);
+	drawScores(canvas, ctx);
 
 	// Display winner message if game is over
 	if (GameState.gameOver) {
@@ -26,20 +19,20 @@ export function draw() {
 	}
 }
 
-function drawBall() {
+function drawBall(ctx: CanvasRenderingContext2D) {
 	ctx.fillStyle = "white";
 	ctx.beginPath();
 	ctx.arc(GameState.ballX, GameState.ballY, 10, 0, Math.PI * 2);
 	ctx.fill();
 }
 
-function drawPaddles() {
+function drawPaddles(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
 	ctx.fillStyle = "white";
 	ctx.fillRect(10, GameState.paddle1Y, GameState.paddleWidth, GameState.paddleHeight);
 	ctx.fillRect(canvas.width - 20, GameState.paddle2Y, GameState.paddleWidth, GameState.paddleHeight);
 }
 
-function drawScores() {
+function drawScores(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
 	ctx.fillStyle = "white";
 	ctx.font = "30px Arial";
 
