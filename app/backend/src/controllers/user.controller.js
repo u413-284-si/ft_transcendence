@@ -1,10 +1,7 @@
 import Ajv from "ajv";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../utils/prisma.js";
 
 const ajv = new Ajv();
-const prisma = new PrismaClient({
-	log: ["query", "info", "warn", "error"],
-});
 
 /**
  * The pattern for the username is:
