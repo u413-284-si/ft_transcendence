@@ -1,4 +1,3 @@
-import { GameState} from "./config.js";
 
 export async function registerUser(playerNum: number) {
     const input = document.getElementById(`usernameInput${playerNum}`) as HTMLInputElement;
@@ -22,13 +21,6 @@ export async function registerUser(playerNum: number) {
             body: JSON.stringify({ username: user }),
         });
         const registerData = await registerResponse.json();
-
-        if (registerData.success) {
-            if (playerNum === 1) GameState.player1 = user;
-            else GameState.player2 = user;
-        } else {
-            alert(registerData.error);
-        }
     } catch (err) {
         console.error("Registration failed:", err);
     }

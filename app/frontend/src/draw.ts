@@ -1,12 +1,10 @@
-import { GameState } from "./config.js";
-
-export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, GameState: any) {
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	drawBall(ctx);
-	drawPaddles(canvas, ctx);
-	drawScores(canvas, ctx);
+	drawBall(ctx, GameState);
+	drawPaddles(canvas, ctx, GameState);
+	drawScores(canvas, ctx, GameState);
 
 	// Display winner message if game is over
 	if (GameState.gameOver) {
@@ -14,25 +12,23 @@ export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
 		ctx.font = "40px Arial";
 		const winnerText = GameState.player1Score >= GameState.winningScore ? "Player 1 Wins!" : "Player 2 Wins!";
 		ctx.fillText(winnerText, canvas.width / 2 - 100, canvas.height / 2);
-		ctx.font = "20px Arial";
-		ctx.fillText("Press ENTER to Restart", canvas.width / 2 - 100, canvas.height / 2 + 40);
 	}
 }
 
-function drawBall(ctx: CanvasRenderingContext2D) {
+function drawBall(ctx: CanvasRenderingContext2D, GameState: any) {
 	ctx.fillStyle = "white";
 	ctx.beginPath();
 	ctx.arc(GameState.ballX, GameState.ballY, 10, 0, Math.PI * 2);
 	ctx.fill();
 }
 
-function drawPaddles(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+function drawPaddles(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, GameState: any) {
 	ctx.fillStyle = "white";
 	ctx.fillRect(10, GameState.paddle1Y, GameState.paddleWidth, GameState.paddleHeight);
 	ctx.fillRect(canvas.width - 20, GameState.paddle2Y, GameState.paddleWidth, GameState.paddleHeight);
 }
 
-function drawScores(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+function drawScores(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, GameState: any) {
 	ctx.fillStyle = "white";
 	ctx.font = "30px Arial";
 
