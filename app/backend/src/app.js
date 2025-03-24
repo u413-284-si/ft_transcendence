@@ -1,7 +1,8 @@
 import Fastify from "fastify";
 import env from "./config/env.js";
 import logger from "./config/logger.js";
-import { routes, staticRoutes } from "./routes/routes.js";
+import userRoutes from "./routes/userRoutes.js";
+import staticRoutes from "./routes/staticRoutes.js"
 import fastifyFormbody from "@fastify/formbody";
 import fastifyCors from "@fastify/cors";
 import fastifyHelmet from "@fastify/helmet";
@@ -24,8 +25,9 @@ await fastify.register(fastifyHelmet);
 await fastify.register(fastifyCompress);
 await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
+
 await fastify.register(staticRoutes);
-await fastify.register(routes);
+await fastify.register(userRoutes, { prefix: "/api/user"});
 await fastify.register(fastifyStatic, {
 	root: "/app/frontend/public",
 });
