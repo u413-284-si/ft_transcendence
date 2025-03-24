@@ -31,19 +31,6 @@ await fastify.register(userRoutes, { prefix: "/api/user"});
 await fastify.register(fastifyStatic, {
 	root: "/app/frontend/public",
 });
-fastify.setNotFoundHandler((req, reply) => {
-	if (req.raw.url && req.raw.url.startsWith("/api")) {
-		return reply.status(404).send({
-			sucess: false,
-			error: {
-				kind: "user_input",
-				message: "Not found"
-			}
-		});
-	}
-	reply.status(200).sendFile("index.html");
-})
-
 
 
 fastify.listen({ host: '0.0.0.0', port: env.port }, (err, address) => {
