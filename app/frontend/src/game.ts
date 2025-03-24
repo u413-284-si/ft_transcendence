@@ -32,7 +32,13 @@ export function renderGame() {
 		gameOver: false
 	};
 
-	startGame(canvas, GameState);
+	startGame(canvas, ctx, GameState);
+}
+
+function startGame(canvas: HTMLCanvasElement,  ctx: CanvasRenderingContext2D, GameState: any) {
+	GameState.gameOver = false;
+	GameState.gameStarted = true;
+	document.getElementById("register-form")?.remove();
 	gameLoop(canvas, ctx, GameState);
 }
 
@@ -42,19 +48,7 @@ function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, Game
 	requestAnimationFrame(() => gameLoop(canvas, ctx, GameState));
 }
 
-function startGame(canvas: HTMLCanvasElement, GameState: any) {
-	GameState.gameOver = false;
-	GameState.gameStarted = true;
-	document.getElementById("register-form")?.remove();
-}
-
-function resetBall(canvas: HTMLCanvasElement, GameState: any) {
-	GameState.ballX = canvas.width / 2;
-	GameState.ballY = canvas.height / 2;
-	GameState.ballSpeedX *= -1; // Change direction after scoring
-}
-
-export function update(canvas: HTMLCanvasElement, GameState: any) {
+function update(canvas: HTMLCanvasElement, GameState: any) {
 	if (GameState.gameOver || !GameState.gameStarted) return;
 
 	updatePaddlePositions(canvas, GameState);
@@ -89,6 +83,12 @@ export function update(canvas: HTMLCanvasElement, GameState: any) {
 		checkWinner(GameState);
 		resetBall(canvas, GameState);
 	}
+}
+
+function resetBall(canvas: HTMLCanvasElement, GameState: any) {
+	GameState.ballX = canvas.width / 2;
+	GameState.ballY = canvas.height / 2;
+	GameState.ballSpeedX *= -1; // Change direction after scoring
 }
 
 function checkWinner(GameState: any) {
