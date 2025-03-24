@@ -66,13 +66,7 @@ export async function getUser(request, reply) {
  */
 export async function getUsers(request, reply) {
 	try {
-		const users = await prisma.user.findMany({
-			include: {
-				stats: true,
-				authentication: true,
-				accountStatus: true
-			}
-		});
+		const users = await prisma.user.findMany();
 
 		// Respond with the list of users
 		reply.code(200).send(users);
