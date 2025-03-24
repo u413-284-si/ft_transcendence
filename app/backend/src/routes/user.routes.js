@@ -2,10 +2,7 @@ import { addUser, getUser, getUsers, editUser, deleteUser } from "../controllers
 
 export default async function userRoutes(fastify) {
 
-
-
-	fastify.post(
-		"/add",
+	fastify.post("/add",
 		{
 			schema: {
 				body: { $ref: "createUserSchema" },
@@ -15,17 +12,18 @@ export default async function userRoutes(fastify) {
 			}
 		},
 		addUser);
-	fastify.get(
-		"/get",
+
+	fastify.get("/get",
 		{
 			schema: {
 				querystring: { $ref: "getUserByUsernameSchema" }
 			}
 		},
 		getUser);
+
 	fastify.get("/list", getUsers);
-	fastify.put(
-		"/edit/:id",
+
+	fastify.put("/edit/:id",
 		{
 			schema: {
 				params: { $ref: "idSchema" },
@@ -33,8 +31,8 @@ export default async function userRoutes(fastify) {
 			}
 		},
 		editUser);
-	fastify.delete(
-		"/delete/:id",
+
+	fastify.delete("/delete/:id",
 		{
 			schema: {
 				params: { $ref: "idSchema" },
