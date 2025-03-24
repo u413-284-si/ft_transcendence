@@ -9,6 +9,8 @@ import fastifyHelmet from "@fastify/helmet";
 import fastifyCompress from "@fastify/compress";
 import fastifyGracefulShutdown from "fastify-graceful-shutdown";
 import fastifyStatic from "@fastify/static";
+import { commonSchemas } from "./schema/common.schema.js";
+import { userSchemas } from "./schema/user.schema.js"
 
 
 const fastify = Fastify({
@@ -26,12 +28,15 @@ await fastify.register(fastifyCompress);
 await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
 
+for (const schema of [...commonSchemas, ...userSchemas]) {
+	fastify.addSchema(schema);
+}
+
 await fastify.register(staticRoutes);
-await fastify.register(userRoutes, { prefix: "/api/user"});
+await fastify.register(userRoutes, { prefix: "/api/user" });
 await fastify.register(fastifyStatic, {
 	root: "/app/frontend/public",
 });
-
 
 fastify.listen({ host: '0.0.0.0', port: env.port }, (err, address) => {
 	if (err) {
