@@ -4,19 +4,21 @@ export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	drawBall(ctx);
-	drawPaddles(canvas, ctx);
 	drawScores(canvas, ctx);
-
+	
 	// Display winner message if game is over
 	if (GameState.gameOver) {
 		ctx.fillStyle = "yellow";
 		ctx.font = "40px Arial";
-		const winnerText = GameState.player1Score >= GameState.winningScore ? "Player 1 Wins!" : "Player 2 Wins!";
+		const winnerText = GameState.player1Score >= GameState.winningScore ? `${GameState.player1} wins!` : `${GameState.player2} wins!`;
 		ctx.fillText(winnerText, canvas.width / 2 - 100, canvas.height / 2);
 		ctx.font = "20px Arial";
 		ctx.fillText("Press ENTER to Restart", canvas.width / 2 - 100, canvas.height / 2 + 40);
+		return;
 	}
+
+	drawBall(ctx);
+	drawPaddles(canvas, ctx);
 }
 
 function drawBall(ctx: CanvasRenderingContext2D) {
