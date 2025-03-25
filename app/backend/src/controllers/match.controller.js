@@ -9,6 +9,7 @@ export async function createMatch(request, reply) {
 		playerScore,
 		opponentScore
 	} = request.body;
+	const won = playerScore > opponentScore ? true : false;
 
 	try {
 		const match = await prisma.match.create({
@@ -21,13 +22,35 @@ export async function createMatch(request, reply) {
 				opponentScore,
 				date: new Date(),
 			},
-			select: { id: true }
-		})
-
-		return reply.code(201).send(match);
+			select: {
+				playerNickname: true,
+				opponentNickname: true,
+				tournamentId: true,
+				playerScore: true,
+				opponentScore: true
+			}
+		});
+		const stats = await prisma.userStats.update({
+			where: { userId: playerId },
+			data: {
+				matchesPlayed: { increment: 1 },
+				matchesWon: { increment: won ? 1 : 0 },
+				matchesLost: { increment: won ? 0 : 1 }
+			},
+			select: {
+				matchesPlayed: true,
+				matchesWon: true,
+				matchesLost: true,
+				winRate: true
+			}
+		});
+		return reply.code(201).send({ message: "New match saved", playerId, ...match, ...stats });
 	} catch (err) {
 		request.log.error(err);
-		reply.code(500).send({ error: "Failed to add match" });
+		if (err.code === "P2025")
+			reply.code(404).send({ error: "UserStats not found" });
+		else
+			reply.code(500).send({ error: "Failed to add match" });
 	}
 }
 
@@ -35,13 +58,12 @@ export async function getMatches(request, reply) {
 	try {
 		const matches = await prisma.match.findMany({
 			select: { id: true }
+		});
+		if (!matches) {
+			return reply.code(404).send({ error: "No matches not found" });
 		}
-		);
-
-		// Respond with the list of matches
 		reply.code(200).send(matches);
 	} catch (err) {
-		// Log the error and respond with a 500 status code
 		request.log.error(err);
 		reply.code(500).send({ error: "Failed to retrieve matches" });
 	}
@@ -55,7 +77,7 @@ export async function getMatch(request, reply) {
 			where: {
 				id
 			}
-		})
+		});
 		if (!match) {
 			return reply.code(404).send({ error: "Match not found" });
 		}

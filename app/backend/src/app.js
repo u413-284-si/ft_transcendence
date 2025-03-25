@@ -17,8 +17,6 @@ import userStatsRoutes from "./routes/userStats.routes.js";
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/user.schema.js"
 import { matchSchemas } from "./schema/match.schema.js"
-import { userStatsSchemas } from "./schema/userStats.schema.js";
-
 
 const fastify = Fastify({
 	logger: {
@@ -38,8 +36,7 @@ await fastify.register(fastifyFormbody);
 for (const schema of [
 	...commonSchemas,
 	...userSchemas,
-	...matchSchemas,
-	...userStatsSchemas]) {
+	...matchSchemas]) {
 	fastify.addSchema(schema);
 }
 
