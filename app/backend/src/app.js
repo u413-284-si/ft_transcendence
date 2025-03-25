@@ -12,10 +12,12 @@ import logger from "./config/logger.js";
 import userRoutes from "./routes/user.routes.js";
 import staticRoutes from "./routes/static.routes.js"
 import matchRoutes from "./routes/match.routes.js"
+import userStatsRoutes from "./routes/userStats.routes.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/user.schema.js"
 import { matchSchemas } from "./schema/match.schema.js"
+import { userStatsSchemas } from "./schema/userStats.schema.js";
 
 
 const fastify = Fastify({
@@ -36,13 +38,15 @@ await fastify.register(fastifyFormbody);
 for (const schema of [
 	...commonSchemas,
 	...userSchemas,
-	...matchSchemas]) {
+	...matchSchemas,
+	...userStatsSchemas]) {
 	fastify.addSchema(schema);
 }
 
 await fastify.register(staticRoutes);
 await fastify.register(userRoutes, { prefix: "/api/user" });
 await fastify.register(matchRoutes, { prefix: "/api/match" });
+await fastify.register(userStatsRoutes, { prefix: "/api/user_stats" });
 await fastify.register(fastifyStatic, {
 	root: "/app/frontend/public",
 });
