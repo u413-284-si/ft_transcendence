@@ -21,7 +21,7 @@ export default class extends AbstractView {
 	}
 
 	async addListeners() {
-		document.getElementById("start-button")?.addEventListener("click", renderGame);
+		document.getElementById("start-button")?.addEventListener("click", (event) => renderGame(event));
 	}
 
 	async render() {

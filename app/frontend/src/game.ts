@@ -2,7 +2,7 @@ import { GameState } from "./config.js";
 import { updatePaddlePositions, setupInputListeners } from "./input.js";
 import { draw } from "./draw.js";
 
-export function renderGame() {
+export function renderGame(event: Event) {
 	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 	const ctx = canvas.getContext("2d")!;
 
@@ -11,15 +11,21 @@ export function renderGame() {
 	const nickname1: string = (document.getElementById("nickname1") as HTMLInputElement).value.trim();
 	const nickname2: string = (document.getElementById("nickname2") as HTMLInputElement).value.trim();
 
-	if (!nickname1 || !nickname2)
-		return alert("Please enter a nickname for both players.");
+	if (!nickname1 || !nickname2) {
+		event.preventDefault();
+		alert("Please enter a nickname for both players.");
+	}
+	else if (nickname1 === nickname2) {
+		event.preventDefault();
+		alert("Nicknames must be different.");
+	}
+	else {
+		GameState.player1 = nickname1;
+		GameState.player2 = nickname2;
 
-	GameState.player1 = nickname1;
-	GameState.player2 = nickname2;
-	// const input = document.getElementById(`usernameInput${playerNum}`) as HTMLInputElement;
-
-	startGame(canvas);
-	gameLoop(canvas, ctx);
+		startGame(canvas);
+		gameLoop(canvas, ctx);
+	}
 }
 
 function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
