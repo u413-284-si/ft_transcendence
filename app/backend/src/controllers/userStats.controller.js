@@ -6,10 +6,10 @@ export async function getUserStats(request, reply) {
 		if (!userStats) {
 			return reply.code(404).send({ error: "No user stats found" });
 		}
-		reply.code(200).send(userStats);
+		return reply.code(200).send(userStats);
 	} catch (err) {
 		request.log.error(err);
-		reply.code(500).send({ error: "Failed to retrieve user stats" });
+		return reply.code(500).send({ error: "Failed to retrieve user stats" });
 	}
 }
 
@@ -24,9 +24,9 @@ export async function getUserStat(request, reply) {
 		if (!userStat) {
 			return reply.code(404).send({ error: "User stat not found" });
 		}
-		reply.code(200).send(userStat);
+		return reply.code(200).send(userStat);
 	} catch (err) {
 		request.log.error(err);
-		reply.code(500).send({ error: "Failed to retrieve user" });
+		return reply.code(500).send({ error: "Failed to retrieve user" });
 	}
 }

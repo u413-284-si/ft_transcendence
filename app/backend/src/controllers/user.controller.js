@@ -51,10 +51,10 @@ export async function getUser(request, reply) {
 			return reply.code(404).send({ error: "User not found" });
 		}
 
-		reply.code(200).send(user);
+		return reply.code(200).send(user);
 	} catch (err) {
 		request.log.error(err);
-		reply.code(500).send({ error: "Failed to retrieve user" });
+		return reply.code(500).send({ error: "Failed to retrieve user" });
 	}
 }
 
@@ -69,11 +69,11 @@ export async function getUsers(request, reply) {
 		const users = await prisma.user.findMany();
 
 		// Respond with the list of users
-		reply.code(200).send(users);
+		return reply.code(200).send(users);
 	} catch (err) {
 		// Log the error and respond with a 500 status code
 		request.log.error(err);
-		reply.code(500).send({ error: "Failed to retrieve users" });
+		return reply.code(500).send({ error: "Failed to retrieve users" });
 	}
 }
 
@@ -102,7 +102,7 @@ export async function editUser(request, reply) {
 			}
 		})
 
-		reply.code(200).send(user);
+		return reply.code(200).send(user);
 	}
 	catch (err) {
 		if (err.code === "P2025")
@@ -128,9 +128,9 @@ export async function deleteUser(request, reply) {
 			}
 		})
 
-		reply.code(200).send({ message: "User deleted successfully", ...user });
+		return reply.code(200).send({ message: "User deleted successfully", ...user });
 	} catch (err) {
 		request.log.error(err);
-		reply.code(500).send({ error: "Failed to delete user" });
+		return reply.code(500).send({ error: "Failed to delete user" });
 	}
 }

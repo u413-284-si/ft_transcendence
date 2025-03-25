@@ -48,9 +48,9 @@ export async function createMatch(request, reply) {
 	} catch (err) {
 		request.log.error(err);
 		if (err.code === "P2025")
-			reply.code(404).send({ error: "UserStats not found" });
+			return reply.code(404).send({ error: "UserStats not found" });
 		else
-			reply.code(500).send({ error: "Failed to add match" });
+			return reply.code(500).send({ error: "Failed to add match" });
 	}
 }
 
@@ -62,10 +62,10 @@ export async function getMatches(request, reply) {
 		if (!matches) {
 			return reply.code(404).send({ error: "No matches not found" });
 		}
-		reply.code(200).send(matches);
+		return reply.code(200).send(matches);
 	} catch (err) {
 		request.log.error(err);
-		reply.code(500).send({ error: "Failed to retrieve matches" });
+		return reply.code(500).send({ error: "Failed to retrieve matches" });
 	}
 }
 
@@ -82,10 +82,10 @@ export async function getMatch(request, reply) {
 			return reply.code(404).send({ error: "Match not found" });
 		}
 
-		reply.code(200).send(match);
+		return reply.code(200).send(match);
 	} catch (err) {
 		request.log.error(err);
-		reply.code(500).send({ error: "Failed to retrieve Match" });
+		return reply.code(500).send({ error: "Failed to retrieve Match" });
 	}
 }
 
@@ -113,10 +113,9 @@ export async function getMatchesByUserId(request, reply) {
 		if (!matches) {
 			return reply.code(404).send({ error: "No matches found for this user" });
 		}
-
-		reply.code(200).send(matches);
+		return reply.code(200).send(matches);
 	} catch (err) {
 		request.log.error(err);
-		reply.code(500).send({ error: "Failed to retrieve matches" });
+		return reply.code(500).send({ error: "Failed to retrieve matches" });
 	}
 }
