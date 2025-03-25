@@ -1,4 +1,4 @@
-import prisma from "../utils/prisma.js";
+import prisma from "../prisma/prismaClient.js";
 
 /**
  * Controller function to add a new user
@@ -48,13 +48,13 @@ export async function getUser(request, reply) {
 			}
 		})
 		if (!user) {
-			return reply.code(404).send({error: "User not found" });
+			return reply.code(404).send({ error: "User not found" });
 		}
 
 		reply.code(200).send(user);
 	} catch (err) {
 		request.log.error(err);
-		reply.code(500).send({error: "Failed to retrieve user"});
+		reply.code(500).send({ error: "Failed to retrieve user" });
 	}
 }
 

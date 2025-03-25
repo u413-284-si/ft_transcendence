@@ -1,4 +1,4 @@
-import prisma from "../utils/prisma.js"
+import prisma from "../prisma/prismaClient.js"
 
 export async function createMatch(request, reply) {
 	const {
