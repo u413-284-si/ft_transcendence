@@ -103,11 +103,6 @@ export async function getMatchesByUserId(request, reply) {
 				playerScore: true,
 				opponentScore: true,
 				date: true,
-				player: {
-					select: {
-						username: true
-					}
-				}
 			}
 		})
 		if (!matches) {
