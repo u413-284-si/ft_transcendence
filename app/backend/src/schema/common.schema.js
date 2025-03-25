@@ -12,6 +12,25 @@ export const idSchema = {
 	additionalProperties: false
 };
 
+export const commonDefinitionsSchema = {
+	$id: "commonDefinitionsSchema",
+	definitions: {
+		username: {
+			type: "string",
+			minLength: 3,
+			maxLength: 50,
+			pattern: "^[a-zA-Z0-9_!@#$%^&*(),.?\":{}|<>-]+$",
+			description: 'A unique username with 3-30 alphanumeric characters or underscores.'
+		},
+		email: {
+			type: 'string',
+			format: 'email',
+			description: 'A valid email address.'
+		}
+	}
+}
+
 export const commonSchemas = [
-	idSchema
+	idSchema,
+	commonDefinitionsSchema
 ];

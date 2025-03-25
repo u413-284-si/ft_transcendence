@@ -1,30 +1,12 @@
 
-/**
- * The pattern for the username is:
- * - At least 1 character
- * - At most 100 characters
- * - No whitespaces
- * - Allows lowercase and uppercase letters
- * - Allows numbers
- * - Allows special characters: !@#$%^&*(),.?":{}|<>
- */
 const createUserSchema = {
 	$id: "createUserSchema",
 	type: "object",
 	properties: {
-		username: {
-			type: "string",
-			minLength: 3,
-			maxLength: 50,
-			pattern: "^[a-zA-Z0-9_!@#$%^&*(),.?\":{}|<>-]+$"
-		},
-		email: {
-			type: "string",
-			format: "email",
-			nullable: true
-		}
+		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+		email: { $ref: "commonDefinitionsSchema#/definitions/email" }
 	},
-	required: ["username"], // `email` is optional
+	required: ["username"],
 	additionalProperties: false
 };
 
@@ -33,10 +15,10 @@ const createUserResponseSchema = {
 	type: "object",
 	properties: {
 		id: { type: "integer" },
-		username: { type: "string" },
-		email: { type: "string" },
+		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+		email: { $ref: "commonDefinitionsSchema#/definitions/email" },
 	},
-	required: ["id"], // `id` and `username` are always required
+	required: ["id"],
 	additionalProperties: false
 };
 
@@ -44,12 +26,7 @@ export const getUserByUsernameSchema = {
 	$id: "getUserByUsernameSchema",
 	type: "object",
 	properties: {
-		username: {
-			type: "string",
-			minLength: 3,
-			maxLength: 50,
-			pattern: "^[a-zA-Z0-9_!@#$%^&*(),.?\":{}|<>-]+$"
-		}
+		username: { $ref: "commonDefinitionsSchema#/definitions/username" }
 	},
 	required: ["username"],
 	additionalProperties: false
