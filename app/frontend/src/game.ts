@@ -1,6 +1,8 @@
 import { GameState } from "./config.js";
 import { updatePaddlePositions, setupInputListeners } from "./input.js";
 import { draw } from "./draw.js";
+import { MatchData } from "./types/match.js"
+import NewGame from "./views/NewGame.js";
 
 export function renderGame() {
 	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
@@ -22,10 +24,13 @@ export function renderGame() {
 	gameLoop(canvas, ctx);
 }
 
-function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+async function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
 	update(canvas);
 	draw(canvas, ctx);
-	requestAnimationFrame(() => gameLoop(canvas, ctx));
+	if (GameState.gameOver)
+		await endGame()
+	else
+		requestAnimationFrame(() => gameLoop(canvas, ctx));
 }
 
 export function startGame(canvas: HTMLCanvasElement) {
@@ -87,7 +92,55 @@ export function update(canvas: HTMLCanvasElement) {
 }
 
 function checkWinner() {
-	if (GameState.player1Score >= 10 || GameState.player2Score >= 10) {
+	if (GameState.player1Score >= 3 || GameState.player2Score >= 3) {
 		GameState.gameOver = true;
 	}
+}
+
+async function endGame() {
+	await saveMatch({
+		playerId: 1,
+		playerNickname: GameState.player1,
+		opponentNickname: GameState.player2,
+		playerScore: GameState.player1Score,
+		opponentScore: GameState.player2Score
+	});
+
+	await waitForEnterKey();
+
+	const newGameView = new NewGame();
+	await newGameView.render();
+}
+
+async function saveMatch(matchData: MatchData) {
+	try {
+		const response = await fetch('http://localhost:4000/api/match', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(matchData),
+		});
+
+		if (!response.ok) {
+			throw new Error('Failed to save match');
+		}
+
+		const data = await response.json();
+		console.log('Match saved:', data);
+	} catch (error) {
+		console.error('Error saving match:', error);
+	}
+};
+
+function waitForEnterKey(): Promise<void> {
+	return new Promise((resolve) => {
+		function onKeyDown(event: KeyboardEvent) {
+			if (event.key === "Enter") {
+				document.removeEventListener("keydown", onKeyDown);
+				resolve();
+			}
+		}
+		document.addEventListener("keydown", onKeyDown);
+	});
 }
