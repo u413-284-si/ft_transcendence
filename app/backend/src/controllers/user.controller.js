@@ -39,12 +39,12 @@ export async function addUser(request, reply) {
  * @returns {Promise<void>}
  */
 export async function getUser(request, reply) {
-	const { username } = request.query;
+	const id = parseInt(request.params.id, 10);
 
 	try {
 		const user = await prisma.user.findUnique({
 			where: {
-				username
+				id
 			}
 		})
 		if (!user) {
@@ -128,7 +128,7 @@ export async function deleteUser(request, reply) {
 			}
 		})
 
-		reply.code(200).send({ message: "User deleted successfully" });
+		reply.code(200).send({ message: "User deleted successfully", ...user });
 	} catch (err) {
 		request.log.error(err);
 		reply.code(500).send({ error: "Failed to delete user" });

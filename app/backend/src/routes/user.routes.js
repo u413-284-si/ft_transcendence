@@ -2,41 +2,35 @@ import { addUser, getUser, getUsers, editUser, deleteUser } from "../controllers
 
 export default async function userRoutes(fastify) {
 
-	fastify.post("/add",
-		{
-			schema: {
-				body: { $ref: "createUserSchema" },
-				response: {
-					201: { $ref: "createUserResponseSchema" }
-				}
-			}
-		},
-		addUser);
+	fastify.post("/", optionsCreateUser, addUser);
 
-	fastify.get("/get",
-		{
-			schema: {
-				querystring: { $ref: "getUserByUsernameSchema" }
-			}
-		},
-		getUser);
+	fastify.get("/:id", optionsGetUser, getUser);
 
-	fastify.get("/list", getUsers);
+	fastify.get("/", getUsers);
 
-	fastify.put("/edit/:id",
-		{
-			schema: {
-				params: { $ref: "idSchema" },
-				body: { $ref: "getUserByUsernameSchema" }
-			}
-		},
-		editUser);
+	fastify.put("/:id", optionsUpdateUser, editUser);
 
-	fastify.delete("/delete/:id",
-		{
-			schema: {
-				params: { $ref: "idSchema" },
-			}
-		},
-		deleteUser);
+	fastify.delete("/:id", optionsGetUser, deleteUser);
+}
+
+const optionsCreateUser = {
+	schema: {
+		body: { $ref: "createUserSchema" },
+		response: {
+			201: { $ref: "createUserResponseSchema" }
+		}
+	}
+};
+
+const optionsGetUser = {
+	schema: {
+		params: { $ref: "idSchema" },
+	}
+}
+
+const optionsUpdateUser = {
+	schema: {
+		params: { $ref: "idSchema" },
+		body: { $ref: "UsernameSchema" }
+	}
 }

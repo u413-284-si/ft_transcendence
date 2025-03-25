@@ -22,8 +22,8 @@ const createUserResponseSchema = {
 	additionalProperties: false
 };
 
-export const getUserByUsernameSchema = {
-	$id: "getUserByUsernameSchema",
+export const UsernameSchema = {
+	$id: "UsernameSchema",
 	type: "object",
 	properties: {
 		username: { $ref: "commonDefinitionsSchema#/definitions/username" }
@@ -35,5 +35,5 @@ export const getUserByUsernameSchema = {
 export const userSchemas = [
 	createUserSchema,
 	createUserResponseSchema,
-	getUserByUsernameSchema,
+	UsernameSchema,
 ];
