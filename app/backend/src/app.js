@@ -7,7 +7,6 @@ import fastifyGracefulShutdown from "fastify-graceful-shutdown";
 import fastifyStatic from "@fastify/static";
 
 import env from "./config/env.js";
-import logger from "./config/logger.js";
 
 import userRoutes from "./routes/users.routes.js";
 import staticRoutes from "./routes/static.routes.js"
@@ -20,9 +19,18 @@ import { matchSchemas } from "./schema/matches.schema.js"
 
 const fastify = Fastify({
 	logger: {
-		level: "info",
+		level: env.logLevel,
 		transport: {
 			target: "pino-pretty",
+			options: {
+				colorize: true,
+				translateTime: 'HH:MM:ss Z'
+			}
+		},
+		formatters: {
+			bindings: () => {
+				return {};
+			}
 		}
 	}
 });
