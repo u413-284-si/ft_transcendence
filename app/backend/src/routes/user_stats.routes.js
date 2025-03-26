@@ -1,4 +1,4 @@
-import { getUserStats, getUserStat } from "../controllers/userStats.controller.js";
+import { getUserStats, getUserStat } from "../controllers/user_stats.controllers.js";
 
 export default async function userStatsRoutes(fastify) {
 

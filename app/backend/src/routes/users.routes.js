@@ -1,4 +1,4 @@
-import { addUser, getUser, getUsers, editUser, deleteUser, getUserMatches } from "../controllers/user.controller.js";
+import { addUser, getUser, getUsers, editUser, deleteUser, getUserMatches } from "../controllers/users.controllers.js";
 
 export default async function userRoutes(fastify) {
 

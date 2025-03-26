@@ -9,14 +9,14 @@ import fastifyStatic from "@fastify/static";
 import env from "./config/env.js";
 import logger from "./config/logger.js";
 
-import userRoutes from "./routes/user.routes.js";
+import userRoutes from "./routes/users.routes.js";
 import staticRoutes from "./routes/static.routes.js"
-import matchRoutes from "./routes/match.routes.js"
-import userStatsRoutes from "./routes/userStats.routes.js";
+import matchRoutes from "./routes/matches.routes.js"
+import userStatsRoutes from "./routes/user_stats.routes.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
-import { userSchemas } from "./schema/user.schema.js"
-import { matchSchemas } from "./schema/match.schema.js"
+import { userSchemas } from "./schema/users.schema.js"
+import { matchSchemas } from "./schema/matches.schema.js"
 
 const fastify = Fastify({
 	logger: {
@@ -48,8 +48,8 @@ for (const schema of [
 }
 
 await fastify.register(staticRoutes);
-await fastify.register(userRoutes, { prefix: "/api/user" });
-await fastify.register(matchRoutes, { prefix: "/api/match" });
+await fastify.register(userRoutes, { prefix: "/api/users" });
+await fastify.register(matchRoutes, { prefix: "/api/matches" });
 await fastify.register(userStatsRoutes, { prefix: "/api/user_stats" });
 await fastify.register(fastifyStatic, {
 	root: "/app/frontend/public",

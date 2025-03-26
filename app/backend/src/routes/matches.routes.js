@@ -1,4 +1,4 @@
-import { createMatch, getMatches, getMatch } from "../controllers/match.controller.js";
+import { createMatch, getMatches, getMatch } from "../controllers/matches.controllers.js";
 
 export default async function matchRoutes(fastify) {
 
