@@ -10,38 +10,42 @@ export default class extends AbstractView {
 
 	async createHTML() {
 		return `
-		<h1>Player Statistics</h1>
-		<table border="1">
-			<thead>
-				<tr>
-					<th>Player</th>
-					<th>Total Matches</th>
-					<th>Matches Won</th>
-					<th>Matches Lost</th>
-					<th>Win Rate</th>
-				</tr>
-			</thead>
-			<tbody id="user-stats-body">
-				<!-- Player stats will be inserted here -->
-			</tbody>
-		</table>
+			<h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
+			<div class="overflow-x-auto">
+				<table class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500">
+					<thead class="bg-blue-800">
+						<tr>
+							<th class="border border-blue-500 px-4 py-2">Username</th>
+							<th class="border border-blue-500 px-4 py-2">Total Matches</th>
+							<th class="border border-blue-500 px-4 py-2">Matches Won</th>
+							<th class="border border-blue-500 px-4 py-2">Matches Lost</th>
+							<th class="border border-blue-500 px-4 py-2">Win Rate</th>
+						</tr>
+					</thead>
+					<tbody id="user-stats-body" class="bg-blue-700 divide-y divide-blue-500">
+						<!-- Player stats will be inserted here -->
+					</tbody>
+				</table>
+			</div>
 
-		<h1>Match History</h1>
-		<table border="1">
-			<thead>
-				<tr>
-					<th>Player 1</th>
-					<th>Score 1</th>
-					<th>Player 2</th>
-					<th>Score 2</th>
-					<th>Winner</th>
-					<th>Date</th>
-				</tr>
-			</thead>
-			<tbody id="matches-table-body">
-				<!-- Matches will be inserted here -->
-			</tbody>
-		</table>
+			<h1 class="text-4xl font-bold text-blue-300 mt-12 mb-8">Match History</h1>
+			<div class="overflow-x-auto">
+				<table class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500">
+					<thead class="bg-blue-800">
+						<tr>
+							<th class="border border-blue-500 px-4 py-2">Nickname</th>
+							<th class="border border-blue-500 px-4 py-2">Score</th>
+							<th class="border border-blue-500 px-4 py-2">Opponent</th>
+							<th class="border border-blue-500 px-4 py-2">Opponent Score</th>
+							<th class="border border-blue-500 px-4 py-2">Result</th>
+							<th class="border border-blue-500 px-4 py-2">Date</th>
+						</tr>
+					</thead>
+					<tbody id="matches-table-body" class="bg-blue-700 divide-y divide-blue-500">
+						<!-- Matches will be inserted here -->
+					</tbody>
+				</table>
+			</div>
 		`;
 	}
 
@@ -65,12 +69,12 @@ export default class extends AbstractView {
 				const result = match.playerScore > match.opponentScore ? "Won" : "Lost";
 				const row = document.createElement('tr');
 				row.innerHTML = `
-					<td>${match.playerNickname}</td>
-					<td>${match.playerScore}</td>
-					<td>${match.opponentNickname}</td>
-					<td>${match.opponentScore}</td>
-					<td>${result}</td>
-					<td>${new Date(match.timestamp!).toLocaleString()}</td>
+						<td class="border border-blue-500 px-4 py-2">${match.playerNickname}</td>
+						<td class="border border-blue-500 px-4 py-2">${match.playerScore}</td>
+						<td class="border border-blue-500 px-4 py-2">${match.opponentNickname}</td>
+						<td class="border border-blue-500 px-4 py-2">${match.opponentScore}</td>
+						<td class="border border-blue-500 px-4 py-2">${result}</td>
+						<td class="border border-blue-500 px-4 py-2">${new Date(match.date!).toLocaleString()}</td>
 				`;
 				matchesTableBody.appendChild(row);
 			});
@@ -92,11 +96,11 @@ export default class extends AbstractView {
 
 			tableBody.innerHTML = `
 				<tr>
-					<td>${user}</td>
-					<td>${stats.matchesPlayed}</td>
-					<td>${stats.matchesWon}</td>
-					<td>${stats.matchesLost}</td>
-					<td>${stats.winRate}</td>
+						<td class="border border-blue-500 px-4 py-2">${user}</td>
+						<td class="border border-blue-500 px-4 py-2">${stats.matchesPlayed}</td>
+						<td class="border border-blue-500 px-4 py-2">${stats.matchesWon}</td>
+						<td class="border border-blue-500 px-4 py-2">${stats.matchesLost}</td>
+						<td class="border border-blue-500 px-4 py-2">${stats.winRate}</td>
 				</tr>
 			`;
 		} catch (error) {
