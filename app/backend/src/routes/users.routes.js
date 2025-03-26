@@ -1,18 +1,18 @@
-import { addUser, getUser, getUsers, editUser, deleteUser, getUserMatches } from "../controllers/users.controllers.js";
+import { registerUserHandler, getUserHandler, getAllUsersHandler, updateUserHandler, deleteUserHandler, getUserMatchesHandler } from "../controllers/users.controllers.js";
 
 export default async function userRoutes(fastify) {
 
-	fastify.post("/", optionsCreateUser, addUser);
+	fastify.post("/", optionsCreateUser, registerUserHandler);
 
-	fastify.get("/:id", optionsGetUser, getUser);
+	fastify.get("/:id", optionsGetUser, getUserHandler);
 
-	fastify.get("/", getUsers);
+	fastify.get("/", getAllUsersHandler);
 
-	fastify.put("/:id", optionsUpdateUser, editUser);
+	fastify.put("/:id", optionsUpdateUser, updateUserHandler);
 
-	fastify.delete("/:id", optionsGetUser, deleteUser);
+	fastify.delete("/:id", optionsGetUser, deleteUserHandler);
 
-	fastify.get("/:id/matches", optionsGetUser, getUserMatches);
+	fastify.get("/:id/matches", optionsGetUser, getUserMatchesHandler);
 }
 
 const optionsCreateUser = {
@@ -33,6 +33,6 @@ const optionsGetUser = {
 const optionsUpdateUser = {
 	schema: {
 		params: { $ref: "idSchema" },
-		body: { $ref: "UsernameSchema" }
+		body: { $ref: "updateUserSchema" }
 	}
 }

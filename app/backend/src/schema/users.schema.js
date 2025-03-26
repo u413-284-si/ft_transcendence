@@ -1,3 +1,14 @@
+const userSchema = {
+	$id: "userSchema",
+	type: "object",
+	properties: {
+		id: { type: "integer" },
+		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+		email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+	},
+	required: ["id", "username"],
+	additionalProperties: false
+};
 
 const createUserSchema = {
 	$id: "createUserSchema",
@@ -14,26 +25,30 @@ const createUserResponseSchema = {
 	$id: "createUserResponseSchema",
 	type: "object",
 	properties: {
-		id: { type: "integer" },
-		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-		email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+		message: { type: "string" },
+		user: { $ref: "userSchema" }
 	},
-	required: ["id"],
+	required: ["message", "user"],
 	additionalProperties: false
 };
 
-export const UsernameSchema = {
-	$id: "UsernameSchema",
+export const updateUserSchema = {
+	$id: "updateUserSchema",
 	type: "object",
 	properties: {
-		username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+		email: { $ref: "commonDefinitionsSchema#/definitions/email" }
 	},
-	required: ["username"],
+	oneOf: [
+		{ required: ["username"] },
+		{ required: ["email"] }
+	],
 	additionalProperties: false
 };
 
 export const userSchemas = [
+	userSchema,
 	createUserSchema,
 	createUserResponseSchema,
-	UsernameSchema,
+	updateUserSchema,
 ];
