@@ -1,90 +1,60 @@
-import prisma from "../prisma/prismaClient.js"
+import { Prisma } from "@prisma/client";
+import { createMatch, getAllMatches, getMatch } from "../services/matches.services.js";
+import { updateUserStats } from "../services/user_stats.services.js";
+import { convertPrismaError } from "../prisma/prismaError.js";
+import { httpError } from "../utils/error.js";
 
-export async function createMatch(request, reply) {
-	const {
-		playerId,
-		playerNickname,
-		opponentNickname,
-		tournamentId,
-		playerScore,
-		opponentScore
-	} = request.body;
-	const won = playerScore > opponentScore ? true : false;
-
+export async function createMatchHandler(request, reply) {
 	try {
-		const match = await prisma.match.create({
-			data: {
-				playerId,
-				playerNickname,
-				opponentNickname,
-				tournamentId,
-				playerScore,
-				opponentScore,
-				date: new Date(),
-			},
-			select: {
-				playerNickname: true,
-				opponentNickname: true,
-				tournamentId: true,
-				playerScore: true,
-				opponentScore: true
-			}
-		});
-		const stats = await prisma.userStats.update({
-			where: { userId: playerId },
-			data: {
-				matchesPlayed: { increment: 1 },
-				matchesWon: { increment: won ? 1 : 0 },
-				matchesLost: { increment: won ? 0 : 1 }
-			},
-			select: {
-				matchesPlayed: true,
-				matchesWon: true,
-				matchesLost: true,
-				winRate: true
-			}
-		});
-		return reply.code(201).send({ message: "New match saved", playerId, ...match, ...stats });
+		const {
+			playerId,
+			playerNickname,
+			opponentNickname,
+			tournamentId,
+			playerScore,
+			opponentScore
+		} = request.body;
+		const won = playerScore > opponentScore ? true : false;
+
+		const match = await createMatch(playerId, playerNickname, opponentNickname, tournamentId, playerScore, opponentScore);
+		const stats = await updateUserStats(playerId, won);
+		return reply.code(201).send({ message: "New match created", match, stats });
 	} catch (err) {
-		request.log.error(err);
-		if (err.code === "P2025")
-			return reply.code(404).send({ error: "UserStats not found" });
-		else
-			return reply.code(500).send({ error: "Failed to add match" });
+		request.log.error({ err, body: request.body }, "createMatchHandler: Failed to create match");
+		let code = 500;
+		if (err instanceof Prisma.PrismaClientKnownRequestError) {
+			code = convertPrismaError(err.code);
+		}
+		return httpError({ reply, code, message: "Failed to create match" });
 	}
 }
 
-export async function getMatches(request, reply) {
+export async function getAllMatchesHandler(request, reply) {
 	try {
-		const matches = await prisma.match.findMany({
-			select: { id: true }
-		});
-		if (!matches) {
-			return reply.code(404).send({ error: "No matches not found" });
-		}
-		return reply.code(200).send(matches);
+		const matches = await getAllMatches();
+		const numberOfMatches = matches.length;
+		return reply.code(200).send({ message: `Found ${numberOfMatches} matches`, matches });
 	} catch (err) {
-		request.log.error(err);
-		return reply.code(500).send({ error: "Failed to retrieve matches" });
+		request.log.error({ err, body: request.body }, "getAllMatchesHandler: Failed to get matches");
+		let code = 500;
+		if (err instanceof Prisma.PrismaClientKnownRequestError) {
+			code = convertPrismaError(err.code);
+		}
+		return httpError({ reply, code, message: "Failed to get matches" });
 	}
 }
 
-export async function getMatch(request, reply) {
-	const id = parseInt(request.params.id, 10);
-
+export async function getMatchHandler(request, reply) {
 	try {
-		const match = await prisma.match.findUnique({
-			where: {
-				id
-			}
-		});
-		if (!match) {
-			return reply.code(404).send({ error: "Match not found" });
-		}
-
-		return reply.code(200).send(match);
+		const id = parseInt(request.params.id, 10);
+		const match = await getMatch(id);
+		return reply.code(200).send({ message: "Found match", match });
 	} catch (err) {
-		request.log.error(err);
-		return reply.code(500).send({ error: "Failed to retrieve Match" });
+		request.log.error({ err, body: request.body }, "getMatch: Failed to get match");
+		let code = 500;
+		if (err instanceof Prisma.PrismaClientKnownRequestError) {
+			code = convertPrismaError(err.code);
+		}
+		return httpError({ reply, code, message: "Failed to get match" });
 	}
 }

@@ -1,12 +1,12 @@
-import { createMatch, getMatches, getMatch } from "../controllers/matches.controllers.js";
+import { createMatchHandler, getAllMatchesHandler, getMatchHandler } from "../controllers/matches.controllers.js";
 
 export default async function matchRoutes(fastify) {
 
-	fastify.post("/", optionsCreateMatch, createMatch);
+	fastify.post("/", optionsCreateMatch, createMatchHandler);
 
-	fastify.get("/", getMatches);
+	fastify.get("/", getAllMatchesHandler);
 
-	fastify.get("/:id", optionsGetMatch, getMatch);
+	fastify.get("/:id", optionsGetMatch, getMatchHandler);
 
 }
 
