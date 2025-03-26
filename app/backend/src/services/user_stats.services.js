@@ -17,3 +17,17 @@ export async function updateUserStats(userId, won) {
 	});
 	return stats;
 }
+
+export async function getAllUserStats() {
+	const userStats = await prisma.userStats.findMany();
+	return userStats;
+}
+
+export async function getUserStats(userId) {
+	const userStat = await prisma.userStats.findUniqueOrThrow({
+		where: {
+			userId
+		}
+	});
+	return userStat;
+}

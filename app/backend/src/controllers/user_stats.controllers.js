@@ -1,32 +1,34 @@
-import prisma from "../prisma/prismaClient.js";
+import { Prisma } from "@prisma/client";
+import { getAllUserStats, getUserStats } from "../services/user_stats.services.js";
+import { convertPrismaError } from "../prisma/prismaError.js";
+import { httpError } from "../utils/error.js";
 
-export async function getUserStats(request, reply) {
+export async function getAllUserStatsHandler(request, reply) {
 	try {
-		const userStats = await prisma.userStats.findMany();
-		if (!userStats) {
-			return reply.code(404).send({ error: "No user stats found" });
-		}
-		return reply.code(200).send(userStats);
+		const userStats = await getAllUserStats();
+		const numberOfUserStats = userStats.length;
+		return reply.code(200).send({ message: `Found ${numberOfUserStats} user stats`, userStats });
 	} catch (err) {
-		request.log.error(err);
-		return reply.code(500).send({ error: "Failed to retrieve user stats" });
+		request.log.error({ err, body: request.body }, "getAllUserStats: Failed to get user stats");
+		let code = 500;
+		if (err instanceof Prisma.PrismaClientKnownRequestError) {
+			code = convertPrismaError(err.code);
+		}
+		return httpError({ reply, code, message: "Failed to get user stats" });
 	}
 }
 
-export async function getUserStat(request, reply) {
-	const userId = parseInt(request.params.id, 10);
+export async function getUserStatsHandler(request, reply) {
 	try {
-		const userStat = await prisma.userStats.findUnique({
-			where: {
-				userId
-			}
-		})
-		if (!userStat) {
-			return reply.code(404).send({ error: "User stat not found" });
-		}
-		return reply.code(200).send(userStat);
+		const userId = parseInt(request.params.id, 10);
+		const userStats = await getUserStats(userId);
+		return reply.code(200).send({message: "Found user stats", userStats});
 	} catch (err) {
-		request.log.error(err);
-		return reply.code(500).send({ error: "Failed to retrieve user" });
+		request.log.error({ err, body: request.body }, "getUserStatsHandler: Failed to get user stats");
+		let code = 500;
+		if (err instanceof Prisma.PrismaClientKnownRequestError) {
+			code = convertPrismaError(err.code);
+		}
+		return httpError({ reply, code, message: "Failed to get user stats" });
 	}
 }

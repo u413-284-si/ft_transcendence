@@ -50,7 +50,7 @@ export async function getMatchHandler(request, reply) {
 		const match = await getMatch(id);
 		return reply.code(200).send({ message: "Found match", match });
 	} catch (err) {
-		request.log.error({ err, body: request.body }, "getMatch: Failed to get match");
+		request.log.error({ err, body: request.body }, "getMatchHandler: Failed to get match");
 		let code = 500;
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
