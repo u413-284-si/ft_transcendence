@@ -30,7 +30,19 @@ export const commonDefinitionsSchema = {
 	}
 }
 
+export const httpErrorSchema = {
+	$id: "httpErrorSchema",
+	type: "object",
+	properties: {
+		message: { type: "string" },
+		cause: { type: "string" }
+	},
+	required: ["message"],
+	additionalProperties: false
+};
+
 export const commonSchemas = [
 	idSchema,
-	commonDefinitionsSchema
+	commonDefinitionsSchema,
+	httpErrorSchema
 ];
