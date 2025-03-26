@@ -28,7 +28,14 @@ const fastify = Fastify({
 });
 
 await fastify.register(fastifyCors);
-await fastify.register(fastifyHelmet);
+await fastify.register(fastifyHelmet, {
+	contentSecurityPolicy: {
+		directives: {
+			defaultSrc: ["'self'"],
+			connectSrc: ["'self'", "http://localhost:4000"]
+		}
+	}
+});
 await fastify.register(fastifyCompress);
 await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
