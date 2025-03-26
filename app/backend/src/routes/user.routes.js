@@ -1,4 +1,4 @@
-import { addUser, getUser, getUsers, editUser, deleteUser } from "../controllers/user.controller.js";
+import { addUser, getUser, getUsers, editUser, deleteUser, getUserMatches } from "../controllers/user.controller.js";
 
 export default async function userRoutes(fastify) {
 
@@ -11,6 +11,8 @@ export default async function userRoutes(fastify) {
 	fastify.put("/:id", optionsUpdateUser, editUser);
 
 	fastify.delete("/:id", optionsGetUser, deleteUser);
+
+	fastify.get("/:id/matches", optionsGetUser, getUserMatches);
 }
 
 const optionsCreateUser = {

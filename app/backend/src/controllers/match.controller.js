@@ -88,29 +88,3 @@ export async function getMatch(request, reply) {
 		return reply.code(500).send({ error: "Failed to retrieve Match" });
 	}
 }
-
-export async function getMatchesByUserId(request, reply) {
-	const playerId = parseInt(request.params.id, 10);
-
-	try {
-		const matches = await prisma.match.findMany({
-			where: {
-				playerId
-			},
-			select: {
-				playerNickname: true,
-				opponentNickname: true,
-				playerScore: true,
-				opponentScore: true,
-				date: true,
-			}
-		})
-		if (!matches) {
-			return reply.code(404).send({ error: "No matches found for this user" });
-		}
-		return reply.code(200).send(matches);
-	} catch (err) {
-		request.log.error(err);
-		return reply.code(500).send({ error: "Failed to retrieve matches" });
-	}
-}

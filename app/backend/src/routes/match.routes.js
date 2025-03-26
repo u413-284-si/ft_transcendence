@@ -1,4 +1,4 @@
-import { createMatch, getMatches, getMatch, getMatchesByUserId } from "../controllers/match.controller.js";
+import { createMatch, getMatches, getMatch } from "../controllers/match.controller.js";
 
 export default async function matchRoutes(fastify) {
 
@@ -7,8 +7,6 @@ export default async function matchRoutes(fastify) {
 	fastify.get("/", getMatches);
 
 	fastify.get("/:id", optionsGetMatch, getMatch);
-
-	fastify.get("/user/:id", optionsGetMatch, getMatchesByUserId);
 
 }
 
