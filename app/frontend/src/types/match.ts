@@ -4,5 +4,5 @@ export interface MatchData {
 	opponentNickname: string;
 	playerScore: number;
 	opponentScore: number;
-	timestamp?: string;
+	date?: string;
 }
