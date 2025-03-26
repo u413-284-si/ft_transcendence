@@ -1,7 +1,7 @@
 import { GameState } from "./config.js";
 import { updatePaddlePositions, setupInputListeners } from "./input.js";
 import { draw } from "./draw.js";
-import { MatchData } from "./types/match.js"
+import { Match } from "./types/match.js"
 import NewGame from "./views/NewGame.js";
 
 export function renderGame() {
@@ -112,9 +112,9 @@ async function endGame() {
 	await newGameView.render();
 }
 
-async function saveMatch(matchData: MatchData) {
+async function saveMatch(matchData: Match) {
 	try {
-		const response = await fetch('http://localhost:4000/api/match', {
+		const response = await fetch('http://localhost:4000/api/matches', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

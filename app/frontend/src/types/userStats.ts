@@ -4,3 +4,8 @@ export interface UserStats {
 	matchesLost: number;
 	winRate: number;
 }
+
+export interface UserStatsData {
+	message: string;
+	userStats: UserStats;
+}
