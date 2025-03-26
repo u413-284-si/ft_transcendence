@@ -94,13 +94,15 @@ export default class extends AbstractView {
 			const tableBody = document.getElementById('user-stats-body');
 			if (!tableBody) return;
 
+			const formattedWinRate = (stats.winRate).toFixed(2) + "%";
+
 			tableBody.innerHTML = `
 				<tr>
 						<td class="border border-blue-500 px-4 py-2">${user}</td>
 						<td class="border border-blue-500 px-4 py-2">${stats.matchesPlayed}</td>
 						<td class="border border-blue-500 px-4 py-2">${stats.matchesWon}</td>
 						<td class="border border-blue-500 px-4 py-2">${stats.matchesLost}</td>
-						<td class="border border-blue-500 px-4 py-2">${stats.winRate}</td>
+						<td class="border border-blue-500 px-4 py-2">${formattedWinRate}</td>
 				</tr>
 			`;
 		} catch (error) {
