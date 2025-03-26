@@ -20,7 +20,7 @@ export async function createUser(username, email) {
 }
 
 export async function getUser(id) {
-	const user = await prisma.user.findUnique({
+	const user = await prisma.user.findUniqueOrThrow({
 		where: {
 			id
 		}

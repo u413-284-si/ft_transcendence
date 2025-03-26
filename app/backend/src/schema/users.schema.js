@@ -39,9 +39,9 @@ export const updateUserSchema = {
 		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
 		email: { $ref: "commonDefinitionsSchema#/definitions/email" }
 	},
-	oneOf: [
+	anyOf: [
 		{ required: ["username"] },
-		{ required: ["email"] }
+		{ required: ["email"] },
 	],
 	additionalProperties: false
 };

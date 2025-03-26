@@ -1,4 +1,5 @@
 import { registerUserHandler, getUserHandler, getAllUsersHandler, updateUserHandler, deleteUserHandler, getUserMatchesHandler } from "../controllers/users.controllers.js";
+import { errorResponses } from "../utils/error.js";
 
 export default async function userRoutes(fastify) {
 
@@ -19,7 +20,8 @@ const optionsCreateUser = {
 	schema: {
 		body: { $ref: "createUserSchema" },
 		response: {
-			201: { $ref: "createUserResponseSchema" }
+			201: { $ref: "createUserResponseSchema" },
+			...errorResponses
 		}
 	}
 };
@@ -27,12 +29,18 @@ const optionsCreateUser = {
 const optionsGetUser = {
 	schema: {
 		params: { $ref: "idSchema" },
+		response: {
+			...errorResponses
+		}
 	}
 }
 
 const optionsUpdateUser = {
 	schema: {
 		params: { $ref: "idSchema" },
-		body: { $ref: "updateUserSchema" }
+		body: { $ref: "updateUserSchema" },
+		response: {
+			...errorResponses
+		}
 	}
 }
