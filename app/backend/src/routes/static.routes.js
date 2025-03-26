@@ -1,6 +1,6 @@
 export default async function staticRoutes(fastify) {
 	fastify.get("/", (req, reply) => {
-		reply.sendFile("index.html");
+		return reply.sendFile("index.html");
 	});
 
 	fastify.setNotFoundHandler((req, reply) => {
@@ -13,6 +13,6 @@ export default async function staticRoutes(fastify) {
 				}
 			});
 		}
-		reply.status(200).sendFile("index.html");
+		return reply.status(200).sendFile("index.html");
 	})
 }
