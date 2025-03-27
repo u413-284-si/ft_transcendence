@@ -22,10 +22,12 @@ export async function createMatchHandler(request, reply) {
 	} catch (err) {
 		request.log.error({ err, body: request.body }, "createMatchHandler: Failed to create match");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to create match" });
+		return httpError(reply, code, "Failed to create match", cause);
 	}
 }
 
@@ -37,10 +39,12 @@ export async function getAllMatchesHandler(request, reply) {
 	} catch (err) {
 		request.log.error({ err, body: request.body }, "getAllMatchesHandler: Failed to get matches");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to get matches" });
+		return httpError(reply, code, "Failed to get matches", cause);
 	}
 }
 
@@ -52,9 +56,11 @@ export async function getMatchHandler(request, reply) {
 	} catch (err) {
 		request.log.error({ err, body: request.body }, "getMatchHandler: Failed to get match");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to get match" });
+		return httpError(reply, code, "Failed to get match", cause);
 	}
 }

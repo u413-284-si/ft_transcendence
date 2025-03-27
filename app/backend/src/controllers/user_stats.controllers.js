@@ -11,10 +11,12 @@ export async function getAllUserStatsHandler(request, reply) {
 	} catch (err) {
 		request.log.error({ err, body: request.body }, "getAllUserStats: Failed to get user stats");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to get user stats" });
+		return httpError(reply, code, "Failed to get user stats", cause);
 	}
 }
 
@@ -26,9 +28,11 @@ export async function getUserStatsHandler(request, reply) {
 	} catch (err) {
 		request.log.error({ err, body: request.body }, "getUserStatsHandler: Failed to get user stats");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to get user stats" });
+		return httpError(reply, code, "Failed to get user stats", cause);
 	}
 }

@@ -11,10 +11,12 @@ export async function registerUserHandler(request, reply) {
 	} catch (err) {
 		request.log.error({ err, body: request.body }, "registerUserHandler: Failed to create user");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to create user" });
+		return httpError(reply, code, "Failed to create user", cause);
 	}
 }
 
@@ -26,10 +28,12 @@ export async function getUserHandler(request, reply) {
 	} catch (err) {
 		request.log.error({ err, body: request.body }, "getUserHandler: Failed to get user");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to get user" });
+		return httpError(reply, code, "Failed to get user", cause);
 	}
 }
 
@@ -41,10 +45,12 @@ export async function getAllUsersHandler(request, reply) {
 	} catch (err) {
 		request.log.error({ err, body: request.body }, "getAllUsersHandler: Failed to get users");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to get users" });;
+		return httpError(reply, code, "Failed to get users", cause);
 	}
 }
 
@@ -57,10 +63,12 @@ export async function updateUserHandler(request, reply) {
 	catch (err) {
 		request.log.error({ err, body: request.body }, "updateUserHandler: Failed to update user");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to update user" });
+		return httpError(reply, code, "Failed to update user", cause);
 	}
 }
 
@@ -72,10 +80,12 @@ export async function deleteUserHandler(request, reply) {
 	} catch (err) {
 		request.log.error({ err, body: request.body }, "deleteUserHandler: Failed to delete user");
 		let code = 500;
+		let cause = "Internal Server";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to delete user" });
+		return httpError(reply, code, "Failed to delete user", cause);
 	}
 }
 
@@ -86,13 +96,14 @@ export async function getUserMatchesHandler(request, reply) {
 		const numberOfMatches = matches.length;
 		return reply.code(200).send({ message: `Found ${numberOfMatches} matches`, matches });
 	} catch (err) {
-		request.log.error(err);
+		request.log.error({ err, body: request.body }, "getUserMatchesHandler: Failed to get matches");
+		let code = 500;
+		let cause = "Internal Server";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
-			if (err.code === "P2025") {
-				return reply.code(404).send({ error: "No matches found" });
-			}
+			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return reply.code(500).send({ error: "Failed to retrieve matches" });
+		return httpError(reply, code, "Failed to get matches", cause);
 	}
 }
 
@@ -105,9 +116,11 @@ export async function patchUserHandler(request, reply) {
 	catch (err) {
 		request.log.error({ err, body: request.body }, "updateUserHandler: Failed to update user");
 		let code = 500;
+		let cause = "Internal Server Error";
 		if (err instanceof Prisma.PrismaClientKnownRequestError) {
 			code = convertPrismaError(err.code);
+			cause = err.meta.cause;
 		}
-		return httpError({ reply, code, message: "Failed to update user" });
+		return httpError(reply, code, "Failed to update user", cause);
 	}
 }
