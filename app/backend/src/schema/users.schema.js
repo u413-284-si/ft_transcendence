@@ -39,6 +39,16 @@ export const updateUserSchema = {
 		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
 		email: { $ref: "commonDefinitionsSchema#/definitions/email" }
 	},
+	additionalProperties: false
+};
+
+export const patchUserSchema = {
+	$id: "patchUserSchema",
+	type: "object",
+	properties: {
+		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+		email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+	},
 	anyOf: [
 		{ required: ["username"] },
 		{ required: ["email"] },
@@ -51,4 +61,5 @@ export const userSchemas = [
 	createUserSchema,
 	createUserResponseSchema,
 	updateUserSchema,
+	patchUserSchema
 ];

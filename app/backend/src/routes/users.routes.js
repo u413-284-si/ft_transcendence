@@ -1,4 +1,4 @@
-import { registerUserHandler, getUserHandler, getAllUsersHandler, updateUserHandler, deleteUserHandler, getUserMatchesHandler } from "../controllers/users.controllers.js";
+import { registerUserHandler, getUserHandler, getAllUsersHandler, updateUserHandler, deleteUserHandler, getUserMatchesHandler, patchUserHandler } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
 export default async function userRoutes(fastify) {
@@ -10,6 +10,8 @@ export default async function userRoutes(fastify) {
 	fastify.get("/", getAllUsersHandler);
 
 	fastify.put("/:id", optionsUpdateUser, updateUserHandler);
+
+	fastify.patch("/:id", optionsPatchUser, patchUserHandler);
 
 	fastify.delete("/:id", optionsGetUser, deleteUserHandler);
 
@@ -39,6 +41,16 @@ const optionsUpdateUser = {
 	schema: {
 		params: { $ref: "idSchema" },
 		body: { $ref: "updateUserSchema" },
+		response: {
+			...errorResponses
+		}
+	}
+}
+
+const optionsPatchUser = {
+	schema: {
+		params: { $ref: "idSchema" },
+		body: { $ref: "patchUserSchema" },
 		response: {
 			...errorResponses
 		}

@@ -95,3 +95,19 @@ export async function getUserMatchesHandler(request, reply) {
 		return reply.code(500).send({ error: "Failed to retrieve matches" });
 	}
 }
+
+export async function patchUserHandler(request, reply) {
+	try {
+		const id = parseInt(request.params.id, 10);
+		const patchedUser = await updateUser(id, request.body);
+		return reply.code(200).send({ message: "Patched user", patchedUser });
+	}
+	catch (err) {
+		request.log.error({ err, body: request.body }, "updateUserHandler: Failed to update user");
+		let code = 500;
+		if (err instanceof Prisma.PrismaClientKnownRequestError) {
+			code = convertPrismaError(err.code);
+		}
+		return httpError({ reply, code, message: "Failed to update user" });
+	}
+}
