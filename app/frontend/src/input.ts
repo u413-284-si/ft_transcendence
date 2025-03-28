@@ -1,3 +1,5 @@
+import { IGameState } from "./IGameState.js";
+
 // Key states
 const keys: { [key: string]: boolean } = {};
 
@@ -6,9 +8,9 @@ export function setupInputListeners() {
 	document.addEventListener("keyup", (event) => keys[event.key] = false);
 }
 
-export function updatePaddlePositions(canvas: HTMLCanvasElement, GameState: any) {
-	if (keys["w"] && GameState.paddle1Y > 0) GameState.paddle1Y -= GameState.paddleSpeed;
-	if (keys["s"] && GameState.paddle1Y < canvas.height - GameState.paddleHeight) GameState.paddle1Y += GameState.paddleSpeed;
-	if (keys["ArrowUp"] && GameState.paddle2Y > 0) GameState.paddle2Y -= GameState.paddleSpeed;
-	if (keys["ArrowDown"] && GameState.paddle2Y < canvas.height - GameState.paddleHeight) GameState.paddle2Y += GameState.paddleSpeed;
+export function updatePaddlePositions(canvas: HTMLCanvasElement, gameState: IGameState) {
+	if (keys["w"] && gameState.paddle1Y > 0) gameState.paddle1Y -= gameState.paddleSpeed;
+	if (keys["s"] && gameState.paddle1Y < canvas.height - gameState.paddleHeight) gameState.paddle1Y += gameState.paddleSpeed;
+	if (keys["ArrowUp"] && gameState.paddle2Y > 0) gameState.paddle2Y -= gameState.paddleSpeed;
+	if (keys["ArrowDown"] && gameState.paddle2Y < canvas.height - gameState.paddleHeight) gameState.paddle2Y += gameState.paddleSpeed;
 }
