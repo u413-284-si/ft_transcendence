@@ -43,6 +43,8 @@ export const updateUserSchema = {
 	additionalProperties: false
 };
 
+// strict mode of ajv requires double definitions in anyOf block:
+// https://github.com/ajv-validator/ajv/issues/1571
 export const patchUserSchema = {
 	$id: "patchUserSchema",
 	type: "object",
