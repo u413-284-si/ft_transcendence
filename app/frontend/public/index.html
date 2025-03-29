@@ -6,19 +6,32 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Pong Game</title>
 	<link rel="stylesheet" href="css/styles.css">
+	<style>
+		body {
+			font-family: 'Courier New', Courier, monospace;
+		}
+	</style>
 </head>
 
-<!-- <body class="bg-gray-900 flex items-center justify-center h-screen"> -->
-
-<body>
-	<nav class="nav">
-		<a href="/" class="nav__link" data-link>Home</a>
-		<a href="/newGame" class="nav__link" data-link>New Game</a>
-		<a href="/newTournament" class="nav__link" data-link>New Tournament</a>
-		<a href="/stats" class="nav__link" data-link>Stats</a>
-		<a href="/settings" class="nav__link" data-link>Settings</a>
+<body class="bg-blue-900 text-white min-h-screen flex flex-col">
+	<nav class="bg-blue-800 text-white py-4 shadow-lg">
+		<div class="container mx-auto flex justify-center space-x-8">
+			<a href="/" class="nav__link text-lg hover:text-blue-300" data-link>Home</a>
+			<a href="/newGame" class="nav__link text-lg hover:text-blue-300" data-link>New Game</a>
+			<a href="/newTournament" class="nav__link text-lg hover:text-blue-300" data-link>New Tournament</a>
+			<a href="/stats" class="nav__link text-lg hover:text-blue-300" data-link>Stats</a>
+			<a href="/settings" class="nav__link text-lg hover:text-blue-300" data-link>Settings</a>
+		</div>
 	</nav>
-	<div id="app"></div>
+
+	<div id="app" class="flex-grow container mx-auto p-8 text-center">
+		<!-- Content will be dynamically injected here -->
+	</div>
+
+	<footer class="bg-blue-800 text-white py-4 text-center">
+		<p class="text-sm">Pong Game &copy; 2025</p>
+	</footer>
+
 	<script type="module" defer src="dist/main.js"></script>
 </body>
 
