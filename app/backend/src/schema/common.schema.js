@@ -1,17 +1,3 @@
-export const idSchema = {
-	$id: "idSchema",
-	type: "object",
-	properties: {
-		id: {
-			type: "integer",
-			minimum: 1,
-			description: "The unique identifier for the entity"
-		}
-	},
-	required: ["id"],
-	additionalProperties: false
-};
-
 export const commonDefinitionsSchema = {
 	$id: "commonDefinitionsSchema",
 	definitions: {
@@ -26,9 +12,24 @@ export const commonDefinitionsSchema = {
 			type: 'string',
 			format: 'email',
 			description: 'A valid email address.'
+		},
+		id: {
+			type: "integer",
+			minimum: 1,
+			description: "The unique identifier for the entity"
 		}
 	}
 }
+
+export const idSchema = {
+	$id: "idSchema",
+	type: "object",
+	properties: {
+		id: { $ref: "commonDefinitionsSchema#/definitions/id" }
+	},
+	required: ["id"],
+	additionalProperties: false
+};
 
 export const httpErrorSchema = {
 	$id: "httpErrorSchema",
@@ -42,7 +43,7 @@ export const httpErrorSchema = {
 };
 
 export const commonSchemas = [
-	idSchema,
 	commonDefinitionsSchema,
+	idSchema,
 	httpErrorSchema
 ];
