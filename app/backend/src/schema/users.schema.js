@@ -39,19 +39,28 @@ export const updateUserSchema = {
 		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
 		email: { $ref: "commonDefinitionsSchema#/definitions/email" }
 	},
+	required: ["username", "email"],
 	additionalProperties: false
 };
 
 export const patchUserSchema = {
 	$id: "patchUserSchema",
 	type: "object",
-	properties: {
-		username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-		email: { $ref: "commonDefinitionsSchema#/definitions/email" }
-	},
 	anyOf: [
-		{ required: ["username"] },
-		{ required: ["email"] },
+		{
+			properties: {
+				username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+				email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+			},
+			required: ["username"],
+		},
+		{
+			properties: {
+				username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+				email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+			},
+			required: ["email"]
+		},
 	],
 	additionalProperties: false
 };
