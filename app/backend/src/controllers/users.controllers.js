@@ -1,126 +1,90 @@
-import { Prisma } from "@prisma/client";
 import { createUser, getUser, getAllUsers, updateUser, deleteUser, getUserMatches } from "../services/users.services.js";
-import { convertPrismaError } from "../prisma/prismaError.js";
-import { httpError } from "../utils/error.js";
+import { handlePrismaError } from "../utils/error.js";
+import { createResponseMessage } from "../utils/response.js"
 
 export async function registerUserHandler(request, reply) {
+	const action = "Create User";
 	try {
 		const { username, email } = request.body;
 		const user = await createUser(username, email);
-		return reply.code(201).send({ message: "User created", user });
+		return reply.code(201).send({ message: createResponseMessage(action, true), user });
 	} catch (err) {
-		request.log.error({ err, body: request.body }, "registerUserHandler: Failed to create user");
-		let code = 500;
-		let cause = "Internal Server Error";
-		if (err instanceof Prisma.PrismaClientKnownRequestError) {
-			code = convertPrismaError(err.code);
-			cause = err.meta.cause;
-		}
-		return httpError(reply, code, "Failed to create user", cause);
+		request.log.error({ err, body: request.body }, `registerUserHandler: ${createResponseMessage(action, false)}`);
+		return handlePrismaError(reply, action, err);
 	}
 }
 
 export async function getUserHandler(request, reply) {
+	const action = "Get user";
 	try {
 		const id = parseInt(request.params.id, 10);
 		const user = await getUser(id);
-		return reply.code(200).send({ message: "Found user", user });
+		return reply.code(200).send({ message: createResponseMessage(action, true), user });
 	} catch (err) {
-		request.log.error({ err, body: request.body }, "getUserHandler: Failed to get user");
-		let code = 500;
-		let cause = "Internal Server Error";
-		if (err instanceof Prisma.PrismaClientKnownRequestError) {
-			code = convertPrismaError(err.code);
-			cause = err.meta.cause;
-		}
-		return httpError(reply, code, "Failed to get user", cause);
+		request.log.error({ err, body: request.body }, `getUserHandler: ${createResponseMessage(action, false)}`);
+		return handlePrismaError(reply, action, err);
 	}
 }
 
 export async function getAllUsersHandler(request, reply) {
+	const action = "Get users"
 	try {
 		const users = await getAllUsers();
 		const numberOfUsers = users.length;
-		return reply.code(200).send({ message: `Found ${numberOfUsers} users`, users });
+		return reply.code(200).send({ message: createResponseMessage(action, true), count: numberOfUsers, users });
 	} catch (err) {
-		request.log.error({ err, body: request.body }, "getAllUsersHandler: Failed to get users");
-		let code = 500;
-		let cause = "Internal Server Error";
-		if (err instanceof Prisma.PrismaClientKnownRequestError) {
-			code = convertPrismaError(err.code);
-			cause = err.meta.cause;
-		}
-		return httpError(reply, code, "Failed to get users", cause);
+		request.log.error({ err, body: request.body }, `getAllUsersHandler: ${createResponseMessage(action, false)}`);
+		return handlePrismaError(reply, action, err);
 	}
 }
 
 export async function updateUserHandler(request, reply) {
+	const action = "Update user";
 	try {
 		const id = parseInt(request.params.id, 10);
 		const updatedUser = await updateUser(id, request.body);
-		return reply.code(200).send({ message: "Updated user", updatedUser });
+		return reply.code(200).send({ message: createResponseMessage(action, true), updatedUser });
 	}
 	catch (err) {
-		request.log.error({ err, body: request.body }, "updateUserHandler: Failed to update user");
-		let code = 500;
-		let cause = "Internal Server Error";
-		if (err instanceof Prisma.PrismaClientKnownRequestError) {
-			code = convertPrismaError(err.code);
-			cause = err.meta.cause;
-		}
-		return httpError(reply, code, "Failed to update user", cause);
+		request.log.error({ err, body: request.body }, `updateUserHandler: ${createResponseMessage(action, false)}`);
+		return handlePrismaError(reply, action, err);
 	}
 }
 
 export async function deleteUserHandler(request, reply) {
+	const action = "Delete user";
 	try {
 		const id = parseInt(request.params.id, 10);
 		const deletedUser = await deleteUser(id);
-		return reply.code(200).send({ message: "Deleted user", deletedUser });
+		return reply.code(200).send({ message: createResponseMessage(action, true), deletedUser });
 	} catch (err) {
-		request.log.error({ err, body: request.body }, "deleteUserHandler: Failed to delete user");
-		let code = 500;
-		let cause = "Internal Server";
-		if (err instanceof Prisma.PrismaClientKnownRequestError) {
-			code = convertPrismaError(err.code);
-			cause = err.meta.cause;
-		}
-		return httpError(reply, code, "Failed to delete user", cause);
+		request.log.error({ err, body: request.body }, `deleteUserHandler: ${createResponseMessage(action, false)}`);
+		return handlePrismaError(reply, action, err);
 	}
 }
 
 export async function getUserMatchesHandler(request, reply) {
+	const action = "Get user matches"
 	try {
 		const id = parseInt(request.params.id, 10);
 		const matches = await getUserMatches(id);
 		const numberOfMatches = matches.length;
-		return reply.code(200).send({ message: `Found ${numberOfMatches} matches`, matches });
+		return reply.code(200).send({ message: createResponseMessage(action, true), count: numberOfMatches, matches });
 	} catch (err) {
-		request.log.error({ err, body: request.body }, "getUserMatchesHandler: Failed to get matches");
-		let code = 500;
-		let cause = "Internal Server";
-		if (err instanceof Prisma.PrismaClientKnownRequestError) {
-			code = convertPrismaError(err.code);
-			cause = err.meta.cause;
-		}
-		return httpError(reply, code, "Failed to get matches", cause);
+		request.log.error({ err, body: request.body }, `getUserMatchesHandler: ${createResponseMessage(action, false)}`);
+		return handlePrismaError(reply, action, err);
 	}
 }
 
 export async function patchUserHandler(request, reply) {
+	const action = "Patch user";
 	try {
 		const id = parseInt(request.params.id, 10);
 		const patchedUser = await updateUser(id, request.body);
-		return reply.code(200).send({ message: "Patched user", patchedUser });
+		return reply.code(200).send({ message: createResponseMessage(action, true), patchedUser });
 	}
 	catch (err) {
-		request.log.error({ err, body: request.body }, "updateUserHandler: Failed to update user");
-		let code = 500;
-		let cause = "Internal Server Error";
-		if (err instanceof Prisma.PrismaClientKnownRequestError) {
-			code = convertPrismaError(err.code);
-			cause = err.meta.cause;
-		}
-		return httpError(reply, code, "Failed to update user", cause);
+		request.log.error({ err, body: request.body }, `updateUserHandler: ${createResponseMessage(action, false)}`);
+		return handlePrismaError(reply, action, err);
 	}
 }
