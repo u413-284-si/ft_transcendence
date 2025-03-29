@@ -32,6 +32,11 @@ const fastify = Fastify({
 				return {};
 			}
 		}
+	},
+	ajv: {
+		customOptions: {
+			strict: true
+		}
 	}
 });
 
