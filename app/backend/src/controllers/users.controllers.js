@@ -27,7 +27,7 @@ export async function getUserHandler(request, reply) {
 }
 
 export async function getAllUsersHandler(request, reply) {
-	const action = "Get users"
+	const action = "Get all users"
 	try {
 		const users = await getAllUsers();
 		const numberOfUsers = users.length;

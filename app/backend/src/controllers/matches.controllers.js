@@ -26,7 +26,7 @@ export async function createMatchHandler(request, reply) {
 }
 
 export async function getAllMatchesHandler(request, reply) {
-	const action = "Get matches"
+	const action = "Get all matches"
 	try {
 		const matches = await getAllMatches();
 		const numberOfMatches = matches.length;
