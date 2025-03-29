@@ -53,16 +53,17 @@ export const patchUserSchema = {
 				email: { $ref: "commonDefinitionsSchema#/definitions/email" }
 			},
 			required: ["username"],
+			additionalProperties: false
 		},
 		{
 			properties: {
 				username: { $ref: "commonDefinitionsSchema#/definitions/username" },
 				email: { $ref: "commonDefinitionsSchema#/definitions/email" }
 			},
-			required: ["email"]
+			required: ["email"],
+			additionalProperties: false
 		},
 	],
-	additionalProperties: false
 };
 
 export const userSchemas = [
