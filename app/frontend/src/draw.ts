@@ -1,4 +1,4 @@
-import { IGameState } from "./IGameState.js";
+import { IGameState } from "./types/IGameState.js";
 
 export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
 	ctx.fillStyle = "black";

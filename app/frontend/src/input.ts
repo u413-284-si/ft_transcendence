@@ -1,4 +1,4 @@
-import { IGameState } from "./IGameState.js";
+import { IGameState } from "./types/IGameState.js";
 
 // Key states
 const keys: { [key: string]: boolean } = {};
