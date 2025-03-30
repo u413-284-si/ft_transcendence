@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
     provider = "sqlite"
-    url      = "file:/app/db/pong.db"
+    url      = "file:../../db/pong.db"
 }
 
 model User {
