@@ -4,7 +4,7 @@ import { IGameState } from "./types/IGameState.js";
 import { Match } from "./types/IMatch.js"
 import NewGame from "./views/NewGame.js";
 
-export function renderGame() {
+export async function renderGame() {
 	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 	const ctx = canvas.getContext("2d")!;
 
@@ -18,6 +18,7 @@ export function renderGame() {
 
 	const gameState = initGameState(canvas, nickname1, nickname2);
 	startGame(canvas, ctx, gameState);
+	await endGame(gameState);
 }
 
 function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: string): IGameState {
@@ -51,7 +52,9 @@ function startGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gam
 function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
 	update(canvas, gameState);
 	draw(canvas, ctx, gameState);
-	requestAnimationFrame(() => gameLoop(canvas, ctx, gameState));
+	if (!gameState.gameOver) {
+		requestAnimationFrame(() => gameLoop(canvas, ctx, gameState));
+	}
 }
 
 function update(canvas: HTMLCanvasElement, gameState: IGameState) {
@@ -103,13 +106,13 @@ function checkWinner(gameState: IGameState) {
 	}
 }
 
-async function endGame() {
+async function endGame(gameState: IGameState) {
 	await saveMatch({
 		playerId: 1,
-		playerNickname: GameState.player1,
-		opponentNickname: GameState.player2,
-		playerScore: GameState.player1Score,
-		opponentScore: GameState.player2Score
+		playerNickname: gameState.player1,
+		opponentNickname: gameState.player2,
+		playerScore: gameState.player1Score,
+		opponentScore: gameState.player2Score
 	});
 
 	await waitForEnterKey();
