@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
-import { Match, MatchData } from "../types/match.js";
-import { UserStats, UserStatsData } from "../types/userStats.js";
+import { Match, MatchData } from "../types/IMatch.js";
+import { UserStats, UserStatsData } from "../types/IUserStats.js";
 
 export default class extends AbstractView {
 	constructor() {
