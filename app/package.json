@@ -12,9 +12,8 @@
 		"watch-frontend": "nodemon --watch ./frontend/src --ext ts --exec \"npm run style && npm run build && npm run start\"",
 		"watch-backend": "nodemon --watch ./backend/src --ext js --exec \"npm run start\"",
 		"watch": "nodemon --watch ./frontend/src --watch ./backend/src  --ext ts,js --exec \"npm run style && npm run build && npm run start\"",
-		"db:migrate": "npx prisma migrate dev --create-only",
-		"db:deploy": "npx prisma migrate deploy && npx prisma generate",
-		"dev": "npm run db:deploy && npm run watch"
+		"db-init": "npx prisma migrate dev",
+		"dev": "npm run db-init && npm run watch"
 	},
 	"repository": {
 		"type": "git",
