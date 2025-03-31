@@ -127,14 +127,14 @@ async function endGame(gameState: IGameState) {
 	await newGameView.render();
 }
 
-async function saveMatch(matchData: Match) {
+async function saveMatch(match: Match) {
 	try {
 		const response = await fetch('http://localhost:4000/api/matches', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(matchData),
+			body: JSON.stringify(match),
 		});
 
 		if (!response.ok) {
