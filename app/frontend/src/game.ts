@@ -4,7 +4,7 @@ import { IGameState } from "./types/IGameState.js";
 import { Match } from "./types/IMatch.js"
 import NewGame from "./views/NewGame.js";
 
-export async function renderGame() {
+export function renderGame(event: Event) {
 	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 	const ctx = canvas.getContext("2d")!;
 
@@ -13,8 +13,14 @@ export async function renderGame() {
 	const nickname1: string = (document.getElementById("nickname1") as HTMLInputElement).value.trim();
 	const nickname2: string = (document.getElementById("nickname2") as HTMLInputElement).value.trim();
 
-	if (!nickname1 || !nickname2)
+	if (!nickname1 || !nickname2) {
+		event.preventDefault();
 		return alert("Please enter a nickname for both players.");
+	}
+	else if (nickname1 === nickname2) {
+		event.preventDefault();
+		return alert("Nicknames must be different.");
+	}
 
 	const gameState = initGameState(canvas, nickname1, nickname2);
 	startGame(canvas, ctx, gameState);
