@@ -14,10 +14,10 @@ export async function createMatchHandler(request, reply) {
 			playerScore,
 			opponentScore
 		} = request.body;
-		const won = playerScore > opponentScore ? true : false;
+		const hasWon = playerScore > opponentScore ? true : false;
 
 		const match = await createMatch(playerId, playerNickname, opponentNickname, tournamentId, playerScore, opponentScore);
-		const stats = await updateUserStats(playerId, won);
+		const stats = await updateUserStats(playerId, hasWon);
 		return reply.code(201).send({ message: createResponseMessage(action, true), match, stats });
 	} catch (err) {
 		request.log.error({ err, body: request.body }, `createMatchHandler: ${createResponseMessage(action, false)}`);
