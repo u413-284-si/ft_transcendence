@@ -63,7 +63,7 @@ for (const schema of [
 await fastify.register(staticRoutes);
 await fastify.register(userRoutes, { prefix: "/api/users" });
 await fastify.register(matchRoutes, { prefix: "/api/matches" });
-await fastify.register(userStatsRoutes, { prefix: "/api/user_stats" });
+await fastify.register(userStatsRoutes, { prefix: "/api/user-stats" });
 await fastify.register(fastifyStatic, {
 	root: "/app/frontend/public",
 });
