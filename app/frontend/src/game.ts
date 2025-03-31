@@ -24,7 +24,6 @@ export async function renderGame(event: Event) {
 
 	const gameState = initGameState(canvas, nickname1, nickname2);
 	startGame(canvas, ctx, gameState);
-	await endGame(gameState);
 }
 
 function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: string): IGameState {
@@ -48,18 +47,21 @@ function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: 
 	};
 }
 
-function startGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+async function startGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
 	gameState.gameOver = false;
 	gameState.gameStarted = true;
 	document.getElementById("register-form")?.remove();
-	gameLoop(canvas, ctx, gameState);
+	await gameLoop(canvas, ctx, gameState);
 }
 
-function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+async function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
 	update(canvas, gameState);
 	draw(canvas, ctx, gameState);
 	if (!gameState.gameOver) {
 		requestAnimationFrame(() => gameLoop(canvas, ctx, gameState));
+	}
+	else {
+		await endGame(gameState);
 	}
 }
 
