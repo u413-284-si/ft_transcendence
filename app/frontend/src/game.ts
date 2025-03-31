@@ -1,6 +1,6 @@
-import { GameState } from "./config.js";
 import { updatePaddlePositions, setupInputListeners } from "./input.js";
 import { draw } from "./draw.js";
+import { IGameState } from "./types/IGameState.js";
 
 export function renderGame(event: Event) {
 	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
@@ -28,72 +28,85 @@ export function renderGame(event: Event) {
 	}
 }
 
-function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
-	update(canvas);
-	draw(canvas, ctx);
-	requestAnimationFrame(() => gameLoop(canvas, ctx));
+function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: string): IGameState {
+  return {
+      player1: nickname1,
+      player2: nickname2,
+      player1Score: 0,
+      player2Score: 0,
+      winningScore: 3,
+      ballX: canvas.width / 2,
+      ballY: canvas.height / 2,
+      ballSpeedX: 7,
+      ballSpeedY: 7,
+      paddle1Y: canvas.height / 2 - 40,
+      paddle2Y: canvas.height / 2 - 40,
+      paddleHeight: 80,
+      paddleWidth: 10,
+      paddleSpeed: 6,
+      gameStarted: false,
+      gameOver: false
+  };
 }
 
-export function startGame(canvas: HTMLCanvasElement) {
-	GameState.gameOver = false;
-	GameState.gameStarted = true;
-	GameState.initialize(canvas.width, canvas.height);
-
-	resetGame(canvas);
+function startGame(canvas: HTMLCanvasElement,  ctx: CanvasRenderingContext2D, gameState: IGameState) {
+	gameState.gameOver = false;
+	gameState.gameStarted = true;
 	document.getElementById("register-form")?.remove();
+	gameLoop(canvas, ctx, gameState);
 }
 
-function resetGame(canvas: HTMLCanvasElement) {
-	GameState.player1Score = 0;
-	GameState.player2Score = 0;
-	resetBall(canvas);
+function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+	update(canvas, gameState);
+	draw(canvas, ctx, gameState);
+	requestAnimationFrame(() => gameLoop(canvas, ctx, gameState));
 }
 
-function resetBall(canvas: HTMLCanvasElement) {
-	GameState.ballX = canvas.width / 2;
-	GameState.ballY = canvas.height / 2;
-	GameState.ballSpeedX *= -1; // Change direction after scoring
-}
+function update(canvas: HTMLCanvasElement, gameState: IGameState) {
+	if (gameState.gameOver || !gameState.gameStarted) return;
 
-export function update(canvas: HTMLCanvasElement) {
-	if (GameState.gameOver || !GameState.gameStarted) return;
-
-	updatePaddlePositions(canvas);
+	updatePaddlePositions(canvas, gameState);
 
 	// Move the ball
-	GameState.ballX += GameState.ballSpeedX;
-	GameState.ballY += GameState.ballSpeedY;
+	gameState.ballX += gameState.ballSpeedX;
+	gameState.ballY += gameState.ballSpeedY;
 
 	// Ball collision with top & bottom
-	if (GameState.ballY <= 0 || GameState.ballY >= canvas.height)
-		GameState.ballSpeedY *= -1;
+	if (gameState.ballY <= 0 || gameState.ballY >= canvas.height)
+		gameState.ballSpeedY *= -1;
 
 	// Ball collision with paddles
 	if (
-		(GameState.ballX <= 20 && GameState.ballY >= GameState.paddle1Y
-			&& GameState.ballY <= GameState.paddle1Y + GameState.paddleHeight) ||
-		(GameState.ballX >= canvas.width - 20 && GameState.ballY >= GameState.paddle2Y
-			&& GameState.ballY <= GameState.paddle2Y + GameState.paddleHeight)
+		(gameState.ballX <= 20 && gameState.ballY >= gameState.paddle1Y
+			&& gameState.ballY <= gameState.paddle1Y + gameState.paddleHeight) ||
+		(gameState.ballX >= canvas.width - 20 && gameState.ballY >= gameState.paddle2Y
+			&& gameState.ballY <= gameState.paddle2Y + gameState.paddleHeight)
 	) {
-		GameState.ballSpeedX *= -1; // Reverse ball direction
+		gameState.ballSpeedX *= -1; // Reverse ball direction
 	}
 
 	// Ball out of bounds (scoring)
-	if (GameState.ballX <= 0) {
-		GameState.player2Score++;
-		checkWinner();
-		resetBall(canvas);
+	if (gameState.ballX <= 0) {
+		gameState.player2Score++;
+		checkWinner(gameState);
+		resetBall(canvas, gameState);
 	}
 
-	if (GameState.ballX >= canvas.width) {
-		GameState.player1Score++;
-		checkWinner();
-		resetBall(canvas);
+	if (gameState.ballX >= canvas.width) {
+		gameState.player1Score++;
+		checkWinner(gameState);
+		resetBall(canvas, gameState);
 	}
 }
 
-function checkWinner() {
-	if (GameState.player1Score >= 10 || GameState.player2Score >= 10) {
-		GameState.gameOver = true;
+function resetBall(canvas: HTMLCanvasElement, gameState: IGameState) {
+	gameState.ballX = canvas.width / 2;
+	gameState.ballY = canvas.height / 2;
+	gameState.ballSpeedX *= -1; // Change direction after scoring
+}
+
+function checkWinner(gameState: IGameState) {
+	if (gameState.player1Score >= gameState.winningScore || gameState.player2Score >= gameState.winningScore) {
+		gameState.gameOver = true;
 	}
 }
