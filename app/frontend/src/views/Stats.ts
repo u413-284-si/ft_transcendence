@@ -87,7 +87,7 @@ export default class extends AbstractView {
 	async fetchAndDisplayUserStats() {
 		const user: String = "Herta";
 		try {
-			const response = await fetch(`http://localhost:4000/api/user_stats/1`);
+			const response = await fetch(`http://localhost:4000/api/user-stats/1`);
 			if (!response.ok) throw new Error('Failed to fetch user stats');
 
 			const userStatsData: UserStatsData = await response.json();
