@@ -4,7 +4,7 @@ import { IGameState } from "./types/IGameState.js";
 import { Match } from "./types/IMatch.js"
 import NewGame from "./views/NewGame.js";
 
-export function renderGame(event: Event) {
+export async function renderGame(event: Event) {
 	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 	const ctx = canvas.getContext("2d")!;
 
