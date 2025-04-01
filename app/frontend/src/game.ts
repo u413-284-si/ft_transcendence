@@ -21,9 +21,10 @@ export async function renderGame(event: Event) {
 		event.preventDefault();
 		return alert("Nicknames must be different.");
 	}
-
-	const gameState = initGameState(canvas, nickname1, nickname2);
-	startGame(canvas, ctx, gameState);
+	else {
+		const gameState = initGameState(canvas, nickname1, nickname2);
+		startGame(canvas, ctx, gameState);
+	}
 }
 
 function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: string): GameState {
