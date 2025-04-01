@@ -1,4 +1,4 @@
-import { registerUserHandler, getUserHandler, getAllUsersHandler, updateUserHandler, deleteUserHandler, getUserMatchesHandler, patchUserHandler } from "../controllers/users.controllers.js";
+import { registerUserHandler, getUserHandler, getAllUsersHandler, updateUserHandler, deleteUserHandler, getUserMatchesHandler, patchUserHandler, getAllUserStatsHandler, getUserStatsHandler } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
 export default async function userRoutes(fastify) {
@@ -16,6 +16,10 @@ export default async function userRoutes(fastify) {
 	fastify.delete("/:id", optionsGetUser, deleteUserHandler);
 
 	fastify.get("/:id/matches", optionsGetUser, getUserMatchesHandler);
+
+	fastify.get("/user-stats/", getAllUserStatsHandler);
+
+	fastify.get("/:id/user-stats/", optionsGetUser, getUserStatsHandler);
 }
 
 const optionsCreateUser = {

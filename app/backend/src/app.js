@@ -11,7 +11,6 @@ import env from "./config/env.js";
 import userRoutes from "./routes/users.routes.js";
 import staticRoutes from "./routes/static.routes.js"
 import matchRoutes from "./routes/matches.routes.js"
-import userStatsRoutes from "./routes/user_stats.routes.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/users.schema.js"
@@ -63,7 +62,6 @@ for (const schema of [
 await fastify.register(staticRoutes);
 await fastify.register(userRoutes, { prefix: "/api/users" });
 await fastify.register(matchRoutes, { prefix: "/api/matches" });
-await fastify.register(userStatsRoutes, { prefix: "/api/user-stats" });
 await fastify.register(fastifyStatic, {
 	root: "/app/frontend/public",
 });
