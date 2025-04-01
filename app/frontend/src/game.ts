@@ -20,11 +20,8 @@ export function renderGame(event: Event) {
 		alert("Nicknames must be different.");
 	}
 	else {
-		GameState.player1 = nickname1;
-		GameState.player2 = nickname2;
-
-		startGame(canvas);
-		gameLoop(canvas, ctx);
+		const gameState = initGameState(canvas, nickname1, nickname2);
+		startGame(canvas, ctx, gameState);
 	}
 }
 
