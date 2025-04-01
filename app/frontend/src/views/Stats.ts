@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
-import { Match, MatchData } from "../types/IMatch.js";
-import { UserStats, UserStatsData } from "../types/IUserStats.js";
+import { Match } from "../types/IMatch.js";
+import { UserStats } from "../types/IUserStats.js";
+import { ApiResponse, ExtendedApiResponse } from "../types/IApiResponse.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -60,8 +61,8 @@ export default class extends AbstractView {
 			const response = await fetch('http://localhost:4000/api/users/1/matches/');
 			if (!response.ok) throw new Error('Failed to fetch matches');
 
-			const matchData: MatchData = await response.json();
-			const { matches } = matchData;
+			const matchData: ExtendedApiResponse<Match[]> = await response.json();
+			const matches = matchData.data;
 
 			const matchesTableBody = document.getElementById('matches-table-body');
 			if (!matchesTableBody) return;
@@ -90,8 +91,8 @@ export default class extends AbstractView {
 			const response = await fetch(`http://localhost:4000/api/users/1/user-stats/`);
 			if (!response.ok) throw new Error('Failed to fetch user stats');
 
-			const userStatsData: UserStatsData = await response.json();
-			const { userStats: stats } = userStatsData;
+			const userStatsData: ApiResponse<UserStats> = await response.json();
+			const stats = userStatsData.data;
 
 			const tableBody = document.getElementById('user-stats-body');
 			if (!tableBody) return;

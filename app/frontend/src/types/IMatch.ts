@@ -6,8 +6,3 @@ export interface Match {
 	opponentScore: number;
 	date?: string;
 }
-
-export interface MatchData {
-	message: string;
-	matches: Match[];
-}
