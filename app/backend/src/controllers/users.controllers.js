@@ -31,7 +31,7 @@ export async function getAllUsersHandler(request, reply) {
 	const action = "Get all users"
 	try {
 		const data = await getAllUsers();
-		const count = users.length;
+		const count = data.length;
 		return reply.code(200).send({ message: createResponseMessage(action, true), count, data });
 	} catch (err) {
 		request.log.error({ err, body: request.body }, `getAllUsersHandler: ${createResponseMessage(action, false)}`);
