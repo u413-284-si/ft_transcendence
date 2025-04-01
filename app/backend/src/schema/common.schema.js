@@ -4,9 +4,9 @@ export const commonDefinitionsSchema = {
 		username: {
 			type: "string",
 			minLength: 3,
-			maxLength: 50,
-			pattern: "^[a-zA-Z0-9_!@#$%^&*(),.?\":{}|<>-]+$",
-			description: 'A unique username with 3-30 alphanumeric characters or underscores.'
+			maxLength: 20,
+			pattern: "^[a-zA-Z0-9!?\-_@$.]{3,20}$",
+			description: 'A unique username with 3-20 alphanumeric or the following special characters inside brackets: [!?-_@$.]'
 		},
 		email: {
 			type: 'string',
