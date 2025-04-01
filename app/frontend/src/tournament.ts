@@ -1,3 +1,5 @@
+import PlayerNicknames from "./views/PlayerNicknames.js";
+
 export async function renderTournament(event: Event) {
   const form = document.getElementById("tournament-form") as HTMLFormElement;
   const players = form?.querySelector(
@@ -21,5 +23,8 @@ export async function renderTournament(event: Event) {
   const selectedPlayers = parseInt(players.value);
   const tournamentName = tournamentNameInput.value.trim();
   console.log(`Tournament "${tournamentName}" started with ${selectedPlayers} players`);
-  // Add logic to handle the selected number of players
+  
+  // Navigate to the PlayerNicknames view
+  const playerNicknamesView = new PlayerNicknames(selectedPlayers, tournamentName);
+  await playerNicknamesView.render();
 }
