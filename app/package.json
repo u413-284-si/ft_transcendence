@@ -12,7 +12,7 @@
 		"watch-frontend": "nodemon --watch ./frontend/src --ext ts --exec \"npm run style && npm run build && npm run start\"",
 		"watch-backend": "nodemon --watch ./backend/src --ext js --exec \"npm run start\"",
 		"watch": "nodemon --watch ./frontend/src --watch ./backend/src  --ext ts,js --exec \"npm run style && npm run build && npm run start\"",
-		"db-init": "npx prisma migrate dev --name init --schema=./backend/prisma/schema.prisma",
+		"db-init": "npx prisma migrate dev",
 		"dev": "npm run db-init && npm run watch"
 	},
 	"repository": {
@@ -45,5 +45,8 @@
 		"ts-node": "^10.9.2",
 		"tsconfig-paths": "^4.2.0",
 		"typescript": "^5.8.2"
+	},
+	"prisma": {
+		"schema": "./backend/prisma/schema.prisma"
 	}
 }
