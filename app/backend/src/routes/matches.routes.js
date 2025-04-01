@@ -6,7 +6,7 @@ export default async function matchRoutes(fastify) {
 
 	fastify.get("/", getAllMatchesHandler);
 
-	fastify.get("/:id", optionsGetMatch, getMatchHandler);
+	fastify.get("/:id/", optionsGetMatch, getMatchHandler);
 
 }
 

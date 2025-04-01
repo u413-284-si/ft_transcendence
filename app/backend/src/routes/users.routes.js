@@ -5,17 +5,17 @@ export default async function userRoutes(fastify) {
 
 	fastify.post("/", optionsCreateUser, registerUserHandler);
 
-	fastify.get("/:id", optionsGetUser, getUserHandler);
+	fastify.get("/:id/", optionsGetUser, getUserHandler);
 
 	fastify.get("/", getAllUsersHandler);
 
-	fastify.put("/:id", optionsUpdateUser, updateUserHandler);
+	fastify.put("/:id/", optionsUpdateUser, updateUserHandler);
 
-	fastify.patch("/:id", optionsPatchUser, patchUserHandler);
+	fastify.patch("/:id/", optionsPatchUser, patchUserHandler);
 
-	fastify.delete("/:id", optionsGetUser, deleteUserHandler);
+	fastify.delete("/:id/", optionsGetUser, deleteUserHandler);
 
-	fastify.get("/:id/matches", optionsGetUser, getUserMatchesHandler);
+	fastify.get("/:id/matches/", optionsGetUser, getUserMatchesHandler);
 
 	fastify.get("/user-stats/", getAllUserStatsHandler);
 
