@@ -9,9 +9,13 @@ export default class extends AbstractView {
 
   async createHTML() {
     return `
-			<h1>New Tournament</h1>
-            <p>Select the number of players:</p>
+    <h1>New Tournament</h1>
+            <p>Enter the tournament name and select the number of players:</p>
             <form id="tournament-form">
+                <label>
+                    Tournament Name:
+                    <input type="text" name="tournamentName" required>
+                </label><br><br>
                 <label>
                     <input type="radio" name="players" value="4" required> 4 Players
                 </label><br>
