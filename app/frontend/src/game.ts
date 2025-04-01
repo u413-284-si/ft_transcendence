@@ -1,8 +1,10 @@
 import { updatePaddlePositions, setupInputListeners } from "./input.js";
 import { draw } from "./draw.js";
 import { IGameState } from "./types/IGameState.js";
+import { Match } from "./types/IMatch.js"
+import NewGame from "./views/NewGame.js";
 
-export function renderGame() {
+export async function renderGame(event: Event) {
 	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 	const ctx = canvas.getContext("2d")!;
 
@@ -11,45 +13,56 @@ export function renderGame() {
 	const nickname1: string = (document.getElementById("nickname1") as HTMLInputElement).value.trim();
 	const nickname2: string = (document.getElementById("nickname2") as HTMLInputElement).value.trim();
 
-	if (!nickname1 || !nickname2)
+	if (!nickname1 || !nickname2) {
+		event.preventDefault();
 		return alert("Please enter a nickname for both players.");
+	}
+	else if (nickname1 === nickname2) {
+		event.preventDefault();
+		return alert("Nicknames must be different.");
+	}
 
 	const gameState = initGameState(canvas, nickname1, nickname2);
 	startGame(canvas, ctx, gameState);
 }
 
 function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: string): IGameState {
-  return {
-      player1: nickname1,
-      player2: nickname2,
-      player1Score: 0,
-      player2Score: 0,
-      winningScore: 3,
-      ballX: canvas.width / 2,
-      ballY: canvas.height / 2,
-      ballSpeedX: 7,
-      ballSpeedY: 7,
-      paddle1Y: canvas.height / 2 - 40,
-      paddle2Y: canvas.height / 2 - 40,
-      paddleHeight: 80,
-      paddleWidth: 10,
-      paddleSpeed: 6,
-      gameStarted: false,
-      gameOver: false
-  };
+	return {
+		player1: nickname1,
+		player2: nickname2,
+		player1Score: 0,
+		player2Score: 0,
+		winningScore: 3,
+		ballX: canvas.width / 2,
+		ballY: canvas.height / 2,
+		ballSpeedX: 7,
+		ballSpeedY: 7,
+		paddle1Y: canvas.height / 2 - 40,
+		paddle2Y: canvas.height / 2 - 40,
+		paddleHeight: 80,
+		paddleWidth: 10,
+		paddleSpeed: 6,
+		gameStarted: false,
+		gameOver: false
+	};
 }
 
-function startGame(canvas: HTMLCanvasElement,  ctx: CanvasRenderingContext2D, gameState: IGameState) {
+async function startGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
 	gameState.gameOver = false;
 	gameState.gameStarted = true;
 	document.getElementById("register-form")?.remove();
-	gameLoop(canvas, ctx, gameState);
+	await gameLoop(canvas, ctx, gameState);
 }
 
-function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+async function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
 	update(canvas, gameState);
 	draw(canvas, ctx, gameState);
-	requestAnimationFrame(() => gameLoop(canvas, ctx, gameState));
+	if (!gameState.gameOver) {
+		requestAnimationFrame(() => gameLoop(canvas, ctx, gameState));
+	}
+	else {
+		await endGame(gameState);
+	}
 }
 
 function update(canvas: HTMLCanvasElement, gameState: IGameState) {
@@ -99,4 +112,52 @@ function checkWinner(gameState: IGameState) {
 	if (gameState.player1Score >= gameState.winningScore || gameState.player2Score >= gameState.winningScore) {
 		gameState.gameOver = true;
 	}
+}
+
+async function endGame(gameState: IGameState) {
+	await saveMatch({
+		playerId: 1,
+		playerNickname: gameState.player1,
+		opponentNickname: gameState.player2,
+		playerScore: gameState.player1Score,
+		opponentScore: gameState.player2Score
+	});
+
+	await waitForEnterKey();
+
+	const newGameView = new NewGame();
+	await newGameView.render();
+}
+
+async function saveMatch(match: Match) {
+	try {
+		const response = await fetch('http://localhost:4000/api/matches', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(match),
+		});
+
+		if (!response.ok) {
+			throw new Error('Failed to save match');
+		}
+
+		const data = await response.json();
+		console.log('Match saved:', data);
+	} catch (error) {
+		console.error('Error saving match:', error);
+	}
+};
+
+function waitForEnterKey(): Promise<void> {
+	return new Promise((resolve) => {
+		function onKeyDown(event: KeyboardEvent) {
+			if (event.key === "Enter") {
+				document.removeEventListener("keydown", onKeyDown);
+				resolve();
+			}
+		}
+		document.addEventListener("keydown", onKeyDown);
+	});
 }
