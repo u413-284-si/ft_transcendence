@@ -1,3 +1,4 @@
+import Login from "./views/Login.js";
 import Home from "./views/Home.js";
 import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
@@ -11,7 +12,8 @@ const navigateTo = (url: string) => {
 
 const router = async () => {
 	const routes = [
-		{ path: "/", view: Home },
+		{ path: "/", view: Login },
+		{ path: "/home", view: Home },
 		{ path: "/newGame", view: NewGame },
 		{ path: "/newTournament", view: NewTournament },
 		{ path: "/settings", view: Settings },
