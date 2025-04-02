@@ -1,4 +1,4 @@
-import { registerUserHandler, getUserHandler, getAllUsersHandler, updateUserHandler, deleteUserHandler, getUserMatchesHandler, patchUserHandler, getAllUserStatsHandler, getUserStatsHandler } from "../controllers/users.controllers.js";
+import { registerUserHandler, getUserHandler, getAllUsersHandler, updateUserHandler, deleteUserHandler, getUserMatchesHandler, patchUserHandler, getAllUserStatsHandler, getUserStatsHandler, loginUserHandler } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
 export default async function userRoutes(fastify) {
@@ -20,6 +20,8 @@ export default async function userRoutes(fastify) {
 	fastify.get("/user-stats/", getAllUserStatsHandler);
 
 	fastify.get("/:id/user-stats/", optionsGetUser, getUserStatsHandler);
+
+	fastify.post("/user-logins/", optionsloginUser, loginUserHandler);
 }
 
 const optionsCreateUser = {
@@ -59,3 +61,13 @@ const optionsPatchUser = {
 		}
 	}
 }
+
+const optionsloginUser = {
+	schema: {
+		body: { $ref: "loginUserSchema" },
+		response: {
+			200: { $ref: "loginUserResponseSchema" },
+			...errorResponses
+		}
+	}
+};
