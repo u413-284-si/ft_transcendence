@@ -10,7 +10,10 @@ export default class extends AbstractView {
 	}
 
 	async createHTML() {
+		const navbarHTML = await this.createNavbar();
+		const footerHTML = await this.createFooter();
 		return `
+			${navbarHTML}
 			<h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
 			<div class="overflow-x-auto">
 				<table class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500">
@@ -47,6 +50,7 @@ export default class extends AbstractView {
 					</tbody>
 				</table>
 			</div>
+			${footerHTML}
 		`;
 	}
 
