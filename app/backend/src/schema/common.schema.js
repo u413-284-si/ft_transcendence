@@ -17,6 +17,19 @@ export const commonDefinitionsSchema = {
 			type: "integer",
 			minimum: 1,
 			description: "The unique identifier for the entity"
+		},
+		password: {
+			type: "string",
+			minLength: 14,
+			maxLength: 30,
+			pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{14,30}$",
+			description: 'Password must be at least 14 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+		},
+		usernameOrEmail: {
+			oneOf: [
+				{ $ref: "commonDefinitionsSchema#/definitions/username" },
+				{ $ref: "commonDefinitionsSchema#/definitions/email" }
+			]
 		}
 	}
 }
