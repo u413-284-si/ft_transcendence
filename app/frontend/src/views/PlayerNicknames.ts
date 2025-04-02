@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+import { createMatches } from "../matchmaking.js";
 
 export default class extends AbstractView {
   constructor(private numberOfPlayers: number, private tournamentName: string) {
@@ -24,30 +25,30 @@ export default class extends AbstractView {
 
     return `
             <h1 style="
-                margin-bottom: 20px; 
-                font-size: 2em; 
-                color: #007BFF; 
-                text-align: center;"
+              margin-bottom: 20px; 
+              font-size: 2em; 
+              color: #007BFF; 
+              text-align: center;"
             >
-                Enter Player Nicknames
+              Enter Player Nicknames
             </h1>
             <p style="margin-bottom: 20px; text-align: center;">
-                Tournament: <strong>${this.tournamentName}</strong>
+              Tournament: <strong>${this.tournamentName}</strong>
             </p>
             <form id="nicknames-form">
-                ${nicknameInputs}
-                <button type="submit" style="
-                margin-top: 20px; 
-                padding: 10px 20px; 
-                font-size: 1em; 
-                background-color: #007BFF; 
-                color: white; 
-                border: none; 
-                border-radius: 5px; 
-                cursor: pointer;"
-                >
-                Submit Nicknames
-                </button>
+              ${nicknameInputs}
+              <button type="submit" style="
+              margin-top: 20px; 
+              padding: 10px 20px; 
+              font-size: 1em; 
+              background-color: #007BFF; 
+              color: white; 
+              border: none; 
+              border-radius: 5px; 
+              cursor: pointer;"
+              >
+              Submit Nicknames
+              </button>
             </form>
             `;
   }
@@ -55,14 +56,7 @@ export default class extends AbstractView {
   async addListeners() {
     document
       .getElementById("nicknames-form")
-      ?.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const form = event.target as HTMLFormElement;
-        const formData = new FormData(form);
-        const nicknames = Array.from(formData.entries()).map(([key, value]) => value);
-        console.log("Player Nicknames:", nicknames);
-        // Add logic to proceed with the tournament setup
-      });
+      ?.addEventListener("submit", (event) => createMatches(event));      
   }
 
   async render() {
