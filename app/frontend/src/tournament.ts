@@ -1,4 +1,6 @@
 import PlayerNicknames from "./views/PlayerNicknames.js";
+import MatchAnnouncement from "./views/MatchAnnouncement.js";
+import { Tournament } from "./types/ITournament.js";
 
 export async function renderTournament(event: Event) {
   const form = document.getElementById("tournament-form") as HTMLFormElement;
@@ -32,4 +34,12 @@ export async function renderTournament(event: Event) {
     tournamentName
   );
   await playerNicknamesView.render();
+}
+
+export async function startTournament(tournament: Tournament) {
+  const { matches, currentMatch } = tournament;
+
+  // Navigate to the MatchAnnouncement view
+  const matchAnnouncementView = new MatchAnnouncement(matches[currentMatch], currentMatch + 1);
+  await matchAnnouncementView.render();
 }

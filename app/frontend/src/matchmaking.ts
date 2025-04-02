@@ -1,5 +1,5 @@
-import MatchAnnouncement from "./views/MatchAnnouncement";
-import { Tournament } from "./types/ITournament";
+import { Tournament } from "./types/ITournament.js";
+import { startTournament } from "./tournament.js";
 
 export function createMatches(event: Event){
   event.preventDefault();
@@ -27,4 +27,6 @@ export function createMatches(event: Event){
     matches: matches,
     currentMatch: 0,
   };
+
+  startTournament(tournament);
 }
