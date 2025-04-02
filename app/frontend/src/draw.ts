@@ -1,6 +1,6 @@
-import { IGameState } from "./types/IGameState.js";
+import { GameState } from "./types/IGameState.js";
 
-export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: GameState) {
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -13,20 +13,20 @@ export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, g
 	drawPaddles(canvas, ctx, gameState);
 }
 
-function drawBall(ctx: CanvasRenderingContext2D, gameState: IGameState) {
+function drawBall(ctx: CanvasRenderingContext2D, gameState: GameState) {
 	ctx.fillStyle = "white";
 	ctx.beginPath();
 	ctx.arc(gameState.ballX, gameState.ballY, 10, 0, Math.PI * 2);
 	ctx.fill();
 }
 
-function drawPaddles(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+function drawPaddles(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: GameState) {
 	ctx.fillStyle = "white";
 	ctx.fillRect(10, gameState.paddle1Y, gameState.paddleWidth, gameState.paddleHeight);
 	ctx.fillRect(canvas.width - 20, gameState.paddle2Y, gameState.paddleWidth, gameState.paddleHeight);
 }
 
-function drawScores(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+function drawScores(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: GameState) {
 	ctx.fillStyle = "white";
 	ctx.font = "30px Arial";
 
@@ -43,7 +43,7 @@ function shortenName(name: string, maxLength: number = 10): string {
 	return name.length > maxLength ? name.slice(0, maxLength) + "." : name;
 }
 
-function drawWinningScreen(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+function drawWinningScreen(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: GameState) {
 		ctx.fillStyle = "yellow";
 		ctx.font = "40px Arial";
 		const winnerText = gameState.player1Score >= gameState.winningScore ? `${gameState.player1} wins!` : `${gameState.player2} wins!`;

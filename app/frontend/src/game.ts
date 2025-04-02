@@ -1,6 +1,6 @@
 import { updatePaddlePositions, setupInputListeners } from "./input.js";
 import { draw } from "./draw.js";
-import { IGameState } from "./types/IGameState.js";
+import { GameState } from "./types/IGameState.js";
 import { Match } from "./types/IMatch.js"
 import NewGame from "./views/NewGame.js";
 
@@ -26,7 +26,7 @@ export async function renderGame(event: Event) {
 	startGame(canvas, ctx, gameState);
 }
 
-function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: string): IGameState {
+function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: string): GameState {
 	return {
 		player1: nickname1,
 		player2: nickname2,
@@ -47,14 +47,14 @@ function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: 
 	};
 }
 
-async function startGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+async function startGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: GameState) {
 	gameState.gameOver = false;
 	gameState.gameStarted = true;
 	document.getElementById("register-form")?.remove();
 	await gameLoop(canvas, ctx, gameState);
 }
 
-async function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: IGameState) {
+async function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: GameState) {
 	update(canvas, gameState);
 	draw(canvas, ctx, gameState);
 	if (!gameState.gameOver) {
@@ -65,7 +65,7 @@ async function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
 	}
 }
 
-function update(canvas: HTMLCanvasElement, gameState: IGameState) {
+function update(canvas: HTMLCanvasElement, gameState: GameState) {
 	if (gameState.gameOver || !gameState.gameStarted) return;
 
 	updatePaddlePositions(canvas, gameState);
@@ -102,19 +102,19 @@ function update(canvas: HTMLCanvasElement, gameState: IGameState) {
 	}
 }
 
-function resetBall(canvas: HTMLCanvasElement, gameState: IGameState) {
+function resetBall(canvas: HTMLCanvasElement, gameState: GameState) {
 	gameState.ballX = canvas.width / 2;
 	gameState.ballY = canvas.height / 2;
 	gameState.ballSpeedX *= -1; // Change direction after scoring
 }
 
-function checkWinner(gameState: IGameState) {
+function checkWinner(gameState: GameState) {
 	if (gameState.player1Score >= gameState.winningScore || gameState.player2Score >= gameState.winningScore) {
 		gameState.gameOver = true;
 	}
 }
 
-async function endGame(gameState: IGameState) {
+async function endGame(gameState: GameState) {
 	await saveMatch({
 		playerId: 1,
 		playerNickname: gameState.player1,

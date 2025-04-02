@@ -1,4 +1,4 @@
-export interface IGameState {
+export interface GameState {
   player1: string;
   player2: string;
   player1Score: number;
