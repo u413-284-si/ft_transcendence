@@ -113,3 +113,14 @@ export async function getUserStatsHandler(request, reply) {
 		handlePrismaError(reply, action, err);
 	}
 }
+
+export async function loginUserHandler(request, reply) {
+	try {
+		const { usernameOrEmail, password } = request.body;
+		const data = await loginUser(usernameOrEmail, password);
+		return reply.code(200).send({ message: createResponseMessage(action, true), data });
+	} catch (err) {
+		request.log.error({ err, body: request.body }, `loginUserHandler: ${createResponseMessage(action, false)}`);
+		return handlePrismaError(reply, action, err);
+	}
+}
