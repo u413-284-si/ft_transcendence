@@ -63,7 +63,7 @@ await fastify.register(staticRoutes);
 await fastify.register(userRoutes, { prefix: "/api/users" });
 await fastify.register(matchRoutes, { prefix: "/api/matches" });
 await fastify.register(fastifyStatic, {
-	root: "/app/frontend/public",
+	root: "/workspaces/ft_transcendence/app/frontend/public",
 });
 
 fastify.listen({ host: '0.0.0.0', port: env.port }, (err, address) => {
