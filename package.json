@@ -1,57 +1,57 @@
 {
-	"name": "ft_transcendence",
-	"description": "ft_transcendence is a multiplayer game designed as a single page application bringing back the Classic Pong game in all its glory!",
-	"version": "1.0.0",
-	"main": "app.js",
-	"type": "module",
-	"scripts": {
-		"style": "npx @tailwindcss/cli -i ./app/frontend/src/css/input.css -o ./app/frontend/public/css/styles.css",
-		"dep": "npx madge --circular --extensions ts ./app/frontend/src",
-		"build": "npx tsc --project ./app/frontend/tsconfig.json",
-		"start": "node ./app/backend/src/app.js",
-		"watch-frontend": "nodemon --watch ./app/frontend/src --ext ts --exec \"npm run style && npm run build && npm run start\"",
-		"watch-backend": "nodemon --watch ./app/backend/src --ext js --exec \"npm run start\"",
-		"watch": "nodemon --watch ./app/frontend/src --watch ./app/backend/src  --ext ts,js --exec \"npm run style && npm run build && npm run start\"",
-		"db-init": "npx prisma migrate dev",
-		"dev": "npm run db-init && npm run watch"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/u413-284-si/ft_transcendence.git"
-	},
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/u413-284-si/ft_transcendence/issues"
-	},
-	"homepage": "https://github.com/u413-284-si/ft_transcendence#readme",
-	"dependencies": {
-		"@fastify/compress": "^8.0.1",
-		"@fastify/cors": "^11.0.0",
-		"@fastify/formbody": "^8.0.2",
-		"@fastify/helmet": "^13.0.1",
-		"@fastify/static": "^8.1.1",
-		"@prisma/client": "^6.5.0",
-		"@tailwindcss/cli": "^4.0.12",
-		"better-sqlite3": "^11.8.1",
-		"env-schema": "^6.0.0",
-		"fastify": "^5.2.1",
-		"fastify-graceful-shutdown": "^4.0.1",
-		"fastify-plugin": "^5.0.1",
-		"nodemon": "^3.1.9",
-		"pino-pretty": "^13.0.0",
-		"prisma": "^6.5.0",
-		"tailwindcss": "^4.0.12",
-		"ts-node": "^10.9.2",
-		"tsconfig-paths": "^4.2.0",
-		"typescript": "^5.8.2"
-	},
-	"prisma": {
-		"schema": "./app/backend/prisma/schema.prisma"
-	},
-	"devDependencies": {
-		"prettier": "^3.5.3"
-	},
+  "name": "ft_transcendence",
+  "description": "ft_transcendence is a multiplayer game designed as a single page application bringing back the Classic Pong game in all its glory!",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "style": "npx @tailwindcss/cli -i ./app/frontend/src/css/input.css -o ./app/frontend/public/css/styles.css",
+    "dep": "npx madge --circular --extensions ts ./app/frontend/src",
+    "build": "npx tsc --project ./app/frontend/tsconfig.json",
+    "start": "node ./app/backend/src/app.js",
+    "watch-frontend": "nodemon --watch ./app/frontend/src --ext ts --exec \"npm run style && npm run build && npm run start\"",
+    "watch-backend": "nodemon --watch ./app/backend/src --ext js --exec \"npm run start\"",
+    "watch": "nodemon --watch ./app/frontend/src --watch ./app/backend/src  --ext ts,js --exec \"npm run style && npm run build && npm run start\"",
+    "db-init": "npx prisma migrate dev",
+    "dev": "npm run db-init && npm run watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/u413-284-si/ft_transcendence.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/u413-284-si/ft_transcendence/issues"
+  },
+  "homepage": "https://github.com/u413-284-si/ft_transcendence#readme",
+  "dependencies": {
+    "@fastify/compress": "^8.0.1",
+    "@fastify/cors": "^11.0.0",
+    "@fastify/formbody": "^8.0.2",
+    "@fastify/helmet": "^13.0.1",
+    "@fastify/static": "^8.1.1",
+    "@prisma/client": "^6.5.0",
+    "@tailwindcss/cli": "^4.0.12",
+    "better-sqlite3": "^11.8.1",
+    "env-schema": "^6.0.0",
+    "fastify": "^5.2.1",
+    "fastify-graceful-shutdown": "^4.0.1",
+    "fastify-plugin": "^5.0.1",
+    "nodemon": "^3.1.9",
+    "pino-pretty": "^13.0.0",
+    "prisma": "^6.5.0",
+    "tailwindcss": "^4.0.12",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.2"
+  },
+  "prisma": {
+    "schema": "./app/backend/prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  },
   "prettier": {
     "singleQuote": false,
     "semi": true,
@@ -80,7 +80,12 @@
       "@typescript-eslint"
     ],
     "rules": {
-      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ]
     }
   }
 }

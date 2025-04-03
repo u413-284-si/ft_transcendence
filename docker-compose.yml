@@ -2,7 +2,7 @@ services:
   app:
     build: ./app
     container_name: app
-    command: [ "npm", "run", "dev" ]
+    command: ["npm", "run", "dev"]
     develop:
       watch:
         - action: sync
@@ -51,7 +51,6 @@ services:
 
 networks:
   pong-network:
-
 
 volumes:
   db:
