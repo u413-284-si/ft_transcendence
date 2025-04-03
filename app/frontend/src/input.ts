@@ -4,8 +4,8 @@ import { GameState } from "./types/IGameState.js";
 const keys: { [key: string]: boolean } = {};
 
 export function setupInputListeners() {
-	document.addEventListener("keydown", (event) => keys[event.key] = true);
-	document.addEventListener("keyup", (event) => keys[event.key] = false);
+  document.addEventListener("keydown", (event) => (keys[event.key] = true));
+  document.addEventListener("keyup", (event) => (keys[event.key] = false));
 }
 
 export function updatePaddlePositions(canvas: HTMLCanvasElement, gameState: GameState) {

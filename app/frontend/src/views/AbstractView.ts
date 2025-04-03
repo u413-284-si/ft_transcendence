@@ -1,20 +1,17 @@
 export default class {
-	constructor() {
-	}
+  constructor() {}
 
-	setTitle(title: string) {
-		document.title = title;
-	}
+  setTitle(title: string) {
+    document.title = title;
+  }
 
-	async createHTML() {
-		return "";
-	}
+  async createHTML() {
+    return "";
+  }
 
-	async updateHTML() {
-		document.querySelector("#app")!.innerHTML = await this.createHTML();
-	}
+  async updateHTML() {
+    document.querySelector("#app")!.innerHTML = await this.createHTML();
+  }
 
-	async render() {
-
-	}
+  async render() {}
 }

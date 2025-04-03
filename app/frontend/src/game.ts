@@ -5,13 +5,17 @@ import { Match } from "./types/IMatch.js"
 import NewGame from "./views/NewGame.js";
 
 export async function renderGame(event: Event) {
-	const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
-	const ctx = canvas.getContext("2d")!;
+  const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d")!;
 
-	setupInputListeners();
+  setupInputListeners();
 
-	const nickname1: string = (document.getElementById("nickname1") as HTMLInputElement).value.trim();
-	const nickname2: string = (document.getElementById("nickname2") as HTMLInputElement).value.trim();
+  const nickname1: string = (
+    document.getElementById("nickname1") as HTMLInputElement
+  ).value.trim();
+  const nickname2: string = (
+    document.getElementById("nickname2") as HTMLInputElement
+  ).value.trim();
 
 	if (!nickname1 || !nickname2) {
 		event.preventDefault();
@@ -69,38 +73,40 @@ async function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
 function update(canvas: HTMLCanvasElement, gameState: GameState) {
 	if (gameState.gameOver || !gameState.gameStarted) return;
 
-	updatePaddlePositions(canvas, gameState);
+  updatePaddlePositions(canvas, gameState);
 
-	// Move the ball
-	gameState.ballX += gameState.ballSpeedX;
-	gameState.ballY += gameState.ballSpeedY;
+  // Move the ball
+  gameState.ballX += gameState.ballSpeedX;
+  gameState.ballY += gameState.ballSpeedY;
 
-	// Ball collision with top & bottom
-	if (gameState.ballY <= 0 || gameState.ballY >= canvas.height)
-		gameState.ballSpeedY *= -1;
+  // Ball collision with top & bottom
+  if (gameState.ballY <= 0 || gameState.ballY >= canvas.height)
+    gameState.ballSpeedY *= -1;
 
-	// Ball collision with paddles
-	if (
-		(gameState.ballX <= 20 && gameState.ballY >= gameState.paddle1Y
-			&& gameState.ballY <= gameState.paddle1Y + gameState.paddleHeight) ||
-		(gameState.ballX >= canvas.width - 20 && gameState.ballY >= gameState.paddle2Y
-			&& gameState.ballY <= gameState.paddle2Y + gameState.paddleHeight)
-	) {
-		gameState.ballSpeedX *= -1; // Reverse ball direction
-	}
+  // Ball collision with paddles
+  if (
+    (gameState.ballX <= 20 &&
+      gameState.ballY >= gameState.paddle1Y &&
+      gameState.ballY <= gameState.paddle1Y + gameState.paddleHeight) ||
+    (gameState.ballX >= canvas.width - 20 &&
+      gameState.ballY >= gameState.paddle2Y &&
+      gameState.ballY <= gameState.paddle2Y + gameState.paddleHeight)
+  ) {
+    gameState.ballSpeedX *= -1; // Reverse ball direction
+  }
 
-	// Ball out of bounds (scoring)
-	if (gameState.ballX <= 0) {
-		gameState.player2Score++;
-		checkWinner(gameState);
-		resetBall(canvas, gameState);
-	}
+  // Ball out of bounds (scoring)
+  if (gameState.ballX <= 0) {
+    gameState.player2Score++;
+    checkWinner(gameState);
+    resetBall(canvas, gameState);
+  }
 
-	if (gameState.ballX >= canvas.width) {
-		gameState.player1Score++;
-		checkWinner(gameState);
-		resetBall(canvas, gameState);
-	}
+  if (gameState.ballX >= canvas.width) {
+    gameState.player1Score++;
+    checkWinner(gameState);
+    resetBall(canvas, gameState);
+  }
 }
 
 function resetBall(canvas: HTMLCanvasElement, gameState: GameState) {
@@ -124,41 +130,41 @@ async function endGame(gameState: GameState) {
 		opponentScore: gameState.player2Score
 	});
 
-	await waitForEnterKey();
+  await waitForEnterKey();
 
-	const newGameView = new NewGame();
-	await newGameView.render();
+  const newGameView = new NewGame();
+  await newGameView.render();
 }
 
 async function saveMatch(match: Match) {
-	try {
-		const response = await fetch('http://localhost:4000/api/matches/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(match),
-		});
+  try {
+    const response = await fetch("http://localhost:4000/api/matches/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(match)
+    });
 
-		if (!response.ok) {
-			throw new Error('Failed to save match');
-		}
+    if (!response.ok) {
+      throw new Error("Failed to save match");
+    }
 
-		const data = await response.json();
-		console.log('Match saved:', data);
-	} catch (error) {
-		console.error('Error saving match:', error);
-	}
-};
+    const data = await response.json();
+    console.log("Match saved:", data);
+  } catch (error) {
+    console.error("Error saving match:", error);
+  }
+}
 
 function waitForEnterKey(): Promise<void> {
-	return new Promise((resolve) => {
-		function onKeyDown(event: KeyboardEvent) {
-			if (event.key === "Enter") {
-				document.removeEventListener("keydown", onKeyDown);
-				resolve();
-			}
-		}
-		document.addEventListener("keydown", onKeyDown);
-	});
+  return new Promise((resolve) => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Enter") {
+        document.removeEventListener("keydown", onKeyDown);
+        resolve();
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+  });
 }

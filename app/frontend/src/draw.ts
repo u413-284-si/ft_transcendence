@@ -4,13 +4,13 @@ export function draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, g
 	ctx.fillStyle = "black";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-	drawScores(canvas, ctx, gameState);
-	if (gameState.gameOver) {
-		drawWinningScreen(canvas, ctx, gameState);
-		return;
-	}
-	drawBall(ctx, gameState);
-	drawPaddles(canvas, ctx, gameState);
+  drawScores(canvas, ctx, gameState);
+  if (gameState.gameOver) {
+    drawWinningScreen(canvas, ctx, gameState);
+    return;
+  }
+  drawBall(ctx, gameState);
+  drawPaddles(canvas, ctx, gameState);
 }
 
 function drawBall(ctx: CanvasRenderingContext2D, gameState: GameState) {
@@ -30,17 +30,25 @@ function drawScores(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, ga
 	ctx.fillStyle = "white";
 	ctx.font = "30px Arial";
 
-	// Player 1 name and score
-	const player1Text = shortenName(gameState.player1 || "Player 1") + ":" + " " + gameState.player1Score.toString();
-	ctx.fillText(player1Text, canvas.width / 4 - 80, 50);
+  // Player 1 name and score
+  const player1Text =
+    shortenName(gameState.player1 || "Player 1") +
+    ":" +
+    " " +
+    gameState.player1Score.toString();
+  ctx.fillText(player1Text, canvas.width / 4 - 80, 50);
 
-	// Player 2 name and score
-	const player2Text = shortenName(gameState.player2 || "Player 2") + ":" + " " + gameState.player2Score.toString();
-	ctx.fillText(player2Text, (canvas.width * 3) / 4 - 80, 50);
+  // Player 2 name and score
+  const player2Text =
+    shortenName(gameState.player2 || "Player 2") +
+    ":" +
+    " " +
+    gameState.player2Score.toString();
+  ctx.fillText(player2Text, (canvas.width * 3) / 4 - 80, 50);
 }
 
 function shortenName(name: string, maxLength: number = 10): string {
-	return name.length > maxLength ? name.slice(0, maxLength) + "." : name;
+  return name.length > maxLength ? name.slice(0, maxLength) + "." : name;
 }
 
 function drawWinningScreen(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: GameState) {
