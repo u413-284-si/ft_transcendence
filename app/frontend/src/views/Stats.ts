@@ -88,7 +88,7 @@ export default class extends AbstractView {
   }
 
   async fetchAndDisplayUserStats() {
-    const user: String = "Herta";
+    const user: string = "Herta";
     try {
       const response = await fetch(
         `http://localhost:4000/api/users/1/user-stats/`
