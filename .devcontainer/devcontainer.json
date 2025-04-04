@@ -17,7 +17,7 @@
   "postCreateCommand": "npm ci",
   "customizations": {
     "vscode": {
-      "extensions": ["dbaeumer.vscode-eslint"]
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
     }
   }
 
