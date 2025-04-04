@@ -8,6 +8,7 @@
     "style": "npx @tailwindcss/cli -i ./app/frontend/src/css/input.css -o ./app/frontend/public/css/styles.css",
     "dep": "npx madge --circular --extensions ts ./app/frontend/src",
     "build": "npx tsc --project ./app/frontend/tsconfig.json",
+    "build:noEmit": "npx tsc --project ./app/frontend/tsconfig.json --noEmit",
     "start": "node ./app/backend/src/app.js",
     "watch-frontend": "nodemon --watch ./app/frontend/src --ext ts --exec \"npm run style && npm run build && npm run start\"",
     "watch-backend": "nodemon --watch ./app/backend/src --ext js --exec \"npm run start\"",
