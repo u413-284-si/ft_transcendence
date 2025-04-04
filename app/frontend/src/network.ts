@@ -24,6 +24,7 @@ export async function registerUser(playerNum: number) {
       body: JSON.stringify({ username: user })
     });
     const registerData = await registerResponse.json();
+    console.log(registerData);
   } catch (err) {
     console.error("Registration failed:", err);
   }
