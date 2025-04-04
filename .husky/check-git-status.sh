@@ -2,6 +2,9 @@
 
 # See also https://stackoverflow.com/a/2659808
 
+# Refresh index before checking it
+git update-index --refresh
+
 # Prevent push if there are uncommitted changes
 if ! git diff-index --quiet HEAD --; then
     echo "❌ You have uncommitted changes. Please commit before pushing."
