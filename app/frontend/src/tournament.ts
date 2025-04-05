@@ -40,6 +40,9 @@ export async function startTournament(tournament: Tournament) {
   const { matches, currentMatch } = tournament;
 
   // Navigate to the MatchAnnouncement view
-  const matchAnnouncementView = new MatchAnnouncement(matches[currentMatch], currentMatch + 1);
+  const matchAnnouncementView = new MatchAnnouncement(
+    matches[currentMatch],
+    currentMatch + 1
+  );
   await matchAnnouncementView.render();
 }

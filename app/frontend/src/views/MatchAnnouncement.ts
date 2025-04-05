@@ -1,7 +1,10 @@
 import AbstractView from "./AbstractView.js";
 
 export default class extends AbstractView {
-  constructor(private match: [string, string], private matchNumber: number) {
+  constructor(
+    private match: [string, string],
+    private matchNumber: number
+  ) {
     super();
     this.setTitle("Match Announcement");
   }
@@ -37,12 +40,12 @@ export default class extends AbstractView {
   }
 
   async addListeners() {
-    document
-      .getElementById("start-match")
-      ?.addEventListener("click", () => {
-        console.log(`Match ${this.matchNumber} started: ${this.match[0]} vs ${this.match[1]}`);
-        // Add logic to proceed to the match or next step
-      });
+    document.getElementById("start-match")?.addEventListener("click", () => {
+      console.log(
+        `Match ${this.matchNumber} started: ${this.match[0]} vs ${this.match[1]}`
+      );
+      // Add logic to proceed to the match or next step
+    });
   }
 
   async render() {

@@ -1,7 +1,7 @@
 import { updatePaddlePositions, setupInputListeners } from "./input.js";
 import { draw } from "./draw.js";
 import { GameState } from "./types/IGameState.js";
-import { Match } from "./types/IMatch.js"
+import { Match } from "./types/IMatch.js";
 import NewGame from "./views/NewGame.js";
 
 export async function renderGame(event: Event) {
@@ -17,61 +17,70 @@ export async function renderGame(event: Event) {
     document.getElementById("nickname2") as HTMLInputElement
   ).value.trim();
 
-	if (!nickname1 || !nickname2) {
-		event.preventDefault();
-		return alert("Please enter a nickname for both players.");
-	}
-	else if (nickname1 === nickname2) {
-		event.preventDefault();
-		return alert("Nicknames must be different.");
-	}
-	else {
-		const gameState = initGameState(canvas, nickname1, nickname2);
-		startGame(canvas, ctx, gameState);
-	}
+  if (!nickname1 || !nickname2) {
+    event.preventDefault();
+    return alert("Please enter a nickname for both players.");
+  } else if (nickname1 === nickname2) {
+    event.preventDefault();
+    return alert("Nicknames must be different.");
+  } else {
+    const gameState = initGameState(canvas, nickname1, nickname2);
+    startGame(canvas, ctx, gameState);
+  }
 }
 
-function initGameState(canvas: HTMLCanvasElement, nickname1: string, nickname2: string): GameState {
-	return {
-		player1: nickname1,
-		player2: nickname2,
-		player1Score: 0,
-		player2Score: 0,
-		winningScore: 3,
-		ballX: canvas.width / 2,
-		ballY: canvas.height / 2,
-		ballSpeedX: 7,
-		ballSpeedY: 7,
-		paddle1Y: canvas.height / 2 - 40,
-		paddle2Y: canvas.height / 2 - 40,
-		paddleHeight: 80,
-		paddleWidth: 10,
-		paddleSpeed: 6,
-		gameStarted: false,
-		gameOver: false
-	};
+function initGameState(
+  canvas: HTMLCanvasElement,
+  nickname1: string,
+  nickname2: string
+): GameState {
+  return {
+    player1: nickname1,
+    player2: nickname2,
+    player1Score: 0,
+    player2Score: 0,
+    winningScore: 3,
+    ballX: canvas.width / 2,
+    ballY: canvas.height / 2,
+    ballSpeedX: 7,
+    ballSpeedY: 7,
+    paddle1Y: canvas.height / 2 - 40,
+    paddle2Y: canvas.height / 2 - 40,
+    paddleHeight: 80,
+    paddleWidth: 10,
+    paddleSpeed: 6,
+    gameStarted: false,
+    gameOver: false
+  };
 }
 
-async function startGame(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: GameState) {
-	gameState.gameOver = false;
-	gameState.gameStarted = true;
-	document.getElementById("register-form")?.remove();
-	await gameLoop(canvas, ctx, gameState);
+async function startGame(
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+  gameState: GameState
+) {
+  gameState.gameOver = false;
+  gameState.gameStarted = true;
+  document.getElementById("register-form")?.remove();
+  await gameLoop(canvas, ctx, gameState);
 }
 
-async function gameLoop(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, gameState: GameState) {
-	update(canvas, gameState);
-	draw(canvas, ctx, gameState);
-	if (!gameState.gameOver) {
-		requestAnimationFrame(() => gameLoop(canvas, ctx, gameState));
-	}
-	else {
-		await endGame(gameState);
-	}
+async function gameLoop(
+  canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
+  gameState: GameState
+) {
+  update(canvas, gameState);
+  draw(canvas, ctx, gameState);
+  if (!gameState.gameOver) {
+    requestAnimationFrame(() => gameLoop(canvas, ctx, gameState));
+  } else {
+    await endGame(gameState);
+  }
 }
 
 function update(canvas: HTMLCanvasElement, gameState: GameState) {
-	if (gameState.gameOver || !gameState.gameStarted) return;
+  if (gameState.gameOver || !gameState.gameStarted) return;
 
   updatePaddlePositions(canvas, gameState);
 
@@ -110,25 +119,28 @@ function update(canvas: HTMLCanvasElement, gameState: GameState) {
 }
 
 function resetBall(canvas: HTMLCanvasElement, gameState: GameState) {
-	gameState.ballX = canvas.width / 2;
-	gameState.ballY = canvas.height / 2;
-	gameState.ballSpeedX *= -1; // Change direction after scoring
+  gameState.ballX = canvas.width / 2;
+  gameState.ballY = canvas.height / 2;
+  gameState.ballSpeedX *= -1; // Change direction after scoring
 }
 
 function checkWinner(gameState: GameState) {
-	if (gameState.player1Score >= gameState.winningScore || gameState.player2Score >= gameState.winningScore) {
-		gameState.gameOver = true;
-	}
+  if (
+    gameState.player1Score >= gameState.winningScore ||
+    gameState.player2Score >= gameState.winningScore
+  ) {
+    gameState.gameOver = true;
+  }
 }
 
 async function endGame(gameState: GameState) {
-	await saveMatch({
-		playerId: 1,
-		playerNickname: gameState.player1,
-		opponentNickname: gameState.player2,
-		playerScore: gameState.player1Score,
-		opponentScore: gameState.player2Score
-	});
+  await saveMatch({
+    playerId: 1,
+    playerNickname: gameState.player1,
+    opponentNickname: gameState.player2,
+    playerScore: gameState.player1Score,
+    opponentScore: gameState.player2Score
+  });
 
   await waitForEnterKey();
 

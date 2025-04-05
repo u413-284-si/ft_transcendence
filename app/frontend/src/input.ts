@@ -8,9 +8,19 @@ export function setupInputListeners() {
   document.addEventListener("keyup", (event) => (keys[event.key] = false));
 }
 
-export function updatePaddlePositions(canvas: HTMLCanvasElement, gameState: GameState) {
-	if (keys["w"] && gameState.paddle1Y > 0) gameState.paddle1Y -= gameState.paddleSpeed;
-	if (keys["s"] && gameState.paddle1Y < canvas.height - gameState.paddleHeight) gameState.paddle1Y += gameState.paddleSpeed;
-	if (keys["ArrowUp"] && gameState.paddle2Y > 0) gameState.paddle2Y -= gameState.paddleSpeed;
-	if (keys["ArrowDown"] && gameState.paddle2Y < canvas.height - gameState.paddleHeight) gameState.paddle2Y += gameState.paddleSpeed;
+export function updatePaddlePositions(
+  canvas: HTMLCanvasElement,
+  gameState: GameState
+) {
+  if (keys["w"] && gameState.paddle1Y > 0)
+    gameState.paddle1Y -= gameState.paddleSpeed;
+  if (keys["s"] && gameState.paddle1Y < canvas.height - gameState.paddleHeight)
+    gameState.paddle1Y += gameState.paddleSpeed;
+  if (keys["ArrowUp"] && gameState.paddle2Y > 0)
+    gameState.paddle2Y -= gameState.paddleSpeed;
+  if (
+    keys["ArrowDown"] &&
+    gameState.paddle2Y < canvas.height - gameState.paddleHeight
+  )
+    gameState.paddle2Y += gameState.paddleSpeed;
 }

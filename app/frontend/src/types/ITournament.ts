@@ -1,5 +1,5 @@
 export interface Tournament {
-	matches: [string, string][];
-	currentMatch: number;
-	date?: string;
+  matches: [string, string][];
+  currentMatch: number;
+  date?: string;
 }

@@ -2,7 +2,10 @@ import AbstractView from "./AbstractView.js";
 import { createMatches } from "../matchmaking.js";
 
 export default class extends AbstractView {
-  constructor(private numberOfPlayers: number, private tournamentName: string) {
+  constructor(
+    private numberOfPlayers: number,
+    private tournamentName: string
+  ) {
     super();
     this.setTitle("Enter Player Nicknames");
   }
@@ -56,7 +59,7 @@ export default class extends AbstractView {
   async addListeners() {
     document
       .getElementById("nicknames-form")
-      ?.addEventListener("submit", (event) => createMatches(event));      
+      ?.addEventListener("submit", (event) => createMatches(event));
   }
 
   async render() {

@@ -1,7 +1,7 @@
 import { Tournament } from "./types/ITournament.js";
 import { startTournament } from "./tournament.js";
 
-export function createMatches(event: Event){
+export function createMatches(event: Event) {
   event.preventDefault();
   const form = event.target as HTMLFormElement;
   const formData = new FormData(form);
@@ -25,7 +25,7 @@ export function createMatches(event: Event){
   // Create a tournament object
   const tournament: Tournament = {
     matches: matches,
-    currentMatch: 0,
+    currentMatch: 0
   };
 
   startTournament(tournament);
