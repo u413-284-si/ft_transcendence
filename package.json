@@ -71,10 +71,6 @@
     "endOfLine": "lf"
   },
   "lint-staged": {
-    "*.{js,ts}": [
-      "eslint",
-      "prettier --write"
-    ],
-    "*.json": "prettier --write"
+    "*.{js,ts, json}": "prettier --write"
   }
 }
