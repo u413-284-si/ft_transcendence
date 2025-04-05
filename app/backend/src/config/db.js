@@ -1,7 +1,7 @@
 import fp from "fastify-plugin";
 import Database from "better-sqlite3";
 
-async function dbConnector(fastify, options) {
+async function dbConnector(fastify) {
   const dbFile = "/app/db/pong.db";
   const db = new Database(dbFile, { verbose: console.log });
 
