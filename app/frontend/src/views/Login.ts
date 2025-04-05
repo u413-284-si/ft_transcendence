@@ -16,7 +16,7 @@ export default class extends AbstractView {
 					</div>
 					<div>
 						<label for="password">Password:</label><br>
-						<input id="password" name="password" type="text" class="border-2 border-white rounded-sm">
+						<input id="password" name="password" type="password" class="border-2 border-white rounded-sm">
 					</div>
 					<div>
 						<button id="login-button" class="border-2 border-white rounded-sm p-2">Login</button>
