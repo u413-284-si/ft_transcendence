@@ -2,7 +2,7 @@ import { GameState } from "./types/IGameState.js";
 
 export function updatePaddlePositions(
   canvas: HTMLCanvasElement,
-  gameState: IGameState
+  gameState: GameState
 ) {
   if (gameState.keys["w"] && gameState.paddle1Y > 0)
     gameState.paddle1Y -= gameState.paddleSpeed;
