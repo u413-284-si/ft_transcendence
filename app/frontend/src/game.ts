@@ -1,42 +1,41 @@
-import { updatePaddlePositions, setupInputListeners } from "./input.js";
+import { updatePaddlePositions } from "./input.js";
 import { draw } from "./draw.js";
 import { GameState } from "./types/IGameState.js";
 import { Match } from "./types/IMatch.js";
 import NewGame from "./views/NewGame.js";
+import { GameType, GameKey } from "./views/Game.js";
 
-export async function renderGame(event: Event) {
+export async function startGame(
+  player1: string,
+  player2: string,
+  type: GameType,
+  keys: Record<GameKey, boolean>,
+  controller: AbortController
+) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
 
-  setupInputListeners();
-
-  const nickname1: string = (
-    document.getElementById("nickname1") as HTMLInputElement
-  ).value.trim();
-  const nickname2: string = (
-    document.getElementById("nickname2") as HTMLInputElement
-  ).value.trim();
-
-  if (!nickname1 || !nickname2) {
-    event.preventDefault();
-    return alert("Please enter a nickname for both players.");
-  } else if (nickname1 === nickname2) {
-    event.preventDefault();
-    return alert("Nicknames must be different.");
-  } else {
-    const gameState = initGameState(canvas, nickname1, nickname2);
-    startGame(canvas, ctx, gameState);
+  const gameState = initGameState(canvas, player1, player2, keys);
+  await new Promise<void>((resolve) => {
+    gameLoop(canvas, ctx, gameState, resolve);
+  });
+  await endGame(gameState);
+  controller.abort();
+  if (type == GameType.single) {
+    const newGameView = new NewGame();
+    await newGameView.render();
   }
 }
 
 function initGameState(
   canvas: HTMLCanvasElement,
-  nickname1: string,
-  nickname2: string
+  player1: string,
+  player2: string,
+  keys: Record<GameKey, boolean>
 ): GameState {
   return {
-    player1: nickname1,
-    player2: nickname2,
+    player1: player1,
+    player2: player2,
     player1Score: 0,
     player2Score: 0,
     winningScore: 3,
@@ -49,38 +48,28 @@ function initGameState(
     paddleHeight: 80,
     paddleWidth: 10,
     paddleSpeed: 6,
-    gameStarted: false,
-    gameOver: false
+    gameOver: false,
+    keys: keys
   };
 }
 
-async function startGame(
+function gameLoop(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
-  gameState: GameState
+  gameState: GameState,
+  resolve: () => void
 ) {
-  gameState.gameOver = false;
-  gameState.gameStarted = true;
-  document.getElementById("register-form")?.remove();
-  await gameLoop(canvas, ctx, gameState);
-}
-
-async function gameLoop(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  gameState: GameState
-) {
+  if (gameState.gameOver) {
+    resolve();
+    return;
+  }
   update(canvas, gameState);
   draw(canvas, ctx, gameState);
-  if (!gameState.gameOver) {
-    requestAnimationFrame(() => gameLoop(canvas, ctx, gameState));
-  } else {
-    await endGame(gameState);
-  }
+  requestAnimationFrame(() => gameLoop(canvas, ctx, gameState, resolve));
 }
 
 function update(canvas: HTMLCanvasElement, gameState: GameState) {
-  if (gameState.gameOver || !gameState.gameStarted) return;
+  if (gameState.gameOver) return;
 
   updatePaddlePositions(canvas, gameState);
 
@@ -143,9 +132,6 @@ async function endGame(gameState: GameState) {
   });
 
   await waitForEnterKey();
-
-  const newGameView = new NewGame();
-  await newGameView.render();
 }
 
 async function saveMatch(match: Match) {
