@@ -1,12 +1,31 @@
 import AbstractView from "./AbstractView.js";
+import { startGame } from "../game.js";
 
-export default class extends AbstractView {
-  constructor() {
+export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
+
+export enum GameType {
+  single,
+  tournament
+}
+
+export class GameView extends AbstractView {
+  constructor(player1: string, player2: string, type: GameType) {
     super();
     this.setTitle("Now playing");
+    this.player1 = player1;
+    this.player2 = player2;
+    this.type = type;
   }
 
-  private keyStates: Record<string, boolean> = {};
+  private player1: string;
+  private player2: string;
+  private type: GameType;
+  private keys: Record<GameKey, boolean> = {
+    w: false,
+    s: false,
+    ArrowUp: false,
+    ArrowDown: false
+  };
   private controller = new AbortController();
 
   async createHTML() {
@@ -17,28 +36,32 @@ export default class extends AbstractView {
 
   async render() {
     await this.updateHTML();
+    this.addEventListeners(this.controller.signal);
+    await startGame(
+      this.player1,
+      this.player2,
+      this.type,
+      this.keys,
+      this.controller
+    );
   }
 
-  private addEventListeners() {
-    window.addEventListener("keydown", this.keyDownHandler, {signal: this.controller.signal});
-    window.addEventListener("keyup", this.keyUpHandler, {signal: this.controller.signal});
+  private addEventListeners(signal: AbortSignal) {
+    document.addEventListener("keydown", this.onKeyDown, { signal: signal });
+    document.addEventListener("keyup", this.onKeyUp, { signal: signal });
   }
 
-  public cleanup() {
-    this.controller.abort();
-    console.log("Event listeners removed");
-  }
+  private onKeyDown = (event: KeyboardEvent): void => {
+    const key = event.key as GameKey;
+    if (key in this.keys) {
+      this.keys[key] = true;
+    }
+  };
 
-      // Event handler for key press
-      private keyDownHandler = (event: KeyboardEvent) => {
-        this.keyStates[event.key] = true;
-        console.log(`Key Down: ${event.key}`, this.keyStates);
-    };
-
-    // Event handler for key release
-    private keyUpHandler = (event: KeyboardEvent) => {
-        this.keyStates[event.key] = false;
-        console.log(`Key Up: ${event.key}`, this.keyStates);
-    };
-
+  private onKeyUp = (event: KeyboardEvent): void => {
+    const key = event.key as GameKey;
+    if (key in this.keys) {
+      this.keys[key] = false;
+    }
+  };
 }
