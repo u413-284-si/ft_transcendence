@@ -1,3 +1,5 @@
+import { GameKey } from "../views/Game";
+
 export interface IGameState {
   player1: string;
   player2: string;
@@ -13,6 +15,6 @@ export interface IGameState {
   paddleHeight: number;
   paddleWidth: number;
   paddleSpeed: number;
-  gameStarted: boolean;
   gameOver: boolean;
+  keys: Record<GameKey, boolean>;
 }
