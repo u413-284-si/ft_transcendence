@@ -17,7 +17,12 @@
   "postCreateCommand": "npm ci",
   "customizations": {
     "vscode": {
-      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "Postman.postman-for-vscode",
+        "Prisma.prisma"
+      ]
     }
   }
 
