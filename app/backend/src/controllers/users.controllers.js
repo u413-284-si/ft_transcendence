@@ -180,6 +180,7 @@ export async function loginUserHandler(request, reply) {
   const action = "Login user";
   try {
     const { usernameOrEmail, password } = request.body;
+
     const data = await loginUser(usernameOrEmail, password);
     return reply
       .code(200)

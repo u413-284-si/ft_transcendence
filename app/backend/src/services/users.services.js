@@ -1,19 +1,28 @@
 import prisma from "../prisma/prismaClient.js";
 
-export async function createUser(username, email) {
+export async function createUser(username, email, hashedPassword) {
   const user = await prisma.user.create({
     data: {
-      username,
-      email,
+      username: username,
+      email: email,
       dateJoined: new Date(),
-      authentication: { create: {} },
+      authentication: {
+        create: {
+          password: hashedPassword
+        }
+      },
       stats: { create: {} },
       accountStatus: { create: {} }
     },
     select: {
       id: true,
       username: true,
-      email: true
+      email: true,
+      authentication: {
+        select: {
+          password: true
+        }
+      }
     }
   });
   return user;

@@ -21,10 +21,10 @@ export const commonDefinitionsSchema = {
     },
     password: {
       type: "string",
-      minLength: 14,
-      maxLength: 30,
-      pattern:
-        "^(?=.*[a-z])(?=.*[A-Z])(?=.*)(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{14,30}$",
+      //   minLength: 14,
+      //   maxLength: 30,
+      //   pattern:
+      //     "^(?=.*[a-z])(?=.*[A-Z])(?=.*)(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{14,30}$",
       description:
         "Password must be at least 14 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character."
     },

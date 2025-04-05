@@ -4,7 +4,13 @@ const userSchema = {
   properties: {
     id: { type: "integer" },
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-    email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+    email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+    authentication: {
+      type: "object",
+      properties: {
+        password: { $ref: "commonDefinitionsSchema#/definitions/password" }
+      }
+    }
   },
   required: ["id", "username"],
   additionalProperties: false
@@ -15,7 +21,8 @@ const createUserSchema = {
   type: "object",
   properties: {
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-    email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+    email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+    password: { $ref: "commonDefinitionsSchema#/definitions/password" }
   },
   required: ["username"],
   additionalProperties: false
@@ -26,7 +33,8 @@ const createUserResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    user: { $ref: "userSchema" }
+    user: { $ref: "userSchema" },
+    password: { $ref: "commonDefinitionsSchema#/definitions/password" }
   },
   required: ["message", "user"],
   additionalProperties: false
