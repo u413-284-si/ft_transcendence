@@ -46,7 +46,7 @@ export default class extends AbstractView {
       return alert("Nicknames must be different.");
     }
 
-    const gameView = new GameView(nickname1, nickname2, GameType.single);
+    const gameView = new GameView(nickname1, nickname2, GameType.single, null);
     gameView.render();
   }
 }

@@ -1,5 +1,6 @@
 import AbstractView from "./AbstractView.js";
-import { createMatches } from "../matchmaking.js";
+import { Tournament } from "../Tournament.js";
+import MatchAnnouncement from "./MatchAnnouncement.js";
 
 export default class extends AbstractView {
   constructor(
@@ -59,11 +60,38 @@ export default class extends AbstractView {
   async addListeners() {
     document
       .getElementById("nicknames-form")
-      ?.addEventListener("submit", (event) => createMatches(event));
+      ?.addEventListener("submit", (event) => this.initTournament(event));
   }
 
   async render() {
     await this.updateHTML();
     this.addListeners();
+  }
+
+  private extractNicknames(): string[] {
+    const form = document.getElementById("nicknames-form") as HTMLFormElement;
+    const nicknames: string[] = [];
+    for (let i = 1; i <= this.numberOfPlayers; i++) {
+      const nicknameInput = form.querySelector(
+        `input[name="player${i}"]`
+      ) as HTMLInputElement;
+      if (nicknameInput) {
+        nicknames.push(nicknameInput.value.trim());
+      }
+    }
+    return nicknames;
+  }
+
+  initTournament(event: Event) {
+    event.preventDefault();
+    const nicknames = this.extractNicknames();
+    const tournament = new Tournament(
+      this.tournamentName,
+      this.numberOfPlayers,
+      nicknames
+    );
+
+    const matchAnnouncementView = new MatchAnnouncement(tournament);
+    matchAnnouncementView.render();
   }
 }

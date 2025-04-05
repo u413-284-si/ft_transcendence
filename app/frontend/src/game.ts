@@ -4,13 +4,16 @@ import { GameState } from "./types/IGameState.js";
 import { Match } from "./types/IMatch.js";
 import NewGame from "./views/NewGame.js";
 import { GameType, GameKey } from "./views/Game.js";
+import { Tournament } from "./Tournament.js";
+import MatchAnnouncement from "./views/MatchAnnouncement.js";
 
 export async function startGame(
   player1: string,
   player2: string,
   type: GameType,
   keys: Record<GameKey, boolean>,
-  controller: AbortController
+  controller: AbortController,
+  tournament: Tournament | null = null
 ) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
@@ -24,6 +27,15 @@ export async function startGame(
   if (type == GameType.single) {
     const newGameView = new NewGame();
     await newGameView.render();
+  }
+  if (type == GameType.tournament) {
+    if (tournament) {
+      tournament.setWinner(
+        gameState.player1Score > gameState.player2Score ? player1 : player2
+      );
+      const matchAnnouncementView = new MatchAnnouncement(tournament);
+      await matchAnnouncementView.render();
+    }
   }
 }
 

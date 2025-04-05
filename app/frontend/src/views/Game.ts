@@ -1,5 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { startGame } from "../game.js";
+import { Tournament } from "../Tournament.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -9,17 +10,16 @@ export enum GameType {
 }
 
 export class GameView extends AbstractView {
-  constructor(player1: string, player2: string, type: GameType) {
+  constructor(
+    private player1: string,
+    private player2: string,
+    private type: GameType,
+    private tournament: Tournament | null
+  ) {
     super();
     this.setTitle("Now playing");
-    this.player1 = player1;
-    this.player2 = player2;
-    this.type = type;
   }
 
-  private player1: string;
-  private player2: string;
-  private type: GameType;
   private keys: Record<GameKey, boolean> = {
     w: false,
     s: false,
@@ -42,7 +42,8 @@ export class GameView extends AbstractView {
       this.player2,
       this.type,
       this.keys,
-      this.controller
+      this.controller,
+      this.tournament
     );
   }
 
