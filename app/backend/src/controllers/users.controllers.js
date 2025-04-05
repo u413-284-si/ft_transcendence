@@ -11,14 +11,22 @@ import {
   getUserStats
 } from "../services/user_stats.services.js";
 import { loginUser } from "../services/user_logins.services.js";
+import pkg from "argon2";
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
 export async function registerUserHandler(request, reply) {
   const action = "Create User";
   try {
-    const { username, email } = request.body;
-    const data = await createUser(username, email);
+    const { username, email, password } = request.body;
+
+    const hashedPassword = await pkg.hash(password, {
+      type: pkg.argon2id,
+      memoryCost: 47104,
+      parallelism: 1
+    });
+
+    const data = await createUser(username, email, hashedPassword);
     return reply
       .code(201)
       .send({ message: createResponseMessage(action, true), data });
