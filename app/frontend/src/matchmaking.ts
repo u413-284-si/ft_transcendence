@@ -6,7 +6,7 @@ export function createMatches(event: Event) {
   const form = event.target as HTMLFormElement;
   const formData = new FormData(form);
   const nicknames = Array.from(formData.entries()).map(
-    ([key, value]) => value as string
+    ([, value]) => value as string
   );
   console.log("Player Nicknames:", nicknames);
 
