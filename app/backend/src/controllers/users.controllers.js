@@ -168,6 +168,7 @@ export async function getUserStatsHandler(request, reply) {
 }
 
 export async function loginUserHandler(request, reply) {
+  const action = "Login user";
   try {
     const { usernameOrEmail, password } = request.body;
     const data = await loginUser(usernameOrEmail, password);
