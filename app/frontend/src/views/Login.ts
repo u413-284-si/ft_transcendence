@@ -1,13 +1,14 @@
 import AbstractView from "./AbstractView.js";
+import { loginUser } from "../login.js";
 
 export default class extends AbstractView {
-	constructor() {
-		super();
-		this.setTitle("Login");
-	}
+  constructor() {
+    super();
+    this.setTitle("Login");
+  }
 
-	async createHTML() {
-		return `
+  async createHTML() {
+    return `
 				<form id="login-form"  class="flex flex-col justify-center items-center h-screen gap-4">
 					<div>
 						<label for="usernameOrEmail">Username or Email:</label><br>
@@ -22,9 +23,14 @@ export default class extends AbstractView {
 					</div>
 				</form>
 			`;
-	}
+  }
 
-	async render() {
-		await this.updateHTML();
-	}
+  async addListeners() {
+    document.addEventListener("submit", (event) => loginUser(event));
+  }
+
+  async render() {
+    await this.addListeners();
+    await this.updateHTML();
+  }
 }
