@@ -10,6 +10,7 @@ import {
   getAllUserStats,
   getUserStats
 } from "../services/user_stats.services.js";
+import { loginUser } from "../services/user_logins.services.js";
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
