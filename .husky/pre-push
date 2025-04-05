@@ -1,0 +1,3 @@
+sh .husky/check-git-status.sh
+npm run build:noEmit
+npx eslint
