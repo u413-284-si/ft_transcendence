@@ -10,6 +10,14 @@ export enum GameType {
 }
 
 export class GameView extends AbstractView {
+  private keys: Record<GameKey, boolean> = {
+    w: false,
+    s: false,
+    ArrowUp: false,
+    ArrowDown: false
+  };
+  private controller = new AbortController();
+
   constructor(
     private player1: string,
     private player2: string,
@@ -19,14 +27,6 @@ export class GameView extends AbstractView {
     super();
     this.setTitle("Now playing");
   }
-
-  private keys: Record<GameKey, boolean> = {
-    w: false,
-    s: false,
-    ArrowUp: false,
-    ArrowDown: false
-  };
-  private controller = new AbortController();
 
   async createHTML() {
     return `

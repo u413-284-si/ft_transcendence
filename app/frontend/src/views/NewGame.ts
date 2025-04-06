@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { GameType, GameView } from "./Game.js";
+import { GameType, GameView } from "./GameView.js";
 
 export default class extends AbstractView {
   constructor() {

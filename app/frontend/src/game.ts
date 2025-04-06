@@ -3,7 +3,7 @@ import { draw } from "./draw.js";
 import { GameState } from "./types/IGameState.js";
 import { Match } from "./types/IMatch.js";
 import NewGame from "./views/NewGame.js";
-import { GameType, GameKey } from "./views/Game.js";
+import { GameType, GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import MatchAnnouncement from "./views/MatchAnnouncement.js";
 
