@@ -14,15 +14,15 @@ export default class extends AbstractView {
 				<input type="text" id="nickname1" placeholder="Enter nickname"><br><br>
 				<label for="nickname2">Player 2 Nickname:</label>
 				<input type="text" id="nickname2" placeholder="Enter nickname"><br><br>
-				<button id="start-button">Start Game</button>
+				<button type="submit">Start Game</button>
 			</form>
 			`;
   }
 
   async addListeners() {
     document
-      .getElementById("start-button")
-      ?.addEventListener("click", (event) => this.validateAndStartGame(event));
+      .getElementById("register-form")
+      ?.addEventListener("submit", (event) => this.validateAndStartGame(event));
   }
 
   async render() {
