@@ -30,7 +30,7 @@ export class Tournament {
     }
   }
 
-  public getNextBracket(): [string, string] | null {
+  public getNextMatch(): [string, string] | null {
     if (this.matchesQueue.length === 0) {
       return null;
     }
