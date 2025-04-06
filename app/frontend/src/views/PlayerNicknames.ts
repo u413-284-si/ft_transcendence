@@ -82,7 +82,7 @@ export default class extends AbstractView {
     return nicknames;
   }
 
-  initTournament(event: Event) {
+  private initTournament(event: Event) {
     event.preventDefault();
     const nicknames = this.extractNicknames();
     const tournament = new Tournament(
