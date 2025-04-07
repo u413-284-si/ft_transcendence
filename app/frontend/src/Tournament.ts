@@ -1,11 +1,15 @@
+import { TournamentDTO } from "./types/ITournament";
+
 export class Tournament {
   private matchesQueue: [string, string][] = [];
   private currentMatchNumber = 0;
   private currentWinner: string | null = null;
+  private tournamentId: number | null = null;
 
   constructor(
     private tournamentName: string,
     private numberOfPlayers: number,
+    private adminId: number,
     private playerNicknames: string[]
   ) {
     this.createMatches();
@@ -54,5 +58,24 @@ export class Tournament {
 
   public getMatchNumber(): number {
     return this.currentMatchNumber;
+  }
+
+  public setId(Id: number): void {
+    this.tournamentId = Id;
+  }
+
+  public getId(): number {
+    if (this.tournamentId === null) {
+      throw new Error("TournamentId is not set");
+    }
+    return this.tournamentId;
+  }
+
+  public toJSON(): TournamentDTO {
+    return {
+      name: this.tournamentName,
+      maxPlayers: this.numberOfPlayers,
+      adminId: this.adminId
+    };
   }
 }

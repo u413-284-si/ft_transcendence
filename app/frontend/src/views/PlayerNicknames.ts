@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
+import TournamentService from "../TournamentService.js";
 
 export default class extends AbstractView {
   constructor(
@@ -17,10 +18,10 @@ export default class extends AbstractView {
       nicknameInputs += `
         <label style="display: block; margin-bottom: 10px;">
           Player ${i} Nickname:
-          <input 
-            type="text" 
-            name="player${i}" 
-            required 
+          <input
+            type="text"
+            name="player${i}"
+            required
             style="width: 50%; padding: 10px; font-size: 1em; border: 2px solid #007BFF; border-radius: 5px; margin-top: 5px;"
           >
         </label>
@@ -29,9 +30,9 @@ export default class extends AbstractView {
 
     return `
             <h1 style="
-              margin-bottom: 20px; 
-              font-size: 2em; 
-              color: #007BFF; 
+              margin-bottom: 20px;
+              font-size: 2em;
+              color: #007BFF;
               text-align: center;"
             >
               Enter Player Nicknames
@@ -42,13 +43,13 @@ export default class extends AbstractView {
             <form id="nicknames-form">
               ${nicknameInputs}
               <button type="submit" style="
-              margin-top: 20px; 
-              padding: 10px 20px; 
-              font-size: 1em; 
-              background-color: #007BFF; 
-              color: white; 
-              border: none; 
-              border-radius: 5px; 
+              margin-top: 20px;
+              padding: 10px 20px;
+              font-size: 1em;
+              background-color: #007BFF;
+              color: white;
+              border: none;
+              border-radius: 5px;
               cursor: pointer;"
               >
               Submit Nicknames
@@ -82,16 +83,27 @@ export default class extends AbstractView {
     return nicknames;
   }
 
-  private initTournament(event: Event) {
+  private async initTournament(event: Event) {
     event.preventDefault();
     const nicknames = this.extractNicknames();
     const tournament = new Tournament(
       this.tournamentName,
       this.numberOfPlayers,
+      1, // FIXME: hard coded ID of player
       nicknames
     );
 
-    const matchAnnouncementView = new MatchAnnouncement(tournament);
-    matchAnnouncementView.render();
+    try {
+      const savedTournament =
+        await TournamentService.createTournament(tournament);
+      const { id } = savedTournament;
+      if (id) {
+        tournament.setId(id);
+      }
+      const matchAnnouncementView = new MatchAnnouncement(tournament);
+      matchAnnouncementView.render();
+    } catch (e) {
+      console.error("Error saving tournament", e);
+    }
   }
 }
