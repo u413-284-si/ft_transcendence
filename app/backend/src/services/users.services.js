@@ -56,19 +56,3 @@ export async function deleteUser(id) {
   });
   return user;
 }
-
-export async function getUserMatches(id) {
-  const matches = await prisma.match.findMany({
-    where: {
-      playerId: id
-    },
-    select: {
-      playerNickname: true,
-      opponentNickname: true,
-      playerScore: true,
-      opponentScore: true,
-      date: true
-    }
-  });
-  return matches;
-}
