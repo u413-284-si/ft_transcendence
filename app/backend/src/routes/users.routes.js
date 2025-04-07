@@ -8,7 +8,8 @@ import {
   patchUserHandler,
   getAllUserStatsHandler,
   getUserStatsHandler,
-  loginUserHandler
+  loginUserHandler,
+  authenticateUserHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 

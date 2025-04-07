@@ -1,4 +1,3 @@
-import { commonDefinitionsSchema } from "../schema/common.schema.js";
 import prisma from "../prisma/prismaClient.js";
 import pkg from "argon2";
 
@@ -24,6 +23,8 @@ export async function loginUser(usernameOrEmail, password) {
 		if (!await pkg.verify(user.authentication.password, password))
 			throw new Error("Invalid password");
 
+		delete user.authentication;
+		console.log("user:", user);
 		return user;
 
 	} catch (err) {

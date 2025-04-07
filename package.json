@@ -29,6 +29,7 @@
   "homepage": "https://github.com/u413-284-si/ft_transcendence#readme",
   "dependencies": {
     "@fastify/compress": "^8.0.1",
+    "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.0.0",
     "@fastify/formbody": "^8.0.2",
     "@fastify/helmet": "^13.0.1",

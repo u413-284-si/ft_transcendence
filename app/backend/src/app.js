@@ -5,6 +5,7 @@ import fastifyHelmet from "@fastify/helmet";
 import fastifyCompress from "@fastify/compress";
 import fastifyGracefulShutdown from "fastify-graceful-shutdown";
 import fastifyStatic from "@fastify/static";
+import fastifyCookie from "@fastify/cookie";
 
 import env from "./config/env.js";
 
@@ -51,6 +52,7 @@ await fastify.register(fastifyHelmet, {
 await fastify.register(fastifyCompress);
 await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
+await fastify.register(fastifyCookie);
 
 for (const schema of [...commonSchemas, ...userSchemas, ...matchSchemas]) {
   fastify.addSchema(schema);

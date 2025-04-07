@@ -9,7 +9,7 @@ export default class extends AbstractView {
 
   async createHTML() {
     return `
-				<form id="login-form"  class="flex flex-col justify-center items-center h-screen gap-4">
+				<form id="login-form" class="flex flex-col justify-center items-center h-screen gap-4">
 					<div>
 						<label for="usernameOrEmail">Username or Email:</label><br>
 						<input id="usernameOrEmail" name="usernameOrEmail" type="text" class="border-2 border-white rounded-sm" required>

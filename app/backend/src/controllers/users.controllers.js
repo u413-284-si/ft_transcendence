@@ -11,7 +11,10 @@ import {
   getUserStats
 } from "../services/user_stats.services.js";
 import { loginUser } from "../services/user_logins.services.js";
+import { authenticateUser } from "../services/user_authenticate.services.js";
 import pkg from "argon2";
+import { JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_SECRET } from "../config/jwt.js";
+import jwt from "jsonwebtoken";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
@@ -182,9 +185,15 @@ export async function loginUserHandler(request, reply) {
     const { usernameOrEmail, password } = request.body;
 
     const data = await loginUser(usernameOrEmail, password);
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), username: data.username });
+	const JWTAccessToken = jwt.sign(data, JWT_ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+	const inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
+
+	return reply.setCookie("authToken", JWTAccessToken, {
+		httpOnly: true,
+		secure: true,
+		sameSite: "strict",
+		expires: inFifteenMinutes
+	}).code(200).send({ message: createResponseMessage(action, true), username: data.username });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -192,4 +201,22 @@ export async function loginUserHandler(request, reply) {
     );
     return httpError(reply, 401, createResponseMessage(action, false), "Unauthorized");
 	}
+}
+
+export async function authenticateUserHandler(request, reply) {
+  const action = "Authenticate user";
+  const token = request.cookies.authToken;
+  if (!token){
+	return httpError(reply, 401, createResponseMessage(action, false), "Unauthorized");
+  }
+  try {
+  	const data = await authenticateUser(token);
+  	request.user = data;
+  } catch (err) {
+	request.log.error(
+		{ err, body: request.body },
+		`loginUserHandler: ${createResponseMessage(action, false)}`
+	  );
+	  return httpError(reply, 401, createResponseMessage(action, false), "Unauthorized");
+  }
 }
