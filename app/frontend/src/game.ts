@@ -34,8 +34,7 @@ export async function startGame(
       if (!tournament.getNextMatchToPlay()) {
         const finishedTournament =
           await TournamentService.setTournamentFinished(tournament.getId());
-        console.log(finishedTournament);
-        const resultsView = new ResultsView();
+        const resultsView = new ResultsView(finishedTournament);
         resultsView.render();
       } else {
         const matchAnnouncementView = new MatchAnnouncement(tournament);
@@ -56,7 +55,7 @@ function initGameState(
     player2: player2,
     player1Score: 0,
     player2Score: 0,
-    winningScore: 3,
+    winningScore: 1, // FIXME: needs to be a higher value
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
     ballSpeedX: 7,
