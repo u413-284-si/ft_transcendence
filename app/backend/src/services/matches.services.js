@@ -26,6 +26,18 @@ export async function createMatch(
       opponentScore: true
     }
   });
+  if (tournamentId) {
+    const tournament = await prisma.tournament.findUniqueOrThrow({
+      where: { id: tournamentId }
+    });
+
+    if (tournament && tournament.status === "CREATED") {
+      await prisma.tournament.update({
+        where: { id: tournament.id },
+        data: { status: "IN_PROGRESS" }
+      });
+    }
+  }
   return match;
 }
 
