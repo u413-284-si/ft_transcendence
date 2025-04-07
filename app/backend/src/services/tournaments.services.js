@@ -1,12 +1,13 @@
 import prisma from "../prisma/prismaClient.js";
 
-export async function createTournament(name, maxPlayers, adminId) {
+export async function createTournament(name, maxPlayers, adminId, bracket) {
   const tournament = await prisma.tournament.create({
     data: {
       name,
       maxPlayers,
       adminId,
-      status: "CREATED"
+      status: "CREATED",
+      bracket
     }
   });
   return tournament;

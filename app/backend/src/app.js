@@ -41,7 +41,10 @@ const fastify = Fastify({
   }
 });
 
-await fastify.register(fastifyCors);
+await fastify.register(fastifyCors, {
+  origin: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+});
 await fastify.register(fastifyHelmet, {
   contentSecurityPolicy: {
     directives: {

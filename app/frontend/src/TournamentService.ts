@@ -47,4 +47,29 @@ export default class TournamentService {
     const updatedTournament = data.data;
     return updatedTournament;
   }
+
+  static async updateTournamentBracket(
+    tournament: Tournament
+  ): Promise<TournamentDTO> {
+    const tournamentId = tournament.getId();
+    const response = await fetch(
+      `http://localhost:4000/api/tournaments/${tournamentId}/`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(tournament)
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update tournament");
+    }
+
+    const data: ApiResponse<TournamentDTO> = await response.json();
+    console.log(data);
+    const updatedTournament = data.data;
+    return updatedTournament;
+  }
 }

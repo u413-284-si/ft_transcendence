@@ -94,16 +94,20 @@ export default class extends AbstractView {
     );
 
     try {
-      const savedTournament =
+      const createdTournament =
         await TournamentService.createTournament(tournament);
-      const { id } = savedTournament;
+      const { id } = createdTournament;
       if (id) {
         tournament.setId(id);
+      }
+      const nextMatch = tournament.getNextMatchToPlay();
+      if (!nextMatch) {
+        throw new Error("Match is undefined");
       }
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       matchAnnouncementView.render();
     } catch (e) {
-      console.error("Error saving tournament", e);
+      console.error("Error creating tournament", e);
     }
   }
 }

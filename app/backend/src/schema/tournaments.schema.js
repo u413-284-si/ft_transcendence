@@ -15,6 +15,10 @@ export const createTournamentSchema = {
     adminId: {
       type: "integer",
       description: "The unique identifier of the player"
+    },
+    bracket: {
+      type: "string",
+      description: "Serialized match brackets"
     }
   },
   required: ["name", "maxPlayers", "adminId"],
@@ -31,7 +35,8 @@ export const patchTournamentSchema = {
         status: {
           type: "string",
           enum: ["CREATED", "IN_PROGRESS", "FINISHED"]
-        }
+        },
+        bracket: { type: "string" }
       },
       required: ["status"],
       additionalProperties: false
@@ -42,9 +47,10 @@ export const patchTournamentSchema = {
         status: {
           type: "string",
           enum: ["CREATED", "IN_PROGRESS", "FINISHED"]
-        }
+        },
+        bracket: { type: "string" }
       },
-      required: ["name"],
+      required: ["bracket"],
       additionalProperties: false
     }
   ]

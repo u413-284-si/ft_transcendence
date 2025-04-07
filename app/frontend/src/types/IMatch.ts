@@ -7,3 +7,13 @@ export interface Match {
   opponentScore: number;
   date?: string;
 }
+
+export type SerializedMatch = {
+  matchId: number;
+  round: number;
+  player1: string | null;
+  player2: string | null;
+  winner: string | null;
+  nextMatchId?: number;
+  winnerSlot?: 1 | 2;
+};

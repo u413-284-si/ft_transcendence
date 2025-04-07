@@ -5,28 +5,29 @@ import { GameView, GameType } from "./GameView.js";
 export default class extends AbstractView {
   private player1: string | null = null;
   private player2: string | null = null;
+  private matchNumber: number | null = null;
 
   constructor(private tournament: Tournament) {
     super();
     this.setTitle("Match Announcement");
-    const match = this.tournament.getNextMatch();
+    const match = this.tournament.getNextMatchToPlay();
     if (!match) {
-      // render WinView;
-      return;
+      throw new Error("Match is undefined");
     }
-    this.player1 = match[0];
-    this.player2 = match[1];
+    this.player1 = match.player1;
+    this.player2 = match.player2;
+    this.matchNumber = match.matchId;
   }
 
   async createHTML() {
     return `
       <h1 style="
-        margin-bottom: 20px; 
-        font-size: 2em; 
-        color: #007BFF; 
+        margin-bottom: 20px;
+        font-size: 2em;
+        color: #007BFF;
         text-align: center;"
       >
-        Match ${this.tournament.getMatchNumber()}
+        Match ${this.matchNumber}
       </h1>
       <p style="margin-bottom: 20px; text-align: center; font-size: 1.5em;">
         <strong>${this.player1}</strong> vs <strong>${this.player2}</strong>
@@ -34,13 +35,13 @@ export default class extends AbstractView {
       <div style="text-align: center;">
         <form id="match-form">
           <button type="submit" style="
-            margin-top: 20px; 
-            padding: 10px 20px; 
-            font-size: 1em; 
-            background-color: #007BFF; 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;"
           >
             Start Match
@@ -64,7 +65,7 @@ export default class extends AbstractView {
   private callGameView(event: Event) {
     event.preventDefault();
     console.log(
-      `Match ${this.tournament.getMatchNumber()} started: ${this.player1} vs ${this.player2}`
+      `Match ${this.matchNumber} started: ${this.player1} vs ${this.player2}`
     );
 
     if (!this.player1 || !this.player2) {

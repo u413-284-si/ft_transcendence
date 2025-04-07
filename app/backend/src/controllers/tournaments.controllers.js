@@ -12,9 +12,9 @@ import { handlePrismaError } from "../utils/error.js";
 export async function createTournamentHandler(request, reply) {
   const action = "Create tournament";
   try {
-    const { name, maxPlayers, adminId } = request.body;
+    const { name, maxPlayers, adminId, bracket } = request.body;
 
-    const data = await createTournament(name, maxPlayers, adminId);
+    const data = await createTournament(name, maxPlayers, adminId, bracket);
     return reply
       .code(201)
       .send({ message: createResponseMessage(action, true), data });

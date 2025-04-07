@@ -31,7 +31,7 @@ export async function startGame(
     await newGameView.render();
   } else if (type == GameType.tournament) {
     if (tournament) {
-      if (tournament.isFinished()) {
+      if (!tournament.getNextMatchToPlay()) {
         const finishedTournament =
           await TournamentService.setTournamentFinished(tournament.getId());
         console.log(finishedTournament);
@@ -144,12 +144,17 @@ async function endGame(gameState: GameState, tournament: Tournament | null) {
   const playerId = 1; // FIXME: Hardcoded user Id
   let tournamentId;
   if (tournament) {
-    tournamentId = tournament.getId();
-    tournament.setWinner(
+    const winner =
       gameState.player1Score > gameState.player2Score
         ? gameState.player1
-        : gameState.player2
-    );
+        : gameState.player2;
+    const matchId = tournament.getNextMatchToPlay()?.matchId;
+    if (!matchId) {
+      throw new Error("Match is undefined");
+    }
+    tournamentId = tournament.getId();
+    tournament.updateBracketWithResult(matchId, winner);
+    await TournamentService.updateTournamentBracket(tournament);
   }
   await saveMatch({
     playerId: playerId,
