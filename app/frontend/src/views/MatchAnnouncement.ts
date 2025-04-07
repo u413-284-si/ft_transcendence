@@ -1,6 +1,8 @@
 import { Tournament } from "../Tournament.js";
+import TournamentService from "../TournamentService.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
+import NewTournament from "./NewTournament.js";
 
 export default class extends AbstractView {
   private player1: string | null = null;
@@ -20,8 +22,9 @@ export default class extends AbstractView {
   }
 
   async createHTML() {
-    return `
-      <h1 style="
+    return /* HTML */ `
+      <h1
+        style="
         margin-bottom: 20px;
         font-size: 2em;
         color: #007BFF;
@@ -34,7 +37,9 @@ export default class extends AbstractView {
       </p>
       <div style="text-align: center;">
         <form id="match-form">
-          <button type="submit" style="
+          <button
+            type="submit"
+            style="
             margin-top: 20px;
             padding: 10px 20px;
             font-size: 1em;
@@ -48,6 +53,22 @@ export default class extends AbstractView {
           </button>
         </form>
       </div>
+      <div>
+        <button
+          id="abort-tournament"
+          style="
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;"
+        >
+          Abort Tournament
+        </button>
+      </div>
     `;
   }
 
@@ -55,6 +76,9 @@ export default class extends AbstractView {
     document
       .getElementById("match-form")
       ?.addEventListener("submit", (event) => this.callGameView(event));
+    document
+      .getElementById("abort-tournament")
+      ?.addEventListener("click", () => this.abortTournament());
   }
 
   async render() {
@@ -80,5 +104,14 @@ export default class extends AbstractView {
       this.tournament
     );
     gameView.render();
+  }
+
+  private async abortTournament() {
+    const deleted = await TournamentService.deleteTournament(
+      this.tournament.getId()
+    );
+    console.log(deleted);
+    const newTournamentView = new NewTournament();
+    newTournamentView.render();
   }
 }

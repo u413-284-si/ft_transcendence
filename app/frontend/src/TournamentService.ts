@@ -78,10 +78,7 @@ export default class TournamentService {
     const response = await fetch(
       `http://localhost:4000/api/users/${userId}/tournaments/active/`,
       {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
+        method: "GET"
       }
     );
 
@@ -92,6 +89,22 @@ export default class TournamentService {
 
     if (!response.ok) {
       throw new Error("Failed to fetch active tournament");
+    }
+
+    const data: ApiResponse<TournamentDTO> = await response.json();
+    return data.data;
+  }
+
+  static async deleteTournament(id: number): Promise<TournamentDTO> {
+    const response = await fetch(
+      `http://localhost:4000/api/tournaments/${id}/`,
+      {
+        method: "DELETE"
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to delete tournament");
     }
 
     const data: ApiResponse<TournamentDTO> = await response.json();
