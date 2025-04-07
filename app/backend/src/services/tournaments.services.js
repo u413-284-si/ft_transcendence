@@ -59,3 +59,15 @@ export async function getUserTournaments(id) {
   });
   return tournaments;
 }
+
+export async function getUserActiveTournament(id) {
+  const tournament = await prisma.tournament.findFirstOrThrow({
+    where: {
+      adminId: id,
+      status: {
+        in: ["CREATED", "IN_PROGRESS"]
+      }
+    }
+  });
+  return tournament;
+}
