@@ -11,10 +11,12 @@ import env from "./config/env.js";
 import userRoutes from "./routes/users.routes.js";
 import staticRoutes from "./routes/static.routes.js";
 import matchRoutes from "./routes/matches.routes.js";
+import tournamentRoutes from "./routes/tournaments.routes.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/users.schema.js";
 import { matchSchemas } from "./schema/matches.schema.js";
+import { tournamentSchemas } from "./schema/tournaments.schema.js";
 
 const fastify = Fastify({
   logger: {
@@ -52,13 +54,19 @@ await fastify.register(fastifyCompress);
 await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
 
-for (const schema of [...commonSchemas, ...userSchemas, ...matchSchemas]) {
+for (const schema of [
+  ...commonSchemas,
+  ...userSchemas,
+  ...matchSchemas,
+  ...tournamentSchemas
+]) {
   fastify.addSchema(schema);
 }
 
 await fastify.register(staticRoutes);
 await fastify.register(userRoutes, { prefix: "/api/users" });
 await fastify.register(matchRoutes, { prefix: "/api/matches" });
+await fastify.register(tournamentRoutes, { prefix: "/api/tournaments" });
 await fastify.register(fastifyStatic, {
   root: "/workspaces/ft_transcendence/app/frontend/public"
 });
