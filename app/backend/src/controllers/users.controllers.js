@@ -127,7 +127,7 @@ export async function patchUserHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `updateUserHandler: ${createResponseMessage(action, false)}`
+      `patchUserHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
