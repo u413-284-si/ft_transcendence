@@ -50,3 +50,12 @@ export async function deleteTournament(id) {
   });
   return tournament;
 }
+
+export async function getUserTournaments(id) {
+  const tournaments = await prisma.tournament.findMany({
+    where: {
+      adminId: id
+    }
+  });
+  return tournaments;
+}

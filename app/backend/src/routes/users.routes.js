@@ -7,7 +7,8 @@ import {
   getUserMatchesHandler,
   patchUserHandler,
   getAllUserStatsHandler,
-  getUserStatsHandler
+  getUserStatsHandler,
+  getUserTournamentsHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
@@ -29,6 +30,8 @@ export default async function userRoutes(fastify) {
   fastify.get("/user-stats/", getAllUserStatsHandler);
 
   fastify.get("/:id/user-stats/", optionsGetUser, getUserStatsHandler);
+
+  fastify.get("/:id/tournaments/", optionsGetUser, getUserTournamentsHandler);
 }
 
 const optionsCreateUser = {
