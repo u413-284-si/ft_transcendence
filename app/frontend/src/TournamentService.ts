@@ -23,4 +23,28 @@ export default class TournamentService {
     const savedTournament = data.data;
     return savedTournament;
   }
+
+  static async setTournamentFinished(
+    tournamentId: number
+  ): Promise<TournamentDTO> {
+    const response = await fetch(
+      `http://localhost:4000/api/tournaments/${tournamentId}/`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ status: "FINISHED" })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update tournament");
+    }
+
+    const data: ApiResponse<TournamentDTO> = await response.json();
+    console.log(data);
+    const updatedTournament = data.data;
+    return updatedTournament;
+  }
 }

@@ -1,8 +1,10 @@
 import {
   createTournamentHandler,
   getAllTournamentsHandler,
-  getTournamentHandler
+  getTournamentHandler,
+  patchTournamentHandler
 } from "../controllers/tournaments.controllers.js";
+import { errorResponses } from "../utils/error.js";
 
 export default async function tournamentRoutes(fastify) {
   fastify.post("/", optionsCreateTournament, createTournamentHandler);
@@ -10,6 +12,8 @@ export default async function tournamentRoutes(fastify) {
   fastify.get("/", getAllTournamentsHandler);
 
   fastify.get("/:id/", optionsGetTournament, getTournamentHandler);
+
+  fastify.patch("/:id/", optionsPatchTournament, patchTournamentHandler);
 }
 
 const optionsCreateTournament = {
@@ -21,5 +25,15 @@ const optionsCreateTournament = {
 const optionsGetTournament = {
   schema: {
     params: { $ref: "idSchema" }
+  }
+};
+
+const optionsPatchTournament = {
+  schema: {
+    params: { $ref: "idSchema" },
+    body: { $ref: "patchTournamentSchema" },
+    response: {
+      ...errorResponses
+    }
   }
 };

@@ -25,3 +25,13 @@ export async function getTournament(id) {
   });
   return tournament;
 }
+
+export async function updateTournament(id, updateData) {
+  const updatedTournament = await prisma.tournament.update({
+    where: {
+      id
+    },
+    data: updateData
+  });
+  return updatedTournament;
+}

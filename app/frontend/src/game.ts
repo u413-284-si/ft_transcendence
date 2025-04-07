@@ -6,6 +6,8 @@ import NewGame from "./views/NewGame.js";
 import { GameType, GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import MatchAnnouncement from "./views/MatchAnnouncement.js";
+import ResultsView from "./views/ResultsView.js";
+import TournamentService from "./TournamentService.js";
 
 export async function startGame(
   player1: string,
@@ -27,11 +29,18 @@ export async function startGame(
   if (type == GameType.single) {
     const newGameView = new NewGame();
     await newGameView.render();
-  }
-  if (type == GameType.tournament) {
+  } else if (type == GameType.tournament) {
     if (tournament) {
-      const matchAnnouncementView = new MatchAnnouncement(tournament);
-      await matchAnnouncementView.render();
+      if (tournament.isFinished()) {
+        const finishedTournament =
+          await TournamentService.setTournamentFinished(tournament.getId());
+        console.log(finishedTournament);
+        const resultsView = new ResultsView();
+        resultsView.render();
+      } else {
+        const matchAnnouncementView = new MatchAnnouncement(tournament);
+        await matchAnnouncementView.render();
+      }
     }
   }
 }

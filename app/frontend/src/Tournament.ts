@@ -78,4 +78,8 @@ export class Tournament {
       adminId: this.adminId
     };
   }
+
+  public isFinished(): boolean {
+    return this.matchesQueue.length === 0;
+  }
 }

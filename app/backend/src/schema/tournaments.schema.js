@@ -21,4 +21,36 @@ export const createTournamentSchema = {
   additionalProperties: false
 };
 
-export const tournamentSchemas = [createTournamentSchema];
+export const patchTournamentSchema = {
+  $id: "patchTournamentSchema",
+  type: "object",
+  anyOf: [
+    {
+      properties: {
+        name: { type: "string" },
+        status: {
+          type: "string",
+          enum: ["CREATED", "IN_PROGRESS", "FINISHED"]
+        }
+      },
+      required: ["status"],
+      additionalProperties: false
+    },
+    {
+      properties: {
+        name: { type: "string" },
+        status: {
+          type: "string",
+          enum: ["CREATED", "IN_PROGRESS", "FINISHED"]
+        }
+      },
+      required: ["name"],
+      additionalProperties: false
+    }
+  ]
+};
+
+export const tournamentSchemas = [
+  createTournamentSchema,
+  patchTournamentSchema
+];
