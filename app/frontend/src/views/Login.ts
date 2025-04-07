@@ -12,11 +12,11 @@ export default class extends AbstractView {
 				<form id="login-form"  class="flex flex-col justify-center items-center h-screen gap-4">
 					<div>
 						<label for="usernameOrEmail">Username or Email:</label><br>
-						<input id="usernameOrEmail" name="usernameOrEmail" type="text" class="border-2 border-white rounded-sm">
+						<input id="usernameOrEmail" name="usernameOrEmail" type="text" class="border-2 border-white rounded-sm" required>
 					</div>
 					<div>
 						<label for="password">Password:</label><br>
-						<input id="password" name="password" type="password" class="border-2 border-white rounded-sm">
+						<input id="password" name="password" type="password" class="border-2 border-white rounded-sm" required>
 					</div>
 					<div>
 						<button id="login-button" class="border-2 border-white rounded-sm p-2">Login</button>
