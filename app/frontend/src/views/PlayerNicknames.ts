@@ -86,11 +86,11 @@ export default class extends AbstractView {
   private async initTournament(event: Event) {
     event.preventDefault();
     const nicknames = this.extractNicknames();
-    const tournament = new Tournament(
+    const tournament = Tournament.fromUsernames(
+      nicknames,
       this.tournamentName,
       this.numberOfPlayers,
-      1, // FIXME: hard coded ID of player
-      nicknames
+      1 // FIXME: Hard coded username
     );
 
     try {

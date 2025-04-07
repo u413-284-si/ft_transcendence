@@ -1,4 +1,8 @@
+import { Tournament } from "../Tournament.js";
+import TournamentService from "../TournamentService.js";
+import { SerializedMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
+import MatchAnnouncement from "./MatchAnnouncement.js";
 import PlayerNicknames from "./PlayerNicknames.js";
 
 export default class extends AbstractView {
@@ -10,10 +14,10 @@ export default class extends AbstractView {
   async createHTML() {
     return `
             <h1 style="
-                margin-bottom: 40px; 
-                font-size: 2.5em; 
-                color: #FF00AA; 
-                text-align: center; 
+                margin-bottom: 40px;
+                font-size: 2.5em;
+                color: #FF00AA;
+                text-align: center;
                 text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);"
             >
                 New Tournament
@@ -22,7 +26,7 @@ export default class extends AbstractView {
             <form id="tournament-form">
                 <label style="font-size: 1.2em; font-weight: bold; display: block; margin-bottom: 10px;">
                     Tournament Name:
-                    <input 
+                    <input
                         type="text"
                         name="tournamentName"
                         required
@@ -52,8 +56,23 @@ export default class extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
-    this.addListeners();
+    const activeTournament = await TournamentService.getActiveTournament();
+    if (!activeTournament) {
+      await this.updateHTML();
+      this.addListeners();
+      return;
+    }
+    const bracket = JSON.parse(activeTournament.bracket) as SerializedMatch[];
+    const tournament = new Tournament(
+      activeTournament.name,
+      activeTournament.maxPlayers,
+      activeTournament.adminId,
+      bracket,
+      activeTournament.id
+    );
+    const matchAnnouncementView = new MatchAnnouncement(tournament);
+    matchAnnouncementView.render();
+    return;
   }
 
   validateAndRequestNicknames(event: Event) {

@@ -72,4 +72,29 @@ export default class TournamentService {
     const updatedTournament = data.data;
     return updatedTournament;
   }
+
+  static async getActiveTournament(): Promise<TournamentDTO | null> {
+    const userId = 1; // FIXME: Hard coded user id
+    const response = await fetch(
+      `http://localhost:4000/api/users/${userId}/tournaments/active/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (response.status == 404) {
+      console.log("No active Tournament found (404)");
+      return null;
+    }
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch active tournament");
+    }
+
+    const data: ApiResponse<TournamentDTO> = await response.json();
+    return data.data;
+  }
 }

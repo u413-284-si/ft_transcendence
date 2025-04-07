@@ -2,27 +2,34 @@ import { TournamentDTO } from "./types/ITournament";
 import { SerializedMatch } from "./types/IMatch";
 
 export class Tournament {
-  private tournamentId: number | null = null;
-
   constructor(
     private tournamentName: string,
     private numberOfPlayers: number,
     private adminId: number,
-    private playerNicknames: string[],
-    private bracket?: SerializedMatch[]
-  ) {
-    if (bracket == null) {
-      this.bracket = this.generateSerializedBracket(playerNicknames);
-    }
+    private bracket: SerializedMatch[],
+    private tournamentId?: number
+  ) {}
+
+  static fromUsernames(
+    playerNicknames: string[],
+    tournamentName: string,
+    numberOfPlayers: number,
+    adminId: number
+  ): Tournament {
+    const bracket = Tournament.generateSerializedBracket(playerNicknames);
+    return new Tournament(tournamentName, numberOfPlayers, adminId, bracket);
   }
 
-  private generateSerializedBracket(usernames: string[]): SerializedMatch[] {
-    const totalRounds = Math.log2(this.numberOfPlayers);
+  private static generateSerializedBracket(
+    playerNicknames: string[]
+  ): SerializedMatch[] {
+    const numberOfPlayers = playerNicknames.length;
+    const totalRounds = Math.log2(numberOfPlayers);
     const bracket: SerializedMatch[] = [];
     let currentMatchId = 1;
 
     const roundMatches: number[][] = [];
-    let matchCount = this.numberOfPlayers / 2;
+    let matchCount = numberOfPlayers / 2;
 
     for (let round = 1; round <= totalRounds; round++) {
       const matchIds: number[] = [];
@@ -53,7 +60,7 @@ export class Tournament {
     }
 
     // Assign usernames to round 1
-    const shuffled = this.shuffle(usernames, false);
+    const shuffled = this.shuffle(playerNicknames, false);
     const firstRound = roundMatches[0];
 
     for (let i = 0; i < shuffled.length; i += 2) {
@@ -122,7 +129,7 @@ export class Tournament {
   }
 
   public getId(): number {
-    if (this.tournamentId === null) {
+    if (!this.tournamentId) {
       throw new Error("TournamentId is not set");
     }
     return this.tournamentId;
@@ -140,7 +147,7 @@ export class Tournament {
     };
   }
 
-  public shuffle(array: string[], inPlace: boolean = true): string[] {
+  public static shuffle(array: string[], inPlace: boolean = true): string[] {
     // If we don't want to modify the original, copy it
     const result = inPlace ? array : [...array];
 
