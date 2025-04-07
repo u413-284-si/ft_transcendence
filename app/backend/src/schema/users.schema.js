@@ -94,9 +94,9 @@ const loginUserResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    user: { $ref: "userSchema" }
+    username: { $ref: "commonDefinitionsSchema#/definitions/username" },
   },
-  required: ["message", "user"],
+  required: ["message", "username"],
   additionalProperties: false
 };
 

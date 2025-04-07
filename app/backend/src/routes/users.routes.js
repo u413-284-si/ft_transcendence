@@ -31,7 +31,7 @@ export default async function userRoutes(fastify) {
 
   fastify.get("/:id/user-stats/", optionsGetUser, getUserStatsHandler);
 
-  fastify.post("/user-logins/", optionsloginUser, loginUserHandler);
+  fastify.post("/user-login/", optionsloginUser, loginUserHandler);
 }
 
 const optionsCreateUser = {

@@ -1,19 +1,25 @@
+import { commonDefinitionsSchema } from "../schema/common.schema.js";
 import prisma from "../prisma/prismaClient.js";
 import pkg from "argon2";
 
 export async function loginUser(usernameOrEmail, password) {
-	const user = await prisma.user.findUniqueOrThrow({
+
+	const user = await prisma.user.findFirst({
 		where: {
 			OR: [
-				{ username: usernameOrEmail },
-				{ email: usernameOrEmail }
-			],
+			  { email: usernameOrEmail },
+			  { username: usernameOrEmail}
+			]
+		  },
+		include: {
+			authentication: {
+				select: {
+					password: true
+				}
+			}
 		}
-	});
-
-	if (!user)
-		throw new Error("User not found");
-
+	})
+	
 	if (!await pkg.verify(user.authentication.password, password))
 		throw new Error("Invalid password");
 
