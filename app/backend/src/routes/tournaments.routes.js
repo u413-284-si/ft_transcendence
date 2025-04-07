@@ -2,7 +2,9 @@ import {
   createTournamentHandler,
   getAllTournamentsHandler,
   getTournamentHandler,
-  patchTournamentHandler
+  patchTournamentHandler,
+  deleteAllTournamentsHandler,
+  deleteTournamentHandler
 } from "../controllers/tournaments.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
@@ -14,6 +16,10 @@ export default async function tournamentRoutes(fastify) {
   fastify.get("/:id/", optionsGetTournament, getTournamentHandler);
 
   fastify.patch("/:id/", optionsPatchTournament, patchTournamentHandler);
+
+  fastify.delete("/", deleteAllTournamentsHandler);
+
+  fastify.delete("/:id/", optionsGetTournament, deleteTournamentHandler);
 }
 
 const optionsCreateTournament = {

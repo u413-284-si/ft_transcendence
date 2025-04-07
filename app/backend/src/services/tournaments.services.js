@@ -35,3 +35,17 @@ export async function updateTournament(id, updateData) {
   });
   return updatedTournament;
 }
+
+export async function deleteAllTournaments() {
+  const tournaments = await prisma.tournament.deleteMany();
+  return tournaments;
+}
+
+export async function deleteTournament(id) {
+  const tournament = await prisma.tournament.delete({
+    where: {
+      id
+    }
+  });
+  return tournament;
+}
