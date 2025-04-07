@@ -12,7 +12,7 @@ import {
 } from "../services/user_stats.services.js";
 import { loginUser } from "../services/user_logins.services.js";
 import pkg from "argon2";
-import { handlePrismaError } from "../utils/error.js";
+import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
 export async function registerUserHandler(request, reply) {
@@ -190,6 +190,6 @@ export async function loginUserHandler(request, reply) {
       { err, body: request.body },
       `loginUserHandler: ${createResponseMessage(action, false)}`
     );
-    return handlePrismaError(reply, action, err);
-  }
+    return httpError(reply, 401, createResponseMessage(action, false), "Unauthorized");
+	}
 }

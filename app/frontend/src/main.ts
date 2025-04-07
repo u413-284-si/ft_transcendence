@@ -5,7 +5,7 @@ import NewTournament from "./views/NewTournament.js";
 import Settings from "./views/Settings.js";
 import Stats from "./views/Stats.js";
 
-const navigateTo = (url: string) => {
+export const navigateTo = (url: string) => {
   history.pushState(null, "", url);
   router();
 };

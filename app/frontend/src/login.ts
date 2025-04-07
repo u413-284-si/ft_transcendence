@@ -1,3 +1,5 @@
+import { navigateTo } from "./main.js";
+
 export async function loginUser(event: Event): Promise<void> {
   event.preventDefault();
 
@@ -8,7 +10,6 @@ export async function loginUser(event: Event): Promise<void> {
   const url: string = "/api/users/user-login/";
   console.log("url:", url);
 
-  try {
     const response = await fetch(url , {
 	method: "POST",
       headers: {
@@ -17,13 +18,11 @@ export async function loginUser(event: Event): Promise<void> {
       body: JSON.stringify({ usernameOrEmail, password })
     });
 
-    if (!response.ok) {
-      throw new Error("Failed to log in user");
-    }
+	if (!response.ok) {	
+		alert("Invalid username or password");
+		return;
+	}
 
-    const user = await response.json();
-    console.log("User logged in:", user);
-  } catch (error) {
-    console.error("Error logging in user:", error);
-  }
+	navigateTo("/home");
+
 }
