@@ -22,7 +22,7 @@ export async function startGame(
   await new Promise<void>((resolve) => {
     gameLoop(canvas, ctx, gameState, resolve);
   });
-  await endGame(gameState);
+  await endGame(gameState, tournament);
   controller.abort();
   if (type == GameType.single) {
     const newGameView = new NewGame();
@@ -30,9 +30,6 @@ export async function startGame(
   }
   if (type == GameType.tournament) {
     if (tournament) {
-      tournament.setWinner(
-        gameState.player1Score > gameState.player2Score ? player1 : player2
-      );
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       await matchAnnouncementView.render();
     }
@@ -134,9 +131,20 @@ function checkWinner(gameState: GameState) {
   }
 }
 
-async function endGame(gameState: GameState) {
+async function endGame(gameState: GameState, tournament: Tournament | null) {
+  const playerId = 1; // FIXME: Hardcoded user Id
+  let tournamentId;
+  if (tournament) {
+    tournamentId = tournament.getId();
+    tournament.setWinner(
+      gameState.player1Score > gameState.player2Score
+        ? gameState.player1
+        : gameState.player2
+    );
+  }
   await saveMatch({
-    playerId: 1,
+    playerId: playerId,
+    tournamentId: tournamentId,
     playerNickname: gameState.player1,
     opponentNickname: gameState.player2,
     playerScore: gameState.player1Score,
