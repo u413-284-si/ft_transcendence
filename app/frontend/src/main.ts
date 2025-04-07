@@ -4,6 +4,7 @@ import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
 import Settings from "./views/Settings.js";
 import Stats from "./views/Stats.js";
+import { authorizeUser } from "./authorization.js";
 
 export const navigateTo = (url: string) => {
   history.pushState(null, "", url);
@@ -12,7 +13,7 @@ export const navigateTo = (url: string) => {
 
 const router = async () => {
   const routes = [
-    { path: "/", view: Login },
+    { path: "/login", view: Login },
     { path: "/home", view: Home },
     { path: "/newGame", view: NewGame },
     { path: "/newTournament", view: NewTournament },
@@ -33,6 +34,17 @@ const router = async () => {
       route: routes[0],
       isMatch: true
     };
+	window.location.href = routes[0].path;
+  }
+
+
+  if (match.route.path !== "/login") {
+	try {
+		await authorizeUser();
+	} catch (err) {
+		window.location.href = "/login";
+		return;
+	}
   }
 
   const view = new match.route.view();

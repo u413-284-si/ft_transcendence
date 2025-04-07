@@ -11,7 +11,7 @@ import {
   getUserStats
 } from "../services/user_stats.services.js";
 import { loginUser } from "../services/user_logins.services.js";
-import { authenticateUser } from "../services/user_authenticate.services.js";
+import { authorizeUser } from "../services/user_authorization.services.js";
 import pkg from "argon2";
 import { JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_SECRET } from "../config/jwt.js";
 import jwt from "jsonwebtoken";
@@ -203,14 +203,14 @@ export async function loginUserHandler(request, reply) {
 	}
 }
 
-export async function authenticateUserHandler(request, reply) {
-  const action = "Authenticate user";
+export async function authorizeUserHandler(request, reply) {
+  const action = "authorize user";
   const token = request.cookies.authToken;
   if (!token){
 	return httpError(reply, 401, createResponseMessage(action, false), "Unauthorized");
   }
   try {
-  	const data = await authenticateUser(token);
+  	const data = await authorizeUser(token);
   	request.user = data;
   } catch (err) {
 	request.log.error(

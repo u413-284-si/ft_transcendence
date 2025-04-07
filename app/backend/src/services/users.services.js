@@ -6,7 +6,7 @@ export async function createUser(username, email, hashedPassword) {
       username: username,
       email: email,
       dateJoined: new Date(),
-      authentication: {
+      authorization: {
         create: {
           password: hashedPassword
         }
@@ -18,7 +18,7 @@ export async function createUser(username, email, hashedPassword) {
       id: true,
       username: true,
       email: true,
-      authentication: {
+      authorization: {
         select: {
           password: true
         }

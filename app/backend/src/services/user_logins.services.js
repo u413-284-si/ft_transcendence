@@ -12,7 +12,7 @@ export async function loginUser(usernameOrEmail, password) {
 				]
 			},
 			include: {
-				authentication: {
+				authorization: {
 					select: {
 						password: true
 					}
@@ -20,10 +20,10 @@ export async function loginUser(usernameOrEmail, password) {
 			}
 		})
 
-		if (!await pkg.verify(user.authentication.password, password))
+		if (!await pkg.verify(user.authorization.password, password))
 			throw new Error("Invalid password");
 
-		delete user.authentication;
+		delete user.authorization;
 		console.log("user:", user);
 		return user;
 

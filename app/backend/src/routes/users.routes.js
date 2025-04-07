@@ -9,7 +9,7 @@ import {
   getAllUserStatsHandler,
   getUserStatsHandler,
   loginUserHandler,
-  authenticateUserHandler
+  authorizeUserHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
@@ -33,6 +33,8 @@ export default async function userRoutes(fastify) {
   fastify.get("/:id/user-stats/", optionsGetUser, getUserStatsHandler);
 
   fastify.post("/user-login/", optionsloginUser, loginUserHandler);
+
+  fastify.get("/user-authorization/", authorizeUserHandler);
 }
 
 const optionsCreateUser = {

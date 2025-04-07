@@ -5,7 +5,7 @@ const userSchema = {
     id: { type: "integer" },
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-    authentication: {
+    authorization: {
       type: "object",
       properties: {
         password: { $ref: "commonDefinitionsSchema#/definitions/password" }
