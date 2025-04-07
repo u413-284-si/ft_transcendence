@@ -19,6 +19,7 @@ export default class TournamentService {
     }
 
     const data: ApiResponse<TournamentDTO> = await response.json();
+    console.log(data);
     const savedTournament = data.data;
     return savedTournament;
   }
