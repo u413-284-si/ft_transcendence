@@ -192,6 +192,7 @@ export async function loginUserHandler(request, reply) {
 		httpOnly: true,
 		secure: true,
 		sameSite: "strict",
+		path: "/",
 		expires: inFifteenMinutes
 	}).code(200).send({ message: createResponseMessage(action, true), username: data.username });
   } catch (err) {

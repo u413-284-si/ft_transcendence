@@ -2,6 +2,7 @@ export const authorizeUser = async () => {
 	try {
 		const response = await fetch("http://localhost:4000/api/users/user-authorization/", {
 			method: "GET",
+			credentials: "same-origin",
 			headers: {
 				"Content-Type": "application/json"
 			}

@@ -8,14 +8,14 @@ export async function loginUser(event: Event): Promise<void> {
   const password: string = loginForm.password.value;
 
   const url: string = "/api/users/user-login/";
-  console.log("url:", url);
 
-    const response = await fetch(url , {
+  const response = await fetch(url , {
 	method: "POST",
+	credentials: "same-origin",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ usernameOrEmail, password })
+      body: JSON.stringify({ usernameOrEmail, password }),
     });
 
 	if (!response.ok) {	
@@ -23,6 +23,5 @@ export async function loginUser(event: Event): Promise<void> {
 		return;
 	}
 
-	navigateTo("/home");
-
+  navigateTo("/home");
 }

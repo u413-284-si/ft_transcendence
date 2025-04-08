@@ -12,6 +12,7 @@ export const navigateTo = (url: string) => {
 };
 
 const router = async () => {
+
   const routes = [
     { path: "/login", view: Login },
     { path: "/home", view: Home },
@@ -37,12 +38,12 @@ const router = async () => {
 	window.location.href = routes[0].path;
   }
 
-
   if (match.route.path !== "/login") {
 	try {
 		await authorizeUser();
+		console.log("Authorized user");
 	} catch (err) {
-		window.location.href = "/login";
+		navigateTo("/login");
 		return;
 	}
   }
