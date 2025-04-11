@@ -7,7 +7,10 @@ import { GameType, GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import MatchAnnouncement from "./views/MatchAnnouncement.js";
 import ResultsView from "./views/ResultsView.js";
-import TournamentService from "./TournamentService.js";
+import {
+  setTournamentFinished,
+  updateTournamentBracket
+} from "./services/TournamentService.js";
 
 export async function startGame(
   player1: string,
@@ -32,8 +35,9 @@ export async function startGame(
   } else if (type == GameType.tournament) {
     if (tournament) {
       if (!tournament.getNextMatchToPlay()) {
-        const finishedTournament =
-          await TournamentService.setTournamentFinished(tournament.getId());
+        const finishedTournament = await setTournamentFinished(
+          tournament.getId()
+        );
         const resultsView = new ResultsView(finishedTournament);
         resultsView.render();
       } else {
@@ -153,7 +157,7 @@ async function endGame(gameState: GameState, tournament: Tournament | null) {
     }
     tournamentId = tournament.getId();
     tournament.updateBracketWithResult(matchId, winner);
-    await TournamentService.updateTournamentBracket(tournament);
+    await updateTournamentBracket(tournament);
   }
   await saveMatch({
     playerId: playerId,

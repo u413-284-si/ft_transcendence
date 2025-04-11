@@ -1,7 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
-import TournamentService from "../TournamentService.js";
+import { createTournament } from "../services/TournamentService.js";
 
 export default class extends AbstractView {
   constructor(
@@ -94,8 +94,7 @@ export default class extends AbstractView {
     );
 
     try {
-      const createdTournament =
-        await TournamentService.createTournament(tournament);
+      const createdTournament = await createTournament(tournament);
       const { id } = createdTournament;
       if (id) {
         tournament.setId(id);

@@ -1,5 +1,5 @@
+import { deleteTournament } from "../services/TournamentService.js";
 import { Tournament } from "../Tournament.js";
-import TournamentService from "../TournamentService.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
 import NewTournament from "./NewTournament.js";
@@ -107,9 +107,7 @@ export default class extends AbstractView {
   }
 
   private async abortTournament() {
-    const deleted = await TournamentService.deleteTournament(
-      this.tournament.getId()
-    );
+    const deleted = await deleteTournament(this.tournament.getId());
     console.log(deleted);
     const newTournamentView = new NewTournament();
     newTournamentView.render();

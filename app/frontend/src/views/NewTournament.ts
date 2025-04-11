@@ -1,5 +1,5 @@
+import { getActiveTournament } from "../services/TournamentService.js";
 import { Tournament } from "../Tournament.js";
-import TournamentService from "../TournamentService.js";
 import { SerializedMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
@@ -56,7 +56,7 @@ export default class extends AbstractView {
   }
 
   async render() {
-    const activeTournament = await TournamentService.getActiveTournament();
+    const activeTournament = await getActiveTournament();
     if (!activeTournament) {
       await this.updateHTML();
       this.addListeners();
