@@ -34,15 +34,19 @@ export async function startGame(
     await newGameView.render();
   } else if (type == GameType.tournament) {
     if (tournament) {
-      if (!tournament.getNextMatchToPlay()) {
+      if (tournament.getNextMatchToPlay()) {
+        const matchAnnouncementView = new MatchAnnouncement(tournament);
+        return await matchAnnouncementView.render();
+      }
+      try {
         const finishedTournament = await setTournamentFinished(
           tournament.getId()
         );
         const resultsView = new ResultsView(finishedTournament);
         resultsView.render();
-      } else {
-        const matchAnnouncementView = new MatchAnnouncement(tournament);
-        await matchAnnouncementView.render();
+      } catch (error) {
+        console.error(error);
+        // show error page
       }
     }
   }
@@ -146,27 +150,32 @@ function checkWinner(gameState: GameState) {
 async function endGame(gameState: GameState, tournament: Tournament | null) {
   const playerId = 1; // FIXME: Hardcoded user Id
   let tournamentId;
-  if (tournament) {
-    const winner =
-      gameState.player1Score > gameState.player2Score
-        ? gameState.player1
-        : gameState.player2;
-    const matchId = tournament.getNextMatchToPlay()?.matchId;
-    if (!matchId) {
-      throw new Error("Match is undefined");
+  try {
+    if (tournament) {
+      const winner =
+        gameState.player1Score > gameState.player2Score
+          ? gameState.player1
+          : gameState.player2;
+      const matchId = tournament.getNextMatchToPlay()?.matchId;
+      if (!matchId) {
+        throw new Error("Match is undefined");
+      }
+      tournamentId = tournament.getId();
+      tournament.updateBracketWithResult(matchId, winner);
+      await updateTournamentBracket(tournament);
     }
-    tournamentId = tournament.getId();
-    tournament.updateBracketWithResult(matchId, winner);
-    await updateTournamentBracket(tournament);
+    await saveMatch({
+      playerId: playerId,
+      tournamentId: tournamentId,
+      playerNickname: gameState.player1,
+      opponentNickname: gameState.player2,
+      playerScore: gameState.player1Score,
+      opponentScore: gameState.player2Score
+    });
+  } catch (error) {
+    console.error(error);
+    // show error page
   }
-  await saveMatch({
-    playerId: playerId,
-    tournamentId: tournamentId,
-    playerNickname: gameState.player1,
-    opponentNickname: gameState.player2,
-    playerScore: gameState.player1Score,
-    opponentScore: gameState.player2Score
-  });
 
   await waitForEnterKey();
 }

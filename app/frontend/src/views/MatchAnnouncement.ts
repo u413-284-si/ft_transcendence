@@ -107,9 +107,13 @@ export default class extends AbstractView {
   }
 
   private async abortTournament() {
-    const deleted = await deleteTournament(this.tournament.getId());
-    console.log(deleted);
-    const newTournamentView = new NewTournament();
-    newTournamentView.render();
+    try {
+      await deleteTournament(this.tournament.getId());
+      const newTournamentView = new NewTournament();
+      newTournamentView.render();
+    } catch (error) {
+      console.error(error);
+      // show error page
+    }
   }
 }
