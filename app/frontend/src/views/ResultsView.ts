@@ -1,30 +1,32 @@
 import AbstractView from "./AbstractView.js";
 import { BracketMatch } from "../types/IMatch.js";
-import { TournamentDTO } from "../types/ITournament.js";
+import { Tournament } from "../Tournament.js";
 
 export default class ResultsView extends AbstractView {
   private matches: BracketMatch[];
 
-  constructor(private tournament: TournamentDTO) {
+  constructor(private tournament: Tournament) {
     super();
     this.setTitle("Results");
-    this.matches = JSON.parse(tournament.bracket) as BracketMatch[];
+    this.matches = tournament.getBracket();
   }
 
   async createHTML() {
-    return `
-        <div class="max-w-3xl mx-auto bg-gray-100 text-gray-900 p-6">
-          <h1 class="text-3xl font-bold mb-4">Tournament Results</h1>
-            <div id="tournament-name" class="text-xl font-semibold mb-2"></div>
-            <div id="brackets" class="space-y-4"></div>
+    return /* HTML */ `
+      <div class="max-w-3xl mx-auto bg-gray-100 text-gray-900 p-6">
+        <h1 class="text-3xl font-bold mb-4">
+          Tournament Results: ${this.tournament.getTournamentName()}
+        </h1>
+        <div id="winner" class="text-xl font-semibold mb-2">
+          🏆 Winner: ${this.tournament.getTournamentWinner()}
         </div>
-      `;
+        <div id="brackets" class="space-y-4"></div>
+      </div>
+    `;
   }
 
   async render() {
     await this.updateHTML();
-    document.getElementById("tournament-name")!.textContent =
-      `🏆 ${this.tournament.name}`;
     this.renderBracket(this.matches);
   }
 

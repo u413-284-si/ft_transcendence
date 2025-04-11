@@ -152,4 +152,13 @@ export class Tournament {
 
     return result;
   }
+
+  public getTournamentWinner(): string | null {
+    const finalMatch = this.bracket.find((match) => !match.nextMatchId);
+    return finalMatch?.winner ?? null;
+  }
+
+  public getTournamentName(): string {
+    return this.tournamentName;
+  }
 }

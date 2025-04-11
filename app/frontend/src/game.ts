@@ -40,10 +40,8 @@ export async function startGame(
         return await matchAnnouncementView.render();
       }
       try {
-        const finishedTournament = await setTournamentFinished(
-          tournament.getId()
-        );
-        const resultsView = new ResultsView(finishedTournament);
+        await setTournamentFinished(tournament.getId());
+        const resultsView = new ResultsView(tournament);
         resultsView.render();
       } catch (error) {
         console.error(error);
