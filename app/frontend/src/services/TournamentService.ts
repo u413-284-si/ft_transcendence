@@ -1,5 +1,5 @@
 import { Tournament } from "../Tournament";
-import { ApiResponse } from "../types/IApiResponse";
+import { ApiResponse, NullableApiResponse } from "../types/IApiResponse";
 import { TournamentDTO } from "../types/ITournament";
 
 export async function createTournament(
@@ -81,16 +81,11 @@ export async function getActiveTournament(): Promise<TournamentDTO | null> {
     }
   );
 
-  if (response.status == 404) {
-    console.log("No active Tournament found (404)");
-    return null;
-  }
-
   if (!response.ok) {
     throw new Error("Failed to fetch active tournament");
   }
 
-  const data: ApiResponse<TournamentDTO> = await response.json();
+  const data: NullableApiResponse<TournamentDTO> = await response.json();
   return data.data;
 }
 

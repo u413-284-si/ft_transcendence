@@ -61,7 +61,7 @@ export async function getUserTournaments(id) {
 }
 
 export async function getUserActiveTournament(id) {
-  const tournament = await prisma.tournament.findFirstOrThrow({
+  const tournament = await prisma.tournament.findFirst({
     where: {
       adminId: id,
       status: {

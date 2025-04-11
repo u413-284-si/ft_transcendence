@@ -58,6 +58,7 @@ export default class extends AbstractView {
   async render() {
     const activeTournament = await getActiveTournament();
     if (!activeTournament) {
+      console.log("No active tournament found");
       await this.updateHTML();
       this.addListeners();
       return;
