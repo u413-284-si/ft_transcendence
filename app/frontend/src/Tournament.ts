@@ -73,9 +73,6 @@ export class Tournament {
   }
 
   public updateBracketWithResult(matchId: number, winner: string): void {
-    if (!this.bracket) {
-      throw new Error("Bracket is undefined");
-    }
     const updated = this.bracket.map((m) => ({ ...m })); // clone
 
     const match = updated.find((m) => m.matchId === matchId);
@@ -98,9 +95,6 @@ export class Tournament {
   }
 
   public getNextMatchToPlay(): SerializedMatch | null {
-    if (!this.bracket) {
-      throw new Error("Bracket is undefined");
-    }
     return (
       this.bracket
         .filter(
@@ -118,9 +112,6 @@ export class Tournament {
   }
 
   public getBracket(): string {
-    if (!this.bracket) {
-      throw new Error("Bracket is undefined");
-    }
     return JSON.stringify(this.bracket);
   }
 
@@ -136,9 +127,6 @@ export class Tournament {
   }
 
   public toJSON(): TournamentDTO {
-    if (!this.bracket) {
-      throw new Error("Bracket is undefined");
-    }
     return {
       name: this.tournamentName,
       maxPlayers: this.numberOfPlayers,
