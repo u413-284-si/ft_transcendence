@@ -8,7 +8,7 @@ export interface Match {
   date?: string;
 }
 
-export type SerializedMatch = {
+export type BracketMatch = {
   matchId: number;
   round: number;
   player1: string | null;

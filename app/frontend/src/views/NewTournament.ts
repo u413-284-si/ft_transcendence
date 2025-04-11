@@ -1,6 +1,6 @@
 import { getActiveTournament } from "../services/TournamentService.js";
 import { Tournament } from "../Tournament.js";
-import { SerializedMatch } from "../types/IMatch.js";
+import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import PlayerNicknames from "./PlayerNicknames.js";
@@ -62,7 +62,7 @@ export default class extends AbstractView {
       this.addListeners();
       return;
     }
-    const bracket = JSON.parse(activeTournament.bracket) as SerializedMatch[];
+    const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
     const tournament = new Tournament(
       activeTournament.name,
       activeTournament.maxPlayers,

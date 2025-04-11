@@ -1,14 +1,14 @@
 import AbstractView from "./AbstractView.js";
-import { SerializedMatch } from "../types/IMatch.js";
+import { BracketMatch } from "../types/IMatch.js";
 import { TournamentDTO } from "../types/ITournament.js";
 
 export default class ResultsView extends AbstractView {
-  private matches: SerializedMatch[];
+  private matches: BracketMatch[];
 
   constructor(private tournament: TournamentDTO) {
     super();
     this.setTitle("Results");
-    this.matches = JSON.parse(tournament.bracket) as SerializedMatch[];
+    this.matches = JSON.parse(tournament.bracket) as BracketMatch[];
   }
 
   async createHTML() {
@@ -28,7 +28,7 @@ export default class ResultsView extends AbstractView {
     this.renderBracket(this.matches);
   }
 
-  private renderBracket(matches: SerializedMatch[]) {
+  private renderBracket(matches: BracketMatch[]) {
     const bracketsDiv = document.getElementById("brackets")!;
     bracketsDiv.innerHTML = "";
 

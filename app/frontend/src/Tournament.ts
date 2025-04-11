@@ -1,12 +1,12 @@
 import { TournamentDTO } from "./types/ITournament";
-import { SerializedMatch } from "./types/IMatch";
+import { BracketMatch } from "./types/IMatch";
 
 export class Tournament {
   constructor(
     private tournamentName: string,
     private numberOfPlayers: number,
     private adminId: number,
-    private bracket: SerializedMatch[],
+    private bracket: BracketMatch[],
     private tournamentId?: number
   ) {}
 
@@ -16,16 +16,19 @@ export class Tournament {
     numberOfPlayers: number,
     adminId: number
   ): Tournament {
-    const bracket = Tournament.generateSerializedBracket(playerNicknames);
+    const bracket = Tournament.generateBracket(
+      playerNicknames,
+      numberOfPlayers
+    );
     return new Tournament(tournamentName, numberOfPlayers, adminId, bracket);
   }
 
-  private static generateSerializedBracket(
-    playerNicknames: string[]
-  ): SerializedMatch[] {
-    const numberOfPlayers = playerNicknames.length;
+  private static generateBracket(
+    playerNicknames: string[],
+    numberOfPlayers: number
+  ): BracketMatch[] {
     const totalRounds = Math.log2(numberOfPlayers);
-    const bracket: SerializedMatch[] = [];
+    const bracket: BracketMatch[] = [];
     let currentMatchId = 1;
 
     const roundMatches: number[][] = [];
@@ -94,7 +97,7 @@ export class Tournament {
     this.bracket = updated;
   }
 
-  public getNextMatchToPlay(): SerializedMatch | null {
+  public getNextMatchToPlay(): BracketMatch | null {
     return (
       this.bracket
         .filter(
