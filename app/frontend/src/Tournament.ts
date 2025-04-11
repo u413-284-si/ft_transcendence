@@ -114,8 +114,8 @@ export class Tournament {
     );
   }
 
-  public getBracket(): string {
-    return JSON.stringify(this.bracket);
+  public getBracket(): BracketMatch[] {
+    return this.bracket;
   }
 
   public setId(Id: number): void {
