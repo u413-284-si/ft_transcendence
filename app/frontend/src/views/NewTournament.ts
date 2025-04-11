@@ -1,4 +1,4 @@
-import { getActiveTournament } from "../services/TournamentService.js";
+import { getActiveTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";

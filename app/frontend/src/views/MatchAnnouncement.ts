@@ -1,4 +1,4 @@
-import { deleteTournament } from "../services/TournamentService.js";
+import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";

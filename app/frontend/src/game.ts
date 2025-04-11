@@ -10,7 +10,7 @@ import ResultsView from "./views/ResultsView.js";
 import {
   setTournamentFinished,
   updateTournamentBracket
-} from "./services/TournamentService.js";
+} from "./services/tournamentService.js";
 
 export async function startGame(
   player1: string,

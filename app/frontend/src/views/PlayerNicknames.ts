@@ -1,7 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
-import { createTournament } from "../services/TournamentService.js";
+import { createTournament } from "../services/tournamentService.js";
 
 export default class extends AbstractView {
   constructor(
