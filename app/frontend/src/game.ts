@@ -11,6 +11,7 @@ import {
   setTournamentFinished,
   updateTournamentBracket
 } from "./services/tournamentService.js";
+import { createMatch } from "./services/matchServices.js";
 
 export async function startGame(
   player1: string,
@@ -164,7 +165,7 @@ async function endGame(gameState: GameState, tournament: Tournament | null) {
       tournament.updateBracketWithResult(matchId, winner);
       await updateTournamentBracket(tournament);
     }
-    await saveMatch({
+    await createMatch({
       playerId: playerId,
       tournamentId: tournamentId,
       playerNickname: gameState.player1,
@@ -178,27 +179,6 @@ async function endGame(gameState: GameState, tournament: Tournament | null) {
   }
 
   await waitForEnterKey();
-}
-
-async function saveMatch(match: Match) {
-  try {
-    const response = await fetch("http://localhost:4000/api/matches/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(match)
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to save match");
-    }
-
-    const data = await response.json();
-    console.log("Match saved:", data);
-  } catch (error) {
-    console.error("Error saving match:", error);
-  }
 }
 
 function waitForEnterKey(): Promise<void> {
