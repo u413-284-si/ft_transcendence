@@ -19,6 +19,7 @@ export const commonDefinitionsSchema = {
       minimum: 1,
       description: "The unique identifier for the entity"
     },
+    // FIXME
     password: {
       type: "string",
       //   minLength: 14,
