@@ -9,9 +9,7 @@ export async function loginUser(event: Event): Promise<void> {
   const usernameOrEmail: string = loginForm.usernameOrEmail.value;
   const password: string = loginForm.password.value;
 
-  const url: string = "/api/auth/";
-
-  const response = await fetch(url, {
+  const response = await fetch("http://localhost:4000/api/auth/", {
     method: "POST",
     credentials: "same-origin",
     headers: {
