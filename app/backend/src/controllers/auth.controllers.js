@@ -49,6 +49,14 @@ export async function loginUserHandler(request, reply) {
       { err, body: request.body },
       `loginUserHandler: ${createResponseMessage(action, false)}`
     );
+    if (err.code === "P2025") {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
     handlePrismaError(reply, action, err);
   }
 }
