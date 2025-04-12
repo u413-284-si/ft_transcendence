@@ -19,3 +19,10 @@ export async function createHashedPassword(password) {
 export async function verifyPassword(databasePassword, loginPassword) {
   return pkg.verify(databasePassword, loginPassword);
 }
+
+export function createAccessToken(user) {
+  const accessToken = jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
+    expiresIn: "15m"
+  });
+  return accessToken;
+}

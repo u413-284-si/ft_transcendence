@@ -2,10 +2,9 @@ import { authorizeUser } from "../services/auth.services.js";
 import { getUserPassword } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
-import jwt from "jsonwebtoken";
-import { JWT_ACCESS_TOKEN_SECRET } from "../config/jwt.js";
 import { httpError } from "../utils/error.js";
 import { verifyPassword } from "../services/auth.services.js";
+import { createAccessToken } from "../services/auth.services.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -26,9 +25,7 @@ export async function loginUserHandler(request, reply) {
     delete data.authentication;
     console.log("user:", data);
 
-    const JWTAccessToken = jwt.sign(data, JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: "15m"
-    });
+    const JWTAccessToken = createAccessToken(data);
     const inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
 
     return reply
