@@ -14,7 +14,14 @@ export async function loginUserHandler(request, reply) {
 
     const data = await getUserPassword(usernameOrEmail);
 
-    await verifyPassword(data.authentication.password, password);
+    if (!(await verifyPassword(data.authentication.password, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
 
     delete data.authentication;
     console.log("user:", data);
