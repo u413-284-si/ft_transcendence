@@ -13,11 +13,13 @@ import env from "./config/env.js";
 import userRoutes from "./routes/users.routes.js";
 import staticRoutes from "./routes/static.routes.js";
 import matchRoutes from "./routes/matches.routes.js";
+import tournamentRoutes from "./routes/tournaments.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/users.schema.js";
 import { matchSchemas } from "./schema/matches.schema.js";
+import { tournamentSchemas } from "./schema/tournaments.schema.js";
 import { authSchemas } from "./schema/auth.schema.js";
 
 const fastify = Fastify({
@@ -43,7 +45,10 @@ const fastify = Fastify({
   }
 });
 
-await fastify.register(fastifyCors);
+await fastify.register(fastifyCors, {
+  origin: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+});
 await fastify.register(fastifyHelmet, {
   contentSecurityPolicy: {
     directives: {
@@ -57,7 +62,7 @@ await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
 await fastify.register(fastifyCookie);
 await fastify.register(fastifyRateLimit, {
-  max: 100,
+  max: 1000,
   timeWindow: "15 minutes"
 });
 
@@ -65,6 +70,7 @@ for (const schema of [
   ...commonSchemas,
   ...userSchemas,
   ...matchSchemas,
+  ...tournamentSchemas,
   ...authSchemas
 ]) {
   fastify.addSchema(schema);
@@ -73,6 +79,7 @@ for (const schema of [
 await fastify.register(staticRoutes);
 await fastify.register(userRoutes, { prefix: "/api/users" });
 await fastify.register(matchRoutes, { prefix: "/api/matches" });
+await fastify.register(tournamentRoutes, { prefix: "/api/tournaments" });
 await fastify.register(authRoutes, { prefix: "/api/auth" });
 await fastify.register(fastifyStatic, {
   root: "/workspaces/ft_transcendence/app/frontend/public"

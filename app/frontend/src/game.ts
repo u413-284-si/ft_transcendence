@@ -1,16 +1,24 @@
 import { updatePaddlePositions } from "./input.js";
 import { draw } from "./draw.js";
-import { IGameState } from "./types/IGameState.js";
-import { Match } from "./types/IMatch.js";
+import { GameState } from "./types/IGameState.js";
 import NewGame from "./views/NewGame.js";
-import { GameType, GameKey } from "./views/Game.js";
+import { GameType, GameKey } from "./views/GameView.js";
+import { Tournament } from "./Tournament.js";
+import MatchAnnouncement from "./views/MatchAnnouncement.js";
+import ResultsView from "./views/ResultsView.js";
+import {
+  setTournamentFinished,
+  updateTournamentBracket
+} from "./services/tournamentService.js";
+import { createMatch } from "./services/matchServices.js";
 
 export async function startGame(
   player1: string,
   player2: string,
   type: GameType,
   keys: Record<GameKey, boolean>,
-  controller: AbortController
+  controller: AbortController,
+  tournament: Tournament | null = null
 ) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
@@ -19,11 +27,26 @@ export async function startGame(
   await new Promise<void>((resolve) => {
     gameLoop(canvas, ctx, gameState, resolve);
   });
-  await endGame(gameState);
+  await endGame(gameState, tournament);
   controller.abort();
   if (type == GameType.single) {
     const newGameView = new NewGame();
     await newGameView.render();
+  } else if (type == GameType.tournament) {
+    if (tournament) {
+      if (tournament.getNextMatchToPlay()) {
+        const matchAnnouncementView = new MatchAnnouncement(tournament);
+        return await matchAnnouncementView.render();
+      }
+      try {
+        await setTournamentFinished(tournament.getId());
+        const resultsView = new ResultsView(tournament);
+        resultsView.render();
+      } catch (error) {
+        console.error(error);
+        // show error page
+      }
+    }
   }
 }
 
@@ -32,13 +55,13 @@ function initGameState(
   player1: string,
   player2: string,
   keys: Record<GameKey, boolean>
-): IGameState {
+): GameState {
   return {
     player1: player1,
     player2: player2,
     player1Score: 0,
     player2Score: 0,
-    winningScore: 3,
+    winningScore: 1, // FIXME: needs to be a higher value
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
     ballSpeedX: 7,
@@ -56,7 +79,7 @@ function initGameState(
 function gameLoop(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
-  gameState: IGameState,
+  gameState: GameState,
   resolve: () => void
 ) {
   if (gameState.gameOver) {
@@ -68,7 +91,7 @@ function gameLoop(
   requestAnimationFrame(() => gameLoop(canvas, ctx, gameState, resolve));
 }
 
-function update(canvas: HTMLCanvasElement, gameState: IGameState) {
+function update(canvas: HTMLCanvasElement, gameState: GameState) {
   if (gameState.gameOver) return;
 
   updatePaddlePositions(canvas, gameState);
@@ -107,13 +130,13 @@ function update(canvas: HTMLCanvasElement, gameState: IGameState) {
   }
 }
 
-function resetBall(canvas: HTMLCanvasElement, gameState: IGameState) {
+function resetBall(canvas: HTMLCanvasElement, gameState: GameState) {
   gameState.ballX = canvas.width / 2;
   gameState.ballY = canvas.height / 2;
   gameState.ballSpeedX *= -1; // Change direction after scoring
 }
 
-function checkWinner(gameState: IGameState) {
+function checkWinner(gameState: GameState) {
   if (
     gameState.player1Score >= gameState.winningScore ||
     gameState.player2Score >= gameState.winningScore
@@ -122,37 +145,37 @@ function checkWinner(gameState: IGameState) {
   }
 }
 
-async function endGame(gameState: IGameState) {
-  await saveMatch({
-    playerId: 1,
-    playerNickname: gameState.player1,
-    opponentNickname: gameState.player2,
-    playerScore: gameState.player1Score,
-    opponentScore: gameState.player2Score
-  });
+async function endGame(gameState: GameState, tournament: Tournament | null) {
+  const playerId = 1; // FIXME: Hardcoded user Id
+  let tournamentId;
+  try {
+    if (tournament) {
+      const winner =
+        gameState.player1Score > gameState.player2Score
+          ? gameState.player1
+          : gameState.player2;
+      const matchId = tournament.getNextMatchToPlay()?.matchId;
+      if (!matchId) {
+        throw new Error("Match is undefined");
+      }
+      tournamentId = tournament.getId();
+      tournament.updateBracketWithResult(matchId, winner);
+      await updateTournamentBracket(tournament);
+    }
+    await createMatch({
+      playerId: playerId,
+      tournamentId: tournamentId,
+      playerNickname: gameState.player1,
+      opponentNickname: gameState.player2,
+      playerScore: gameState.player1Score,
+      opponentScore: gameState.player2Score
+    });
+  } catch (error) {
+    console.error(error);
+    // show error page
+  }
 
   await waitForEnterKey();
-}
-
-async function saveMatch(match: Match) {
-  try {
-    const response = await fetch("http://localhost:4000/api/matches/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(match)
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to save match");
-    }
-
-    const data = await response.json();
-    console.log("Match saved:", data);
-  } catch (error) {
-    console.error("Error saving match:", error);
-  }
 }
 
 function waitForEnterKey(): Promise<void> {

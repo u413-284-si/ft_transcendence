@@ -3,13 +3,17 @@ import {
   getUser,
   getAllUsers,
   updateUser,
-  deleteUser,
-  getUserMatches
+  deleteUser
 } from "../services/users.services.js";
 import {
   getAllUserStats,
   getUserStats
 } from "../services/user_stats.services.js";
+import { getUserMatches } from "../services/matches.services.js";
+import {
+  getUserTournaments,
+  getUserActiveTournament
+} from "../services/tournaments.services.js";
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHashedPassword } from "../services/auth.services.js";
@@ -131,7 +135,7 @@ export async function patchUserHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `updateUserHandler: ${createResponseMessage(action, false)}`
+      `patchUserHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
@@ -168,5 +172,40 @@ export async function getUserStatsHandler(request, reply) {
       `getUserStatsHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getUserTournamentsHandler(request, reply) {
+  const action = "Get user tournaments";
+  try {
+    const id = parseInt(request.params.id, 10);
+    const data = await getUserTournaments(id);
+    const count = data.length;
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), count, data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserTournamentsHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getUserActiveTournamentHandler(request, reply) {
+  const action = "Get user active tournament";
+  try {
+    const id = parseInt(request.params.id, 10);
+    const data = await getUserActiveTournament(id);
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserActiveTournamentHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
   }
 }

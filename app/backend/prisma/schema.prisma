@@ -102,6 +102,7 @@ model Tournament {
     isPrivate  Boolean          @default(false)
     status     TournamentStatus @default(CREATED)
     adminId    Int
+    bracket    Json
 
     admin   User    @relation(fields: [adminId], references: [id], onDelete: Cascade)
     matches Match[]
