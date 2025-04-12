@@ -12,11 +12,11 @@ import env from "./config/env.js";
 import userRoutes from "./routes/users.routes.js";
 import staticRoutes from "./routes/static.routes.js";
 import matchRoutes from "./routes/matches.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/users.schema.js";
 import { matchSchemas } from "./schema/matches.schema.js";
-import { authRoutes } from "./routes/auth.routes.js";
 import { authSchemas } from "./schema/auth.schema.js";
 
 const fastify = Fastify({
