@@ -12,6 +12,8 @@ export default class extends AbstractView {
   }
 
   async createHTML() {
+    const navbarHTML = await this.createNavbar();
+    const footerHTML = await this.createFooter();
     return `
             <h1 style="
                 margin-bottom: 40px;
