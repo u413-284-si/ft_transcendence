@@ -10,7 +10,7 @@ import {
   getAllUserStats,
   getUserStats
 } from "../services/user_stats.services.js";
-import { handlePrismaError, httpError } from "../utils/error.js";
+import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHashedPassword } from "../services/auth.services.js";
 
