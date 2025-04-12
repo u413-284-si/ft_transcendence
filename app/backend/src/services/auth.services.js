@@ -15,3 +15,13 @@ export async function createHashedPassword(password) {
   });
   return hashedPassword;
 }
+
+export async function verifyPassword(loginPassword, databasePassword) {
+  if (!(await pkg.verify(loginPassword, databasePassword)))
+    return httpError(
+      reply,
+      401,
+      createResponseMessage(action, false),
+      "Wrong credentials"
+    );
+}

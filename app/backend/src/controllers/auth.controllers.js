@@ -1,4 +1,3 @@
-import pkg from "argon2";
 import { authorizeUser } from "../services/auth.services.js";
 import { getUserPassword } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -6,6 +5,7 @@ import { handlePrismaError } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 import { JWT_ACCESS_TOKEN_SECRET } from "../config/jwt.js";
 import { httpError } from "../utils/error.js";
+import { verifyPassword } from "../services/auth.services.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -14,13 +14,7 @@ export async function loginUserHandler(request, reply) {
 
     const data = await getUserPassword(usernameOrEmail);
 
-    if (!(await pkg.verify(data.authentication.password, password)))
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(action, false),
-        "Wrong credentials"
-      );
+    await verifyPassword(data.authentication.password, password);
 
     delete data.authentication;
     console.log("user:", data);
