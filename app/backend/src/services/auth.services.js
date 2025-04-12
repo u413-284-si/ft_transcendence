@@ -21,8 +21,7 @@ export async function verifyPassword(databasePassword, loginPassword) {
 }
 
 export function createAccessToken(user) {
-  const accessToken = jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
+  return jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
     expiresIn: "15m"
   });
-  return accessToken;
 }
