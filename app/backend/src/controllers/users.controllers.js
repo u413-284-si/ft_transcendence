@@ -12,12 +12,16 @@ import {
 } from "../services/user_stats.services.js";
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
+import { createHashedPassword } from "../services/auth.services.js";
 
 export async function registerUserHandler(request, reply) {
   const action = "Create User";
   try {
-    const { username, email } = request.body;
-    const data = await createUser(username, email);
+    const { username, email, password } = request.body;
+
+    const hashedPassword = await createHashedPassword(password);
+
+    const data = await createUser(username, email, hashedPassword);
     return reply
       .code(201)
       .send({ message: createResponseMessage(action, true), data });

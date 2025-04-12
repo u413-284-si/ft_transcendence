@@ -1,12 +1,16 @@
 import prisma from "../prisma/prismaClient.js";
 
-export async function createUser(username, email) {
+export async function createUser(username, email, hashedPassword) {
   const user = await prisma.user.create({
     data: {
-      username,
-      email,
+      username: username,
+      email: email,
       dateJoined: new Date(),
-      authentication: { create: {} },
+      authentication: {
+        create: {
+          password: hashedPassword
+        }
+      },
       stats: { create: {} },
       accountStatus: { create: {} }
     },
@@ -71,4 +75,21 @@ export async function getUserMatches(id) {
     }
   });
   return matches;
+}
+
+export async function getUserPassword(usernameOrEmail) {
+  const user = await prisma.user.findFirstOrThrow({
+    where: {
+      OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+    },
+    include: {
+      authentication: {
+        select: {
+          password: true
+        }
+      }
+    }
+  });
+
+  return user;
 }

@@ -7,9 +7,13 @@ export default class extends AbstractView {
   }
 
   async createHTML() {
+    const navbarHTML = await this.createNavbar();
+    const footerHTML = await this.createFooter();
     return `
+			${navbarHTML}
 			<h1>Home</h1>
 			<p>This is the home page</p>
+			${footerHTML}
 			`;
   }
 

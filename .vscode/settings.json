@@ -1,0 +1,4 @@
+{
+  "remote.autoForwardPortsFallback": 0,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
