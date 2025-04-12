@@ -20,8 +20,8 @@ export async function verifyPassword(databasePassword, loginPassword) {
   return pkg.verify(databasePassword, loginPassword);
 }
 
-export function createAccessToken(user) {
+export function createAccessToken(user, timeToExpire) {
   return jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m"
+    expiresIn: timeToExpire
   });
 }

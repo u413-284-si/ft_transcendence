@@ -25,8 +25,9 @@ export async function loginUserHandler(request, reply) {
     delete data.authentication;
     console.log("user:", data);
 
-    const JWTAccessToken = createAccessToken(data);
-    const inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
+    const timeSpan = 15 * 60;
+    const inFifteenMinutes = new Date(new Date().getTime() + timeSpan * 1000);
+    const JWTAccessToken = createAccessToken(data, timeSpan);
 
     return reply
       .setCookie("authToken", JWTAccessToken, {
