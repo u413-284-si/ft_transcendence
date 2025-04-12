@@ -82,7 +82,7 @@ export async function getUserMatches(id) {
   return matches;
 }
 
-export async function loginUser(usernameOrEmail, password) {
+export async function getUserPassword(usernameOrEmail) {
   const user = await prisma.user.findFirstOrThrow({
     where: {
       OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
