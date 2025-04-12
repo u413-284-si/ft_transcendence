@@ -17,12 +17,7 @@ export async function createUser(username, email, hashedPassword) {
     select: {
       id: true,
       username: true,
-      email: true,
-      authentication: {
-        select: {
-          password: true
-        }
-      }
+      email: true
     }
   });
   return user;
