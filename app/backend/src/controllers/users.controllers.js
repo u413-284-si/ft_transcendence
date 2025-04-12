@@ -10,20 +10,16 @@ import {
   getAllUserStats,
   getUserStats
 } from "../services/user_stats.services.js";
-import pkg from "argon2";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
+import { createHashedPassword } from "../services/auth.services.js";
 
 export async function registerUserHandler(request, reply) {
   const action = "Create User";
   try {
     const { username, email, password } = request.body;
 
-    const hashedPassword = await pkg.hash(password, {
-      type: pkg.argon2id,
-      memoryCost: 47104,
-      parallelism: 1
-    });
+    const hashedPassword = await createHashedPassword(password);
 
     const data = await createUser(username, email, hashedPassword);
     return reply
