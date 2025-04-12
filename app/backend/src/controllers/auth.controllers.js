@@ -1,17 +1,18 @@
 import pkg from "argon2";
 import { authorizeUser } from "../services/auth.services.js";
-import { loginUser } from "../services/users.services.js";
+import { getUserPassword } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 import { JWT_ACCESS_TOKEN_SECRET } from "../config/jwt.js";
+import { httpError } from "../utils/error.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
   try {
     const { usernameOrEmail, password } = request.body;
 
-    const data = await loginUser(usernameOrEmail, password);
+    const data = await getUserPassword(usernameOrEmail);
 
     if (!(await pkg.verify(data.authentication.password, password)))
       return httpError(
