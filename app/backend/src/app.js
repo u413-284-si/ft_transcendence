@@ -16,6 +16,8 @@ import matchRoutes from "./routes/matches.routes.js";
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/users.schema.js";
 import { matchSchemas } from "./schema/matches.schema.js";
+import { authRoutes } from "./routes/auth.routes.js";
+import { authSchemas } from "./schema/auth.schema.js";
 
 const fastify = Fastify({
   logger: {
@@ -54,13 +56,19 @@ await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
 await fastify.register(fastifyCookie);
 
-for (const schema of [...commonSchemas, ...userSchemas, ...matchSchemas]) {
+for (const schema of [
+  ...commonSchemas,
+  ...userSchemas,
+  ...matchSchemas,
+  ...authSchemas
+]) {
   fastify.addSchema(schema);
 }
 
 await fastify.register(staticRoutes);
 await fastify.register(userRoutes, { prefix: "/api/users" });
 await fastify.register(matchRoutes, { prefix: "/api/matches" });
+await fastify.register(authRoutes, { prefix: "/api/auth" });
 await fastify.register(fastifyStatic, {
   root: "/workspaces/ft_transcendence/app/frontend/public"
 });

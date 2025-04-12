@@ -7,9 +7,7 @@ import {
   getUserMatchesHandler,
   patchUserHandler,
   getAllUserStatsHandler,
-  getUserStatsHandler,
-  loginUserHandler,
-  authorizeUserHandler
+  getUserStatsHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
@@ -31,10 +29,6 @@ export default async function userRoutes(fastify) {
   fastify.get("/user-stats/", getAllUserStatsHandler);
 
   fastify.get("/:id/user-stats/", optionsGetUser, getUserStatsHandler);
-
-  fastify.post("/user-login/", optionsloginUser, loginUserHandler);
-
-  fastify.get("/user-authorization/", authorizeUserHandler);
 }
 
 const optionsCreateUser = {
@@ -70,16 +64,6 @@ const optionsPatchUser = {
     params: { $ref: "idSchema" },
     body: { $ref: "patchUserSchema" },
     response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsloginUser = {
-  schema: {
-    body: { $ref: "loginUserSchema" },
-    response: {
-      200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
   }

@@ -81,3 +81,20 @@ export async function getUserMatches(id) {
   });
   return matches;
 }
+
+export async function loginUser(usernameOrEmail, password) {
+  const user = await prisma.user.findFirstOrThrow({
+    where: {
+      OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+    },
+    include: {
+      authentication: {
+        select: {
+          password: true
+        }
+      }
+    }
+  });
+
+  return user;
+}

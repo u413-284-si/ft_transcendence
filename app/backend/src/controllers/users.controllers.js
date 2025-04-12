@@ -10,11 +10,7 @@ import {
   getAllUserStats,
   getUserStats
 } from "../services/user_stats.services.js";
-import { loginUser } from "../services/user_logins.services.js";
-import { authorizeUser } from "../services/user_authorization.services.js";
 import pkg from "argon2";
-import { JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_SECRET } from "../config/jwt.js";
-import jwt from "jsonwebtoken";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
@@ -176,48 +172,5 @@ export async function getUserStatsHandler(request, reply) {
       `getUserStatsHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
-  }
-}
-
-export async function loginUserHandler(request, reply) {
-  const action = "Login user";
-  try {
-    const { usernameOrEmail, password } = request.body;
-
-    const data = await loginUser(usernameOrEmail, password);
-	const JWTAccessToken = jwt.sign(data, JWT_ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
-	const inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
-
-	return reply.setCookie("authToken", JWTAccessToken, {
-		httpOnly: true,
-		secure: true,
-		sameSite: "strict",
-		path: "/",
-		expires: inFifteenMinutes
-	}).code(200).send({ message: createResponseMessage(action, true), username: data.username });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `loginUserHandler: ${createResponseMessage(action, false)}`
-    );
-    return httpError(reply, 401, createResponseMessage(action, false), "Unauthorized");
-	}
-}
-
-export async function authorizeUserHandler(request, reply) {
-  const action = "authorize user";
-  const token = request.cookies.authToken;
-  if (!token){
-	return httpError(reply, 401, createResponseMessage(action, false), "Unauthorized");
-  }
-  try {
-  	const data = await authorizeUser(token);
-  	request.user = data;
-  } catch (err) {
-	request.log.error(
-		{ err, body: request.body },
-		`loginUserHandler: ${createResponseMessage(action, false)}`
-	  );
-	  return httpError(reply, 401, createResponseMessage(action, false), "Unauthorized");
   }
 }
