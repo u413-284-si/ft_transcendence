@@ -68,12 +68,9 @@ await fastify.register(fastifyRateLimit, {
 
 for (const schema of [
   ...commonSchemas,
-
   ...userSchemas,
-
   ...matchSchemas,
   ...tournamentSchemas,
-  ,
   ...authSchemas
 ]) {
   fastify.addSchema(schema);
