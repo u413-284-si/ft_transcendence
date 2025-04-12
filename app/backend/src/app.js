@@ -6,6 +6,7 @@ import fastifyCompress from "@fastify/compress";
 import fastifyGracefulShutdown from "fastify-graceful-shutdown";
 import fastifyStatic from "@fastify/static";
 import fastifyCookie from "@fastify/cookie";
+import fastifyRateLimit from "@fastify/rate-limit";
 
 import env from "./config/env.js";
 
@@ -55,6 +56,10 @@ await fastify.register(fastifyCompress);
 await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
 await fastify.register(fastifyCookie);
+await fastify.register(fastifyRateLimit, {
+  max: 100,
+  timeWindow: "15 minutes"
+});
 
 for (const schema of [
   ...commonSchemas,
