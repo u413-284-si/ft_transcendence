@@ -4,7 +4,7 @@ import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
 import Settings from "./views/Settings.js";
 import Stats from "./views/Stats.js";
-import { authorizeUser } from "./authorization.js";
+import authorizeUser from "./authorization.js";
 
 export const navigateTo = (url: string) => {
   history.pushState(null, "", url);
@@ -12,7 +12,6 @@ export const navigateTo = (url: string) => {
 };
 
 const router = async () => {
-
   const routes = [
     { path: "/login", view: Login },
     { path: "/home", view: Home },
@@ -35,17 +34,18 @@ const router = async () => {
       route: routes[0],
       isMatch: true
     };
-	window.location.href = routes[0].path;
+    window.location.href = routes[0].path;
   }
 
   if (match.route.path !== "/login") {
-	try {
-		await authorizeUser();
-		console.log("Authorized user");
-	} catch (err) {
-		navigateTo("/login");
-		return;
-	}
+    try {
+      await authorizeUser();
+      console.log("Authorized user");
+    } catch (err) {
+      console.error("Authorization failed:", err);
+      navigateTo("/login");
+      return;
+    }
   }
 
   const view = new match.route.view();
