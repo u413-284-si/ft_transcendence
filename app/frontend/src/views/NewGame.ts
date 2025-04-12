@@ -1,5 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
+import { hasDuplicates } from "../validate.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -39,16 +40,20 @@ export default class extends AbstractView {
     const nickname1: string = (
       document.getElementById("nickname1") as HTMLInputElement
     ).value.trim();
+
     const nickname2: string = (
       document.getElementById("nickname2") as HTMLInputElement
     ).value.trim();
 
-    if (!nickname1 || !nickname2) {
+    if (nickname1 === "" || nickname2 === "") {
       event.preventDefault();
       return alert("Please enter a nickname for both players.");
-    } else if (nickname1 === nickname2) {
+    }
+
+    const nicknames = [nickname1, nickname2];
+    if (hasDuplicates(nicknames)) {
       event.preventDefault();
-      return alert("Nicknames must be different.");
+      return alert("Nicknames must be unique");
     }
 
     const gameView = new GameView(nickname1, nickname2, GameType.single, null);

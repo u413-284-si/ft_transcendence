@@ -2,6 +2,7 @@ import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { createTournament } from "../services/tournamentService.js";
+import { hasDuplicates } from "../validate.js";
 
 export default class extends AbstractView {
   constructor(
@@ -21,7 +22,6 @@ export default class extends AbstractView {
           <input
             type="text"
             name="player${i}"
-            required
             style="width: 50%; padding: 10px; font-size: 1em; border: 2px solid #007BFF; border-radius: 5px; margin-top: 5px;"
           >
         </label>
@@ -73,12 +73,19 @@ export default class extends AbstractView {
     const form = document.getElementById("nicknames-form") as HTMLFormElement;
     const nicknames: string[] = [];
     for (let i = 1; i <= this.numberOfPlayers; i++) {
-      const nicknameInput = form.querySelector(
-        `input[name="player${i}"]`
-      ) as HTMLInputElement;
-      if (nicknameInput) {
-        nicknames.push(nicknameInput.value.trim());
+      const nicknameInput: string = (
+        form.querySelector(`input[name="player${i}"]`) as HTMLInputElement
+      ).value.trim();
+      if (nicknameInput !== "") {
+        nicknames.push(nicknameInput);
+      } else {
+        alert("Please enter a nickname for all players");
+        return [];
       }
+    }
+    if (hasDuplicates(nicknames)) {
+      alert("Nicknames must be unique");
+      return [];
     }
     return nicknames;
   }
@@ -86,6 +93,9 @@ export default class extends AbstractView {
   private async initTournament(event: Event) {
     event.preventDefault();
     const nicknames = this.extractNicknames();
+    if (nicknames.length === 0) {
+      return;
+    }
     const tournament = Tournament.fromUsernames(
       nicknames,
       this.tournamentName,
