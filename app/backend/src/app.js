@@ -62,7 +62,7 @@ await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
 await fastify.register(fastifyCookie);
 await fastify.register(fastifyRateLimit, {
-  max: 100,
+  max: 1000,
   timeWindow: "15 minutes"
 });
 
