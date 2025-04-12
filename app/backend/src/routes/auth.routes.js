@@ -5,18 +5,9 @@ import {
 import { errorResponses } from "../utils/error.js";
 
 export default async function authRoutes(fastify) {
-  fastify.post(
-    "/",
-    optionsloginUser,
-    { config: { rateLimit: { max: 10, timeWindow: "1 minute" } } },
-    loginUserHandler
-  );
+  fastify.post("/", optionsloginUser, loginUserHandler);
 
-  fastify.get(
-    "/",
-    { config: { rateLimit: { max: 10, timeWindow: "1 minute" } } },
-    authorizeUserHandler
-  );
+  fastify.get("/", authorizeUserHandler);
 }
 
 const optionsloginUser = {
