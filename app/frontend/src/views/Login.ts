@@ -26,8 +26,8 @@ export default class extends AbstractView {
   }
 
   async addListeners() {
-	const loginForm = document.querySelector("#login-form") as HTMLFormElement;
-	loginForm.addEventListener("submit", (event) => loginUser(event));
+    const loginForm = document.getElementById("login-form") as HTMLFormElement;
+    loginForm.addEventListener("submit", (event) => loginUser(event));
   }
 
   async render() {
