@@ -1,7 +1,4 @@
-import {
-  JWT_ACCESS_TOKEN_SECRET,
-  JWT_REFRESH_TOKEN_SECRET
-} from "../config/jwt.js";
+import { JWT_ACCESS_TOKEN_SECRET } from "../config/jwt.js";
 import jwt from "jsonwebtoken";
 import pkg from "argon2";
 
