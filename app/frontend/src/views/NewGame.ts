@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { renderGame } from "../game.js";
+import { GameType, GameView } from "./Game.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -27,11 +27,31 @@ export default class extends AbstractView {
   async addListeners() {
     document
       .getElementById("start-button")
-      ?.addEventListener("click", (event) => renderGame(event));
+      ?.addEventListener("click", (event) => this.validateAndStartGame(event));
   }
 
   async render() {
     await this.updateHTML();
     this.addListeners();
+  }
+
+  validateAndStartGame(event: Event) {
+    const nickname1: string = (
+      document.getElementById("nickname1") as HTMLInputElement
+    ).value.trim();
+    const nickname2: string = (
+      document.getElementById("nickname2") as HTMLInputElement
+    ).value.trim();
+
+    if (!nickname1 || !nickname2) {
+      event.preventDefault();
+      return alert("Please enter a nickname for both players.");
+    } else if (nickname1 === nickname2) {
+      event.preventDefault();
+      return alert("Nicknames must be different.");
+    }
+
+    const gameView = new GameView(nickname1, nickname2, GameType.single);
+    gameView.render();
   }
 }
