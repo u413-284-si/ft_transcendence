@@ -83,32 +83,32 @@ export async function authorizeUserAccessHandler(request, reply) {
 }
 
 export async function authorizeUserRefreshHandler(request, reply) {
-  //   const action = "authorize user";
-  //   const token = request.cookies.refreshToken;
-  //   if (!token) {
-  //     return httpError(
-  //       reply,
-  //       401,
-  //       createResponseMessage(action, false),
-  //       "No token provided"
-  //     );
-  //   }
-  //   try {
-  //     const data = authorizeUserRefresh(token);
-  // 	const oneWeekInSeconds = 7 * 24 * 60 * 60;
-  //     const inOneWeek = new Date(new Date().getTime() + oneWeekInSeconds * 1000);
-  //     request.user = data;
-  //     return reply.unsetCookie("accessToken").unsetCookie("refreshToken");
-  //   } catch (err) {
-  //     request.log.error(
-  //       { err, body: request.body },
-  //       `authorizeUserRefreshHandler: ${createResponseMessage(action, false)}`
-  //     );
-  //     return httpError(
-  //       reply,
-  //       401,
-  //       createResponseMessage(action, false),
-  //       "Could not verify JWT"
-  //     );
-  //   }
+  const action = "authorize user";
+  const token = request.cookies.refreshToken;
+  if (!token) {
+    return httpError(
+      reply,
+      401,
+      createResponseMessage(action, false),
+      "No token provided"
+    );
+  }
+  try {
+    const data = authorizeUserRefresh(token);
+    const oneWeekInSeconds = 7 * 24 * 60 * 60;
+    const inOneWeek = new Date(new Date().getTime() + oneWeekInSeconds * 1000);
+    request.user = data;
+    return reply.unsetCookie("accessToken").unsetCookie("refreshToken");
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `authorizeUserRefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    return httpError(
+      reply,
+      401,
+      createResponseMessage(action, false),
+      "Could not verify JWT"
+    );
+  }
 }
