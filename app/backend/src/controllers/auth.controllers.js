@@ -1,16 +1,14 @@
 import {
   authorizeUserAccess,
-  authorizeUserRefresh
+  authorizeUserRefresh,
+  createAccessAndRefreshToken
 } from "../services/auth.services.js";
 import { getUserPassword } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
 import { verifyPassword } from "../services/auth.services.js";
-import {
-  createAccessToken,
-  createRefreshToken
-} from "../services/auth.services.js";
+import { setAuthCookies } from "../utils/cookie.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -31,32 +29,9 @@ export async function loginUserHandler(request, reply) {
     delete data.authentication;
     console.log("user:", data);
 
-    const fifteenMinutesInSeconds = 15 * 60;
-    const inFifteenMinutes = new Date(
-      new Date().getTime() + fifteenMinutesInSeconds * 1000
-    );
+    const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
 
-    const oneWeekInSeconds = 7 * 24 * 60 * 60;
-    const inOneWeek = new Date(new Date().getTime() + oneWeekInSeconds * 1000);
-
-    const JWTAccessToken = createAccessToken(data, fifteenMinutesInSeconds);
-    const JWTRefreshToken = createRefreshToken(data, oneWeekInSeconds);
-
-    return reply
-      .setCookie("accessToken", JWTAccessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        path: "/",
-        expires: inFifteenMinutes
-      })
-      .setCookie("refreshToken", JWTRefreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        path: "/",
-        expires: inOneWeek
-      })
+    return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
@@ -108,29 +83,32 @@ export async function authorizeUserAccessHandler(request, reply) {
 }
 
 export async function authorizeUserRefreshHandler(request, reply) {
-  const action = "authorize user";
-  const token = request.cookies.refreshToken;
-  if (!token) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "No token provided"
-    );
-  }
-  try {
-    const data = authorizeUserRefresh(token);
-    request.user = data;
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `authorizeUserRefreshHandler: ${createResponseMessage(action, false)}`
-    );
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "Could not verify JWT"
-    );
-  }
+  //   const action = "authorize user";
+  //   const token = request.cookies.refreshToken;
+  //   if (!token) {
+  //     return httpError(
+  //       reply,
+  //       401,
+  //       createResponseMessage(action, false),
+  //       "No token provided"
+  //     );
+  //   }
+  //   try {
+  //     const data = authorizeUserRefresh(token);
+  // 	const oneWeekInSeconds = 7 * 24 * 60 * 60;
+  //     const inOneWeek = new Date(new Date().getTime() + oneWeekInSeconds * 1000);
+  //     request.user = data;
+  //     return reply.unsetCookie("accessToken").unsetCookie("refreshToken");
+  //   } catch (err) {
+  //     request.log.error(
+  //       { err, body: request.body },
+  //       `authorizeUserRefreshHandler: ${createResponseMessage(action, false)}`
+  //     );
+  //     return httpError(
+  //       reply,
+  //       401,
+  //       createResponseMessage(action, false),
+  //       "Could not verify JWT"
+  //     );
+  //   }
 }

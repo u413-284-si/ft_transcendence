@@ -36,3 +36,32 @@ export function createRefreshToken(user, timeToExpire) {
     expiresIn: timeToExpire
   });
 }
+
+export function createAccessAndRefreshToken(user) {
+  const accessTokenExpirationInSeconds = 15 * 60;
+  const accessTokenTimeToExpire = new Date(
+    new Date().getTime() + accessTokenExpirationInSeconds * 1000
+  );
+
+  const refreshTokenExpirationInSeconds = 7 * 24 * 60 * 60;
+  const refreshTokenTimeToExpire = new Date(
+    new Date().getTime() + refreshTokenExpirationInSeconds * 1000
+  );
+
+  const accessToken = createAccessToken(user, accessTokenExpirationInSeconds);
+  const refreshToken = createRefreshToken(
+    user,
+    refreshTokenExpirationInSeconds
+  );
+
+  return {
+    accessToken: {
+      token: accessToken,
+      timeToExpire: accessTokenTimeToExpire
+    },
+    refreshToken: {
+      token: refreshToken,
+      timeToExpire: refreshTokenTimeToExpire
+    }
+  };
+}
