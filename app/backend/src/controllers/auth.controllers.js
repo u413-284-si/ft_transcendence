@@ -7,7 +7,10 @@ import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
 import { verifyPassword } from "../services/auth.services.js";
-import { createAccessToken } from "../services/auth.services.js";
+import {
+  createAccessToken,
+  createRefreshToken
+} from "../services/auth.services.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -28,9 +31,16 @@ export async function loginUserHandler(request, reply) {
     delete data.authentication;
     console.log("user:", data);
 
-    const timeSpan = 15 * 60;
-    const inFifteenMinutes = new Date(new Date().getTime() + timeSpan * 1000);
-    const JWTAccessToken = createAccessToken(data, timeSpan);
+    const fifteenMinutesInSeconds = 15 * 60;
+    const inFifteenMinutes = new Date(
+      new Date().getTime() + fifteenMinutesInSeconds * 1000
+    );
+
+    const oneWeekInSeconds = 7 * 24 * 60 * 60;
+    const inOneWeek = new Date(new Date().getTime() + oneWeekInSeconds * 1000);
+
+    const JWTAccessToken = createAccessToken(data, fifteenMinutesInSeconds);
+    const JWTRefreshToken = createRefreshToken(data, oneWeekInSeconds);
 
     return reply
       .setCookie("accessToken", JWTAccessToken, {
@@ -39,6 +49,13 @@ export async function loginUserHandler(request, reply) {
         sameSite: "strict",
         path: "/",
         expires: inFifteenMinutes
+      })
+      .setCookie("refreshToken", JWTRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        path: "/",
+        expires: inOneWeek
       })
       .code(200)
       .send({
