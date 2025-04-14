@@ -1,4 +1,4 @@
-import { authorizeUser } from "../services/auth.services.js";
+import { authorizeUserAccess } from "../services/auth.services.js";
 import { getUserPassword } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
@@ -59,7 +59,7 @@ export async function loginUserHandler(request, reply) {
   }
 }
 
-export async function authorizeUserHandler(request, reply) {
+export async function authorizeUserAccessHandler(request, reply) {
   const action = "authorize user";
   const token = request.cookies.authToken;
   if (!token) {
@@ -71,7 +71,7 @@ export async function authorizeUserHandler(request, reply) {
     );
   }
   try {
-    const data = authorizeUser(token);
+    const data = authorizeUserAccess(token);
     request.user = data;
   } catch (err) {
     request.log.error(

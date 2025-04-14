@@ -1,5 +1,5 @@
 import {
-  authorizeUserHandler,
+  authorizeUserAccessHandler,
   loginUserHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
@@ -7,7 +7,7 @@ import { errorResponses } from "../utils/error.js";
 export default async function authRoutes(fastify) {
   fastify.post("/", optionsloginUser, loginUserHandler);
 
-  fastify.get("/", authorizeUserHandler);
+  fastify.get("/", authorizeUserAccessHandler);
 }
 
 const optionsloginUser = {
