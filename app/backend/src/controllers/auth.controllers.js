@@ -30,7 +30,7 @@ export async function loginUserHandler(request, reply) {
     const JWTAccessToken = createAccessToken(data, timeSpan);
 
     return reply
-      .setCookie("authToken", JWTAccessToken, {
+      .setCookie("accessToken", JWTAccessToken, {
         httpOnly: true,
         secure: true,
         sameSite: "strict",
@@ -61,7 +61,7 @@ export async function loginUserHandler(request, reply) {
 
 export async function authorizeUserAccessHandler(request, reply) {
   const action = "authorize user";
-  const token = request.cookies.authToken;
+  const token = request.cookies.accessToken;
   if (!token) {
     return httpError(
       reply,
