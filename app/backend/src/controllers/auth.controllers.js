@@ -95,8 +95,8 @@ export async function authorizeUserRefreshHandler(request, reply) {
   }
   try {
     const data = authorizeUserRefresh(token);
-    const oneWeekInSeconds = 7 * 24 * 60 * 60;
-    const inOneWeek = new Date(new Date().getTime() + oneWeekInSeconds * 1000);
+    // const oneWeekInSeconds = 7 * 24 * 60 * 60;
+    // const inOneWeek = new Date(new Date().getTime() + oneWeekInSeconds * 1000);
     request.user = data;
     return reply.unsetCookie("accessToken").unsetCookie("refreshToken");
   } catch (err) {
