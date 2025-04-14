@@ -79,7 +79,7 @@ export async function authorizeUserAccessHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authorizeUserHandler: ${createResponseMessage(action, false)}`
+      `authorizeUserAccessHandler: ${createResponseMessage(action, false)}`
     );
     return httpError(
       reply,
