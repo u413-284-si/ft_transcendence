@@ -93,3 +93,49 @@ export async function getUserPassword(usernameOrEmail) {
 
   return user;
 }
+
+export async function getRefreshToken(id) {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id
+    },
+    select: {
+      authentication: {
+        select: {
+          refreshToken: true
+        }
+      }
+    }
+  });
+  return user.authentication.refreshToken;
+}
+
+export async function addUserRefreshToken(id, hashedRefreshToken) {
+  await prisma.user.update({
+    where: {
+      id
+    },
+    data: {
+      authentication: {
+        update: {
+          refreshToken: hashedRefreshToken
+        }
+      }
+    }
+  });
+}
+
+export async function deleteUserRefreshToken(id) {
+  await prisma.user.update({
+    where: {
+      id
+    },
+    data: {
+      authentication: {
+        update: {
+          refreshToken: null
+        }
+      }
+    }
+  });
+}

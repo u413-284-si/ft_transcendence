@@ -21,8 +21,23 @@ export async function createHashedPassword(password) {
   });
 }
 
+export async function createHashedRefreshToken(refreshToken) {
+  return await pkg.hash(refreshToken, {
+    type: pkg.argon2id,
+    memoryCost: 47104,
+    parallelism: 1
+  });
+}
+
 export async function verifyPassword(databasePassword, loginPassword) {
   return await pkg.verify(databasePassword, loginPassword);
+}
+
+export async function verifyRefreshToken(
+  databaseRefreshToken,
+  requestRefreshToken
+) {
+  return await pkg.verify(databaseRefreshToken, requestRefreshToken);
 }
 
 export function createAccessToken(user, timeToExpire) {

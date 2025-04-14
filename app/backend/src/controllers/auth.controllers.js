@@ -1,14 +1,21 @@
 import {
   authorizeUserAccess,
   authorizeUserRefresh,
-  createAccessAndRefreshToken
+  createAccessAndRefreshToken,
+  verifyRefreshToken
 } from "../services/auth.services.js";
-import { getUserPassword } from "../services/users.services.js";
+import {
+  deleteUserRefreshToken,
+  getUserPassword,
+  getRefreshToken
+} from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
 import { verifyPassword } from "../services/auth.services.js";
 import { setAuthCookies } from "../utils/cookie.js";
+import { createHashedRefreshToken } from "../services/auth.services.js";
+import { addUserRefreshToken } from "../services/users.services.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -30,6 +37,11 @@ export async function loginUserHandler(request, reply) {
     console.log("user:", data);
 
     const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
+
+    const hashedRefreshToken = await createHashedRefreshToken(
+      refreshToken.token
+    );
+    await addUserRefreshToken(data.id, hashedRefreshToken);
 
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
@@ -102,6 +114,27 @@ export async function authorizeUserRefreshHandler(request, reply) {
     console.log("data:", data);
 
     const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
+    const hashedRefreshTokenDatabase = await getRefreshToken(data.id);
+    const hashedRefreshTokenRequest = await createHashedRefreshToken(
+      refreshToken.token
+    );
+
+    if (
+      !(await verifyRefreshToken(
+        hashedRefreshTokenDatabase,
+        hashedRefreshTokenRequest
+      ))
+    ) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid refresh token"
+      );
+    }
+
+    await deleteUserRefreshToken(data.id);
+    await addUserRefreshToken(data.id, refreshToken.token);
 
     request.user = data;
     return setAuthCookies(reply, accessToken, refreshToken)
