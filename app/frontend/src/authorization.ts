@@ -8,7 +8,16 @@ const authorizeUser = async () => {
   });
 
   if (!response.ok) {
-    throw new Error("authorization failed");
+    const response = await fetch("http://localhost:4000/api/auth/refresh", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      throw new Error("authorization failed");
+    }
   }
 };
 

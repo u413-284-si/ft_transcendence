@@ -95,10 +95,21 @@ export async function authorizeUserRefreshHandler(request, reply) {
   }
   try {
     const data = authorizeUserRefresh(token);
-    // const oneWeekInSeconds = 7 * 24 * 60 * 60;
-    // const inOneWeek = new Date(new Date().getTime() + oneWeekInSeconds * 1000);
+
+    delete data.exp;
+    delete data.iat;
+
+    console.log("data:", data);
+
+    const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
+
     request.user = data;
-    return reply.unsetCookie("accessToken").unsetCookie("refreshToken");
+    return setAuthCookies(reply, accessToken, refreshToken)
+      .code(200)
+      .send({
+        message: createResponseMessage(action, true),
+        username: data.username
+      });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
