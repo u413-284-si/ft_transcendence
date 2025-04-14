@@ -38,12 +38,14 @@ export function createRefreshToken(user, timeToExpire) {
 }
 
 export function createAccessAndRefreshToken(user) {
-  const accessTokenExpirationInSeconds = 15 * 60;
+  //   const accessTokenExpirationInSeconds = 15 * 60;
+  const accessTokenExpirationInSeconds = 5;
   const accessTokenTimeToExpire = new Date(
     new Date().getTime() + accessTokenExpirationInSeconds * 1000
   );
 
-  const refreshTokenExpirationInSeconds = 7 * 24 * 60 * 60;
+  //   const refreshTokenExpirationInSeconds = 7 * 24 * 60 * 60;
+  const refreshTokenExpirationInSeconds = 30;
   const refreshTokenTimeToExpire = new Date(
     new Date().getTime() + refreshTokenExpirationInSeconds * 1000
   );
