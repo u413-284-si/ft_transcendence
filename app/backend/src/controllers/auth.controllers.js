@@ -1,4 +1,7 @@
-import { authorizeUserAccess } from "../services/auth.services.js";
+import {
+  authorizeUserAccess,
+  authorizeUserRefresh
+} from "../services/auth.services.js";
 import { getUserPassword } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
@@ -77,6 +80,34 @@ export async function authorizeUserAccessHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `authorizeUserHandler: ${createResponseMessage(action, false)}`
+    );
+    return httpError(
+      reply,
+      401,
+      createResponseMessage(action, false),
+      "Could not verify JWT"
+    );
+  }
+}
+
+export async function authorizeUserRefreshHandler(request, reply) {
+  const action = "authorize user";
+  const token = request.cookies.refreshToken;
+  if (!token) {
+    return httpError(
+      reply,
+      401,
+      createResponseMessage(action, false),
+      "No token provided"
+    );
+  }
+  try {
+    const data = authorizeUserRefresh(token);
+    request.user = data;
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `authorizeUserRefreshHandler: ${createResponseMessage(action, false)}`
     );
     return httpError(
       reply,
