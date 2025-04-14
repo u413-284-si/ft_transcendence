@@ -9,6 +9,10 @@ export function authorizeUserAccess(token) {
   return jwt.verify(token, JWT_ACCESS_TOKEN_SECRET);
 }
 
+export function authorizeUserRefresh(token) {
+  return jwt.verify(token, JWT_REFRESH_TOKEN_SECRET);
+}
+
 export async function createHashedPassword(password) {
   return await pkg.hash(password, {
     type: pkg.argon2id,
