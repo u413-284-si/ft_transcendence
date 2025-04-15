@@ -28,7 +28,7 @@ export async function registerUserHandler(request, reply) {
     const data = await createUser(username, email, hashedPassword);
     return reply
       .code(201)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), user: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
