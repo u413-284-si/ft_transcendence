@@ -45,6 +45,7 @@ const optionsCreateUser = {
   schema: {
     body: { $ref: "createUserSchema" },
     response: {
+      201: { $ref: "createUserResponseSchema" },
       ...errorResponses
     }
   }
