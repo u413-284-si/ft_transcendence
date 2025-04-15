@@ -62,9 +62,7 @@ export default class extends AbstractView {
 
   async fetchAndDisplayMatches() {
     try {
-      const response = await fetch(
-        "http://localhost:4000/api/users/1/matches/"
-      );
+      const response = await fetch("http://localhost:4000/api/users/matches/");
       if (!response.ok) throw new Error("Failed to fetch matches");
 
       const matchData: ExtendedApiResponse<Match[]> = await response.json();
@@ -95,7 +93,7 @@ export default class extends AbstractView {
     const user: string = "Herta";
     try {
       const response = await fetch(
-        `http://localhost:4000/api/users/1/user-stats/`
+        `http://localhost:4000/api/users/user-stats/`
       );
       if (!response.ok) throw new Error("Failed to fetch user stats");
 

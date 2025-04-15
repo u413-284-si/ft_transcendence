@@ -49,9 +49,8 @@ export async function updateTournamentBracket(
 }
 
 export async function getActiveTournament(): Promise<TournamentDTO | null> {
-  const userId = 1; // FIXME: Hard coded user id
   const apiResponse = await apiFetch<TournamentDTO | null>(
-    `http://localhost:4000/api/users/${userId}/tournaments/active/`,
+    `http://localhost:4000/api/users/tournaments/active/`,
     {
       method: "GET"
     }
