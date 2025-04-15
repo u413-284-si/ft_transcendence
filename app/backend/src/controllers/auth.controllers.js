@@ -68,7 +68,7 @@ export async function authAndDecodeHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `getMatchHandler: ${createResponseMessage(action, false)}`
+      `authAndDecodeHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
