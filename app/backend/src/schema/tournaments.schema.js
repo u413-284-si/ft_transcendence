@@ -12,16 +12,12 @@ export const createTournamentSchema = {
       type: "integer",
       description: "The number of players in the tournament"
     },
-    adminId: {
-      type: "integer",
-      description: "The unique identifier of the player"
-    },
     bracket: {
       type: "string",
       description: "Serialized match brackets"
     }
   },
-  required: ["name", "maxPlayers", "adminId"],
+  required: ["name", "maxPlayers"],
   additionalProperties: false
 };
 

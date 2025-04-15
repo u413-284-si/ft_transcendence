@@ -196,8 +196,8 @@ export async function getUserTournamentsHandler(request, reply) {
 export async function getUserActiveTournamentHandler(request, reply) {
   const action = "Get user active tournament";
   try {
-    const id = parseInt(request.user.id, 10);
-    const data = await getUserActiveTournament(id);
+    const adminId = parseInt(request.user.id, 10);
+    const data = await getUserActiveTournament(adminId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data });
