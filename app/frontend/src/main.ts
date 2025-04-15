@@ -4,7 +4,10 @@ import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
 import Settings from "./views/Settings.js";
 import Stats from "./views/Stats.js";
-import authorizeUser from "./authorization.js";
+import { authorizeUser } from "./services/authServices.js";
+import { Token } from "./types/Token.js";
+
+export let globalToken: Token; // FIXME: should be in router
 
 export const navigateTo = (url: string) => {
   history.pushState(null, "", url);
@@ -39,8 +42,9 @@ const router = async () => {
 
   if (match.route.path !== "/login") {
     try {
-      await authorizeUser();
-      console.log("Authorized user");
+      const token = await authorizeUser();
+      console.log({ message: "Set global token", token });
+      globalToken = token;
     } catch (err) {
       console.error("Authorization failed:", err);
       navigateTo("/login");
