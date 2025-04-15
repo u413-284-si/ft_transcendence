@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+import { globalToken } from "../main.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -9,12 +10,13 @@ export default class extends AbstractView {
   async createHTML() {
     const navbarHTML = await this.createNavbar();
     const footerHTML = await this.createFooter();
-    return `
-			${navbarHTML}
-			<h1>Home</h1>
-			<p>This is the home page</p>
-			${footerHTML}
-			`;
+    return /* HTML */ `
+      ${navbarHTML}
+      <h1>Home</h1>
+      <p>Hello ${globalToken.username}!</p>
+      <p>This is the home page</p>
+      ${footerHTML}
+    `;
   }
 
   async render() {
