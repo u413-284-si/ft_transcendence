@@ -4,7 +4,8 @@ const userSchema = {
   properties: {
     id: { $ref: "commonDefinitionsSchema#/definitions/id" },
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-    email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+    email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+    dateJoined: { type: "string", format: "date" }
   },
   required: ["id", "username"],
   additionalProperties: false

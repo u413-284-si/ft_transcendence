@@ -13,11 +13,6 @@ export async function createUser(username, email, hashedPassword) {
       },
       stats: { create: {} },
       accountStatus: { create: {} }
-    },
-    select: {
-      id: true,
-      username: true,
-      email: true
     }
   });
   return user;
