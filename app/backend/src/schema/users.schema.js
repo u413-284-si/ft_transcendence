@@ -2,15 +2,9 @@ const userSchema = {
   $id: "userSchema",
   type: "object",
   properties: {
-    id: { type: "integer" },
+    id: { $ref: "commonDefinitionsSchema#/definitions/id" },
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-    email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-    authorization: {
-      type: "object",
-      properties: {
-        password: { $ref: "commonDefinitionsSchema#/definitions/password" }
-      }
-    }
+    email: { $ref: "commonDefinitionsSchema#/definitions/email" }
   },
   required: ["id", "username"],
   additionalProperties: false
@@ -24,7 +18,7 @@ const createUserSchema = {
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
     password: { $ref: "commonDefinitionsSchema#/definitions/password" }
   },
-  required: ["username"],
+  required: ["username", "password"],
   additionalProperties: false
 };
 
@@ -33,8 +27,7 @@ const createUserResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    user: { $ref: "userSchema" },
-    password: { $ref: "commonDefinitionsSchema#/definitions/password" }
+    user: { $ref: "userSchema" }
   },
   required: ["message", "user"],
   additionalProperties: false
