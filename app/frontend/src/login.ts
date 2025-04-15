@@ -1,4 +1,6 @@
 import { navigateTo } from "./main.js";
+import { APIError } from "./services/api.js";
+import { userLogin } from "./services/authServices.js";
 
 export async function loginUser(event: Event): Promise<void> {
   event.preventDefault();
@@ -9,19 +11,17 @@ export async function loginUser(event: Event): Promise<void> {
   const usernameOrEmail: string = loginForm.usernameOrEmail.value;
   const password: string = loginForm.password.value;
 
-  const response = await fetch("http://localhost:4000/api/auth/", {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ usernameOrEmail, password })
-  });
-
-  if (!response.ok) {
-    alert("Invalid username or password");
-    return;
+  try {
+    const token = await userLogin(usernameOrEmail, password);
+    console.log(token);
+  } catch (error) {
+    if (error instanceof APIError) {
+      if (error.status === 401) {
+        alert("Invalid username or password");
+      }
+    }
+    console.error(error);
   }
 
-  navigateTo("/home");
+  setTimeout(() => navigateTo("/home"), 1000);
 }
