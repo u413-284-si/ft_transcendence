@@ -1,4 +1,3 @@
-import { authorizeUser } from "../services/auth.services.js";
 import { getUserPassword } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
@@ -59,30 +58,18 @@ export async function loginUserHandler(request, reply) {
   }
 }
 
-export async function authorizeUserHandler(request, reply) {
+export async function authAndDecodeHandler(request, reply) {
   const action = "authorize user";
-  const token = request.cookies.authToken;
-  if (!token) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "No token provided"
-    );
-  }
   try {
-    const data = authorizeUser(token);
-    request.user = data;
+    const data = request.user;
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authorizeUserHandler: ${createResponseMessage(action, false)}`
+      `getMatchHandler: ${createResponseMessage(action, false)}`
     );
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "Could not verify JWT"
-    );
+    handlePrismaError(reply, action, err);
   }
 }
