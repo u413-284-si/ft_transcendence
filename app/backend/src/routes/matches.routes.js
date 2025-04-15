@@ -1,8 +1,10 @@
+import { authorizeUserHandler } from "../controllers/auth.controllers.js";
 import {
   createMatchHandler,
   getAllMatchesHandler,
   getMatchHandler
 } from "../controllers/matches.controllers.js";
+import { errorResponses } from "../utils/error.js";
 
 export default async function matchRoutes(fastify) {
   fastify.post("/", optionsCreateMatch, createMatchHandler);
@@ -13,13 +15,20 @@ export default async function matchRoutes(fastify) {
 }
 
 const optionsCreateMatch = {
+  onRequest: [authorizeUserHandler],
   schema: {
-    body: { $ref: "createMatchSchema" }
+    body: { $ref: "createMatchSchema" },
+    response: {
+      ...errorResponses
+    }
   }
 };
 
 const optionsGetMatch = {
   schema: {
-    params: { $ref: "idSchema" }
+    params: { $ref: "idSchema" },
+    response: {
+      ...errorResponses
+    }
   }
 };
