@@ -7,7 +7,7 @@ import Stats from "./views/Stats.js";
 import { authorizeUser } from "./services/authServices.js";
 import { Token } from "./types/Token.js";
 
-export let globalToken: Token; // FIXME: should be in router
+export let globalToken: Token | null; // FIXME: should be in router
 
 export const navigateTo = (url: string) => {
   history.pushState(null, "", url);
@@ -40,6 +40,20 @@ const router = async () => {
     window.location.href = routes[0].path;
   }
 
+  if (match.route.path === "/login" && globalToken !== null) {
+    try {
+      const token = await authorizeUser();
+      console.log({ message: "Set global token", token });
+      globalToken = token;
+      navigateTo("/home");
+    } catch (err) {
+      console.error("Authorization failed:", err);
+      globalToken = null;
+      navigateTo("/login");
+      return;
+    }
+  }
+
   if (match.route.path !== "/login") {
     try {
       const token = await authorizeUser();
@@ -47,6 +61,7 @@ const router = async () => {
       globalToken = token;
     } catch (err) {
       console.error("Authorization failed:", err);
+      globalToken = null;
       navigateTo("/login");
       return;
     }

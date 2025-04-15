@@ -112,7 +112,7 @@ export default class extends AbstractView {
   }
 
   async fetchAndDisplayUserStats() {
-    const user: string = globalToken.username;
+    const user: string = globalToken?.username ?? "undefined";
     try {
       const userStats = await getUserStats();
 

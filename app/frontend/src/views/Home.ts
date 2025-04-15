@@ -13,7 +13,7 @@ export default class extends AbstractView {
     return /* HTML */ `
       ${navbarHTML}
       <h1>Home</h1>
-      <p>Hello ${globalToken.username}!</p>
+      <p>Hello ${globalToken?.username ?? "undefined"}!</p>
       <p>This is the home page</p>
       ${footerHTML}
     `;
