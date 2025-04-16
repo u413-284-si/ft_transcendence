@@ -23,5 +23,5 @@ export async function loginUser(event: Event): Promise<void> {
     console.error(error);
   }
 
-  setTimeout(() => navigateTo("/home"), 1000);
+  navigateTo("/home");
 }
