@@ -2,7 +2,7 @@ import { apiFetch } from "./api.js";
 import { Token } from "../types/Token.js";
 
 export async function authAndDecode(): Promise<Token> {
-  const apiResponse = await apiFetch<Token>("http://localhost:4000/api/auth/", {
+  const apiResponse = await apiFetch<Token>("/api/auth/", {
     method: "GET",
     credentials: "same-origin"
   });
@@ -15,7 +15,7 @@ export async function userLogin(
   usernameOrEmail: string,
   password: string
 ): Promise<Token> {
-  const apiResponse = await apiFetch<Token>("http://localhost:4000/api/auth/", {
+  const apiResponse = await apiFetch<Token>("/api/auth/", {
     method: "POST",
     credentials: "same-origin",
     body: JSON.stringify({ usernameOrEmail, password })
