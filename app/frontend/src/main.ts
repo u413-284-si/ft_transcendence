@@ -4,7 +4,7 @@ import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
 import Settings from "./views/Settings.js";
 import Stats from "./views/Stats.js";
-import { authorizeUser } from "./services/authServices.js";
+import { authAndDecode } from "./services/authServices.js";
 import { Token } from "./types/Token.js";
 
 export let globalToken: Token | null; // FIXME: should be in router
@@ -42,7 +42,7 @@ const router = async () => {
 
   if (match.route.path === "/login" && globalToken !== null) {
     try {
-      const token = await authorizeUser();
+      const token = await authAndDecode();
       console.log({ message: "Set global token", token });
       globalToken = token;
       navigateTo("/home");
@@ -56,7 +56,7 @@ const router = async () => {
 
   if (match.route.path !== "/login") {
     try {
-      const token = await authorizeUser();
+      const token = await authAndDecode();
       console.log({ message: "Set global token", token });
       globalToken = token;
     } catch (err) {

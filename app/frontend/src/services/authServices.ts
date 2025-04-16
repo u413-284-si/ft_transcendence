@@ -1,7 +1,7 @@
 import { apiFetch } from "./api.js";
 import { Token } from "../types/Token.js";
 
-export async function authorizeUser(): Promise<Token> {
+export async function authAndDecode(): Promise<Token> {
   const apiResponse = await apiFetch<Token>("http://localhost:4000/api/auth/", {
     method: "GET",
     credentials: "same-origin"

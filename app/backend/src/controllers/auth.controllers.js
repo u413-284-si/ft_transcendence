@@ -59,7 +59,7 @@ export async function loginUserHandler(request, reply) {
 }
 
 export async function authAndDecodeHandler(request, reply) {
-  const action = "authorize user";
+  const action = "Auth and decode";
   try {
     const data = request.user;
     return reply
