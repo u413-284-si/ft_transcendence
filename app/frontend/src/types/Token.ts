@@ -4,6 +4,6 @@ export type Token = {
   email: string;
   avatar: string;
   dateJoined: string;
-  iat?: number;
-  exp?: number;
+  iat: number;
+  exp: number;
 };
