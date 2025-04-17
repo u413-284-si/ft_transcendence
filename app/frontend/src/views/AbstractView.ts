@@ -32,4 +32,8 @@ export default class {
   }
 
   async render() {}
+
+  unmount?(): void;
+
+  getLeaveGuard?(): () => boolean | string;
 }
