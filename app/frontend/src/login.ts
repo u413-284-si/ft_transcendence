@@ -1,4 +1,4 @@
-import { navigateTo } from "./main.js";
+import router from "./main.js";
 
 export async function loginUser(event: Event): Promise<void> {
   event.preventDefault();
@@ -9,7 +9,7 @@ export async function loginUser(event: Event): Promise<void> {
   const usernameOrEmail: string = loginForm.usernameOrEmail.value;
   const password: string = loginForm.password.value;
 
-  const response = await fetch("http://localhost:4000/api/auth/", {
+  const response = await fetch("/api/auth/", {
     method: "POST",
     credentials: "same-origin",
     headers: {
@@ -23,5 +23,5 @@ export async function loginUser(event: Event): Promise<void> {
     return;
   }
 
-  navigateTo("/home");
+  router.navigate("/home");
 }

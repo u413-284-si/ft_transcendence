@@ -4,64 +4,20 @@ import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
 import Settings from "./views/Settings.js";
 import Stats from "./views/Stats.js";
-import authorizeUser from "./authorization.js";
+import { authGuard, Router } from "./Router.js";
 
-export const navigateTo = (url: string) => {
-  history.pushState(null, "", url);
-  router();
-};
+const router = new Router("app");
 
-const router = async () => {
-  const routes = [
-    { path: "/login", view: Login },
-    { path: "/home", view: Home },
-    { path: "/newGame", view: NewGame },
-    { path: "/newTournament", view: NewTournament },
-    { path: "/settings", view: Settings },
-    { path: "/stats", view: Stats }
-  ];
-
-  const potentialMatches = routes.map((route) => {
-    return {
-      route: route,
-      isMatch: location.pathname === route.path
-    };
-  });
-
-  let match = potentialMatches.find((match) => match.isMatch);
-  if (!match) {
-    match = {
-      route: routes[0],
-      isMatch: true
-    };
-    window.location.href = routes[0].path;
-  }
-
-  if (match.route.path !== "/login") {
-    try {
-      await authorizeUser();
-      console.log("Authorized user");
-    } catch (err) {
-      console.error("Authorization failed:", err);
-      navigateTo("/login");
-      return;
-    }
-  }
-
-  const view = new match.route.view();
-  await view.render();
-};
-
-window.addEventListener("popstate", router);
+router
+  .addRoute({ path: "/login", view: Login })
+  .addRoute({ path: "/home", view: Home, guard: authGuard })
+  .addRoute({ path: "/newGame", view: NewGame, guard: authGuard })
+  .addRoute({ path: "/newTournament", view: NewTournament, guard: authGuard })
+  .addRoute({ path: "/settings", view: Settings, guard: authGuard })
+  .addRoute({ path: "/stats", view: Stats, guard: authGuard });
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.body.addEventListener("click", (e: MouseEvent) => {
-    const target = e.target as HTMLAnchorElement | null;
-    if (!target) return;
-    if (target.matches("[data-link]")) {
-      e.preventDefault();
-      navigateTo(target.href);
-    }
-  });
-  router();
+  router.start();
 });
+
+export default router;
