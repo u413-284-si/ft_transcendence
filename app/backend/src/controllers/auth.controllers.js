@@ -39,7 +39,7 @@ export async function loginUserHandler(request, reply) {
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        username: data.username
+        data: { username: data.username }
       });
   } catch (err) {
     request.log.error(

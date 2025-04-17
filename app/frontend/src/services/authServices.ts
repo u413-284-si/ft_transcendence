@@ -14,8 +14,8 @@ export async function authAndDecode(): Promise<Token> {
 export async function userLogin(
   usernameOrEmail: string,
   password: string
-): Promise<Token> {
-  const apiResponse = await apiFetch<Token>("/api/auth/", {
+): Promise<{ username: string }> {
+  const apiResponse = await apiFetch<{ username: string }>("/api/auth/", {
     method: "POST",
     credentials: "same-origin",
     body: JSON.stringify({ usernameOrEmail, password })

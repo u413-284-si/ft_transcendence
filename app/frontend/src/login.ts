@@ -12,8 +12,7 @@ export async function loginUser(event: Event): Promise<void> {
   const password: string = loginForm.password.value;
 
   try {
-    const token = await userLogin(usernameOrEmail, password);
-    console.log(token);
+    await userLogin(usernameOrEmail, password);
   } catch (error) {
     if (error instanceof APIError) {
       if (error.status === 401) {
