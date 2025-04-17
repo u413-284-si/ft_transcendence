@@ -146,7 +146,6 @@ function checkWinner(gameState: GameState) {
 }
 
 async function endGame(gameState: GameState, tournament: Tournament | null) {
-  const playerId = 1; // FIXME: Hardcoded user Id
   let tournamentId;
   try {
     if (tournament) {
@@ -163,7 +162,6 @@ async function endGame(gameState: GameState, tournament: Tournament | null) {
       await updateTournamentBracket(tournament);
     }
     await createMatch({
-      playerId: playerId,
       tournamentId: tournamentId,
       playerNickname: gameState.player1,
       opponentNickname: gameState.player2,

@@ -2,10 +2,6 @@ export const createMatchSchema = {
   $id: "createMatchSchema",
   type: "object",
   properties: {
-    playerId: {
-      type: "integer",
-      description: "The unique identifier for the player"
-    },
     playerNickname: {
       type: "string",
       description: "The nickname of the player",
@@ -35,7 +31,6 @@ export const createMatchSchema = {
     }
   },
   required: [
-    "playerId",
     "playerNickname",
     "opponentNickname",
     "playerScore",

@@ -5,13 +5,10 @@ import { apiFetch } from "./api.js";
 export async function createTournament(
   tournament: Tournament
 ): Promise<TournamentDTO> {
-  const apiResponse = await apiFetch<TournamentDTO>(
-    "http://localhost:4000/api/tournaments",
-    {
-      method: "POST",
-      body: JSON.stringify(tournament) // uses toJSON()
-    }
-  );
+  const apiResponse = await apiFetch<TournamentDTO>("/api/tournaments", {
+    method: "POST",
+    body: JSON.stringify(tournament) // uses toJSON()
+  });
 
   console.log(apiResponse);
   return apiResponse.data;
@@ -21,7 +18,7 @@ export async function setTournamentFinished(
   tournamentId: number
 ): Promise<TournamentDTO> {
   const apiResponse = await apiFetch<TournamentDTO>(
-    `http://localhost:4000/api/tournaments/${tournamentId}/`,
+    `/api/tournaments/${tournamentId}/`,
     {
       method: "PATCH",
       body: JSON.stringify({ status: "FINISHED" })
@@ -37,7 +34,7 @@ export async function updateTournamentBracket(
 ): Promise<TournamentDTO> {
   const tournamentId = tournament.getId();
   const apiResponse = await apiFetch<TournamentDTO>(
-    `http://localhost:4000/api/tournaments/${tournamentId}/`,
+    `/api/tournaments/${tournamentId}/`,
     {
       method: "PATCH",
       body: JSON.stringify({ bracket: JSON.stringify(tournament.getBracket()) })
@@ -49,9 +46,8 @@ export async function updateTournamentBracket(
 }
 
 export async function getActiveTournament(): Promise<TournamentDTO | null> {
-  const userId = 1; // FIXME: Hard coded user id
   const apiResponse = await apiFetch<TournamentDTO | null>(
-    `http://localhost:4000/api/users/${userId}/tournaments/active/`,
+    `/api/users/tournaments/active/`,
     {
       method: "GET"
     }
@@ -62,12 +58,9 @@ export async function getActiveTournament(): Promise<TournamentDTO | null> {
 }
 
 export async function deleteTournament(id: number): Promise<TournamentDTO> {
-  const apiResponse = await apiFetch<TournamentDTO>(
-    `http://localhost:4000/api/tournaments/${id}/`,
-    {
-      method: "DELETE"
-    }
-  );
+  const apiResponse = await apiFetch<TournamentDTO>(`/api/tournaments/${id}/`, {
+    method: "DELETE"
+  });
 
   console.log(apiResponse);
   return apiResponse.data;
