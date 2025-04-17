@@ -41,7 +41,7 @@ const router = async () => {
     try {
       await authorizeUser();
       console.log("Authorized user");
-    } catch (err) {
+    } catch {
       navigateTo("/login");
       return;
     }
