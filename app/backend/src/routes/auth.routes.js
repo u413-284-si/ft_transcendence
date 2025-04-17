@@ -15,7 +15,7 @@ const optionsloginUser = {
   schema: {
     body: { $ref: "loginUserSchema" },
     response: {
-      //200: { $ref: "loginUserResponseSchema" }, FIXME: what should it respond?
+      200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
   }
