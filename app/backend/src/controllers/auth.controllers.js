@@ -69,12 +69,13 @@ export async function loginUserHandler(request, reply) {
 export async function authorizeUserAccessHandler(request, reply) {
   const action = "authorize user";
   const token = request.cookies.accessToken;
+
   if (!token) {
     return httpError(
       reply,
       401,
       createResponseMessage(action, false),
-      "No token provided"
+      "No access token provided"
     );
   }
   try {
