@@ -1,5 +1,5 @@
 import { navigateTo } from "./main.js";
-import { APIError } from "./services/api.js";
+import { ApiError } from "./services/api.js";
 import { userLogin } from "./services/authServices.js";
 
 export async function loginUser(event: Event): Promise<void> {
@@ -14,7 +14,7 @@ export async function loginUser(event: Event): Promise<void> {
   try {
     await userLogin(usernameOrEmail, password);
   } catch (error) {
-    if (error instanceof APIError) {
+    if (error instanceof ApiError) {
       if (error.status === 401) {
         alert("Invalid username or password");
       }

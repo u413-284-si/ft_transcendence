@@ -1,6 +1,6 @@
 import { ApiResponse } from "../types/IApiResponse";
 
-export class APIError extends Error {
+export class ApiError extends Error {
   status: number;
   cause?: string;
 
@@ -20,15 +20,22 @@ export async function apiFetch<T>(
   if (options?.body) {
     headers.set("Content-Type", "application/json");
   }
-  const response = await fetch(url, {
-    ...options,
-    headers
-  });
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers
+    });
 
-  const json = await response.json();
+    const json = await response.json();
 
-  if (!response.ok) {
-    throw new APIError(response.status, json.message, json.cause);
+    if (!response.ok) {
+      throw new ApiError(response.status, json.message, json.cause);
+    }
+    return json as ApiResponse<T>;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw new ApiError(500, "Internal server error");
   }
-  return json as ApiResponse<T>;
 }
