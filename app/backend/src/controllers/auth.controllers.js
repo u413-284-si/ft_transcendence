@@ -103,29 +103,14 @@ export async function authorizeUserRefreshHandler(request, reply) {
       reply,
       401,
       createResponseMessage(action, false),
-      "No token provided"
+      "No refresh token provided"
     );
   }
   try {
     const data = authorizeUserRefresh(token);
-
-    delete data.exp;
-    delete data.iat;
-
-    console.log("data:", data);
-
-    const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
     const hashedRefreshTokenDatabase = await getRefreshToken(data.id);
-    const hashedRefreshTokenRequest = await createHashedRefreshToken(
-      refreshToken.token
-    );
 
-    if (
-      !(await verifyRefreshToken(
-        hashedRefreshTokenDatabase,
-        hashedRefreshTokenRequest
-      ))
-    ) {
+    if (!(await verifyRefreshToken(hashedRefreshTokenDatabase, token))) {
       return httpError(
         reply,
         401,
@@ -134,8 +119,16 @@ export async function authorizeUserRefreshHandler(request, reply) {
       );
     }
 
+    delete data.exp;
+    delete data.iat;
+
+    const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
+    const hashedRefreshTokenRequest = await createHashedRefreshToken(
+      refreshToken.token
+    );
+
     await deleteUserRefreshToken(data.id);
-    await addUserRefreshToken(data.id, refreshToken.token);
+    await addUserRefreshToken(data.id, hashedRefreshTokenRequest);
 
     request.user = data;
     return setAuthCookies(reply, accessToken, refreshToken)
