@@ -1,3 +1,4 @@
+import { authorizeUser } from "../middleware/auth.js";
 import {
   registerUserHandler,
   getUserHandler,
@@ -16,26 +17,26 @@ import { errorResponses } from "../utils/error.js";
 export default async function userRoutes(fastify) {
   fastify.post("/", optionsCreateUser, registerUserHandler);
 
-  fastify.get("/:id/", optionsGetUser, getUserHandler);
+  fastify.get("/", optionsGetUser, getUserHandler);
 
-  fastify.get("/", getAllUsersHandler);
+  fastify.get("/admin", getAllUsersHandler);
 
   fastify.put("/:id/", optionsUpdateUser, updateUserHandler);
 
   fastify.patch("/:id/", optionsPatchUser, patchUserHandler);
 
-  fastify.delete("/:id/", optionsGetUser, deleteUserHandler);
+  fastify.delete("/:id/", deleteUserHandler);
 
-  fastify.get("/:id/matches/", optionsGetUser, getUserMatchesHandler);
+  fastify.get("/matches/", optionsGetUser, getUserMatchesHandler);
 
-  fastify.get("/user-stats/", getAllUserStatsHandler);
+  fastify.get("/admin/user-stats/", getAllUserStatsHandler);
 
-  fastify.get("/:id/user-stats/", optionsGetUser, getUserStatsHandler);
+  fastify.get("/user-stats/", optionsGetUser, getUserStatsHandler);
 
-  fastify.get("/:id/tournaments/", optionsGetUser, getUserTournamentsHandler);
+  fastify.get("/tournaments/", optionsGetUser, getUserTournamentsHandler);
 
   fastify.get(
-    "/:id/tournaments/active/",
+    "/tournaments/active/",
     optionsGetUser,
     getUserActiveTournamentHandler
   );
@@ -52,8 +53,8 @@ const optionsCreateUser = {
 };
 
 const optionsGetUser = {
+  onRequest: [authorizeUser],
   schema: {
-    params: { $ref: "idSchema" },
     response: {
       ...errorResponses
     }

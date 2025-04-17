@@ -6,6 +6,7 @@ import {
   deleteAllTournamentsHandler,
   deleteTournamentHandler
 } from "../controllers/tournaments.controllers.js";
+import { authorizeUser } from "../middleware/auth.js";
 import { errorResponses } from "../utils/error.js";
 
 export default async function tournamentRoutes(fastify) {
@@ -19,12 +20,16 @@ export default async function tournamentRoutes(fastify) {
 
   fastify.delete("/", deleteAllTournamentsHandler);
 
-  fastify.delete("/:id/", optionsGetTournament, deleteTournamentHandler);
+  fastify.delete("/:id/", optionsDeleteTournament, deleteTournamentHandler);
 }
 
 const optionsCreateTournament = {
+  onRequest: [authorizeUser],
   schema: {
-    body: { $ref: "createTournamentSchema" }
+    body: { $ref: "createTournamentSchema" },
+    response: {
+      ...errorResponses
+    }
   }
 };
 
@@ -35,9 +40,20 @@ const optionsGetTournament = {
 };
 
 const optionsPatchTournament = {
+  onRequest: [authorizeUser],
   schema: {
     params: { $ref: "idSchema" },
     body: { $ref: "patchTournamentSchema" },
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteTournament = {
+  onRequest: [authorizeUser],
+  schema: {
+    params: { $ref: "idSchema" },
     response: {
       ...errorResponses
     }
