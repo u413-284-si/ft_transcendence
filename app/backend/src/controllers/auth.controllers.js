@@ -34,13 +34,13 @@ export async function loginUserHandler(request, reply) {
     }
 
     delete data.authentication;
-    console.log("user:", data);
 
     const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
 
     const hashedRefreshToken = await createHashedRefreshToken(
       refreshToken.token
     );
+
     await addUserRefreshToken(data.id, hashedRefreshToken);
 
     return setAuthCookies(reply, accessToken, refreshToken)
