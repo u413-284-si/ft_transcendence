@@ -4,11 +4,11 @@ import AbstractView from "./views/AbstractView.js";
 type RouteGuardResult = true | false | string;
 type RouteGuard = () => RouteGuardResult | Promise<RouteGuardResult>;
 
-interface RouteConfig {
+type RouteConfig = {
   path: string;
   view: new () => AbstractView;
   guard?: RouteGuard;
-}
+};
 
 export class Router {
   private routes: Map<string, RouteConfig> = new Map();
