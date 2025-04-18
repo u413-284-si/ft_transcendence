@@ -12,10 +12,10 @@ type RouteConfig = {
 export class Router {
   private static instance: Router;
   private routes: Map<string, RouteConfig> = new Map();
-  private rootElement: HTMLElement;
+  // private rootElement: HTMLElement;
   private currentView: AbstractView | null = null;
   private subviews: AbstractView[] = [];
-  private currentPath: string = window.location.pathname;
+  private currentPath: string = "";
   private routeChangeListeners: ((path: string) => void)[] = [];
 
   private constructor() {}
@@ -39,17 +39,31 @@ export class Router {
   }
 
   async navigate(path: string, push: boolean = true): Promise<void> {
-    if (!(await this.canNavigate())) return;
-
-    const route = this.routes.get(path);
-    if (!route) {
-      console.warn(`No route found for path: ${path}`);
+    if (this.currentPath === path) {
+      console.log(`Already on path ${path}`);
+      return;
+    }
+    console.log(`Try to navigate to ${path} from ${this.currentPath}`);
+    if (!(await this.canNavigate())) {
+      console.warn(`Navigation blocked`);
       return;
     }
 
-    if (push && path !== this.currentPath) {
-      history.pushState({}, "", path);
+    const route = this.routes.get(path);
+    if (!route) {
+      console.warn(`No route found for path: ${path}. Navigate to /home`);
+      this.navigate("/home", false);
+      return;
     }
+
+    if (push) {
+      console.log(`Push state for ${path}`);
+      history.pushState({}, "", path);
+    } else {
+      console.log(`Replace state for ${path}`);
+      history.replaceState({}, "", path);
+    }
+    this.currentPath = path;
 
     this.handleRouteChange(route, path);
   }
@@ -65,11 +79,10 @@ export class Router {
         return;
       } else if (typeof guardResult === "string") {
         console.warn(`Redirecting due to guard → ${guardResult}`);
-        this.navigate(guardResult);
+        this.navigate(guardResult, false);
         return;
       }
     }
-    this.currentPath = path;
 
     // Cleanup current view
     this.currentView?.unmount?.();
