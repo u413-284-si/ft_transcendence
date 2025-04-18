@@ -1,5 +1,4 @@
 import AbstractView from "./AbstractView.js";
-import { globalToken } from "../main.js";
 import { getUserStats } from "../services/userStatsServices.js";
 import { getUserMatches } from "../services/userServices.js";
 
@@ -112,7 +111,7 @@ export default class extends AbstractView {
   }
 
   async fetchAndDisplayUserStats() {
-    const user: string = globalToken?.username ?? "undefined";
+    const user: string = "undefined";
     try {
       const userStats = await getUserStats();
 

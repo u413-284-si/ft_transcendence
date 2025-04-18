@@ -1,5 +1,4 @@
 import AbstractView from "./AbstractView.js";
-import { globalToken } from "../main.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -13,7 +12,7 @@ export default class extends AbstractView {
     return /* HTML */ `
       ${navbarHTML}
       <h1>Home</h1>
-      <p>Hello ${globalToken?.username ?? "undefined"}!</p>
+      <p>Hello ${"undefined"}!</p>
       <p>This is the home page</p>
       ${footerHTML}
     `;

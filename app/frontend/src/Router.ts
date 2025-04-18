@@ -1,4 +1,4 @@
-import authorizeUser from "./authorization.js";
+import { authAndDecode } from "./services/authServices.js";
 import AbstractView from "./views/AbstractView.js";
 
 type RouteGuardResult = true | false | string;
@@ -133,7 +133,7 @@ export class Router {
 
 export const authGuard = async (): Promise<RouteGuardResult> => {
   try {
-    await authorizeUser();
+    await authAndDecode();
     console.log("Authorized user");
     return true;
   } catch (err) {
