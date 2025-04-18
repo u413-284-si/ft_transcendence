@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+import { auth } from "../AuthManager.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -12,7 +13,7 @@ export default class extends AbstractView {
     return /* HTML */ `
       ${navbarHTML}
       <h1>Home</h1>
-      <p>Hello ${"undefined"}!</p>
+      <p>Hello ${auth.getToken()?.username ?? "undefined"}!</p>
       <p>This is the home page</p>
       ${footerHTML}
     `;
