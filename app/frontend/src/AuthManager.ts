@@ -1,6 +1,6 @@
-import { ApiError } from "./services/api";
-import { authAndDecode, userLogin } from "./services/authServices";
-import { Token } from "./types/Token";
+import { ApiError } from "./services/api.js";
+import { authAndDecode, userLogin } from "./services/authServices.js";
+import { Token } from "./types/Token.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
 
@@ -9,11 +9,9 @@ export class AuthManager {
   private authenticated = false;
   private token: Token | null = null;
   private listeners: AuthChangeCallback[] = [];
-  private intervalMs: number = 300000;
+  private intervalMs: number = 30000;
 
-  private constructor(intervalMs?: number) {
-    if (intervalMs) this.intervalMs = intervalMs;
-  }
+  private constructor() {}
 
   public static getInstance(): AuthManager {
     if (!AuthManager.instance) {
@@ -22,12 +20,14 @@ export class AuthManager {
     return AuthManager.instance;
   }
 
-  public async initialize(): Promise<void> {
+  public async initialize(intervalMs?: number): Promise<void> {
+    if (intervalMs) this.intervalMs = intervalMs;
     await this.checkSession();
     this.startSessionChecker();
   }
 
   private async checkSession(): Promise<void> {
+    console.log("Checking user jwt");
     try {
       const token = await authAndDecode();
       this.token = token;
@@ -48,6 +48,7 @@ export class AuthManager {
     try {
       await userLogin(username, password);
       await this.checkSession();
+      console.log("User logged in");
       return true;
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -81,3 +82,5 @@ export class AuthManager {
     }
   }
 }
+
+export const auth = AuthManager.getInstance();
