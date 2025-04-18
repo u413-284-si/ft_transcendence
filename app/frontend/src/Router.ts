@@ -11,6 +11,7 @@ type RouteConfig = {
 };
 
 export class Router {
+  private static instance: Router;
   private routes: Map<string, RouteConfig> = new Map();
   private rootElement: HTMLElement;
   private currentView: AbstractView | null = null;
@@ -18,8 +19,13 @@ export class Router {
   private currentPath: string = window.location.pathname;
   private routeChangeListeners: ((path: string) => void)[] = [];
 
-  constructor(rootElementId: string) {
-    this.rootElement = document.getElementById(rootElementId)!;
+  private constructor() {}
+
+  public static getInstance(): Router {
+    if (!Router.instance) {
+      Router.instance = new Router();
+    }
+    return Router.instance;
   }
 
   addRoute(config: RouteConfig): this {
@@ -131,13 +137,4 @@ export class Router {
   }
 }
 
-export const authGuard = async (): Promise<RouteGuardResult> => {
-  try {
-    await authAndDecode();
-    console.log("Authorized user");
-    return true;
-  } catch (err) {
-    console.error("Authorization failed:", err);
-    return "/login";
-  }
-};
+export const router = Router.getInstance();
