@@ -1,7 +1,6 @@
-import { authAndDecode } from "./services/authServices.js";
 import AbstractView from "./views/AbstractView.js";
 
-type RouteGuardResult = true | false | string;
+export type RouteGuardResult = true | false | string;
 type RouteGuard = () => RouteGuardResult | Promise<RouteGuardResult>;
 
 type RouteConfig = {
