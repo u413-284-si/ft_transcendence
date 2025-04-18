@@ -1,7 +1,7 @@
 import AbstractView from "./AbstractView.js";
-import { Match } from "../types/IMatch.js";
-import { UserStats } from "../types/IUserStats.js";
-import { ApiResponse, ExtendedApiResponse } from "../types/IApiResponse.js";
+import { globalToken } from "../main.js";
+import { getUserStats } from "../services/userStatsServices.js";
+import { getUserMatches } from "../services/userServices.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -12,46 +12,57 @@ export default class extends AbstractView {
   async createHTML() {
     const navbarHTML = await this.createNavbar();
     const footerHTML = await this.createFooter();
-    return `
-			${navbarHTML}
-			<h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
-			<div class="overflow-x-auto">
-				<table class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500">
-					<thead class="bg-blue-800">
-						<tr>
-							<th class="border border-blue-500 px-4 py-2">Username</th>
-							<th class="border border-blue-500 px-4 py-2">Total Matches</th>
-							<th class="border border-blue-500 px-4 py-2">Matches Won</th>
-							<th class="border border-blue-500 px-4 py-2">Matches Lost</th>
-							<th class="border border-blue-500 px-4 py-2">Win Rate</th>
-						</tr>
-					</thead>
-					<tbody id="user-stats-body" class="bg-blue-700 divide-y divide-blue-500">
-						<!-- Player stats will be inserted here -->
-					</tbody>
-				</table>
-			</div>
+    return /* HTML */ `
+      ${navbarHTML}
+      <h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
+      <div class="overflow-x-auto">
+        <table
+          class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500"
+        >
+          <thead class="bg-blue-800">
+            <tr>
+              <th class="border border-blue-500 px-4 py-2">Username</th>
+              <th class="border border-blue-500 px-4 py-2">Total Matches</th>
+              <th class="border border-blue-500 px-4 py-2">Matches Won</th>
+              <th class="border border-blue-500 px-4 py-2">Matches Lost</th>
+              <th class="border border-blue-500 px-4 py-2">Win Rate</th>
+            </tr>
+          </thead>
+          <tbody
+            id="user-stats-body"
+            class="bg-blue-700 divide-y divide-blue-500"
+          >
+            <!-- Player stats will be inserted here -->
+          </tbody>
+        </table>
+      </div>
 
-			<h1 class="text-4xl font-bold text-blue-300 mt-12 mb-8">Match History</h1>
-			<div class="overflow-x-auto">
-				<table class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500">
-					<thead class="bg-blue-800">
-						<tr>
-							<th class="border border-blue-500 px-4 py-2">Nickname</th>
-							<th class="border border-blue-500 px-4 py-2">Score</th>
-							<th class="border border-blue-500 px-4 py-2">Opponent</th>
-							<th class="border border-blue-500 px-4 py-2">Opponent Score</th>
-							<th class="border border-blue-500 px-4 py-2">Result</th>
-							<th class="border border-blue-500 px-4 py-2">Date</th>
-						</tr>
-					</thead>
-					<tbody id="matches-table-body" class="bg-blue-700 divide-y divide-blue-500">
-						<!-- Matches will be inserted here -->
-					</tbody>
-				</table>
-			</div>
-			${footerHTML}
-		`;
+      <h1 class="text-4xl font-bold text-blue-300 mt-12 mb-8">Match History</h1>
+      <div class="overflow-x-auto">
+        <table
+          id="matches-table"
+          class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500"
+        >
+          <thead class="bg-blue-800">
+            <tr>
+              <th class="border border-blue-500 px-4 py-2">Nickname</th>
+              <th class="border border-blue-500 px-4 py-2">Score</th>
+              <th class="border border-blue-500 px-4 py-2">Opponent</th>
+              <th class="border border-blue-500 px-4 py-2">Opponent Score</th>
+              <th class="border border-blue-500 px-4 py-2">Result</th>
+              <th class="border border-blue-500 px-4 py-2">Date</th>
+            </tr>
+          </thead>
+          <tbody
+            id="matches-table-body"
+            class="bg-blue-700 divide-y divide-blue-500"
+          >
+            <!-- Matches will be inserted here -->
+          </tbody>
+        </table>
+      </div>
+      ${footerHTML}
+    `;
   }
 
   async render() {
@@ -62,13 +73,14 @@ export default class extends AbstractView {
 
   async fetchAndDisplayMatches() {
     try {
-      const response = await fetch(
-        "http://localhost:4000/api/users/1/matches/"
-      );
-      if (!response.ok) throw new Error("Failed to fetch matches");
+      const matches = await getUserMatches();
 
-      const matchData: ExtendedApiResponse<Match[]> = await response.json();
-      const matches = matchData.data;
+      if (matches.length === 0) {
+        document
+          .getElementById("matches-table")
+          ?.replaceWith("No matches played yet");
+        return;
+      }
 
       const matchesTableBody = document.getElementById("matches-table-body");
       if (!matchesTableBody) return;
@@ -76,14 +88,22 @@ export default class extends AbstractView {
       matches.forEach((match) => {
         const result = match.playerScore > match.opponentScore ? "Won" : "Lost";
         const row = document.createElement("tr");
-        row.innerHTML = `
-						<td class="border border-blue-500 px-4 py-2">${match.playerNickname}</td>
-						<td class="border border-blue-500 px-4 py-2">${match.playerScore}</td>
-						<td class="border border-blue-500 px-4 py-2">${match.opponentNickname}</td>
-						<td class="border border-blue-500 px-4 py-2">${match.opponentScore}</td>
-						<td class="border border-blue-500 px-4 py-2">${result}</td>
-						<td class="border border-blue-500 px-4 py-2">${new Date(match.date!).toLocaleString()}</td>
-				`;
+        row.innerHTML = /* HTML */ `
+          <td class="border border-blue-500 px-4 py-2">
+            ${match.playerNickname}
+          </td>
+          <td class="border border-blue-500 px-4 py-2">${match.playerScore}</td>
+          <td class="border border-blue-500 px-4 py-2">
+            ${match.opponentNickname}
+          </td>
+          <td class="border border-blue-500 px-4 py-2">
+            ${match.opponentScore}
+          </td>
+          <td class="border border-blue-500 px-4 py-2">${result}</td>
+          <td class="border border-blue-500 px-4 py-2">
+            ${new Date(match.date!).toLocaleString()}
+          </td>
+        `;
         matchesTableBody.appendChild(row);
       });
     } catch (error) {
@@ -92,32 +112,32 @@ export default class extends AbstractView {
   }
 
   async fetchAndDisplayUserStats() {
-    const user: string = "Herta";
+    const user: string = globalToken?.username ?? "undefined";
     try {
-      const response = await fetch(
-        `http://localhost:4000/api/users/1/user-stats/`
-      );
-      if (!response.ok) throw new Error("Failed to fetch user stats");
-
-      const userStatsData: ApiResponse<UserStats> = await response.json();
-      const stats = userStatsData.data;
+      const userStats = await getUserStats();
 
       const tableBody = document.getElementById("user-stats-body");
       if (!tableBody) return;
 
-      const formattedWinRate = stats.winRate.toFixed(2) + "%";
+      const formattedWinRate = userStats.winRate.toFixed(2) + "%";
 
-      tableBody.innerHTML = `
-				<tr>
-						<td class="border border-blue-500 px-4 py-2">${user}</td>
-						<td class="border border-blue-500 px-4 py-2">${stats.matchesPlayed}</td>
-						<td class="border border-blue-500 px-4 py-2">${stats.matchesWon}</td>
-						<td class="border border-blue-500 px-4 py-2">${stats.matchesLost}</td>
-						<td class="border border-blue-500 px-4 py-2">${formattedWinRate}</td>
-				</tr>
-			`;
+      tableBody.innerHTML = /* HTML */ `
+        <tr>
+          <td class="border border-blue-500 px-4 py-2">${user}</td>
+          <td class="border border-blue-500 px-4 py-2">
+            ${userStats.matchesPlayed}
+          </td>
+          <td class="border border-blue-500 px-4 py-2">
+            ${userStats.matchesWon}
+          </td>
+          <td class="border border-blue-500 px-4 py-2">
+            ${userStats.matchesLost}
+          </td>
+          <td class="border border-blue-500 px-4 py-2">${formattedWinRate}</td>
+        </tr>
+      `;
     } catch (error) {
-      console.error("Error fetching user stats:", error);
+      console.error("Error fetching userStats:", error);
     }
   }
 }
