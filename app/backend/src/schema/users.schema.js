@@ -11,6 +11,17 @@ const userSchema = {
   additionalProperties: false
 };
 
+const userResponseSchema = {
+  $id: "userResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    user: { $ref: "userSchema" }
+  },
+  required: ["message", "user"],
+  additionalProperties: false
+};
+
 const createUserSchema = {
   $id: "createUserSchema",
   type: "object",
@@ -20,17 +31,6 @@ const createUserSchema = {
     password: { $ref: "commonDefinitionsSchema#/definitions/password" }
   },
   required: ["username", "password"],
-  additionalProperties: false
-};
-
-const createUserResponseSchema = {
-  $id: "createUserResponseSchema",
-  type: "object",
-  properties: {
-    message: { type: "string" },
-    user: { $ref: "userSchema" }
-  },
-  required: ["message", "user"],
   additionalProperties: false
 };
 
@@ -72,8 +72,8 @@ export const patchUserSchema = {
 
 export const userSchemas = [
   userSchema,
+  userResponseSchema,
   createUserSchema,
-  createUserResponseSchema,
   updateUserSchema,
   patchUserSchema
 ];

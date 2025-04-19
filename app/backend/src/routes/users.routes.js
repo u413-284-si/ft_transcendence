@@ -46,7 +46,7 @@ const optionsCreateUser = {
   schema: {
     body: { $ref: "createUserSchema" },
     response: {
-      201: { $ref: "createUserResponseSchema" },
+      201: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }
@@ -56,6 +56,7 @@ const optionsGetUser = {
   onRequest: [authorizeUser],
   schema: {
     response: {
+      200: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }
@@ -66,6 +67,7 @@ const optionsUpdateUser = {
     params: { $ref: "idSchema" },
     body: { $ref: "updateUserSchema" },
     response: {
+      200: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }
@@ -76,6 +78,7 @@ const optionsPatchUser = {
     params: { $ref: "idSchema" },
     body: { $ref: "patchUserSchema" },
     response: {
+      200: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }

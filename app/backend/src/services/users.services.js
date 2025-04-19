@@ -51,6 +51,11 @@ export async function deleteUser(id) {
   const user = await prisma.user.delete({
     where: {
       id
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true
     }
   });
   return user;
