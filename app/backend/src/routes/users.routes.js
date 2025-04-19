@@ -1,6 +1,6 @@
 import { authorizeUser } from "../middleware/auth.js";
 import {
-  registerUserHandler,
+  createUserHandler,
   getUserHandler,
   getAllUsersHandler,
   updateUserHandler,
@@ -15,7 +15,7 @@ import {
 import { errorResponses } from "../utils/error.js";
 
 export default async function userRoutes(fastify) {
-  fastify.post("/", optionsCreateUser, registerUserHandler);
+  fastify.post("/", optionsCreateUser, createUserHandler);
 
   fastify.get("/", optionsGetUser, getUserHandler);
 

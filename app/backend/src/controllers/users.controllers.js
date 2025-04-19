@@ -18,7 +18,7 @@ import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHashedPassword } from "../services/auth.services.js";
 
-export async function registerUserHandler(request, reply) {
+export async function createUserHandler(request, reply) {
   const action = "Create User";
   try {
     const { username, email, password } = request.body;
@@ -32,7 +32,7 @@ export async function registerUserHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `registerUserHandler: ${createResponseMessage(action, false)}`
+      `createUserHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
