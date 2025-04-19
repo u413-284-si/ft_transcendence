@@ -89,6 +89,23 @@ export async function updateUserHandler(request, reply) {
   }
 }
 
+export async function patchUserHandler(request, reply) {
+  const action = "Patch user";
+  try {
+    const id = parseInt(request.params.id, 10);
+    const data = await updateUser(id, request.body);
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), user: data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `patchUserHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
 export async function deleteUserHandler(request, reply) {
   const action = "Delete user";
   try {
@@ -119,23 +136,6 @@ export async function getUserMatchesHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserMatchesHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function patchUserHandler(request, reply) {
-  const action = "Patch user";
-  try {
-    const id = parseInt(request.params.id, 10);
-    const data = await updateUser(id, request.body);
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), user: data });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `patchUserHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

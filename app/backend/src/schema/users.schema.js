@@ -22,6 +22,21 @@ const userResponseSchema = {
   additionalProperties: false
 };
 
+const usersResponseSchema = {
+  $id: "usersResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    count: { type: "integer" },
+    data: {
+      type: "array",
+      items: { $ref: "userSchema" }
+    }
+  },
+  required: ["message", "count", "data"],
+  additionalProperties: false
+};
+
 const createUserSchema = {
   $id: "createUserSchema",
   type: "object",
@@ -73,6 +88,7 @@ export const patchUserSchema = {
 export const userSchemas = [
   userSchema,
   userResponseSchema,
+  usersResponseSchema,
   createUserSchema,
   updateUserSchema,
   patchUserSchema

@@ -19,7 +19,7 @@ export default async function userRoutes(fastify) {
 
   fastify.get("/", optionsGetUser, getUserHandler);
 
-  fastify.get("/admin", getAllUsersHandler);
+  fastify.get("/admin", optionsGetAllUsers, getAllUsersHandler);
 
   fastify.put("/:id/", optionsUpdateUser, updateUserHandler);
 
@@ -55,8 +55,18 @@ const optionsCreateUser = {
 const optionsGetUser = {
   onRequest: [authorizeUser],
   schema: {
+    params: { $ref: "idSchema" },
     response: {
       200: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetAllUsers = {
+  schema: {
+    response: {
+      200: { $ref: "usersResponseSchema" },
       ...errorResponses
     }
   }
