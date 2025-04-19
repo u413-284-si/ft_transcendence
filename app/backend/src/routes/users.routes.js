@@ -25,19 +25,19 @@ export default async function userRoutes(fastify) {
 
   fastify.patch("/:id/", optionsPatchUser, patchUserHandler);
 
-  fastify.delete("/:id/", deleteUserHandler);
+  fastify.delete("/:id/", optionsDeleteUser, deleteUserHandler);
 
-  fastify.get("/matches/", optionsGetUser, getUserMatchesHandler);
+  fastify.get("/matches/", optionsGetUserData, getUserMatchesHandler);
 
   fastify.get("/admin/user-stats/", getAllUserStatsHandler);
 
-  fastify.get("/user-stats/", optionsGetUser, getUserStatsHandler);
+  fastify.get("/user-stats/", optionsGetUserData, getUserStatsHandler);
 
-  fastify.get("/tournaments/", optionsGetUser, getUserTournamentsHandler);
+  fastify.get("/tournaments/", optionsGetUserData, getUserTournamentsHandler);
 
   fastify.get(
     "/tournaments/active/",
-    optionsGetUser,
+    optionsGetUserData,
     getUserActiveTournamentHandler
   );
 }
@@ -79,6 +79,25 @@ const optionsPatchUser = {
     body: { $ref: "patchUserSchema" },
     response: {
       200: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteUser = {
+  schema: {
+    params: { $ref: "idSchema" },
+    response: {
+      200: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserData = {
+  onRequest: [authorizeUser],
+  schema: {
+    response: {
       ...errorResponses
     }
   }
