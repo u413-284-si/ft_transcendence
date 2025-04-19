@@ -39,22 +39,38 @@ export class Router {
   }
 
   async navigate(path: string, push: boolean = true): Promise<void> {
-    if (this.currentPath === path) {
-      console.log(`Already on path ${path}`);
-      return;
-    }
-    console.log(`Try to navigate to ${path} from ${this.currentPath}`);
-    if (!(await this.canNavigate())) {
-      console.warn(`Navigation blocked`);
-      return;
-    }
+    try {
+      if (this.currentPath === path) {
+        console.log(`Already on path ${path}`);
+        return;
+      }
 
-    const route = this.routes.get(path);
-    if (!route) {
-      console.warn(`No route found for path: ${path}. Navigate to /home`);
-      this.navigate("/home", false);
-      return;
+      console.log(`Try to navigate to ${path} from ${this.currentPath}`);
+      if (!(await this.canNavigateFrom())) {
+        console.warn(`Navigation blocked`);
+        return;
+      }
+
+      const route = this.routes.get(path);
+      if (!route) {
+        console.warn(`No route found for path: ${path}. Navigate to /home`);
+        await this.navigate("/home", false);
+        return;
+      }
+
+      await this.handleRouteChange(route, path, push);
+    } catch (error) {
+      console.error("Error during navigation:", error);
     }
+  }
+
+  private async handleRouteChange(
+    route: RouteConfig,
+    path: string,
+    push: boolean
+  ) {
+    const isAllowed = await this.evaluateGuard(route);
+    if (!isAllowed) return;
 
     if (push) {
       console.log(`Push state for ${path}`);
@@ -65,29 +81,7 @@ export class Router {
     }
     this.currentPath = path;
 
-    this.handleRouteChange(route, path);
-  }
-
-  private async handleRouteChange(route: RouteConfig, path: string) {
-    // Guard check
-    if (route.guard) {
-      const guardResult = await route.guard();
-      if (guardResult === true) {
-        // continue
-      } else if (guardResult === false) {
-        console.warn("Route blocked by guard.");
-        return;
-      } else if (typeof guardResult === "string") {
-        console.warn(`Redirecting due to guard → ${guardResult}`);
-        this.navigate(guardResult, false);
-        return;
-      }
-    }
-
-    // Cleanup current view
-    this.currentView?.unmount?.();
-    this.subviews.forEach((subview) => subview.unmount?.());
-    this.subviews = [];
+    this.clearCurrentView();
 
     // Instantiate and mount new view
     this.currentView = new route.view();
@@ -130,7 +124,7 @@ export class Router {
     }
   };
 
-  private async canNavigate(): Promise<boolean> {
+  private async canNavigateFrom(): Promise<boolean> {
     const guards = [
       this.currentView?.getLeaveGuard?.(),
       ...this.subviews.map((v) => v.getLeaveGuard?.()).filter(Boolean)
@@ -146,6 +140,36 @@ export class Router {
     }
 
     return true;
+  }
+
+  private async evaluateGuard(route: RouteConfig): Promise<boolean> {
+    if (!route.guard) return true;
+
+    try {
+      const result = await route.guard();
+
+      if (result === false) {
+        console.warn("Route blocked by guard.");
+        return false;
+      }
+
+      if (typeof result === "string") {
+        console.warn(`Redirecting due to guard → ${result}`);
+        await this.navigate(result, false);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error during guard evaluation:", error);
+      return false;
+    }
+  }
+
+  private clearCurrentView() {
+    this.currentView?.unmount?.();
+    this.subviews.forEach((s) => s.unmount?.());
+    this.subviews = [];
   }
 }
 
