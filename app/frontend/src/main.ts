@@ -16,17 +16,15 @@ router
   .addRoute({ path: "/settings", view: Settings, guard: authGuard })
   .addRoute({ path: "/stats", view: Stats, guard: authGuard });
 
-auth.onChange((isAuth) => {
-  const path = window.location.pathname;
-  if (!isAuth && path !== "/login") {
-    router.navigate("/login", false);
-  } else if (isAuth && path === "/login") {
-    router.navigate("/home", false);
-  }
-});
-
 document.addEventListener("DOMContentLoaded", () => {
   auth.initialize().then(() => {
     router.start();
+    auth.onChange(async (isAuth) => {
+      const path = window.location.pathname;
+      if (!isAuth && path !== "/login") {
+        alert("JWT expired");
+        await router.navigate("/login", false);
+      }
+    });
   });
 });

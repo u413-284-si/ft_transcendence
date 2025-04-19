@@ -109,6 +109,7 @@ export class Router {
   }
 
   private handlePopState = () => {
+    console.log("Popstate event triggered");
     this.navigate(window.location.pathname, false);
   };
 
@@ -147,6 +148,7 @@ export class Router {
 
     try {
       const result = await route.guard();
+      console.log(`Route guard result: ${result}`);
 
       if (result === false) {
         console.warn("Route blocked by guard.");

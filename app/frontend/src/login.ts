@@ -1,4 +1,5 @@
 import { auth } from "./AuthManager.js";
+import { router } from "./Router.js";
 
 export async function loginUser(event: Event): Promise<void> {
   event.preventDefault();
@@ -9,5 +10,7 @@ export async function loginUser(event: Event): Promise<void> {
   const usernameOrEmail: string = loginForm.usernameOrEmail.value;
   const password: string = loginForm.password.value;
 
-  auth.login(usernameOrEmail, password);
+  const isAllowed = await auth.login(usernameOrEmail, password);
+  if (!isAllowed) return;
+  router.navigate("/home", false);
 }
