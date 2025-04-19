@@ -9,7 +9,7 @@ import { errorResponses } from "../utils/error.js";
 export default async function matchRoutes(fastify) {
   fastify.post("/", optionsCreateMatch, createMatchHandler);
 
-  fastify.get("/", getAllMatchesHandler);
+  fastify.get("/", optionsGetAllMatches, getAllMatchesHandler);
 
   fastify.get("/:id/", optionsGetMatch, getMatchHandler);
 }
@@ -28,6 +28,16 @@ const optionsGetMatch = {
   schema: {
     params: { $ref: "idSchema" },
     response: {
+      200: { $ref: "matchResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetAllMatches = {
+  schema: {
+    response: {
+      200: { $ref: "matchesResponseSchema" },
       ...errorResponses
     }
   }
