@@ -2,7 +2,7 @@ import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { createTournament } from "../services/tournamentService.js";
-import { hasDuplicates } from "../validate.js";
+import { validateNicknames } from "../validate.js";
 
 export default class extends AbstractView {
   constructor(
@@ -61,7 +61,9 @@ export default class extends AbstractView {
   async addListeners() {
     document
       .getElementById("nicknames-form")
-      ?.addEventListener("submit", (event) => this.initTournament(event));
+      ?.addEventListener("submit", (event) =>
+        this.validateAndStartTournament(event)
+      );
   }
 
   async render() {
@@ -69,33 +71,11 @@ export default class extends AbstractView {
     this.addListeners();
   }
 
-  private extractNicknames(): string[] {
-    const form = document.getElementById("nicknames-form") as HTMLFormElement;
-    const nicknames: string[] = [];
-    for (let i = 1; i <= this.numberOfPlayers; i++) {
-      const nicknameInput: string = (
-        form.querySelector(`input[name="player${i}"]`) as HTMLInputElement
-      ).value.trim();
-      if (nicknameInput !== "") {
-        nicknames.push(nicknameInput);
-      } else {
-        alert("Please enter a nickname for all players");
-        return [];
-      }
-    }
-    if (hasDuplicates(nicknames)) {
-      alert("Nicknames must be unique");
-      return [];
-    }
-    return nicknames;
-  }
-
-  private async initTournament(event: Event) {
+  private async validateAndStartTournament(event: Event) {
     event.preventDefault();
     const nicknames = this.extractNicknames();
-    if (nicknames.length === 0) {
-      return;
-    }
+    if (!validateNicknames(nicknames, event)) return;
+
     const tournament = Tournament.fromUsernames(
       nicknames,
       this.tournamentName,
@@ -118,5 +98,18 @@ export default class extends AbstractView {
     } catch (e) {
       console.error("Error creating tournament", e);
     }
+  }
+
+  private extractNicknames(): string[] {
+    const form = document.getElementById("nicknames-form") as HTMLFormElement;
+    const nicknames: string[] = [];
+
+    for (let i = 1; i <= this.numberOfPlayers; i++) {
+      const nicknameInput: string = (
+        form.querySelector(`input[name="player${i}"]`) as HTMLInputElement
+      ).value;
+      nicknames.push(nicknameInput);
+    }
+    return nicknames;
   }
 }

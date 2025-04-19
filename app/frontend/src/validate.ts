@@ -1,7 +1,3 @@
-export function hasDuplicates(nicknames: string[]): boolean {
-  return new Set(nicknames).size !== nicknames.length;
-}
-
 export function validateNicknames(nicknames: string[], event: Event): boolean {
   const usernameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
 
@@ -26,4 +22,8 @@ export function validateNicknames(nicknames: string[], event: Event): boolean {
     return false;
   }
   return true;
+}
+
+function hasDuplicates(nicknames: string[]): boolean {
+  return new Set(nicknames).size !== nicknames.length;
 }
