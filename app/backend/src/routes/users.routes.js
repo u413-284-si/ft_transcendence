@@ -27,7 +27,7 @@ export default async function userRoutes(fastify) {
 
   fastify.delete("/:id/", optionsDeleteUser, deleteUserHandler);
 
-  fastify.get("/matches/", optionsGetUserData, getUserMatchesHandler);
+  fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
 
   fastify.get("/admin/user-stats/", getAllUserStatsHandler);
 
@@ -99,6 +99,16 @@ const optionsDeleteUser = {
     params: { $ref: "idSchema" },
     response: {
       200: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserMatches = {
+  onRequest: [authorizeUser],
+  schema: {
+    response: {
+      200: { $ref: "matchesResponseSchema" },
       ...errorResponses
     }
   }

@@ -7,7 +7,7 @@ export const commonDefinitionsSchema = {
       maxLength: 20,
       pattern: "^[a-zA-Z0-9-!?_$.]{3,20}$",
       description:
-        "A unique username with 3-20 alphanumeric or the following special characters inside brackets: [-!?_@$.]"
+        "A unique username with 3-20 alphanumeric or the following special characters inside brackets: [-!?_$.]"
     },
     email: {
       type: "string",
@@ -34,6 +34,16 @@ export const commonDefinitionsSchema = {
         { $ref: "commonDefinitionsSchema#/definitions/username" },
         { $ref: "commonDefinitionsSchema#/definitions/email" }
       ]
+    },
+    score: {
+      type: "integer",
+      minimum: 0,
+      description: "A score with a minimum value of 0."
+    },
+    date: {
+      type: "string",
+      format: "date",
+      description: "A date in ISO 8601 format."
     }
   }
 };
