@@ -20,7 +20,6 @@ export default class extends AbstractView {
 				<input type="text" id="nickname2" placeholder="Enter nickname"><br><br>
 				<button type="submit">Start Game</button>
 			</form>
-			<canvas id="gameCanvas" width="800" height="400" class="border-4 border-white"></canvas>
 			${footerHTML}
 			`;
   }
