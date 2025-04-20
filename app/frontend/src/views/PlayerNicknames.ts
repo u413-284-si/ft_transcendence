@@ -3,6 +3,7 @@ import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { createTournament } from "../services/tournamentService.js";
 import { hasDuplicates } from "../validate.js";
+import { router } from "../Router.js";
 
 export default class extends AbstractView {
   constructor(
@@ -114,9 +115,9 @@ export default class extends AbstractView {
         throw new Error("Match is undefined");
       }
       const matchAnnouncementView = new MatchAnnouncement(tournament);
-      matchAnnouncementView.render();
-    } catch (e) {
-      console.error("Error creating tournament", e);
+      router.navigateToView(matchAnnouncementView);
+    } catch (error) {
+      console.error("Error creating tournament", error);
     }
   }
 }

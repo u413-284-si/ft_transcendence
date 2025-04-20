@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
 import { hasDuplicates } from "../validate.js";
+import { router } from "../Router.js";
 
 export default class NewGameView extends AbstractView {
   constructor() {
@@ -61,6 +62,6 @@ export default class NewGameView extends AbstractView {
       type: GameType.single,
       tournament: null
     });
-    gameView.render();
+    router.navigateToView(gameView);
   }
 }

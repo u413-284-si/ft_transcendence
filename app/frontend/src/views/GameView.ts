@@ -1,6 +1,10 @@
 import AbstractView from "./AbstractView.js";
 import { startGame, getGameState, setGameState } from "../game.js";
 import { GameData } from "../types/GameData.js";
+import { router } from "../Router.js";
+import MatchAnnouncement from "./MatchAnnouncement.js";
+import { setTournamentFinished } from "../services/tournamentService.js";
+import ResultsView from "./ResultsView.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -24,21 +28,27 @@ export class GameView extends AbstractView {
   }
 
   async createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
-    return `
-    ${navbarHTML}
-      <canvas id="gameCanvas" width="800" height="400" class="border-4 border-white"></canvas>
     const navbarHTML = await this.createNavbar();
     const footerHTML = await this.createFooter();
-    ${footerHTML}
-      `;
+    return /* HTML */ `
+      ${navbarHTML}
+      <canvas
+        id="gameCanvas"
+        width="800"
+        height="400"
+        class="border-4 border-white"
+      ></canvas>
+      ${footerHTML}
+    `;
   }
 
   async render() {
     await this.updateHTML();
     this.addEventListeners(this.controller.signal);
     await startGame(this.gameData, this.keys);
+    if (getGameState() !== "aborted") {
+      await this.navigateAfterGame();
+    }
   }
 
   private addEventListeners(signal: AbortSignal) {
@@ -65,28 +75,28 @@ export class GameView extends AbstractView {
     this.controller.abort();
   }
 
-  /* async cleanAndSwitchView(): Promise<void> {
-    this.unmount();
+  async navigateAfterGame(): Promise<void> {
     try {
       if (this.gameData.type == GameType.single) {
         await router.navigate("/newGame", false);
       } else if (this.gameData.type == GameType.tournament) {
         if (this.gameData.tournament) {
           if (this.gameData.tournament.getNextMatchToPlay()) {
+            const view = new MatchAnnouncement(this.gameData.tournament);
+            router.navigateToView(view);
             return;
           }
           await setTournamentFinished(this.gameData.tournament.getId());
-          const resultsView = new ResultsView(this.gameData.tournament);
-          router.registerSubview(resultsView);
-          resultsView.render();
+          const view = new ResultsView(this.gameData.tournament);
+          router.navigateToView(view);
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error in navigateAfterGame(): ", error);
       // show error page
     }
   }
- */
+
   async confirmLeave(): Promise<boolean> {
     if (getGameState() !== "running") return true;
 

@@ -1,3 +1,4 @@
+import { router } from "../Router.js";
 import { getActiveTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import { BracketMatch } from "../types/IMatch.js";
@@ -116,6 +117,6 @@ export default class extends AbstractView {
       selectedPlayers,
       tournamentName
     );
-    playerNicknamesView.render();
+    router.navigateToView(playerNicknamesView);
   }
 }

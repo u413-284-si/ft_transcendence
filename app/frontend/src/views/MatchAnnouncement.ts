@@ -1,8 +1,8 @@
+import { router } from "../Router.js";
 import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
-import NewTournament from "./NewTournament.js";
 
 export default class extends AbstractView {
   private player1: string | null = null;
@@ -103,14 +103,13 @@ export default class extends AbstractView {
       type: GameType.tournament,
       tournament: this.tournament
     });
-    gameView.render();
+    router.navigateToView(gameView);
   }
 
   private async abortTournament() {
     try {
       await deleteTournament(this.tournament.getId());
-      const newTournamentView = new NewTournament();
-      newTournamentView.render();
+      router.navigate("/newTournament", false);
     } catch (error) {
       console.error(error);
       // show error page

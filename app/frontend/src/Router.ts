@@ -56,36 +56,39 @@ export class Router {
         return;
       }
 
-      await this.handleRouteChange(route, path, push);
+      const isAllowed = await this.evaluateGuard(route);
+      if (!isAllowed) return;
+
+      if (push) {
+        console.log(`Push state for ${path}`);
+        history.pushState({}, "", path);
+      } else {
+        console.log(`Replace state for ${path}`);
+        history.replaceState({}, "", path);
+      }
+      this.currentPath = path;
+
+      const view = new route.view();
+      this.setView(view);
+
+      this.routeChangeListeners.forEach((fn) => fn(path));
     } catch (error) {
-      console.error("Error during navigation:", error);
+      console.error("Error during navigate():", error);
     }
   }
 
-  private async handleRouteChange(
-    route: RouteConfig,
-    path: string,
-    push: boolean
-  ) {
-    const isAllowed = await this.evaluateGuard(route);
-    if (!isAllowed) return;
-
-    if (push) {
-      console.log(`Push state for ${path}`);
-      history.pushState({}, "", path);
-    } else {
-      console.log(`Replace state for ${path}`);
-      history.replaceState({}, "", path);
+  async navigateToView(view: AbstractView): Promise<void> {
+    try {
+      console.log(`Try to navigate to /internal from ${this.currentPath}`);
+      if (!(await this.canNavigateFrom())) {
+        console.warn(`Navigation blocked`);
+        return;
+      }
+      this.currentPath = "/internal";
+      await this.setView(view);
+    } catch (error) {
+      console.error("Error during navigateToView():", error);
     }
-    this.currentPath = path;
-
-    this.currentView?.unmount?.();
-
-    // Instantiate and mount new view
-    this.currentView = new route.view();
-    await this.currentView.render();
-
-    this.routeChangeListeners.forEach((fn) => fn(path));
   }
 
   addRouteChangeListener(fn: (path: string) => void) {
@@ -116,12 +119,9 @@ export class Router {
   };
 
   private async canNavigateFrom(): Promise<boolean> {
-    const guard = this.currentView?.getLeaveGuard?.();
-    const result = guard?.();
-    if (typeof result === "string") {
-      if (!confirm(result)) return false;
-    } else if (result === false) {
-      return false;
+    if (this.currentView?.confirmLeave) {
+      const result = await this.currentView.confirmLeave();
+      return result;
     }
     return true;
   }
@@ -149,6 +149,14 @@ export class Router {
       console.error("Error during guard evaluation:", error);
       return false;
     }
+  }
+
+  private async setView(view: AbstractView) {
+    if (this.currentView) {
+      this.currentView.unmount?.();
+    }
+    this.currentView = view;
+    await view.render();
   }
 }
 

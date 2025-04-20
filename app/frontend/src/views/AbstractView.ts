@@ -35,5 +35,5 @@ export default class {
 
   unmount?(): void;
 
-  getLeaveGuard?(): () => boolean | string;
+  async confirmLeave?(): Promise<boolean>;
 }
