@@ -1,10 +1,5 @@
 import AbstractView from "./AbstractView.js";
 import { startGame, getGameState, setGameState } from "../game.js";
-import { Tournament } from "../Tournament.js";
-import { router } from "../Router.js";
-import { setTournamentFinished } from "../services/tournamentService.js";
-import MatchAnnouncement from "./MatchAnnouncement.js";
-import ResultsView from "./ResultsView.js";
 import { GameData } from "../types/GameData.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";

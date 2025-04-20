@@ -1,15 +1,9 @@
 import { updatePaddlePositions } from "./input.js";
 import { draw } from "./draw.js";
 import { GameState } from "./types/IGameState.js";
-import NewGame from "./views/NewGame.js";
-import { GameType, GameKey } from "./views/GameView.js";
+import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
-import MatchAnnouncement from "./views/MatchAnnouncement.js";
-import ResultsView from "./views/ResultsView.js";
-import {
-  setTournamentFinished,
-  updateTournamentBracket
-} from "./services/tournamentService.js";
+import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
 import { GameData } from "./types/GameData.js";
 
