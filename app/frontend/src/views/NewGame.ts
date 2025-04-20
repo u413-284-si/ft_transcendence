@@ -56,7 +56,12 @@ export default class NewGameView extends AbstractView {
       return alert("Nicknames must be unique");
     }
 
-    const gameView = new GameView(nickname1, nickname2, GameType.single, null);
+    const gameView = new GameView({
+      nickname1,
+      nickname2,
+      type: GameType.single,
+      tournament: null
+    });
     gameView.render();
   }
 }
