@@ -13,7 +13,6 @@ export class Router {
   private routes: Map<string, RouteConfig> = new Map();
   // private rootElement: HTMLElement;
   private currentView: AbstractView | null = null;
-  private subviews: AbstractView[] = [];
   private currentPath: string = "";
   private routeChangeListeners: ((path: string) => void)[] = [];
 
@@ -80,21 +79,13 @@ export class Router {
     }
     this.currentPath = path;
 
-    this.clearCurrentView();
+    this.currentView?.unmount?.();
 
     // Instantiate and mount new view
     this.currentView = new route.view();
     await this.currentView.render();
 
     this.routeChangeListeners.forEach((fn) => fn(path));
-  }
-
-  registerSubview(view: AbstractView) {
-    this.subviews.push(view);
-  }
-
-  unregisterSubview(view: AbstractView) {
-    this.subviews = this.subviews.filter((v) => v !== view);
   }
 
   addRouteChangeListener(fn: (path: string) => void) {
@@ -125,20 +116,13 @@ export class Router {
   };
 
   private async canNavigateFrom(): Promise<boolean> {
-    const guards = [
-      this.currentView?.getLeaveGuard?.(),
-      ...this.subviews.map((v) => v.getLeaveGuard?.()).filter(Boolean)
-    ];
-
-    for (const guard of guards) {
-      const result = guard?.();
-      if (typeof result === "string") {
-        if (!confirm(result)) return false;
-      } else if (result === false) {
-        return false;
-      }
+    const guard = this.currentView?.getLeaveGuard?.();
+    const result = guard?.();
+    if (typeof result === "string") {
+      if (!confirm(result)) return false;
+    } else if (result === false) {
+      return false;
     }
-
     return true;
   }
 
@@ -165,12 +149,6 @@ export class Router {
       console.error("Error during guard evaluation:", error);
       return false;
     }
-  }
-
-  private clearCurrentView() {
-    this.currentView?.unmount?.();
-    this.subviews.forEach((s) => s.unmount?.());
-    this.subviews = [];
   }
 }
 
