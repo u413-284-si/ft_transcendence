@@ -9,12 +9,12 @@ import { authGuard, guestOnlyGuard } from "./routeGuard.js";
 import { auth } from "./AuthManager.js";
 
 router
-  .addRoute({ path: "/login", view: Login, guard: guestOnlyGuard })
-  .addRoute({ path: "/home", view: Home, guard: authGuard })
-  .addRoute({ path: "/newGame", view: NewGame, guard: authGuard })
-  .addRoute({ path: "/newTournament", view: NewTournament, guard: authGuard })
-  .addRoute({ path: "/settings", view: Settings, guard: authGuard })
-  .addRoute({ path: "/stats", view: Stats, guard: authGuard });
+  .addRoute("/login", { view: Login, guard: guestOnlyGuard })
+  .addRoute("/home", { view: Home, guard: authGuard })
+  .addRoute("/newGame", { view: NewGame, guard: authGuard })
+  .addRoute("/newTournament", { view: NewTournament, guard: authGuard })
+  .addRoute("/settings", { view: Settings, guard: authGuard })
+  .addRoute("/stats", { view: Stats, guard: authGuard });
 
 document.addEventListener("DOMContentLoaded", () => {
   auth.initialize().then(() => {

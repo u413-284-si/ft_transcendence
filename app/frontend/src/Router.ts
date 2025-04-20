@@ -4,7 +4,6 @@ export type RouteGuardResult = true | false | string;
 type RouteGuard = () => RouteGuardResult | Promise<RouteGuardResult>;
 
 type RouteConfig = {
-  path: string;
   view: new () => AbstractView;
   guard?: RouteGuard;
 };
@@ -27,8 +26,8 @@ export class Router {
     return Router.instance;
   }
 
-  addRoute(config: RouteConfig): this {
-    this.routes.set(config.path, config);
+  addRoute(path: string, config: RouteConfig): this {
+    this.routes.set(path, config);
     return this;
   }
 
