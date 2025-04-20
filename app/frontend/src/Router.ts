@@ -30,10 +30,10 @@ export class Router {
     return this;
   }
 
-  start(): void {
+  async start(): Promise<void> {
     window.addEventListener("popstate", this.handlePopState);
     document.body.addEventListener("click", this.handleLinkClick);
-    this.navigate(window.location.pathname, false);
+    await this.navigate(window.location.pathname, false);
   }
 
   async navigate(path: string, push: boolean = true): Promise<void> {
@@ -59,7 +59,7 @@ export class Router {
       const isAllowed = await this.evaluateGuard(route);
       if (!isAllowed) return;
 
-      if (push) {
+      if (push && this.currentPath !== "/internal") {
         console.log(`Push state for ${path}`);
         history.pushState({}, "", path);
       } else {
