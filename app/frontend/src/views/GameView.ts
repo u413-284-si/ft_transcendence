@@ -1,6 +1,11 @@
 import AbstractView from "./AbstractView.js";
-import { startGame } from "../game.js";
+import { startGame, getGameState, setGameState } from "../game.js";
 import { Tournament } from "../Tournament.js";
+import { router } from "../Router.js";
+import { setTournamentFinished } from "../services/tournamentService.js";
+import MatchAnnouncement from "./MatchAnnouncement.js";
+import ResultsView from "./ResultsView.js";
+import { GameData } from "../types/GameData.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -18,12 +23,7 @@ export class GameView extends AbstractView {
   };
   private controller = new AbortController();
 
-  constructor(
-    private player1: string,
-    private player2: string,
-    private type: GameType,
-    private tournament: Tournament | null
-  ) {
+  constructor(private gameData: GameData) {
     super();
     this.setTitle("Now playing");
   }
@@ -37,14 +37,7 @@ export class GameView extends AbstractView {
   async render() {
     await this.updateHTML();
     this.addEventListeners(this.controller.signal);
-    await startGame(
-      this.player1,
-      this.player2,
-      this.type,
-      this.keys,
-      this.controller,
-      this.tournament
-    );
+    await startGame(this.gameData, this.keys);
   }
 
   private addEventListeners(signal: AbortSignal) {

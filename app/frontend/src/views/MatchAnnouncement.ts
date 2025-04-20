@@ -97,12 +97,12 @@ export default class extends AbstractView {
       return;
     }
 
-    const gameView = new GameView(
-      this.player1,
-      this.player2,
-      GameType.tournament,
-      this.tournament
-    );
+    const gameView = new GameView({
+      nickname1: this.player1,
+      nickname2: this.player2,
+      type: GameType.tournament,
+      tournament: this.tournament
+    });
     gameView.render();
   }
 

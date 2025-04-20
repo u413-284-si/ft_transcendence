@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
 import { hasDuplicates } from "../validate.js";
+import { GameData } from "../types/GameData.js";
 
 export default class extends AbstractView {
   constructor() {
