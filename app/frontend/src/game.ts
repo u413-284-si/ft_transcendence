@@ -13,6 +13,16 @@ import {
 import { createMatch } from "./services/matchServices.js";
 import { GameData } from "./types/GameData.js";
 
+let state: "init" | "running" | "done" | "aborted" = "init";
+
+export function getGameState(): "init" | "running" | "done" | "aborted" {
+  return state;
+}
+
+export function setGameState(value: "init" | "running" | "done" | "aborted") {
+  state = value;
+}
+
 export async function startGame(
   gameData: GameData,
   keys: Record<GameKey, boolean>
@@ -20,6 +30,7 @@ export async function startGame(
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
 
+  setGameState("running");
   const gameState = initGameState(
     canvas,
     gameData.nickname1,
@@ -29,6 +40,10 @@ export async function startGame(
   await new Promise<void>((resolve) => {
     gameLoop(canvas, ctx, gameState, resolve);
   });
+  if (getGameState() === "aborted") {
+    return;
+  }
+  setGameState("done");
   await endGame(gameState, gameData.tournament);
 }
 
