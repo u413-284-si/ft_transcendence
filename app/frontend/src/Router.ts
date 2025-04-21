@@ -157,6 +157,14 @@ export class Router {
     this.currentView = view;
     await view.render();
   }
+
+  getCurrentView(): AbstractView | null {
+    return this.currentView;
+  }
+
+  getCurrentPath(): string {
+    return this.currentPath;
+  }
 }
 
 export const router = Router.getInstance();
