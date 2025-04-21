@@ -12,7 +12,8 @@ import { handlePrismaError } from "../utils/error.js";
 export async function createTournamentHandler(request, reply) {
   const action = "Create tournament";
   try {
-    const { name, maxPlayers, adminId, bracket } = request.body;
+    const adminId = request.user.id;
+    const { name, maxPlayers, bracket } = request.body;
 
     const data = await createTournament(name, maxPlayers, adminId, bracket);
     return reply
@@ -65,7 +66,8 @@ export async function patchTournamentHandler(request, reply) {
   const action = "Patch tournament";
   try {
     const id = parseInt(request.params.id, 10);
-    const data = await updateTournament(id, request.body);
+    const adminId = parseInt(request.user.id, 10);
+    const data = await updateTournament(id, adminId, request.body);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data });
@@ -98,7 +100,8 @@ export async function deleteTournamentHandler(request, reply) {
   const action = "Delete Tournament";
   try {
     const id = parseInt(request.params.id, 10);
-    const data = await deleteTournament(id);
+    const adminId = parseInt(request.user.id, 10);
+    const data = await deleteTournament(id, adminId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data });

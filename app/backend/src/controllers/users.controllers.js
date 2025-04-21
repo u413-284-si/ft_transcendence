@@ -41,7 +41,7 @@ export async function registerUserHandler(request, reply) {
 export async function getUserHandler(request, reply) {
   const action = "Get user";
   try {
-    const id = parseInt(request.params.id, 10);
+    const id = parseInt(request.user.id, 10);
     const data = await getUser(id);
     return reply
       .code(200)
@@ -109,7 +109,7 @@ export async function deleteUserHandler(request, reply) {
 export async function getUserMatchesHandler(request, reply) {
   const action = "Get user matches";
   try {
-    const id = parseInt(request.params.id, 10);
+    const id = parseInt(request.user.id, 10);
     const data = await getUserMatches(id);
     const count = data.length;
     return reply
@@ -161,7 +161,7 @@ export async function getAllUserStatsHandler(request, reply) {
 export async function getUserStatsHandler(request, reply) {
   const action = "Get user stats";
   try {
-    const userId = parseInt(request.params.id, 10);
+    const userId = parseInt(request.user.id, 10);
     const data = await getUserStats(userId);
     return reply
       .code(200)
@@ -178,7 +178,7 @@ export async function getUserStatsHandler(request, reply) {
 export async function getUserTournamentsHandler(request, reply) {
   const action = "Get user tournaments";
   try {
-    const id = parseInt(request.params.id, 10);
+    const id = parseInt(request.user.id, 10);
     const data = await getUserTournaments(id);
     const count = data.length;
     return reply
@@ -196,8 +196,8 @@ export async function getUserTournamentsHandler(request, reply) {
 export async function getUserActiveTournamentHandler(request, reply) {
   const action = "Get user active tournament";
   try {
-    const id = parseInt(request.params.id, 10);
-    const data = await getUserActiveTournament(id);
+    const adminId = parseInt(request.user.id, 10);
+    const data = await getUserActiveTournament(adminId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data });

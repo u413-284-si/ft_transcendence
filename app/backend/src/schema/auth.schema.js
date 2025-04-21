@@ -16,9 +16,15 @@ const loginUserResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+    data: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: ["username"]
+    }
   },
-  required: ["message", "username"],
+  required: ["message", "data"],
   additionalProperties: false
 };
 

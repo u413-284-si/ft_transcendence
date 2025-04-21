@@ -27,10 +27,11 @@ export async function getTournament(id) {
   return tournament;
 }
 
-export async function updateTournament(id, updateData) {
+export async function updateTournament(id, adminId, updateData) {
   const updatedTournament = await prisma.tournament.update({
     where: {
-      id
+      id,
+      adminId
     },
     data: updateData
   });
@@ -42,10 +43,11 @@ export async function deleteAllTournaments() {
   return tournaments;
 }
 
-export async function deleteTournament(id) {
+export async function deleteTournament(id, adminId) {
   const tournament = await prisma.tournament.delete({
     where: {
-      id
+      id,
+      adminId
     }
   });
   return tournament;
@@ -60,10 +62,10 @@ export async function getUserTournaments(id) {
   return tournaments;
 }
 
-export async function getUserActiveTournament(id) {
+export async function getUserActiveTournament(adminId) {
   const tournament = await prisma.tournament.findFirst({
     where: {
-      adminId: id,
+      adminId,
       status: {
         in: ["CREATED", "IN_PROGRESS"]
       }
