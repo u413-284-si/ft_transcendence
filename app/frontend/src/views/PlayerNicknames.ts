@@ -4,6 +4,7 @@ import MatchAnnouncement from "./MatchAnnouncement.js";
 import { createTournament } from "../services/tournamentService.js";
 import { hasDuplicates } from "../validate.js";
 import { router } from "../Router.js";
+import { auth } from "../AuthManager.js";
 
 export default class extends AbstractView {
   constructor(
@@ -97,14 +98,16 @@ export default class extends AbstractView {
     if (nicknames.length === 0) {
       return;
     }
-    const tournament = Tournament.fromUsernames(
-      nicknames,
-      this.tournamentName,
-      this.numberOfPlayers,
-      1 // FIXME: Hard coded username
-    );
-
     try {
+      const userId = auth.getToken()?.id;
+      if (!userId) throw new Error("User Id is undefined");
+      const tournament = Tournament.fromUsernames(
+        nicknames,
+        this.tournamentName,
+        this.numberOfPlayers,
+        userId
+      );
+
       const createdTournament = await createTournament(tournament);
       const { id } = createdTournament;
       if (id) {
