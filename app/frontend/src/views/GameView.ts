@@ -83,12 +83,12 @@ export class GameView extends AbstractView {
         if (this.gameData.tournament) {
           if (this.gameData.tournament.getNextMatchToPlay()) {
             const view = new MatchAnnouncement(this.gameData.tournament);
-            router.navigateToView(view);
+            router.navigateInternally(view);
             return;
           }
           await setTournamentFinished(this.gameData.tournament.getId());
           const view = new ResultsView(this.gameData.tournament);
-          router.navigateToView(view);
+          router.navigateInternally(view);
         }
       }
     } catch (error) {

@@ -11,7 +11,6 @@ type RouteConfig = {
 export class Router {
   private static instance: Router;
   private routes: Map<string, RouteConfig> = new Map();
-  // private rootElement: HTMLElement;
   private currentView: AbstractView | null = null;
   private currentPath: string = "";
   private routeChangeListeners: ((path: string) => void)[] = [];
@@ -77,7 +76,7 @@ export class Router {
     }
   }
 
-  async navigateToView(view: AbstractView): Promise<void> {
+  async navigateInternally(view: AbstractView): Promise<void> {
     try {
       console.log(`Try to navigate to /internal from ${this.currentPath}`);
       if (!(await this.canNavigateFrom())) {

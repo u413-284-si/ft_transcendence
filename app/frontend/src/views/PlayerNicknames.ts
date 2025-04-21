@@ -115,7 +115,7 @@ export default class extends AbstractView {
         throw new Error("Match is undefined");
       }
       const matchAnnouncementView = new MatchAnnouncement(tournament);
-      router.navigateToView(matchAnnouncementView);
+      router.navigateInternally(matchAnnouncementView);
     } catch (error) {
       console.error("Error creating tournament", error);
     }

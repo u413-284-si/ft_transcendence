@@ -117,6 +117,6 @@ export default class extends AbstractView {
       selectedPlayers,
       tournamentName
     );
-    router.navigateToView(playerNicknamesView);
+    router.navigateInternally(playerNicknamesView);
   }
 }

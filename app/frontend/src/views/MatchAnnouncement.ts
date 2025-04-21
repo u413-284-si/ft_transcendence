@@ -103,7 +103,7 @@ export default class extends AbstractView {
       type: GameType.tournament,
       tournament: this.tournament
     });
-    router.navigateToView(gameView);
+    router.navigateInternally(gameView);
   }
 
   private async abortTournament() {

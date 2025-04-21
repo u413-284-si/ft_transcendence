@@ -62,6 +62,6 @@ export default class NewGameView extends AbstractView {
       type: GameType.single,
       tournament: null
     });
-    router.navigateToView(gameView);
+    router.navigateInternally(gameView);
   }
 }
