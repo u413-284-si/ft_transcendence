@@ -1,14 +1,5 @@
-import {
-  authorizeUserAccess,
-  authorizeUserRefresh,
-  createAccessAndRefreshToken,
-  verifyRefreshToken
-} from "../services/auth.services.js";
-import {
-  deleteUserRefreshToken,
-  getUserPassword,
-  getRefreshToken
-} from "../services/users.services.js";
+import { createAccessAndRefreshToken } from "../services/auth.services.js";
+import { getUserPassword } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
@@ -66,87 +57,34 @@ export async function loginUserHandler(request, reply) {
   }
 }
 
-export async function authorizeUserAccessHandler(request, reply) {
-  const action = "authorize user";
-  const token = request.cookies.accessToken;
-
-  if (!token) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "No access token provided"
-    );
-  }
+export async function authAndDecodeAccessHandler(request, reply) {
+  const action = "Auth and decode access token";
   try {
-    const data = authorizeUserAccess(token);
-    request.user = data;
+    const data = request.user;
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authorizeUserAccessHandler: ${createResponseMessage(action, false)}`
+      `authAndDecodeAccessHandler: ${createResponseMessage(action, false)}`
     );
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "Could not verify JWT"
-    );
+    handlePrismaError(reply, action, err);
   }
 }
 
-export async function authorizeUserRefreshHandler(request, reply) {
-  const action = "authorize user";
-  const token = request.cookies.refreshToken;
-  if (!token) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "No refresh token provided"
-    );
-  }
+export async function authAndDecodeRefreshHandler(request, reply) {
+  const action = "Auth and decode refresh token";
   try {
-    const data = authorizeUserRefresh(token);
-    const hashedRefreshTokenDatabase = await getRefreshToken(data.id);
-
-    if (!(await verifyRefreshToken(hashedRefreshTokenDatabase, token))) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(action, false),
-        "Invalid refresh token"
-      );
-    }
-
-    delete data.exp;
-    delete data.iat;
-
-    const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
-    const hashedRefreshTokenRequest = await createHashedRefreshToken(
-      refreshToken.token
-    );
-
-    await deleteUserRefreshToken(data.id);
-    await addUserRefreshToken(data.id, hashedRefreshTokenRequest);
-
-    request.user = data;
-    return setAuthCookies(reply, accessToken, refreshToken)
+    const data = request.user;
+    return reply
       .code(200)
-      .send({
-        message: createResponseMessage(action, true),
-        username: data.username
-      });
+      .send({ message: createResponseMessage(action, true), data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authorizeUserRefreshHandler: ${createResponseMessage(action, false)}`
+      `authAndDecodeRefreshHandler: ${createResponseMessage(action, false)}`
     );
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "Could not verify JWT"
-    );
+    handlePrismaError(reply, action, err);
   }
 }

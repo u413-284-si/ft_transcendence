@@ -1,5 +1,5 @@
 const authorizeUser = async () => {
-  const response = await fetch("http://localhost:4000/api/auth/", {
+  const response = await fetch("/api/auth/", {
     method: "GET",
     credentials: "same-origin",
     headers: {
@@ -8,7 +8,7 @@ const authorizeUser = async () => {
   });
 
   if (!response.ok) {
-    const response = await fetch("http://localhost:4000/api/auth/refresh", {
+    const response = await fetch("/api/auth/refresh", {
       method: "GET",
       credentials: "same-origin",
       headers: {

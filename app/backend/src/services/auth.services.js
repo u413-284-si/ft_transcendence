@@ -5,11 +5,11 @@ import {
 import jwt from "jsonwebtoken";
 import pkg from "argon2";
 
-export function authorizeUserAccess(token) {
+export function verifyAccessToken(token) {
   return jwt.verify(token, JWT_ACCESS_TOKEN_SECRET);
 }
 
-export function authorizeUserRefresh(token) {
+export function verifyRefreshToken(token) {
   return jwt.verify(token, JWT_REFRESH_TOKEN_SECRET);
 }
 
@@ -33,7 +33,7 @@ export async function verifyPassword(databasePassword, loginPassword) {
   return await pkg.verify(databasePassword, loginPassword);
 }
 
-export async function verifyRefreshToken(
+export async function verifyStoredRefreshToken(
   databaseRefreshToken,
   requestRefreshToken
 ) {
@@ -56,13 +56,13 @@ export function createAccessAndRefreshToken(user) {
   //   const accessTokenTimeToExpireCookie = 15 * 60;
   const accessTokenTimeToExpireJWT = 5;
   const accessTokenTimeToExpireCookie = new Date(
-    new Date().getTime() + 60 * 60 * 1000
+    new Date().getTime() + accessTokenTimeToExpireJWT * 1000
   );
 
   //   const refreshToken = 7 * 24 * 60 * 60;
   const refreshTokenTimeToExpireJWT = 30;
   const refreshTokenTimeToExpireCookie = new Date(
-    new Date().getTime() + 24 * 60 * 60 * 1000
+    new Date().getTime() + refreshTokenTimeToExpireJWT * 1000
   );
 
   const accessToken = createAccessToken(user, accessTokenTimeToExpireJWT);
