@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     auth.onChange(async (isAuth) => {
       const path = window.location.pathname;
       if (!isAuth && path !== "/login") {
-        alert("JWT expired");
+        alert("User was logged out");
         await router.navigate("/login", false);
       }
     });

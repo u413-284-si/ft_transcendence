@@ -11,6 +11,10 @@ export class AuthManager {
   private listeners: AuthChangeCallback[] = [];
   private intervalMs: number = 30000;
 
+  private idleTimeout: ReturnType<typeof setTimeout> | null = null;
+  private inactivityMs = 30 * 60 * 1000; // 30 minutes
+  private resetActivityTimer = () => this.startInactivityTimer();
+
   private constructor() {}
 
   public static getInstance(): AuthManager {
@@ -48,6 +52,8 @@ export class AuthManager {
     try {
       await userLogin(username, password);
       await this.checkSession();
+      this.registerActivityListeners();
+      this.startInactivityTimer();
       console.log("User logged in");
       return true;
     } catch (error) {
@@ -61,6 +67,8 @@ export class AuthManager {
   public async logout(): Promise<void> {
     this.authenticated = false;
     this.token = null;
+    this.clearInactivityTimer();
+    this.removeActivityListeners();
     this.notify();
   }
 
@@ -79,6 +87,32 @@ export class AuthManager {
   private notify(): void {
     for (const callback of this.listeners) {
       callback(this.authenticated, this.token);
+    }
+  }
+
+  private startInactivityTimer(): void {
+    if (this.idleTimeout) clearTimeout(this.idleTimeout);
+    this.idleTimeout = setTimeout(() => {
+      console.warn("User inactive. Logging out.");
+      this.logout();
+    }, this.inactivityMs);
+  }
+
+  private registerActivityListeners(): void {
+    window.addEventListener("mousemove", this.resetActivityTimer);
+    window.addEventListener("keydown", this.resetActivityTimer);
+    this.startInactivityTimer();
+  }
+
+  private removeActivityListeners(): void {
+    window.removeEventListener("mousemove", this.resetActivityTimer);
+    window.removeEventListener("keydown", this.resetActivityTimer);
+  }
+
+  private clearInactivityTimer(): void {
+    if (this.idleTimeout) {
+      clearTimeout(this.idleTimeout);
+      this.idleTimeout = null;
     }
   }
 }
