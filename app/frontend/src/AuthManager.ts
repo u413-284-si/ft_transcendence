@@ -9,7 +9,6 @@ export class AuthManager {
   private authenticated = false;
   private token: Token | null = null;
   private listeners: AuthChangeCallback[] = [];
-  private intervalMs: number = 30000;
 
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
@@ -24,10 +23,8 @@ export class AuthManager {
     return AuthManager.instance;
   }
 
-  public async initialize(intervalMs?: number): Promise<void> {
-    if (intervalMs) this.intervalMs = intervalMs;
+  public async initialize(): Promise<void> {
     await this.checkSession();
-    this.startSessionChecker();
   }
 
   private async checkSession(): Promise<void> {
@@ -42,10 +39,6 @@ export class AuthManager {
     } finally {
       this.notify();
     }
-  }
-
-  private startSessionChecker(): void {
-    setInterval(() => this.checkSession(), this.intervalMs);
   }
 
   public async login(username: string, password: string): Promise<boolean> {
