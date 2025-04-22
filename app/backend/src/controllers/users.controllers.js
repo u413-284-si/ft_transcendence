@@ -60,13 +60,11 @@ export async function getAllUsersHandler(request, reply) {
   try {
     const data = await getAllUsers();
     const count = data.length;
-    return reply
-      .code(200)
-      .send({
-        message: createResponseMessage(action, true),
-        count: count,
-        data: data
-      });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -133,13 +131,11 @@ export async function getUserMatchesHandler(request, reply) {
     const id = parseInt(request.user.id, 10);
     const data = await getUserMatches(id);
     const count = data.length;
-    return reply
-      .code(200)
-      .send({
-        message: createResponseMessage(action, true),
-        count: count,
-        data: data
-      });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -154,9 +150,11 @@ export async function getAllUserStatsHandler(request, reply) {
   try {
     const data = await getAllUserStats();
     const count = data.length;
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), count, data });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -173,7 +171,7 @@ export async function getUserStatsHandler(request, reply) {
     const data = await getUserStats(userId);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), stats: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },

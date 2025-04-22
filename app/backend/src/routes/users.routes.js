@@ -29,9 +29,13 @@ export default async function userRoutes(fastify) {
 
   fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
 
-  fastify.get("/admin/user-stats/", getAllUserStatsHandler);
+  fastify.get(
+    "/admin/user-stats/",
+    optionsGetAllUserStats,
+    getAllUserStatsHandler
+  );
 
-  fastify.get("/user-stats/", optionsGetUserData, getUserStatsHandler);
+  fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
 
   fastify.get("/tournaments/", optionsGetUserData, getUserTournamentsHandler);
 
@@ -109,6 +113,25 @@ const optionsGetUserMatches = {
   schema: {
     response: {
       200: { $ref: "matchesResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserStats = {
+  onRequest: [authorizeUser],
+  schema: {
+    response: {
+      200: { $ref: "userStatsResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetAllUserStats = {
+  schema: {
+    response: {
+      200: { $ref: "allUserStatsResponseSchema" },
       ...errorResponses
     }
   }
