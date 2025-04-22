@@ -103,9 +103,29 @@ export const createMatchSchema = {
   additionalProperties: false
 };
 
+export const createMatchResponseSchema = {
+  $id: "createMatchResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: {
+      type: "object",
+      properties: {
+        match: { $ref: "createMatchSchema" },
+        stats: { $ref: "userStatsSchema" }
+      },
+      required: ["match", "stats"],
+      additionalProperties: false
+    }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
 export const matchSchemas = [
   matchSchema,
   matchResponseSchema,
   matchesResponseSchema,
-  createMatchSchema
+  createMatchSchema,
+  createMatchResponseSchema
 ];

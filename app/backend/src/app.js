@@ -21,6 +21,7 @@ import { userSchemas } from "./schema/users.schema.js";
 import { matchSchemas } from "./schema/matches.schema.js";
 import { tournamentSchemas } from "./schema/tournaments.schema.js";
 import { authSchemas } from "./schema/auth.schema.js";
+import { userStatsSchemas } from "./schema/user_stats.schema.js";
 
 const fastify = Fastify({
   logger: {
@@ -71,7 +72,8 @@ for (const schema of [
   ...userSchemas,
   ...matchSchemas,
   ...tournamentSchemas,
-  ...authSchemas
+  ...authSchemas,
+  ...userStatsSchemas
 ]) {
   fastify.addSchema(schema);
 }

@@ -19,6 +19,7 @@ const optionsCreateMatch = {
   schema: {
     body: { $ref: "createMatchSchema" },
     response: {
+      201: { $ref: "createMatchResponseSchema" },
       ...errorResponses
     }
   }
