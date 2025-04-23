@@ -57,6 +57,14 @@ export async function getUserTournaments(id) {
   const tournaments = await prisma.tournament.findMany({
     where: {
       adminId: id
+    },
+    select: {
+      id: true,
+      name: true,
+      maxPlayers: true,
+      bracket: true,
+      status: true,
+      adminId: true
     }
   });
   return tournaments;
@@ -69,6 +77,14 @@ export async function getUserActiveTournament(adminId) {
       status: {
         in: ["CREATED", "IN_PROGRESS"]
       }
+    },
+    select: {
+      id: true,
+      name: true,
+      maxPlayers: true,
+      bracket: true,
+      status: true,
+      adminId: true
     }
   });
   return tournament;

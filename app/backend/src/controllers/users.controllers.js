@@ -187,9 +187,11 @@ export async function getUserTournamentsHandler(request, reply) {
     const id = parseInt(request.user.id, 10);
     const data = await getUserTournaments(id);
     const count = data.length;
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), count, data });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -206,7 +208,7 @@ export async function getUserActiveTournamentHandler(request, reply) {
     const data = await getUserActiveTournament(adminId);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
