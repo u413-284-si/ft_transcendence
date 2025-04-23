@@ -4,7 +4,10 @@ import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
 import Settings from "./views/Settings.js";
 import Stats from "./views/Stats.js";
-import { authAndDecode } from "./services/authServices.js";
+import {
+  authAndDecodeAccessToken,
+  authAndDecodeRefreshToken
+} from "./services/authServices.js";
 import { Token } from "./types/Token.js";
 
 export let globalToken: Token | null; // FIXME: should be in router
@@ -42,28 +45,44 @@ const router = async () => {
 
   if (match.route.path === "/login" && globalToken !== null) {
     try {
-      const token = await authAndDecode();
+      const token = await authAndDecodeAccessToken();
       console.log({ message: "Set global token", token });
       globalToken = token;
       navigateTo("/home");
     } catch (err) {
-      console.error("Authorization failed:", err);
-      globalToken = null;
-      navigateTo("/login");
-      return;
+      console.error("Authorization with access token failed:", err);
+      try {
+        const token = await authAndDecodeRefreshToken();
+        console.log({ message: "Set global token", token });
+        globalToken = token;
+        navigateTo("/home");
+      } catch (err) {
+        console.error("Authorization with refresh token failed:", err);
+        globalToken = null;
+        navigateTo("/login");
+        return;
+      }
     }
   }
 
   if (match.route.path !== "/login") {
     try {
-      const token = await authAndDecode();
+      const token = await authAndDecodeAccessToken();
       console.log({ message: "Set global token", token });
       globalToken = token;
     } catch (err) {
-      console.error("Authorization failed:", err);
-      globalToken = null;
-      navigateTo("/login");
-      return;
+      console.error("Authorization with access token failed:", err);
+      try {
+        const token = await authAndDecodeRefreshToken();
+        console.log({ message: "Set global token", token });
+        globalToken = token;
+        navigateTo("/home");
+      } catch (err) {
+        console.error("Authorization with refresh token failed:", err);
+        globalToken = null;
+        navigateTo("/login");
+        return;
+      }
     }
   }
 
