@@ -1,7 +1,8 @@
 import {
   verifyAccessToken,
   verifyRefreshToken,
-  verifyStoredRefreshToken
+  verifyStoredRefreshToken,
+  decodeAccessToken
 } from "../services/auth.services.js";
 import { createAccessAndRefreshToken } from "../services/auth.services.js";
 import {
@@ -17,8 +18,6 @@ import { setAuthCookies } from "../utils/cookie.js";
 export async function authorizeUserAccess(request, reply) {
   const action = "Authorize user access";
   const token = request.cookies.accessToken;
-  console.log("cookies", request.cookies);
-  console.log("token", token);
   if (!token) {
     return httpError(
       reply,
@@ -68,24 +67,21 @@ export async function authorizeUserRefresh(request, reply) {
       );
     }
 
-    delete data.exp;
-    delete data.iat;
+    const userData = decodeAccessToken(token).payload;
 
-    const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
+    delete userData.exp;
+    delete userData.iat;
+
+    const { accessToken, refreshToken } = createAccessAndRefreshToken(userData);
     const hashedRefreshTokenRequest = await createHashedRefreshToken(
       refreshToken.token
     );
 
-    await deleteUserRefreshToken(data.id);
-    await addUserRefreshToken(data.id, hashedRefreshTokenRequest);
+    await deleteUserRefreshToken(userData.id);
+    await addUserRefreshToken(userData.id, hashedRefreshTokenRequest);
 
-    request.user = data;
-    return setAuthCookies(reply, accessToken, refreshToken)
-      .code(200)
-      .send({
-        message: createResponseMessage(action, true),
-        username: data.username
-      });
+    request.user = userData;
+    setAuthCookies(reply, accessToken, refreshToken);
   } catch (err) {
     request.log.error(
       { err, body: request.body },

@@ -13,6 +13,10 @@ export function verifyRefreshToken(token) {
   return jwt.verify(token, JWT_REFRESH_TOKEN_SECRET);
 }
 
+export function decodeAccessToken(token) {
+  return jwt.decode(token, { complete: true });
+}
+
 export async function createHashedPassword(password) {
   return await pkg.hash(password, {
     type: pkg.argon2id,
