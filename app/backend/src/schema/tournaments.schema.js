@@ -24,7 +24,9 @@ export const tournamentResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    data: { $ref: "tournamentSchema" }
+    data: {
+      anyOf: [{ $ref: "tournamentSchema" }, { type: "null" }]
+    }
   },
   required: ["message", "data"],
   additionalProperties: false
