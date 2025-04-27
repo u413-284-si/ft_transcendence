@@ -16,7 +16,7 @@ const userResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    user: { $ref: "userSchema" }
+    data: { $ref: "userSchema" }
   },
   required: ["message", "user"],
   additionalProperties: false

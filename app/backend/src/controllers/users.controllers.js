@@ -28,7 +28,7 @@ export async function createUserHandler(request, reply) {
     const data = await createUser(username, email, hashedPassword);
     return reply
       .code(201)
-      .send({ message: createResponseMessage(action, true), user: data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -45,7 +45,7 @@ export async function getUserHandler(request, reply) {
     const data = await getUser(id);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), user: data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -81,7 +81,7 @@ export async function updateUserHandler(request, reply) {
     const data = await updateUser(id, request.body);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), user: data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -98,7 +98,7 @@ export async function patchUserHandler(request, reply) {
     const data = await updateUser(id, request.body);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), user: data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -115,7 +115,7 @@ export async function deleteUserHandler(request, reply) {
     const data = await deleteUser(id);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), user: data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -171,7 +171,7 @@ export async function getUserStatsHandler(request, reply) {
     const data = await getUserStats(userId);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), stats: data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },

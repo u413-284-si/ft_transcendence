@@ -17,7 +17,7 @@ const userStatsResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    stats: { $ref: "userStatsSchema" }
+    data: { $ref: "userStatsSchema" }
   },
   required: ["message", "stats"],
   additionalProperties: false

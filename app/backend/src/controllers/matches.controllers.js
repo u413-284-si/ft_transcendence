@@ -47,13 +47,11 @@ export async function getAllMatchesHandler(request, reply) {
   try {
     const data = await getAllMatches();
     const count = data.length;
-    return reply
-      .code(200)
-      .send({
-        message: createResponseMessage(action, true),
-        count: count,
-        data: data
-      });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -70,7 +68,7 @@ export async function getMatchHandler(request, reply) {
     const data = await getMatch(id);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), match: data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
