@@ -9,7 +9,7 @@ import { getRefreshToken } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { httpError } from "../utils/error.js";
 import { createHashedRefreshToken } from "../services/auth.services.js";
-import { addUserRefreshToken } from "../services/users.services.js";
+import { updateUserRefreshToken } from "../services/users.services.js";
 import { setAuthCookies } from "../utils/cookie.js";
 
 export async function authorizeUserAccess(request, reply) {
@@ -73,7 +73,7 @@ export async function authorizeUserRefresh(request, reply) {
       refreshToken.token
     );
 
-    await addUserRefreshToken(userData.id, hashedRefreshTokenRequest);
+    await updateUserRefreshToken(userData.id, hashedRefreshTokenRequest);
 
     request.user = userData;
     setAuthCookies(reply, accessToken, refreshToken);

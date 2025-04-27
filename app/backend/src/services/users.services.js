@@ -110,7 +110,7 @@ export async function getRefreshToken(id) {
   return user.authentication.refreshToken;
 }
 
-export async function addUserRefreshToken(id, hashedRefreshToken) {
+export async function updateUserRefreshToken(id, hashedRefreshToken) {
   await prisma.user.update({
     where: {
       id
