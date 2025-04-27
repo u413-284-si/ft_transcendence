@@ -5,10 +5,7 @@ import {
   decodeAccessToken
 } from "../services/auth.services.js";
 import { createAccessAndRefreshToken } from "../services/auth.services.js";
-import {
-  getRefreshToken,
-  deleteUserRefreshToken
-} from "../services/users.services.js";
+import { getRefreshToken } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { httpError } from "../utils/error.js";
 import { createHashedRefreshToken } from "../services/auth.services.js";
@@ -68,7 +65,6 @@ export async function authorizeUserRefresh(request, reply) {
     }
 
     const userData = decodeAccessToken(token).payload;
-
     delete userData.exp;
     delete userData.iat;
 
@@ -77,7 +73,6 @@ export async function authorizeUserRefresh(request, reply) {
       refreshToken.token
     );
 
-    await deleteUserRefreshToken(userData.id);
     await addUserRefreshToken(userData.id, hashedRefreshTokenRequest);
 
     request.user = userData;
