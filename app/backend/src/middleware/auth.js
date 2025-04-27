@@ -16,7 +16,7 @@ import { addUserRefreshToken } from "../services/users.services.js";
 import { setAuthCookies } from "../utils/cookie.js";
 
 export async function authorizeUserAccess(request, reply) {
-  const action = "Authorize user access";
+  const action = "Authorize user's access token";
   const token = request.cookies.accessToken;
   if (!token) {
     return httpError(
@@ -44,7 +44,7 @@ export async function authorizeUserAccess(request, reply) {
 }
 
 export async function authorizeUserRefresh(request, reply) {
-  const action = "Authorize user refresh";
+  const action = "Authorize user's refresh token";
   const token = request.cookies.refreshToken;
   if (!token) {
     return httpError(
