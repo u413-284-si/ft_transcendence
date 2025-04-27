@@ -74,7 +74,7 @@ export default class extends AbstractView {
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
     const nicknames = this.extractNicknames();
-    if (!validateNicknames(nicknames, event)) return;
+    if (!validateNicknames(nicknames)) return;
 
     const tournament = Tournament.fromUsernames(
       nicknames,

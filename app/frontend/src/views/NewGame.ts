@@ -37,6 +37,7 @@ export default class extends AbstractView {
   }
 
   validateAndStartGame(event: Event) {
+    event.preventDefault();
     const nickname1: string = (
       document.getElementById("nickname1") as HTMLInputElement
     ).value;
@@ -47,7 +48,7 @@ export default class extends AbstractView {
 
     const nicknames = [nickname1, nickname2];
 
-    if (!validateNicknames(nicknames, event)) return;
+    if (!validateNicknames(nicknames)) return;
 
     const gameView = new GameView(nickname1, nickname2, GameType.single, null);
     gameView.render();

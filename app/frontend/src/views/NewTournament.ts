@@ -4,6 +4,7 @@ import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import PlayerNicknames from "./PlayerNicknames.js";
+import { validateTournamentName, validatePlayers } from "../validate.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -32,12 +33,11 @@ export default class extends AbstractView {
               <input
                   type="text"
                   name="tournamentName"
-                  required
                   style="width: 30%; padding: 10px; font-size: 1em; border: 2px solid #007BFF; border-radius: 5px; margin-top: 5px;"
               >
           </label><br><br>
           <label>
-              <input type="radio" name="players" value="4" required> 4 Players
+              <input type="radio" name="players" value="4"> 4 Players
           </label><br>
           <label>
               <input type="radio" name="players" value="8"> 8 Players
@@ -86,6 +86,7 @@ export default class extends AbstractView {
   }
 
   validateAndRequestNicknames(event: Event) {
+    event.preventDefault();
     const form = document.getElementById("tournament-form") as HTMLFormElement;
     const players = form?.querySelector(
       'input[name="players"]:checked'
@@ -94,27 +95,21 @@ export default class extends AbstractView {
       'input[name="tournamentName"]'
     ) as HTMLInputElement;
 
-    if (!players) {
-      event.preventDefault();
-      return alert("Please select the number of players.");
-    }
+    if (
+      !validateTournamentName(tournamentNameInput.value) ||
+      !validatePlayers(players)
+    )
+      return;
 
-    if (!tournamentNameInput) {
-      event.preventDefault();
-      return alert("Please enter a tournament name.");
-    }
-
-    event.preventDefault();
     const selectedPlayers = parseInt(players.value);
-    const tournamentName = tournamentNameInput.value.trim();
     console.log(
-      `Tournament "${tournamentName}" started with ${selectedPlayers} players`
+      `Tournament "${tournamentNameInput.value}" started with ${selectedPlayers} players`
     );
 
     // Navigate to the PlayerNicknames view
     const playerNicknamesView = new PlayerNicknames(
       selectedPlayers,
-      tournamentName
+      tournamentNameInput.value
     );
     playerNicknamesView.render();
   }
