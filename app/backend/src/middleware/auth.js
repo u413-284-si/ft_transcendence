@@ -55,7 +55,7 @@ export async function authorizeUserRefresh(request, reply) {
     const data = verifyRefreshToken(token);
     const hashedRefreshTokenDatabase = await getRefreshToken(data.id);
 
-    if (!verifyStoredRefreshToken(hashedRefreshTokenDatabase, token)) {
+    if (!(await verifyStoredRefreshToken(hashedRefreshTokenDatabase, token))) {
       return httpError(
         reply,
         401,
