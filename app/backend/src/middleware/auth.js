@@ -29,8 +29,20 @@ export async function authorizeUserAccess(request, reply) {
     );
   }
   try {
-    const data = verifyAccessToken(token);
-    request.user = data;
+    verifyAccessToken(token);
+
+    if (!("id" in decodeToken(token).payload)) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid payload"
+      );
+    }
+
+    const userId = decodeToken(token).payload.id;
+    const userData = await getUserDataForAccessToken(userId);
+    request.user = userData;
   } catch (err) {
     request.log.error(
       { err, body: request.body },
