@@ -1,5 +1,11 @@
-import { createAccessAndRefreshToken } from "../services/auth.services.js";
-import { getUserPassword } from "../services/users.services.js";
+import {
+  createAccessToken,
+  createRefreshToken
+} from "../services/auth.services.js";
+import {
+  getUserDataForAccessToken,
+  getUserPassword
+} from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
@@ -13,9 +19,10 @@ export async function loginUserHandler(request, reply) {
   try {
     const { usernameOrEmail, password } = request.body;
 
-    const data = await getUserPassword(usernameOrEmail);
+    const passwordDatabase = await getUserPassword(usernameOrEmail);
+    const userData = await getUserDataForAccessToken(usernameOrEmail);
 
-    if (!(await verifyPassword(data.authentication.password, password))) {
+    if (!(await verifyPassword(passwordDatabase, password))) {
       return httpError(
         reply,
         401,
@@ -24,21 +31,26 @@ export async function loginUserHandler(request, reply) {
       );
     }
 
-    delete data.authentication;
+    const accessTokenTimeToExpireJWT = 15 * 60; // 15 Minutes
+    const refreshTokenTimeToExpireJWT = 24 * 60 * 60; // 1 day
 
-    const { accessToken, refreshToken } = createAccessAndRefreshToken(data);
+    const accessToken = createAccessToken(userData, accessTokenTimeToExpireJWT);
+    const refreshToken = createRefreshToken(
+      userData,
+      refreshTokenTimeToExpireJWT
+    );
 
     const hashedRefreshToken = await createHashedRefreshToken(
       refreshToken.token
     );
 
-    await updateUserRefreshToken(data.id, hashedRefreshToken);
+    await updateUserRefreshToken(userData.id, hashedRefreshToken);
 
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: data.username }
+        data: { username: userData.username }
       });
   } catch (err) {
     request.log.error(

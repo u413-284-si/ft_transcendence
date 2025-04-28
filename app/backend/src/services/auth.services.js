@@ -44,40 +44,32 @@ export async function verifyStoredRefreshToken(
   return await pkg.verify(databaseRefreshToken, requestRefreshToken);
 }
 
-export function createAccessToken(user, timeToExpire) {
-  return jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
-    expiresIn: timeToExpire
-  });
-}
-
-export function createRefreshToken(user, timeToExpire) {
-  return jwt.sign(user, JWT_REFRESH_TOKEN_SECRET, {
-    expiresIn: timeToExpire
-  });
-}
-
-export function createAccessAndRefreshToken(user) {
-  const accessTokenTimeToExpireJWT = 15 * 60; // 15 Minutes
-  const accessTokenTimeToExpireCookie = new Date(
-    new Date().getTime() + accessTokenTimeToExpireJWT * 1000
+export function createAccessToken(user, timeToExpireJWT) {
+  const timeToExpireCookie = new Date(
+    new Date().getTime() + timeToExpireJWT * 1000
   );
 
-  const refreshTokenTimeToExpireJWT = 24 * 60 * 60; // 1 Day
-  const refreshTokenTimeToExpireCookie = new Date(
-    new Date().getTime() + refreshTokenTimeToExpireJWT * 1000
-  );
-
-  const accessToken = createAccessToken(user, accessTokenTimeToExpireJWT);
-  const refreshToken = createRefreshToken(user, refreshTokenTimeToExpireJWT);
+  const token = jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
+    expiresIn: timeToExpireJWT
+  });
 
   return {
-    accessToken: {
-      token: accessToken,
-      timeToExpire: accessTokenTimeToExpireCookie
-    },
-    refreshToken: {
-      token: refreshToken,
-      timeToExpire: refreshTokenTimeToExpireCookie
-    }
+    token: token,
+    timeToExpire: timeToExpireCookie
+  };
+}
+
+export function createRefreshToken(user, timeToExpireJWT) {
+  const timeToExpireCookie = new Date(
+    new Date().getTime() + timeToExpireJWT * 1000
+  );
+
+  const token = jwt.sign(user, JWT_REFRESH_TOKEN_SECRET, {
+    expiresIn: timeToExpireJWT
+  });
+
+  return {
+    token: token,
+    timeToExpire: timeToExpireCookie
   };
 }

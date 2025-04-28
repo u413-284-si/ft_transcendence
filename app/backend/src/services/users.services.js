@@ -91,6 +91,20 @@ export async function getUserPassword(usernameOrEmail) {
     }
   });
 
+  return user.authentication.password;
+}
+
+export async function getUserDataForAccessToken(usernameOrEmail) {
+  const user = await prisma.user.findFirstOrThrow({
+    where: {
+      OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+    },
+    select: {
+      id: true,
+      username: true
+    }
+  });
+
   return user;
 }
 

@@ -2,9 +2,10 @@ import {
   verifyAccessToken,
   verifyRefreshToken,
   verifyStoredRefreshToken,
-  decodeAccessToken
+  decodeAccessToken,
+  createAccessToken,
+  createRefreshToken
 } from "../services/auth.services.js";
-import { createAccessAndRefreshToken } from "../services/auth.services.js";
 import { getRefreshToken } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { httpError } from "../utils/error.js";
@@ -65,10 +66,21 @@ export async function authorizeUserRefresh(request, reply) {
     }
 
     const userData = decodeAccessToken(token).payload;
+
     delete userData.exp;
     delete userData.iat;
 
-    const { accessToken, refreshToken } = createAccessAndRefreshToken(userData);
+    console.log("userData: ", userData);
+
+    const accessTokenTimeToExpireJWT = 15 * 60; // 15 Minutes
+    const refreshTokenTimeToExpireJWT = 24 * 60 * 60; // 1 day
+
+    const accessToken = createAccessToken(userData, accessTokenTimeToExpireJWT);
+    const refreshToken = createRefreshToken(
+      userData,
+      refreshTokenTimeToExpireJWT
+    );
+    console.log("refreshToken: ", refreshToken);
     const hashedRefreshTokenNew = await createHashedRefreshToken(
       refreshToken.token
     );
