@@ -2,19 +2,19 @@ import {
   JWT_ACCESS_TOKEN_SECRET,
   JWT_REFRESH_TOKEN_SECRET
 } from "../config/jwt.js";
-import jwt from "jsonwebtoken";
 import pkg from "argon2";
+import fastify from "../app.js";
 
 export function verifyAccessToken(token) {
-  jwt.verify(token, JWT_ACCESS_TOKEN_SECRET);
+  fastify.jwt.verify(token, JWT_ACCESS_TOKEN_SECRET);
 }
 
 export function verifyRefreshToken(token) {
-  jwt.verify(token, JWT_REFRESH_TOKEN_SECRET);
+  fastify.jwt.verify(token, JWT_REFRESH_TOKEN_SECRET);
 }
 
 export function decodeToken(token) {
-  return jwt.decode(token, { complete: true });
+  return fastify.jwt.decode(token, { complete: true });
 }
 
 export async function createHashedPassword(password) {
@@ -49,7 +49,7 @@ export function createAccessToken(user, timeToExpireJWT) {
     new Date().getTime() + timeToExpireJWT * 1000
   );
 
-  const token = jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
+  const token = fastify.jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
     expiresIn: timeToExpireJWT
   });
 
@@ -64,7 +64,7 @@ export function createRefreshToken(user, timeToExpireJWT) {
     new Date().getTime() + timeToExpireJWT * 1000
   );
 
-  const token = jwt.sign(user, JWT_REFRESH_TOKEN_SECRET, {
+  const token = fastify.jwt.sign(user, JWT_REFRESH_TOKEN_SECRET, {
     expiresIn: timeToExpireJWT
   });
 
