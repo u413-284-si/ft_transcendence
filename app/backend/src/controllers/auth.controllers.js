@@ -4,6 +4,7 @@ import {
 } from "../services/auth.services.js";
 import {
   getUserDataForAccessToken,
+  getUserDataForRefreshToken,
   getUserPassword
 } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -20,7 +21,11 @@ export async function loginUserHandler(request, reply) {
     const { usernameOrEmail, password } = request.body;
 
     const passwordDatabase = await getUserPassword(usernameOrEmail);
-    const userData = await getUserDataForAccessToken(usernameOrEmail);
+
+    const userDataAccessToken =
+      await getUserDataForAccessToken(usernameOrEmail);
+    const userDataRefreshToken =
+      await getUserDataForRefreshToken(usernameOrEmail);
 
     if (!(await verifyPassword(passwordDatabase, password))) {
       return httpError(
@@ -34,9 +39,12 @@ export async function loginUserHandler(request, reply) {
     const accessTokenTimeToExpireJWT = 15 * 60; // 15 Minutes
     const refreshTokenTimeToExpireJWT = 24 * 60 * 60; // 1 day
 
-    const accessToken = createAccessToken(userData, accessTokenTimeToExpireJWT);
+    const accessToken = createAccessToken(
+      userDataAccessToken,
+      accessTokenTimeToExpireJWT
+    );
     const refreshToken = createRefreshToken(
-      userData,
+      userDataRefreshToken,
       refreshTokenTimeToExpireJWT
     );
 
@@ -44,13 +52,13 @@ export async function loginUserHandler(request, reply) {
       refreshToken.token
     );
 
-    await updateUserRefreshToken(userData.id, hashedRefreshToken);
+    await updateUserRefreshToken(userDataRefreshToken.id, hashedRefreshToken);
 
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: userData.username }
+        data: { username: userDataAccessToken.username }
       });
   } catch (err) {
     request.log.error(

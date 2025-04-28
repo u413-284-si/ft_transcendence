@@ -108,6 +108,19 @@ export async function getUserDataForAccessToken(usernameOrEmail) {
   return user;
 }
 
+export async function getUserDataForRefreshToken(usernameOrEmail) {
+  const user = await prisma.user.findFirstOrThrow({
+    where: {
+      OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+    },
+    select: {
+      id: true
+    }
+  });
+
+  return user;
+}
+
 export async function getRefreshToken(id) {
   const user = await prisma.user.findUniqueOrThrow({
     where: {
