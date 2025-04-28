@@ -57,13 +57,11 @@ export function createRefreshToken(user, timeToExpire) {
 }
 
 export function createAccessAndRefreshToken(user) {
-  //   const accessTokenTimeToExpireCookie = 15 * 60;
   const accessTokenTimeToExpireJWT = 5;
   const accessTokenTimeToExpireCookie = new Date(
     new Date().getTime() + accessTokenTimeToExpireJWT * 1000
   );
 
-  //   const refreshToken = 7 * 24 * 60 * 60;
   const refreshTokenTimeToExpireJWT = 30;
   const refreshTokenTimeToExpireCookie = new Date(
     new Date().getTime() + refreshTokenTimeToExpireJWT * 1000
