@@ -5,7 +5,8 @@ import {
 import {
   getUserDataForAccessToken,
   getUserDataForRefreshToken,
-  getUserPassword
+  getUserPassword,
+  getUserID
 } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
@@ -20,12 +21,11 @@ export async function loginUserHandler(request, reply) {
   try {
     const { usernameOrEmail, password } = request.body;
 
-    const passwordDatabase = await getUserPassword(usernameOrEmail);
+    const userId = getUserID(usernameOrEmail);
+    const passwordDatabase = await getUserPassword(userId);
 
-    const userDataAccessToken =
-      await getUserDataForAccessToken(usernameOrEmail);
-    const userDataRefreshToken =
-      await getUserDataForRefreshToken(usernameOrEmail);
+    const userDataAccessToken = await getUserDataForAccessToken(userId);
+    const userDataRefreshToken = await getUserDataForRefreshToken(userId);
 
     if (!(await verifyPassword(passwordDatabase, password))) {
       return httpError(

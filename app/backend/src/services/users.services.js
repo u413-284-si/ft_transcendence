@@ -77,10 +77,23 @@ export async function getUserMatches(id) {
   return matches;
 }
 
-export async function getUserPassword(usernameOrEmail) {
+export async function getUserID(usernameOrEmail) {
   const user = await prisma.user.findFirstOrThrow({
     where: {
       OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+    },
+    select: {
+      id: true
+    }
+  });
+
+  return user.id;
+}
+
+export async function getUserPassword(userId) {
+  const user = await prisma.user.findFirstOrThrow({
+    where: {
+      id: userId
     },
     include: {
       authentication: {
@@ -94,10 +107,10 @@ export async function getUserPassword(usernameOrEmail) {
   return user.authentication.password;
 }
 
-export async function getUserDataForAccessToken(usernameOrEmail) {
+export async function getUserDataForAccessToken(userId) {
   const user = await prisma.user.findFirstOrThrow({
     where: {
-      OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+      id: userId
     },
     select: {
       id: true,
@@ -108,10 +121,10 @@ export async function getUserDataForAccessToken(usernameOrEmail) {
   return user;
 }
 
-export async function getUserDataForRefreshToken(usernameOrEmail) {
+export async function getUserDataForRefreshToken(userId) {
   const user = await prisma.user.findFirstOrThrow({
     where: {
-      OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+      id: userId
     },
     select: {
       id: true
@@ -121,10 +134,10 @@ export async function getUserDataForRefreshToken(usernameOrEmail) {
   return user;
 }
 
-export async function getRefreshToken(id) {
+export async function getRefreshToken(userId) {
   const user = await prisma.user.findUniqueOrThrow({
     where: {
-      id
+      id: userId
     },
     select: {
       authentication: {
@@ -137,10 +150,10 @@ export async function getRefreshToken(id) {
   return user.authentication.refreshToken;
 }
 
-export async function updateUserRefreshToken(id, hashedRefreshToken) {
+export async function updateUserRefreshToken(userId, hashedRefreshToken) {
   await prisma.user.update({
     where: {
-      id
+      id: userId
     },
     data: {
       authentication: {

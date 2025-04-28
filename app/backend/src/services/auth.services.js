@@ -6,14 +6,14 @@ import jwt from "jsonwebtoken";
 import pkg from "argon2";
 
 export function verifyAccessToken(token) {
-  return jwt.verify(token, JWT_ACCESS_TOKEN_SECRET);
+  jwt.verify(token, JWT_ACCESS_TOKEN_SECRET);
 }
 
 export function verifyRefreshToken(token) {
-  return jwt.verify(token, JWT_REFRESH_TOKEN_SECRET);
+  jwt.verify(token, JWT_REFRESH_TOKEN_SECRET);
 }
 
-export function decodeAccessToken(token) {
+export function decodeToken(token) {
   return jwt.decode(token, { complete: true });
 }
 

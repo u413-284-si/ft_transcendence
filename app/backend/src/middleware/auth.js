@@ -2,11 +2,15 @@ import {
   verifyAccessToken,
   verifyRefreshToken,
   verifyStoredRefreshToken,
-  decodeAccessToken,
+  decodeToken,
   createAccessToken,
   createRefreshToken
 } from "../services/auth.services.js";
-import { getRefreshToken } from "../services/users.services.js";
+import {
+  getRefreshToken,
+  getUserDataForAccessToken,
+  getUserDataForRefreshToken
+} from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { httpError } from "../utils/error.js";
 import { createHashedRefreshToken } from "../services/auth.services.js";
@@ -53,8 +57,22 @@ export async function authorizeUserRefresh(request, reply) {
     );
   }
   try {
-    const data = verifyRefreshToken(token);
-    const hashedRefreshTokenDatabase = await getRefreshToken(data.id);
+    verifyRefreshToken(token);
+
+    if (!("id" in decodeToken(token).payload)) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid payload"
+      );
+    }
+
+    const userId = decodeToken(token).payload.id;
+    const userDataRefreshToken = getUserDataForRefreshToken(userId);
+    const hashedRefreshTokenDatabase = await getRefreshToken(
+      userDataRefreshToken.id
+    );
 
     if (!(await verifyStoredRefreshToken(hashedRefreshTokenDatabase, token))) {
       return httpError(
@@ -65,19 +83,19 @@ export async function authorizeUserRefresh(request, reply) {
       );
     }
 
-    const userData = decodeAccessToken(token).payload;
-
-    delete userData.exp;
-    delete userData.iat;
-
-    console.log("userData: ", userData);
+    delete userDataRefreshToken.exp;
+    delete userDataRefreshToken.iat;
 
     const accessTokenTimeToExpireJWT = 15 * 60; // 15 Minutes
     const refreshTokenTimeToExpireJWT = 24 * 60 * 60; // 1 day
 
-    const accessToken = createAccessToken(userData, accessTokenTimeToExpireJWT);
+    const userDataAccessToken = getUserDataForAccessToken(userId);
+    const accessToken = createAccessToken(
+      userDataAccessToken,
+      accessTokenTimeToExpireJWT
+    );
     const refreshToken = createRefreshToken(
-      userData,
+      userDataRefreshToken,
       refreshTokenTimeToExpireJWT
     );
     console.log("refreshToken: ", refreshToken);
@@ -85,9 +103,12 @@ export async function authorizeUserRefresh(request, reply) {
       refreshToken.token
     );
 
-    await updateUserRefreshToken(userData.id, hashedRefreshTokenNew);
+    await updateUserRefreshToken(
+      userDataRefreshToken.id,
+      hashedRefreshTokenNew
+    );
 
-    request.user = userData;
+    request.user = userDataAccessToken;
     setAuthCookies(reply, accessToken, refreshToken);
   } catch (err) {
     request.log.error(
