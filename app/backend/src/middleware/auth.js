@@ -69,11 +69,11 @@ export async function authorizeUserRefresh(request, reply) {
     delete userData.iat;
 
     const { accessToken, refreshToken } = createAccessAndRefreshToken(userData);
-    const hashedRefreshTokenRequest = await createHashedRefreshToken(
+    const hashedRefreshTokenNew = await createHashedRefreshToken(
       refreshToken.token
     );
 
-    await updateUserRefreshToken(userData.id, hashedRefreshTokenRequest);
+    await updateUserRefreshToken(userData.id, hashedRefreshTokenNew);
 
     request.user = userData;
     setAuthCookies(reply, accessToken, refreshToken);
