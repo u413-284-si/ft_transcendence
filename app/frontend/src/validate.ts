@@ -1,3 +1,5 @@
+// import { getUserTournaments } from "./services/tournamentService";
+
 function isEmptyString(str: string): boolean {
   return str === "";
 }
@@ -38,7 +40,7 @@ export function validateNicknames(nicknames: string[]): boolean {
   return true;
 }
 
-export function validateTournamentName(name: string): boolean {
+export async function validateTournamentName(name: string): Promise<boolean> {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.@]{1,10}$/;
 
   if (isEmptyString(name)) {
@@ -53,6 +55,23 @@ export function validateTournamentName(name: string): boolean {
     );
     return false;
   }
+
+  // try {
+  //   const tournaments = await getUserTournaments();
+  //   if (tournaments.length === 0) {
+  //     return true;
+  //   }
+
+  //   const tournamentNames = tournaments.map((tournament) => tournament.name);
+  //   if (tournamentNames.includes(name)) {
+  //     alert("Tournament name already exists. Please choose a different name.");
+  //     return false;
+  //   }
+  // } catch (error) {
+  //   console.error("Error fetching tournaments:", error);
+  //   alert("An error occurred while validating the tournament name.");
+  //   return false;
+  // }
   return true;
 }
 

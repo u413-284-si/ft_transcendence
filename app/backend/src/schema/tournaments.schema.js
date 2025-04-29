@@ -16,7 +16,7 @@ export const tournamentSchema = {
     adminId: { $ref: "commonDefinitionsSchema#/definitions/id" }
   },
   required: ["id", "name", "maxPlayers", "bracket", "status", "adminId"],
-  additionalProperties: true
+  additionalProperties: false
 };
 
 export const tournamentResponseSchema = {

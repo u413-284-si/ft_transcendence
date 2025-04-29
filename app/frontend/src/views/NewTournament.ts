@@ -85,7 +85,7 @@ export default class extends AbstractView {
     }
   }
 
-  validateAndRequestNicknames(event: Event) {
+  async validateAndRequestNicknames(event: Event) {
     event.preventDefault();
     const form = document.getElementById("tournament-form") as HTMLFormElement;
     const players = form?.querySelector(
@@ -96,7 +96,7 @@ export default class extends AbstractView {
     ) as HTMLInputElement;
 
     if (
-      !validateTournamentName(tournamentNameInput.value) ||
+      !(await validateTournamentName(tournamentNameInput.value)) ||
       !validatePlayers(players)
     )
       return;
