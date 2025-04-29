@@ -5,8 +5,12 @@ import { createTournament } from "../services/tournamentService.js";
 import { hasDuplicates } from "../validate.js";
 import { router } from "../Router.js";
 import { auth } from "../AuthManager.js";
+import { FormTracker } from "../FormTracker.js";
 
 export default class extends AbstractView {
+  private formElement!: HTMLFormElement;
+  private formTracker!: FormTracker;
+
   constructor(
     private numberOfPlayers: number,
     private tournamentName: string
@@ -61,13 +65,15 @@ export default class extends AbstractView {
   }
 
   async addListeners() {
-    document
-      .getElementById("nicknames-form")
-      ?.addEventListener("submit", (event) => this.initTournament(event));
+    this.formElement.addEventListener("submit", (event) =>
+      this.initTournament(event)
+    );
   }
 
   async render() {
     await this.updateHTML();
+    this.formElement = document.querySelector("#nicknames-form")!;
+    this.formTracker = new FormTracker(this.formElement);
     this.addListeners();
   }
 
@@ -117,10 +123,20 @@ export default class extends AbstractView {
       if (!nextMatch) {
         throw new Error("Match is undefined");
       }
+      this.formTracker.reset();
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.navigateInternally(matchAnnouncementView);
     } catch (error) {
       console.error("Error creating tournament", error);
     }
+  }
+
+  getName(): string {
+    return "player-nicknames";
+  }
+
+  async confirmLeave(): Promise<boolean> {
+    if (!this.formTracker?.isDirty()) return true;
+    return confirm("You have unsaved changes. Do you really want to leave?");
   }
 }

@@ -106,4 +106,8 @@ export class GameView extends AbstractView {
     }
     return confirmed;
   }
+
+  getName(): string {
+    return "game";
+  }
 }

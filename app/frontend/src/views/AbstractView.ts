@@ -1,4 +1,4 @@
-export default class {
+export default abstract class {
   constructor() {}
 
   setTitle(title: string) {
@@ -36,4 +36,6 @@ export default class {
   unmount?(): void;
 
   async confirmLeave?(): Promise<boolean>;
+
+  abstract getName(): string;
 }

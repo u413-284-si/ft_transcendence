@@ -34,4 +34,8 @@ export default class extends AbstractView {
     await this.updateHTML();
     await this.addListeners();
   }
+
+  getName(): string {
+    return "login";
+  }
 }

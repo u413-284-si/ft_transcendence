@@ -83,4 +83,8 @@ export default class ResultsView extends AbstractView {
       {} as Record<string, T[]>
     );
   }
+
+  getName(): string {
+    return "results";
+  }
 }

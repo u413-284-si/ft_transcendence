@@ -140,4 +140,8 @@ export default class extends AbstractView {
       console.error("Error fetching userStats:", error);
     }
   }
+
+  getName(): string {
+    return "stats";
+  }
 }

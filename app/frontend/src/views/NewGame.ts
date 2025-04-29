@@ -64,4 +64,8 @@ export default class NewGameView extends AbstractView {
     });
     router.navigateInternally(gameView);
   }
+
+  getName(): string {
+    return "new-game";
+  }
 }

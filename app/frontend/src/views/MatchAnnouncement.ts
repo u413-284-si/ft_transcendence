@@ -115,4 +115,8 @@ export default class extends AbstractView {
       // show error page
     }
   }
+
+  getName(): string {
+    return "match-announcement";
+  }
 }
