@@ -4,6 +4,7 @@ import { userLogin } from "../services/authServices.js";
 // FIXME: activate when password policy is applied
 //import { validatePassword, validateUsernameOrEmail } from "../validate.js";
 import { validateUsernameOrEmail } from "../validate.js";
+import { navigateTo } from "../main.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -60,5 +61,6 @@ export default class extends AbstractView {
       }
       console.error(error);
     }
+    navigateTo("/home");
   }
 }
