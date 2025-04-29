@@ -19,7 +19,7 @@ const userStatsResponseSchema = {
     message: { type: "string" },
     data: { $ref: "userStatsSchema" }
   },
-  required: ["message", "stats"],
+  required: ["message", "data"],
   additionalProperties: false
 };
 
