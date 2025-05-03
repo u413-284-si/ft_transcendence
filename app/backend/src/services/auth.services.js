@@ -3,11 +3,11 @@ import pkg from "argon2";
 import fastify from "../app.js";
 
 export function verifyAccessToken(token) {
-  fastify.jwt.verify(token, env.jwtAccessTokenSecret);
+  return fastify.jwt.verify(token, env.jwtAccessTokenSecret);
 }
 
 export function verifyRefreshToken(token) {
-  fastify.jwt.verify(token, env.jwtRefreshTokenSecret);
+  return fastify.jwt.verify(token, env.jwtRefreshTokenSecret);
 }
 
 export function decodeToken(token) {

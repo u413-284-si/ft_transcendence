@@ -1,12 +1,13 @@
 import {
   createAccessToken,
-  createRefreshToken
+  createRefreshToken,
+  verifyRefreshToken,
+  verifyStoredRefreshToken
 } from "../services/auth.services.js";
 import {
-  getUserDataForAccessToken,
-  getUserDataForRefreshToken,
-  getUserPassword,
-  getUserID
+  getUserData,
+  getUserID,
+  getRefreshToken
 } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
@@ -22,12 +23,15 @@ export async function loginUserHandler(request, reply) {
     const { usernameOrEmail, password } = request.body;
 
     const userId = getUserID(usernameOrEmail);
-    const passwordDatabase = await getUserPassword(userId);
 
-    const userDataAccessToken = await getUserDataForAccessToken(userId);
-    const userDataRefreshToken = await getUserDataForRefreshToken(userId);
+    const userData = await getUserData(userId);
+    const {
+      authentication: { password: hashedPassword },
+      ...userDataAccessToken
+    } = userData;
+    const { _username, ...userDataRefreshToken } = userDataAccessToken;
 
-    if (!(await verifyPassword(passwordDatabase, password))) {
+    if (!(await verifyPassword(hashedPassword, password))) {
       return httpError(
         reply,
         401,
@@ -82,17 +86,60 @@ export async function authAndDecodeAccessHandler(request, reply) {
   }
 }
 
-export async function authAndDecodeRefreshHandler(request, reply) {
-  const action = "Auth and decode refresh token";
+export async function authRefreshHandler(request, reply) {
+  const action = "Auth refresh token";
   try {
-    const data = request.user;
+    const token = request.cookies.refreshToken;
+    if (!token) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "No refresh token provided"
+      );
+    }
+    const data = verifyRefreshToken(token);
+    const userId = data.id;
+
+    const hashedRefreshToken = await getRefreshToken(userId);
+
+    if (!(await verifyStoredRefreshToken(hashedRefreshToken, token))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid refresh token"
+      );
+    }
+
+    const userData = await getUserData(userId);
+    const {
+      authentication: { _password },
+      ...userDataAccessToken
+    } = userData;
+    const { _username, ...userDataRefreshToken } = userDataAccessToken;
+
+    const accessToken = createAccessToken(userDataAccessToken);
+    const refreshToken = createRefreshToken(userDataRefreshToken);
+
+    const hashedRefreshTokenNew = await createHashedRefreshToken(
+      refreshToken.token
+    );
+
+    await updateUserRefreshToken(
+      userDataRefreshToken.id,
+      hashedRefreshTokenNew
+    );
+
+    request.user = userDataAccessToken;
+    setAuthCookies(reply, accessToken, refreshToken);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true) });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authAndDecodeRefreshHandler: ${createResponseMessage(action, false)}`
+      `RefreshHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }

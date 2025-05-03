@@ -1,20 +1,17 @@
 import {
   authAndDecodeAccessHandler,
-  authAndDecodeRefreshHandler,
+  authRefreshHandler,
   loginUserHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
-import {
-  authorizeUserAccess,
-  authorizeUserRefresh
-} from "../middleware/auth.js";
+import { authorizeUserAccess } from "../middleware/auth.js";
 
 export default async function authRoutes(fastify) {
   fastify.post("/", optionsloginUser, loginUserHandler);
 
   fastify.get("/", optionsAuthUserAccess, authAndDecodeAccessHandler);
 
-  fastify.get("/refresh", optionsAuthUserRefresh, authAndDecodeRefreshHandler);
+  fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 }
 
 const optionsloginUser = {
@@ -37,7 +34,6 @@ const optionsAuthUserAccess = {
 };
 
 const optionsAuthUserRefresh = {
-  onRequest: [authorizeUserRefresh],
   schema: {
     response: {
       ...errorResponses

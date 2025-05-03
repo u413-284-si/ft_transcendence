@@ -1,21 +1,7 @@
-import {
-  verifyAccessToken,
-  verifyRefreshToken,
-  verifyStoredRefreshToken,
-  decodeToken,
-  createAccessToken,
-  createRefreshToken
-} from "../services/auth.services.js";
-import {
-  getRefreshToken,
-  getUserDataForAccessToken,
-  getUserDataForRefreshToken
-} from "../services/users.services.js";
+import { verifyAccessToken, decodeToken } from "../services/auth.services.js";
+import { getUserData } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { httpError } from "../utils/error.js";
-import { createHashedRefreshToken } from "../services/auth.services.js";
-import { updateUserRefreshToken } from "../services/users.services.js";
-import { setAuthCookies } from "../utils/cookie.js";
 
 export async function authorizeUserAccess(request, reply) {
   const action = "Authorize user's access token";
@@ -41,82 +27,13 @@ export async function authorizeUserAccess(request, reply) {
     }
 
     const userId = decodeToken(token).payload.id;
-    const userData = await getUserDataForAccessToken(userId);
-    request.user = userData;
+    const userData = await getUserData(userId);
+    const { _password, ...userDataAccessToken } = userData;
+    request.user = userDataAccessToken;
   } catch (err) {
     request.log.error(
       { err, body: request.body },
       `authorizeUserHandler: ${createResponseMessage(action, false)}`
-    );
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "Could not verify JWT"
-    );
-  }
-}
-
-export async function authorizeUserRefresh(request, reply) {
-  const action = "Authorize user's refresh token";
-  const token = request.cookies.refreshToken;
-  if (!token) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "No refresh token provided"
-    );
-  }
-  try {
-    verifyRefreshToken(token);
-
-    if (!("id" in decodeToken(token).payload)) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(action, false),
-        "Invalid payload"
-      );
-    }
-
-    const userId = decodeToken(token).payload.id;
-    const userDataRefreshToken = getUserDataForRefreshToken(userId);
-    const hashedRefreshTokenDatabase = await getRefreshToken(
-      userDataRefreshToken.id
-    );
-
-    if (!(await verifyStoredRefreshToken(hashedRefreshTokenDatabase, token))) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(action, false),
-        "Invalid refresh token"
-      );
-    }
-
-    delete userDataRefreshToken.exp;
-    delete userDataRefreshToken.iat;
-
-    const userDataAccessToken = getUserDataForAccessToken(userId);
-    const accessToken = createAccessToken(userDataAccessToken);
-    const refreshToken = createRefreshToken(userDataRefreshToken);
-    console.log("refreshToken: ", refreshToken);
-    const hashedRefreshTokenNew = await createHashedRefreshToken(
-      refreshToken.token
-    );
-
-    await updateUserRefreshToken(
-      userDataRefreshToken.id,
-      hashedRefreshTokenNew
-    );
-
-    request.user = userDataAccessToken;
-    setAuthCookies(reply, accessToken, refreshToken);
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `authorizeUserRefreshHandler: ${createResponseMessage(action, false)}`
     );
     return httpError(
       reply,
