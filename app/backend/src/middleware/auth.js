@@ -98,18 +98,9 @@ export async function authorizeUserRefresh(request, reply) {
     delete userDataRefreshToken.exp;
     delete userDataRefreshToken.iat;
 
-    const accessTokenTimeToExpireJWT = 15 * 60; // 15 Minutes
-    const refreshTokenTimeToExpireJWT = 24 * 60 * 60; // 1 day
-
     const userDataAccessToken = getUserDataForAccessToken(userId);
-    const accessToken = createAccessToken(
-      userDataAccessToken,
-      accessTokenTimeToExpireJWT
-    );
-    const refreshToken = createRefreshToken(
-      userDataRefreshToken,
-      refreshTokenTimeToExpireJWT
-    );
+    const accessToken = createAccessToken(userDataAccessToken);
+    const refreshToken = createRefreshToken(userDataRefreshToken);
     console.log("refreshToken: ", refreshToken);
     const hashedRefreshTokenNew = await createHashedRefreshToken(
       refreshToken.token

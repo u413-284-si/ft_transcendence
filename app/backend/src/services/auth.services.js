@@ -41,32 +41,18 @@ export async function verifyStoredRefreshToken(
   return await pkg.verify(databaseRefreshToken, requestRefreshToken);
 }
 
-export function createAccessToken(user, timeToExpireJWT) {
-  const timeToExpireCookie = new Date(
-    new Date().getTime() + timeToExpireJWT * 1000
-  );
-
+export function createAccessToken(user) {
   const token = fastify.jwt.sign(user, env.jwtAccessTokenSecret, {
-    expiresIn: timeToExpireJWT
+    expiresIn: env.accessTokenTimeToExpireInMs
   });
 
-  return {
-    token: token,
-    timeToExpire: timeToExpireCookie
-  };
+  return token;
 }
 
-export function createRefreshToken(user, timeToExpireJWT) {
-  const timeToExpireCookie = new Date(
-    new Date().getTime() + timeToExpireJWT * 1000
-  );
-
+export function createRefreshToken(user) {
   const token = fastify.jwt.sign(user, env.jwtRefreshTokenSecret, {
-    expiresIn: timeToExpireJWT
+    expiresIn: env.refreshTokenTimeToExpireInMS
   });
 
-  return {
-    token: token,
-    timeToExpire: timeToExpireCookie
-  };
+  return token;
 }

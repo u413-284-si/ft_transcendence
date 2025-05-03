@@ -36,21 +36,10 @@ export async function loginUserHandler(request, reply) {
       );
     }
 
-    const accessTokenTimeToExpireJWT = 15 * 60; // 15 Minutes
-    const refreshTokenTimeToExpireJWT = 24 * 60 * 60; // 1 day
+    const accessToken = createAccessToken(userDataAccessToken);
+    const refreshToken = createRefreshToken(userDataRefreshToken);
 
-    const accessToken = createAccessToken(
-      userDataAccessToken,
-      accessTokenTimeToExpireJWT
-    );
-    const refreshToken = createRefreshToken(
-      userDataRefreshToken,
-      refreshTokenTimeToExpireJWT
-    );
-
-    const hashedRefreshToken = await createHashedRefreshToken(
-      refreshToken.token
-    );
+    const hashedRefreshToken = await createHashedRefreshToken(refreshToken);
 
     await updateUserRefreshToken(userDataRefreshToken.id, hashedRefreshToken);
 
