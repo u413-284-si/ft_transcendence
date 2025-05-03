@@ -1,16 +1,13 @@
-import {
-  JWT_ACCESS_TOKEN_SECRET,
-  JWT_REFRESH_TOKEN_SECRET
-} from "../config/jwt.js";
+import env from "../config/env.js";
 import pkg from "argon2";
 import fastify from "../app.js";
 
 export function verifyAccessToken(token) {
-  fastify.jwt.verify(token, JWT_ACCESS_TOKEN_SECRET);
+  fastify.jwt.verify(token, env.jwtAccessTokenSecret);
 }
 
 export function verifyRefreshToken(token) {
-  fastify.jwt.verify(token, JWT_REFRESH_TOKEN_SECRET);
+  fastify.jwt.verify(token, env.jwtRefreshTokenSecret);
 }
 
 export function decodeToken(token) {
@@ -49,7 +46,7 @@ export function createAccessToken(user, timeToExpireJWT) {
     new Date().getTime() + timeToExpireJWT * 1000
   );
 
-  const token = fastify.jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
+  const token = fastify.jwt.sign(user, env.jwtAccessTokenSecret, {
     expiresIn: timeToExpireJWT
   });
 
@@ -64,7 +61,7 @@ export function createRefreshToken(user, timeToExpireJWT) {
     new Date().getTime() + timeToExpireJWT * 1000
   );
 
-  const token = fastify.jwt.sign(user, JWT_REFRESH_TOKEN_SECRET, {
+  const token = fastify.jwt.sign(user, env.jwtRefreshTokenSecret, {
     expiresIn: timeToExpireJWT
   });
 

@@ -23,8 +23,6 @@ import { matchSchemas } from "./schema/matches.schema.js";
 import { tournamentSchemas } from "./schema/tournaments.schema.js";
 import { authSchemas } from "./schema/auth.schema.js";
 
-import { JWT_ACCESS_TOKEN_SECRET } from "./config/jwt.js";
-
 const fastify = Fastify({
   logger: {
     level: env.logLevel,
@@ -69,7 +67,7 @@ await fastify.register(fastifyRateLimit, {
   timeWindow: "15 minutes"
 });
 await fastify.register(jwt, {
-  secret: JWT_ACCESS_TOKEN_SECRET
+  secret: env.jwtAccessTokenSecret
 });
 
 for (const schema of [
