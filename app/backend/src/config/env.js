@@ -1,7 +1,6 @@
 import path from "node:path";
 import envSchema from "env-schema";
 import { fileURLToPath } from "node:url";
-import { access } from "node:fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
