@@ -49,7 +49,8 @@ export async function getUserTournaments(): Promise<TournamentDTO[]> {
   const apiResponse = await apiFetch<TournamentDTO[]>(
     "/api/users/tournaments/",
     {
-      method: "GET"
+      method: "GET",
+      credentials: "same-origin"
     }
   );
 
