@@ -2,7 +2,8 @@ import {
   createAccessToken,
   createRefreshToken,
   verifyRefreshToken,
-  verifyStoredRefreshToken
+  verifyStoredRefreshToken,
+  updateUserRefreshToken
 } from "../services/auth.services.js";
 import { getUserData, getUserID } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -11,7 +12,6 @@ import { httpError } from "../utils/error.js";
 import { verifyPassword } from "../services/auth.services.js";
 import { setAuthCookies } from "../utils/cookie.js";
 import { createHashedRefreshToken } from "../services/auth.services.js";
-import { updateUserRefreshToken } from "../services/users.services.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";

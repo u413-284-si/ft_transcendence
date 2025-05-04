@@ -109,18 +109,3 @@ export async function getUserData(userId) {
 
   return user;
 }
-
-export async function updateUserRefreshToken(userId, hashedRefreshToken) {
-  await prisma.user.update({
-    where: {
-      id: userId
-    },
-    data: {
-      authentication: {
-        update: {
-          refreshToken: hashedRefreshToken
-        }
-      }
-    }
-  });
-}

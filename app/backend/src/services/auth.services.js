@@ -1,6 +1,7 @@
 import env from "../config/env.js";
 import pkg from "argon2";
 import fastify from "../app.js";
+import prisma from "../prisma/prismaClient.js";
 
 export function verifyAccessToken(token) {
   return fastify.jwt.verify(token, env.jwtAccessTokenSecret);
@@ -55,4 +56,15 @@ export function createRefreshToken(user) {
   });
 
   return token;
+}
+
+export async function updateUserRefreshToken(userId, hashedRefreshToken) {
+  await prisma.authentication.update({
+    where: {
+      userId: userId
+    },
+    data: {
+      refreshToken: hashedRefreshToken
+    }
+  });
 }
