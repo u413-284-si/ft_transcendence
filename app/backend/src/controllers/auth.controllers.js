@@ -4,11 +4,7 @@ import {
   verifyRefreshToken,
   verifyStoredRefreshToken
 } from "../services/auth.services.js";
-import {
-  getUserData,
-  getUserID,
-  getRefreshToken
-} from "../services/users.services.js";
+import { getUserData, getUserID } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
@@ -26,7 +22,11 @@ export async function loginUserHandler(request, reply) {
 
     const userData = await getUserData(userId);
     const {
-      authentication: { password: hashedPassword },
+      authentication: {
+        password: hashedPassword,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        refreshToken: hashedRefreshToken
+      },
       ...userDataAccessToken
     } = userData;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -44,9 +44,12 @@ export async function loginUserHandler(request, reply) {
     const accessToken = createAccessToken(userDataAccessToken);
     const refreshToken = createRefreshToken(userDataRefreshToken);
 
-    const hashedRefreshToken = await createHashedRefreshToken(refreshToken);
+    const newHashedRefreshToken = await createHashedRefreshToken(refreshToken);
 
-    await updateUserRefreshToken(userDataRefreshToken.id, hashedRefreshToken);
+    await updateUserRefreshToken(
+      userDataRefreshToken.id,
+      newHashedRefreshToken
+    );
 
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
@@ -99,10 +102,15 @@ export async function authRefreshHandler(request, reply) {
         "No refresh token provided"
       );
     }
-    const data = verifyRefreshToken(token);
-    const userId = data.id;
+    const userDataRefreshToken = verifyRefreshToken(token);
+    const userId = userDataRefreshToken.id;
 
-    const hashedRefreshToken = await getRefreshToken(userId);
+    const userData = await getUserData(userId);
+    const {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      authentication: { hashedPassword, hashedRefreshToken },
+      ...userDataAccessToken
+    } = userData;
 
     if (!(await verifyStoredRefreshToken(hashedRefreshToken, token))) {
       return httpError(
@@ -112,15 +120,6 @@ export async function authRefreshHandler(request, reply) {
         "Invalid refresh token"
       );
     }
-
-    const userData = await getUserData(userId);
-    const {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      authentication: { password },
-      ...userDataAccessToken
-    } = userData;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { username, ...userDataRefreshToken } = userDataAccessToken;
 
     const accessToken = createAccessToken(userDataAccessToken);
     const refreshToken = createRefreshToken(userDataRefreshToken);

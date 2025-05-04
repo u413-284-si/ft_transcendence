@@ -17,7 +17,7 @@ export async function authorizeUserAccess(request, reply) {
     const userData = verifyAccessToken(token);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...userDataAccessToken } = userData;
+    const { authentication, ...userDataAccessToken } = userData;
     request.user = userDataAccessToken;
   } catch (err) {
     request.log.error(
