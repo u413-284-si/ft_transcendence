@@ -1,5 +1,4 @@
-import { verifyAccessToken, decodeToken } from "../services/auth.services.js";
-import { getUserData } from "../services/users.services.js";
+import { verifyAccessToken } from "../services/auth.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { httpError } from "../utils/error.js";
 
