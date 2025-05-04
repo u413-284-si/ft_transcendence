@@ -15,6 +15,47 @@ function hasDuplicates(nicknames: string[]): boolean {
   return new Set(nicknames).size !== nicknames.length;
 }
 
+function markInvalid(message: string, inputEl?: HTMLInputElement): void {
+  inputEl?.focus();
+  inputEl?.classList.add(
+    "border-2",
+    "border-red-600",
+    "ring-1",
+    "ring-red-500",
+    "bg-[rgba(255,0,0,0.25)]"
+  );
+
+  // Create or update the error message element
+  let errorMessageEl = inputEl?.nextElementSibling as HTMLElement;
+  if (!errorMessageEl || !errorMessageEl.classList.contains("error-message")) {
+    errorMessageEl = document.createElement("span");
+    errorMessageEl.classList.add(
+      "error-message",
+      "text-red-600",
+      "text-sm",
+      "mt-2",
+      "block",
+      "ml-49"
+    );
+    inputEl?.insertAdjacentElement("afterend", errorMessageEl);
+  }
+  errorMessageEl.textContent = message;
+}
+
+function clearInvalid(inputEl?: HTMLInputElement): void {
+  inputEl?.classList.remove(
+    "border-2",
+    "border-red-600",
+    "ring-1",
+    "ring-red-500",
+    "bg-[rgba(255,0,0,0.25)]"
+  );
+  const errorMessageEl = inputEl?.nextElementSibling as HTMLElement;
+  if (errorMessageEl && errorMessageEl.classList.contains("error-message")) {
+    errorMessageEl.remove();
+  }
+}
+
 export function validateNicknames(nicknames: string[]): boolean {
   const nicknameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
 
@@ -40,18 +81,21 @@ export function validateNicknames(nicknames: string[]): boolean {
   return true;
 }
 
-export async function validateTournamentName(name: string): Promise<boolean> {
+export async function validateTournamentName(
+  name: string,
+  inputEl?: HTMLInputElement
+): Promise<boolean> {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.@]{1,10}$/;
 
   if (isEmptyString(name)) {
-    alert("Please enter a tournament name.");
+    markInvalid("Tournament name is required.", inputEl);
     return false;
   }
 
   if (!validateAgainstRegex(name, tournamentNameRegex)) {
-    alert(
-      "Tournament name must be 1-10 characters long and can only contain letters, " +
-        "numbers, or the following special characters inside brackets: [-!?_$.@]."
+    markInvalid(
+      "Tournament name must be 1–10 characters long and can only contain letters, numbers, or [-!?_$.@].",
+      inputEl
     );
     return false;
   }
@@ -64,7 +108,10 @@ export async function validateTournamentName(name: string): Promise<boolean> {
 
     const tournamentNames = tournaments.map((tournament) => tournament.name);
     if (tournamentNames.includes(name)) {
-      alert("Tournament name already exists. Please choose a different name.");
+      markInvalid(
+        "Tournament name already exists. Please choose a different name.",
+        inputEl
+      );
       return false;
     }
   } catch (error) {
@@ -72,6 +119,8 @@ export async function validateTournamentName(name: string): Promise<boolean> {
     alert("An error occurred while validating the tournament name.");
     return false;
   }
+
+  clearInvalid(inputEl);
   return true;
 }
 

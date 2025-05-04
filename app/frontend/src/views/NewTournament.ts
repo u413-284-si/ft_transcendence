@@ -33,7 +33,7 @@ export default class extends AbstractView {
               <input
                   type="text"
                   name="tournamentName"
-                  style="width: 30%; padding: 10px; font-size: 1em; border: 2px solid #007BFF; border-radius: 5px; margin-top: 5px;"
+                  class="border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
               >
           </label><br><br>
           <label>
@@ -96,7 +96,10 @@ export default class extends AbstractView {
     ) as HTMLInputElement;
 
     if (
-      !(await validateTournamentName(tournamentNameInput.value)) ||
+      !(await validateTournamentName(
+        tournamentNameInput.value,
+        tournamentNameInput
+      )) ||
       !validatePlayers(players)
     )
       return;
