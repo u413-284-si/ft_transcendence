@@ -32,6 +32,7 @@ export async function loginUserHandler(request, reply) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { username, ...userDataRefreshToken } = userDataAccessToken;
 
+    // @TODO: rename function to verifyHash (can be used for login and refresh token)
     if (!(await verifyPassword(hashedPassword, password))) {
       return httpError(
         reply,
@@ -41,6 +42,7 @@ export async function loginUserHandler(request, reply) {
       );
     }
 
+    // @TODO: create single service called: createAuthTokens (can be used for login and refresh token)
     const accessToken = createAccessToken(userDataAccessToken);
     const refreshToken = createRefreshToken(userDataRefreshToken);
 
