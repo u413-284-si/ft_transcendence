@@ -45,10 +45,12 @@ export default class extends AbstractView {
     const nickname2: string = (
       document.getElementById("nickname2") as HTMLInputElement
     ).value;
+    const form = document.getElementById("register-form") as HTMLFormElement;
+    const inputs = Array.from(
+      form.querySelectorAll("input[type='text']")
+    ) as HTMLInputElement[];
 
-    const nicknames = [nickname1, nickname2];
-
-    if (!validateNicknames(nicknames)) return;
+    if (!validateNicknames(inputs)) return;
 
     const gameView = new GameView(nickname1, nickname2, GameType.single, null);
     gameView.render();

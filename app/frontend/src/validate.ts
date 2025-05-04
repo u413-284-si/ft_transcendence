@@ -11,10 +11,6 @@ function validateAgainstRegex(str: string, regex: RegExp): boolean {
   return true;
 }
 
-function hasDuplicates(nicknames: string[]): boolean {
-  return new Set(nicknames).size !== nicknames.length;
-}
-
 function markInvalid(message: string, inputEl?: HTMLInputElement): void {
   inputEl?.focus();
   inputEl?.classList.add(
@@ -80,29 +76,31 @@ function clearSelectionInvalid(
   errorEl?.classList.add("hidden");
 }
 
-export function validateNicknames(nicknames: string[]): boolean {
+export function validateNicknames(inputElements: HTMLInputElement[]): boolean {
   const nicknameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
+  let isValid = true;
 
-  if (nicknames.some((nickname) => nickname === "")) {
-    alert("Please enter a nickname for all players.");
-    return false;
-  }
+  const nicknames = inputElements.map((input) => input.value);
 
-  for (const nickname of nicknames) {
-    if (!validateAgainstRegex(nickname, nicknameRegex)) {
-      alert(
-        "Nicknames must be 3-20 characters long and can only contain letters, " +
-          "numbers, or the following special characters inside brackets: [-!?_$.]."
+  inputElements.forEach((inputEl, i) => {
+    clearInvalid(inputEl);
+    const nickname = nicknames[i];
+
+    if (nickname === "") {
+      markInvalid("Nickname is required.", inputEl);
+      isValid = false;
+    } else if (!validateAgainstRegex(nickname, nicknameRegex)) {
+      markInvalid(
+        "Nickname must be 3–20 characters and can include letters, numbers, or [-!?_$.]",
+        inputEl
       );
-      return false;
+      isValid = false;
+    } else if (nicknames.filter((n) => n === nickname).length > 1) {
+      markInvalid("Nicknames must be unique.", inputEl);
+      isValid = false;
     }
-  }
-
-  if (hasDuplicates(nicknames)) {
-    alert("Nicknames must be unique.");
-    return false;
-  }
-  return true;
+  });
+  return isValid;
 }
 
 export async function validateTournamentName(
