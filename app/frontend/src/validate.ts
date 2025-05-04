@@ -11,7 +11,7 @@ function validateAgainstRegex(str: string, regex: RegExp): boolean {
   return true;
 }
 
-function markInvalid(message: string, inputEl?: HTMLInputElement): void {
+function markInvalid(message: string, inputEl: HTMLInputElement): void {
   inputEl?.focus();
   inputEl?.classList.add(
     "border-2",
@@ -38,7 +38,7 @@ function markInvalid(message: string, inputEl?: HTMLInputElement): void {
   errorMessageEl.textContent = message;
 }
 
-function clearInvalid(inputEl?: HTMLInputElement): void {
+function clearInvalid(inputEl: HTMLInputElement): void {
   inputEl?.classList.remove(
     "border-2",
     "border-red-600",
@@ -105,7 +105,7 @@ export function validateNicknames(inputElements: HTMLInputElement[]): boolean {
 
 export async function validateTournamentName(
   name: string,
-  inputEl?: HTMLInputElement
+  inputEl: HTMLInputElement
 ): Promise<boolean> {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.@]{1,10}$/;
 
