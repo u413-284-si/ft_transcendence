@@ -13,21 +13,36 @@ export default class extends AbstractView {
   }
 
   async createHTML() {
-    return `
-				<form id="login-form" class="flex flex-col justify-center items-center h-screen gap-4">
-					<div>
-						<label for="usernameOrEmail">Username or Email:</label><br>
-						<input id="usernameOrEmail" name="usernameOrEmail" type="text" class="border-2 border-white rounded-sm">
-					</div>
-					<div>
-						<label for="password">Password:</label><br>
-						<input id="password" name="password" type="password" class="border-2 border-white rounded-sm">
-					</div>
-					<div>
-						<button type="submit" class="border-2 border-white rounded-sm p-2">Login</button>
-					</div>
-				</form>
-			`;
+    return /* HTML */ `
+      <form
+        id="login-form"
+        class="flex flex-col justify-center items-center h-screen gap-4"
+      >
+        <div class="w-[300px]">
+          <label for="usernameOrEmail">Username or Email:</label><br />
+          <input
+            id="usernameOrEmail"
+            name="usernameOrEmail"
+            type="text"
+            class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
+          />
+        </div>
+        <div class="w-[300px]">
+          <label for="password">Password:</label><br />
+          <input
+            id="password"
+            name="password"
+            type="password"
+            class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
+          />
+        </div>
+        <div>
+          <button type="submit" class="border-2 border-white rounded-sm p-2">
+            Login
+          </button>
+        </div>
+      </form>
+    `;
   }
 
   async addListeners() {
@@ -43,18 +58,17 @@ export default class extends AbstractView {
 
   async validateAndLoginUser(event: Event) {
     event.preventDefault();
-    const loginForm: HTMLFormElement = document.getElementById(
-      "login-form"
-    ) as HTMLFormElement;
-    const usernameOrEmail: string = loginForm.usernameOrEmail.value;
-    const password: string = loginForm.password.value;
+    const userEl = document.getElementById(
+      "usernameOrEmail"
+    ) as HTMLInputElement;
+    const passwordEl = document.getElementById("password") as HTMLInputElement;
 
-    if (!validateUsernameOrEmail(usernameOrEmail)) return;
+    if (!validateUsernameOrEmail(userEl)) return;
     // FIXME: activate when password policy is applied
-    // if (!validatePassword(password)) return;
+    // if (!validatePassword(passwordEl)) return;
 
     try {
-      await userLogin(usernameOrEmail, password);
+      await userLogin(userEl.value, passwordEl.value);
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         alert("Invalid username or password");

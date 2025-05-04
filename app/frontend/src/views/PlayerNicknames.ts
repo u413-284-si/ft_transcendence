@@ -16,33 +16,42 @@ export default class extends AbstractView {
   async createHTML() {
     let nicknameInputs = "";
     for (let i = 1; i <= this.numberOfPlayers; i++) {
-      nicknameInputs += `
-        <label style="display: block; margin-bottom: 10px;">
-          Player ${i} Nickname:
-          <input
-            type="text"
-            name="player${i}"
-            style="width: 50%; padding: 10px; font-size: 1em; border: 2px solid #007BFF; border-radius: 5px; margin-top: 5px;"
-          >
-        </label>
+      nicknameInputs += /* HTML */ `
+        <div class="w-[800px]">
+          <label style="display: block; margin-bottom: 10px;">
+            Player ${i} Nickname:
+            <input
+              type="text"
+              name="player${i}"
+              class="border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
+            />
+          </label>
+        </div>
       `;
     }
 
-    return `
-            <h1 style="
+    return /* HTML */ `
+      <h1
+        style="
               margin-bottom: 20px;
               font-size: 2em;
               color: #007BFF;
               text-align: center;"
-            >
-              Enter Player Nicknames
-            </h1>
-            <p style="margin-bottom: 20px; text-align: center;">
-              Tournament: <strong>${this.tournamentName}</strong>
-            </p>
-            <form id="nicknames-form">
-              ${nicknameInputs}
-              <button type="submit" style="
+      >
+        Enter Player Nicknames
+      </h1>
+      <p style="margin-bottom: 20px; text-align: center;">
+        Tournament: <strong>${this.tournamentName}</strong>
+      </p>
+      <form
+        id="nicknames-form"
+        class="flex flex-col justify-center items-center h-screen gap-4"
+      >
+        ${nicknameInputs}
+        <div>
+          <button
+            type="submit"
+            style="
               margin-top: 20px;
               padding: 10px 20px;
               font-size: 1em;
@@ -51,11 +60,12 @@ export default class extends AbstractView {
               border: none;
               border-radius: 5px;
               cursor: pointer;"
-              >
-              Submit Nicknames
-              </button>
-            </form>
-            `;
+          >
+            Submit Nicknames
+          </button>
+        </div>
+      </form>
+    `;
   }
 
   async addListeners() {

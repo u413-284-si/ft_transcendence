@@ -30,21 +30,27 @@ export default class extends AbstractView {
       >
         New Tournament
       </h1>
-      <p style="margin-bottom: 20px;">
+      <p class="text-center mb-5">
         Enter the tournament name and select the number of players:
       </p>
-      <form id="tournament-form">
-        <label
-          style="font-size: 1.2em; font-weight: bold; display: block; margin-bottom: 10px;"
-        >
-          Tournament Name:
-          <input
-            type="text"
-            name="tournamentName"
-            class="border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
-          /> </label
-        ><br /><br />
-        <div id="player-options" class="rounded px-2 py-1">
+      <form
+        id="tournament-form"
+        class="flex flex-col justify-center items-center gap-4"
+      >
+        <div class="w-[300px]">
+          <label
+            style="font-size: 1.2em; font-weight: bold; display: block; margin-bottom: 10px;"
+          >
+            Tournament Name:
+            <input
+              type="text"
+              name="tournamentName"
+              class="border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
+            />
+          </label>
+        </div>
+        <br /><br />
+        <div id="player-options" class="rounded px-2 py-1 w-[300px]">
           <label class="block">
             <input type="radio" name="players" value="4" /> 4 Players
           </label>
@@ -106,7 +112,7 @@ export default class extends AbstractView {
     const playersSelected = form?.querySelector(
       'input[name="players"]:checked'
     ) as HTMLInputElement;
-    const tournamentNameInput = form?.querySelector(
+    const tournamentNameEl = form?.querySelector(
       'input[name="tournamentName"]'
     ) as HTMLInputElement;
     const selectionEl = document.getElementById(
@@ -115,23 +121,20 @@ export default class extends AbstractView {
     const errorEl = document.getElementById("player-error") as HTMLInputElement;
 
     if (
-      !(await validateTournamentName(
-        tournamentNameInput.value,
-        tournamentNameInput
-      )) ||
+      !(await validateTournamentName(tournamentNameEl)) ||
       !validatePlayersSelection(playersSelected, selectionEl, errorEl)
     )
       return;
 
     const playerNum = parseInt(playersSelected.value);
     console.log(
-      `Tournament "${tournamentNameInput.value}" started with ${playerNum} players`
+      `Tournament "${tournamentNameEl.value}" started with ${playerNum} players`
     );
 
     // Navigate to the PlayerNicknames view
     const playerNicknamesView = new PlayerNicknames(
       playerNum,
-      tournamentNameInput.value
+      tournamentNameEl.value
     );
     playerNicknamesView.render();
   }

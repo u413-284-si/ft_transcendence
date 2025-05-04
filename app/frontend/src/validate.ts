@@ -31,7 +31,7 @@ function markInvalid(message: string, inputEl: HTMLInputElement): void {
       "text-sm",
       "mt-2",
       "block",
-      "ml-49"
+      "ml-0"
     );
     inputEl?.insertAdjacentElement("afterend", errorMessageEl);
   }
@@ -104,17 +104,16 @@ export function validateNicknames(inputElements: HTMLInputElement[]): boolean {
 }
 
 export async function validateTournamentName(
-  name: string,
   inputEl: HTMLInputElement
 ): Promise<boolean> {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.@]{1,10}$/;
 
-  if (isEmptyString(name)) {
+  if (isEmptyString(inputEl.value)) {
     markInvalid("Tournament name is required.", inputEl);
     return false;
   }
 
-  if (!validateAgainstRegex(name, tournamentNameRegex)) {
+  if (!validateAgainstRegex(inputEl.value, tournamentNameRegex)) {
     markInvalid(
       "Tournament name must be 1–10 characters long and can only contain letters, numbers, or [-!?_$.@].",
       inputEl
@@ -129,7 +128,7 @@ export async function validateTournamentName(
     }
 
     const tournamentNames = tournaments.map((tournament) => tournament.name);
-    if (tournamentNames.includes(name)) {
+    if (tournamentNames.includes(inputEl.value)) {
       markInvalid(
         "Tournament name already exists. Please choose a different name.",
         inputEl
@@ -159,44 +158,47 @@ export function validatePlayersSelection(
   return true;
 }
 
-export function validatePassword(password: string): boolean {
+export function validatePassword(inputEl: HTMLInputElement): boolean {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{14,30}$/;
 
-  if (isEmptyString(password)) {
-    alert("Please enter a password.");
+  if (isEmptyString(inputEl.value)) {
+    markInvalid("Please enter a password.", inputEl);
     return false;
   }
 
-  if (!validateAgainstRegex(password, passwordRegex)) {
-    alert(
+  if (!validateAgainstRegex(inputEl.value, passwordRegex)) {
+    markInvalid(
       "Password must be 14-30 characters long and must contain at least one " +
         "number, one uppercase and one lowercase letter and one of the " +
-        "following special characters inside brackets: [-!?_$.]."
+        "following special characters inside brackets: [-!?_$.].",
+      inputEl
     );
     return false;
   }
+  clearInvalid(inputEl);
   return true;
 }
 
-export function validateUsernameOrEmail(usernameOrEmail: string): boolean {
+export function validateUsernameOrEmail(inputEl: HTMLInputElement): boolean {
   const usernameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  if (isEmptyString(usernameOrEmail)) {
-    console.log("USERNAME VALIDATION FAILED"); // add this
-    alert("Please enter a username or email address.");
+  if (isEmptyString(inputEl.value)) {
+    markInvalid("Please enter a username or email address.", inputEl);
     return false;
   }
 
   if (
-    !validateAgainstRegex(usernameOrEmail, usernameRegex) &&
-    !validateAgainstRegex(usernameOrEmail, emailRegex)
+    !validateAgainstRegex(inputEl.value, usernameRegex) &&
+    !validateAgainstRegex(inputEl.value, emailRegex)
   ) {
-    alert(
-      "Please enter a valid username (3-20 characters long) or email address"
+    markInvalid(
+      "Please enter a valid username (3-20 characters long) or email address",
+      inputEl
     );
     return false;
   }
+  clearInvalid(inputEl);
   return true;
 }

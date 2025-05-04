@@ -11,18 +11,28 @@ export default class extends AbstractView {
   async createHTML() {
     const navbarHTML = await this.createNavbar();
     const footerHTML = await this.createFooter();
-    return `
-			${navbarHTML}
-			<form id="register-form">
-				<label for="nickname1">Player 1 Nickname:</label>
-				<input type="text" id="nickname1" placeholder="Enter nickname"><br><br>
-				<label for="nickname2">Player 2 Nickname:</label>
-				<input type="text" id="nickname2" placeholder="Enter nickname"><br><br>
-				<button type="submit">Start Game</button>
-			</form>
-			<canvas id="gameCanvas" width="800" height="400" class="border-4 border-white"></canvas>
-			${footerHTML}
-			`;
+    return /* HTML */ `
+      ${navbarHTML}
+      <form
+        id="register-form"
+        class="flex flex-col justify-center items-center h-screen gap-4"
+      >
+        <div class="w-[300px]">
+          <label for="nickname1">Player 1 Nickname:</label>
+          <input type="text" id="nickname1" placeholder="Enter nickname" />
+        </div>
+        <br /><br />
+        <div class="w-[300px]">
+          <label for="nickname2">Player 2 Nickname:</label>
+          <input type="text" id="nickname2" placeholder="Enter nickname" />
+        </div>
+        <br /><br />
+        <div class="w-[300px]">
+          <button type="submit">Start Game</button>
+        </div>
+      </form>
+      ${footerHTML}
+    `;
   }
 
   async addListeners() {
