@@ -100,29 +100,14 @@ export async function getUserData(userId) {
       username: true,
       authentication: {
         select: {
-          password: true
+          password: true,
+          refreshToken: true
         }
       }
     }
   });
 
   return user;
-}
-
-export async function getRefreshToken(userId) {
-  const user = await prisma.user.findUniqueOrThrow({
-    where: {
-      id: userId
-    },
-    select: {
-      authentication: {
-        select: {
-          refreshToken: true
-        }
-      }
-    }
-  });
-  return user.authentication.refreshToken;
 }
 
 export async function updateUserRefreshToken(userId, hashedRefreshToken) {
