@@ -17,15 +17,6 @@ export async function authorizeUserAccess(request, reply) {
   try {
     verifyAccessToken(token);
 
-    if (!("id" in decodeToken(token).payload)) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(action, false),
-        "Invalid payload"
-      );
-    }
-
     const userId = decodeToken(token).payload.id;
     const userData = await getUserData(userId);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
