@@ -29,7 +29,8 @@ export async function loginUserHandler(request, reply) {
       authentication: { password: hashedPassword },
       ...userDataAccessToken
     } = userData;
-    const { _username, ...userDataRefreshToken } = userDataAccessToken;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { username, ...userDataRefreshToken } = userDataAccessToken;
 
     if (!(await verifyPassword(hashedPassword, password))) {
       return httpError(
@@ -114,10 +115,12 @@ export async function authRefreshHandler(request, reply) {
 
     const userData = await getUserData(userId);
     const {
-      authentication: { _password },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      authentication: { password },
       ...userDataAccessToken
     } = userData;
-    const { _username, ...userDataRefreshToken } = userDataAccessToken;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { username, ...userDataRefreshToken } = userDataAccessToken;
 
     const accessToken = createAccessToken(userDataAccessToken);
     const refreshToken = createRefreshToken(userDataRefreshToken);
