@@ -56,6 +56,30 @@ function clearInvalid(inputEl?: HTMLInputElement): void {
   }
 }
 
+function markSelectionInvalid(
+  selectionEl: HTMLInputElement,
+  errorEl: HTMLInputElement
+): void {
+  selectionEl?.classList.add(
+    "border-2",
+    "border-red-600",
+    "bg-[rgba(255,0,0,0.2)]"
+  );
+  errorEl?.classList.remove("hidden");
+}
+
+function clearSelectionInvalid(
+  selectionEl: HTMLInputElement,
+  errorEl: HTMLInputElement
+): void {
+  selectionEl?.classList.remove(
+    "border-2",
+    "border-red-600",
+    "bg-[rgba(255,0,0,0.2)]"
+  );
+  errorEl?.classList.add("hidden");
+}
+
 export function validateNicknames(nicknames: string[]): boolean {
   const nicknameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
 
@@ -124,11 +148,16 @@ export async function validateTournamentName(
   return true;
 }
 
-export function validatePlayers(players: HTMLInputElement): boolean {
-  if (!players) {
-    alert("Please select the number of players.");
+export function validatePlayersSelection(
+  playersSelected: HTMLInputElement,
+  selectionEl: HTMLInputElement,
+  errorEl: HTMLInputElement
+): boolean {
+  if (!playersSelected) {
+    markSelectionInvalid(selectionEl, errorEl);
     return false;
   }
+  clearSelectionInvalid(selectionEl, errorEl);
   return true;
 }
 

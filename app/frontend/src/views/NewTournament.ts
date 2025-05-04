@@ -4,7 +4,10 @@ import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import PlayerNicknames from "./PlayerNicknames.js";
-import { validateTournamentName, validatePlayers } from "../validate.js";
+import {
+  validateTournamentName,
+  validatePlayersSelection
+} from "../validate.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -15,40 +18,52 @@ export default class extends AbstractView {
   async createHTML() {
     const navbarHTML = await this.createNavbar();
     const footerHTML = await this.createFooter();
-    return `
+    return /* HTML */ `
       ${navbarHTML}
-      <h1 style="
+      <h1
+        style="
           margin-bottom: 40px;
           font-size: 2.5em;
           color: #FF00AA;
           text-align: center;
           text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);"
       >
-          New Tournament
+        New Tournament
       </h1>
-      <p style="margin-bottom: 20px;">Enter the tournament name and select the number of players:</p>
+      <p style="margin-bottom: 20px;">
+        Enter the tournament name and select the number of players:
+      </p>
       <form id="tournament-form">
-          <label style="font-size: 1.2em; font-weight: bold; display: block; margin-bottom: 10px;">
-              Tournament Name:
-              <input
-                  type="text"
-                  name="tournamentName"
-                  class="border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
-              >
-          </label><br><br>
-          <label>
-              <input type="radio" name="players" value="4"> 4 Players
-          </label><br>
-          <label>
-              <input type="radio" name="players" value="8"> 8 Players
-          </label><br>
-          <label>
-              <input type="radio" name="players" value="16"> 16 Players
-          </label><br>
-          <button type="submit">Start Tournament</button>
+        <label
+          style="font-size: 1.2em; font-weight: bold; display: block; margin-bottom: 10px;"
+        >
+          Tournament Name:
+          <input
+            type="text"
+            name="tournamentName"
+            class="border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
+          /> </label
+        ><br /><br />
+        <div id="player-options" class="rounded px-2 py-1">
+          <label class="block">
+            <input type="radio" name="players" value="4" /> 4 Players
+          </label>
+          <label class="block">
+            <input type="radio" name="players" value="8" /> 8 Players
+          </label>
+          <label class="block">
+            <input type="radio" name="players" value="16" /> 16 Players
+          </label>
+          <span
+            id="player-error"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+            >Please select number of players.</span
+          >
+        </div>
+        <button type="submit">Start Tournament</button>
       </form>
       ${footerHTML}
-      `;
+    `;
   }
 
   async addListeners() {
@@ -88,30 +103,34 @@ export default class extends AbstractView {
   async validateAndRequestNicknames(event: Event) {
     event.preventDefault();
     const form = document.getElementById("tournament-form") as HTMLFormElement;
-    const players = form?.querySelector(
+    const playersSelected = form?.querySelector(
       'input[name="players"]:checked'
     ) as HTMLInputElement;
     const tournamentNameInput = form?.querySelector(
       'input[name="tournamentName"]'
     ) as HTMLInputElement;
+    const selectionEl = document.getElementById(
+      "player-options"
+    ) as HTMLInputElement;
+    const errorEl = document.getElementById("player-error") as HTMLInputElement;
 
     if (
       !(await validateTournamentName(
         tournamentNameInput.value,
         tournamentNameInput
       )) ||
-      !validatePlayers(players)
+      !validatePlayersSelection(playersSelected, selectionEl, errorEl)
     )
       return;
 
-    const selectedPlayers = parseInt(players.value);
+    const playerNum = parseInt(playersSelected.value);
     console.log(
-      `Tournament "${tournamentNameInput.value}" started with ${selectedPlayers} players`
+      `Tournament "${tournamentNameInput.value}" started with ${playerNum} players`
     );
 
     // Navigate to the PlayerNicknames view
     const playerNicknamesView = new PlayerNicknames(
-      selectedPlayers,
+      playerNum,
       tournamentNameInput.value
     );
     playerNicknamesView.render();
