@@ -15,10 +15,8 @@ export async function authorizeUserAccess(request, reply) {
     );
   }
   try {
-    verifyAccessToken(token);
+    const userData = verifyAccessToken(token);
 
-    const userId = decodeToken(token).payload.id;
-    const userData = await getUserData(userId);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userDataAccessToken } = userData;
     request.user = userDataAccessToken;
