@@ -53,7 +53,7 @@ export const tournamentResponseSchema = {
   properties: {
     message: { type: "string" },
     data: {
-      anyOf: [{ $ref: "tournamentSchema" }, { type: "null" }]
+      oneOf: [{ $ref: "tournamentSchema" }, { type: "null" }]
     }
   },
   required: ["message", "data"],
