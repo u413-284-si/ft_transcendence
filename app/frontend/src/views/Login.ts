@@ -24,7 +24,7 @@ export default class extends AbstractView {
             id="usernameOrEmail"
             name="usernameOrEmail"
             type="text"
-            class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
+            class="w-full border border-gray-300 rounded px-2 py-1 transition-all duration-300"
           />
         </div>
         <div class="w-[300px]">
@@ -33,7 +33,7 @@ export default class extends AbstractView {
             id="password"
             name="password"
             type="password"
-            class="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
+            class="w-full border border-gray-300 rounded px-2 py-1 transition-all duration-300"
           />
         </div>
         <div>

@@ -45,7 +45,7 @@ export default class extends AbstractView {
             <input
               type="text"
               name="tournamentName"
-              class="border border-gray-300 rounded px-2 py-1 focus:outline-none transition-all duration-300"
+              class="border border-gray-300 rounded px-2 py-1 transition-all duration-300"
             />
           </label>
         </div>
