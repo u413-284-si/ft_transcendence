@@ -39,13 +39,13 @@ export default async function userRoutes(fastify) {
 
   fastify.get(
     "/tournaments/",
-    optionsGetUserTournamentsData,
+    optionsGetUserTournaments,
     getUserTournamentsHandler
   );
 
   fastify.get(
     "/tournaments/active/",
-    optionsGetUserActiveTournamentData,
+    optionsGetUserActiveTournament,
     getUserActiveTournamentHandler
   );
 }
@@ -141,7 +141,7 @@ const optionsGetAllUserStats = {
   }
 };
 
-const optionsGetUserTournamentsData = {
+const optionsGetUserTournaments = {
   onRequest: [authorizeUser],
   schema: {
     response: {
@@ -151,7 +151,7 @@ const optionsGetUserTournamentsData = {
   }
 };
 
-const optionsGetUserActiveTournamentData = {
+const optionsGetUserActiveTournament = {
   onRequest: [authorizeUser],
   schema: {
     response: {
