@@ -19,7 +19,7 @@ export function setAuthCookies(reply, accessToken, refreshToken) {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      path: "/",
+      path: "/api/auth/refresh",
       expires: refreshTokenTimeToExpire
     });
 }
