@@ -110,7 +110,10 @@ export async function authRefreshHandler(request, reply) {
     const userData = await getUserData(userId);
     const {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      authentication: { hashedPassword, hashedRefreshToken },
+      authentication: {
+        password: hashedPassword,
+        refreshToken: hashedRefreshToken
+      },
       ...userDataAccessToken
     } = userData;
 
@@ -126,9 +129,7 @@ export async function authRefreshHandler(request, reply) {
     const accessToken = createAccessToken(userDataAccessToken);
     const refreshToken = createRefreshToken(userDataRefreshToken);
 
-    const hashedRefreshTokenNew = await createHashedRefreshToken(
-      refreshToken.token
-    );
+    const hashedRefreshTokenNew = await createHashedRefreshToken(refreshToken);
 
     await updateUserRefreshToken(
       userDataRefreshToken.id,
