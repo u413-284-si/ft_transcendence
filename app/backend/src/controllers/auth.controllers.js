@@ -2,16 +2,15 @@ import {
   createAccessToken,
   createRefreshToken,
   verifyRefreshToken,
-  verifyStoredRefreshToken,
-  updateUserRefreshToken
+  updateUserRefreshToken,
+  verifyHash,
+  createHash
 } from "../services/auth.services.js";
 import { getUserData, getUserID } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
-import { verifyPassword } from "../services/auth.services.js";
 import { setAuthCookies } from "../utils/cookie.js";
-import { createHashedRefreshToken } from "../services/auth.services.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -33,7 +32,7 @@ export async function loginUserHandler(request, reply) {
     const { username, ...userDataRefreshToken } = userDataAccessToken;
 
     // @TODO: rename function to verifyHash (can be used for login and refresh token)
-    if (!(await verifyPassword(hashedPassword, password))) {
+    if (!(await verifyHash(hashedPassword, password))) {
       return httpError(
         reply,
         401,
@@ -46,7 +45,7 @@ export async function loginUserHandler(request, reply) {
     const accessToken = createAccessToken(userDataAccessToken);
     const refreshToken = createRefreshToken(userDataRefreshToken);
 
-    const newHashedRefreshToken = await createHashedRefreshToken(refreshToken);
+    const newHashedRefreshToken = await createHash(refreshToken);
 
     await updateUserRefreshToken(
       userDataRefreshToken.id,
@@ -117,7 +116,7 @@ export async function authRefreshHandler(request, reply) {
       ...userDataAccessToken
     } = userData;
 
-    if (!(await verifyStoredRefreshToken(hashedRefreshToken, token))) {
+    if (!(await verifyHash(hashedRefreshToken, token))) {
       return httpError(
         reply,
         401,
@@ -129,7 +128,7 @@ export async function authRefreshHandler(request, reply) {
     const accessToken = createAccessToken(userDataAccessToken);
     const refreshToken = createRefreshToken(userDataRefreshToken);
 
-    const hashedRefreshTokenNew = await createHashedRefreshToken(refreshToken);
+    const hashedRefreshTokenNew = await createHash(refreshToken);
 
     await updateUserRefreshToken(
       userDataRefreshToken.id,
@@ -137,8 +136,7 @@ export async function authRefreshHandler(request, reply) {
     );
 
     request.user = userDataAccessToken;
-    setAuthCookies(reply, accessToken, refreshToken);
-    return reply
+    return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {

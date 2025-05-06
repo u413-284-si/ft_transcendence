@@ -11,31 +11,16 @@ export function verifyRefreshToken(token) {
   return fastify.jwt.verify(token, env.jwtRefreshTokenSecret);
 }
 
-export async function createHashedPassword(password) {
-  return await pkg.hash(password, {
+export async function createHash(value) {
+  return await pkg.hash(value, {
     type: pkg.argon2id,
     memoryCost: 47104,
     parallelism: 1
   });
 }
 
-export async function createHashedRefreshToken(refreshToken) {
-  return await pkg.hash(refreshToken, {
-    type: pkg.argon2id,
-    memoryCost: 47104,
-    parallelism: 1
-  });
-}
-
-export async function verifyPassword(databasePassword, loginPassword) {
-  return await pkg.verify(databasePassword, loginPassword);
-}
-
-export async function verifyStoredRefreshToken(
-  databaseRefreshToken,
-  requestRefreshToken
-) {
-  return await pkg.verify(databaseRefreshToken, requestRefreshToken);
+export async function verifyHash(hash, value) {
+  return await pkg.verify(hash, value);
 }
 
 export function createAccessToken(user) {
