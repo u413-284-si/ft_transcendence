@@ -23,8 +23,8 @@ const userStatsResponseSchema = {
   additionalProperties: false
 };
 
-const allUserStatsResponseSchema = {
-  $id: "allUserStatsResponseSchema",
+const userStatsArrayResponseSchema = {
+  $id: "userStatsArrayResponseSchema",
   type: "object",
   properties: {
     message: { type: "string" },
@@ -41,5 +41,5 @@ const allUserStatsResponseSchema = {
 export const userStatsSchemas = [
   userStatsSchema,
   userStatsResponseSchema,
-  allUserStatsResponseSchema
+  userStatsArrayResponseSchema
 ];

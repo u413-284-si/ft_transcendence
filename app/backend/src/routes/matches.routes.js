@@ -38,7 +38,7 @@ const optionsGetMatch = {
 const optionsGetAllMatches = {
   schema: {
     response: {
-      200: { $ref: "matchesResponseSchema" },
+      200: { $ref: "matchArrayResponseSchema" },
       ...errorResponses
     }
   }

@@ -60,8 +60,8 @@ export const tournamentResponseSchema = {
   additionalProperties: false
 };
 
-const tournamentsResponseSchema = {
-  $id: "tournamentsResponseSchema",
+const tournamentArrayResponseSchema = {
+  $id: "tournamentArrayResponseSchema",
   type: "object",
   properties: {
     message: { type: "string" },
@@ -132,7 +132,7 @@ export const tournamentSchemas = [
   tournamentDefinitionsSchema,
   tournamentSchema,
   tournamentResponseSchema,
-  tournamentsResponseSchema,
+  tournamentArrayResponseSchema,
   createTournamentSchema,
   patchTournamentSchema
 ];

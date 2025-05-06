@@ -51,8 +51,8 @@ const matchResponseSchema = {
   additionalProperties: false
 };
 
-const matchesResponseSchema = {
-  $id: "matchesResponseSchema",
+const matchArrayResponseSchema = {
+  $id: "matchArrayResponseSchema",
   type: "object",
   properties: {
     message: { type: "string" },
@@ -125,7 +125,7 @@ export const createMatchResponseSchema = {
 export const matchSchemas = [
   matchSchema,
   matchResponseSchema,
-  matchesResponseSchema,
+  matchArrayResponseSchema,
   createMatchSchema,
   createMatchResponseSchema
 ];

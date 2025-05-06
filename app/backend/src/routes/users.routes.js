@@ -74,7 +74,7 @@ const optionsGetUser = {
 const optionsGetAllUsers = {
   schema: {
     response: {
-      200: { $ref: "usersResponseSchema" },
+      200: { $ref: "userArrayResponseSchema" },
       ...errorResponses
     }
   }
@@ -116,7 +116,7 @@ const optionsGetUserMatches = {
   onRequest: [authorizeUser],
   schema: {
     response: {
-      200: { $ref: "matchesResponseSchema" },
+      200: { $ref: "matchArrayResponseSchema" },
       ...errorResponses
     }
   }
@@ -135,7 +135,7 @@ const optionsGetUserStats = {
 const optionsGetAllUserStats = {
   schema: {
     response: {
-      200: { $ref: "allUserStatsResponseSchema" },
+      200: { $ref: "userStatsArrayResponseSchema" },
       ...errorResponses
     }
   }
@@ -145,7 +145,7 @@ const optionsGetUserTournaments = {
   onRequest: [authorizeUser],
   schema: {
     response: {
-      200: { $ref: "tournamentsResponseSchema" },
+      200: { $ref: "tournamentArrayResponseSchema" },
       ...errorResponses
     }
   }
