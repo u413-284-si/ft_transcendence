@@ -83,7 +83,7 @@ export function validateNicknames(inputElements: HTMLInputElement[]): boolean {
     clearInvalid(inputEl);
     const nickname = nicknames[i];
 
-    if (nickname === "") {
+    if (isEmptyString(nickname)) {
       markInvalid("Nickname is required.", inputEl);
       isValid = false;
     } else if (!validateAgainstRegex(nickname, nicknameRegex)) {
