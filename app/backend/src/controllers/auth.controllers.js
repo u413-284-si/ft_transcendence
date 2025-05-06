@@ -109,8 +109,8 @@ export async function authRefreshHandler(request, reply) {
 
     const userData = await getUserData(userId);
     const {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       authentication: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         password: hashedPassword,
         refreshToken: hashedRefreshToken
       },
