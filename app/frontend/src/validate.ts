@@ -9,8 +9,8 @@ function validateAgainstRegex(str: string, regex: RegExp): boolean {
 }
 
 function markInvalid(message: string, inputEl: HTMLInputElement): void {
-  inputEl?.focus();
-  inputEl?.classList.add(
+  inputEl.focus();
+  inputEl.classList.add(
     "border-2",
     "border-red-600",
     "ring-1",
@@ -19,7 +19,7 @@ function markInvalid(message: string, inputEl: HTMLInputElement): void {
   );
 
   // Create or update the error message element
-  let errorMessageEl = inputEl?.nextElementSibling as HTMLElement;
+  let errorMessageEl = inputEl.nextElementSibling as HTMLElement;
   if (!errorMessageEl || !errorMessageEl.classList.contains("error-message")) {
     errorMessageEl = document.createElement("span");
     errorMessageEl.classList.add(
@@ -30,20 +30,20 @@ function markInvalid(message: string, inputEl: HTMLInputElement): void {
       "block",
       "ml-0"
     );
-    inputEl?.insertAdjacentElement("afterend", errorMessageEl);
+    inputEl.insertAdjacentElement("afterend", errorMessageEl);
   }
   errorMessageEl.textContent = message;
 }
 
 function clearInvalid(inputEl: HTMLInputElement): void {
-  inputEl?.classList.remove(
+  inputEl.classList.remove(
     "border-2",
     "border-red-600",
     "ring-1",
     "ring-red-500",
     "bg-[rgba(255,0,0,0.25)]"
   );
-  const errorMessageEl = inputEl?.nextElementSibling as HTMLElement;
+  const errorMessageEl = inputEl.nextElementSibling as HTMLElement;
   if (errorMessageEl && errorMessageEl.classList.contains("error-message")) {
     errorMessageEl.remove();
   }
