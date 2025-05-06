@@ -47,7 +47,7 @@ const matchResponseSchema = {
     message: { type: "string" },
     data: { $ref: "matchSchema" }
   },
-  required: ["message", "match"],
+  required: ["message", "data"],
   additionalProperties: false
 };
 

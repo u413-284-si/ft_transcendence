@@ -18,7 +18,7 @@ const userResponseSchema = {
     message: { type: "string" },
     data: { $ref: "userSchema" }
   },
-  required: ["message", "user"],
+  required: ["message", "data"],
   additionalProperties: false
 };
 
