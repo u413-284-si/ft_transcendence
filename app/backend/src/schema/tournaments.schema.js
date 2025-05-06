@@ -1,3 +1,31 @@
+const tournamentDefinitionsSchema = {
+  $id: "tournamentDefinitionsSchema",
+  definitions: {
+    tournamentName: {
+      type: "string",
+      minLength: 3,
+      maxLength: 20,
+      pattern: "^[a-zA-Z0-9-!?_$.]{3,20}$",
+      description:
+        "A unique tournament name with 3-20 alphanumeric or the following special characters inside brackets: [-!?_$.]"
+    },
+    tournamentMaxPlayers: {
+      type: "integer",
+      minimum: 4,
+      maximum: 16,
+      description: "The number of players in the tournament"
+    },
+    tournamentStatus: {
+      type: "string",
+      enum: ["CREATED", "IN_PROGRESS", "FINISHED"]
+    },
+    tournamentBracket: {
+      type: "string",
+      description: "Serialized match brackets"
+    }
+  }
+};
+
 export const tournamentSchema = {
   $id: "tournamentSchema",
   type: "object",
@@ -101,6 +129,7 @@ const patchTournamentSchema = {
 };
 
 export const tournamentSchemas = [
+  tournamentDefinitionsSchema,
   tournamentSchema,
   tournamentResponseSchema,
   tournamentsResponseSchema,

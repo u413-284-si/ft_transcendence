@@ -106,7 +106,7 @@ export function validateNicknames(inputElements: HTMLInputElement[]): boolean {
 export async function validateTournamentName(
   inputEl: HTMLInputElement
 ): Promise<boolean> {
-  const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.@]{1,10}$/;
+  const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
 
   if (isEmptyString(inputEl.value)) {
     markInvalid("Tournament name is required.", inputEl);
@@ -115,7 +115,7 @@ export async function validateTournamentName(
 
   if (!validateAgainstRegex(inputEl.value, tournamentNameRegex)) {
     markInvalid(
-      "Tournament name must be 1–10 characters long and can only contain letters, numbers, or [-!?_$.@].",
+      "Tournament name must be 3–20 characters long and can only contain letters, numbers, or [-!?_$.].",
       inputEl
     );
     return false;
