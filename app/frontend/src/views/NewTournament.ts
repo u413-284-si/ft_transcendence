@@ -48,6 +48,10 @@ export default class extends AbstractView {
               class="border border-gray-300 rounded px-2 py-1 transition-all duration-300"
             />
           </label>
+          <span
+            id="tournamentName-error"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
         </div>
         <br /><br />
         <div id="player-options" class="rounded px-2 py-1 w-[300px]">
@@ -63,8 +67,7 @@ export default class extends AbstractView {
           <span
             id="player-error"
             class="error-message text-red-600 text-sm mt-1 hidden"
-            >Please select number of players.</span
-          >
+          ></span>
         </div>
         <button type="submit">Start Tournament</button>
       </form>
@@ -118,13 +121,20 @@ export default class extends AbstractView {
     const selectionEl = document.getElementById(
       "player-options"
     ) as HTMLInputElement;
-    const errorEl = document.getElementById("player-error") as HTMLInputElement;
+    const tournamentErrorEl = document.getElementById(
+      "tournamentName-error"
+    ) as HTMLElement;
+    const playerErrorEl = document.getElementById(
+      "player-error"
+    ) as HTMLElement;
     let isValid = true;
 
-    if (!(await validateTournamentName(tournamentNameEl))) {
+    if (!(await validateTournamentName(tournamentNameEl, tournamentErrorEl))) {
       isValid = false;
     }
-    if (!validatePlayersSelection(playersSelected, selectionEl, errorEl)) {
+    if (
+      !validatePlayersSelection(playersSelected, selectionEl, playerErrorEl)
+    ) {
       isValid = false;
     }
     if (!isValid) {

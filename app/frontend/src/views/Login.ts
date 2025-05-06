@@ -26,6 +26,10 @@ export default class extends AbstractView {
             type="text"
             class="w-full border border-gray-300 rounded px-2 py-1 transition-all duration-300"
           />
+          <span
+            id="usernameOrEmail-error"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
         </div>
         <div class="w-[300px]">
           <label for="password">Password:</label><br />
@@ -35,6 +39,10 @@ export default class extends AbstractView {
             type="password"
             class="w-full border border-gray-300 rounded px-2 py-1 transition-all duration-300"
           />
+          <span
+            id="password-error"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
         </div>
         <div>
           <button type="submit" class="border-2 border-white rounded-sm p-2">
@@ -61,11 +69,18 @@ export default class extends AbstractView {
     const userEl = document.getElementById(
       "usernameOrEmail"
     ) as HTMLInputElement;
+    const userErrorEl = document.getElementById(
+      "usernameOrEmail-error"
+    ) as HTMLElement;
     const passwordEl = document.getElementById("password") as HTMLInputElement;
-
-    if (!validateUsernameOrEmail(userEl)) return;
     // FIXME: activate when password policy is applied
-    // if (!validatePassword(passwordEl)) return;
+    // const passwordErrorEl = document.getElementById(
+    //   "password-error"
+    // ) as HTMLElement;
+
+    if (!validateUsernameOrEmail(userEl, userErrorEl)) return;
+    // FIXME: activate when password policy is applied
+    // if (!validatePassword(passwordEl, passwordErrorEl)) return;
 
     try {
       await userLogin(userEl.value, passwordEl.value);

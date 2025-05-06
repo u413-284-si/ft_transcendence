@@ -26,6 +26,10 @@ export default class extends AbstractView {
               class="border border-gray-300 rounded px-2 py-1 transition-all duration-300"
             />
           </label>
+          <span
+            id="player-error${i}"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
         </div>
       `;
     }
@@ -84,12 +88,15 @@ export default class extends AbstractView {
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
     const form = document.getElementById("nicknames-form") as HTMLFormElement;
-    const inputElements = Array.from(
+    const inputElements: HTMLInputElement[] = Array.from(
       form.querySelectorAll("input[type='text']")
-    ) as HTMLInputElement[];
+    );
+    const errorElements: HTMLElement[] = Array.from(
+      form.querySelectorAll("span.error-message")
+    );
     const nicknames = inputElements.map((input) => input.value);
 
-    if (!validateNicknames(inputElements, nicknames)) return;
+    if (!validateNicknames(inputElements, errorElements, nicknames)) return;
 
     const tournament = Tournament.fromUsernames(
       nicknames,

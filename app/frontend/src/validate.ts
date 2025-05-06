@@ -8,7 +8,11 @@ function validateAgainstRegex(str: string, regex: RegExp): boolean {
   return regex.test(str);
 }
 
-function markInvalid(message: string, inputEl: HTMLInputElement): void {
+function markInvalid(
+  message: string,
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): void {
   inputEl.focus();
   inputEl.classList.add(
     "border-2",
@@ -18,24 +22,11 @@ function markInvalid(message: string, inputEl: HTMLInputElement): void {
     "bg-[rgba(255,0,0,0.25)]"
   );
 
-  // Create or update the error message element
-  let errorMessageEl = inputEl.nextElementSibling as HTMLElement;
-  if (!errorMessageEl || !errorMessageEl.classList.contains("error-message")) {
-    errorMessageEl = document.createElement("span");
-    errorMessageEl.classList.add(
-      "error-message",
-      "text-red-600",
-      "text-sm",
-      "mt-2",
-      "block",
-      "ml-0"
-    );
-    inputEl.insertAdjacentElement("afterend", errorMessageEl);
-  }
-  errorMessageEl.textContent = message;
+  errorEl.classList.remove("hidden");
+  errorEl.textContent = message;
 }
 
-function clearInvalid(inputEl: HTMLInputElement): void {
+function clearInvalid(inputEl: HTMLInputElement, errorEl: HTMLElement): void {
   inputEl.classList.remove(
     "border-2",
     "border-red-600",
@@ -43,58 +34,34 @@ function clearInvalid(inputEl: HTMLInputElement): void {
     "ring-red-500",
     "bg-[rgba(255,0,0,0.25)]"
   );
-  const errorMessageEl = inputEl.nextElementSibling as HTMLElement;
-  if (errorMessageEl && errorMessageEl.classList.contains("error-message")) {
-    errorMessageEl.remove();
-  }
-}
-
-function markSelectionInvalid(
-  selectionEl: HTMLInputElement,
-  errorEl: HTMLInputElement
-): void {
-  selectionEl?.classList.add(
-    "border-2",
-    "border-red-600",
-    "bg-[rgba(255,0,0,0.2)]"
-  );
-  errorEl?.classList.remove("hidden");
-}
-
-function clearSelectionInvalid(
-  selectionEl: HTMLInputElement,
-  errorEl: HTMLInputElement
-): void {
-  selectionEl?.classList.remove(
-    "border-2",
-    "border-red-600",
-    "bg-[rgba(255,0,0,0.2)]"
-  );
-  errorEl?.classList.add("hidden");
+  errorEl.classList.add("hidden");
+  errorEl.textContent = "";
 }
 
 export function validateNicknames(
   inputElements: HTMLInputElement[],
+  errorElements: HTMLElement[],
   nicknames: string[]
 ): boolean {
   const nicknameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
   let isValid = true;
 
   inputElements.forEach((inputEl, i) => {
-    clearInvalid(inputEl);
+    clearInvalid(inputEl, errorElements[i]);
     const nickname = nicknames[i];
 
     if (isEmptyString(nickname)) {
-      markInvalid("Nickname is required.", inputEl);
+      markInvalid("Nickname is required.", inputEl, errorElements[i]);
       isValid = false;
     } else if (!validateAgainstRegex(nickname, nicknameRegex)) {
       markInvalid(
         "Nickname must be 3–20 characters and can include letters, numbers, or [-!?_$.]",
-        inputEl
+        inputEl,
+        errorElements[i]
       );
       isValid = false;
     } else if (nicknames.filter((n) => n === nickname).length > 1) {
-      markInvalid("Nicknames must be unique.", inputEl);
+      markInvalid("Nicknames must be unique.", inputEl, errorElements[i]);
       isValid = false;
     }
   });
@@ -102,19 +69,22 @@ export function validateNicknames(
 }
 
 export async function validateTournamentName(
-  inputEl: HTMLInputElement
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
 ): Promise<boolean> {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
 
+  clearInvalid(inputEl, errorEl);
   if (isEmptyString(inputEl.value)) {
-    markInvalid("Tournament name is required.", inputEl);
+    markInvalid("Tournament name is required.", inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(inputEl.value, tournamentNameRegex)) {
     markInvalid(
       "Tournament name must be 3–20 characters long and can only contain letters, numbers, or [-!?_$.].",
-      inputEl
+      inputEl,
+      errorEl
     );
     return false;
   }
@@ -129,7 +99,8 @@ export async function validateTournamentName(
     if (tournamentNames.includes(inputEl.value)) {
       markInvalid(
         "Tournament name already exists. Please choose a different name.",
-        inputEl
+        inputEl,
+        errorEl
       );
       return false;
     }
@@ -138,30 +109,31 @@ export async function validateTournamentName(
     alert("An error occurred while validating the tournament name.");
     return false;
   }
-
-  clearInvalid(inputEl);
   return true;
 }
 
 export function validatePlayersSelection(
   playersSelected: HTMLInputElement,
   selectionEl: HTMLInputElement,
-  errorEl: HTMLInputElement
+  errorEl: HTMLElement
 ): boolean {
   if (!playersSelected) {
-    markSelectionInvalid(selectionEl, errorEl);
+    markInvalid("Please select number of players.", selectionEl, errorEl);
     return false;
   }
-  clearSelectionInvalid(selectionEl, errorEl);
+  clearInvalid(selectionEl, errorEl);
   return true;
 }
 
-export function validatePassword(inputEl: HTMLInputElement): boolean {
+export function validatePassword(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{14,30}$/;
 
   if (isEmptyString(inputEl.value)) {
-    markInvalid("Please enter a password.", inputEl);
+    markInvalid("Please enter a password.", inputEl, errorEl);
     return false;
   }
 
@@ -170,20 +142,24 @@ export function validatePassword(inputEl: HTMLInputElement): boolean {
       "Password must be 14-30 characters long and must contain at least one " +
         "number, one uppercase and one lowercase letter and one of the " +
         "following special characters inside brackets: [-!?_$.].",
-      inputEl
+      inputEl,
+      errorEl
     );
     return false;
   }
-  clearInvalid(inputEl);
+  clearInvalid(inputEl, errorEl);
   return true;
 }
 
-export function validateUsernameOrEmail(inputEl: HTMLInputElement): boolean {
+export function validateUsernameOrEmail(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
   const usernameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   if (isEmptyString(inputEl.value)) {
-    markInvalid("Please enter a username or email address.", inputEl);
+    markInvalid("Please enter a username or email address.", inputEl, errorEl);
     return false;
   }
 
@@ -193,10 +169,11 @@ export function validateUsernameOrEmail(inputEl: HTMLInputElement): boolean {
   ) {
     markInvalid(
       "Please enter a valid username (3-20 characters long) or email address",
-      inputEl
+      inputEl,
+      errorEl
     );
     return false;
   }
-  clearInvalid(inputEl);
+  clearInvalid(inputEl, errorEl);
   return true;
 }

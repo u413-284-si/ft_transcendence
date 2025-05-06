@@ -20,11 +20,19 @@ export default class extends AbstractView {
         <div class="w-[300px]">
           <label for="nickname1">Player 1 Nickname:</label>
           <input type="text" id="nickname1" placeholder="Enter nickname" />
+          <span
+            id="nickname-error1"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
         </div>
         <br /><br />
         <div class="w-[300px]">
           <label for="nickname2">Player 2 Nickname:</label>
           <input type="text" id="nickname2" placeholder="Enter nickname" />
+          <span
+            id="nickname-error2"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
         </div>
         <br /><br />
         <div class="w-[300px]">
@@ -49,12 +57,15 @@ export default class extends AbstractView {
   validateAndStartGame(event: Event) {
     event.preventDefault();
     const form = document.getElementById("register-form") as HTMLFormElement;
-    const inputElements = Array.from(
+    const inputElements: HTMLInputElement[] = Array.from(
       form.querySelectorAll("input[type='text']")
-    ) as HTMLInputElement[];
+    );
+    const errorElements: HTMLElement[] = Array.from(
+      form.querySelectorAll("span.error-message")
+    );
     const nicknames = inputElements.map((input) => input.value);
 
-    if (!validateNicknames(inputElements, nicknames)) return;
+    if (!validateNicknames(inputElements, errorElements, nicknames)) return;
 
     const gameView = new GameView(
       nicknames[0],
