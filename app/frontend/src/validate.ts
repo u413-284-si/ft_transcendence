@@ -5,10 +5,7 @@ function isEmptyString(str: string): boolean {
 }
 
 function validateAgainstRegex(str: string, regex: RegExp): boolean {
-  if (!regex.test(str)) {
-    return false;
-  }
-  return true;
+  return regex.test(str);
 }
 
 function markInvalid(message: string, inputEl: HTMLInputElement): void {
