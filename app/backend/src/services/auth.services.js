@@ -11,10 +11,6 @@ export function verifyRefreshToken(token) {
   return fastify.jwt.verify(token, env.jwtRefreshTokenSecret);
 }
 
-export function decodeToken(token) {
-  return fastify.jwt.decode(token, { complete: true });
-}
-
 export async function createHashedPassword(password) {
   return await pkg.hash(password, {
     type: pkg.argon2id,
