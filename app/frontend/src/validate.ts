@@ -73,11 +73,12 @@ function clearSelectionInvalid(
   errorEl?.classList.add("hidden");
 }
 
-export function validateNicknames(inputElements: HTMLInputElement[]): boolean {
+export function validateNicknames(
+  inputElements: HTMLInputElement[],
+  nicknames: string[]
+): boolean {
   const nicknameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
   let isValid = true;
-
-  const nicknames = inputElements.map((input) => input.value);
 
   inputElements.forEach((inputEl, i) => {
     clearInvalid(inputEl);

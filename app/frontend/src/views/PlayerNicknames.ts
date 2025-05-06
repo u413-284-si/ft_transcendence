@@ -83,13 +83,13 @@ export default class extends AbstractView {
 
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
-    const nicknames = this.extractNicknames();
     const form = document.getElementById("nicknames-form") as HTMLFormElement;
-    const inputs = Array.from(
+    const inputElements = Array.from(
       form.querySelectorAll("input[type='text']")
     ) as HTMLInputElement[];
+    const nicknames = inputElements.map((input) => input.value);
 
-    if (!validateNicknames(inputs)) return;
+    if (!validateNicknames(inputElements, nicknames)) return;
 
     const tournament = Tournament.fromUsernames(
       nicknames,
@@ -113,18 +113,5 @@ export default class extends AbstractView {
     } catch (e) {
       console.error("Error creating tournament", e);
     }
-  }
-
-  private extractNicknames(): string[] {
-    const form = document.getElementById("nicknames-form") as HTMLFormElement;
-    const nicknames: string[] = [];
-
-    for (let i = 1; i <= this.numberOfPlayers; i++) {
-      const nicknameInput: string = (
-        form.querySelector(`input[name="player${i}"]`) as HTMLInputElement
-      ).value;
-      nicknames.push(nicknameInput);
-    }
-    return nicknames;
   }
 }
