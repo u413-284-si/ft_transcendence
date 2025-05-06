@@ -1,5 +1,14 @@
 import prisma from "../prisma/prismaClient.js";
 
+const tournamentSelect = {
+  id: true,
+  name: true,
+  maxPlayers: true,
+  bracket: true,
+  status: true,
+  adminId: true
+};
+
 export async function createTournament(name, maxPlayers, adminId, bracket) {
   const tournament = await prisma.tournament.create({
     data: {
@@ -9,20 +18,15 @@ export async function createTournament(name, maxPlayers, adminId, bracket) {
       status: "CREATED",
       bracket
     },
-    select: {
-      id: true,
-      name: true,
-      maxPlayers: true,
-      bracket: true,
-      status: true,
-      adminId: true
-    }
+    select: tournamentSelect
   });
   return tournament;
 }
 
 export async function getAllTournaments() {
-  const tournaments = await prisma.tournament.findMany();
+  const tournaments = await prisma.tournament.findMany({
+    select: tournamentSelect
+  });
   return tournaments;
 }
 
@@ -31,14 +35,7 @@ export async function getTournament(id) {
     where: {
       id
     },
-    select: {
-      id: true,
-      name: true,
-      maxPlayers: true,
-      bracket: true,
-      status: true,
-      adminId: true
-    }
+    select: tournamentSelect
   });
   return tournament;
 }
@@ -50,14 +47,7 @@ export async function updateTournament(id, adminId, updateData) {
       adminId
     },
     data: updateData,
-    select: {
-      id: true,
-      name: true,
-      maxPlayers: true,
-      bracket: true,
-      status: true,
-      adminId: true
-    }
+    select: tournamentSelect
   });
   return updatedTournament;
 }
@@ -73,14 +63,7 @@ export async function deleteTournament(id, adminId) {
       id,
       adminId
     },
-    select: {
-      id: true,
-      name: true,
-      maxPlayers: true,
-      bracket: true,
-      status: true,
-      adminId: true
-    }
+    select: tournamentSelect
   });
   return tournament;
 }
@@ -90,14 +73,7 @@ export async function getUserTournaments(id) {
     where: {
       adminId: id
     },
-    select: {
-      id: true,
-      name: true,
-      maxPlayers: true,
-      bracket: true,
-      status: true,
-      adminId: true
-    }
+    select: tournamentSelect
   });
   return tournaments;
 }
@@ -110,14 +86,7 @@ export async function getUserActiveTournament(adminId) {
         in: ["CREATED", "IN_PROGRESS"]
       }
     },
-    select: {
-      id: true,
-      name: true,
-      maxPlayers: true,
-      bracket: true,
-      status: true,
-      adminId: true
-    }
+    select: tournamentSelect
   });
   return tournament;
 }
