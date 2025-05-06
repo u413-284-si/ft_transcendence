@@ -1,8 +1,8 @@
-import { apiFetch } from "./api.js";
+import { apiFetch, authApiFetch } from "./api.js";
 import { Token } from "../types/Token.js";
 
 export async function authAndDecodeAccessToken(): Promise<Token> {
-  const apiResponse = await apiFetch<Token>("/api/auth/", {
+  const apiResponse = await authApiFetch<Token>("/api/auth/", {
     method: "GET",
     credentials: "same-origin"
   });
@@ -11,14 +11,11 @@ export async function authAndDecodeAccessToken(): Promise<Token> {
   return apiResponse.data;
 }
 
-export async function authAndDecodeRefreshToken(): Promise<Token> {
-  const apiResponse = await apiFetch<Token>("/api/auth/refresh", {
+export async function refreshAccessToken() {
+  await apiFetch("/api/auth/refresh", {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log("refresh api response", apiResponse);
-  return apiResponse.data;
 }
 
 export async function userLogin(

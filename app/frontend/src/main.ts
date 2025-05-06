@@ -4,10 +4,7 @@ import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
 import Settings from "./views/Settings.js";
 import Stats from "./views/Stats.js";
-import {
-  authAndDecodeAccessToken,
-  authAndDecodeRefreshToken
-} from "./services/authServices.js";
+import { authAndDecodeAccessToken } from "./services/authServices.js";
 import { Token } from "./types/Token.js";
 
 export let globalToken: Token | null; // FIXME: should be in router
@@ -50,18 +47,10 @@ const router = async () => {
       globalToken = token;
       navigateTo("/home");
     } catch (err) {
-      console.error("Authorization with access token failed:", err);
-      try {
-        const token = await authAndDecodeRefreshToken();
-        console.log({ message: "Set global token", token });
-        globalToken = token;
-        navigateTo("/home");
-      } catch (err) {
-        console.error("Authorization with refresh token failed:", err);
-        globalToken = null;
-        navigateTo("/login");
-        return;
-      }
+      console.error("Authorization failed:", err);
+      globalToken = null;
+      navigateTo("/login");
+      return;
     }
   }
 
@@ -71,21 +60,12 @@ const router = async () => {
       console.log({ message: "Set global token", token });
       globalToken = token;
     } catch (err) {
-      console.error("Authorization with access token failed:", err);
-      try {
-        const token = await authAndDecodeRefreshToken();
-        console.log({ message: "Set global token", token });
-        globalToken = token;
-        navigateTo("/home");
-      } catch (err) {
-        console.error("Authorization with refresh token failed:", err);
-        globalToken = null;
-        navigateTo("/login");
-        return;
-      }
+      console.error("Authorization failed:", err);
+      globalToken = null;
+      navigateTo("/login");
+      return;
     }
   }
-
   const view = new match.route.view();
   await view.render();
 };
