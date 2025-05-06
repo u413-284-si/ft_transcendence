@@ -119,12 +119,17 @@ export default class extends AbstractView {
       "player-options"
     ) as HTMLInputElement;
     const errorEl = document.getElementById("player-error") as HTMLInputElement;
+    let isValid = true;
 
-    if (
-      !(await validateTournamentName(tournamentNameEl)) ||
-      !validatePlayersSelection(playersSelected, selectionEl, errorEl)
-    )
+    if (!(await validateTournamentName(tournamentNameEl))) {
+      isValid = false;
+    }
+    if (!validatePlayersSelection(playersSelected, selectionEl, errorEl)) {
+      isValid = false;
+    }
+    if (!isValid) {
       return;
+    }
 
     const playerNum = parseInt(playersSelected.value);
     console.log(
