@@ -87,7 +87,7 @@ const createTournamentSchema = {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentBracket"
     }
   },
-  required: ["name", "maxPlayers"],
+  required: ["name", "maxPlayers", "bracket"],
   additionalProperties: false
 };
 
