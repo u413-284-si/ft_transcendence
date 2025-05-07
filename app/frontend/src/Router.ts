@@ -8,6 +8,13 @@ type RouteConfig = {
   guard?: RouteGuard;
 };
 
+type RouteChangeInfo = {
+  path: string;
+  view: AbstractView | null;
+  isInternal: boolean;
+};
+type RouteChangeListener = (info: RouteChangeInfo) => void;
+
 export class Router {
   private static instance: Router;
   private routes: Map<string, RouteConfig> = new Map();
@@ -15,7 +22,7 @@ export class Router {
   private currentPath: string = "";
   private publicPath: string = "";
   private isInInternalView: boolean = false;
-  private routeChangeListeners: ((path: string) => void)[] = [];
+  private routeChangeListeners: RouteChangeListener[] = [];
   private historyIndex: number = 0;
   private suppressNextPopstate: boolean = false;
 
@@ -34,15 +41,16 @@ export class Router {
   }
 
   async start(): Promise<void> {
-    window.addEventListener("popstate", this.handlePopState);
-    document.body.addEventListener("click", this.handleLinkClick);
-    const state = history.state as { index?: number } | null;
-    this.historyIndex = state?.index ?? 0;
+    const index = parseInt(sessionStorage.getItem("router:index") || "0", 10);
+    this.historyIndex = isNaN(index) ? 0 : index;
     history.replaceState(
       { index: this.historyIndex },
       "",
       window.location.pathname
     );
+
+    window.addEventListener("popstate", this.handlePopState);
+    document.body.addEventListener("click", this.handleLinkClick);
     await this.navigate(window.location.pathname, false);
   }
 
@@ -92,9 +100,9 @@ export class Router {
       this.publicPath = path;
 
       const view = new route.view();
-      this.setView(view);
+      await this.setView(view);
 
-      this.routeChangeListeners.forEach((fn) => fn(path));
+      this.notifyRouteChange();
     } catch (error) {
       console.error("Error during navigate():", error);
     }
@@ -112,20 +120,32 @@ export class Router {
         this.isInInternalView = true;
       }
       this.currentPath = target;
-      await this.setView(view);
+      this.setView(view);
+      this.notifyRouteChange();
     } catch (error) {
       console.error("Error during navigateInternally():", error);
     }
   }
 
-  addRouteChangeListener(fn: (path: string) => void) {
+  addRouteChangeListener(fn: RouteChangeListener): this {
     this.routeChangeListeners.push(fn);
+    return this;
   }
 
-  removeRouteChangeListener(fn: (path: string) => void) {
+  removeRouteChangeListener(fn: RouteChangeListener): this {
     this.routeChangeListeners = this.routeChangeListeners.filter(
       (f) => f !== fn
     );
+    return this;
+  }
+
+  private notifyRouteChange() {
+    const info: RouteChangeInfo = {
+      path: this.currentPath,
+      view: this.currentView,
+      isInternal: this.isInInternalView
+    };
+    this.routeChangeListeners.forEach((fn) => fn(info));
   }
 
   private handlePopState = async (event: PopStateEvent) => {
@@ -135,7 +155,7 @@ export class Router {
       return;
     }
     const state = event.state as { index?: number } | null;
-    const newIndex = state?.index ?? 0;
+    const newIndex = state?.index ?? this.historyIndex;
     const direction =
       newIndex > this.historyIndex
         ? "forward"
@@ -159,6 +179,8 @@ export class Router {
     }
 
     this.historyIndex = newIndex;
+    sessionStorage.setItem("router:index", this.historyIndex.toString());
+
     this.navigate(window.location.pathname, false, true);
   };
 
