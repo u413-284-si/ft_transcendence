@@ -13,6 +13,8 @@ export class Router {
   private routes: Map<string, RouteConfig> = new Map();
   private currentView: AbstractView | null = null;
   private currentPath: string = "";
+  private publicPath: string = "";
+  private isInInternalView: boolean = false;
   private routeChangeListeners: ((path: string) => void)[] = [];
 
   private constructor() {}
@@ -35,15 +37,19 @@ export class Router {
     await this.navigate(window.location.pathname, false);
   }
 
-  async navigate(path: string, push: boolean = true): Promise<void> {
+  async navigate(
+    path: string,
+    push: boolean = true,
+    skipLeaveCheck: boolean = false
+  ): Promise<void> {
     try {
-      if (this.currentPath === path) {
+      if (this.currentPath === path && !this.isInInternalView) {
         console.log(`Already on path ${path}`);
         return;
       }
 
       console.log(`Try to navigate to ${path} from ${this.currentPath}`);
-      if (!(await this.canNavigateFrom())) {
+      if (!skipLeaveCheck && !(await this.canNavigateFrom())) {
         console.warn(`Navigation blocked`);
         return;
       }
@@ -58,7 +64,11 @@ export class Router {
       const isAllowed = await this.evaluateGuard(route);
       if (!isAllowed) return;
 
-      if (push && this.currentPath !== "/internal") {
+      if (this.isInInternalView) {
+        this.isInInternalView = false;
+      }
+
+      if (push) {
         console.log(`Push state for ${path}`);
         history.pushState({}, "", path);
       } else {
@@ -66,6 +76,7 @@ export class Router {
         history.replaceState({}, "", path);
       }
       this.currentPath = path;
+      this.publicPath = path;
 
       const view = new route.view();
       this.setView(view);
@@ -78,15 +89,19 @@ export class Router {
 
   async navigateInternally(view: AbstractView): Promise<void> {
     try {
-      console.log(`Try to navigate to /internal from ${this.currentPath}`);
+      const target = `/internal/${view.getName()}`;
+      console.log(`Internally navigate from ${this.currentPath} to ${target}`);
       if (!(await this.canNavigateFrom())) {
         console.warn(`Navigation blocked`);
         return;
       }
-      this.currentPath = "/internal";
+      if (!this.isInInternalView) {
+        this.isInInternalView = true;
+      }
+      this.currentPath = target;
       await this.setView(view);
     } catch (error) {
-      console.error("Error during navigateToView():", error);
+      console.error("Error during navigateInternally():", error);
     }
   }
 
@@ -100,9 +115,16 @@ export class Router {
     );
   }
 
-  private handlePopState = () => {
-    console.log("Popstate event triggered");
-    this.navigate(window.location.pathname, false);
+  private handlePopState = async () => {
+    const targetPath = window.location.pathname;
+    console.log("Popstate event triggered. Target:", targetPath);
+
+    if (!(await this.canNavigateFrom())) {
+      history.pushState({}, "", this.currentPath);
+      return;
+    }
+
+    this.navigate(window.location.pathname, false, true);
   };
 
   private handleLinkClick = (event: MouseEvent) => {
@@ -120,6 +142,7 @@ export class Router {
   private async canNavigateFrom(): Promise<boolean> {
     if (this.currentView?.confirmLeave) {
       const result = await this.currentView.confirmLeave();
+      console.log(`Confirm leave result: ${result}`);
       return result;
     }
     return true;
