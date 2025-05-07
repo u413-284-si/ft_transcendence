@@ -3,12 +3,12 @@ import pkg from "argon2";
 import fastify from "../app.js";
 import prisma from "../prisma/prismaClient.js";
 
-export function verifyAccessToken(token) {
-  return fastify.jwt.verify(token, env.jwtAccessTokenSecret);
+export async function verifyAccessToken(request, token) {
+  return await request.accessTokenVerify(token);
 }
 
-export function verifyRefreshToken(token) {
-  return fastify.jwt.verify(token, env.jwtRefreshTokenSecret);
+export async function verifyRefreshToken(request, token) {
+  return await request.refreshTokenVerify(token);
 }
 
 export async function createHash(value) {
@@ -23,20 +23,12 @@ export async function verifyHash(hash, value) {
   return await pkg.verify(hash, value);
 }
 
-export function createAccessToken(user) {
-  const token = fastify.jwt.sign(user, env.jwtAccessTokenSecret, {
-    expiresIn: env.accessTokenTimeToExpireInMs
-  });
-
-  return token;
+export async function createAccessToken(reply, user) {
+  return await reply.accessTokenSign(user);
 }
 
-export function createRefreshToken(user) {
-  const token = fastify.jwt.sign(user, env.jwtRefreshTokenSecret, {
-    expiresIn: env.refreshTokenTimeToExpireInMS
-  });
-
-  return token;
+export async function createRefreshToken(reply, user) {
+  return await reply.refreshTokenSign(user);
 }
 
 export async function updateUserRefreshToken(userId, hashedRefreshToken) {
@@ -51,11 +43,12 @@ export async function updateUserRefreshToken(userId, hashedRefreshToken) {
 }
 
 export async function createAuthTokens(
+  reply,
   userDataAccessToken,
   userDataRefreshToken
 ) {
-  const accessToken = createAccessToken(userDataAccessToken);
-  const refreshToken = createRefreshToken(userDataRefreshToken);
+  const accessToken = await createAccessToken(reply, userDataAccessToken);
+  const refreshToken = await createRefreshToken(reply, userDataRefreshToken);
 
   const newHashedRefreshToken = await createHash(refreshToken);
 

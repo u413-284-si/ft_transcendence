@@ -5,6 +5,7 @@ import {
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
+import fastify from "fastify";
 
 export default async function authRoutes(fastify) {
   fastify.post("/", optionsloginUser, loginUserHandler);

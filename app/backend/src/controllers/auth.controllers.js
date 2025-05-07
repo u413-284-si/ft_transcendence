@@ -43,10 +43,11 @@ export async function loginUserHandler(request, reply) {
     }
 
     const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
       userDataAccessToken,
       userDataRefreshToken
     );
-
+    request.user = userDataAccessToken;
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
@@ -98,7 +99,7 @@ export async function authRefreshHandler(request, reply) {
         "No refresh token provided"
       );
     }
-    const userDataRefreshToken = verifyRefreshToken(token);
+    const userDataRefreshToken = await verifyRefreshToken(request, token);
     const userId = userDataRefreshToken.id;
 
     const userData = await getUserData(userId);
@@ -121,6 +122,7 @@ export async function authRefreshHandler(request, reply) {
     }
 
     const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
       userDataAccessToken,
       userDataRefreshToken
     );

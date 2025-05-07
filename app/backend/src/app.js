@@ -67,7 +67,26 @@ await fastify.register(fastifyRateLimit, {
   timeWindow: "15 minutes"
 });
 await fastify.register(jwt, {
-  secret: env.jwtAccessTokenSecret
+  namespace: "accessToken",
+  secret: env.jwtAccessTokenSecret,
+  jwtVerify: "accessTokenVerify",
+  jwtSign: "accessTokenSign",
+  sign: { expiresIn: env.accessTokenTimeToExpireInMs },
+  cookie: {
+    cookieName: "accessToken",
+    signed: false
+  }
+});
+await fastify.register(jwt, {
+  namespace: "refreshToken",
+  secret: env.jwtRefreshTokenSecret,
+  jwtVerify: "refreshTokenVerify",
+  jwtSign: "refreshTokenSign",
+  sign: { expiresIn: env.refreshTokenTimeToExpireInMS },
+  cookie: {
+    cookieName: "refreshToken",
+    signed: false
+  }
 });
 
 for (const schema of [
