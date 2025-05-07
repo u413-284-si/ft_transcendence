@@ -52,6 +52,7 @@ export class Router {
     skipLeaveCheck: boolean = false
   ): Promise<void> {
     try {
+      path = this.normalizePath(path);
       if (this.currentPath === path && !this.isInInternalView) {
         console.log(`Already on path ${path}`);
         return;
@@ -221,6 +222,10 @@ export class Router {
 
   getCurrentPath(): string {
     return this.currentPath;
+  }
+
+  normalizePath(path: string): string {
+    return path.replace(/\/+$/, "") || "/";
   }
 }
 
