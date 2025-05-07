@@ -16,6 +16,8 @@ export class Router {
   private publicPath: string = "";
   private isInInternalView: boolean = false;
   private routeChangeListeners: ((path: string) => void)[] = [];
+  private historyIndex: number = 0;
+  private suppressNextPopstate: boolean = false;
 
   private constructor() {}
 
@@ -34,6 +36,13 @@ export class Router {
   async start(): Promise<void> {
     window.addEventListener("popstate", this.handlePopState);
     document.body.addEventListener("click", this.handleLinkClick);
+    const state = history.state as { index?: number } | null;
+    this.historyIndex = state?.index ?? 0;
+    history.replaceState(
+      { index: this.historyIndex },
+      "",
+      window.location.pathname
+    );
     await this.navigate(window.location.pathname, false);
   }
 
@@ -48,7 +57,9 @@ export class Router {
         return;
       }
 
-      console.log(`Try to navigate to ${path} from ${this.currentPath}`);
+      console.log(
+        `Try to navigate to ${path} from ${this.currentPath}, index: ${this.historyIndex}`
+      );
       if (!skipLeaveCheck && !(await this.canNavigateFrom())) {
         console.warn(`Navigation blocked`);
         return;
@@ -70,10 +81,11 @@ export class Router {
 
       if (push) {
         console.log(`Push state for ${path}`);
-        history.pushState({}, "", path);
+        this.historyIndex++;
+        history.pushState({ index: this.historyIndex }, "", path);
       } else {
         console.log(`Replace state for ${path}`);
-        history.replaceState({}, "", path);
+        history.replaceState({ index: this.historyIndex }, "", path);
       }
       this.currentPath = path;
       this.publicPath = path;
@@ -115,15 +127,37 @@ export class Router {
     );
   }
 
-  private handlePopState = async () => {
+  private handlePopState = async (event: PopStateEvent) => {
+    if (this.suppressNextPopstate) {
+      console.log("Popstate suppressed");
+      this.suppressNextPopstate = false;
+      return;
+    }
+    const state = event.state as { index?: number } | null;
+    const newIndex = state?.index ?? 0;
+    const direction =
+      newIndex > this.historyIndex
+        ? "forward"
+        : newIndex < this.historyIndex
+          ? "backward"
+          : "unknown";
+
     const targetPath = window.location.pathname;
-    console.log("Popstate event triggered. Target:", targetPath);
+    console.log(`Popstate triggered: ${direction} to ${targetPath}`);
 
     if (!(await this.canNavigateFrom())) {
-      history.pushState({}, "", this.currentPath);
+      console.warn("Navigation blocked. Reverting...");
+
+      this.suppressNextPopstate = true;
+
+      // Restore the previous state
+      if (direction === "forward") history.go(-1);
+      else if (direction === "backward") history.go(1);
+
       return;
     }
 
+    this.historyIndex = newIndex;
     this.navigate(window.location.pathname, false, true);
   };
 
