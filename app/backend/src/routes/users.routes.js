@@ -1,4 +1,4 @@
-import { authorizeUser } from "../middleware/auth.js";
+import { authorizeUserAccess } from "../middleware/auth.js";
 import {
   registerUserHandler,
   getUserHandler,
@@ -52,7 +52,7 @@ const optionsCreateUser = {
 };
 
 const optionsGetUser = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       ...errorResponses

@@ -77,15 +77,31 @@ export async function getUserMatches(id) {
   return matches;
 }
 
-export async function getUserPassword(usernameOrEmail) {
+export async function getUserID(usernameOrEmail) {
   const user = await prisma.user.findFirstOrThrow({
     where: {
       OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
     },
-    include: {
+    select: {
+      id: true
+    }
+  });
+
+  return user.id;
+}
+
+export async function getUserData(userId) {
+  const user = await prisma.user.findFirstOrThrow({
+    where: {
+      id: userId
+    },
+    select: {
+      id: true,
+      username: true,
       authentication: {
         select: {
-          password: true
+          password: true,
+          refreshToken: true
         }
       }
     }
