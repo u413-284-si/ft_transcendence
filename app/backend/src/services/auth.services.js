@@ -49,3 +49,17 @@ export async function updateUserRefreshToken(userId, hashedRefreshToken) {
     }
   });
 }
+
+export async function createAuthTokens(
+  userDataAccessToken,
+  userDataRefreshToken
+) {
+  const accessToken = createAccessToken(userDataAccessToken);
+  const refreshToken = createRefreshToken(userDataRefreshToken);
+
+  const newHashedRefreshToken = await createHash(refreshToken);
+
+  await updateUserRefreshToken(userDataRefreshToken.id, newHashedRefreshToken);
+
+  return { accessToken, refreshToken };
+}

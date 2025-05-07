@@ -4,7 +4,8 @@ import {
   verifyRefreshToken,
   updateUserRefreshToken,
   verifyHash,
-  createHash
+  createHash,
+  createAuthTokens
 } from "../services/auth.services.js";
 import { getUserData, getUserID } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -41,15 +42,9 @@ export async function loginUserHandler(request, reply) {
       );
     }
 
-    // @TODO: create single service called: createAuthTokens (can be used for login and refresh token)
-    const accessToken = createAccessToken(userDataAccessToken);
-    const refreshToken = createRefreshToken(userDataRefreshToken);
-
-    const newHashedRefreshToken = await createHash(refreshToken);
-
-    await updateUserRefreshToken(
-      userDataRefreshToken.id,
-      newHashedRefreshToken
+    const { accessToken, refreshToken } = await createAuthTokens(
+      userDataAccessToken,
+      userDataRefreshToken
     );
 
     return setAuthCookies(reply, accessToken, refreshToken)
@@ -125,17 +120,10 @@ export async function authRefreshHandler(request, reply) {
       );
     }
 
-    const accessToken = createAccessToken(userDataAccessToken);
-    const refreshToken = createRefreshToken(userDataRefreshToken);
-
-    const hashedRefreshTokenNew = await createHash(refreshToken);
-
-    await updateUserRefreshToken(
-      userDataRefreshToken.id,
-      hashedRefreshTokenNew
+    const { accessToken, refreshToken } = await createAuthTokens(
+      userDataAccessToken,
+      userDataRefreshToken
     );
-
-    request.user = userDataAccessToken;
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({ message: createResponseMessage(action, true) });
