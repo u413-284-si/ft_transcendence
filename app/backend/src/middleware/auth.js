@@ -24,11 +24,6 @@ export async function authorizeUserAccess(request, reply) {
       { err, body: request.body },
       `authorizeUserHandler: ${createResponseMessage(action, false)}`
     );
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "Could not verify JWT"
-    );
+    handlePrismaError(reply, action, err);
   }
 }
