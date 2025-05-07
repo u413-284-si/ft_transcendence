@@ -1,6 +1,4 @@
-import env from "../config/env.js";
 import pkg from "argon2";
-import fastify from "../app.js";
 import prisma from "../prisma/prismaClient.js";
 
 export async function verifyAccessToken(request, token) {
