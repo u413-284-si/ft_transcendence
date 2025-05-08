@@ -1,10 +1,9 @@
 import AbstractView from "./AbstractView.js";
-import { ApiError } from "../services/api.js";
-import { userLogin } from "../services/authServices.js";
 // FIXME: activate when password policy is applied
 //import { validatePassword, validateUsernameOrEmail } from "../validate.js";
 import { validateUsernameOrEmail } from "../validate.js";
-import { navigateTo } from "../main.js";
+import { auth } from "../AuthManager.js";
+import { router } from "../Router.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -86,14 +85,8 @@ export default class extends AbstractView {
     // FIXME: activate when password policy is applied
     // if (!validatePassword(passwordEl, passwordErrorEl)) return;
 
-    try {
-      await userLogin(userEl.value, passwordEl.value);
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        alert("Invalid username or password");
-      }
-      console.error(error);
-    }
-    navigateTo("/home");
+    const isAllowed = await auth.login(userEl.value, passwordEl.value);
+    if (!isAllowed) return;
+    router.navigate("/home", false);
   }
 }
