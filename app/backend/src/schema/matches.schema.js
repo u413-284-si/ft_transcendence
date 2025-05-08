@@ -1,33 +1,97 @@
+const matchSchema = {
+  $id: "matchSchema",
+  type: "object",
+  properties: {
+    playerNickname: {
+      $ref: "commonDefinitionsSchema#/definitions/username",
+      description: "The nickname of the user"
+    },
+    opponentNickname: {
+      $ref: "commonDefinitionsSchema#/definitions/username",
+      description: "The nickname of the opponent"
+    },
+    tournamentId: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/id" },
+        { type: "null" }
+      ],
+      description: "The unique identifier for the tournament"
+    },
+    playerScore: {
+      $ref: "commonDefinitionsSchema#/definitions/score",
+      description: "The score of the user in the match"
+    },
+    opponentScore: {
+      $ref: "commonDefinitionsSchema#/definitions/score",
+      description: "The score of the opponent in the match"
+    },
+    date: {
+      $ref: "commonDefinitionsSchema#/definitions/date",
+      description: "The date of the match"
+    }
+  },
+  required: [
+    "playerNickname",
+    "opponentNickname",
+    "playerScore",
+    "opponentScore",
+    "date"
+  ],
+  additionalProperties: false
+};
+
+const matchResponseSchema = {
+  $id: "matchResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: { $ref: "matchSchema" }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
+const matchArrayResponseSchema = {
+  $id: "matchArrayResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    count: { type: "integer" },
+    data: {
+      type: "array",
+      items: { $ref: "matchSchema" }
+    }
+  },
+  required: ["message", "count", "data"],
+  additionalProperties: false
+};
+
 export const createMatchSchema = {
   $id: "createMatchSchema",
   type: "object",
   properties: {
     playerNickname: {
-      type: "string",
-      description: "The nickname of the player",
-      minLength: 1,
-      maxLength: 50
+      $ref: "commonDefinitionsSchema#/definitions/username",
+      description: "The nickname of the user"
     },
     opponentNickname: {
-      type: "string",
-      description: "The nickname of the opponent",
-      minLength: 1,
-      maxLength: 50
+      $ref: "commonDefinitionsSchema#/definitions/username",
+      description: "The nickname of the opponent"
     },
     tournamentId: {
-      type: "integer",
-      description: "The unique identifier for the tournament",
-      nullable: true
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/id" },
+        { type: "null" }
+      ],
+      description: "The unique identifier for the tournament"
     },
     playerScore: {
-      type: "integer",
-      description: "The score of the player in the match",
-      minimum: 0
+      $ref: "commonDefinitionsSchema#/definitions/score",
+      description: "The score of the user in the match"
     },
     opponentScore: {
-      type: "integer",
-      description: "The score of the opponent in the match",
-      minimum: 0
+      $ref: "commonDefinitionsSchema#/definitions/score",
+      description: "The score of the opponent in the match"
     }
   },
   required: [
@@ -39,4 +103,29 @@ export const createMatchSchema = {
   additionalProperties: false
 };
 
-export const matchSchemas = [createMatchSchema];
+export const createMatchResponseSchema = {
+  $id: "createMatchResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: {
+      type: "object",
+      properties: {
+        match: { $ref: "createMatchSchema" },
+        stats: { $ref: "userStatsSchema" }
+      },
+      required: ["match", "stats"],
+      additionalProperties: false
+    }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
+export const matchSchemas = [
+  matchSchema,
+  matchResponseSchema,
+  matchArrayResponseSchema,
+  createMatchSchema,
+  createMatchResponseSchema
+];

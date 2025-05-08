@@ -28,6 +28,7 @@ const optionsCreateTournament = {
   schema: {
     body: { $ref: "createTournamentSchema" },
     response: {
+      201: { $ref: "tournamentResponseSchema" },
       ...errorResponses
     }
   }
@@ -35,7 +36,11 @@ const optionsCreateTournament = {
 
 const optionsGetTournament = {
   schema: {
-    params: { $ref: "idSchema" }
+    params: { $ref: "idSchema" },
+    response: {
+      200: { $ref: "tournamentResponseSchema" },
+      ...errorResponses
+    }
   }
 };
 
@@ -45,6 +50,7 @@ const optionsPatchTournament = {
     params: { $ref: "idSchema" },
     body: { $ref: "patchTournamentSchema" },
     response: {
+      200: { $ref: "tournamentResponseSchema" },
       ...errorResponses
     }
   }
@@ -55,6 +61,7 @@ const optionsDeleteTournament = {
   schema: {
     params: { $ref: "idSchema" },
     response: {
+      200: { $ref: "tournamentResponseSchema" },
       ...errorResponses
     }
   }
