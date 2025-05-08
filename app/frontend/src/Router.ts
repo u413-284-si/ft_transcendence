@@ -50,6 +50,7 @@ export class Router {
     );
 
     window.addEventListener("popstate", this.handlePopState);
+    window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.body.addEventListener("click", this.handleLinkClick);
     await this.navigate(window.location.pathname, false);
   }
@@ -193,11 +194,25 @@ export class Router {
     }
   };
 
+  private handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    if (!this.canNavigateFromSync()) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+  };
+
   private async canNavigateFrom(): Promise<boolean> {
     if (this.currentView?.confirmLeave) {
       const result = await this.currentView.confirmLeave();
       console.log(`Confirm leave result: ${result}`);
       return result;
+    }
+    return true;
+  }
+
+  private canNavigateFromSync(): boolean {
+    if (this.currentView?.confirmLeaveSync) {
+      return this.currentView.confirmLeaveSync();
     }
     return true;
   }

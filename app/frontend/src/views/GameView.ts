@@ -56,6 +56,10 @@ export class GameView extends AbstractView {
     document.addEventListener("keyup", this.onKeyUp, { signal: signal });
   }
 
+  private isGameRunning(): boolean {
+    return getGameState() === "running";
+  }
+
   private onKeyDown = (event: KeyboardEvent): void => {
     const key = event.key as GameKey;
     if (key in this.keys) {
@@ -98,13 +102,17 @@ export class GameView extends AbstractView {
   }
 
   async confirmLeave(): Promise<boolean> {
-    if (getGameState() !== "running") return true;
+    if (!this.isGameRunning()) return true;
 
     const confirmed = confirm("A game is running. Do you want to abort?");
     if (confirmed) {
       setGameState("aborted");
     }
     return confirmed;
+  }
+
+  confirmLeaveSync(): boolean {
+    return !this.isGameRunning();
   }
 
   getName(): string {

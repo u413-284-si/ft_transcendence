@@ -37,5 +37,7 @@ export default abstract class {
 
   async confirmLeave?(): Promise<boolean>;
 
+  confirmLeaveSync?(): boolean;
+
   abstract getName(): string;
 }
