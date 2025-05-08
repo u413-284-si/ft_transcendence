@@ -2,7 +2,7 @@ import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { createTournament } from "../services/tournamentService.js";
-import { hasDuplicates } from "../validate.js";
+import { validateNicknames } from "../validate.js";
 import { router } from "../Router.js";
 import { auth } from "../AuthManager.js";
 import { FormTracker } from "../FormTracker.js";
@@ -22,33 +22,46 @@ export default class extends AbstractView {
   async createHTML() {
     let nicknameInputs = "";
     for (let i = 1; i <= this.numberOfPlayers; i++) {
-      nicknameInputs += `
-        <label style="display: block; margin-bottom: 10px;">
-          Player ${i} Nickname:
-          <input
-            type="text"
-            name="player${i}"
-            style="width: 50%; padding: 10px; font-size: 1em; border: 2px solid #007BFF; border-radius: 5px; margin-top: 5px;"
-          >
-        </label>
+      nicknameInputs += /* HTML */ `
+        <div class="w-[800px]">
+          <label style="display: block; margin-bottom: 10px;">
+            Player ${i} Nickname:
+            <input
+              type="text"
+              name="player${i}"
+              class="border border-gray-300 rounded px-2 py-1 transition-all duration-300"
+            />
+          </label>
+          <span
+            id="player-error${i}"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
+        </div>
       `;
     }
 
-    return `
-            <h1 style="
+    return /* HTML */ `
+      <h1
+        style="
               margin-bottom: 20px;
               font-size: 2em;
               color: #007BFF;
               text-align: center;"
-            >
-              Enter Player Nicknames
-            </h1>
-            <p style="margin-bottom: 20px; text-align: center;">
-              Tournament: <strong>${this.tournamentName}</strong>
-            </p>
-            <form id="nicknames-form">
-              ${nicknameInputs}
-              <button type="submit" style="
+      >
+        Enter Player Nicknames
+      </h1>
+      <p style="margin-bottom: 20px; text-align: center;">
+        Tournament: <strong>${this.tournamentName}</strong>
+      </p>
+      <form
+        id="nicknames-form"
+        class="flex flex-col justify-center items-center h-screen gap-4"
+      >
+        ${nicknameInputs}
+        <div>
+          <button
+            type="submit"
+            style="
               margin-top: 20px;
               padding: 10px 20px;
               font-size: 1em;
@@ -57,17 +70,20 @@ export default class extends AbstractView {
               border: none;
               border-radius: 5px;
               cursor: pointer;"
-              >
-              Submit Nicknames
-              </button>
-            </form>
-            `;
+          >
+            Submit Nicknames
+          </button>
+        </div>
+      </form>
+    `;
   }
 
   async addListeners() {
-    this.formElement.addEventListener("submit", (event) =>
-      this.initTournament(event)
-    );
+    document
+      .getElementById("nicknames-form")
+      ?.addEventListener("submit", (event) =>
+        this.validateAndStartTournament(event)
+      );
   }
 
   async render() {
@@ -77,33 +93,19 @@ export default class extends AbstractView {
     this.addListeners();
   }
 
-  private extractNicknames(): string[] {
-    const form = document.getElementById("nicknames-form") as HTMLFormElement;
-    const nicknames: string[] = [];
-    for (let i = 1; i <= this.numberOfPlayers; i++) {
-      const nicknameInput: string = (
-        form.querySelector(`input[name="player${i}"]`) as HTMLInputElement
-      ).value.trim();
-      if (nicknameInput !== "") {
-        nicknames.push(nicknameInput);
-      } else {
-        alert("Please enter a nickname for all players");
-        return [];
-      }
-    }
-    if (hasDuplicates(nicknames)) {
-      alert("Nicknames must be unique");
-      return [];
-    }
-    return nicknames;
-  }
-
-  private async initTournament(event: Event) {
+  private async validateAndStartTournament(event: Event) {
     event.preventDefault();
-    const nicknames = this.extractNicknames();
-    if (nicknames.length === 0) {
-      return;
-    }
+    const form = document.getElementById("nicknames-form") as HTMLFormElement;
+    const inputElements: HTMLInputElement[] = Array.from(
+      form.querySelectorAll("input[type='text']")
+    );
+    const errorElements: HTMLElement[] = Array.from(
+      form.querySelectorAll("span.error-message")
+    );
+    const nicknames = inputElements.map((input) => input.value);
+
+    if (!validateNicknames(inputElements, errorElements, nicknames)) return;
+
     try {
       const userId = auth.getToken()?.id;
       if (!userId) throw new Error("User Id is undefined");

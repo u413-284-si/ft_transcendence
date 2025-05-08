@@ -18,7 +18,7 @@ import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHashedPassword } from "../services/auth.services.js";
 
-export async function registerUserHandler(request, reply) {
+export async function createUserHandler(request, reply) {
   const action = "Create User";
   try {
     const { username, email, password } = request.body;
@@ -28,11 +28,11 @@ export async function registerUserHandler(request, reply) {
     const data = await createUser(username, email, hashedPassword);
     return reply
       .code(201)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `registerUserHandler: ${createResponseMessage(action, false)}`
+      `createUserHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
@@ -45,7 +45,7 @@ export async function getUserHandler(request, reply) {
     const data = await getUser(id);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -60,9 +60,11 @@ export async function getAllUsersHandler(request, reply) {
   try {
     const data = await getAllUsers();
     const count = data.length;
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), count, data });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -79,11 +81,28 @@ export async function updateUserHandler(request, reply) {
     const data = await updateUser(id, request.body);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
       `updateUserHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function patchUserHandler(request, reply) {
+  const action = "Patch user";
+  try {
+    const id = parseInt(request.params.id, 10);
+    const data = await updateUser(id, request.body);
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data: data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `patchUserHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
@@ -96,7 +115,7 @@ export async function deleteUserHandler(request, reply) {
     const data = await deleteUser(id);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -112,30 +131,15 @@ export async function getUserMatchesHandler(request, reply) {
     const id = parseInt(request.user.id, 10);
     const data = await getUserMatches(id);
     const count = data.length;
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), count, data });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
       `getUserMatchesHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function patchUserHandler(request, reply) {
-  const action = "Patch user";
-  try {
-    const id = parseInt(request.params.id, 10);
-    const data = await updateUser(id, request.body);
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), data });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `patchUserHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
@@ -146,9 +150,11 @@ export async function getAllUserStatsHandler(request, reply) {
   try {
     const data = await getAllUserStats();
     const count = data.length;
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), count, data });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -165,7 +171,7 @@ export async function getUserStatsHandler(request, reply) {
     const data = await getUserStats(userId);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -181,9 +187,11 @@ export async function getUserTournamentsHandler(request, reply) {
     const id = parseInt(request.user.id, 10);
     const data = await getUserTournaments(id);
     const count = data.length;
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), count, data });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -200,7 +208,7 @@ export async function getUserActiveTournamentHandler(request, reply) {
     const data = await getUserActiveTournament(adminId);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },

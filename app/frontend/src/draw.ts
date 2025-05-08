@@ -87,7 +87,7 @@ function drawWinningScreen(
   ctx.fillText(winnerText, canvas.width / 2 - 100, canvas.height / 2);
   ctx.font = "20px Arial";
   ctx.fillText(
-    "Press ENTER to Restart",
+    "Press ENTER to continue",
     canvas.width / 2 - 100,
     canvas.height / 2 + 40
   );

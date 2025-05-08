@@ -1,5 +1,14 @@
 import prisma from "../prisma/prismaClient.js";
 
+const matchSelect = {
+  playerNickname: true,
+  opponentNickname: true,
+  tournamentId: true,
+  playerScore: true,
+  opponentScore: true,
+  date: true
+};
+
 export async function createMatch(
   playerId,
   playerNickname,
@@ -18,13 +27,7 @@ export async function createMatch(
       opponentScore,
       date: new Date()
     },
-    select: {
-      playerNickname: true,
-      opponentNickname: true,
-      tournamentId: true,
-      playerScore: true,
-      opponentScore: true
-    }
+    select: matchSelect
   });
   if (tournamentId) {
     const tournament = await prisma.tournament.findUniqueOrThrow({
@@ -42,7 +45,7 @@ export async function createMatch(
 }
 
 export async function getAllMatches() {
-  const matches = await prisma.match.findMany();
+  const matches = await prisma.match.findMany({ select: matchSelect });
   return matches;
 }
 
@@ -50,7 +53,8 @@ export async function getMatch(id) {
   const match = await prisma.match.findUniqueOrThrow({
     where: {
       id
-    }
+    },
+    select: matchSelect
   });
   return match;
 }
@@ -60,13 +64,7 @@ export async function getUserMatches(id) {
     where: {
       playerId: id
     },
-    select: {
-      playerNickname: true,
-      opponentNickname: true,
-      playerScore: true,
-      opponentScore: true,
-      date: true
-    }
+    select: matchSelect
   });
   return matches;
 }

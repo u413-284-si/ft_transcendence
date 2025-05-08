@@ -2,17 +2,38 @@ const userSchema = {
   $id: "userSchema",
   type: "object",
   properties: {
-    id: { type: "integer" },
+    id: { $ref: "commonDefinitionsSchema#/definitions/id" },
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-    authorization: {
-      type: "object",
-      properties: {
-        password: { $ref: "commonDefinitionsSchema#/definitions/password" }
-      }
-    }
+    dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" }
   },
   required: ["id", "username"],
+  additionalProperties: false
+};
+
+const userResponseSchema = {
+  $id: "userResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: { $ref: "userSchema" }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
+const userArrayResponseSchema = {
+  $id: "userArrayResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    count: { type: "integer" },
+    data: {
+      type: "array",
+      items: { $ref: "userSchema" }
+    }
+  },
+  required: ["message", "count", "data"],
   additionalProperties: false
 };
 
@@ -24,19 +45,7 @@ const createUserSchema = {
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
     password: { $ref: "commonDefinitionsSchema#/definitions/password" }
   },
-  required: ["username"],
-  additionalProperties: false
-};
-
-const createUserResponseSchema = {
-  $id: "createUserResponseSchema",
-  type: "object",
-  properties: {
-    message: { type: "string" },
-    user: { $ref: "userSchema" },
-    password: { $ref: "commonDefinitionsSchema#/definitions/password" }
-  },
-  required: ["message", "user"],
+  required: ["username", "password"],
   additionalProperties: false
 };
 
@@ -78,8 +87,9 @@ export const patchUserSchema = {
 
 export const userSchemas = [
   userSchema,
+  userResponseSchema,
+  userArrayResponseSchema,
   createUserSchema,
-  createUserResponseSchema,
   updateUserSchema,
   patchUserSchema
 ];

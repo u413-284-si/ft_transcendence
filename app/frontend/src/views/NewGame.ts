@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
-import { hasDuplicates } from "../validate.js";
+import { validateNicknames } from "../validate.js";
 import { router } from "../Router.js";
 
 export default class NewGameView extends AbstractView {
@@ -12,17 +12,36 @@ export default class NewGameView extends AbstractView {
   async createHTML() {
     const navbarHTML = await this.createNavbar();
     const footerHTML = await this.createFooter();
-    return `
-			${navbarHTML}
-			<form id="register-form">
-				<label for="nickname1">Player 1 Nickname:</label>
-				<input type="text" id="nickname1" placeholder="Enter nickname"><br><br>
-				<label for="nickname2">Player 2 Nickname:</label>
-				<input type="text" id="nickname2" placeholder="Enter nickname"><br><br>
-				<button type="submit">Start Game</button>
-			</form>
-			${footerHTML}
-			`;
+    return /* HTML */ `
+      ${navbarHTML}
+      <form
+        id="register-form"
+        class="flex flex-col justify-center items-center h-screen gap-4"
+      >
+        <div class="w-[300px]">
+          <label for="nickname1">Player 1 Nickname:</label>
+          <input type="text" id="nickname1" placeholder="Enter nickname" />
+          <span
+            id="nickname-error1"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
+        </div>
+        <br /><br />
+        <div class="w-[300px]">
+          <label for="nickname2">Player 2 Nickname:</label>
+          <input type="text" id="nickname2" placeholder="Enter nickname" />
+          <span
+            id="nickname-error2"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
+        </div>
+        <br /><br />
+        <div class="w-[300px]">
+          <button type="submit">Start Game</button>
+        </div>
+      </form>
+      ${footerHTML}
+    `;
   }
 
   async addListeners() {
@@ -37,29 +56,25 @@ export default class NewGameView extends AbstractView {
   }
 
   validateAndStartGame(event: Event) {
-    const nickname1: string = (
-      document.getElementById("nickname1") as HTMLInputElement
-    ).value.trim();
+    event.preventDefault();
+    const form = document.getElementById("register-form") as HTMLFormElement;
+    const inputElements: HTMLInputElement[] = Array.from(
+      form.querySelectorAll("input[type='text']")
+    );
+    const errorElements: HTMLElement[] = Array.from(
+      form.querySelectorAll("span.error-message")
+    );
+    const nicknames = inputElements.map((input) => input.value);
 
-    const nickname2: string = (
-      document.getElementById("nickname2") as HTMLInputElement
-    ).value.trim();
-
-    if (nickname1 === "" || nickname2 === "") {
-      event.preventDefault();
-      return alert("Please enter a nickname for both players.");
-    }
-
-    const nicknames = [nickname1, nickname2];
-    if (hasDuplicates(nicknames)) {
-      event.preventDefault();
-      return alert("Nicknames must be unique");
-    }
+    if (!validateNicknames(inputElements, errorElements, nicknames)) return;
 
     const gameView = new GameView({
-      nickname1,
-      nickname2,
+      nickname1: nicknames[0],
+
+      nickname2: nicknames[1],
+
       type: GameType.single,
+
       tournament: null
     });
     router.navigateInternally(gameView);
