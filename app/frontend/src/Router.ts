@@ -156,12 +156,10 @@ export class Router {
     }
     const state = event.state as { index?: number } | null;
     const newIndex = state?.index ?? this.historyIndex;
+    const delta = newIndex - this.historyIndex;
+
     const direction =
-      newIndex > this.historyIndex
-        ? "forward"
-        : newIndex < this.historyIndex
-          ? "backward"
-          : "unknown";
+      delta > 0 ? "forward" : delta < 0 ? "backward" : "unknown";
 
     const targetPath = window.location.pathname;
     console.log(`Popstate triggered: ${direction} to ${targetPath}`);
@@ -172,8 +170,7 @@ export class Router {
       this.suppressNextPopstate = true;
 
       // Restore the previous state
-      if (direction === "forward") history.go(-1);
-      else if (direction === "backward") history.go(1);
+      history.go(-delta);
 
       return;
     }
