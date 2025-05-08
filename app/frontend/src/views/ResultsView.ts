@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { BracketMatch } from "../types/IMatch.js";
 import { Tournament } from "../Tournament.js";
+import { escapeHTML } from "../utility.js";
 
 export default class ResultsView extends AbstractView {
   private matches: BracketMatch[];
@@ -18,10 +19,10 @@ export default class ResultsView extends AbstractView {
       ${navbarHTML}
       <div class="max-w-3xl mx-auto bg-gray-100 text-gray-900 p-6">
         <h1 class="text-3xl font-bold mb-4">
-          Tournament Results: ${this.tournament.getTournamentName()}
+          Tournament Results: ${escapeHTML(this.tournament.getTournamentName())}
         </h1>
         <div id="winner" class="text-xl font-semibold mb-2">
-          🏆 Winner: ${this.tournament.getTournamentWinner()}
+          🏆 Winner: ${escapeHTML(this.tournament.getTournamentWinner())}
         </div>
         <div id="brackets" class="space-y-4"></div>
       </div>
@@ -58,10 +59,10 @@ export default class ResultsView extends AbstractView {
 
         matchEl.innerHTML = `
           <div class="font-medium">
-            ${match.player1 ?? "TBD"} vs ${match.player2 ?? "TBD"}
+            ${escapeHTML(match.player1) ?? "TBD"} vs ${escapeHTML(match.player2) ?? "TBD"}
           </div>
           <div class="text-green-600 font-semibold">
-            ${match.winner ? `Winner: ${match.winner}` : ""}
+            ${escapeHTML(match.winner) ? `Winner: ${escapeHTML(match.winner)}` : ""}
           </div>
         `;
 
