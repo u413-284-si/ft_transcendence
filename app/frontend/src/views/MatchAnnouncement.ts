@@ -3,6 +3,7 @@ import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
 import NewTournament from "./NewTournament.js";
+import { escapeHTML } from "../utility.js";
 
 export default class extends AbstractView {
   private player1: string | null = null;
@@ -33,7 +34,8 @@ export default class extends AbstractView {
         Match ${this.matchNumber}
       </h1>
       <p style="margin-bottom: 20px; text-align: center; font-size: 1.5em;">
-        <strong>${this.player1}</strong> vs <strong>${this.player2}</strong>
+        <strong>${escapeHTML(this.player1)}</strong> vs
+        <strong>${escapeHTML(this.player2)}</strong>
       </p>
       <div style="text-align: center;">
         <form id="match-form">

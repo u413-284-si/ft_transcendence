@@ -2,6 +2,7 @@ import AbstractView from "./AbstractView.js";
 import { globalToken } from "../main.js";
 import { getUserStats } from "../services/userStatsServices.js";
 import { getUserMatches } from "../services/userServices.js";
+import { escapeHTML } from "../utility.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -90,11 +91,11 @@ export default class extends AbstractView {
         const row = document.createElement("tr");
         row.innerHTML = /* HTML */ `
           <td class="border border-blue-500 px-4 py-2">
-            ${match.playerNickname}
+            ${escapeHTML(match.playerNickname)}
           </td>
           <td class="border border-blue-500 px-4 py-2">${match.playerScore}</td>
           <td class="border border-blue-500 px-4 py-2">
-            ${match.opponentNickname}
+            ${escapeHTML(match.opponentNickname)}
           </td>
           <td class="border border-blue-500 px-4 py-2">
             ${match.opponentScore}
@@ -112,7 +113,7 @@ export default class extends AbstractView {
   }
 
   async fetchAndDisplayUserStats() {
-    const user: string = globalToken?.username ?? "undefined";
+    const user: string = escapeHTML(globalToken?.username) ?? "undefined";
     try {
       const userStats = await getUserStats();
 

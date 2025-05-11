@@ -1,3 +1,5 @@
+import { sanitizeHTML } from "../sanitize.js";
+
 export default class {
   constructor() {}
 
@@ -28,7 +30,9 @@ export default class {
   }
 
   async updateHTML() {
-    document.querySelector("#app")!.innerHTML = await this.createHTML();
+    const html = await this.createHTML();
+    const cleanHTML = sanitizeHTML(html);
+    document.querySelector("#app")!.innerHTML = cleanHTML;
   }
 
   async render() {}
