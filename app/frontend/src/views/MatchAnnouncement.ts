@@ -3,6 +3,7 @@ import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
+import NewTournament from "./NewTournament.js";
 
 export default class extends AbstractView {
   private player1: string | null = null;
@@ -108,8 +109,11 @@ export default class extends AbstractView {
 
   private async abortTournament() {
     try {
+      const confirmed = confirm("Do you really want to abort the tournament?");
+      if (!confirmed) return;
       await deleteTournament(this.tournament.getId());
-      router.navigate("/newTournament", false);
+      const view = new NewTournament();
+      router.switchView(view);
     } catch (error) {
       console.error(error);
       // show error page
