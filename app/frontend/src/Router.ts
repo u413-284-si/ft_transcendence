@@ -11,7 +11,6 @@ type RouteConfig = {
 type RouteChangeInfo = {
   path: string;
   view: AbstractView | null;
-  isInternal: boolean;
 };
 type RouteChangeListener = (info: RouteChangeInfo) => void;
 
@@ -21,7 +20,6 @@ export class Router {
   private currentView: AbstractView | null = null;
   private currentPath: string = "";
   private publicPath: string = "";
-  private isInInternalView: boolean = false;
   private routeChangeListeners: RouteChangeListener[] = [];
   private historyIndex: number = 0;
   private suppressNextPopstate: boolean = false;
@@ -62,7 +60,7 @@ export class Router {
   ): Promise<void> {
     try {
       path = this.normalizePath(path);
-      if (this.currentPath === path && !this.isInInternalView) {
+      if (this.currentPath === path) {
         console.log(`Already on path ${path}`);
         return;
       }
@@ -85,10 +83,6 @@ export class Router {
       const isAllowed = await this.evaluateGuard(route);
       if (!isAllowed) return;
 
-      if (this.isInInternalView) {
-        this.isInInternalView = false;
-      }
-
       if (push) {
         console.log(`Push state for ${path}`);
         this.historyIndex++;
@@ -99,6 +93,7 @@ export class Router {
       }
       this.currentPath = path;
       this.publicPath = path;
+      sessionStorage.setItem("router:index", this.historyIndex.toString());
 
       const view = new route.view();
       await this.setView(view);
@@ -116,9 +111,6 @@ export class Router {
       if (!(await this.canNavigateFrom())) {
         console.warn(`Navigation blocked`);
         return;
-      }
-      if (!this.isInInternalView) {
-        this.isInInternalView = true;
       }
       this.currentPath = target;
       this.setView(view);
@@ -143,8 +135,7 @@ export class Router {
   private notifyRouteChange() {
     const info: RouteChangeInfo = {
       path: this.currentPath,
-      view: this.currentView,
-      isInternal: this.isInInternalView
+      view: this.currentView
     };
     this.routeChangeListeners.forEach((fn) => fn(info));
   }
