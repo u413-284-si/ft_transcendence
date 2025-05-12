@@ -46,10 +46,7 @@ export class GameView extends AbstractView {
   async render() {
     await this.updateHTML();
     this.addEventListeners(this.controller.signal);
-    await startGame(this.gameData, this.keys);
-    if (getGameState() !== "aborted") {
-      await this.navigateAfterGame();
-    }
+    this.launchGame();
   }
 
   private addEventListeners(signal: AbortSignal) {
@@ -80,8 +77,11 @@ export class GameView extends AbstractView {
     this.controller.abort();
   }
 
-  async navigateAfterGame(): Promise<void> {
+  async launchGame(): Promise<void> {
     try {
+      await startGame(this.gameData, this.keys);
+      if (getGameState() === "aborted") return;
+
       if (this.gameData.type == GameType.single) {
         const view = new NewGameView();
         await router.switchView(view);
