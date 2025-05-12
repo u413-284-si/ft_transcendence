@@ -9,7 +9,8 @@ type RouteConfig = {
 };
 
 type RouteChangeInfo = {
-  path: string;
+  from: string;
+  to: string;
   view: AbstractView | null;
 };
 type RouteChangeListener = (info: RouteChangeInfo) => void;
@@ -19,7 +20,7 @@ export class Router {
   private routes: Map<string, RouteConfig> = new Map();
   private currentView: AbstractView | null = null;
   private currentPath: string = "";
-  private publicPath: string = "";
+  private previousPath: string = "";
   private routeChangeListeners: RouteChangeListener[] = [];
   private historyIndex: number = 0;
   private suppressNextPopstate: boolean = false;
@@ -91,8 +92,8 @@ export class Router {
         console.log(`Replace state for ${path}`);
         history.replaceState({ index: this.historyIndex }, "", path);
       }
+      this.previousPath = this.currentPath;
       this.currentPath = path;
-      this.publicPath = path;
       sessionStorage.setItem("router:index", this.historyIndex.toString());
 
       const view = new route.view();
@@ -112,7 +113,6 @@ export class Router {
         console.warn(`Navigation blocked`);
         return;
       }
-      this.currentPath = target;
       this.setView(view);
       this.notifyRouteChange();
     } catch (error) {
@@ -134,7 +134,8 @@ export class Router {
 
   private notifyRouteChange() {
     const info: RouteChangeInfo = {
-      path: this.currentPath,
+      from: this.previousPath,
+      to: this.currentPath,
       view: this.currentView
     };
     this.routeChangeListeners.forEach((fn) => fn(info));

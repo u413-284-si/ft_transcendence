@@ -15,16 +15,16 @@ router
   .addRoute("/newTournament", { view: NewTournament, guard: authGuard })
   .addRoute("/settings", { view: Settings, guard: authGuard })
   .addRoute("/stats", { view: Stats, guard: authGuard })
-  .addRouteChangeListener(({ path, view, isInternal }) => {
-    console.log("Navigated to:", path);
-    console.log("Is internal modal?", isInternal);
-    console.log("View instance:", view?.getName());
+  .addRouteChangeListener(({ from, to, view }) => {
+    console.log("From:", from);
+    console.log("To:", to);
+    console.log("View:", view?.getName());
 
     // Update UI
     const navItems = document.querySelectorAll("[data-link]");
     navItems.forEach((item) => {
       const href = item.getAttribute("href");
-      if (href === path) {
+      if (href === to) {
         item.classList.add("text-indigo-600", "font-semibold", "underline");
       } else {
         item.classList.remove("text-indigo-600", "font-semibold", "underline");
