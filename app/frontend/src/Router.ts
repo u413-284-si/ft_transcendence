@@ -40,8 +40,6 @@ export class Router {
   }
 
   async start(): Promise<void> {
-    const index = parseInt(sessionStorage.getItem("router:index") || "0", 10);
-    this.historyIndex = isNaN(index) ? 0 : index;
     history.replaceState(
       { index: this.historyIndex },
       "",
@@ -94,7 +92,6 @@ export class Router {
       }
       this.previousPath = this.currentPath;
       this.currentPath = path;
-      sessionStorage.setItem("router:index", this.historyIndex.toString());
 
       const view = new route.view();
       await this.setView(view);
@@ -159,18 +156,13 @@ export class Router {
 
     if (!(await this.canNavigateFrom())) {
       console.warn("Navigation blocked. Reverting...");
-
       this.suppressNextPopstate = true;
-
       // Restore the previous state
       history.go(-delta);
-
       return;
     }
 
     this.historyIndex = newIndex;
-    sessionStorage.setItem("router:index", this.historyIndex.toString());
-
     this.navigate(window.location.pathname, false, true);
   };
 
