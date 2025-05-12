@@ -179,7 +179,7 @@ export class Router {
   };
 
   private handleBeforeUnload = (event: BeforeUnloadEvent) => {
-    if (!this.canNavigateFromSync()) {
+    if (this.currentView?.canLeave && !this.currentView?.canLeave()) {
       event.preventDefault();
       event.returnValue = "";
     }
@@ -190,13 +190,6 @@ export class Router {
       const result = await this.currentView.confirmLeave();
       console.log(`Confirm leave result: ${result}`);
       return result;
-    }
-    return true;
-  }
-
-  private canNavigateFromSync(): boolean {
-    if (this.currentView?.confirmLeaveSync) {
-      return this.currentView.confirmLeaveSync();
     }
     return true;
   }

@@ -138,11 +138,11 @@ export default class extends AbstractView {
   }
 
   async confirmLeave(): Promise<boolean> {
-    if (!this.formTracker?.isDirty()) return true;
+    if (this.canLeave()) return true;
     return confirm("You have unsaved changes. Do you really want to leave?");
   }
 
-  confirmLeaveSync(): boolean {
+  canLeave(): boolean {
     return !this.formTracker?.isDirty();
   }
 }

@@ -102,7 +102,7 @@ export class GameView extends AbstractView {
   }
 
   async confirmLeave(): Promise<boolean> {
-    if (!this.isGameRunning()) return true;
+    if (this.canLeave()) return true;
 
     const confirmed = confirm("A game is running. Do you want to abort?");
     if (confirmed) {
@@ -111,7 +111,7 @@ export class GameView extends AbstractView {
     return confirmed;
   }
 
-  confirmLeaveSync(): boolean {
+  canLeave(): boolean {
     return !this.isGameRunning();
   }
 
