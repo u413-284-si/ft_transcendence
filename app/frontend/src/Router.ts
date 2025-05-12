@@ -102,18 +102,19 @@ export class Router {
     }
   }
 
-  async navigateInternally(view: AbstractView): Promise<void> {
+  async switchView(view: AbstractView): Promise<void> {
     try {
-      const target = `/internal/${view.getName()}`;
-      console.log(`Internally navigate from ${this.currentPath} to ${target}`);
+      console.log(
+        `Try to switch view from ${this.currentView?.getName()} to ${view.getName()}`
+      );
       if (!(await this.canNavigateFrom())) {
-        console.warn(`Navigation blocked`);
+        console.warn(`Switching blocked`);
         return;
       }
-      this.setView(view);
+      await this.setView(view);
       this.notifyRouteChange();
     } catch (error) {
-      console.error("Error during navigateInternally():", error);
+      console.error("Error during switchView():", error);
     }
   }
 

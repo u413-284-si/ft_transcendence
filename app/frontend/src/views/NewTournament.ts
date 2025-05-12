@@ -106,7 +106,7 @@ export default class extends AbstractView {
         activeTournament.id
       );
       const matchAnnouncementView = new MatchAnnouncement(tournament);
-      router.navigateInternally(matchAnnouncementView);
+      router.switchView(matchAnnouncementView);
       return;
     } catch (error) {
       console.error(error);
@@ -158,7 +158,7 @@ export default class extends AbstractView {
       playerNum,
       tournamentNameEl.value
     );
-    router.navigateInternally(playerNicknamesView);
+    router.switchView(playerNicknamesView);
   }
 
   getName(): string {

@@ -5,6 +5,7 @@ import { router } from "../Router.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { setTournamentFinished } from "../services/tournamentService.js";
 import ResultsView from "./ResultsView.js";
+import NewGameView from "./NewGame.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -82,17 +83,18 @@ export class GameView extends AbstractView {
   async navigateAfterGame(): Promise<void> {
     try {
       if (this.gameData.type == GameType.single) {
-        await router.navigate("/newGame", false);
+        const view = new NewGameView();
+        await router.switchView(view);
       } else if (this.gameData.type == GameType.tournament) {
         if (this.gameData.tournament) {
           if (this.gameData.tournament.getNextMatchToPlay()) {
             const view = new MatchAnnouncement(this.gameData.tournament);
-            router.navigateInternally(view);
+            router.switchView(view);
             return;
           }
           await setTournamentFinished(this.gameData.tournament.getId());
           const view = new ResultsView(this.gameData.tournament);
-          router.navigateInternally(view);
+          router.switchView(view);
         }
       }
     } catch (error) {

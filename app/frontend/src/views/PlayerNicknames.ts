@@ -127,7 +127,7 @@ export default class extends AbstractView {
       }
       this.formTracker.reset();
       const matchAnnouncementView = new MatchAnnouncement(tournament);
-      router.navigateInternally(matchAnnouncementView);
+      router.switchView(matchAnnouncementView);
     } catch (error) {
       console.error("Error creating tournament", error);
     }
