@@ -36,13 +36,13 @@ export class AuthManager {
   }
 
   public async initialize(): Promise<void> {
-    console.log("Check for JWT");
+    console.log("Checking for existing auth token");
     try {
       const token = await authAndDecode();
       this.updateAuthState(token);
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
-        console.log("Could not verify JWT");
+        console.log("JWT validation failed or no token found.");
       } else {
         console.error("Unexpected error:", error);
       }
