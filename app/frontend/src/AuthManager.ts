@@ -65,7 +65,6 @@ export class AuthManager {
   public async logout(): Promise<void> {
     this.authenticated = false;
     this.token = null;
-    this.clearInactivityTimer();
     this.removeActivityListeners();
     this.notify();
   }
@@ -96,6 +95,13 @@ export class AuthManager {
     }, this.inactivityMs);
   }
 
+  private clearInactivityTimer(): void {
+    if (this.idleTimeout) {
+      clearTimeout(this.idleTimeout);
+      this.idleTimeout = null;
+    }
+  }
+
   private registerActivityListeners(): void {
     window.addEventListener("mousemove", this.resetActivityTimer);
     window.addEventListener("keydown", this.resetActivityTimer);
@@ -103,15 +109,9 @@ export class AuthManager {
   }
 
   private removeActivityListeners(): void {
+    this.clearInactivityTimer();
     window.removeEventListener("mousemove", this.resetActivityTimer);
     window.removeEventListener("keydown", this.resetActivityTimer);
-  }
-
-  private clearInactivityTimer(): void {
-    if (this.idleTimeout) {
-      clearTimeout(this.idleTimeout);
-      this.idleTimeout = null;
-    }
   }
 }
 
