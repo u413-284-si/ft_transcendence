@@ -1,30 +1,32 @@
 import prisma from "../prisma/prismaClient.js";
 
 const matchSelect = {
-  playerNickname: true,
-  opponentNickname: true,
+  player1Nickname: true,
+  player2Nickname: true,
   tournamentId: true,
-  playerScore: true,
-  opponentScore: true,
+  player1Score: true,
+  player2Score: true,
   date: true
 };
 
 export async function createMatch(
-  playerId,
-  playerNickname,
-  opponentNickname,
+  player1Id,
+  player2Id,
+  player1Nickname,
+  player2Nickname,
   tournamentId,
-  playerScore,
-  opponentScore
+  player1Score,
+  player2Score
 ) {
   const match = await prisma.match.create({
     data: {
-      playerId,
-      playerNickname,
-      opponentNickname,
+      player1Id,
+      player2Id,
+      player1Nickname,
+      player2Nickname,
       tournamentId,
-      playerScore,
-      opponentScore,
+      player1Score,
+      player2Score,
       date: new Date()
     },
     select: matchSelect

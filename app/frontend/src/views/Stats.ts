@@ -86,18 +86,20 @@ export default class extends AbstractView {
       if (!matchesTableBody) return;
 
       matches.forEach((match) => {
-        const result = match.playerScore > match.opponentScore ? "Won" : "Lost";
+        const result = match.player1Score > match.player2Score ? "Won" : "Lost";
         const row = document.createElement("tr");
         row.innerHTML = /* HTML */ `
           <td class="border border-blue-500 px-4 py-2">
-            ${match.playerNickname}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">${match.playerScore}</td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${match.opponentNickname}
+            ${match.player1Nickname}
           </td>
           <td class="border border-blue-500 px-4 py-2">
-            ${match.opponentScore}
+            ${match.player1Score}
+          </td>
+          <td class="border border-blue-500 px-4 py-2">
+            ${match.player2Nickname}
+          </td>
+          <td class="border border-blue-500 px-4 py-2">
+            ${match.player2Score}
           </td>
           <td class="border border-blue-500 px-4 py-2">${result}</td>
           <td class="border border-blue-500 px-4 py-2">

@@ -163,10 +163,10 @@ async function endGame(gameState: GameState, tournament: Tournament | null) {
     }
     await createMatch({
       tournamentId: tournamentId,
-      playerNickname: gameState.player1,
-      opponentNickname: gameState.player2,
-      playerScore: gameState.player1Score,
-      opponentScore: gameState.player2Score
+      player1Nickname: gameState.player1,
+      player2Nickname: gameState.player2,
+      player1Score: gameState.player1Score,
+      player2Score: gameState.player2Score
     });
   } catch (error) {
     console.error(error);

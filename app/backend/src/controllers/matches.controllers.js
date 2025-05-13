@@ -10,25 +10,25 @@ import { handlePrismaError } from "../utils/error.js";
 export async function createMatchHandler(request, reply) {
   const action = "Create match";
   try {
-    const playerId = request.user.id;
+    const player1Id = request.user.id;
     const {
-      playerNickname,
-      opponentNickname,
+      player1Nickname,
+      player2Nickname,
       tournamentId,
-      playerScore,
-      opponentScore
+      player1Score,
+      player2Score
     } = request.body;
-    const hasWon = playerScore > opponentScore ? true : false;
+    const hasWon = player1Score > player2Score ? true : false;
 
     const match = await createMatch(
-      playerId,
-      playerNickname,
-      opponentNickname,
+      player1Id,
+      player1Nickname,
+      player2Nickname,
       tournamentId,
-      playerScore,
-      opponentScore
+      player1Score,
+      player2Score
     );
-    const stats = await updateUserStats(playerId, hasWon);
+    const stats = await updateUserStats(player1Id, hasWon);
     const data = { match, stats };
     return reply
       .code(201)

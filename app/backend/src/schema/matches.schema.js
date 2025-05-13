@@ -2,13 +2,13 @@ const matchSchema = {
   $id: "matchSchema",
   type: "object",
   properties: {
-    playerNickname: {
+    player1Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
-      description: "The nickname of the user"
+      description: "The nickname of player 1"
     },
-    opponentNickname: {
+    player2Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
-      description: "The nickname of the opponent"
+      description: "The nickname of player 2"
     },
     tournamentId: {
       oneOf: [
@@ -17,13 +17,13 @@ const matchSchema = {
       ],
       description: "The unique identifier for the tournament"
     },
-    playerScore: {
+    player1Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
-      description: "The score of the user in the match"
+      description: "The score of player 1 in the match"
     },
-    opponentScore: {
+    player2Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
-      description: "The score of the opponent in the match"
+      description: "The score of player 2 in the match"
     },
     date: {
       $ref: "commonDefinitionsSchema#/definitions/date",
@@ -31,10 +31,10 @@ const matchSchema = {
     }
   },
   required: [
-    "playerNickname",
-    "opponentNickname",
-    "playerScore",
-    "opponentScore",
+    "player1Nickname",
+    "player2Nickname",
+    "player1Score",
+    "player2Score",
     "date"
   ],
   additionalProperties: false
@@ -70,13 +70,13 @@ export const createMatchSchema = {
   $id: "createMatchSchema",
   type: "object",
   properties: {
-    playerNickname: {
+    player1Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
-      description: "The nickname of the user"
+      description: "The nickname of player 1"
     },
-    opponentNickname: {
+    player2Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
-      description: "The nickname of the opponent"
+      description: "The nickname of player 2"
     },
     tournamentId: {
       oneOf: [
@@ -85,20 +85,20 @@ export const createMatchSchema = {
       ],
       description: "The unique identifier for the tournament"
     },
-    playerScore: {
+    player1Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
-      description: "The score of the user in the match"
+      description: "The score of player 1 in the match"
     },
-    opponentScore: {
+    player2Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
-      description: "The score of the opponent in the match"
+      description: "The score of player 2 in the match"
     }
   },
   required: [
-    "playerNickname",
-    "opponentNickname",
-    "playerScore",
-    "opponentScore"
+    "player1Nickname",
+    "player2Nickname",
+    "player1Score",
+    "player2Score"
   ],
   additionalProperties: false
 };
