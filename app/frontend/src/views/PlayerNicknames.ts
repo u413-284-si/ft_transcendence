@@ -72,7 +72,7 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("nicknames-form")
       ?.addEventListener("submit", (event) =>

@@ -72,7 +72,7 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("match-form")
       ?.addEventListener("submit", (event) => this.callGameView(event));

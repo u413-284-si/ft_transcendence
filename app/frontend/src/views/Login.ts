@@ -53,7 +53,7 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("login-form")
       ?.addEventListener("submit", (event) => this.validateAndLoginUser(event));
@@ -61,7 +61,7 @@ export default class extends AbstractView {
 
   async render() {
     await this.updateHTML();
-    await this.addListeners();
+    this.addListeners();
   }
 
   async validateAndLoginUser(event: Event) {

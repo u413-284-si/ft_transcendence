@@ -32,4 +32,6 @@ export default class {
   }
 
   async render() {}
+
+  protected addListeners?(): void;
 }

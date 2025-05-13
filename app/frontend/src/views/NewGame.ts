@@ -43,7 +43,7 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("register-form")
       ?.addEventListener("submit", (event) => this.validateAndStartGame(event));
