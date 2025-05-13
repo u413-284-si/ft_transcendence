@@ -14,6 +14,8 @@ export class AuthManager {
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
   private resetActivityTimer = () => this.startInactivityTimer();
 
+  private refreshTimeout: ReturnType<typeof setTimeout> | null = null;
+
   private constructor() {}
 
   public static getInstance(): AuthManager {
@@ -27,9 +29,11 @@ export class AuthManager {
     this.token = token;
     if (token) {
       this.authenticated = true;
+      this.scheduleTokenValidation(token);
       this.registerActivityListeners();
     } else {
       this.authenticated = false;
+      this.clearRefreshTimer();
       this.removeActivityListeners();
     }
     this.notify();
@@ -115,6 +119,39 @@ export class AuthManager {
     this.clearInactivityTimer();
     window.removeEventListener("mousemove", this.resetActivityTimer);
     window.removeEventListener("keydown", this.resetActivityTimer);
+  }
+
+  private scheduleTokenValidation(token: Token): void {
+    if (!token.exp) return;
+
+    const expiresAt = token.exp * 1000;
+    const now = Date.now();
+    const refreshAt = expiresAt - 60_000; // 1 minute before expiry
+
+    const delay = Math.max(refreshAt - now, 0);
+
+    if (this.refreshTimeout) clearTimeout(this.refreshTimeout);
+    this.refreshTimeout = setTimeout(() => {
+      this.refreshToken();
+    }, delay);
+  }
+
+  private async refreshToken(): Promise<void> {
+    console.log("Refresh token");
+    try {
+      const newToken = await authAndDecode();
+      this.updateAuthState(newToken);
+    } catch (error) {
+      console.warn("Token refresh failed or expired. Logging out.");
+      this.logout();
+    }
+  }
+
+  private clearRefreshTimer(): void {
+    if (this.refreshTimeout) {
+      clearTimeout(this.refreshTimeout);
+      this.refreshTimeout = null;
+    }
   }
 }
 
