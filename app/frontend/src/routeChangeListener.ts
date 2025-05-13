@@ -1,9 +1,14 @@
 import { RouteChangeListener } from "./Router";
 
 export const logRouteChange: RouteChangeListener = (info) => {
-  console.log("From:", info.from);
-  console.log("To:", info.to);
-  console.log("View:", info.view?.getName());
+  if (info.event === "nav") {
+    console.log("RouteChange: Navigation");
+    console.log("From:", info.from);
+    console.log("To:", info.to);
+  } else if (info.event === "view") {
+    console.log("RouteChange: Switch view");
+    console.log("View:", info.view?.getName());
+  }
 };
 
 export const updateUI: RouteChangeListener = (info) => {

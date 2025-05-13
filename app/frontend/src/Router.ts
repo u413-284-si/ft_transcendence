@@ -8,7 +8,9 @@ type RouteConfig = {
   guard?: RouteGuard;
 };
 
+type routeEvent = "nav" | "view";
 type RouteChangeInfo = {
+  event: routeEvent;
   from: string;
   to: string;
   view: AbstractView | null;
@@ -96,7 +98,7 @@ export class Router {
       const view = new route.view();
       await this.setView(view);
 
-      this.notifyRouteChange();
+      this.notifyRouteChange("nav");
     } catch (error) {
       console.error("Error during navigate():", error);
     }
@@ -112,7 +114,7 @@ export class Router {
         return;
       }
       await this.setView(view);
-      this.notifyRouteChange();
+      this.notifyRouteChange("view");
     } catch (error) {
       console.error("Error during switchView():", error);
     }
@@ -130,8 +132,9 @@ export class Router {
     return this;
   }
 
-  private notifyRouteChange() {
+  private notifyRouteChange(event: routeEvent) {
     const info: RouteChangeInfo = {
+      event: event,
       from: this.previousPath,
       to: this.currentPath,
       view: this.currentView
