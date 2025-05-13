@@ -42,6 +42,8 @@ export class Router {
   }
 
   async start(): Promise<void> {
+    const index = history.state?.index;
+    this.historyIndex = index ? index : 0;
     history.replaceState(
       { index: this.historyIndex },
       "",
