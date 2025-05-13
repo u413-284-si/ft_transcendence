@@ -141,7 +141,7 @@ export class AuthManager {
     try {
       const newToken = await authAndDecode();
       this.updateAuthState(newToken);
-    } catch (error) {
+    } catch {
       console.warn("Token refresh failed or expired. Logging out.");
       this.logout();
     }
