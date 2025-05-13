@@ -23,32 +23,37 @@ export class AuthManager {
     return AuthManager.instance;
   }
 
-  public async initialize(): Promise<void> {
-    await this.checkToken();
-    if (this.authenticated) {
+  private updateAuthState(token: Token | null): void {
+    this.token = token;
+    if (token) {
+      this.authenticated = true;
       this.registerActivityListeners();
+    } else {
+      this.authenticated = false;
+      this.removeActivityListeners();
     }
+    this.notify();
   }
 
-  private async checkToken(): Promise<void> {
-    console.log("Checking user jwt");
+  public async initialize(): Promise<void> {
+    console.log("Check for JWT");
     try {
       const token = await authAndDecode();
-      this.token = token;
-      this.authenticated = true;
-    } catch {
-      this.token = null;
-      this.authenticated = false;
-    } finally {
-      this.notify();
+      this.updateAuthState(token);
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        console.log("Could not verify JWT");
+      } else {
+        console.error("Unexpected error:", error);
+      }
     }
   }
 
   public async login(username: string, password: string): Promise<boolean> {
     try {
       await userLogin(username, password);
-      await this.checkToken();
-      this.registerActivityListeners();
+      const token = await authAndDecode();
+      this.updateAuthState(token);
       console.log("User logged in");
       return true;
     } catch (error) {
@@ -63,10 +68,8 @@ export class AuthManager {
   }
 
   public async logout(): Promise<void> {
-    this.authenticated = false;
-    this.token = null;
-    this.removeActivityListeners();
-    this.notify();
+    // FIXME: remove auth and refresh cookies via API
+    this.updateAuthState(null);
   }
 
   public isAuthenticated(): boolean {
