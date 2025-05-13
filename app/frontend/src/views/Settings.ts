@@ -20,4 +20,8 @@ export default class extends AbstractView {
   async render() {
     await this.updateHTML();
   }
+
+  getName(): string {
+    return "settings";
+  }
 }

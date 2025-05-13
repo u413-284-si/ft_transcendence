@@ -1,6 +1,11 @@
 import AbstractView from "./AbstractView.js";
-import { startGame } from "../game.js";
-import { Tournament } from "../Tournament.js";
+import { startGame, getGameState, setGameState } from "../game.js";
+import { GameData } from "../types/GameData.js";
+import { router } from "../Router.js";
+import MatchAnnouncement from "./MatchAnnouncement.js";
+import { setTournamentFinished } from "../services/tournamentService.js";
+import ResultsView from "./ResultsView.js";
+import NewGameView from "./NewGame.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -18,38 +23,39 @@ export class GameView extends AbstractView {
   };
   private controller = new AbortController();
 
-  constructor(
-    private player1: string,
-    private player2: string,
-    private type: GameType,
-    private tournament: Tournament | null
-  ) {
+  constructor(private gameData: GameData) {
     super();
     this.setTitle("Now playing");
   }
 
   async createHTML() {
-    return `
-      <canvas id="gameCanvas" width="800" height="400" class="border-4 border-white"></canvas>
-      `;
+    const navbarHTML = await this.createNavbar();
+    const footerHTML = await this.createFooter();
+    return /* HTML */ `
+      ${navbarHTML}
+      <canvas
+        id="gameCanvas"
+        width="800"
+        height="400"
+        class="border-4 border-white"
+      ></canvas>
+      ${footerHTML}
+    `;
   }
 
   async render() {
     await this.updateHTML();
     this.addEventListeners(this.controller.signal);
-    await startGame(
-      this.player1,
-      this.player2,
-      this.type,
-      this.keys,
-      this.controller,
-      this.tournament
-    );
+    this.launchGame();
   }
 
   private addEventListeners(signal: AbortSignal) {
     document.addEventListener("keydown", this.onKeyDown, { signal: signal });
     document.addEventListener("keyup", this.onKeyUp, { signal: signal });
+  }
+
+  private isGameRunning(): boolean {
+    return getGameState() === "running";
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {
@@ -65,4 +71,53 @@ export class GameView extends AbstractView {
       this.keys[key] = false;
     }
   };
+
+  unmount(): void {
+    console.log("Cleaning up GameView");
+    this.controller.abort();
+  }
+
+  async launchGame(): Promise<void> {
+    try {
+      await startGame(this.gameData, this.keys);
+      if (getGameState() === "aborted") return;
+
+      if (this.gameData.type == GameType.single) {
+        const view = new NewGameView();
+        await router.switchView(view);
+      } else if (this.gameData.type == GameType.tournament) {
+        if (this.gameData.tournament) {
+          if (this.gameData.tournament.getNextMatchToPlay()) {
+            const view = new MatchAnnouncement(this.gameData.tournament);
+            router.switchView(view);
+            return;
+          }
+          await setTournamentFinished(this.gameData.tournament.getId());
+          const view = new ResultsView(this.gameData.tournament);
+          router.switchView(view);
+        }
+      }
+    } catch (error) {
+      console.error("Error in navigateAfterGame(): ", error);
+      // show error page
+    }
+  }
+
+  async confirmLeave(): Promise<boolean> {
+    if (this.canLeave()) return true;
+
+    const confirmed = confirm("A game is running. Do you want to abort?");
+    if (confirmed) {
+      setGameState("aborted");
+    }
+    return confirmed;
+  }
+
+  canLeave(): boolean {
+    return !this.isGameRunning();
+  }
+
+  getName(): string {
+    return "game";
+  }
 }

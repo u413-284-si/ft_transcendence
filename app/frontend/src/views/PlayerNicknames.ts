@@ -3,8 +3,14 @@ import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
+import { router } from "../Router.js";
+import { auth } from "../AuthManager.js";
+import { FormTracker } from "../FormTracker.js";
 
 export default class extends AbstractView {
+  private formElement!: HTMLFormElement;
+  private formTracker!: FormTracker;
+
   constructor(
     private numberOfPlayers: number,
     private tournamentName: string
@@ -82,6 +88,8 @@ export default class extends AbstractView {
 
   async render() {
     await this.updateHTML();
+    this.formElement = document.querySelector("#nicknames-form")!;
+    this.formTracker = new FormTracker(this.formElement);
     this.addListeners();
   }
 
@@ -98,14 +106,16 @@ export default class extends AbstractView {
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
 
-    const tournament = Tournament.fromUsernames(
-      nicknames,
-      this.tournamentName,
-      this.numberOfPlayers,
-      1 // FIXME: Hard coded username
-    );
-
     try {
+      const userId = auth.getToken()?.id;
+      if (!userId) throw new Error("User Id is undefined");
+      const tournament = Tournament.fromUsernames(
+        nicknames,
+        this.tournamentName,
+        this.numberOfPlayers,
+        userId
+      );
+
       const createdTournament = await createTournament(tournament);
       const { id } = createdTournament;
       if (id) {
@@ -115,10 +125,24 @@ export default class extends AbstractView {
       if (!nextMatch) {
         throw new Error("Match is undefined");
       }
+      this.formTracker.reset();
       const matchAnnouncementView = new MatchAnnouncement(tournament);
-      matchAnnouncementView.render();
-    } catch (e) {
-      console.error("Error creating tournament", e);
+      router.switchView(matchAnnouncementView);
+    } catch (error) {
+      console.error("Error creating tournament", error);
     }
+  }
+
+  getName(): string {
+    return "player-nicknames";
+  }
+
+  async confirmLeave(): Promise<boolean> {
+    if (this.canLeave()) return true;
+    return confirm("You have unsaved changes. Do you really want to leave?");
+  }
+
+  canLeave(): boolean {
+    return !this.formTracker?.isDirty();
   }
 }

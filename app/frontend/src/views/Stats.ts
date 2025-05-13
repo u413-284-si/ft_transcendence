@@ -1,7 +1,7 @@
 import AbstractView from "./AbstractView.js";
-import { globalToken } from "../main.js";
 import { getUserStats } from "../services/userStatsServices.js";
 import { getUserMatches } from "../services/userServices.js";
+import { auth } from "../AuthManager.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -112,7 +112,7 @@ export default class extends AbstractView {
   }
 
   async fetchAndDisplayUserStats() {
-    const user: string = globalToken?.username ?? "undefined";
+    const user: string = auth.getToken()?.username ?? "undefined";
     try {
       const userStats = await getUserStats();
 
@@ -139,5 +139,9 @@ export default class extends AbstractView {
     } catch (error) {
       console.error("Error fetching userStats:", error);
     }
+  }
+
+  getName(): string {
+    return "stats";
   }
 }

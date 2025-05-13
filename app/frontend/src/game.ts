@@ -1,53 +1,44 @@
 import { updatePaddlePositions } from "./input.js";
 import { draw } from "./draw.js";
 import { GameState } from "./types/IGameState.js";
-import NewGame from "./views/NewGame.js";
-import { GameType, GameKey } from "./views/GameView.js";
+import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
-import MatchAnnouncement from "./views/MatchAnnouncement.js";
-import ResultsView from "./views/ResultsView.js";
-import {
-  setTournamentFinished,
-  updateTournamentBracket
-} from "./services/tournamentService.js";
+import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
+import { GameData } from "./types/GameData.js";
+
+let state: "init" | "running" | "done" | "aborted" = "init";
+
+export function getGameState(): "init" | "running" | "done" | "aborted" {
+  return state;
+}
+
+export function setGameState(value: "init" | "running" | "done" | "aborted") {
+  state = value;
+}
 
 export async function startGame(
-  player1: string,
-  player2: string,
-  type: GameType,
-  keys: Record<GameKey, boolean>,
-  controller: AbortController,
-  tournament: Tournament | null = null
+  gameData: GameData,
+  keys: Record<GameKey, boolean>
 ) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
 
-  const gameState = initGameState(canvas, player1, player2, keys);
+  setGameState("running");
+  const gameState = initGameState(
+    canvas,
+    gameData.nickname1,
+    gameData.nickname2,
+    keys
+  );
   await new Promise<void>((resolve) => {
     gameLoop(canvas, ctx, gameState, resolve);
   });
-  await endGame(gameState, tournament);
-  controller.abort();
-  if (type == GameType.single) {
-    const newGameView = new NewGame();
-    await newGameView.render();
-  } else if (type == GameType.tournament) {
-    if (tournament) {
-      if (tournament.getNextMatchToPlay()) {
-        const matchAnnouncementView = new MatchAnnouncement(tournament);
-        return await matchAnnouncementView.render();
-      }
-      try {
-        await setTournamentFinished(tournament.getId());
-        const resultsView = new ResultsView(tournament);
-        resultsView.render();
-      } catch (error) {
-        console.error(error);
-        // show error page
-      }
-    }
+  if (getGameState() === "aborted") {
+    return;
   }
+  setGameState("done");
+  await endGame(gameState, gameData.tournament);
 }
 
 function initGameState(

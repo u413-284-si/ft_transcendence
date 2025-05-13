@@ -1,4 +1,4 @@
-import { GameKey } from "../views/GameView";
+import { GameKey } from "../views/GameView.js";
 
 export interface GameState {
   player1: string;

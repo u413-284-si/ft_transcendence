@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { globalToken } from "../main.js";
+import { auth } from "../AuthManager.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -13,7 +13,7 @@ export default class extends AbstractView {
     return /* HTML */ `
       ${navbarHTML}
       <h1>Home</h1>
-      <p>Hello ${globalToken?.username ?? "undefined"}!</p>
+      <p>Hello ${auth.getToken()?.username ?? "undefined"}!</p>
       <p>This is the home page</p>
       ${footerHTML}
     `;
@@ -21,5 +21,9 @@ export default class extends AbstractView {
 
   async render() {
     await this.updateHTML();
+  }
+
+  getName(): string {
+    return "home";
   }
 }

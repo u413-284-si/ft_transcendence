@@ -1,3 +1,5 @@
+import { FormTracker } from "../FormTracker.js";
+import { router } from "../Router.js";
 import { getActiveTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import { BracketMatch } from "../types/IMatch.js";
@@ -10,6 +12,9 @@ import {
 } from "../validate.js";
 
 export default class extends AbstractView {
+  private formElement!: HTMLFormElement;
+  private formTracker!: FormTracker;
+
   constructor() {
     super();
     this.setTitle("New Tournament");
@@ -76,11 +81,9 @@ export default class extends AbstractView {
   }
 
   async addListeners() {
-    document
-      .getElementById("tournament-form")
-      ?.addEventListener("submit", (event) =>
-        this.validateAndRequestNicknames(event)
-      );
+    this.formElement.addEventListener("submit", (event) =>
+      this.validateAndRequestNicknames(event)
+    );
   }
 
   async render() {
@@ -89,6 +92,8 @@ export default class extends AbstractView {
       if (!activeTournament) {
         console.log("No active tournament found");
         await this.updateHTML();
+        this.formElement = document.querySelector("#tournament-form")!;
+        this.formTracker = new FormTracker(this.formElement);
         this.addListeners();
         return;
       }
@@ -101,7 +106,7 @@ export default class extends AbstractView {
         activeTournament.id
       );
       const matchAnnouncementView = new MatchAnnouncement(tournament);
-      matchAnnouncementView.render();
+      router.switchView(matchAnnouncementView);
       return;
     } catch (error) {
       console.error(error);
@@ -146,11 +151,26 @@ export default class extends AbstractView {
       `Tournament "${tournamentNameEl.value}" started with ${playerNum} players`
     );
 
+    this.formTracker.reset();
+
     // Navigate to the PlayerNicknames view
     const playerNicknamesView = new PlayerNicknames(
       playerNum,
       tournamentNameEl.value
     );
-    playerNicknamesView.render();
+    router.switchView(playerNicknamesView);
+  }
+
+  getName(): string {
+    return "new-tournament";
+  }
+
+  async confirmLeave(): Promise<boolean> {
+    if (this.canLeave()) return true;
+    return confirm("You have unsaved changes. Do you really want to leave?");
+  }
+
+  canLeave(): boolean {
+    return !this.formTracker?.isDirty();
   }
 }

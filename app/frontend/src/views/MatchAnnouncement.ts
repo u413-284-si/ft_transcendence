@@ -1,3 +1,4 @@
+import { router } from "../Router.js";
 import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
@@ -97,23 +98,29 @@ export default class extends AbstractView {
       return;
     }
 
-    const gameView = new GameView(
-      this.player1,
-      this.player2,
-      GameType.tournament,
-      this.tournament
-    );
-    gameView.render();
+    const gameView = new GameView({
+      nickname1: this.player1,
+      nickname2: this.player2,
+      type: GameType.tournament,
+      tournament: this.tournament
+    });
+    router.switchView(gameView);
   }
 
   private async abortTournament() {
     try {
+      const confirmed = confirm("Do you really want to abort the tournament?");
+      if (!confirmed) return;
       await deleteTournament(this.tournament.getId());
-      const newTournamentView = new NewTournament();
-      newTournamentView.render();
+      const view = new NewTournament();
+      router.switchView(view);
     } catch (error) {
       console.error(error);
       // show error page
     }
+  }
+
+  getName(): string {
+    return "match-announcement";
   }
 }
