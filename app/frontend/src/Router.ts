@@ -8,7 +8,7 @@ type RouteConfig = {
   guard?: RouteGuard;
 };
 
-type RouteChangeInfo = {
+export type RouteChangeInfo = {
   from: string;
   to: string;
   view: AbstractView | null;

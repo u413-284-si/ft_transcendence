@@ -7,6 +7,7 @@ import Stats from "./views/Stats.js";
 import { router } from "./Router.js";
 import { authGuard, guestOnlyGuard } from "./routeGuard.js";
 import { auth } from "./AuthManager.js";
+import { logRouteChange, updateUI } from "./routeChangeListener.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard })
@@ -15,22 +16,8 @@ router
   .addRoute("/newTournament", { view: NewTournament, guard: authGuard })
   .addRoute("/settings", { view: Settings, guard: authGuard })
   .addRoute("/stats", { view: Stats, guard: authGuard })
-  .addRouteChangeListener(({ from, to, view }) => {
-    console.log("From:", from);
-    console.log("To:", to);
-    console.log("View:", view?.getName());
-
-    // Update UI
-    const navItems = document.querySelectorAll("[data-link]");
-    navItems.forEach((item) => {
-      const href = item.getAttribute("href");
-      if (href === to) {
-        item.classList.add("text-indigo-600", "font-semibold", "underline");
-      } else {
-        item.classList.remove("text-indigo-600", "font-semibold", "underline");
-      }
-    });
-  });
+  .addRouteChangeListener(logRouteChange)
+  .addRouteChangeListener(updateUI);
 
 document.addEventListener("DOMContentLoaded", () => {
   auth.initialize().then(() => {
