@@ -1,10 +1,10 @@
-import { RouteGuardResult } from "./Router.js";
+import { RouteGuard } from "./Router.js";
 import { auth } from "./AuthManager.js";
 
-export const authGuard = async (): Promise<RouteGuardResult> => {
+export const authGuard: RouteGuard = () => {
   return auth.isAuthenticated() || "/login";
 };
 
-export const guestOnlyGuard = async (): Promise<RouteGuardResult> => {
+export const guestOnlyGuard: RouteGuard = () => {
   return !auth.isAuthenticated() || "/home";
 };

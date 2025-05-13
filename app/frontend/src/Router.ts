@@ -1,7 +1,7 @@
 import AbstractView from "./views/AbstractView.js";
 
 export type RouteGuardResult = true | false | string;
-type RouteGuard = () => RouteGuardResult | Promise<RouteGuardResult>;
+export type RouteGuard = () => RouteGuardResult;
 
 type RouteConfig = {
   view: new () => AbstractView;
@@ -199,7 +199,7 @@ export class Router {
     if (!route.guard) return true;
 
     try {
-      const result = await route.guard();
+      const result = route.guard();
       console.log(`Route guard result: ${result}`);
 
       if (result === false) {
@@ -212,7 +212,6 @@ export class Router {
         await this.navigate(result, false);
         return false;
       }
-
       return true;
     } catch (error) {
       console.error("Error during guard evaluation:", error);
