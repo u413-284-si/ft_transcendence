@@ -25,6 +25,9 @@ export class AuthManager {
 
   public async initialize(): Promise<void> {
     await this.checkToken();
+    if (this.authenticated) {
+      this.registerActivityListeners();
+    }
   }
 
   private async checkToken(): Promise<void> {
@@ -46,12 +49,14 @@ export class AuthManager {
       await userLogin(username, password);
       await this.checkToken();
       this.registerActivityListeners();
-      this.startInactivityTimer();
       console.log("User logged in");
       return true;
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         alert("Invalid username or password");
+      } else {
+        console.error("Unexpected login error:", error);
+        alert("An unexpected error occurred.");
       }
       return false;
     }
