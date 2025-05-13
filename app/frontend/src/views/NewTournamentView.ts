@@ -2,8 +2,8 @@ import { getActiveTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
-import MatchAnnouncement from "./MatchAnnouncement.js";
-import PlayerNicknames from "./PlayerNicknames.js";
+import MatchAnnouncement from "./MatchAnnouncementView.js";
+import PlayerNicknames from "./PlayerNicknamesView.js";
 import {
   validateTournamentName,
   validatePlayersSelection

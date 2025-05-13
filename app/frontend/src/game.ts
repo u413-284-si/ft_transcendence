@@ -1,10 +1,10 @@
 import { updatePaddlePositions } from "./input.js";
 import { draw } from "./draw.js";
 import { GameState } from "./types/IGameState.js";
-import NewGame from "./views/NewGame.js";
+import NewGame from "./views/NewGameView.js";
 import { GameType, GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
-import MatchAnnouncement from "./views/MatchAnnouncement.js";
+import MatchAnnouncement from "./views/MatchAnnouncementView.js";
 import ResultsView from "./views/ResultsView.js";
 import {
   setTournamentFinished,

@@ -2,7 +2,7 @@ import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
-import NewTournament from "./NewTournament.js";
+import NewTournament from "./NewTournamentView.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string | null = null;

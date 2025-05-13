@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
-import MatchAnnouncement from "./MatchAnnouncement.js";
+import MatchAnnouncement from "./MatchAnnouncementView.js";
 import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
 
