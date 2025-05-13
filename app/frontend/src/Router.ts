@@ -1,6 +1,6 @@
 import AbstractView from "./views/AbstractView.js";
 
-export type RouteGuardResult = true | false | string;
+type RouteGuardResult = true | false | string;
 export type RouteGuard = () => RouteGuardResult;
 
 type RouteConfig = {
@@ -8,12 +8,12 @@ type RouteConfig = {
   guard?: RouteGuard;
 };
 
-export type RouteChangeInfo = {
+type RouteChangeInfo = {
   from: string;
   to: string;
   view: AbstractView | null;
 };
-type RouteChangeListener = (info: RouteChangeInfo) => void;
+export type RouteChangeListener = (info: RouteChangeInfo) => void;
 
 export class Router {
   private static instance: Router;

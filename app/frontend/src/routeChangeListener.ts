@@ -1,12 +1,12 @@
-import { RouteChangeInfo } from "./Router";
+import { RouteChangeListener } from "./Router";
 
-export const logRouteChange = (info: RouteChangeInfo) => {
+export const logRouteChange: RouteChangeListener = (info) => {
   console.log("From:", info.from);
   console.log("To:", info.to);
   console.log("View:", info.view?.getName());
 };
 
-export const updateUI = (info: RouteChangeInfo) => {
+export const updateUI: RouteChangeListener = (info) => {
   const navItems = document.querySelectorAll("[data-link]");
   navItems.forEach((item) => {
     const href = item.getAttribute("href");
