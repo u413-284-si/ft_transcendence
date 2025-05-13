@@ -24,10 +24,10 @@ export class AuthManager {
   }
 
   public async initialize(): Promise<void> {
-    await this.checkSession();
+    await this.checkToken();
   }
 
-  private async checkSession(): Promise<void> {
+  private async checkToken(): Promise<void> {
     console.log("Checking user jwt");
     try {
       const token = await authAndDecode();
@@ -44,7 +44,7 @@ export class AuthManager {
   public async login(username: string, password: string): Promise<boolean> {
     try {
       await userLogin(username, password);
-      await this.checkSession();
+      await this.checkToken();
       this.registerActivityListeners();
       this.startInactivityTimer();
       console.log("User logged in");
