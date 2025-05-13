@@ -6,7 +6,7 @@ import { userLogin } from "../services/authServices.js";
 import { validateUsernameOrEmail } from "../validate.js";
 import { navigateTo } from "../main.js";
 
-export default class extends AbstractView {
+export default class LoginView extends AbstractView {
   constructor() {
     super();
     this.setTitle("Login");

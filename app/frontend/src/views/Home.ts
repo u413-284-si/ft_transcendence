@@ -1,7 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { globalToken } from "../main.js";
 
-export default class extends AbstractView {
+export default class HomeView extends AbstractView {
   constructor() {
     super();
     this.setTitle("Home");

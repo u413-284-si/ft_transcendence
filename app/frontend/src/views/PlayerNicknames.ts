@@ -4,7 +4,7 @@ import MatchAnnouncement from "./MatchAnnouncement.js";
 import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
 
-export default class extends AbstractView {
+export default class NewTournamentView extends AbstractView {
   constructor(
     private numberOfPlayers: number,
     private tournamentName: string

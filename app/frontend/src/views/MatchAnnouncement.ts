@@ -4,7 +4,7 @@ import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
 import NewTournament from "./NewTournament.js";
 
-export default class extends AbstractView {
+export default class MatchAnnouncementView extends AbstractView {
   private player1: string | null = null;
   private player2: string | null = null;
   private matchNumber: number | null = null;

@@ -3,7 +3,7 @@ import { globalToken } from "../main.js";
 import { getUserStats } from "../services/userStatsServices.js";
 import { getUserMatches } from "../services/userServices.js";
 
-export default class extends AbstractView {
+export default class StatsView extends AbstractView {
   constructor() {
     super();
     this.setTitle("Stats");

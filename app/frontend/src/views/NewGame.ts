@@ -2,7 +2,7 @@ import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
 
-export default class extends AbstractView {
+export default class NewGameView extends AbstractView {
   constructor() {
     super();
     this.setTitle("New Game");
