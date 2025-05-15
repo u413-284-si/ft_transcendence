@@ -23,51 +23,36 @@ export default class extends AbstractView {
 
   async createHTML() {
     return /* HTML */ `
-      <h1
-        style="
-        margin-bottom: 20px;
-        font-size: 2em;
-        color: #007BFF;
-        text-align: center;"
-      >
-        Match ${this.matchNumber}
-      </h1>
-      <p style="margin-bottom: 20px; text-align: center; font-size: 1.5em;">
-        <strong>${this.player1}</strong> vs <strong>${this.player2}</strong>
-      </p>
-      <div style="text-align: center;">
-        <form id="match-form">
+      <div class="max-w-4xl mx-auto p-4">
+        <h1 class="mb-5 text-3xl font-bold text-blue-600 text-center">
+          Match ${this.matchNumber}
+        </h1>
+
+        <p class="mb-5 text-center text-xl">
+          <strong>${this.player1}</strong> vs <strong>${this.player2}</strong>
+        </p>
+
+        <div class="text-center">
+          <form id="match-form">
+            <button
+              type="submit"
+              class="mt-5 px-6 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 transition"
+            >
+              Start Match
+            </button>
+          </form>
+        </div>
+
+        <div>${this.tournament.getBracketAsHTML()}</div>
+
+        <div class="text-center mt-4">
           <button
-            type="submit"
-            style="
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1em;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;"
+            id="abort-tournament"
+            class="mt-4 px-6 py-2 text-white bg-red-500 rounded hover:bg-red-600 transition"
           >
-            Start Match
+            Abort Tournament
           </button>
-        </form>
-      </div>
-      <div>
-        <button
-          id="abort-tournament"
-          style="
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1em;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;"
-        >
-          Abort Tournament
-        </button>
+        </div>
       </div>
     `;
   }
