@@ -1,14 +1,35 @@
 import { TournamentDTO } from "./types/ITournament";
 import { BracketMatch } from "./types/IMatch";
 
+type BracketLayout = {
+  rounds: {
+    round: number;
+    matches: {
+      matchId: number;
+      player1Text: string;
+      player2Text: string;
+      isPlayed: boolean;
+      isNext: boolean;
+      winner: string | null;
+    }[];
+  }[];
+};
+
 export class Tournament {
+  private feederMap: Record<
+    number,
+    { slot1?: BracketMatch; slot2?: BracketMatch }
+  > = {};
+
   constructor(
     private tournamentName: string,
     private numberOfPlayers: number,
     private adminId: number,
     private bracket: BracketMatch[],
     private tournamentId?: number
-  ) {}
+  ) {
+    this.buildFeederMap();
+  }
 
   static fromUsernames(
     playerNicknames: string[],
@@ -160,5 +181,165 @@ export class Tournament {
 
   public getTournamentName(): string {
     return this.tournamentName;
+  }
+
+  public getBracketLayout(): BracketLayout {
+    const matchesByRound = this.groupBy(this.bracket, "round");
+    const totalRounds = Object.keys(matchesByRound).length;
+
+    const nextMatch = this.bracket.find((m) => !m.winner);
+    const nextMatchId = nextMatch?.matchId;
+
+    const rounds: BracketLayout["rounds"] = [];
+
+    for (let round = 1; round <= totalRounds; round++) {
+      const roundMatches = matchesByRound[round] || [];
+
+      const matches = roundMatches.map((match) => {
+        const isPlayed = !!match.winner;
+        const isNext = match.matchId === nextMatchId;
+        const feeder = this.feederMap[match.matchId];
+
+        const player1Text =
+          match.player1 ??
+          (feeder?.slot1 ? `Winner Match ${feeder.slot1.matchId}` : "TBD");
+
+        const player2Text =
+          match.player2 ??
+          (feeder?.slot2 ? `Winner Match ${feeder.slot2.matchId}` : "TBD");
+
+        return {
+          matchId: match.matchId,
+          player1Text,
+          player2Text,
+          isPlayed,
+          isNext,
+          winner: match.winner
+        };
+      });
+
+      rounds.push({ round, matches });
+    }
+
+    return { rounds };
+  }
+
+  public renderBracketHTML(layout: BracketLayout): string {
+    const totalRounds = layout.rounds.length;
+    const roundSpacing = this.calculateRoundSpacing(totalRounds);
+
+    let html = `
+    <div class="w-full overflow-x-auto">
+      <div class="flex flex-row justify-start gap-4 flex-wrap md:flex-nowrap text-gray-900">
+  `;
+
+    for (const { round, matches } of layout.rounds) {
+      const roundSpacingClass = roundSpacing[round] || "my-0";
+
+      html += `
+      <div class="flex-1 min-w-[200px] flex flex-col">
+        <h3 class="text-center font-bold text-base md:text-lg uppercase border-b pb-1 text-blue-600 border-gray-300 mb-4">
+          Round ${round}
+        </h3>
+        <div class="flex flex-col ${roundSpacingClass} h-full justify-between space-y-2">
+    `;
+
+      for (const match of matches) {
+        const cardBg = match.isPlayed
+          ? "bg-gray-300"
+          : match.isNext
+            ? "bg-yellow-100"
+            : "bg-gray-100";
+
+        const textColor = match.isPlayed ? "text-gray-500" : "text-gray-900";
+        const borderStyle = match.isNext
+          ? "border-2 border-yellow-400"
+          : "border";
+
+        html += `
+        <div class="${cardBg} ${textColor} p-4 rounded-md shadow ${borderStyle} text-xs md:text-sm">
+          <h4 class="font-bold text-center text-sm md:text-base mb-2">Match ${match.matchId}</h4>
+          <div class="flex justify-between">
+            <span class="font-medium">${match.player1Text}</span>
+            <span class="text-green-600 font-semibold">${match.winner === match.player1Text ? "🏆" : ""}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-medium">${match.player2Text}</span>
+            <span class="text-green-600 font-semibold">${match.winner === match.player2Text ? "🏆" : ""}</span>
+          </div>
+        </div>
+      `;
+      }
+
+      html += `
+        </div>
+      </div>
+    `;
+    }
+
+    html += `
+      </div>
+    </div>
+  `;
+
+    return html;
+  }
+
+  public getBracketAsHTML(): string {
+    const layout = this.getBracketLayout();
+    return this.renderBracketHTML(layout);
+  }
+
+  private calculateRoundSpacing(totalRounds: number): Record<number, string> {
+    const roundSpacing: Record<number, string> = {};
+    if (totalRounds <= 1) return roundSpacing;
+
+    // More sophisticated spacing logic based on totalRounds
+    if (totalRounds === 2) {
+      roundSpacing[2] = "my-12"; // A bit more than default
+    } else if (totalRounds === 3) {
+      roundSpacing[2] = "my-16";
+      roundSpacing[3] = "my-32";
+    } else if (totalRounds === 4) {
+      roundSpacing[2] = "my-16";
+      roundSpacing[3] = "my-44";
+      roundSpacing[4] = "my-100";
+    } else {
+      roundSpacing[2] = "my-20";
+      roundSpacing[3] = "my-40";
+      roundSpacing[4] = "my-60";
+      roundSpacing[5] = "my-80";
+    }
+    return roundSpacing;
+  }
+
+  private groupBy<T>(arr: T[], key: keyof T): Record<string, T[]> {
+    return arr.reduce(
+      (acc, item) => {
+        const group = String(item[key]);
+        if (!acc[group]) acc[group] = [];
+        acc[group].push(item);
+        return acc;
+      },
+      {} as Record<string, T[]>
+    );
+  }
+
+  private buildFeederMap() {
+    this.feederMap = {};
+
+    for (const match of this.bracket) {
+      if (match.nextMatchId && match.winnerSlot) {
+        if (!this.feederMap[match.nextMatchId]) {
+          this.feederMap[match.nextMatchId] = {};
+        }
+
+        if (match.winnerSlot === 1) {
+          this.feederMap[match.nextMatchId].slot1 = match;
+        } else if (match.winnerSlot === 2) {
+          this.feederMap[match.nextMatchId].slot2 = match;
+        }
+      }
+    }
   }
 }
