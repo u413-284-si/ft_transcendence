@@ -97,6 +97,7 @@ export default class extends AbstractView {
         activeTournament.name,
         activeTournament.maxPlayers,
         activeTournament.adminId,
+        activeTournament.activeUserNickname,
         bracket,
         activeTournament.id
       );

@@ -6,6 +6,7 @@ export class Tournament {
     private tournamentName: string,
     private numberOfPlayers: number,
     private adminId: number,
+    private activeUserNickname: string | null,
     private bracket: BracketMatch[],
     private tournamentId?: number
   ) {}
@@ -22,7 +23,13 @@ export class Tournament {
       numberOfPlayers,
       activeUserNickname
     );
-    return new Tournament(tournamentName, numberOfPlayers, adminId, bracket);
+    return new Tournament(
+      tournamentName,
+      numberOfPlayers,
+      adminId,
+      activeUserNickname,
+      bracket
+    );
   }
 
   private static generateBracket(
@@ -98,8 +105,10 @@ export class Tournament {
 
       if (match.winnerSlot === 1) {
         nextMatch.player1 = winner;
+        nextMatch.player1IsActiveUser = winner === this.activeUserNickname;
       } else {
         nextMatch.player2 = winner;
+        nextMatch.player2IsActiveUser = winner === this.activeUserNickname;
       }
     }
 
@@ -143,6 +152,7 @@ export class Tournament {
       name: this.tournamentName,
       maxPlayers: this.numberOfPlayers,
       adminId: this.adminId,
+      activeUserNickname: this.activeUserNickname,
       bracket: JSON.stringify(this.bracket)
     };
   }
