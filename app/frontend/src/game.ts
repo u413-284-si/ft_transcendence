@@ -11,10 +11,12 @@ import {
   updateTournamentBracket
 } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
+import { globalToken } from "./main.js";
 
 export async function startGame(
   player1: string,
   player2: string,
+  activeUserRole: string | null,
   type: GameType,
   keys: Record<GameKey, boolean>,
   controller: AbortController,
@@ -27,7 +29,7 @@ export async function startGame(
   await new Promise<void>((resolve) => {
     gameLoop(canvas, ctx, gameState, resolve);
   });
-  await endGame(gameState, tournament);
+  await endGame(gameState, tournament, activeUserRole);
   controller.abort();
   if (type == GameType.single) {
     const newGameView = new NewGame();
@@ -145,7 +147,11 @@ function checkWinner(gameState: GameState) {
   }
 }
 
-async function endGame(gameState: GameState, tournament: Tournament | null) {
+async function endGame(
+  gameState: GameState,
+  tournament: Tournament | null,
+  activeUserRole: string | null
+) {
   let tournamentId;
   try {
     if (tournament) {
@@ -161,8 +167,14 @@ async function endGame(gameState: GameState, tournament: Tournament | null) {
       tournament.updateBracketWithResult(matchId, winner);
       await updateTournamentBracket(tournament);
     }
+
+    const player1Id = activeUserRole === "player1" ? globalToken?.id : null;
+    const player2Id = activeUserRole === "player2" ? globalToken?.id : null;
+
     await createMatch({
       tournamentId: tournamentId,
+      player1Id: player1Id,
+      player2Id: player2Id,
       player1Nickname: gameState.player1,
       player2Nickname: gameState.player2,
       player1Score: gameState.player1Score,

@@ -17,15 +17,19 @@ export default class extends AbstractView {
     let nicknameInputs = "";
     for (let i = 1; i <= this.numberOfPlayers; i++) {
       nicknameInputs += /* HTML */ `
-        <div class="w-[800px]">
-          <label style="display: block; margin-bottom: 10px;">
-            Player ${i} Nickname:
-            <input
-              type="text"
-              name="player${i}"
-              class="border border-gray-300 rounded px-2 py-1 transition-all duration-300"
-            />
-          </label>
+        <div class="w-[800px] border border-gray-200 p-4 rounded shadow-sm">
+          <label class="block mb-2 font-medium"> Player ${i} Nickname: </label>
+          <input
+            type="text"
+            name="player${i}"
+            class="border border-gray-300 rounded px-2 py-1 w-full"
+          />
+          <div class="mt-2">
+            <label class="inline-flex items-center text-sm text-gray-600">
+              <input type="radio" name="activeUser" value="${i}" class="mr-2" />
+              This is me
+            </label>
+          </div>
           <span
             id="player-error${i}"
             class="error-message text-red-600 text-sm mt-1 hidden"
@@ -88,6 +92,8 @@ export default class extends AbstractView {
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
     const form = document.getElementById("nicknames-form") as HTMLFormElement;
+    const formData = new FormData(form);
+    const activeUserNumber = formData.get("activeUser");
     const inputElements: HTMLInputElement[] = Array.from(
       form.querySelectorAll("input[type='text']")
     );
@@ -95,13 +101,17 @@ export default class extends AbstractView {
       form.querySelectorAll("span.error-message")
     );
     const nicknames = inputElements.map((input) => input.value);
+    let activeUserNickname: string | null = null;
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
-
+    if (activeUserNumber) {
+      activeUserNickname = formData.get(`player${activeUserNumber}`) as string;
+    }
     const tournament = Tournament.fromUsernames(
       nicknames,
       this.tournamentName,
       this.numberOfPlayers,
+      activeUserNickname,
       1 // FIXME: Hard coded username
     );
 

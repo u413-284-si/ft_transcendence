@@ -18,8 +18,15 @@ export default class extends AbstractView {
         class="flex flex-col justify-center items-center h-screen gap-4"
       >
         <div class="w-[300px]">
-          <label for="nickname1">Player 1 Nickname:</label>
-          <input type="text" id="nickname1" placeholder="Enter nickname" />
+          <label for="nickname1" class="font-semibold text-blue-600">
+            Player 1 Nickname (You):
+          </label>
+          <input
+            type="text"
+            id="nickname1"
+            placeholder="Enter your nickname"
+            class="border border-blue-500 focus:ring-2 focus:ring-blue-400 w-full px-2 py-1 mt-1 rounded"
+          />
           <span
             id="nickname-error1"
             class="error-message text-red-600 text-sm mt-1 hidden"
@@ -28,7 +35,12 @@ export default class extends AbstractView {
         <br /><br />
         <div class="w-[300px]">
           <label for="nickname2">Player 2 Nickname:</label>
-          <input type="text" id="nickname2" placeholder="Enter nickname" />
+          <input
+            type="text"
+            id="nickname2"
+            placeholder="Enter opponent's nickname"
+            class="border w-full px-2 py-1 mt-1 rounded"
+          />
           <span
             id="nickname-error2"
             class="error-message text-red-600 text-sm mt-1 hidden"
@@ -36,7 +48,12 @@ export default class extends AbstractView {
         </div>
         <br /><br />
         <div class="w-[300px]">
-          <button type="submit">Start Game</button>
+          <button
+            type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Start Game
+          </button>
         </div>
       </form>
       ${footerHTML}
@@ -70,6 +87,7 @@ export default class extends AbstractView {
     const gameView = new GameView(
       nicknames[0],
       nicknames[1],
+      "player1",
       GameType.single,
       null
     );

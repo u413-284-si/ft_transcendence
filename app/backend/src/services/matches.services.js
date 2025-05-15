@@ -64,7 +64,7 @@ export async function getMatch(id) {
 export async function getUserMatches(id) {
   const matches = await prisma.match.findMany({
     where: {
-      playerId: id
+      OR: [{ player1Id: id }, { player2Id: id }]
     },
     select: matchSelect
   });

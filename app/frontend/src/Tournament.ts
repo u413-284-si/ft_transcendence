@@ -14,18 +14,21 @@ export class Tournament {
     playerNicknames: string[],
     tournamentName: string,
     numberOfPlayers: number,
+    activeUserNickname: string | null,
     adminId: number
   ): Tournament {
     const bracket = Tournament.generateBracket(
       playerNicknames,
-      numberOfPlayers
+      numberOfPlayers,
+      activeUserNickname
     );
     return new Tournament(tournamentName, numberOfPlayers, adminId, bracket);
   }
 
   private static generateBracket(
     playerNicknames: string[],
-    numberOfPlayers: number
+    numberOfPlayers: number,
+    activeUserNickname: string | null
   ): BracketMatch[] {
     const totalRounds = Math.log2(numberOfPlayers);
     const bracket: BracketMatch[] = [];
@@ -68,8 +71,14 @@ export class Tournament {
 
     for (let i = 0; i < shuffled.length; i += 2) {
       const match = bracket.find((m) => m.matchId === firstRound[i / 2])!;
-      match.player1 = shuffled[i];
-      match.player2 = shuffled[i + 1];
+      const nickname1 = shuffled[i];
+      const nickname2 = shuffled[i + 1];
+
+      match.player1 = nickname1;
+      match.player2 = nickname2;
+
+      match.player1IsActiveUser = nickname1 === activeUserNickname;
+      match.player2IsActiveUser = nickname2 === activeUserNickname;
     }
 
     return bracket;
