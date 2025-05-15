@@ -13,7 +13,7 @@ export default class NewTournamentView extends AbstractView {
     this.setTitle("Enter Player Nicknames");
   }
 
-  async createHTML() {
+  createHTML() {
     let nicknameInputs = "";
     for (let i = 1; i <= this.numberOfPlayers; i++) {
       nicknameInputs += /* HTML */ `
@@ -81,7 +81,7 @@ export default class NewTournamentView extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.addListeners();
   }
 

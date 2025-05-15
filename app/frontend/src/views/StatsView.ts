@@ -9,9 +9,9 @@ export default class StatsView extends AbstractView {
     this.setTitle("Stats");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
@@ -66,7 +66,7 @@ export default class StatsView extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     await this.fetchAndDisplayMatches();
     await this.fetchAndDisplayUserStats();
   }

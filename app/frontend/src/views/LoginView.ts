@@ -12,7 +12,7 @@ export default class LoginView extends AbstractView {
     this.setTitle("Login");
   }
 
-  async createHTML() {
+  createHTML() {
     return /* HTML */ `
       <form
         id="login-form"
@@ -60,7 +60,7 @@ export default class LoginView extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.addListeners();
   }
 

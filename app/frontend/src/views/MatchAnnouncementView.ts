@@ -21,7 +21,7 @@ export default class MatchAnnouncementView extends AbstractView {
     this.matchNumber = match.matchId;
   }
 
-  async createHTML() {
+  createHTML() {
     return /* HTML */ `
       <h1
         style="
@@ -82,7 +82,7 @@ export default class MatchAnnouncementView extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.addListeners();
   }
 

@@ -28,14 +28,14 @@ export class GameView extends AbstractView {
     this.setTitle("Now playing");
   }
 
-  async createHTML() {
+  createHTML() {
     return `
       <canvas id="gameCanvas" width="800" height="400" class="border-4 border-white"></canvas>
       `;
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.addListeners();
     await startGame(
       this.player1,

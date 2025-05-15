@@ -15,9 +15,9 @@ export default class extends AbstractView {
     this.setTitle("New Tournament");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <h1
@@ -88,7 +88,7 @@ export default class extends AbstractView {
       const activeTournament = await getActiveTournament();
       if (!activeTournament) {
         console.log("No active tournament found");
-        await this.updateHTML();
+        this.updateHTML();
         this.addListeners();
         return;
       }
