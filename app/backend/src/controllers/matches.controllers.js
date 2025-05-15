@@ -19,7 +19,6 @@ export async function createMatchHandler(request, reply) {
       player1Score,
       player2Score
     } = request.body;
-    const hasWon = player1Score > player2Score ? true : false;
 
     const match = await createMatch(
       player1Id,
@@ -32,9 +31,15 @@ export async function createMatchHandler(request, reply) {
     );
     let stats = null;
     if (player1Id !== null) {
-      await updateUserStats(player1Id, hasWon);
+      await updateUserStats(
+        player1Id,
+        player1Score > player2Score ? true : false
+      );
     } else if (player2Id !== null) {
-      await updateUserStats(player2Id, hasWon);
+      await updateUserStats(
+        player2Id,
+        player2Score > player1Score ? true : false
+      );
     }
     const data = { match, stats };
     return reply
