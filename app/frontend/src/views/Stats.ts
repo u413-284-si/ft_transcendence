@@ -45,10 +45,10 @@ export default class extends AbstractView {
         >
           <thead class="bg-blue-800">
             <tr>
-              <th class="border border-blue-500 px-4 py-2">Nickname</th>
-              <th class="border border-blue-500 px-4 py-2">Score</th>
-              <th class="border border-blue-500 px-4 py-2">Opponent</th>
-              <th class="border border-blue-500 px-4 py-2">Opponent Score</th>
+              <th class="border border-blue-500 px-4 py-2">Player1</th>
+              <th class="border border-blue-500 px-4 py-2">Player1 Score</th>
+              <th class="border border-blue-500 px-4 py-2">Player2</th>
+              <th class="border border-blue-500 px-4 py-2">Player2 Score</th>
               <th class="border border-blue-500 px-4 py-2">Result</th>
               <th class="border border-blue-500 px-4 py-2">Date</th>
             </tr>
@@ -85,19 +85,36 @@ export default class extends AbstractView {
       const matchesTableBody = document.getElementById("matches-table-body");
       if (!matchesTableBody) return;
 
+      const activeUserId = globalToken?.id;
+
       matches.forEach((match) => {
-        const result = match.player1Score > match.player2Score ? "Won" : "Lost";
+        console.log("activeUserId:", activeUserId);
+        console.log("match.player1Id:", match.player1Id);
+        console.log("match.player2Id:", match.player2Id);
+        const isPlayer1ActiveUser = match.player1Id === activeUserId;
+        const isPlayer2ActiveUser = match.player2Id === activeUserId;
+
+        let result = "-";
+        if (isPlayer1ActiveUser) {
+          result = match.player1Score > match.player2Score ? "Won" : "Lost";
+        } else if (isPlayer2ActiveUser) {
+          result = match.player2Score > match.player1Score ? "Won" : "Lost";
+        }
+
+        const player1Display = isPlayer1ActiveUser
+          ? `${match.player1Nickname} (You)`
+          : match.player1Nickname;
+        const player2Display = isPlayer2ActiveUser
+          ? `${match.player2Nickname} (You)`
+          : match.player2Nickname;
+
         const row = document.createElement("tr");
         row.innerHTML = /* HTML */ `
-          <td class="border border-blue-500 px-4 py-2">
-            ${match.player1Nickname}
-          </td>
+          <td class="border border-blue-500 px-4 py-2">${player1Display}</td>
           <td class="border border-blue-500 px-4 py-2">
             ${match.player1Score}
           </td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${match.player2Nickname}
-          </td>
+          <td class="border border-blue-500 px-4 py-2">${player2Display}</td>
           <td class="border border-blue-500 px-4 py-2">
             ${match.player2Score}
           </td>

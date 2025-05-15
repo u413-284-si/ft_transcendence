@@ -2,6 +2,20 @@ const matchSchema = {
   $id: "matchSchema",
   type: "object",
   properties: {
+    player1Id: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/id" },
+        { type: "null" }
+      ],
+      description: "The optional unique identifier for player 1"
+    },
+    player2Id: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/id" },
+        { type: "null" }
+      ],
+      description: "The optional unique identifier for player 2"
+    },
     player1Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
       description: "The nickname of player 1"
@@ -31,6 +45,8 @@ const matchSchema = {
     }
   },
   required: [
+    "player1Id",
+    "player2Id",
     "player1Nickname",
     "player2Nickname",
     "player1Score",

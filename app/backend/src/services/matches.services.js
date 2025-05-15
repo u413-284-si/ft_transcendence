@@ -1,6 +1,8 @@
 import prisma from "../prisma/prismaClient.js";
 
 const matchSelect = {
+  player1Id: true,
+  player2Id: true,
   player1Nickname: true,
   player2Nickname: true,
   tournamentId: true,
