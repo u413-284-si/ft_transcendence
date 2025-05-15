@@ -28,15 +28,15 @@ export class GameView extends AbstractView {
     this.setTitle("Now playing");
   }
 
-  async createHTML() {
+  createHTML() {
     return `
       <canvas id="gameCanvas" width="800" height="400" class="border-4 border-white"></canvas>
       `;
   }
 
   async render() {
-    await this.updateHTML();
-    this.addEventListeners(this.controller.signal);
+    this.updateHTML();
+    this.addListeners();
     await startGame(
       this.player1,
       this.player2,
@@ -47,9 +47,13 @@ export class GameView extends AbstractView {
     );
   }
 
-  private addEventListeners(signal: AbortSignal) {
-    document.addEventListener("keydown", this.onKeyDown, { signal: signal });
-    document.addEventListener("keyup", this.onKeyUp, { signal: signal });
+  protected addListeners() {
+    document.addEventListener("keydown", this.onKeyDown, {
+      signal: this.controller.signal
+    });
+    document.addEventListener("keyup", this.onKeyUp, {
+      signal: this.controller.signal
+    });
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {

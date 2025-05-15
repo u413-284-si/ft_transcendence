@@ -11,9 +11,9 @@ export default class ResultsView extends AbstractView {
     this.matches = tournament.getBracket();
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <div class="max-w-3xl mx-auto bg-gray-100 text-gray-900 p-6">
@@ -30,7 +30,7 @@ export default class ResultsView extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.renderBracket(this.matches);
   }
 

@@ -2,9 +2,9 @@ import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
-import NewTournament from "./NewTournament.js";
+import NewTournament from "./NewTournamentView.js";
 
-export default class extends AbstractView {
+export default class MatchAnnouncementView extends AbstractView {
   private player1: string | null = null;
   private player2: string | null = null;
   private matchNumber: number | null = null;
@@ -21,7 +21,7 @@ export default class extends AbstractView {
     this.matchNumber = match.matchId;
   }
 
-  async createHTML() {
+  createHTML() {
     return /* HTML */ `
       <h1
         style="
@@ -72,7 +72,7 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("match-form")
       ?.addEventListener("submit", (event) => this.callGameView(event));
@@ -82,7 +82,7 @@ export default class extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.addListeners();
   }
 

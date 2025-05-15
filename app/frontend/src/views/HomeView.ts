@@ -1,15 +1,15 @@
 import AbstractView from "./AbstractView.js";
 import { globalToken } from "../main.js";
 
-export default class extends AbstractView {
+export default class HomeView extends AbstractView {
   constructor() {
     super();
     this.setTitle("Home");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <h1>Home</h1>
@@ -20,6 +20,6 @@ export default class extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
   }
 }

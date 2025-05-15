@@ -1,10 +1,10 @@
 import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
-import MatchAnnouncement from "./MatchAnnouncement.js";
+import MatchAnnouncement from "./MatchAnnouncementView.js";
 import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
 
-export default class extends AbstractView {
+export default class NewTournamentView extends AbstractView {
   constructor(
     private numberOfPlayers: number,
     private tournamentName: string
@@ -13,7 +13,7 @@ export default class extends AbstractView {
     this.setTitle("Enter Player Nicknames");
   }
 
-  async createHTML() {
+  createHTML() {
     let nicknameInputs = "";
     for (let i = 1; i <= this.numberOfPlayers; i++) {
       nicknameInputs += /* HTML */ `
@@ -72,7 +72,7 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("nicknames-form")
       ?.addEventListener("submit", (event) =>
@@ -81,7 +81,7 @@ export default class extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.addListeners();
   }
 
