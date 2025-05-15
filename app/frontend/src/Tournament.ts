@@ -230,14 +230,14 @@ export class Tournament {
 
     let html = `
     <div class="w-full overflow-x-auto">
-      <div class="flex flex-row justify-start gap-4 flex-wrap md:flex-nowrap text-gray-900">
+      <div class="flex flex-col md:flex-row justify-start gap-4 flex-wrap text-gray-900">
   `;
 
     for (const { round, matches } of layout.rounds) {
       const roundSpacingClass = roundSpacing[round] || "my-0";
 
       html += `
-      <div class="flex-1 min-w-[200px] flex flex-col">
+      <div class="flex-1 flex flex-col">
         <h3 class="text-center font-bold text-base md:text-lg uppercase border-b pb-1 text-blue-600 border-gray-300 mb-4">
           Round ${round}
         </h3>
@@ -296,19 +296,19 @@ export class Tournament {
 
     // More sophisticated spacing logic based on totalRounds
     if (totalRounds === 2) {
-      roundSpacing[2] = "my-12"; // A bit more than default
+      roundSpacing[2] = "my-0 md:my-12"; // A bit more than default
     } else if (totalRounds === 3) {
-      roundSpacing[2] = "my-16";
-      roundSpacing[3] = "my-32";
+      roundSpacing[2] = "my-0 md:my-16";
+      roundSpacing[3] = "my-0 md:my-32";
     } else if (totalRounds === 4) {
-      roundSpacing[2] = "my-16";
-      roundSpacing[3] = "my-44";
-      roundSpacing[4] = "my-100";
+      roundSpacing[2] = "my-0 md:my-16";
+      roundSpacing[3] = "my-0 md:my-44";
+      roundSpacing[4] = "my-0 md:my-100";
     } else {
-      roundSpacing[2] = "my-20";
-      roundSpacing[3] = "my-40";
-      roundSpacing[4] = "my-60";
-      roundSpacing[5] = "my-80";
+      roundSpacing[2] = "my-0 md:my-20";
+      roundSpacing[3] = "my-0 md:my-40";
+      roundSpacing[4] = "my-0 md:my-60";
+      roundSpacing[5] = "my-0 md:my-80";
     }
     return roundSpacing;
   }
