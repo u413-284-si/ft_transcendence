@@ -187,7 +187,7 @@ export class Tournament {
     const matchesByRound = this.groupBy(this.bracket, "round");
     const totalRounds = Object.keys(matchesByRound).length;
 
-    const nextMatch = this.bracket.find((m) => !m.winner);
+    const nextMatch = this.getNextMatchToPlay();
     const nextMatchId = nextMatch?.matchId;
 
     const rounds: BracketLayout["rounds"] = [];
