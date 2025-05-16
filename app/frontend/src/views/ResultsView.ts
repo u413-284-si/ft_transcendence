@@ -1,14 +1,10 @@
 import AbstractView from "./AbstractView.js";
-import { BracketMatch } from "../types/IMatch.js";
 import { Tournament } from "../Tournament.js";
 
 export default class ResultsView extends AbstractView {
-  private matches: BracketMatch[];
-
   constructor(private tournament: Tournament) {
     super();
     this.setTitle("Results");
-    this.matches = tournament.getBracket();
   }
 
   async createHTML() {
