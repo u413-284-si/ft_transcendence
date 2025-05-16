@@ -24,31 +24,34 @@ export default class extends AbstractView {
   }
 
   async createHTML() {
+    const navbarHTML = await this.createNavbar();
+    const footerHTML = await this.createFooter();
     return /* HTML */ `
-      <div class="max-w-4xl mx-auto p-4">
-        <section class="mb-10">
+      ${navbarHTML}
+      <div class="max-w-4xl mx-auto px-4 py-8 space-y-10">
+        <!-- Match Announcement Card -->
+        <section>
           <div
-            class="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-md max-w-xl mx-auto text-center space-y-4"
+            class="bg-blue-50 border-l-4 border-blue-400 rounded-2xl shadow p-6 text-center space-y-4"
           >
-            <h1 class="text-3xl font-bold text-blue-600">
-              Get ready for the next match!
+            <h1 class="text-4xl font-extrabold text-blue-700">
+              🎮 Next Match!
             </h1>
 
-            <p class="text-xl text-gray-800">
-              <strong
-                >Round ${this.roundNumber} - Match ${this.matchNumber}</strong
-              >
+            <p class="text-lg text-gray-700">
+              <span class="font-medium">Round</span> ${this.roundNumber} &mdash;
+              <span class="font-medium">Match</span> ${this.matchNumber}
             </p>
 
-            <p class="text-xl text-gray-700">
-              <strong>${this.player1}</strong> vs
-              <strong>${this.player2}</strong>
+            <p class="text-2xl text-gray-900 font-semibold">
+              ${this.player1} <span class="text-gray-500">vs</span> ${this
+                .player2}
             </p>
 
             <form id="match-form">
               <button
                 type="submit"
-                class="mt-5 px-6 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 transition"
+                class="mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
               >
                 Start Match
               </button>
@@ -56,14 +59,13 @@ export default class extends AbstractView {
           </div>
         </section>
 
-        <hr class="border-gray-300 mb-6" />
-
+        <!-- Tournament Status Card -->
         <section>
           <div
-            class="bg-white border border-gray-300 rounded-xl p-6 shadow-md max-w-3xl mx-auto text-center space-y-6"
+            class="bg-white border border-gray-300 rounded-2xl shadow p-6 text-center space-y-6"
           >
-            <h2 class="text-2xl font-semibold text-gray-700">
-              Tournament Status
+            <h2 class="text-2xl font-bold text-gray-800">
+              📊 Tournament Status
             </h2>
 
             <div class="mb-6">${this.tournament.getBracketAsHTML()}</div>
@@ -71,7 +73,7 @@ export default class extends AbstractView {
             <div>
               <button
                 id="abort-tournament"
-                class="mt-4 px-6 py-2 text-white bg-red-500 rounded hover:bg-red-600 transition"
+                class="px-6 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition"
               >
                 Abort Tournament
               </button>
@@ -79,6 +81,7 @@ export default class extends AbstractView {
           </div>
         </section>
       </div>
+      ${footerHTML}
     `;
   }
 
