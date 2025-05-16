@@ -258,11 +258,11 @@ export class Tournament {
           <h4 class="font-bold text-center text-sm md:text-base mb-2">Match ${match.matchId}</h4>
           <div class="flex justify-between">
             <span class="font-medium">${match.player1Text}</span>
-            <span class="text-green-600 font-semibold">${match.winner === match.player1Text ? "🏆" : ""}</span>
+            <span>${match.winner === match.player1Text ? "🏆" : ""}</span>
           </div>
           <div class="flex justify-between">
             <span class="font-medium">${match.player2Text}</span>
-            <span class="text-green-600 font-semibold">${match.winner === match.player2Text ? "🏆" : ""}</span>
+            <span>${match.winner === match.player2Text ? "🏆" : ""}</span>
           </div>
         </div>
       `;
