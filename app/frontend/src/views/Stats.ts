@@ -13,6 +13,9 @@ export default class extends AbstractView {
   async createHTML() {
     const navbarHTML = await this.createNavbar();
     const footerHTML = await this.createFooter();
+    const userStatsHTML = await this.getUserStatsHTML();
+    const matchesHTML = await this.getMatchesHTML();
+
     return /* HTML */ `
       ${navbarHTML}
       <h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
@@ -29,11 +32,8 @@ export default class extends AbstractView {
               <th class="border border-blue-500 px-4 py-2">Win Rate</th>
             </tr>
           </thead>
-          <tbody
-            id="user-stats-body"
-            class="bg-blue-700 divide-y divide-blue-500"
-          >
-            <!-- Player stats will be inserted here -->
+          <tbody class="bg-blue-700 divide-y divide-blue-500">
+            ${userStatsHTML}
           </tbody>
         </table>
       </div>
@@ -41,7 +41,6 @@ export default class extends AbstractView {
       <h1 class="text-4xl font-bold text-blue-300 mt-12 mb-8">Match History</h1>
       <div class="overflow-x-auto">
         <table
-          id="matches-table"
           class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500"
         >
           <thead class="bg-blue-800">
@@ -54,11 +53,8 @@ export default class extends AbstractView {
               <th class="border border-blue-500 px-4 py-2">Date</th>
             </tr>
           </thead>
-          <tbody
-            id="matches-table-body"
-            class="bg-blue-700 divide-y divide-blue-500"
-          >
-            <!-- Matches will be inserted here -->
+          <tbody class="bg-blue-700 divide-y divide-blue-500">
+            ${matchesHTML}
           </tbody>
         </table>
       </div>
@@ -68,61 +64,15 @@ export default class extends AbstractView {
 
   async render() {
     await this.updateHTML();
-    await this.fetchAndDisplayMatches();
-    await this.fetchAndDisplayUserStats();
   }
 
-  async fetchAndDisplayMatches() {
-    try {
-      const matches = await getUserMatches();
-
-      if (matches.length === 0) {
-        document
-          .getElementById("matches-table")
-          ?.replaceWith("No matches played yet");
-        return;
-      }
-
-      const matchesTableBody = document.getElementById("matches-table-body");
-      if (!matchesTableBody) return;
-
-      matches.forEach((match) => {
-        const result = match.playerScore > match.opponentScore ? "Won" : "Lost";
-        const row = document.createElement("tr");
-        row.innerHTML = /* HTML */ `
-          <td class="border border-blue-500 px-4 py-2">
-            ${escapeHTML(match.playerNickname)}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">${match.playerScore}</td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${escapeHTML(match.opponentNickname)}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${match.opponentScore}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">${result}</td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${new Date(match.date!).toLocaleString()}
-          </td>
-        `;
-        matchesTableBody.appendChild(row);
-      });
-    } catch (error) {
-      console.error("Error fetching match data:", error);
-    }
-  }
-
-  async fetchAndDisplayUserStats() {
+  async getUserStatsHTML(): Promise<string> {
     const user: string = escapeHTML(globalToken?.username) ?? "undefined";
     try {
       const userStats = await getUserStats();
-
-      const tableBody = document.getElementById("user-stats-body");
-      if (!tableBody) return;
-
       const formattedWinRate = userStats.winRate.toFixed(2) + "%";
 
-      tableBody.innerHTML = /* HTML */ `
+      return /* HTML */ `
         <tr>
           <td class="border border-blue-500 px-4 py-2">${user}</td>
           <td class="border border-blue-500 px-4 py-2">
@@ -139,6 +89,47 @@ export default class extends AbstractView {
       `;
     } catch (error) {
       console.error("Error fetching userStats:", error);
+      return `<tr><td colspan="5" class="text-center text-red-400 py-4">Error loading user stats</td></tr>`;
+    }
+  }
+
+  async getMatchesHTML(): Promise<string> {
+    try {
+      const matches = await getUserMatches();
+
+      if (matches.length === 0) {
+        return `<tr><td colspan="6" class="text-center text-blue-200 py-4">No matches played yet</td></tr>`;
+      }
+
+      return matches
+        .map((match) => {
+          const result =
+            match.playerScore > match.opponentScore ? "Won" : "Lost";
+          return /* HTML */ `
+            <tr>
+              <td class="border border-blue-500 px-4 py-2">
+                ${escapeHTML(match.playerNickname)}
+              </td>
+              <td class="border border-blue-500 px-4 py-2">
+                ${match.playerScore}
+              </td>
+              <td class="border border-blue-500 px-4 py-2">
+                ${escapeHTML(match.opponentNickname)}
+              </td>
+              <td class="border border-blue-500 px-4 py-2">
+                ${match.opponentScore}
+              </td>
+              <td class="border border-blue-500 px-4 py-2">${result}</td>
+              <td class="border border-blue-500 px-4 py-2">
+                ${new Date(match.date!).toLocaleString()}
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+    } catch (error) {
+      console.error("Error fetching match data:", error);
+      return `<tr><td colspan="6" class="text-center text-red-400 py-4">Error loading match history</td></tr>`;
     }
   }
 }
