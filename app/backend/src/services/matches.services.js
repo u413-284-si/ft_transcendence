@@ -72,3 +72,8 @@ export async function getUserMatches(id) {
   });
   return matches;
 }
+
+export async function deleteAllMatches() {
+  const matches = await prisma.match.deleteMany();
+  return matches;
+}

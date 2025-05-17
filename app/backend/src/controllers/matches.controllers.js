@@ -1,7 +1,8 @@
 import {
   createMatch,
   getAllMatches,
-  getMatch
+  getMatch,
+  deleteAllMatches
 } from "../services/matches.services.js";
 import { updateUserStats } from "../services/user_stats.services.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -85,6 +86,22 @@ export async function getMatchHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getMatchHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function deleteAllMatchesHandler(request, reply) {
+  const action = "Delete all matches";
+  try {
+    const data = await deleteAllMatches();
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `deleteAllMatchesHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
