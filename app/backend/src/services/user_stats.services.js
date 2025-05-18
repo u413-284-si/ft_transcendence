@@ -9,15 +9,26 @@ const userStatsSelect = {
 };
 
 export async function updateUserStats(userId, won) {
+  const userStats = await prisma.userStats.findUnique({
+    where: { userId },
+    select: { matchesPlayed: true, matchesWon: true }
+  });
+
+  const matchesPlayed = userStats.matchesPlayed + 1;
+  const matchesWon = userStats.matchesWon + (won ? 1 : 0);
+  const winRate = (matchesWon / matchesPlayed) * 100;
+
   const stats = await prisma.userStats.update({
     where: { userId },
     data: {
-      matchesPlayed: { increment: 1 },
-      matchesWon: { increment: won ? 1 : 0 },
-      matchesLost: { increment: won ? 0 : 1 }
+      matchesPlayed,
+      matchesWon,
+      matchesLost: { increment: won ? 0 : 1 },
+      winRate
     },
     select: userStatsSelect
   });
+
   return stats;
 }
 
