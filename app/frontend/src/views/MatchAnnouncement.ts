@@ -8,6 +8,7 @@ export default class extends AbstractView {
   private player1: string | null = null;
   private player2: string | null = null;
   private matchNumber: number | null = null;
+  private activeUserRole: string | null = null;
 
   constructor(private tournament: Tournament) {
     super();
@@ -19,6 +20,13 @@ export default class extends AbstractView {
     this.player1 = match.player1;
     this.player2 = match.player2;
     this.matchNumber = match.matchId;
+    if (match.player1IsActiveUser) {
+      this.activeUserRole = "player1";
+    } else if (match.player2IsActiveUser) {
+      this.activeUserRole = "player2";
+    } else {
+      this.activeUserRole = null;
+    }
   }
 
   async createHTML() {
@@ -100,6 +108,7 @@ export default class extends AbstractView {
     const gameView = new GameView(
       this.player1,
       this.player2,
+      this.activeUserRole,
       GameType.tournament,
       this.tournament
     );

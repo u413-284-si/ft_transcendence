@@ -1,30 +1,39 @@
 import prisma from "../prisma/prismaClient.js";
 
 const matchSelect = {
-  playerNickname: true,
-  opponentNickname: true,
-  tournamentId: true,
-  playerScore: true,
-  opponentScore: true,
-  date: true
+  player1Id: true,
+  player2Id: true,
+  player1Nickname: true,
+  player2Nickname: true,
+  player1Score: true,
+  player2Score: true,
+  date: true,
+  tournament: {
+    select: {
+      id: true,
+      name: true
+    }
+  }
 };
 
 export async function createMatch(
-  playerId,
-  playerNickname,
-  opponentNickname,
+  player1Id,
+  player2Id,
+  player1Nickname,
+  player2Nickname,
   tournamentId,
-  playerScore,
-  opponentScore
+  player1Score,
+  player2Score
 ) {
   const match = await prisma.match.create({
     data: {
-      playerId,
-      playerNickname,
-      opponentNickname,
+      player1Id,
+      player2Id,
+      player1Nickname,
+      player2Nickname,
       tournamentId,
-      playerScore,
-      opponentScore,
+      player1Score,
+      player2Score,
       date: new Date()
     },
     select: matchSelect
@@ -62,9 +71,14 @@ export async function getMatch(id) {
 export async function getUserMatches(id) {
   const matches = await prisma.match.findMany({
     where: {
-      playerId: id
+      OR: [{ player1Id: id }, { player2Id: id }]
     },
     select: matchSelect
   });
+  return matches;
+}
+
+export async function deleteAllMatches() {
+  const matches = await prisma.match.deleteMany();
   return matches;
 }

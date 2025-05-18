@@ -5,10 +5,7 @@ import {
   updateUser,
   deleteUser
 } from "../services/users.services.js";
-import {
-  getAllUserStats,
-  getUserStats
-} from "../services/user_stats.services.js";
+import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
 import {
   getUserTournaments,
@@ -142,25 +139,6 @@ export async function getUserMatchesHandler(request, reply) {
       `getUserMatchesHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function getAllUserStatsHandler(request, reply) {
-  const action = "Get all user stats";
-  try {
-    const data = await getAllUserStats();
-    const count = data.length;
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      count: count,
-      data: data
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getAllUserStats: ${createResponseMessage(action, false)}`
-    );
-    handlePrismaError(reply, action, err);
   }
 }
 

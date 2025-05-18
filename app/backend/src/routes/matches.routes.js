@@ -2,7 +2,8 @@ import { authorizeUser } from "../middleware/auth.js";
 import {
   createMatchHandler,
   getAllMatchesHandler,
-  getMatchHandler
+  getMatchHandler,
+  deleteAllMatchesHandler
 } from "../controllers/matches.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
@@ -12,6 +13,8 @@ export default async function matchRoutes(fastify) {
   fastify.get("/", optionsGetAllMatches, getAllMatchesHandler);
 
   fastify.get("/:id/", optionsGetMatch, getMatchHandler);
+
+  fastify.delete("/", deleteAllMatchesHandler);
 }
 
 const optionsCreateMatch = {

@@ -2,13 +2,27 @@ const matchSchema = {
   $id: "matchSchema",
   type: "object",
   properties: {
-    playerNickname: {
-      $ref: "commonDefinitionsSchema#/definitions/username",
-      description: "The nickname of the user"
+    player1Id: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/id" },
+        { type: "null" }
+      ],
+      description: "The optional unique identifier for player 1"
     },
-    opponentNickname: {
+    player2Id: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/id" },
+        { type: "null" }
+      ],
+      description: "The optional unique identifier for player 2"
+    },
+    player1Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
-      description: "The nickname of the opponent"
+      description: "The nickname of player 1"
+    },
+    player2Nickname: {
+      $ref: "commonDefinitionsSchema#/definitions/username",
+      description: "The nickname of player 2"
     },
     tournamentId: {
       oneOf: [
@@ -17,24 +31,35 @@ const matchSchema = {
       ],
       description: "The unique identifier for the tournament"
     },
-    playerScore: {
+    player1Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
-      description: "The score of the user in the match"
+      description: "The score of player 1 in the match"
     },
-    opponentScore: {
+    player2Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
-      description: "The score of the opponent in the match"
+      description: "The score of player 2 in the match"
     },
     date: {
       $ref: "commonDefinitionsSchema#/definitions/date",
       description: "The date of the match"
+    },
+    tournament: {
+      type: "object",
+      properties: {
+        id: { $ref: "commonDefinitionsSchema#/definitions/id" },
+        name: { type: "string" }
+      },
+      required: ["id", "name"],
+      description: "The tournament details if this match belongs to one"
     }
   },
   required: [
-    "playerNickname",
-    "opponentNickname",
-    "playerScore",
-    "opponentScore",
+    "player1Id",
+    "player2Id",
+    "player1Nickname",
+    "player2Nickname",
+    "player1Score",
+    "player2Score",
     "date"
   ],
   additionalProperties: false
@@ -70,13 +95,27 @@ export const createMatchSchema = {
   $id: "createMatchSchema",
   type: "object",
   properties: {
-    playerNickname: {
-      $ref: "commonDefinitionsSchema#/definitions/username",
-      description: "The nickname of the user"
+    player1Id: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/id" },
+        { type: "null" }
+      ],
+      description: "The optional unique identifier for player 1"
     },
-    opponentNickname: {
+    player2Id: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/id" },
+        { type: "null" }
+      ],
+      description: "The optional unique identifier for player 2"
+    },
+    player1Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
-      description: "The nickname of the opponent"
+      description: "The nickname of player 1"
+    },
+    player2Nickname: {
+      $ref: "commonDefinitionsSchema#/definitions/username",
+      description: "The nickname of player 2"
     },
     tournamentId: {
       oneOf: [
@@ -85,20 +124,20 @@ export const createMatchSchema = {
       ],
       description: "The unique identifier for the tournament"
     },
-    playerScore: {
+    player1Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
-      description: "The score of the user in the match"
+      description: "The score of player 1 in the match"
     },
-    opponentScore: {
+    player2Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
-      description: "The score of the opponent in the match"
+      description: "The score of player 2 in the match"
     }
   },
   required: [
-    "playerNickname",
-    "opponentNickname",
-    "playerScore",
-    "opponentScore"
+    "player1Nickname",
+    "player2Nickname",
+    "player1Score",
+    "player2Score"
   ],
   additionalProperties: false
 };

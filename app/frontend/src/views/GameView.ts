@@ -21,6 +21,7 @@ export class GameView extends AbstractView {
   constructor(
     private player1: string,
     private player2: string,
+    private activeUserRole: string | null,
     private type: GameType,
     private tournament: Tournament | null
   ) {
@@ -40,6 +41,7 @@ export class GameView extends AbstractView {
     await startGame(
       this.player1,
       this.player2,
+      this.activeUserRole,
       this.type,
       this.keys,
       this.controller,
