@@ -15,6 +15,7 @@ import staticRoutes from "./routes/static.routes.js";
 import matchRoutes from "./routes/matches.routes.js";
 import tournamentRoutes from "./routes/tournaments.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import userstatsRoutes from "./routes/user_stats.routes.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/users.schema.js";
@@ -83,6 +84,7 @@ await fastify.register(userRoutes, { prefix: "/api/users" });
 await fastify.register(matchRoutes, { prefix: "/api/matches" });
 await fastify.register(tournamentRoutes, { prefix: "/api/tournaments" });
 await fastify.register(authRoutes, { prefix: "/api/auth" });
+await fastify.register(userstatsRoutes, { prefix: "/api/userstats" });
 await fastify.register(fastifyStatic, {
   root: "/workspaces/ft_transcendence/app/frontend/public"
 });

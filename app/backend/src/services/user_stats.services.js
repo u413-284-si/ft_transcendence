@@ -37,3 +37,8 @@ export async function getUserStats(userId) {
   });
   return userStat;
 }
+
+export async function deleteAllUserStats() {
+  const userStats = await prisma.userStats.deleteMany();
+  return userStats;
+}
