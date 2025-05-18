@@ -51,6 +51,7 @@ export default class extends AbstractView {
               <th class="border border-blue-500 px-4 py-2">Player2 Score</th>
               <th class="border border-blue-500 px-4 py-2">Result</th>
               <th class="border border-blue-500 px-4 py-2">Date</th>
+              <th class="border border-blue-500 px-4 py-2">Tournament</th>
             </tr>
           </thead>
           <tbody
@@ -91,6 +92,8 @@ export default class extends AbstractView {
         console.log("activeUserId:", activeUserId);
         console.log("match.player1Id:", match.player1Id);
         console.log("match.player2Id:", match.player2Id);
+        console.log("match.tournament:", match.tournament);
+
         const isPlayer1ActiveUser = match.player1Id === activeUserId;
         const isPlayer2ActiveUser = match.player2Id === activeUserId;
 
@@ -107,6 +110,10 @@ export default class extends AbstractView {
         const player2Display = isPlayer2ActiveUser
           ? `${match.player2Nickname} (You)`
           : match.player2Nickname;
+        const tournamentDisplay =
+          match.tournament?.id && match.tournament?.name
+            ? `ID: #${match.tournament.id} - Name: ${match.tournament.name}`
+            : "N/A";
 
         const row = document.createElement("tr");
         row.innerHTML = /* HTML */ `
@@ -122,6 +129,7 @@ export default class extends AbstractView {
           <td class="border border-blue-500 px-4 py-2">
             ${new Date(match.date!).toLocaleString()}
           </td>
+          <td class="border border-blue-500 px-4 py-2">${tournamentDisplay}</td>
         `;
         matchesTableBody.appendChild(row);
       });

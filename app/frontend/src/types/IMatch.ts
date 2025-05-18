@@ -1,5 +1,9 @@
 export interface Match {
   tournamentId?: number;
+  tournament?: {
+    id: number;
+    name: string;
+  } | null;
   player1Id?: number | null;
   player2Id?: number | null;
   player1Nickname: string;

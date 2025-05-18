@@ -5,10 +5,15 @@ const matchSelect = {
   player2Id: true,
   player1Nickname: true,
   player2Nickname: true,
-  tournamentId: true,
   player1Score: true,
   player2Score: true,
-  date: true
+  date: true,
+  tournament: {
+    select: {
+      id: true,
+      name: true
+    }
+  }
 };
 
 export async function createMatch(

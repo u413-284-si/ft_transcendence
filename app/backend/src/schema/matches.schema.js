@@ -42,6 +42,15 @@ const matchSchema = {
     date: {
       $ref: "commonDefinitionsSchema#/definitions/date",
       description: "The date of the match"
+    },
+    tournament: {
+      type: "object",
+      properties: {
+        id: { $ref: "commonDefinitionsSchema#/definitions/id" },
+        name: { type: "string" }
+      },
+      required: ["id", "name"],
+      description: "The tournament details if this match belongs to one"
     }
   },
   required: [
