@@ -12,7 +12,6 @@ export class AuthManager {
 
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
-  private resetActivityTimer = () => this.startInactivityTimer();
 
   private refreshTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -94,13 +93,13 @@ export class AuthManager {
     }
   }
 
-  private startInactivityTimer(): void {
+  private startInactivityTimer = (): void => {
     if (this.idleTimeout) clearTimeout(this.idleTimeout);
     this.idleTimeout = setTimeout(() => {
       console.warn("User inactive. Logging out.");
       this.logout();
     }, this.inactivityMs);
-  }
+  };
 
   private clearInactivityTimer(): void {
     if (this.idleTimeout) {
@@ -110,15 +109,15 @@ export class AuthManager {
   }
 
   private registerActivityListeners(): void {
-    window.addEventListener("mousemove", this.resetActivityTimer);
-    window.addEventListener("keydown", this.resetActivityTimer);
+    window.addEventListener("mousemove", this.startInactivityTimer);
+    window.addEventListener("keydown", this.startInactivityTimer);
     this.startInactivityTimer();
   }
 
   private removeActivityListeners(): void {
     this.clearInactivityTimer();
-    window.removeEventListener("mousemove", this.resetActivityTimer);
-    window.removeEventListener("keydown", this.resetActivityTimer);
+    window.removeEventListener("mousemove", this.startInactivityTimer);
+    window.removeEventListener("keydown", this.startInactivityTimer);
   }
 
   private scheduleTokenValidation(token: Token): void {
