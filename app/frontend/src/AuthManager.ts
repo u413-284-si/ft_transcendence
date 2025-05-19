@@ -123,11 +123,11 @@ export class AuthManager {
   private scheduleTokenValidation(token: Token): void {
     if (!token.exp) return;
 
-    const expiresAt = token.exp * 1000;
+    const expiresAtMs = token.exp * 1000;
     const now = Date.now();
-    const refreshAt = expiresAt - 60_000; // 1 minute before expiry
+    const refreshAtMs = expiresAtMs - 60_000; // 1 minute before expiry
 
-    const delay = Math.max(refreshAt - now, 0);
+    const delay = Math.max(refreshAtMs - now, 0);
 
     if (this.refreshTimeout) clearTimeout(this.refreshTimeout);
     this.refreshTimeout = setTimeout(() => {
