@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { startGame, getGameState, setGameState } from "../game.js";
+import { startGame, getIsAborted, setIsAborted } from "../game.js";
 import { GameData } from "../types/GameData.js";
 import { router } from "../Router.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
@@ -55,7 +55,7 @@ export class GameView extends AbstractView {
   }
 
   private isGameRunning(): boolean {
-    return getGameState() === "running";
+    return !getIsAborted();
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {
@@ -80,7 +80,7 @@ export class GameView extends AbstractView {
   async handleGame(): Promise<void> {
     try {
       await startGame(this.gameData, this.keys);
-      if (getGameState() === "aborted") return;
+      if (getIsAborted()) return;
 
       if (this.gameData.type == GameType.single) {
         const view = new NewGameView();
@@ -108,7 +108,7 @@ export class GameView extends AbstractView {
 
     const confirmed = confirm("A game is running. Do you want to abort?");
     if (confirmed) {
-      setGameState("aborted");
+      setIsAborted(true);
     }
     return confirmed;
   }
