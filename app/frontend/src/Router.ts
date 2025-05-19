@@ -14,7 +14,7 @@ export class Router {
   private previousPath: string = "";
   private routeChangeListeners: RouteChangeListener[] = [];
   private historyIndex: number = 0;
-  private suppressNextPopstate: boolean = false;
+  private shallSuppressNextPopstate: boolean = false;
 
   private constructor() {}
 
@@ -134,9 +134,9 @@ export class Router {
   }
 
   private handlePopState = async (event: PopStateEvent) => {
-    if (this.suppressNextPopstate) {
+    if (this.shallSuppressNextPopstate) {
       console.log("Popstate suppressed");
-      this.suppressNextPopstate = false;
+      this.shallSuppressNextPopstate = false;
       return;
     }
     const state = event.state as { index?: number } | null;
@@ -151,7 +151,7 @@ export class Router {
 
     if (!(await this.canNavigateFrom())) {
       console.warn("Navigation blocked. Reverting...");
-      this.suppressNextPopstate = true;
+      this.shallSuppressNextPopstate = true;
       // Restore the previous state
       history.go(-delta);
       return;
