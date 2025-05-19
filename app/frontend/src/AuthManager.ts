@@ -79,7 +79,8 @@ export class AuthManager {
     return this.authenticated;
   }
 
-  public getToken(): Token | null {
+  public getToken(): Token {
+    if (!this.token) throw new Error("No active Token");
     return this.token;
   }
 

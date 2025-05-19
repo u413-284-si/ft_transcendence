@@ -107,8 +107,7 @@ export default class extends AbstractView {
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
 
     try {
-      const userId = auth.getToken()?.id;
-      if (!userId) throw new Error("User Id is undefined");
+      const userId = auth.getToken().id;
       const tournament = Tournament.fromUsernames(
         nicknames,
         this.tournamentName,
