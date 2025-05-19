@@ -46,7 +46,7 @@ export class GameView extends AbstractView {
   async render() {
     await this.updateHTML();
     this.addEventListeners(this.controller.signal);
-    this.launchGame();
+    this.handleGame();
   }
 
   private addEventListeners(signal: AbortSignal) {
@@ -77,7 +77,7 @@ export class GameView extends AbstractView {
     this.controller.abort();
   }
 
-  async launchGame(): Promise<void> {
+  async handleGame(): Promise<void> {
     try {
       await startGame(this.gameData, this.keys);
       if (getGameState() === "aborted") return;
