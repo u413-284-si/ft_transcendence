@@ -9,7 +9,7 @@ import {
   validatePlayersSelection
 } from "../validate.js";
 
-export default class extends AbstractView {
+export default class NewTournamentView extends AbstractView {
   constructor() {
     super();
     this.setTitle("New Tournament");
