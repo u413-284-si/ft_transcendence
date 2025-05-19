@@ -111,14 +111,14 @@ export class Router {
     }
   }
 
-  addRouteChangeListener(fn: RouteChangeListener): this {
-    this.routeChangeListeners.push(fn);
+  addRouteChangeListener(listener: RouteChangeListener): this {
+    this.routeChangeListeners.push(listener);
     return this;
   }
 
-  removeRouteChangeListener(fn: RouteChangeListener): this {
+  removeRouteChangeListener(listener: RouteChangeListener): this {
     this.routeChangeListeners = this.routeChangeListeners.filter(
-      (f) => f !== fn
+      (f) => f !== listener
     );
     return this;
   }
@@ -130,7 +130,7 @@ export class Router {
       to: this.currentPath,
       view: this.currentView
     };
-    this.routeChangeListeners.forEach((fn) => fn(info));
+    this.routeChangeListeners.forEach((listener) => listener(info));
   }
 
   private handlePopState = async (event: PopStateEvent) => {
