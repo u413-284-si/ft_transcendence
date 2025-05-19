@@ -1,4 +1,4 @@
-import { RouteGuard } from "./Router.js";
+import { RouteGuard } from "./types/Route.js";
 import { auth } from "./AuthManager.js";
 
 export const authGuard: RouteGuard = () => {

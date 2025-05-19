@@ -1,21 +1,10 @@
 import AbstractView from "./views/AbstractView.js";
-
-type RouteGuardResult = true | false | string;
-export type RouteGuard = () => RouteGuardResult;
-
-type RouteConfig = {
-  view: new () => AbstractView;
-  guard?: RouteGuard;
-};
-
-type routeEvent = "nav" | "view";
-type RouteChangeInfo = {
-  event: routeEvent;
-  from: string;
-  to: string;
-  view: AbstractView | null;
-};
-export type RouteChangeListener = (info: RouteChangeInfo) => void;
+import {
+  RouteConfig,
+  RouteChangeListener,
+  RouteChangeInfo,
+  routeEvent
+} from "./types/Route.js";
 
 export class Router {
   private static instance: Router;
