@@ -183,7 +183,12 @@ export class Tournament {
     return this.tournamentName;
   }
 
-  public getBracketLayout(): BracketLayout {
+  public getBracketAsHTML(): string {
+    const layout = this.getBracketLayout();
+    return this.renderBracketHTML(layout);
+  }
+
+  private getBracketLayout(): BracketLayout {
     const matchesByRound = this.groupBy(this.bracket, "round");
     const totalRounds = Object.keys(matchesByRound).length;
 
@@ -224,7 +229,7 @@ export class Tournament {
     return { rounds };
   }
 
-  public renderBracketHTML(layout: BracketLayout): string {
+  private renderBracketHTML(layout: BracketLayout): string {
     let html = /* HTML */ `
       <div class="w-full overflow-x-auto">
         <div
@@ -292,11 +297,6 @@ export class Tournament {
   `;
 
     return html;
-  }
-
-  public getBracketAsHTML(): string {
-    const layout = this.getBracketLayout();
-    return this.renderBracketHTML(layout);
   }
 
   private getRoundSpacing(round: number): string {
