@@ -138,6 +138,7 @@ export class AuthManager {
   private async refreshToken(): Promise<void> {
     console.log("Refresh token");
     try {
+      // FIXME: create route to directly refresh token
       const newToken = await authAndDecode();
       this.updateAuthState(newToken);
     } catch {
