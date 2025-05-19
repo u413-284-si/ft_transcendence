@@ -85,15 +85,15 @@ export default class NewGameView extends AbstractView {
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
 
     this.formTracker.reset();
-    const gameView = new GameView({
-      nickname1: nicknames[0],
+    const gameView = new GameView(
+      nicknames[0],
 
-      nickname2: nicknames[1],
+      nicknames[1],
 
-      type: GameType.single,
+      GameType.single,
 
-      tournament: null
-    });
+      null
+    );
     router.switchView(gameView);
   }
 

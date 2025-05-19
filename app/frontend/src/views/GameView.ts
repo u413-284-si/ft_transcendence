@@ -1,11 +1,11 @@
 import AbstractView from "./AbstractView.js";
 import { startGame, getIsAborted, setIsAborted } from "../game.js";
-import { GameData } from "../types/GameData.js";
 import { router } from "../Router.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { setTournamentFinished } from "../services/tournamentService.js";
 import ResultsView from "./ResultsView.js";
 import NewGameView from "./NewGame.js";
+import { Tournament } from "../Tournament.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -23,7 +23,12 @@ export class GameView extends AbstractView {
   };
   private controller = new AbortController();
 
-  constructor(private gameData: GameData) {
+  constructor(
+    private nickname1: string,
+    private nickname2: string,
+    private gameType: GameType,
+    private tournament: Tournament | null
+  ) {
     super();
     this.setTitle("Now playing");
   }
@@ -79,21 +84,27 @@ export class GameView extends AbstractView {
 
   async handleGame(): Promise<void> {
     try {
-      await startGame(this.gameData, this.keys);
+      await startGame(
+        this.nickname1,
+        this.nickname2,
+        this.gameType,
+        this.tournament,
+        this.keys
+      );
       if (getIsAborted()) return;
 
-      if (this.gameData.type == GameType.single) {
+      if (this.gameType == GameType.single) {
         const view = new NewGameView();
         await router.switchView(view);
-      } else if (this.gameData.type == GameType.tournament) {
-        if (this.gameData.tournament) {
-          if (this.gameData.tournament.getNextMatchToPlay()) {
-            const view = new MatchAnnouncement(this.gameData.tournament);
+      } else if (this.gameType == GameType.tournament) {
+        if (this.tournament) {
+          if (this.tournament.getNextMatchToPlay()) {
+            const view = new MatchAnnouncement(this.tournament);
             router.switchView(view);
             return;
           }
-          await setTournamentFinished(this.gameData.tournament.getId());
-          const view = new ResultsView(this.gameData.tournament);
+          await setTournamentFinished(this.tournament.getId());
+          const view = new ResultsView(this.tournament);
           router.switchView(view);
         }
       }

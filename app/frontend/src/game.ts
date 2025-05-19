@@ -5,7 +5,7 @@ import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { GameData } from "./types/GameData.js";
+import { GameType } from "./views/GameView.js";
 
 let isAborted: boolean = false;
 
@@ -18,26 +18,24 @@ export function setIsAborted(value: boolean) {
 }
 
 export async function startGame(
-  gameData: GameData,
+  nickname1: string,
+  nickname2: string,
+  gameType: GameType,
+  tournament: Tournament | null,
   keys: Record<GameKey, boolean>
 ) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
 
   setIsAborted(false);
-  const gameState = initGameState(
-    canvas,
-    gameData.nickname1,
-    gameData.nickname2,
-    keys
-  );
+  const gameState = initGameState(canvas, nickname1, nickname2, keys);
   await new Promise<void>((resolve) => {
     gameLoop(canvas, ctx, gameState, resolve);
   });
   if (getIsAborted()) {
     return;
   }
-  await endGame(gameState, gameData.tournament);
+  await endGame(gameState, tournament);
 }
 
 function initGameState(
