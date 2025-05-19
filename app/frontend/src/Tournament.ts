@@ -16,7 +16,7 @@ type BracketLayout = {
 };
 
 export class Tournament {
-  private feederMap: Record<
+  private matchSlotMap: Record<
     number,
     { slot1?: BracketMatch; slot2?: BracketMatch }
   > = {};
@@ -28,7 +28,7 @@ export class Tournament {
     private bracket: BracketMatch[],
     private tournamentId?: number
   ) {
-    this.buildFeederMap();
+    this.buildMatchSlotMap();
   }
 
   static fromUsernames(
@@ -203,15 +203,19 @@ export class Tournament {
       const matches = roundMatches.map((match) => {
         const isPlayed = !!match.winner;
         const isNext = match.matchId === nextMatchId;
-        const feeder = this.feederMap[match.matchId];
+        const matchSlots = this.matchSlotMap[match.matchId];
 
         const player1Text =
           match.player1 ??
-          (feeder?.slot1 ? `Winner Match ${feeder.slot1.matchId}` : "TBD");
+          (matchSlots?.slot1
+            ? `Winner Match ${matchSlots.slot1.matchId}`
+            : "TBD");
 
         const player2Text =
           match.player2 ??
-          (feeder?.slot2 ? `Winner Match ${feeder.slot2.matchId}` : "TBD");
+          (matchSlots?.slot2
+            ? `Winner Match ${matchSlots.slot2.matchId}`
+            : "TBD");
 
         return {
           matchId: match.matchId,
@@ -321,19 +325,19 @@ export class Tournament {
     );
   }
 
-  private buildFeederMap() {
-    this.feederMap = {};
+  private buildMatchSlotMap() {
+    this.matchSlotMap = {};
 
     for (const match of this.bracket) {
       if (match.nextMatchId && match.winnerSlot) {
-        if (!this.feederMap[match.nextMatchId]) {
-          this.feederMap[match.nextMatchId] = {};
+        if (!this.matchSlotMap[match.nextMatchId]) {
+          this.matchSlotMap[match.nextMatchId] = {};
         }
 
         if (match.winnerSlot === 1) {
-          this.feederMap[match.nextMatchId].slot1 = match;
+          this.matchSlotMap[match.nextMatchId].slot1 = match;
         } else if (match.winnerSlot === 2) {
-          this.feederMap[match.nextMatchId].slot2 = match;
+          this.matchSlotMap[match.nextMatchId].slot2 = match;
         }
       }
     }
