@@ -99,7 +99,7 @@ export class GameView extends AbstractView {
       }
     } catch (error) {
       console.error("Error in navigateAfterGame(): ", error);
-      // show error page
+      // FIXME: show error page
     }
   }
 
