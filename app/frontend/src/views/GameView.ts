@@ -1,10 +1,10 @@
 import AbstractView from "./AbstractView.js";
 import { startGame, getIsAborted, setIsAborted } from "../game.js";
 import { router } from "../routing/Router.js";
-import MatchAnnouncement from "./MatchAnnouncement.js";
+import MatchAnnouncement from "./MatchAnnouncementView.js";
 import { setTournamentFinished } from "../services/tournamentService.js";
 import ResultsView from "./ResultsView.js";
-import NewGameView from "./NewGame.js";
+import NewGameView from "./NewGameView.js";
 import { Tournament } from "../Tournament.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
@@ -33,9 +33,9 @@ export class GameView extends AbstractView {
     this.setTitle("Now playing");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <canvas
@@ -49,18 +49,18 @@ export class GameView extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
-    this.addEventListeners(this.controller.signal);
+    this.updateHTML();
+    this.addListeners();
     this.handleGame();
   }
 
-  private addEventListeners(signal: AbortSignal) {
-    document.addEventListener("keydown", this.onKeyDown, { signal: signal });
-    document.addEventListener("keyup", this.onKeyUp, { signal: signal });
-  }
-
-  private isGameRunning(): boolean {
-    return !getIsAborted();
+  protected addListeners() {
+    document.addEventListener("keydown", this.onKeyDown, {
+      signal: this.controller.signal
+    });
+    document.addEventListener("keyup", this.onKeyUp, {
+      signal: this.controller.signal
+    });
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {

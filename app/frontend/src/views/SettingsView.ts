@@ -1,14 +1,14 @@
 import AbstractView from "./AbstractView.js";
 
-export default class extends AbstractView {
+export default class SettingsView extends AbstractView {
   constructor() {
     super();
     this.setTitle("Settings");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return `
 			${navbarHTML}
 			<h1>Settings</h1>
@@ -18,7 +18,7 @@ export default class extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
   }
 
   getName(): string {

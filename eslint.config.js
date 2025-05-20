@@ -15,5 +15,5 @@ export default defineConfig([
     extends: ["js/recommended"]
   },
   tseslint.configs.recommended,
-  globalIgnores(["**/dist/"])
+  globalIgnores(["**/dist/", "**/ext/"])
 ]);

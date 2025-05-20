@@ -1,9 +1,9 @@
-import Login from "./views/Login.js";
-import Home from "./views/Home.js";
-import NewGame from "./views/NewGame.js";
-import NewTournament from "./views/NewTournament.js";
-import Settings from "./views/Settings.js";
-import Stats from "./views/Stats.js";
+import Login from "./views/LoginView.js";
+import Home from "./views/HomeView.js";
+import NewGame from "./views/NewGameView.js";
+import NewTournament from "./views/NewTournamentView.js";
+import Settings from "./views/SettingsView.js";
+import Stats from "./views/StatsView.js";
 import { router } from "./routing/Router.js";
 import { authGuard, guestOnlyGuard } from "./routing/routeGuard.js";
 import { auth } from "./AuthManager.js";

@@ -4,16 +4,16 @@ import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 
 export default class NewGameView extends AbstractView {
-  private formElement!: HTMLFormElement;
+  private formEl!: HTMLFormElement;
 
   constructor() {
     super();
     this.setTitle("New Game");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <form
@@ -56,26 +56,25 @@ export default class NewGameView extends AbstractView {
     `;
   }
 
-  async addListeners() {
-    this.formElement.addEventListener("submit", (event) =>
+  protected addListeners() {
+    this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartGame(event)
     );
   }
 
   async render() {
-    await this.updateHTML();
-    this.formElement = document.querySelector("#register-form")!;
+    this.updateHTML();
+    this.formEl = document.querySelector("#register-form")!;
     this.addListeners();
   }
 
   validateAndStartGame(event: Event) {
     event.preventDefault();
-    const form = document.getElementById("register-form") as HTMLFormElement;
     const inputElements: HTMLInputElement[] = Array.from(
-      form.querySelectorAll("input[type='text']")
+      this.formEl.querySelectorAll("input[type='text']")
     );
     const errorElements: HTMLElement[] = Array.from(
-      form.querySelectorAll("span.error-message")
+      this.formEl.querySelectorAll("span.error-message")
     );
     const nicknames = inputElements.map((input) => input.value);
 
