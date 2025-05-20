@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+@layer utilities {
+  @keyframes show-results {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-show-results {
+    animation: show-results 0.6s ease-out forwards;
+  }
+}
+

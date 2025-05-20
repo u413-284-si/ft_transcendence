@@ -1,16 +1,19 @@
 import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
+import { router } from "../routing/Router.js";
 
-export default class extends AbstractView {
+export default class NewGameView extends AbstractView {
+  private formEl!: HTMLFormElement;
+
   constructor() {
     super();
     this.setTitle("New Game");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <form
@@ -19,7 +22,12 @@ export default class extends AbstractView {
       >
         <div class="w-[300px]">
           <label for="nickname1">Player 1 Nickname:</label>
-          <input type="text" id="nickname1" placeholder="Enter nickname" />
+          <input
+            type="text"
+            id="nickname1"
+            name="nickname1"
+            placeholder="Enter nickname"
+          />
           <span
             id="nickname-error1"
             class="error-message text-red-600 text-sm mt-1 hidden"
@@ -28,7 +36,12 @@ export default class extends AbstractView {
         <br /><br />
         <div class="w-[300px]">
           <label for="nickname2">Player 2 Nickname:</label>
-          <input type="text" id="nickname2" placeholder="Enter nickname" />
+          <input
+            type="text"
+            id="nickname2"
+            name="nickname2"
+            placeholder="Enter nickname"
+          />
           <span
             id="nickname-error2"
             class="error-message text-red-600 text-sm mt-1 hidden"
@@ -43,25 +56,25 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
-    document
-      .getElementById("register-form")
-      ?.addEventListener("submit", (event) => this.validateAndStartGame(event));
+  protected addListeners() {
+    this.formEl.addEventListener("submit", (event) =>
+      this.validateAndStartGame(event)
+    );
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
+    this.formEl = document.querySelector("#register-form")!;
     this.addListeners();
   }
 
   validateAndStartGame(event: Event) {
     event.preventDefault();
-    const form = document.getElementById("register-form") as HTMLFormElement;
     const inputElements: HTMLInputElement[] = Array.from(
-      form.querySelectorAll("input[type='text']")
+      this.formEl.querySelectorAll("input[type='text']")
     );
     const errorElements: HTMLElement[] = Array.from(
-      form.querySelectorAll("span.error-message")
+      this.formEl.querySelectorAll("span.error-message")
     );
     const nicknames = inputElements.map((input) => input.value);
 
@@ -73,6 +86,10 @@ export default class extends AbstractView {
       GameType.single,
       null
     );
-    gameView.render();
+    router.switchView(gameView);
+  }
+
+  getName(): string {
+    return "new-game";
   }
 }

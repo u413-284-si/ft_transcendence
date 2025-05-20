@@ -1,6 +1,0 @@
-curl http://localhost:4000/ --include
-
-curl -X POST http://localhost:4000/user/add -H "Content-Type: application/json" -d '{"username": "df "}'
-curl -X GET http://localhost:4000/user/list
-curl -X DELETE http://localhost:4000/user/delete/2
-curl -X PUT http://localhost:4000/user/edit/1 -H "Content-Type: application/json" -d '{"username": "updateduser"}'

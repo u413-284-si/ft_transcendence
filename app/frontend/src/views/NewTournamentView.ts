@@ -1,23 +1,26 @@
+import { router } from "../routing/Router.js";
 import { getActiveTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
-import MatchAnnouncement from "./MatchAnnouncement.js";
-import PlayerNicknames from "./PlayerNicknames.js";
+import MatchAnnouncement from "./MatchAnnouncementView.js";
+import PlayerNicknames from "./PlayerNicknamesView.js";
 import {
   validateTournamentName,
   validatePlayersSelection
 } from "../validate.js";
 
-export default class extends AbstractView {
+export default class NewTournamentView extends AbstractView {
+  private formEl!: HTMLFormElement;
+
   constructor() {
     super();
     this.setTitle("New Tournament");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <h1
@@ -75,12 +78,10 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
-    document
-      .getElementById("tournament-form")
-      ?.addEventListener("submit", (event) =>
-        this.validateAndRequestNicknames(event)
-      );
+  protected addListeners() {
+    this.formEl.addEventListener("submit", (event) =>
+      this.validateAndRequestNicknames(event)
+    );
   }
 
   async render() {
@@ -88,7 +89,8 @@ export default class extends AbstractView {
       const activeTournament = await getActiveTournament();
       if (!activeTournament) {
         console.log("No active tournament found");
-        await this.updateHTML();
+        this.updateHTML();
+        this.formEl = document.querySelector("#tournament-form")!;
         this.addListeners();
         return;
       }
@@ -101,7 +103,7 @@ export default class extends AbstractView {
         activeTournament.id
       );
       const matchAnnouncementView = new MatchAnnouncement(tournament);
-      matchAnnouncementView.render();
+      router.switchView(matchAnnouncementView);
       return;
     } catch (error) {
       console.error(error);
@@ -111,11 +113,10 @@ export default class extends AbstractView {
 
   async validateAndRequestNicknames(event: Event) {
     event.preventDefault();
-    const form = document.getElementById("tournament-form") as HTMLFormElement;
-    const playersSelected = form?.querySelector(
+    const playersSelected = this.formEl.querySelector(
       'input[name="players"]:checked'
     ) as HTMLInputElement;
-    const tournamentNameEl = form?.querySelector(
+    const tournamentNameEl = this.formEl.querySelector(
       'input[name="tournamentName"]'
     ) as HTMLInputElement;
     const selectionEl = document.getElementById(
@@ -151,6 +152,10 @@ export default class extends AbstractView {
       playerNum,
       tournamentNameEl.value
     );
-    playerNicknamesView.render();
+    router.switchView(playerNicknamesView);
+  }
+
+  getName(): string {
+    return "new-tournament";
   }
 }

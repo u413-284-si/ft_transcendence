@@ -1,10 +1,12 @@
+import { router } from "../routing/Router.js";
 import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
-import NewTournament from "./NewTournament.js";
+import NewTournament from "./NewTournamentView.js";
+import { escapeHTML } from "../utility.js";
 
-export default class extends AbstractView {
+export default class MatchAnnouncementView extends AbstractView {
   private player1: string | null = null;
   private player2: string | null = null;
   private matchNumber: number | null = null;
@@ -23,17 +25,11 @@ export default class extends AbstractView {
     this.roundNumber = match.round;
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
-      ${navbarHTML}
-      <div class="max-w-4xl mx-auto px-4 py-8 space-y-10">
-        <!-- Match Announcement Card -->
-        <section>
-          <div
-            class="bg-blue-50 border-l-4 border-blue-400 rounded-2xl shadow p-6 text-center space-y-4"
-          >
+${navbarHTML}
             <h1 class="text-4xl font-extrabold text-blue-700">
               🎮 Next Match!
             </h1>
@@ -44,8 +40,9 @@ export default class extends AbstractView {
             </p>
 
             <p class="text-2xl text-gray-900 font-semibold">
-              ${this.player1} <span class="text-gray-500">vs</span> ${this
-                .player2}
+              ${escapeHTML(this.player1)} <span class="text-gray-500">vs</span> ${escapeHTML(
+                this.player2
+              )}
             </p>
 
             <form id="match-form">
@@ -85,7 +82,7 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("match-form")
       ?.addEventListener("submit", (event) => this.callGameView(event));
@@ -95,7 +92,7 @@ export default class extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.addListeners();
   }
 
@@ -116,17 +113,23 @@ export default class extends AbstractView {
       GameType.tournament,
       this.tournament
     );
-    gameView.render();
+    router.switchView(gameView);
   }
 
   private async abortTournament() {
     try {
+      const confirmed = confirm("Do you really want to abort the tournament?");
+      if (!confirmed) return;
       await deleteTournament(this.tournament.getId());
-      const newTournamentView = new NewTournament();
-      newTournamentView.render();
+      const view = new NewTournament();
+      router.switchView(view);
     } catch (error) {
       console.error(error);
       // show error page
     }
+  }
+
+  getName(): string {
+    return "match-announcement";
   }
 }

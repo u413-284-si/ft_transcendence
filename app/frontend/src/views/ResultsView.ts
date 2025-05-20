@@ -1,5 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
+import { escapeHTML } from "../utility.js";
 
 export default class ResultsView extends AbstractView {
   constructor(private tournament: Tournament) {
@@ -7,9 +8,10 @@ export default class ResultsView extends AbstractView {
     this.setTitle("Results");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
+
     return /* HTML */ `
       ${navbarHTML}
       <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
@@ -21,7 +23,7 @@ export default class ResultsView extends AbstractView {
             🎉 Tournament Results 🎉
           </h1>
           <p class="text-xl text-gray-700 mt-2">
-            Name: ${this.tournament.getTournamentName()}
+            Name: ${escapeHTML(this.tournament.getTournamentName())}
           </p>
         </div>
 
@@ -31,7 +33,7 @@ export default class ResultsView extends AbstractView {
         >
           <h2 class="text-3xl font-extrabold text-yellow-700">Champion</h2>
           <p class="text-2xl font-bold text-gray-800">
-            🏆 ${this.tournament.getTournamentWinner()} 🏆
+            🏆 ${escapeHTML(this.tournament.getTournamentWinner())} 🏆
           </p>
           <p class="text-xl text-gray-600">Congratulations on the victory!</p>
         </div>
@@ -47,6 +49,10 @@ export default class ResultsView extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
+  }
+
+  getName(): string {
+    return "results";
   }
 }

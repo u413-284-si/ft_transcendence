@@ -1,10 +1,15 @@
 import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
-import MatchAnnouncement from "./MatchAnnouncement.js";
+import MatchAnnouncement from "./MatchAnnouncementView.js";
 import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
+import { router } from "../routing/Router.js";
+import { auth } from "../AuthManager.js";
+import { escapeHTML } from "../utility.js";
 
-export default class extends AbstractView {
+export default class PlayerNicknamesView extends AbstractView {
+  private formEl!: HTMLFormElement;
+
   constructor(
     private numberOfPlayers: number,
     private tournamentName: string
@@ -13,7 +18,7 @@ export default class extends AbstractView {
     this.setTitle("Enter Player Nicknames");
   }
 
-  async createHTML() {
+  createHTML() {
     let nicknameInputs = "";
     for (let i = 1; i <= this.numberOfPlayers; i++) {
       nicknameInputs += /* HTML */ `
@@ -45,7 +50,7 @@ export default class extends AbstractView {
         Enter Player Nicknames
       </h1>
       <p style="margin-bottom: 20px; text-align: center;">
-        Tournament: <strong>${this.tournamentName}</strong>
+        Tournament: <strong>${escapeHTML(this.tournamentName)}</strong>
       </p>
       <form
         id="nicknames-form"
@@ -72,40 +77,39 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
-    document
-      .getElementById("nicknames-form")
-      ?.addEventListener("submit", (event) =>
-        this.validateAndStartTournament(event)
-      );
+  protected addListeners() {
+    this.formEl.addEventListener("submit", (event) =>
+      this.validateAndStartTournament(event)
+    );
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
+    this.formEl = document.querySelector("#nicknames-form")!;
     this.addListeners();
   }
 
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
-    const form = document.getElementById("nicknames-form") as HTMLFormElement;
     const inputElements: HTMLInputElement[] = Array.from(
-      form.querySelectorAll("input[type='text']")
+      this.formEl.querySelectorAll("input[type='text']")
     );
     const errorElements: HTMLElement[] = Array.from(
-      form.querySelectorAll("span.error-message")
+      this.formEl.querySelectorAll("span.error-message")
     );
     const nicknames = inputElements.map((input) => input.value);
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
 
-    const tournament = Tournament.fromUsernames(
-      nicknames,
-      this.tournamentName,
-      this.numberOfPlayers,
-      1 // FIXME: Hard coded username
-    );
-
     try {
+      const userId = auth.getToken().id;
+      const tournament = Tournament.fromUsernames(
+        nicknames,
+        this.tournamentName,
+        this.numberOfPlayers,
+        userId
+      );
+
       const createdTournament = await createTournament(tournament);
       const { id } = createdTournament;
       if (id) {
@@ -116,9 +120,13 @@ export default class extends AbstractView {
         throw new Error("Match is undefined");
       }
       const matchAnnouncementView = new MatchAnnouncement(tournament);
-      matchAnnouncementView.render();
-    } catch (e) {
-      console.error("Error creating tournament", e);
+      router.switchView(matchAnnouncementView);
+    } catch (error) {
+      console.error("Error creating tournament", error);
     }
+  }
+
+  getName(): string {
+    return "player-nicknames";
   }
 }
