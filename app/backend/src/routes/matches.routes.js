@@ -14,7 +14,7 @@ export default async function matchRoutes(fastify) {
 
   fastify.get("/:id/", optionsGetMatch, getMatchHandler);
 
-  fastify.delete("/", deleteAllMatchesHandler);
+  fastify.delete("/", optionsDeleteAllMatches, deleteAllMatchesHandler);
 }
 
 const optionsCreateMatch = {
@@ -42,6 +42,14 @@ const optionsGetAllMatches = {
   schema: {
     response: {
       200: { $ref: "matchArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteAllMatches = {
+  schema: {
+    response: {
       ...errorResponses
     }
   }

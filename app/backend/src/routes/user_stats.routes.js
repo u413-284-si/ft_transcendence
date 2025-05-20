@@ -7,13 +7,21 @@ import { errorResponses } from "../utils/error.js";
 export default async function userstatsRoutes(fastify) {
   fastify.get("/", optionsGetAllUserStats, getAllUserStatsHandler);
 
-  fastify.delete("/", deleteAllUserStatsHandler);
+  fastify.delete("/", optionsDeleteAllUserStats, deleteAllUserStatsHandler);
 }
 
 const optionsGetAllUserStats = {
   schema: {
     response: {
       200: { $ref: "userStatsArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteAllUserStats = {
+  schema: {
+    response: {
       ...errorResponses
     }
   }
