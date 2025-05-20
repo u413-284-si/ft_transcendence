@@ -79,6 +79,7 @@ export class GameView extends AbstractView {
 
   unmount(): void {
     console.log("Cleaning up GameView");
+    setIsAborted(true);
     this.controller.abort();
   }
 
@@ -112,20 +113,6 @@ export class GameView extends AbstractView {
       console.error("Error in navigateAfterGame(): ", error);
       // FIXME: show error page
     }
-  }
-
-  async confirmLeave(): Promise<boolean> {
-    if (this.canLeave()) return true;
-
-    const confirmed = confirm("A game is running. Do you want to abort?");
-    if (confirmed) {
-      setIsAborted(true);
-    }
-    return confirmed;
-  }
-
-  canLeave(): boolean {
-    return !this.isGameRunning();
   }
 
   getName(): string {

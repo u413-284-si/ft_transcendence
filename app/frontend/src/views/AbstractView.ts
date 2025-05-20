@@ -35,9 +35,5 @@ export default abstract class {
 
   unmount?(): void;
 
-  async confirmLeave?(): Promise<boolean>;
-
-  canLeave?(): boolean;
-
   abstract getName(): string;
 }

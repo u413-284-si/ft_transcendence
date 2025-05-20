@@ -13,8 +13,6 @@ export class Router {
   private currentPath: string = "";
   private previousPath: string = "";
   private routeChangeListeners: RouteChangeListener[] = [];
-  private historyIndex: number = 0;
-  private shallSuppressNextPopstate: boolean = false;
 
   private constructor() {}
 
@@ -31,25 +29,12 @@ export class Router {
   }
 
   async start(): Promise<void> {
-    const index = history.state?.index;
-    this.historyIndex = index ? index : 0;
-    history.replaceState(
-      { index: this.historyIndex },
-      "",
-      window.location.pathname
-    );
-
     window.addEventListener("popstate", this.handlePopState);
-    window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.body.addEventListener("click", this.handleLinkClick);
     await this.navigate(window.location.pathname, false);
   }
 
-  async navigate(
-    path: string,
-    push: boolean = true,
-    skipLeaveCheck: boolean = false
-  ): Promise<void> {
+  async navigate(path: string, push: boolean = true): Promise<void> {
     try {
       path = this.normalizePath(path);
       if (this.currentPath === path) {
@@ -57,13 +42,7 @@ export class Router {
         return;
       }
 
-      console.log(
-        `Try to navigate to ${path} from ${this.currentPath}, index: ${this.historyIndex}`
-      );
-      if (!skipLeaveCheck && !(await this.canNavigateFrom())) {
-        console.warn(`Navigation blocked`);
-        return;
-      }
+      console.log(`Try to navigate to ${path} from ${this.currentPath}`);
 
       const route = this.routes.get(path);
       if (!route) {
@@ -77,11 +56,10 @@ export class Router {
 
       if (push) {
         console.log(`Push state for ${path}`);
-        this.historyIndex++;
-        history.pushState({ index: this.historyIndex }, "", path);
+        history.pushState({}, "", path);
       } else {
         console.log(`Replace state for ${path}`);
-        history.replaceState({ index: this.historyIndex }, "", path);
+        history.replaceState({}, "", path);
       }
       this.previousPath = this.currentPath;
       this.currentPath = path;
@@ -100,10 +78,6 @@ export class Router {
       console.log(
         `Try to switch view from ${this.currentView?.getName()} to ${view.getName()}`
       );
-      if (!(await this.canNavigateFrom())) {
-        console.warn(`Switching blocked`);
-        return;
-      }
       await this.setView(view);
       this.notifyRouteChange("view");
     } catch (error) {
@@ -133,32 +107,10 @@ export class Router {
     this.routeChangeListeners.forEach((listener) => listener(info));
   }
 
-  private handlePopState = async (event: PopStateEvent) => {
-    if (this.shallSuppressNextPopstate) {
-      console.log("Popstate suppressed");
-      this.shallSuppressNextPopstate = false;
-      return;
-    }
-    const state = event.state as { index?: number } | null;
-    const newIndex = state?.index ?? this.historyIndex;
-    const delta = newIndex - this.historyIndex;
-
-    const direction =
-      delta > 0 ? "forward" : delta < 0 ? "backward" : "unknown";
-
+  private handlePopState = async () => {
     const targetPath = window.location.pathname;
-    console.log(`Popstate triggered: ${direction} to ${targetPath}`);
-
-    if (!(await this.canNavigateFrom())) {
-      console.warn("Navigation blocked. Reverting...");
-      this.shallSuppressNextPopstate = true;
-      // Restore the previous state
-      history.go(-delta);
-      return;
-    }
-
-    this.historyIndex = newIndex;
-    this.navigate(window.location.pathname, false, true);
+    console.log(`Popstate triggered: ${targetPath}`);
+    this.navigate(targetPath, false);
   };
 
   private handleLinkClick = (event: MouseEvent) => {
@@ -169,25 +121,9 @@ export class Router {
     ) {
       event.preventDefault();
       const url = new URL(target.href);
-      this.navigate(url.pathname);
+      this.navigate(url.pathname, true);
     }
   };
-
-  private handleBeforeUnload = (event: BeforeUnloadEvent) => {
-    if (this.currentView?.canLeave && !this.currentView?.canLeave()) {
-      event.preventDefault();
-      event.returnValue = "";
-    }
-  };
-
-  private async canNavigateFrom(): Promise<boolean> {
-    if (this.currentView?.confirmLeave) {
-      const result = await this.currentView.confirmLeave();
-      console.log(`Confirm leave result: ${result}`);
-      return result;
-    }
-    return true;
-  }
 
   private async evaluateGuard(route: RouteConfig): Promise<boolean> {
     if (!route.guard) return true;

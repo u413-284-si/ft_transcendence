@@ -5,11 +5,9 @@ import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
 import { router } from "../Router.js";
 import { auth } from "../AuthManager.js";
-import { FormTracker } from "../FormTracker.js";
 
 export default class extends AbstractView {
   private formElement!: HTMLFormElement;
-  private formTracker!: FormTracker;
 
   constructor(
     private numberOfPlayers: number,
@@ -89,7 +87,6 @@ export default class extends AbstractView {
   async render() {
     await this.updateHTML();
     this.formElement = document.querySelector("#nicknames-form")!;
-    this.formTracker = new FormTracker(this.formElement);
     this.addListeners();
   }
 
@@ -124,7 +121,6 @@ export default class extends AbstractView {
       if (!nextMatch) {
         throw new Error("Match is undefined");
       }
-      this.formTracker.reset();
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.switchView(matchAnnouncementView);
     } catch (error) {
@@ -134,14 +130,5 @@ export default class extends AbstractView {
 
   getName(): string {
     return "player-nicknames";
-  }
-
-  async confirmLeave(): Promise<boolean> {
-    if (this.canLeave()) return true;
-    return confirm("You have unsaved changes. Do you really want to leave?");
-  }
-
-  canLeave(): boolean {
-    return !this.formTracker?.isDirty();
   }
 }

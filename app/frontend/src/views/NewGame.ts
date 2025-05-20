@@ -2,11 +2,9 @@ import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
 import { router } from "../Router.js";
-import { FormTracker } from "../FormTracker.js";
 
 export default class NewGameView extends AbstractView {
   private formElement!: HTMLFormElement;
-  private formTracker!: FormTracker;
 
   constructor() {
     super();
@@ -67,7 +65,6 @@ export default class NewGameView extends AbstractView {
   async render() {
     await this.updateHTML();
     this.formElement = document.querySelector("#register-form")!;
-    this.formTracker = new FormTracker(this.formElement);
     this.addListeners();
   }
 
@@ -84,14 +81,10 @@ export default class NewGameView extends AbstractView {
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
 
-    this.formTracker.reset();
     const gameView = new GameView(
       nicknames[0],
-
       nicknames[1],
-
       GameType.single,
-
       null
     );
     router.switchView(gameView);
@@ -99,14 +92,5 @@ export default class NewGameView extends AbstractView {
 
   getName(): string {
     return "new-game";
-  }
-
-  async confirmLeave(): Promise<boolean> {
-    if (this.canLeave()) return true;
-    return confirm("You have unsaved changes. Do you really want to leave?");
-  }
-
-  canLeave(): boolean {
-    return !this.formTracker.isDirty();
   }
 }
