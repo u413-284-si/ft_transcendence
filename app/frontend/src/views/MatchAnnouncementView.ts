@@ -29,7 +29,13 @@ export default class MatchAnnouncementView extends AbstractView {
     const navbarHTML = this.createNavbar();
     const footerHTML = this.createFooter();
     return /* HTML */ `
-${navbarHTML}
+      ${navbarHTML}
+      <div class="max-w-4xl mx-auto px-4 py-8 space-y-10">
+        <!-- Match Announcement Card -->
+        <section>
+          <div
+            class="bg-blue-50 border-l-4 border-blue-400 rounded-2xl shadow p-6 text-center space-y-4"
+          >
             <h1 class="text-4xl font-extrabold text-blue-700">
               🎮 Next Match!
             </h1>
@@ -40,9 +46,8 @@ ${navbarHTML}
             </p>
 
             <p class="text-2xl text-gray-900 font-semibold">
-              ${escapeHTML(this.player1)} <span class="text-gray-500">vs</span> ${escapeHTML(
-                this.player2
-              )}
+              ${escapeHTML(this.player1)}
+              <span class="text-gray-500">vs</span> ${escapeHTML(this.player2)}
             </p>
 
             <form id="match-form">
