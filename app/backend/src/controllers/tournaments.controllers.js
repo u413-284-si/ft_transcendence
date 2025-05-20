@@ -86,7 +86,7 @@ export async function deleteAllTournamentsHandler(request, reply) {
     const data = await deleteAllTournaments();
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },

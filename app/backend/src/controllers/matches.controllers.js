@@ -97,7 +97,7 @@ export async function deleteAllMatchesHandler(request, reply) {
     const data = await deleteAllMatches();
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
