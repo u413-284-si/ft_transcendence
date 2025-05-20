@@ -10,11 +10,12 @@ export default class extends AbstractView {
     this.setTitle("Stats");
   }
 
+  private userStatsHTML: string = "";
+  private matchesHTML: string = "";
+
   async createHTML() {
     const navbarHTML = await this.createNavbar();
     const footerHTML = await this.createFooter();
-    const userStatsHTML = await this.getUserStatsHTML();
-    const matchesHTML = await this.getMatchesHTML();
 
     return /* HTML */ `
       ${navbarHTML}
@@ -33,7 +34,7 @@ export default class extends AbstractView {
             </tr>
           </thead>
           <tbody class="bg-blue-700 divide-y divide-blue-500">
-            ${userStatsHTML}
+            ${this.userStatsHTML}
           </tbody>
         </table>
       </div>
@@ -54,7 +55,7 @@ export default class extends AbstractView {
             </tr>
           </thead>
           <tbody class="bg-blue-700 divide-y divide-blue-500">
-            ${matchesHTML}
+            ${this.matchesHTML}
           </tbody>
         </table>
       </div>
@@ -63,7 +64,14 @@ export default class extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    try {
+      this.userStatsHTML = await this.getUserStatsHTML();
+      this.matchesHTML = await this.getMatchesHTML();
+      await this.updateHTML();
+    } catch (error) {
+      console.error(error);
+      // FIXME: show error page
+    }
   }
 
   async getUserStatsHTML(): Promise<string> {
