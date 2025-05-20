@@ -85,7 +85,7 @@ export default class PlayerNicknamesView extends AbstractView {
 
   async render() {
     this.updateHTML();
-    this.formEl = document.querySelector("#tournament-form")!;
+    this.formEl = document.querySelector("#nicknames-form")!;
     this.addListeners();
   }
 
