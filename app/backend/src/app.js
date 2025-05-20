@@ -84,7 +84,7 @@ await fastify.register(userRoutes, { prefix: "/api/users" });
 await fastify.register(matchRoutes, { prefix: "/api/matches" });
 await fastify.register(tournamentRoutes, { prefix: "/api/tournaments" });
 await fastify.register(authRoutes, { prefix: "/api/auth" });
-await fastify.register(userstatsRoutes, { prefix: "/api/userstats" });
+await fastify.register(userstatsRoutes, { prefix: "/api/user-stats" });
 await fastify.register(fastifyStatic, {
   root: "/workspaces/ft_transcendence/app/frontend/public"
 });
