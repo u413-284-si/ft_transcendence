@@ -1,8 +1,8 @@
 import AbstractView from "./AbstractView.js";
-import { globalToken } from "../main.js";
 import { getUserStats } from "../services/userStatsServices.js";
 import { getUserMatches } from "../services/userServices.js";
 import { escapeHTML } from "../utility.js";
+import { auth } from "../AuthManager.js";
 
 export default class StatsView extends AbstractView {
   constructor() {
@@ -75,7 +75,7 @@ export default class StatsView extends AbstractView {
   }
 
   async getUserStatsHTML(): Promise<string> {
-    const user: string = escapeHTML(globalToken?.username) ?? "undefined";
+    const user: string = escapeHTML(auth.getToken().username);
     const userStats = await getUserStats();
     const formattedWinRate = userStats.winRate.toFixed(2) + "%";
 
@@ -128,5 +128,9 @@ export default class StatsView extends AbstractView {
         `;
       })
       .join("");
+  }
+
+  getName(): string {
+    return "stats";
   }
 }
