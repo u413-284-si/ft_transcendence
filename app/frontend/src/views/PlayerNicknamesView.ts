@@ -3,6 +3,7 @@ import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncementView.js";
 import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
+import { escapeHTML } from "../utility.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   constructor(
@@ -45,7 +46,7 @@ export default class PlayerNicknamesView extends AbstractView {
         Enter Player Nicknames
       </h1>
       <p style="margin-bottom: 20px; text-align: center;">
-        Tournament: <strong>${this.tournamentName}</strong>
+        Tournament: <strong>${escapeHTML(this.tournamentName)}</strong>
       </p>
       <form
         id="nicknames-form"

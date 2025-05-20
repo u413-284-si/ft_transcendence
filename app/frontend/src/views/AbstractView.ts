@@ -1,3 +1,5 @@
+import { sanitizeHTML } from "../sanitize.js";
+
 export default abstract class AbstractView {
   constructor() {}
 
@@ -26,7 +28,9 @@ export default abstract class AbstractView {
   abstract createHTML(): string;
 
   updateHTML() {
-    document.querySelector("#app")!.innerHTML = this.createHTML();
+    const html = this.createHTML();
+    const cleanHTML = sanitizeHTML(html);
+    document.querySelector("#app")!.innerHTML = cleanHTML;
   }
 
   async render() {}

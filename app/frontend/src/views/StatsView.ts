@@ -2,6 +2,7 @@ import AbstractView from "./AbstractView.js";
 import { globalToken } from "../main.js";
 import { getUserStats } from "../services/userStatsServices.js";
 import { getUserMatches } from "../services/userServices.js";
+import { escapeHTML } from "../utility.js";
 
 export default class StatsView extends AbstractView {
   constructor() {
@@ -9,9 +10,13 @@ export default class StatsView extends AbstractView {
     this.setTitle("Stats");
   }
 
+  private userStatsHTML: string = "";
+  private matchesHTML: string = "";
+
   createHTML() {
     const navbarHTML = this.createNavbar();
     const footerHTML = this.createFooter();
+
     return /* HTML */ `
       ${navbarHTML}
       <h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
@@ -28,11 +33,8 @@ export default class StatsView extends AbstractView {
               <th class="border border-blue-500 px-4 py-2">Win Rate</th>
             </tr>
           </thead>
-          <tbody
-            id="user-stats-body"
-            class="bg-blue-700 divide-y divide-blue-500"
-          >
-            <!-- Player stats will be inserted here -->
+          <tbody class="bg-blue-700 divide-y divide-blue-500">
+            ${this.userStatsHTML}
           </tbody>
         </table>
       </div>
@@ -40,7 +42,6 @@ export default class StatsView extends AbstractView {
       <h1 class="text-4xl font-bold text-blue-300 mt-12 mb-8">Match History</h1>
       <div class="overflow-x-auto">
         <table
-          id="matches-table"
           class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500"
         >
           <thead class="bg-blue-800">
@@ -53,11 +54,8 @@ export default class StatsView extends AbstractView {
               <th class="border border-blue-500 px-4 py-2">Date</th>
             </tr>
           </thead>
-          <tbody
-            id="matches-table-body"
-            class="bg-blue-700 divide-y divide-blue-500"
-          >
-            <!-- Matches will be inserted here -->
+          <tbody class="bg-blue-700 divide-y divide-blue-500">
+            ${this.matchesHTML}
           </tbody>
         </table>
       </div>
@@ -66,78 +64,69 @@ export default class StatsView extends AbstractView {
   }
 
   async render() {
-    this.updateHTML();
-    await this.fetchAndDisplayMatches();
-    await this.fetchAndDisplayUserStats();
+    try {
+      this.userStatsHTML = await this.getUserStatsHTML();
+      this.matchesHTML = await this.getMatchesHTML();
+      this.updateHTML();
+    } catch (error) {
+      console.error(error);
+      // FIXME: show error page
+    }
   }
 
-  async fetchAndDisplayMatches() {
-    try {
-      const matches = await getUserMatches();
+  async getUserStatsHTML(): Promise<string> {
+    const user: string = escapeHTML(globalToken?.username) ?? "undefined";
+    const userStats = await getUserStats();
+    const formattedWinRate = userStats.winRate.toFixed(2) + "%";
 
-      if (matches.length === 0) {
-        document
-          .getElementById("matches-table")
-          ?.replaceWith("No matches played yet");
-        return;
-      }
+    return /* HTML */ `
+      <tr>
+        <td class="border border-blue-500 px-4 py-2">${user}</td>
+        <td class="border border-blue-500 px-4 py-2">
+          ${userStats.matchesPlayed}
+        </td>
+        <td class="border border-blue-500 px-4 py-2">
+          ${userStats.matchesWon}
+        </td>
+        <td class="border border-blue-500 px-4 py-2">
+          ${userStats.matchesLost}
+        </td>
+        <td class="border border-blue-500 px-4 py-2">${formattedWinRate}</td>
+      </tr>
+    `;
+  }
 
-      const matchesTableBody = document.getElementById("matches-table-body");
-      if (!matchesTableBody) return;
+  async getMatchesHTML(): Promise<string> {
+    const matches = await getUserMatches();
 
-      matches.forEach((match) => {
+    if (matches.length === 0) {
+      return `<tr><td colspan="6" class="text-center text-blue-200 py-4">No matches played yet</td></tr>`;
+    }
+
+    return matches
+      .map((match) => {
         const result = match.playerScore > match.opponentScore ? "Won" : "Lost";
-        const row = document.createElement("tr");
-        row.innerHTML = /* HTML */ `
-          <td class="border border-blue-500 px-4 py-2">
-            ${match.playerNickname}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">${match.playerScore}</td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${match.opponentNickname}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${match.opponentScore}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">${result}</td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${new Date(match.date!).toLocaleString()}
-          </td>
+        return /* HTML */ `
+          <tr>
+            <td class="border border-blue-500 px-4 py-2">
+              ${escapeHTML(match.playerNickname)}
+            </td>
+            <td class="border border-blue-500 px-4 py-2">
+              ${match.playerScore}
+            </td>
+            <td class="border border-blue-500 px-4 py-2">
+              ${escapeHTML(match.opponentNickname)}
+            </td>
+            <td class="border border-blue-500 px-4 py-2">
+              ${match.opponentScore}
+            </td>
+            <td class="border border-blue-500 px-4 py-2">${result}</td>
+            <td class="border border-blue-500 px-4 py-2">
+              ${new Date(match.date!).toLocaleString()}
+            </td>
+          </tr>
         `;
-        matchesTableBody.appendChild(row);
-      });
-    } catch (error) {
-      console.error("Error fetching match data:", error);
-    }
-  }
-
-  async fetchAndDisplayUserStats() {
-    const user: string = globalToken?.username ?? "undefined";
-    try {
-      const userStats = await getUserStats();
-
-      const tableBody = document.getElementById("user-stats-body");
-      if (!tableBody) return;
-
-      const formattedWinRate = userStats.winRate.toFixed(2) + "%";
-
-      tableBody.innerHTML = /* HTML */ `
-        <tr>
-          <td class="border border-blue-500 px-4 py-2">${user}</td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${userStats.matchesPlayed}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${userStats.matchesWon}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${userStats.matchesLost}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">${formattedWinRate}</td>
-        </tr>
-      `;
-    } catch (error) {
-      console.error("Error fetching userStats:", error);
-    }
+      })
+      .join("");
   }
 }
