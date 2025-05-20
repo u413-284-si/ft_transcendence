@@ -1,4 +1,4 @@
-import { router } from "../Router.js";
+import { router } from "../routing/Router.js";
 import { getActiveTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import { BracketMatch } from "../types/IMatch.js";

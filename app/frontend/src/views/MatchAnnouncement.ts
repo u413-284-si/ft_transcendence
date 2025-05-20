@@ -1,4 +1,4 @@
-import { router } from "../Router.js";
+import { router } from "../routing/Router.js";
 import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";

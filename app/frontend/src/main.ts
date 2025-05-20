@@ -4,10 +4,10 @@ import NewGame from "./views/NewGame.js";
 import NewTournament from "./views/NewTournament.js";
 import Settings from "./views/Settings.js";
 import Stats from "./views/Stats.js";
-import { router } from "./Router.js";
-import { authGuard, guestOnlyGuard } from "./routeGuard.js";
+import { router } from "./routing/Router.js";
+import { authGuard, guestOnlyGuard } from "./routing/routeGuard.js";
 import { auth } from "./AuthManager.js";
-import { logRouteChange, updateUI } from "./routeChangeListener.js";
+import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard })

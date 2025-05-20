@@ -1,7 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
-import { router } from "../Router.js";
+import { router } from "../routing/Router.js";
 
 export default class NewGameView extends AbstractView {
   private formElement!: HTMLFormElement;

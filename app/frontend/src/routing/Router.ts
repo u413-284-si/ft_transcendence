@@ -1,10 +1,10 @@
-import AbstractView from "./views/AbstractView.js";
+import AbstractView from "../views/AbstractView.js";
 import {
   RouteConfig,
   RouteChangeListener,
   RouteChangeInfo,
   routeEvent
-} from "./types/Route.js";
+} from "../types/Route.js";
 
 export class Router {
   private static instance: Router;

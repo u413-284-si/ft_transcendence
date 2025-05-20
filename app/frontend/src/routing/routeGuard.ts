@@ -1,5 +1,5 @@
-import { RouteGuard } from "./types/Route.js";
-import { auth } from "./AuthManager.js";
+import { RouteGuard } from "../types/Route.js";
+import { auth } from "../AuthManager.js";
 
 export const authGuard: RouteGuard = () => {
   return auth.isAuthenticated() ? true : "/login";

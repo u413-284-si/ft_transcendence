@@ -3,7 +3,7 @@ import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
-import { router } from "../Router.js";
+import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
 
 export default class extends AbstractView {

@@ -1,4 +1,4 @@
-import { RouteChangeListener } from "./types/Route";
+import { RouteChangeListener } from "../types/Route";
 
 export const logRouteChange: RouteChangeListener = (info) => {
   if (info.event === "nav") {

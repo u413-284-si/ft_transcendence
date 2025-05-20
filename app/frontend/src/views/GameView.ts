@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { startGame, getIsAborted, setIsAborted } from "../game.js";
-import { router } from "../Router.js";
+import { router } from "../routing/Router.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { setTournamentFinished } from "../services/tournamentService.js";
 import ResultsView from "./ResultsView.js";

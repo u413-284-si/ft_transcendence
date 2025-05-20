@@ -3,7 +3,7 @@ import AbstractView from "./AbstractView.js";
 //import { validatePassword, validateUsernameOrEmail } from "../validate.js";
 import { validateUsernameOrEmail } from "../validate.js";
 import { auth } from "../AuthManager.js";
-import { router } from "../Router.js";
+import { router } from "../routing/Router.js";
 
 export default class extends AbstractView {
   constructor() {
