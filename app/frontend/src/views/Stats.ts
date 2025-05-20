@@ -76,68 +76,57 @@ export default class extends AbstractView {
 
   async getUserStatsHTML(): Promise<string> {
     const user: string = escapeHTML(globalToken?.username) ?? "undefined";
-    try {
-      const userStats = await getUserStats();
-      const formattedWinRate = userStats.winRate.toFixed(2) + "%";
+    const userStats = await getUserStats();
+    const formattedWinRate = userStats.winRate.toFixed(2) + "%";
 
-      return /* HTML */ `
-        <tr>
-          <td class="border border-blue-500 px-4 py-2">${user}</td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${userStats.matchesPlayed}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${userStats.matchesWon}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">
-            ${userStats.matchesLost}
-          </td>
-          <td class="border border-blue-500 px-4 py-2">${formattedWinRate}</td>
-        </tr>
-      `;
-    } catch (error) {
-      console.error("Error fetching userStats:", error);
-      return `<tr><td colspan="5" class="text-center text-red-400 py-4">Error loading user stats</td></tr>`;
-    }
+    return /* HTML */ `
+      <tr>
+        <td class="border border-blue-500 px-4 py-2">${user}</td>
+        <td class="border border-blue-500 px-4 py-2">
+          ${userStats.matchesPlayed}
+        </td>
+        <td class="border border-blue-500 px-4 py-2">
+          ${userStats.matchesWon}
+        </td>
+        <td class="border border-blue-500 px-4 py-2">
+          ${userStats.matchesLost}
+        </td>
+        <td class="border border-blue-500 px-4 py-2">${formattedWinRate}</td>
+      </tr>
+    `;
   }
 
   async getMatchesHTML(): Promise<string> {
-    try {
-      const matches = await getUserMatches();
+    const matches = await getUserMatches();
 
-      if (matches.length === 0) {
-        return `<tr><td colspan="6" class="text-center text-blue-200 py-4">No matches played yet</td></tr>`;
-      }
-
-      return matches
-        .map((match) => {
-          const result =
-            match.playerScore > match.opponentScore ? "Won" : "Lost";
-          return /* HTML */ `
-            <tr>
-              <td class="border border-blue-500 px-4 py-2">
-                ${escapeHTML(match.playerNickname)}
-              </td>
-              <td class="border border-blue-500 px-4 py-2">
-                ${match.playerScore}
-              </td>
-              <td class="border border-blue-500 px-4 py-2">
-                ${escapeHTML(match.opponentNickname)}
-              </td>
-              <td class="border border-blue-500 px-4 py-2">
-                ${match.opponentScore}
-              </td>
-              <td class="border border-blue-500 px-4 py-2">${result}</td>
-              <td class="border border-blue-500 px-4 py-2">
-                ${new Date(match.date!).toLocaleString()}
-              </td>
-            </tr>
-          `;
-        })
-        .join("");
-    } catch (error) {
-      console.error("Error fetching match data:", error);
-      return `<tr><td colspan="6" class="text-center text-red-400 py-4">Error loading match history</td></tr>`;
+    if (matches.length === 0) {
+      return `<tr><td colspan="6" class="text-center text-blue-200 py-4">No matches played yet</td></tr>`;
     }
+
+    return matches
+      .map((match) => {
+        const result = match.playerScore > match.opponentScore ? "Won" : "Lost";
+        return /* HTML */ `
+          <tr>
+            <td class="border border-blue-500 px-4 py-2">
+              ${escapeHTML(match.playerNickname)}
+            </td>
+            <td class="border border-blue-500 px-4 py-2">
+              ${match.playerScore}
+            </td>
+            <td class="border border-blue-500 px-4 py-2">
+              ${escapeHTML(match.opponentNickname)}
+            </td>
+            <td class="border border-blue-500 px-4 py-2">
+              ${match.opponentScore}
+            </td>
+            <td class="border border-blue-500 px-4 py-2">${result}</td>
+            <td class="border border-blue-500 px-4 py-2">
+              ${new Date(match.date!).toLocaleString()}
+            </td>
+          </tr>
+        `;
+      })
+      .join("");
   }
 }
