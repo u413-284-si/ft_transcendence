@@ -2,22 +2,22 @@ import { getActiveTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
-import MatchAnnouncement from "./MatchAnnouncement.js";
-import PlayerNicknames from "./PlayerNicknames.js";
+import MatchAnnouncement from "./MatchAnnouncementView.js";
+import PlayerNicknames from "./PlayerNicknamesView.js";
 import {
   validateTournamentName,
   validatePlayersSelection
 } from "../validate.js";
 
-export default class extends AbstractView {
+export default class NewTournamentView extends AbstractView {
   constructor() {
     super();
     this.setTitle("New Tournament");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <h1
@@ -75,7 +75,7 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("tournament-form")
       ?.addEventListener("submit", (event) =>
@@ -88,7 +88,7 @@ export default class extends AbstractView {
       const activeTournament = await getActiveTournament();
       if (!activeTournament) {
         console.log("No active tournament found");
-        await this.updateHTML();
+        this.updateHTML();
         this.addListeners();
         return;
       }

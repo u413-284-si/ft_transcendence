@@ -2,15 +2,15 @@ import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
 
-export default class extends AbstractView {
+export default class NewGameView extends AbstractView {
   constructor() {
     super();
     this.setTitle("New Game");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     return /* HTML */ `
       ${navbarHTML}
       <form
@@ -43,14 +43,14 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("register-form")
       ?.addEventListener("submit", (event) => this.validateAndStartGame(event));
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.addListeners();
   }
 

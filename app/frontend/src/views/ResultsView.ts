@@ -12,9 +12,9 @@ export default class ResultsView extends AbstractView {
     this.matches = tournament.getBracket();
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
     const bracketsHTML = this.generateBracketHTML(this.matches);
 
     return /* HTML */ `
@@ -37,7 +37,7 @@ export default class ResultsView extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
   }
 
   private generateBracketHTML(matches: BracketMatch[]): string {

@@ -4,7 +4,7 @@ import { getUserStats } from "../services/userStatsServices.js";
 import { getUserMatches } from "../services/userServices.js";
 import { escapeHTML } from "../utility.js";
 
-export default class extends AbstractView {
+export default class StatsView extends AbstractView {
   constructor() {
     super();
     this.setTitle("Stats");
@@ -13,9 +13,9 @@ export default class extends AbstractView {
   private userStatsHTML: string = "";
   private matchesHTML: string = "";
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
 
     return /* HTML */ `
       ${navbarHTML}
@@ -67,7 +67,7 @@ export default class extends AbstractView {
     try {
       this.userStatsHTML = await this.getUserStatsHTML();
       this.matchesHTML = await this.getMatchesHTML();
-      await this.updateHTML();
+      this.updateHTML();
     } catch (error) {
       console.error(error);
       // FIXME: show error page

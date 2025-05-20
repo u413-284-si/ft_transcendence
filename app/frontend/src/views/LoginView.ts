@@ -6,13 +6,13 @@ import { userLogin } from "../services/authServices.js";
 import { validateUsernameOrEmail } from "../validate.js";
 import { navigateTo } from "../main.js";
 
-export default class extends AbstractView {
+export default class LoginView extends AbstractView {
   constructor() {
     super();
     this.setTitle("Login");
   }
 
-  async createHTML() {
+  createHTML() {
     return /* HTML */ `
       <form
         id="login-form"
@@ -53,15 +53,15 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("login-form")
       ?.addEventListener("submit", (event) => this.validateAndLoginUser(event));
   }
 
   async render() {
-    await this.updateHTML();
-    await this.addListeners();
+    this.updateHTML();
+    this.addListeners();
   }
 
   async validateAndLoginUser(event: Event) {
