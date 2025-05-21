@@ -85,30 +85,25 @@ export default class NewTournamentView extends AbstractView {
   }
 
   async render() {
-    try {
-      const activeTournament = await getActiveTournament();
-      if (!activeTournament) {
-        console.log("No active tournament found");
-        this.updateHTML();
-        this.formEl = document.querySelector("#tournament-form")!;
-        this.addListeners();
-        return;
-      }
-      const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
-      const tournament = new Tournament(
-        activeTournament.name,
-        activeTournament.maxPlayers,
-        activeTournament.adminId,
-        bracket,
-        activeTournament.id
-      );
-      const matchAnnouncementView = new MatchAnnouncement(tournament);
-      router.switchView(matchAnnouncementView);
+    const activeTournament = await getActiveTournament();
+    if (!activeTournament) {
+      console.log("No active tournament found");
+      this.updateHTML();
+      this.formEl = document.querySelector("#tournament-form")!;
+      this.addListeners();
       return;
-    } catch (error) {
-      console.error(error);
-      // show error page
     }
+    const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
+    const tournament = new Tournament(
+      activeTournament.name,
+      activeTournament.maxPlayers,
+      activeTournament.adminId,
+      bracket,
+      activeTournament.id
+    );
+    const matchAnnouncementView = new MatchAnnouncement(tournament);
+    router.switchView(matchAnnouncementView);
+    return;
   }
 
   async validateAndRequestNicknames(event: Event) {
