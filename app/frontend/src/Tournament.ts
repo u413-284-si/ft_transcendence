@@ -75,7 +75,7 @@ export class Tournament {
     return bracket;
   }
 
-  public updateBracketWithResult(matchId: number, winner: string): void {
+  public updateBracketWithResult(matchId: number, winner: string | null): void {
     const updated = this.bracket.map((m) => ({ ...m })); // clone
 
     const match = updated.find((m) => m.matchId === matchId);

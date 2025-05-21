@@ -135,13 +135,7 @@ function checkWinner(gameState: GameState) {
 
 async function endGame(gameState: GameState, tournament: Tournament | null) {
   if (tournament) {
-    const winner =
-      gameState.player1Score > gameState.player2Score
-        ? gameState.player1
-        : gameState.player2;
-    const matchId = tournament.getNextMatchToPlay()!.matchId;
-    await updateTournamentBracket(tournament);
-    tournament.updateBracketWithResult(matchId, winner);
+    updateTournament(gameState, tournament);
   }
   const tournamentId = tournament ? tournament.getId() : undefined;
   await createMatch({
@@ -165,4 +159,19 @@ function waitForEnterKey(): Promise<void> {
     }
     document.addEventListener("keydown", onKeyDown);
   });
+}
+
+async function updateTournament(gameState: GameState, tournament: Tournament) {
+  const matchId = tournament.getNextMatchToPlay()!.matchId;
+  try {
+    const winner =
+      gameState.player1Score > gameState.player2Score
+        ? gameState.player1
+        : gameState.player2;
+    tournament.updateBracketWithResult(matchId, winner);
+    await updateTournamentBracket(tournament);
+  } catch (error) {
+    tournament.updateBracketWithResult(matchId, null);
+    throw error;
+  }
 }
