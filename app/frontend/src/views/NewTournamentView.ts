@@ -9,6 +9,7 @@ import {
   validateTournamentName,
   validatePlayersSelection
 } from "../validate.js";
+import ResultsView from "./ResultsView.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -101,8 +102,11 @@ export default class NewTournamentView extends AbstractView {
       bracket,
       activeTournament.id
     );
-    const matchAnnouncementView = new MatchAnnouncement(tournament);
-    router.switchView(matchAnnouncementView);
+    if (tournament.getNextMatchToPlay()) {
+      router.switchView(new MatchAnnouncement(tournament));
+    } else {
+      router.switchView(new ResultsView(tournament));
+    }
     return;
   }
 
