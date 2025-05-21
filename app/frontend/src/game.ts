@@ -134,32 +134,23 @@ function checkWinner(gameState: GameState) {
 }
 
 async function endGame(gameState: GameState, tournament: Tournament | null) {
-  let tournamentId;
-  try {
-    if (tournament) {
-      const winner =
-        gameState.player1Score > gameState.player2Score
-          ? gameState.player1
-          : gameState.player2;
-      const matchId = tournament.getNextMatchToPlay()?.matchId;
-      if (!matchId) {
-        throw new Error("Match is undefined");
-      }
-      tournamentId = tournament.getId();
-      tournament.updateBracketWithResult(matchId, winner);
-      await updateTournamentBracket(tournament);
-    }
-    await createMatch({
-      tournamentId: tournamentId,
-      playerNickname: gameState.player1,
-      opponentNickname: gameState.player2,
-      playerScore: gameState.player1Score,
-      opponentScore: gameState.player2Score
-    });
-  } catch (error) {
-    console.error(error);
-    // show error page
+  if (tournament) {
+    const winner =
+      gameState.player1Score > gameState.player2Score
+        ? gameState.player1
+        : gameState.player2;
+    const matchId = tournament.getNextMatchToPlay()!.matchId;
+    await updateTournamentBracket(tournament);
+    tournament.updateBracketWithResult(matchId, winner);
   }
+  const tournamentId = tournament ? tournament.getId() : undefined;
+  await createMatch({
+    tournamentId: tournamentId,
+    playerNickname: gameState.player1,
+    opponentNickname: gameState.player2,
+    playerScore: gameState.player1Score,
+    opponentScore: gameState.player2Score
+  });
 
   await waitForEnterKey();
 }
