@@ -122,7 +122,7 @@ export default class PlayerNicknamesView extends AbstractView {
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.switchView(matchAnnouncementView);
     } catch (error) {
-      console.error("Error creating tournament", error);
+      router.handleError("Error creating tournament", error);
     }
   }
 
