@@ -108,8 +108,7 @@ export class GameView extends AbstractView {
         }
       }
     } catch (error) {
-      console.error("Error in navigateAfterGame(): ", error);
-      // FIXME: show error page
+      router.handleError("Error in handleGame()", error);
     }
   }
 
