@@ -1,5 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { ApiError } from "../services/api.js";
+import { router } from "../routing/Router.js";
 
 export default class ErrorView extends AbstractView {
   private message: string = "An unexpected error occurred.";
@@ -39,11 +40,13 @@ export default class ErrorView extends AbstractView {
           ${this.cause
             ? `<p class="mt-2 text-sm text-gray-500">Details: ${this.cause}</p>`
             : ""}
-          <div class="mt-4">
-            <button onclick="history.back()" class="text-blue-500 underline">
-              Go Back
+          <div class="mt-4 space-x-4">
+            <button
+              id="home-btn"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl shadow"
+            >
+              Reload
             </button>
-            <a href="/" class="ml-4 text-blue-500 underline">Home</a>
           </div>
         </div>
       </main>
@@ -51,8 +54,15 @@ export default class ErrorView extends AbstractView {
     `;
   }
 
+  protected addListeners(): void {
+    document.getElementById("home-btn")!.addEventListener("click", () => {
+      router.reload();
+    });
+  }
+
   async render() {
     this.updateHTML();
+    this.addListeners();
   }
 
   getName(): string {
