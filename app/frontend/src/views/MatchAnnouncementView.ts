@@ -45,9 +45,9 @@ export default class MatchAnnouncementView extends AbstractView {
               <span class="font-medium">Match</span> ${this.matchNumber}
             </p>
 
-            <p class="text-2xl text-gray-900 font-semibold">
-              ${escapeHTML(this.player1)}
-              <span class="text-gray-500">vs</span> ${escapeHTML(this.player2)}
+            <p class="text-2xl text-gray-900">
+              <b>${escapeHTML(this.player1)}</b>
+              vs <b>${escapeHTML(this.player2)}</b>
             </p>
 
             <form id="match-form">
