@@ -3,13 +3,12 @@ import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
-import NewTournament from "./NewTournamentView.js";
 import { escapeHTML } from "../utility.js";
 
 export default class MatchAnnouncementView extends AbstractView {
-  private player1: string | null = null;
-  private player2: string | null = null;
-  private matchNumber: number | null = null;
+  private player1: string;
+  private player2: string;
+  private matchNumber: number;
 
   constructor(private tournament: Tournament) {
     super();
@@ -18,8 +17,8 @@ export default class MatchAnnouncementView extends AbstractView {
     if (!match) {
       throw new Error("Match is undefined");
     }
-    this.player1 = match.player1;
-    this.player2 = match.player2;
+    this.player1 = match.player1!;
+    this.player2 = match.player2!;
     this.matchNumber = match.matchId;
   }
 
@@ -95,11 +94,6 @@ export default class MatchAnnouncementView extends AbstractView {
       `Match ${this.matchNumber} started: ${this.player1} vs ${this.player2}`
     );
 
-    if (!this.player1 || !this.player2) {
-      console.error("Player names are not set.");
-      return;
-    }
-
     const gameView = new GameView(
       this.player1,
       this.player2,
@@ -114,11 +108,9 @@ export default class MatchAnnouncementView extends AbstractView {
       const confirmed = confirm("Do you really want to abort the tournament?");
       if (!confirmed) return;
       await deleteTournament(this.tournament.getId());
-      const view = new NewTournament();
-      router.switchView(view);
+      router.reload();
     } catch (error) {
-      console.error(error);
-      // show error page
+      router.handleError("Error while deleting tournament", error);
     }
   }
 

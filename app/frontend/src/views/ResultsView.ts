@@ -2,6 +2,8 @@ import AbstractView from "./AbstractView.js";
 import { BracketMatch } from "../types/IMatch.js";
 import { Tournament } from "../Tournament.js";
 import { escapeHTML } from "../utility.js";
+import { setTournamentFinished } from "../services/tournamentService.js";
+import { router } from "../routing/Router.js";
 
 export default class ResultsView extends AbstractView {
   private matches: BracketMatch[];
@@ -31,13 +33,37 @@ export default class ResultsView extends AbstractView {
           🏆 Winner: ${escapeHTML(this.tournament.getTournamentWinner())}
         </div>
         <div id="brackets" class="space-y-4">${bracketsHTML}</div>
+        <div class="mt-4 space-x-4">
+          <button
+            id="finish-btn"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl shadow"
+          >
+            Set as finished
+          </button>
+        </div>
       </div>
       ${footerHTML}
     `;
   }
 
+  protected addListeners(): void {
+    document
+      .getElementById("finish-btn")!
+      .addEventListener("click", () => this.setFinished());
+  }
+
   async render() {
     this.updateHTML();
+    this.addListeners();
+  }
+
+  private async setFinished() {
+    try {
+      await setTournamentFinished(this.tournament.getId());
+      router.reload();
+    } catch (error) {
+      router.handleError("Error setting tournament as finished", error);
+    }
   }
 
   private generateBracketHTML(matches: BracketMatch[]): string {
