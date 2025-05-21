@@ -2,47 +2,42 @@ import AbstractView from "./AbstractView.js";
 import { ApiError } from "../services/api.js";
 
 export default class ErrorView extends AbstractView {
-  private error: unknown;
+  private message: string = "An unexpected error occurred.";
+  private status: string = "500";
+  private cause: string | undefined;
 
   constructor(error: unknown) {
     super();
     this.setTitle("Error");
-    this.error = error;
+    this.parseError(error);
   }
 
-  private parseError(): { message: string; status: string; cause?: string } {
-    let message = "An unexpected error occurred.";
-    let status = "500";
-    let cause: string | undefined;
-
-    const error = this.error;
-
+  private parseError(error: unknown): void {
     if (error instanceof ApiError) {
-      message = error.message;
-      status = String(error.status);
-      cause = error.cause;
+      this.message = error.message;
+      this.status = String(error.status);
+      this.cause = error.cause;
     } else if (error instanceof Error) {
-      message = error.message;
+      this.message = error.message;
     } else if (typeof error === "string") {
-      message = error;
+      this.message = error;
     }
-
-    return { message, status, cause };
   }
 
   createHTML() {
     const navbarHTML = this.createNavbar();
     const footerHTML = this.createFooter();
-    const { message, status, cause } = this.parseError();
 
     return /* HTML */ `
       ${navbarHTML}
       <main class="p-6 flex flex-col items-center justify-center text-center">
         <div class="bg-red-100 p-6 rounded-xl shadow-md">
-          <h1 class="text-3xl font-bold text-red-700">⚠️ Error ${status}</h1>
-          <p class="mt-2 text-gray-700">${message}</p>
-          ${cause
-            ? `<p class="mt-2 text-sm text-gray-500">Details: ${cause}</p>`
+          <h1 class="text-3xl font-bold text-red-700">
+            ⚠️ Error ${this.status}
+          </h1>
+          <p class="mt-2 text-gray-700">${this.message}</p>
+          ${this.cause
+            ? `<p class="mt-2 text-sm text-gray-500">Details: ${this.cause}</p>`
             : ""}
           <div class="mt-4">
             <button onclick="history.back()" class="text-blue-500 underline">
