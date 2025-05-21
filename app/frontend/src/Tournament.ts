@@ -1,19 +1,6 @@
 import { TournamentDTO } from "./types/ITournament";
 import { BracketMatch } from "./types/IMatch";
-
-type BracketLayout = {
-  rounds: {
-    round: number;
-    matches: {
-      matchId: number;
-      player1Text: string;
-      player2Text: string;
-      isPlayed: boolean;
-      isNext: boolean;
-      winner: string | null;
-    }[];
-  }[];
-};
+import { BracketLayout } from "./types/BracketLayout";
 
 export class Tournament {
   private matchSlotMap: Record<
@@ -184,11 +171,11 @@ export class Tournament {
   }
 
   public getBracketAsHTML(): string {
-    const layout = this.getBracketLayout();
+    const layout = this.createBracketLayout();
     return this.renderBracketHTML(layout);
   }
 
-  private getBracketLayout(): BracketLayout {
+  private createBracketLayout(): BracketLayout {
     const matchesByRound = this.groupBy(this.bracket, "round");
     const totalRounds = Object.keys(matchesByRound).length;
 
