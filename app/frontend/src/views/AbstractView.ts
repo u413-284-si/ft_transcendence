@@ -30,7 +30,7 @@ export default abstract class AbstractView {
   updateHTML() {
     const html = this.createHTML();
     const cleanHTML = sanitizeHTML(html);
-    document.querySelector("#app")!.innerHTML = cleanHTML;
+    document.querySelector("#app-content")!.innerHTML = cleanHTML;
   }
 
   async render() {}
