@@ -50,7 +50,7 @@ export class Layout {
         </div>
       </nav>`;
     }
-    return /* HTML */ `<nav class="bg-blue-800 text-white py-4 shadow-lg">
+    return /* HTML */ `<nav>
       <div class="container mx-auto flex justify-center space-x-8">
         <a href="/login" class="text-lg hover:text-blue-300" data-link>Login</a>
         <a href="/register" class="text-lg hover:text-blue-300" data-link
