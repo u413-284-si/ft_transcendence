@@ -13,12 +13,9 @@ export default class ResultsView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
     const bracketsHTML = this.generateBracketHTML(this.matches);
 
     return /* HTML */ `
-      ${navbarHTML}
       <div class="max-w-3xl mx-auto bg-gray-100 text-gray-900 p-6">
         <h1 class="text-3xl font-bold mb-4 leading-tight">
           Tournament ${escapeHTML(this.tournament.getTournamentName())}<br />
@@ -32,7 +29,6 @@ export default class ResultsView extends AbstractView {
         </div>
         <div id="brackets" class="space-y-4">${bracketsHTML}</div>
       </div>
-      ${footerHTML}
     `;
   }
 

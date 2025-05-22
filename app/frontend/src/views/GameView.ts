@@ -34,17 +34,13 @@ export class GameView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
     return /* HTML */ `
-      ${navbarHTML}
       <canvas
         id="gameCanvas"
         width="800"
         height="400"
         class="border-4 border-white"
       ></canvas>
-      ${footerHTML}
     `;
   }
 
