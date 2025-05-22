@@ -54,7 +54,7 @@ export default class PlayerNicknamesView extends AbstractView {
       </p>
       <form
         id="nicknames-form"
-        class="flex flex-col justify-center items-center h-screen gap-4"
+        class="flex flex-col justify-center items-center gap-4"
       >
         ${nicknameInputs}
         <div>
