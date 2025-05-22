@@ -14,7 +14,6 @@ export class Router {
   private currentPath: string = "";
   private previousPath: string = "";
   private routeChangeListeners: RouteChangeListener[] = [];
-  private rootEl: HTMLElement = document.getElementById("app")!;
   private layout = new Layout("guest");
 
   private constructor() {}
@@ -34,7 +33,6 @@ export class Router {
   async start(): Promise<void> {
     window.addEventListener("popstate", this.handlePopState);
     document.body.addEventListener("click", this.handleLinkClick);
-    this.rootEl.innerHTML = this.layout.renderShell();
     await this.navigate(window.location.pathname, false);
   }
 
@@ -68,10 +66,7 @@ export class Router {
       this.previousPath = this.currentPath;
       this.currentPath = path;
 
-      if (this.layout.getMode() !== route.layout) {
-        this.layout.setMode(route.layout);
-        this.rootEl.innerHTML = this.layout.renderShell();
-      }
+      this.layout.setMode(route.layout);
 
       const view = new route.view();
       await this.setView(view);

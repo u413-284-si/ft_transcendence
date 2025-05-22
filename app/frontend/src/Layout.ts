@@ -2,24 +2,31 @@ export type LayoutMode = "auth" | "guest";
 
 export class Layout {
   private mode: LayoutMode;
+  private rootEl: HTMLElement;
 
   constructor(initialMode: LayoutMode) {
     this.mode = initialMode;
+    this.rootEl = document.getElementById("app")!;
+    this.update();
   }
 
-  getMode(): LayoutMode {
-    return this.mode;
-  }
-
-  setMode(newMode: LayoutMode): void {
+  public setMode(newMode: LayoutMode): void {
+    if (this.mode === newMode) return;
     this.mode = newMode;
+    this.update();
   }
 
-  renderShell(): string {
+  private update(): void {
+    this.rootEl.className =
+      "bg-blue-900 text-white min-h-screen min-w-screen flex flex-col";
+    this.rootEl.innerHTML = this.renderShell();
+  }
+
+  private renderShell(): string {
     return `
       <header class="bg-blue-800 text-white py-4 shadow-lg">${this.renderHeader()}</header>
-      <main id="app-content"></main>
-      <footer class="bg-blue-800 text-white py-4 text-center>${this.renderFooter()}</footer>
+      <main id="app-content" class="flex-grow"></main>
+      <footer class="bg-blue-800 text-white py-4 shadow-lg">${this.renderFooter()}</footer>
     `;
   }
 
@@ -54,6 +61,10 @@ export class Layout {
   }
 
   private renderFooter(): string {
-    return /* HTML */ `<p class="text-sm">Pong Game &copy; 2025</p>`;
+    return /* HTML */ `<div
+      class="container mx-auto flex justify-center space-x-8"
+    >
+      <p class="text-sm">Pong Game &copy; 2025</p>
+    </div>`;
   }
 }
