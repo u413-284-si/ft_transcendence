@@ -18,14 +18,14 @@ export class Layout {
 
   private renderShell(): void {
     this.rootEl.className =
-      "bg-blue-900 text-white min-h-screen min-w-screen flex flex-col";
+      "bg-blue-900 text-white min-h-screen min-w-screen flex flex-col font-mono";
     this.rootEl.innerHTML = this.getShellHTML();
   }
 
   private getShellHTML(): string {
     return `
       <header class="bg-blue-800 text-white py-4 shadow-lg">${this.getHeaderHTML()}</header>
-      <main id="app-content" class="flex-grow"></main>
+      <main id="app-content" class="flex-grow px-4 py-8"></main>
       <footer class="bg-blue-800 text-white py-4 shadow-lg">${this.getFooterHTML()}</footer>
     `;
   }
