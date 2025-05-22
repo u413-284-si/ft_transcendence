@@ -7,30 +7,30 @@ export class Layout {
   constructor(initialMode: LayoutMode) {
     this.mode = initialMode;
     this.rootEl = document.getElementById("app")!;
-    this.update();
+    this.renderShell();
   }
 
-  public setMode(newMode: LayoutMode): void {
+  public update(newMode: LayoutMode): void {
     if (this.mode === newMode) return;
     this.mode = newMode;
-    this.update();
+    this.renderShell();
   }
 
-  private update(): void {
+  private renderShell(): void {
     this.rootEl.className =
       "bg-blue-900 text-white min-h-screen min-w-screen flex flex-col";
-    this.rootEl.innerHTML = this.renderShell();
+    this.rootEl.innerHTML = this.getShellHTML();
   }
 
-  private renderShell(): string {
+  private getShellHTML(): string {
     return `
-      <header class="bg-blue-800 text-white py-4 shadow-lg">${this.renderHeader()}</header>
+      <header class="bg-blue-800 text-white py-4 shadow-lg">${this.getHeaderHTML()}</header>
       <main id="app-content" class="flex-grow"></main>
-      <footer class="bg-blue-800 text-white py-4 shadow-lg">${this.renderFooter()}</footer>
+      <footer class="bg-blue-800 text-white py-4 shadow-lg">${this.getFooterHTML()}</footer>
     `;
   }
 
-  private renderHeader(): string {
+  private getHeaderHTML(): string {
     if (this.mode === "auth") {
       return /* HTML */ `<nav>
         <div class="container mx-auto flex justify-center space-x-8">
@@ -60,7 +60,7 @@ export class Layout {
     </nav>`;
   }
 
-  private renderFooter(): string {
+  private getFooterHTML(): string {
     return /* HTML */ `<div
       class="container mx-auto flex justify-center space-x-8"
     >
