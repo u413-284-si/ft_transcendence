@@ -18,8 +18,8 @@ import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHashedPassword } from "../services/auth.services.js";
 import {
-  createFriend,
-  deleteFriend,
+  createFriendship,
+  deleteFriend as deleteFriendship,
   getUserFriends,
   isFriends
 } from "../services/friends.services.js";
@@ -260,8 +260,8 @@ export async function createUserFriendHandler(request, reply) {
       );
     }
 
-    // Check user exists
-    await getUser(friendId);
+    // Check friend exists
+    const friend = await getUser(friendId);
 
     const alreadyFriend = await isFriends(userId, friendId);
     if (alreadyFriend) {
@@ -273,7 +273,8 @@ export async function createUserFriendHandler(request, reply) {
       );
     }
 
-    const data = await createFriend(userId, friendId);
+    await createFriendship(userId, friendId);
+    const data = { id: friend.id, username: friend.username };
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -291,10 +292,10 @@ export async function deleteUserFriendHandler(request, reply) {
   try {
     const userId = parseInt(request.user.id, 10);
     const friendId = parseInt(request.params.id, 10);
-    const data = await deleteFriend(userId, friendId);
+    const count = await deleteFriendship(userId, friendId);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data: data });
+      .send({ message: createResponseMessage(action, true), data: count });
   } catch (err) {
     request.log.error(
       { err, body: request.body },

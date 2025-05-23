@@ -14,32 +14,30 @@ export async function getUserFriends(userId) {
 }
 
 export async function isFriends(userId, friendId) {
-  const friendCount = await prisma.friends.count({
-    where: { userId: userId, friendId: friendId }
+  const existing = await prisma.friends.findUnique({
+    where: { userId_friendId: { userId: userId, friendId: friendId } }
   });
-  return friendCount > 0;
+  return existing ? true : false;
 }
 
-export async function createFriend(userId, friendId) {
-  const friend = await prisma.friends.create({
-    data: {
-      userId: userId,
-      friendId: friendId
-    },
-    select: friendSelect
+export async function createFriendship(userId, friendId) {
+  const count = await prisma.friends.createMany({
+    data: [
+      { userId: userId, friendId: friendId },
+      { userId: friendId, friendId: userId }
+    ]
   });
-  return friend;
+  return count;
 }
 
 export async function deleteFriend(userId, friendId) {
-  const friend = await prisma.friends.delete({
+  const count = await prisma.friends.deleteMany({
     where: {
-      userId_friendId: {
-        userId: userId,
-        friendId: friendId
-      }
-    },
-    select: friendSelect
+      OR: [
+        { userId: userId, friendId: friendId },
+        { userId: friendId, friendId: userId }
+      ]
+    }
   });
-  return friend;
+  return count;
 }
