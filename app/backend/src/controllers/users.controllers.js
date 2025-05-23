@@ -19,7 +19,7 @@ import { createResponseMessage } from "../utils/response.js";
 import { createHashedPassword } from "../services/auth.services.js";
 import {
   createFriendship,
-  deleteFriend as deleteFriendship,
+  deleteFriendship,
   getUserFriends,
   isFriends
 } from "../services/friends.services.js";

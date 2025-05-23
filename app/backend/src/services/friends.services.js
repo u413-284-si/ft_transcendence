@@ -30,7 +30,7 @@ export async function createFriendship(userId, friendId) {
   return count;
 }
 
-export async function deleteFriend(userId, friendId) {
+export async function deleteFriendship(userId, friendId) {
   const count = await prisma.friends.deleteMany({
     where: {
       OR: [
