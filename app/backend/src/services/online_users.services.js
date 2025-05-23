@@ -24,10 +24,9 @@ export function isUserOnline(userId) {
 
 export async function notifyFriends(userId, status) {
   const friends = await getUserFriends(userId);
-  const data = friends.map((f) => f.friend);
 
-  for (const id of data) {
-    const friendReply = getOnlineUser(id);
+  for (const friend of friends) {
+    const friendReply = getOnlineUser(friend.id);
     if (friendReply) {
       friendReply.raw.write(`data: ${JSON.stringify({ userId, status })}\n\n`);
     }

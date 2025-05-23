@@ -233,8 +233,7 @@ export async function getUserFriendsHandler(request, reply) {
   const action = "Get user friends";
   try {
     const userId = parseInt(request.user.id, 10);
-    const friends = await getUserFriends(userId);
-    const data = friends.map((f) => f.friend);
+    const data = await getUserFriends(userId);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),

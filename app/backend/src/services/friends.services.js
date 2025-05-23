@@ -1,4 +1,5 @@
 import prisma from "../prisma/prismaClient.js";
+import { isUserOnline } from "./online_users.services.js";
 
 const friendSelect = {
   friend: {
@@ -10,7 +11,13 @@ export async function getUserFriends(userId) {
     where: { userId: userId },
     select: friendSelect
   });
-  return friends;
+  const enrichedFriends = friends.map(({ friend }) => ({
+    id: friend.id,
+    username: friend.username,
+    isOnline: isUserOnline(friend.id)
+  }));
+
+  return enrichedFriends;
 }
 
 export async function isFriends(userId, friendId) {
