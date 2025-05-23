@@ -30,3 +30,16 @@ export async function createFriend(userId, friendId) {
   });
   return friend;
 }
+
+export async function deleteFriend(userId, friendId) {
+  const friend = await prisma.friends.delete({
+    where: {
+      userId_friendId: {
+        userId: userId,
+        friendId: friendId
+      }
+    },
+    select: friendSelect
+  });
+  return friend;
+}

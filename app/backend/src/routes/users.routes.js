@@ -12,7 +12,8 @@ import {
   getUserTournamentsHandler,
   getUserActiveTournamentHandler,
   getUserFriendsHandler,
-  createUserFriendHandler
+  createUserFriendHandler,
+  deleteUserFriendHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
@@ -54,6 +55,12 @@ export default async function userRoutes(fastify) {
   fastify.get("/friends/", optionsGetUserFriends, getUserFriendsHandler);
 
   fastify.post("/friends/", optionsCreateUserFriend, createUserFriendHandler);
+
+  fastify.delete(
+    "/friends/:id/",
+    optionsDeleteUserFriend,
+    deleteUserFriendHandler
+  );
 }
 
 const optionsCreateUser = {
@@ -179,6 +186,16 @@ const optionsGetUserFriends = {
 const optionsCreateUserFriend = {
   onRequest: [authorizeUser],
   schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteUserFriend = {
+  onRequest: [authorizeUser],
+  schema: {
+    params: { $ref: "idSchema" },
     response: {
       ...errorResponses
     }

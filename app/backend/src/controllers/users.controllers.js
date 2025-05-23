@@ -19,6 +19,7 @@ import { createResponseMessage } from "../utils/response.js";
 import { createHashedPassword } from "../services/auth.services.js";
 import {
   createFriend,
+  deleteFriend,
   getUserFriends,
   isFriends
 } from "../services/friends.services.js";
@@ -247,7 +248,7 @@ export async function createUserFriendHandler(request, reply) {
   const action = "Create user friend";
   try {
     const userId = parseInt(request.user.id, 10);
-    const friendId = parseInt(request.body.friendId, 10);
+    const { friendId } = request.body;
 
     if (userId === friendId) {
       return httpError(
@@ -279,6 +280,24 @@ export async function createUserFriendHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `createUserFriendHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function deleteUserFriendHandler(request, reply) {
+  const action = "Delete user friend";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const friendId = parseInt(request.params.id, 10);
+    const data = await deleteFriend(userId, friendId);
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data: data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `deleteUserFriendHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
