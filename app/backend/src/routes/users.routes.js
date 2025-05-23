@@ -10,7 +10,9 @@ import {
   getAllUserStatsHandler,
   getUserStatsHandler,
   getUserTournamentsHandler,
-  getUserActiveTournamentHandler
+  getUserActiveTournamentHandler,
+  getUserFriendsHandler,
+  createUserFriendHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
@@ -48,6 +50,10 @@ export default async function userRoutes(fastify) {
     optionsGetUserActiveTournament,
     getUserActiveTournamentHandler
   );
+
+  fastify.get("/friends/", optionsGetUserFriends, getUserFriendsHandler);
+
+  fastify.post("/friends/", optionsCreateUserFriend, createUserFriendHandler);
 }
 
 const optionsCreateUser = {
@@ -156,6 +162,24 @@ const optionsGetUserActiveTournament = {
   schema: {
     response: {
       200: { $ref: "tournamentResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserFriends = {
+  onRequest: [authorizeUser],
+  schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsCreateUserFriend = {
+  onRequest: [authorizeUser],
+  schema: {
+    response: {
       ...errorResponses
     }
   }

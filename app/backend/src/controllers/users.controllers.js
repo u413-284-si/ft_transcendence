@@ -14,9 +14,14 @@ import {
   getUserTournaments,
   getUserActiveTournament
 } from "../services/tournaments.services.js";
-import { handlePrismaError } from "../utils/error.js";
+import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHashedPassword } from "../services/auth.services.js";
+import {
+  createFriend,
+  getUserFriends,
+  isFriends
+} from "../services/friends.services.js";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -213,6 +218,67 @@ export async function getUserActiveTournamentHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserActiveTournamentHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getUserFriendsHandler(request, reply) {
+  const action = "Get user friends";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const data = await getUserFriends(userId);
+    const count = data.length;
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserFriendsHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function createUserFriendHandler(request, reply) {
+  const action = "Create user friend";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const friendId = parseInt(request.body.friendId, 10);
+
+    if (userId === friendId) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Can't add yourself as a friend"
+      );
+    }
+
+    // Check user exists
+    await getUser(friendId);
+
+    const alreadyFriend = await isFriends(userId, friendId);
+    if (alreadyFriend) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Already friends"
+      );
+    }
+
+    const data = await createFriend(userId, friendId);
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data: data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `createUserFriendHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
