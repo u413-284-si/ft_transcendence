@@ -4,6 +4,7 @@ import NewGame from "./views/NewGameView.js";
 import NewTournament from "./views/NewTournamentView.js";
 import Settings from "./views/SettingsView.js";
 import Stats from "./views/StatsView.js";
+import Friends from "./views/FriendsView.js";
 import { router } from "./routing/Router.js";
 import { authGuard, guestOnlyGuard } from "./routing/routeGuard.js";
 import { auth } from "./AuthManager.js";
@@ -16,6 +17,7 @@ router
   .addRoute("/newTournament", { view: NewTournament, guard: authGuard })
   .addRoute("/settings", { view: Settings, guard: authGuard })
   .addRoute("/stats", { view: Stats, guard: authGuard })
+  .addRoute("/friends", { view: Friends, guard: authGuard })
   .addRouteChangeListener(logRouteChange)
   .addRouteChangeListener(updateUI);
 
