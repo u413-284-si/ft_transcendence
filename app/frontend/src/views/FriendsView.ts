@@ -83,5 +83,27 @@ export default class FriendsView extends AbstractView {
         }
       });
     });
+    window.addEventListener("friendStatusChanged", (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        userId: number;
+        isOnline: boolean;
+      }>;
+      this.updateFriendStatus(
+        customEvent.detail.userId,
+        customEvent.detail.isOnline
+      );
+    });
+  }
+
+  private updateFriendStatus(userId: number, isOnline: boolean) {
+    const statusSpan = document.querySelector(
+      `.remove-friend-btn[data-friend-id="${userId}"]`
+    )?.previousElementSibling as HTMLElement | null;
+
+    if (statusSpan) {
+      statusSpan.textContent = isOnline ? "Online" : "Offline";
+      statusSpan.classList.toggle("text-green-500", isOnline);
+      statusSpan.classList.toggle("text-gray-400", !isOnline);
+    }
   }
 }

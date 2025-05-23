@@ -15,6 +15,17 @@ export function startOnlineStatusTracking() {
 
   eventSource.onmessage = (event) => {
     console.log("📨 SSE message:", event.data);
+    try {
+      const { userId, status } = JSON.parse(event.data);
+      // Dispatch a custom event with the data
+      window.dispatchEvent(
+        new CustomEvent("friendStatusChanged", {
+          detail: { userId, isOnline: status === "online" }
+        })
+      );
+    } catch (e) {
+      console.error("Failed to parse SSE message", e);
+    }
   };
 
   eventSource.onerror = (error) => {
