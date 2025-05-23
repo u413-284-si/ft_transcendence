@@ -1,13 +1,14 @@
 import prisma from "../prisma/prismaClient.js";
 
+const friendSelect = {
+  friend: {
+    select: { id: true, username: true }
+  }
+};
 export async function getUserFriends(userId) {
   const friends = await prisma.friends.findMany({
     where: { userId: userId },
-    select: {
-      friend: {
-        select: { id: true, username: true }
-      }
-    }
+    select: friendSelect
   });
   return friends;
 }
@@ -24,7 +25,8 @@ export async function createFriend(userId, friendId) {
     data: {
       userId: userId,
       friendId: friendId
-    }
+    },
+    select: friendSelect
   });
   return friend;
 }
