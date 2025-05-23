@@ -10,3 +10,15 @@ export async function getUserFriends(): Promise<Friend[]> {
   console.log(apiResponse);
   return apiResponse.data;
 }
+
+export async function deleteFriend(friendId: number): Promise<Friend> {
+  const apiResponse = await apiFetch<Friend>(
+    `/api/users/friends/${friendId}/`,
+    {
+      method: "DELETE"
+    }
+  );
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
