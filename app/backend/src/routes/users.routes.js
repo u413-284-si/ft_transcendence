@@ -13,7 +13,8 @@ import {
   getUserActiveTournamentHandler,
   getUserFriendsHandler,
   createUserFriendHandler,
-  deleteUserFriendHandler
+  deleteUserFriendHandler,
+  sseOnlineHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 
@@ -61,6 +62,8 @@ export default async function userRoutes(fastify) {
     optionsDeleteUserFriend,
     deleteUserFriendHandler
   );
+
+  fastify.get("/online/", optionsSseOnline, sseOnlineHandler);
 }
 
 const optionsCreateUser = {
@@ -199,6 +202,15 @@ const optionsDeleteUserFriend = {
   onRequest: [authorizeUser],
   schema: {
     params: { $ref: "idSchema" },
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsSseOnline = {
+  onRequest: [authorizeUser],
+  schema: {
     response: {
       ...errorResponses
     }

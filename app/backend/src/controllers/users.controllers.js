@@ -23,6 +23,11 @@ import {
   getUserFriends,
   isFriends
 } from "../services/friends.services.js";
+import {
+  addOnlineUser,
+  notifyFriends,
+  removeOnlineUser
+} from "../services/online_users.services.js";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -302,5 +307,37 @@ export async function deleteUserFriendHandler(request, reply) {
       `deleteUserFriendHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function sseOnlineHandler(request, reply) {
+  const action = "SSE Online";
+  try {
+    const userId = parseInt(request.user.id, 10);
+
+    // Setup SSE headers
+    reply.raw.setHeader("Content-Type", "text/event-stream");
+    reply.raw.setHeader("Cache-Control", "no-cache");
+    reply.raw.setHeader("Connection", "keep-alive");
+    reply.raw.flushHeaders();
+
+    addOnlineUser(userId);
+    notifyFriends(userId, "online");
+
+    // Clean up when client disconnects
+    request.raw.on("close", () => {
+      removeOnlineUser(userId);
+      notifyFriends(userId, "offline");
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `sseOnlineHandler: ${createResponseMessage(action, false)}`
+    );
+    if (!reply.raw.headersSent) {
+      return handlePrismaError(reply, action, err);
+    } else {
+      reply.raw.end();
+    }
   }
 }
