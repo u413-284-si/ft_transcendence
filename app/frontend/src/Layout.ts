@@ -1,3 +1,5 @@
+import { sanitizeHTML } from "./sanitize.js";
+
 export type LayoutMode = "auth" | "guest";
 
 export class Layout {
@@ -7,6 +9,7 @@ export class Layout {
   constructor(initialMode: LayoutMode) {
     this.mode = initialMode;
     this.rootEl = document.getElementById("app")!;
+    this.styleRootElement();
     this.renderShell();
   }
 
@@ -16,10 +19,15 @@ export class Layout {
     this.renderShell();
   }
 
-  private renderShell(): void {
+  private styleRootElement(): void {
     this.rootEl.className =
       "bg-blue-900 text-white min-h-screen min-w-screen flex flex-col font-mono";
-    this.rootEl.innerHTML = this.getShellHTML();
+  }
+
+  private renderShell(): void {
+    const html = this.getShellHTML();
+    const cleanHTML = sanitizeHTML(html);
+    this.rootEl.innerHTML = cleanHTML;
   }
 
   private getShellHTML(): string {
