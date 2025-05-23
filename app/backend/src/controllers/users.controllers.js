@@ -249,7 +249,7 @@ export async function createUserFriendHandler(request, reply) {
   const action = "Create user friend";
   try {
     const userId = parseInt(request.user.id, 10);
-    const { friendId } = request.body;
+    const friendId = request.body.id;
 
     if (userId === friendId) {
       return httpError(
@@ -276,7 +276,7 @@ export async function createUserFriendHandler(request, reply) {
     await createFriendship(userId, friendId);
     const data = { id: friend.id, username: friend.username };
     return reply
-      .code(200)
+      .code(201)
       .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(

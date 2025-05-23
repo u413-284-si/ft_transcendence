@@ -178,6 +178,7 @@ const optionsGetUserFriends = {
   onRequest: [authorizeUser],
   schema: {
     response: {
+      200: { $ref: "userArrayResponseSchema" },
       ...errorResponses
     }
   }
@@ -186,7 +187,9 @@ const optionsGetUserFriends = {
 const optionsCreateUserFriend = {
   onRequest: [authorizeUser],
   schema: {
+    body: { $ref: "idSchema" },
     response: {
+      201: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }
