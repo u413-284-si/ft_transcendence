@@ -31,28 +31,41 @@ export default class FriendsView extends AbstractView {
 
   private async createFriendsHTML(): Promise<string> {
     const friends = await getUserFriends();
+
     if (friends.length === 0) {
       return /* HTML */ ` <p>You have no friends yet 😢</p>`;
     }
-    return /* HTML */ ` <ul class="space-y-4">
-      ${friends
-        .map(
-          (friend) => `
-          <li
-            class="bg-blue-800 p-4 rounded shadow-md flex justify-between items-center"
-          >
-            <span>${escapeHTML(friend.username)}</span>
+
+    let html = `<ul class="space-y-4">`;
+
+    for (const friend of friends) {
+      const onlineStatusClass = friend.isOnline
+        ? "text-green-500"
+        : "text-gray-400";
+      const onlineStatusText = friend.isOnline ? "Online" : "Offline";
+
+      html += /* HTML */ `
+        <li
+          class="bg-blue-800 p-4 rounded shadow-md flex justify-between items-center"
+        >
+          <span class="flex-1 truncate">${escapeHTML(friend.username)}</span>
+          <div class="flex items-center space-x-4">
+            <span class="online-status font-semibold ${onlineStatusClass}"
+              >${onlineStatusText}</span
+            >
             <button
               class="remove-friend-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
               data-friend-id="${friend.id}"
             >
               Remove
             </button>
-          </li>
-        `
-        )
-        .join("")}
-    </ul>`;
+          </div>
+        </li>
+      `;
+    }
+
+    html += `</ul>`;
+    return html;
   }
 
   protected addListeners(): void {
