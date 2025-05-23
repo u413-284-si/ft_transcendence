@@ -320,7 +320,7 @@ export async function sseOnlineHandler(request, reply) {
     reply.raw.setHeader("Connection", "keep-alive");
     reply.raw.flushHeaders();
 
-    addOnlineUser(userId);
+    addOnlineUser(userId, reply);
     notifyFriends(userId, "online");
 
     // Clean up when client disconnects
