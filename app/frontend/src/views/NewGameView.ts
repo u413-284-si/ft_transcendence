@@ -12,13 +12,10 @@ export default class NewGameView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
     return /* HTML */ `
-      ${navbarHTML}
       <form
         id="register-form"
-        class="flex flex-col justify-center items-center h-screen gap-4"
+        class="flex flex-col justify-center items-center gap-4"
       >
         <div class="w-[300px]">
           <label for="nickname1">Player 1 Nickname:</label>
@@ -52,7 +49,6 @@ export default class NewGameView extends AbstractView {
           <button type="submit">Start Game</button>
         </div>
       </form>
-      ${footerHTML}
     `;
   }
 

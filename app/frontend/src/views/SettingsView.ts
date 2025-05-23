@@ -7,13 +7,9 @@ export default class SettingsView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
     return `
-			${navbarHTML}
 			<h1>Settings</h1>
 			<p>This is the Settings page</p>
-			${footerHTML}
 			`;
   }
 
