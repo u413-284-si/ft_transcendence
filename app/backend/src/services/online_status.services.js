@@ -28,7 +28,9 @@ export async function notifyFriends(userId, status) {
   for (const friend of friends) {
     const friendReply = getOnlineUser(friend.id);
     if (friendReply) {
-      friendReply.raw.write(`data: ${JSON.stringify({ userId, status })}\n\n`);
+      const payload = JSON.stringify({ userId, status });
+      friendReply.raw.write(`event: friendStatusChange\n`);
+      friendReply.raw.write(`data: ${payload}\n\n`);
     }
   }
 }
