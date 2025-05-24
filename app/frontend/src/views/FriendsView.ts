@@ -1,9 +1,11 @@
 import { deleteFriend, getUserFriends } from "../services/friendsServices.js";
+import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
 import { escapeHTML } from "../utility.js";
 import AbstractView from "./AbstractView.js";
 
 export default class FriendsView extends AbstractView {
   private friendsHTML: string = "";
+  private controller = new AbortController();
 
   constructor() {
     super();
@@ -70,32 +72,35 @@ export default class FriendsView extends AbstractView {
 
   protected addListeners(): void {
     document.querySelectorAll(".remove-friend-btn").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const target = e.currentTarget as HTMLButtonElement;
-        const friendId = Number(target.dataset.friendId);
-        if (!isNaN(friendId)) {
-          try {
-            await deleteFriend(friendId);
-            await this.render();
-          } catch (error) {
-            console.error("Failed to remove friend:", error);
-          }
-        }
+      btn.addEventListener("click", this.handleDeleteButton, {
+        signal: this.controller.signal
       });
     });
-    window.addEventListener("friendStatusChanged", (event: Event) => {
-      const customEvent = event as CustomEvent<{
-        userId: number;
-        isOnline: boolean;
-      }>;
-      this.updateFriendStatus(
-        customEvent.detail.userId,
-        customEvent.detail.isOnline
-      );
-    });
+    window.addEventListener(
+      "friendStatusChange",
+      this.handleFriendStatusChange,
+      {
+        signal: this.controller.signal
+      }
+    );
   }
 
-  private updateFriendStatus(userId: number, isOnline: boolean) {
+  private handleDeleteButton = async (event: Event) => {
+    const target = event.currentTarget as HTMLButtonElement;
+    const friendId = Number(target.dataset.friendId);
+    if (!isNaN(friendId)) {
+      try {
+        await deleteFriend(friendId);
+        await this.render();
+      } catch (error) {
+        console.error("Failed to remove friend:", error);
+      }
+    }
+  };
+
+  private handleFriendStatusChange = (event: Event) => {
+    const customEvent = event as FriendStatusChangeEvent;
+    const { userId, isOnline } = customEvent.detail;
     const statusSpan = document.querySelector(
       `.remove-friend-btn[data-friend-id="${userId}"]`
     )?.previousElementSibling as HTMLElement | null;
@@ -105,5 +110,10 @@ export default class FriendsView extends AbstractView {
       statusSpan.classList.toggle("text-green-500", isOnline);
       statusSpan.classList.toggle("text-gray-400", !isOnline);
     }
+  };
+
+  unmount(): void {
+    console.log("Cleaning up FriendsView");
+    this.controller.abort();
   }
 }
