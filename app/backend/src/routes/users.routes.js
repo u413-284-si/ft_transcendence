@@ -13,10 +13,10 @@ import {
   getUserActiveTournamentHandler,
   getUserFriendsHandler,
   createUserFriendHandler,
-  deleteUserFriendHandler,
-  sseOnlineHandler
+  deleteUserFriendHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
+import { sseOnlineHandler } from "../controllers/online_status.controllers.js";
 
 export default async function userRoutes(fastify) {
   fastify.post("/", optionsCreateUser, createUserHandler);

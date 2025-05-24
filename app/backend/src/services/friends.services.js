@@ -1,5 +1,5 @@
 import prisma from "../prisma/prismaClient.js";
-import { isUserOnline } from "./online_users.services.js";
+import { isUserOnline } from "./online_status.services.js";
 
 const friendSelect = {
   friend: {
