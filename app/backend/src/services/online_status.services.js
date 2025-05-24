@@ -34,3 +34,10 @@ export async function notifyFriends(userId, status) {
     }
   }
 }
+
+export function addOnlineStatusToArray(array) {
+  return array.map((item) => ({
+    ...item,
+    isOnline: isUserOnline(item.id)
+  }));
+}

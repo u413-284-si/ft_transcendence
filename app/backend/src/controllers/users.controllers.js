@@ -23,6 +23,10 @@ import {
   getUserFriends,
   isFriends
 } from "../services/friends.services.js";
+import {
+  addOnlineStatusToArray,
+  isUserOnline
+} from "../services/online_status.services.js";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -228,7 +232,8 @@ export async function getUserFriendsHandler(request, reply) {
   const action = "Get user friends";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getUserFriends(userId);
+    const friends = await getUserFriends(userId);
+    const data = addOnlineStatusToArray(friends);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
@@ -273,7 +278,11 @@ export async function createUserFriendHandler(request, reply) {
     }
 
     await createFriendship(userId, friendId);
-    const data = { id: friend.id, username: friend.username };
+    const data = {
+      id: friend.id,
+      username: friend.username,
+      isOnline: isUserOnline(friend.id)
+    };
     return reply
       .code(201)
       .send({ message: createResponseMessage(action, true), data: data });
