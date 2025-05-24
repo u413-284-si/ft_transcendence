@@ -181,7 +181,7 @@ const optionsGetUserFriends = {
   onRequest: [authorizeUser],
   schema: {
     response: {
-      // FIXME: add schema for friends
+      200: { $ref: "userArrayResponseSchema" },
       ...errorResponses
     }
   }
