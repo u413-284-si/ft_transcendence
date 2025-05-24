@@ -17,13 +17,17 @@ export async function sseOnlineHandler(request, reply) {
     reply.raw.setHeader("Connection", "keep-alive");
     reply.raw.flushHeaders();
 
-    addOnlineUser(userId, reply);
-    notifyFriends(userId, "online");
+    const isNowOnline = addOnlineUser(userId, reply);
+    if (isNowOnline) {
+      notifyFriends(userId, "online");
+    }
 
     // Clean up when client disconnects
     request.raw.on("close", () => {
-      removeOnlineUser(userId);
-      notifyFriends(userId, "offline");
+      const isNowOffline = removeOnlineUser(userId, reply);
+      if (isNowOffline) {
+        notifyFriends(userId, "offline");
+      }
     });
   } catch (err) {
     request.log.error(
