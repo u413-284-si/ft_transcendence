@@ -86,34 +86,12 @@ export async function getUserMatches(id) {
   return matches;
 }
 
-export async function getUserID(usernameOrEmail) {
+export async function getTokenData(identifier, identifierType, selectType) {
   const user = await prisma.user.findFirstOrThrow({
     where: {
-      OR: [{ email: usernameOrEmail }, { username: usernameOrEmail }]
+      [identifierType]: identifier
     },
-    select: {
-      id: true
-    }
-  });
-
-  return user.id;
-}
-
-export async function getUserData(userId) {
-  const user = await prisma.user.findFirstOrThrow({
-    where: {
-      id: userId
-    },
-    select: {
-      id: true,
-      username: true,
-      authentication: {
-        select: {
-          password: true,
-          refreshToken: true
-        }
-      }
-    }
+    select: selectType
   });
 
   return user;
