@@ -95,7 +95,7 @@ export async function authRefreshHandler(request, reply) {
         "No refresh token provided"
       );
     }
-    const userDataRefreshToken = await verifyRefreshToken(request, token);
+    const userDataRefreshToken = await verifyRefreshToken(request);
     const userId = userDataRefreshToken.id;
 
     const userData = await getUserData(userId);

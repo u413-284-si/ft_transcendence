@@ -1,12 +1,12 @@
 import pkg from "argon2";
 import prisma from "../prisma/prismaClient.js";
 
-export async function verifyAccessToken(request, token) {
-  return await request.accessTokenVerify(token);
+export async function verifyAccessToken(request) {
+  return await request.accessTokenVerify();
 }
 
-export async function verifyRefreshToken(request, token) {
-  return await request.refreshTokenVerify(token);
+export async function verifyRefreshToken(request) {
+  return await request.refreshTokenVerify();
 }
 
 export async function createHash(value) {
