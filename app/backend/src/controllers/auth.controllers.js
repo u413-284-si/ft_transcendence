@@ -1,9 +1,15 @@
 import {
+  getPasswordHash,
   verifyRefreshToken,
   verifyHash,
-  createAuthTokens
+  createAuthTokens,
+  getTokenHash
 } from "../services/auth.services.js";
-import { getUserData, getUserID } from "../services/users.services.js";
+import {
+  getTokenData,
+  accessTokenSelect,
+  refreshTokenSelect
+} from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
@@ -14,21 +20,34 @@ export async function loginUserHandler(request, reply) {
   try {
     const { usernameOrEmail, password } = request.body;
 
-    const userId = getUserID(usernameOrEmail);
+    let userDataAccessToken;
+    let userDataRefreshToken;
+    if (usernameOrEmail.includes("@")) {
+      userDataAccessToken = await getTokenData(
+        usernameOrEmail,
+        "email",
+        accessTokenSelect
+      );
+      userDataRefreshToken = await getTokenData(
+        usernameOrEmail,
+        "email",
+        refreshTokenSelect
+      );
+    } else {
+      userDataAccessToken = await getTokenData(
+        usernameOrEmail,
+        "username",
+        accessTokenSelect
+      );
+      userDataRefreshToken = await getTokenData(
+        usernameOrEmail,
+        "username",
+        refreshTokenSelect
+      );
+    }
 
-    const userData = await getUserData(userId);
-    const {
-      authentication: {
-        password: hashedPassword,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        refreshToken: hashedRefreshToken
-      },
-      ...userDataAccessToken
-    } = userData;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { username, ...userDataRefreshToken } = userDataAccessToken;
+    const hashedPassword = await getPasswordHash(userDataAccessToken.id);
 
-    // @TODO: rename function to verifyHash (can be used for login and refresh token)
     if (!(await verifyHash(hashedPassword, password))) {
       return httpError(
         reply,
@@ -95,18 +114,16 @@ export async function authRefreshHandler(request, reply) {
         "No refresh token provided"
       );
     }
+
     const userDataRefreshToken = await verifyRefreshToken(request);
     const userId = userDataRefreshToken.id;
 
-    const userData = await getUserData(userId);
-    const {
-      authentication: {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        password: hashedPassword,
-        refreshToken: hashedRefreshToken
-      },
-      ...userDataAccessToken
-    } = userData;
+    const hashedRefreshToken = await getTokenHash(userId);
+    const userDataAccessToken = await getTokenData(
+      userId,
+      "id",
+      accessTokenSelect
+    );
 
     if (!(await verifyHash(hashedRefreshToken, token))) {
       return httpError(
