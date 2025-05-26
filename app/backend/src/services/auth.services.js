@@ -40,6 +40,30 @@ export async function updateUserRefreshToken(userId, hashedRefreshToken) {
   });
 }
 
+export async function getPasswordHash(userId) {
+  const authentication = await prisma.authentication.findUniqueOrThrow({
+    where: {
+      userId: userId
+    },
+    select: {
+      password: true
+    }
+  });
+  return authentication.password;
+}
+
+export async function getTokenHash(userId) {
+  const authentication = await prisma.authentication.findUniqueOrThrow({
+    where: {
+      userId: userId
+    },
+    select: {
+      refreshToken: true
+    }
+  });
+  return authentication.refreshToken;
+}
+
 export async function createAuthTokens(
   reply,
   userDataAccessToken,
