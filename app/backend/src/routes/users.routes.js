@@ -1,6 +1,6 @@
 import { authorizeUserAccess } from "../middleware/auth.js";
 import {
-  registerUserHandler,
+  createUserHandler,
   getUserHandler,
   getAllUsersHandler,
   updateUserHandler,
@@ -15,29 +15,37 @@ import {
 import { errorResponses } from "../utils/error.js";
 
 export default async function userRoutes(fastify) {
-  fastify.post("/", optionsCreateUser, registerUserHandler);
+  fastify.post("/", optionsCreateUser, createUserHandler);
 
   fastify.get("/", optionsGetUser, getUserHandler);
 
-  fastify.get("/admin", getAllUsersHandler);
+  fastify.get("/admin", optionsGetAllUsers, getAllUsersHandler);
 
   fastify.put("/:id/", optionsUpdateUser, updateUserHandler);
 
   fastify.patch("/:id/", optionsPatchUser, patchUserHandler);
 
-  fastify.delete("/:id/", deleteUserHandler);
+  fastify.delete("/:id/", optionsDeleteUser, deleteUserHandler);
 
-  fastify.get("/matches/", optionsGetUser, getUserMatchesHandler);
+  fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
 
-  fastify.get("/admin/user-stats/", getAllUserStatsHandler);
+  fastify.get(
+    "/admin/user-stats/",
+    optionsGetAllUserStats,
+    getAllUserStatsHandler
+  );
 
-  fastify.get("/user-stats/", optionsGetUser, getUserStatsHandler);
+  fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
 
-  fastify.get("/tournaments/", optionsGetUser, getUserTournamentsHandler);
+  fastify.get(
+    "/tournaments/",
+    optionsGetUserTournaments,
+    getUserTournamentsHandler
+  );
 
   fastify.get(
     "/tournaments/active/",
-    optionsGetUser,
+    optionsGetUserActiveTournament,
     getUserActiveTournamentHandler
   );
 }
@@ -46,6 +54,7 @@ const optionsCreateUser = {
   schema: {
     body: { $ref: "createUserSchema" },
     response: {
+      201: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }
@@ -54,7 +63,18 @@ const optionsCreateUser = {
 const optionsGetUser = {
   onRequest: [authorizeUserAccess],
   schema: {
+    params: { $ref: "idSchema" },
     response: {
+      200: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetAllUsers = {
+  schema: {
+    response: {
+      200: { $ref: "userArrayResponseSchema" },
       ...errorResponses
     }
   }
@@ -65,6 +85,7 @@ const optionsUpdateUser = {
     params: { $ref: "idSchema" },
     body: { $ref: "updateUserSchema" },
     response: {
+      200: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }
@@ -75,6 +96,66 @@ const optionsPatchUser = {
     params: { $ref: "idSchema" },
     body: { $ref: "patchUserSchema" },
     response: {
+      200: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteUser = {
+  schema: {
+    params: { $ref: "idSchema" },
+    response: {
+      200: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserMatches = {
+  onRequest: [authorizeUser],
+  schema: {
+    response: {
+      200: { $ref: "matchArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserStats = {
+  onRequest: [authorizeUser],
+  schema: {
+    response: {
+      200: { $ref: "userStatsResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetAllUserStats = {
+  schema: {
+    response: {
+      200: { $ref: "userStatsArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserTournaments = {
+  onRequest: [authorizeUser],
+  schema: {
+    response: {
+      200: { $ref: "tournamentArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserActiveTournament = {
+  onRequest: [authorizeUser],
+  schema: {
+    response: {
+      200: { $ref: "tournamentResponseSchema" },
       ...errorResponses
     }
   }

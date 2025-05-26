@@ -18,7 +18,7 @@ export async function createTournamentHandler(request, reply) {
     const data = await createTournament(name, maxPlayers, adminId, bracket);
     return reply
       .code(201)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -52,7 +52,7 @@ export async function getTournamentHandler(request, reply) {
     const data = await getTournament(id);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -70,7 +70,7 @@ export async function patchTournamentHandler(request, reply) {
     const data = await updateTournament(id, adminId, request.body);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -104,7 +104,7 @@ export async function deleteTournamentHandler(request, reply) {
     const data = await deleteTournament(id, adminId);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
