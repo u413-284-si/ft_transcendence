@@ -1,5 +1,14 @@
 import prisma from "../prisma/prismaClient.js";
 
+export const accessTokenSelect = {
+  id: true,
+  username: true
+};
+
+export const refreshTokenSelect = {
+  id: true
+};
+
 export async function createUser(username, email, hashedPassword) {
   const user = await prisma.user.create({
     data: {
