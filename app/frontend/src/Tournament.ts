@@ -252,13 +252,26 @@ export class Tournament {
         html += `
         <div class="${cardBg} ${textColor} p-4 rounded-md shadow ${borderStyle} text-xs md:text-sm">
           <h4 class="font-bold text-center text-sm md:text-base mb-2">Match ${match.matchId}</h4>
-          <div class="flex justify-between">
-            <span class="font-medium">${match.player1Text}</span>
-            <span>${match.winner === match.player1Text ? "🏆" : ""}</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="font-medium">${match.player2Text}</span>
-            <span>${match.winner === match.player2Text ? "🏆" : ""}</span>
+          <div class="flex justify-center items-center gap-2 text-sm md:text-base font-medium">
+
+            <!-- Player 1 -->
+            <div class="flex items-center gap-1 w-[150px]">
+              ${match.winner === match.player1Text ? "🏆" : ""}
+              <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis w-full" title="${match.player1Text}">
+                ${match.player1Text}
+              </span>
+            </div>
+
+            <!-- Separator -->
+            <span class="text-gray-400 font-normal">vs</span>
+
+            <!-- Player 2 -->
+            <div class="flex items-center gap-1 w-[150px]">
+              <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis w-full" title="${match.player2Text}">
+                ${match.player2Text}
+              </span>
+              ${match.winner === match.player2Text ? "🏆" : ""}
+            </div>
           </div>
         </div>
       `;
