@@ -307,9 +307,7 @@ export class Tournament {
       if (!match.nextMatchId || !match.winnerSlot) {
         continue;
       }
-      if (!this.matchSlotMap[match.nextMatchId]) {
-        this.matchSlotMap[match.nextMatchId] = {};
-      }
+      this.matchSlotMap[match.nextMatchId] ??= {};
 
       const slotKey = match.winnerSlot === 1 ? "slot1" : "slot2";
       this.matchSlotMap[match.nextMatchId][slotKey] = match;
