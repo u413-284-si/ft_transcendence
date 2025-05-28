@@ -311,11 +311,8 @@ export class Tournament {
         this.matchSlotMap[match.nextMatchId] = {};
       }
 
-      if (match.winnerSlot === 1) {
-        this.matchSlotMap[match.nextMatchId].slot1 = match;
-      } else if (match.winnerSlot === 2) {
-        this.matchSlotMap[match.nextMatchId].slot2 = match;
-      }
+      const slotKey = match.winnerSlot === 1 ? "slot1" : "slot2";
+      this.matchSlotMap[match.nextMatchId][slotKey] = match;
     }
   }
 }
