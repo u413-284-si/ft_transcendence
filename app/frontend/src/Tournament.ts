@@ -304,16 +304,17 @@ export class Tournament {
     this.matchSlotMap = {};
 
     for (const match of this.bracket) {
-      if (match.nextMatchId && match.winnerSlot) {
-        if (!this.matchSlotMap[match.nextMatchId]) {
-          this.matchSlotMap[match.nextMatchId] = {};
-        }
+      if (!match.nextMatchId || !match.winnerSlot) {
+        continue;
+      }
+      if (!this.matchSlotMap[match.nextMatchId]) {
+        this.matchSlotMap[match.nextMatchId] = {};
+      }
 
-        if (match.winnerSlot === 1) {
-          this.matchSlotMap[match.nextMatchId].slot1 = match;
-        } else if (match.winnerSlot === 2) {
-          this.matchSlotMap[match.nextMatchId].slot2 = match;
-        }
+      if (match.winnerSlot === 1) {
+        this.matchSlotMap[match.nextMatchId].slot1 = match;
+      } else if (match.winnerSlot === 2) {
+        this.matchSlotMap[match.nextMatchId].slot2 = match;
       }
     }
   }
