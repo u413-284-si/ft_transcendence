@@ -105,8 +105,7 @@ export default class MatchAnnouncementView extends AbstractView {
 
   private async abortTournament() {
     try {
-      const confirmed = confirm("Do you really want to abort the tournament?");
-      if (!confirmed) return;
+      if (!confirm("Do you really want to abort the tournament?")) return;
       await deleteTournament(this.tournament.getId());
       router.reload();
     } catch (error) {
