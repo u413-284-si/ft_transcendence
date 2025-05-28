@@ -49,6 +49,7 @@ export default class FriendsView extends AbstractView {
       html += /* HTML */ `
         <li
           class="bg-blue-800 p-4 rounded shadow-md flex justify-between items-center"
+          data-friend-id="${friend.id}"
         >
           <span class="flex-1 truncate">${escapeHTML(friend.username)}</span>
           <div class="flex items-center space-x-4">
@@ -57,7 +58,6 @@ export default class FriendsView extends AbstractView {
             >
             <button
               class="remove-friend-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-              data-friend-id="${friend.id}"
             >
               Remove
             </button>
@@ -87,7 +87,12 @@ export default class FriendsView extends AbstractView {
 
   private handleDeleteButton = async (event: Event) => {
     const target = event.currentTarget as HTMLButtonElement;
-    const friendId = Number(target.dataset.friendId);
+    const container = target.closest<HTMLElement>("[data-friend-id]");
+    if (!container) {
+      console.warn("Tried to delete, but container not found");
+      return;
+    }
+    const friendId = Number(container.dataset.friendId);
     if (!isNaN(friendId)) {
       try {
         await deleteFriend(friendId);
@@ -101,15 +106,18 @@ export default class FriendsView extends AbstractView {
   private handleFriendStatusChange = (event: Event) => {
     const customEvent = event as FriendStatusChangeEvent;
     const { userId, isOnline } = customEvent.detail;
-    const statusSpan = document.querySelector(
-      `.remove-friend-btn[data-friend-id="${userId}"]`
-    )?.previousElementSibling as HTMLElement | null;
-
-    if (statusSpan) {
-      statusSpan.textContent = isOnline ? "Online" : "Offline";
-      statusSpan.classList.toggle("text-green-500", isOnline);
-      statusSpan.classList.toggle("text-gray-400", !isOnline);
+    const container = document.querySelector<HTMLElement>(
+      `li[data-friend-id="${userId}"]`
+    );
+    if (!container) {
+      console.warn("Tried to update status, but container not found");
+      return;
     }
+    const statusSpan = container.querySelector(".online-status")!;
+
+    statusSpan.textContent = isOnline ? "Online" : "Offline";
+    statusSpan.classList.toggle("text-green-500", isOnline);
+    statusSpan.classList.toggle("text-gray-400", !isOnline);
   };
 
   unmount(): void {
