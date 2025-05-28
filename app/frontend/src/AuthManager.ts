@@ -1,5 +1,9 @@
 import { ApiError } from "./services/api.js";
 import { authAndDecode, userLogin } from "./services/authServices.js";
+import {
+  startOnlineStatusTracking,
+  stopOnlineStatusTracking
+} from "./services/onlineStatusServices.js";
 import { Token } from "./types/Token.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
@@ -30,10 +34,12 @@ export class AuthManager {
       this.authenticated = true;
       this.scheduleTokenValidation(token);
       this.registerActivityListeners();
+      startOnlineStatusTracking();
     } else {
       this.authenticated = false;
       this.clearRefreshTimer();
       this.removeActivityListeners();
+      stopOnlineStatusTracking();
     }
     this.notify();
   }

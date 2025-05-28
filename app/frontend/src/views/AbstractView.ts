@@ -15,6 +15,7 @@ export default abstract class AbstractView {
 						<a href="/newTournament" class="text-lg hover:text-blue-300" data-link>New Tournament</a>
 						<a href="/stats" class="text-lg hover:text-blue-300" data-link>Stats</a>
 						<a href="/settings" class="text-lg hover:text-blue-300" data-link>Settings</a>
+            <a href="/friends" class="text-lg hover:text-blue-300" data-link>Friends</a>
 					</div>
 			</nav>`;
   }
