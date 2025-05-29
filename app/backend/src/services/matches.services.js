@@ -1,8 +1,8 @@
 import prisma from "../prisma/prismaClient.js";
 
 const matchSelect = {
-  player1Id: true,
-  player2Id: true,
+  userId: true,
+  playedAs: true,
   player1Nickname: true,
   player2Nickname: true,
   player1Score: true,
@@ -17,8 +17,8 @@ const matchSelect = {
 };
 
 export async function createMatch(
-  player1Id,
-  player2Id,
+  userId,
+  playedAs,
   player1Nickname,
   player2Nickname,
   tournamentId,
@@ -27,8 +27,8 @@ export async function createMatch(
 ) {
   const match = await prisma.match.create({
     data: {
-      player1Id,
-      player2Id,
+      userId,
+      playedAs,
       player1Nickname,
       player2Nickname,
       tournamentId,
@@ -68,10 +68,10 @@ export async function getMatch(id) {
   return match;
 }
 
-export async function getUserMatches(id) {
+export async function getUserMatches(userId) {
   const matches = await prisma.match.findMany({
     where: {
-      OR: [{ player1Id: id }, { player2Id: id }]
+      userId: userId
     },
     select: matchSelect
   });

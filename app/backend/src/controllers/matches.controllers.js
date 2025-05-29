@@ -12,8 +12,8 @@ export async function createMatchHandler(request, reply) {
   const action = "Create match";
   try {
     const {
-      player1Id,
-      player2Id,
+      userId,
+      playedAs,
       player1Nickname,
       player2Nickname,
       tournamentId,
@@ -22,26 +22,25 @@ export async function createMatchHandler(request, reply) {
     } = request.body;
 
     const match = await createMatch(
-      player1Id,
-      player2Id,
+      userId,
+      playedAs,
       player1Nickname,
       player2Nickname,
       tournamentId,
       player1Score,
       player2Score
     );
+
     let stats = null;
-    if (player1Id !== null) {
-      await updateUserStats(
-        player1Id,
-        player1Score > player2Score ? true : false
-      );
-    } else if (player2Id !== null) {
-      await updateUserStats(
-        player2Id,
-        player2Score > player1Score ? true : false
+    if (userId !== null) {
+      const isPlayerOne = playedAs === "PLAYERONE";
+      stats = await updateUserStats(
+        userId,
+        (isPlayerOne ? player1Score : player2Score) >
+          (isPlayerOne ? player2Score : player1Score)
       );
     }
+
     const data = { match, stats };
     return reply
       .code(201)
