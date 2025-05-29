@@ -20,8 +20,7 @@ export class Tournament {
   ): Tournament {
     const bracket = Tournament.generateBracket(
       playerNicknames,
-      numberOfPlayers,
-      activeUserNickname
+      numberOfPlayers
     );
     return new Tournament(
       tournamentName,
@@ -34,8 +33,7 @@ export class Tournament {
 
   private static generateBracket(
     playerNicknames: string[],
-    numberOfPlayers: number,
-    activeUserNickname: string | null
+    numberOfPlayers: number
   ): BracketMatch[] {
     const totalRounds = Math.log2(numberOfPlayers);
     const bracket: BracketMatch[] = [];
@@ -83,9 +81,6 @@ export class Tournament {
 
       match.player1 = nickname1;
       match.player2 = nickname2;
-
-      match.player1IsActiveUser = nickname1 === activeUserNickname;
-      match.player2IsActiveUser = nickname2 === activeUserNickname;
     }
 
     return bracket;
@@ -105,10 +100,8 @@ export class Tournament {
 
       if (match.winnerSlot === 1) {
         nextMatch.player1 = winner;
-        nextMatch.player1IsActiveUser = winner === this.activeUserNickname;
       } else {
         nextMatch.player2 = winner;
-        nextMatch.player2IsActiveUser = winner === this.activeUserNickname;
       }
     }
 
@@ -145,6 +138,10 @@ export class Tournament {
       throw new Error("TournamentId is not set");
     }
     return this.tournamentId;
+  }
+
+  public getActiveUserNickname(): string | null {
+    return this.activeUserNickname;
   }
 
   public toJSON(): TournamentDTO {

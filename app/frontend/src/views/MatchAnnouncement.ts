@@ -20,13 +20,13 @@ export default class extends AbstractView {
     this.player1 = match.player1;
     this.player2 = match.player2;
     this.matchNumber = match.matchId;
-    if (match.player1IsActiveUser) {
-      this.activeUserRole = "player1";
-    } else if (match.player2IsActiveUser) {
-      this.activeUserRole = "player2";
-    } else {
-      this.activeUserRole = null;
-    }
+    const activeUserNickname = tournament.getActiveUserNickname();
+    this.activeUserRole =
+      this.player1 === activeUserNickname
+        ? "PLAYERONE"
+        : this.player2 === activeUserNickname
+          ? "PLAYERTWO"
+          : null;
   }
 
   async createHTML() {

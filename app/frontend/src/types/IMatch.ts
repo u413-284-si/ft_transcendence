@@ -4,8 +4,8 @@ export interface Match {
     id: number;
     name: string;
   } | null;
-  player1Id?: number | null;
-  player2Id?: number | null;
+  userId?: number | null;
+  playedAs?: string | null;
   player1Nickname: string;
   player2Nickname: string;
   player1Score: number;
@@ -21,6 +21,4 @@ export type BracketMatch = {
   winner: string | null;
   nextMatchId?: number;
   winnerSlot?: 1 | 2;
-  player1IsActiveUser?: boolean;
-  player2IsActiveUser?: boolean;
 };
