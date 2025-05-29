@@ -16,6 +16,8 @@ export default class extends AbstractView {
   async createHTML() {
     let nicknameInputs = "";
     for (let i = 1; i <= this.numberOfPlayers; i++) {
+      const isChecked = i === 1 ? "checked" : "";
+
       nicknameInputs += /* HTML */ `
         <div class="w-[800px] border border-gray-200 p-4 rounded shadow-sm">
           <label class="block mb-2 font-medium"> Player ${i} Nickname: </label>
@@ -26,7 +28,13 @@ export default class extends AbstractView {
           />
           <div class="mt-2">
             <label class="inline-flex items-center text-sm text-gray-600">
-              <input type="radio" name="activeUser" value="${i}" class="mr-2" />
+              <input
+                type="radio"
+                name="activeUser"
+                value="${i}"
+                class="mr-2"
+                ${isChecked}
+              />
               This is me
             </label>
           </div>
@@ -101,12 +109,11 @@ export default class extends AbstractView {
       form.querySelectorAll("span.error-message")
     );
     const nicknames = inputElements.map((input) => input.value);
-    let activeUserNickname: string | null = null;
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
-    if (activeUserNumber) {
-      activeUserNickname = formData.get(`player${activeUserNumber}`) as string;
-    }
+    const activeUserNickname = formData.get(
+      `player${activeUserNumber}`
+    ) as string;
     const tournament = Tournament.fromUsernames(
       nicknames,
       this.tournamentName,

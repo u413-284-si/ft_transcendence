@@ -6,7 +6,7 @@ export class Tournament {
     private tournamentName: string,
     private numberOfPlayers: number,
     private adminId: number,
-    private activeUserNickname: string | null,
+    private activeUserNickname: string,
     private bracket: BracketMatch[],
     private tournamentId?: number
   ) {}
@@ -15,7 +15,7 @@ export class Tournament {
     playerNicknames: string[],
     tournamentName: string,
     numberOfPlayers: number,
-    activeUserNickname: string | null,
+    activeUserNickname: string,
     adminId: number
   ): Tournament {
     const bracket = Tournament.generateBracket(

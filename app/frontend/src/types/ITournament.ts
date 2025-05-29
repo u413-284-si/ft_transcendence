@@ -3,6 +3,6 @@ export interface TournamentDTO {
   name: string;
   maxPlayers: number;
   adminId: number;
-  activeUserNickname: string | null;
+  activeUserNickname: string;
   bracket: string;
 }
