@@ -1,5 +1,8 @@
 import { ApiError } from "./services/api.js";
-import { authAndDecodeAccessToken, userLogin } from "./services/authServices.js";
+import {
+  authAndDecodeAccessToken,
+  userLogin
+} from "./services/authServices.js";
 import { Token } from "./types/Token.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
