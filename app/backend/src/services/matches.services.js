@@ -39,13 +39,13 @@ export async function createMatch(
     select: matchSelect
   });
   if (tournament?.id) {
-    const tournament = await prisma.tournament.findUniqueOrThrow({
+    const tournamentRecord = await prisma.tournament.findUniqueOrThrow({
       where: { id: tournament?.id }
     });
 
-    if (tournament && tournament.status === "CREATED") {
+    if (tournamentRecord && tournamentRecord.status === "CREATED") {
       await prisma.tournament.update({
-        where: { id: tournament.id },
+        where: { id: tournamentRecord.id },
         data: { status: "IN_PROGRESS" }
       });
     }
