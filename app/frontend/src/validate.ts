@@ -132,7 +132,7 @@ export function validatePassword(
   errorEl: HTMLElement
 ): boolean {
   const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{14,30}$/;
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$/;
 
   clearInvalid(inputEl, errorEl);
 
@@ -143,9 +143,9 @@ export function validatePassword(
 
   if (!validateAgainstRegex(inputEl.value, passwordRegex)) {
     markInvalid(
-      "Password must be 14-30 characters long and must contain at least one " +
+      "Password must be 10-64 characters long and must contain at least one " +
         "number, one uppercase and one lowercase letter and one of the " +
-        "following special characters inside brackets: [-!?_$.].",
+        "following special characters inside brackets: [@$!%*?&].",
       inputEl,
       errorEl
     );
