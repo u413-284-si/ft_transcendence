@@ -62,7 +62,6 @@ export async function loginUserHandler(request, reply) {
       userDataAccessToken,
       userDataRefreshToken
     );
-    request.user = userDataAccessToken;
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
