@@ -156,7 +156,7 @@ export const createMatchResponseSchema = {
       type: "object",
       properties: {
         match: { $ref: "matchSchema" },
-        stats: { $ref: "userStatsSchema" }
+        stats: { $ref: "createUserStatsResponseSchema" }
       },
       required: ["match", "stats"],
       additionalProperties: false
