@@ -7,7 +7,7 @@ import {
   validatePassword,
   validateConfirmPassword
 } from "../validate.js";
-import { auth } from "../AuthManager.js";
+import { registerUser } from "../services/userServices.js";
 import { router } from "../routing/Router.js";
 
 export default class LoginView extends AbstractView {
@@ -101,7 +101,7 @@ export default class LoginView extends AbstractView {
     return "register";
   }
 
-  async validateAndRegisterUser(event: Event) {
+  private async validateAndRegisterUser(event: Event) {
     event.preventDefault();
     const emailEL = document.getElementById("email") as HTMLInputElement;
     const emailErrorEl = document.getElementById("email-error") as HTMLElement;
@@ -135,6 +135,7 @@ export default class LoginView extends AbstractView {
     )
       return;
 
+    await registerUser(emailEL.value, userEl.value, passwordEl.value);
     router.navigate("/login", false);
   }
 }
