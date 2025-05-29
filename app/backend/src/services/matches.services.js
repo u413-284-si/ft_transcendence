@@ -8,9 +8,9 @@ const matchSelect = {
   player1Score: true,
   player2Score: true,
   date: true,
-  tournamentId: true,
   tournament: {
     select: {
+      id: true,
       name: true
     }
   }
@@ -21,9 +21,9 @@ export async function createMatch(
   playedAs,
   player1Nickname,
   player2Nickname,
-  tournamentId,
   player1Score,
-  player2Score
+  player2Score,
+  tournament
 ) {
   const match = await prisma.match.create({
     data: {
@@ -33,14 +33,14 @@ export async function createMatch(
       player2Nickname,
       player1Score,
       player2Score,
-      tournamentId,
+      tournamentId: tournament?.id || null,
       date: new Date()
     },
     select: matchSelect
   });
-  if (tournamentId) {
+  if (tournament?.id) {
     const tournament = await prisma.tournament.findUniqueOrThrow({
-      where: { id: tournamentId }
+      where: { id: tournament?.id }
     });
 
     if (tournament && tournament.status === "CREATED") {

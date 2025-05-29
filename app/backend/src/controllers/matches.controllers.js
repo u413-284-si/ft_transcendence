@@ -16,9 +16,9 @@ export async function createMatchHandler(request, reply) {
       playedAs,
       player1Nickname,
       player2Nickname,
-      tournamentId,
       player1Score,
-      player2Score
+      player2Score,
+      tournament
     } = request.body;
 
     const match = await createMatch(
@@ -26,9 +26,9 @@ export async function createMatchHandler(request, reply) {
       playedAs,
       player1Nickname,
       player2Nickname,
-      tournamentId,
       player1Score,
-      player2Score
+      player2Score,
+      tournament
     );
 
     let stats = null;

@@ -169,7 +169,9 @@ async function endGame(
     }
 
     await createMatch({
-      tournamentId: tournamentId,
+      tournament: tournamentId
+        ? { id: tournamentId, name: tournament!.getTournamentName() }
+        : null,
       userId: activeUserRole ? globalToken?.id : null,
       playedAs: activeUserRole,
       player1Nickname: gameState.player1,
