@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
+import { globalToken } from "../main.js";
 
 export default class extends AbstractView {
   constructor() {
@@ -26,7 +27,7 @@ export default class extends AbstractView {
             name="player${i}"
             id="nickname${i}"
             placeholder="Enter your nickname"
-            class="border border-blue-500 focus:ring-2 focus:ring-blue-400 w-full px-2 py-1 mt-1 rounded"
+            class="border border-blue-500 w-full px-2 py-1 mt-1 rounded"
           />
           <div class="mt-2">
             <label class="inline-flex items-center text-sm text-gray-600">
@@ -37,7 +38,7 @@ export default class extends AbstractView {
                 class="mr-2"
                 ${isChecked}
               />
-              This is me
+              I will play as Player ${i}
             </label>
           </div>
           <span
@@ -54,6 +55,9 @@ export default class extends AbstractView {
         id="register-form"
         class="flex flex-col justify-center items-center h-screen gap-4"
       >
+        <p class="text-sm text-gray-500 mb-2 text-center">
+          Select which player will be controlled by ${globalToken?.username}.
+        </p>
         ${nicknameInputs}
         <br /><br />
         <div class="w-[300px]">

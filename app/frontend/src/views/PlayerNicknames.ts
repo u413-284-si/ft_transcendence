@@ -3,6 +3,7 @@ import { Tournament } from "../Tournament.js";
 import MatchAnnouncement from "./MatchAnnouncement.js";
 import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
+import { globalToken } from "../main.js";
 
 export default class extends AbstractView {
   constructor(
@@ -24,6 +25,8 @@ export default class extends AbstractView {
           <input
             type="text"
             name="player${i}"
+            id="nickname${i}"
+            placeholder="Enter your nickname"
             class="border border-gray-300 rounded px-2 py-1 w-full"
           />
           <div class="mt-2">
@@ -35,7 +38,7 @@ export default class extends AbstractView {
                 class="mr-2"
                 ${isChecked}
               />
-              This is me
+              I will play as Player ${i}
             </label>
           </div>
           <span
@@ -63,6 +66,9 @@ export default class extends AbstractView {
         id="nicknames-form"
         class="flex flex-col justify-center items-center h-screen gap-4"
       >
+        <p class="text-sm text-gray-500 mb-2 text-center">
+          Select which player will be controlled by ${globalToken?.username}.
+        </p>
         ${nicknameInputs}
         <div>
           <button
