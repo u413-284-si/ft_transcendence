@@ -56,7 +56,7 @@ export default class extends AbstractView {
         <br /><br />
         <div id="player-options" class="rounded px-2 py-1 w-[300px]">
           <label class="block">
-            <input type="radio" name="players" value="4" /> 4 Players
+            <input type="radio" name="players" value="4" checked /> 4 Players
           </label>
           <label class="block">
             <input type="radio" name="players" value="8" /> 8 Players
