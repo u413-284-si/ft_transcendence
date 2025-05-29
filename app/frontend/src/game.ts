@@ -168,13 +168,10 @@ async function endGame(
       await updateTournamentBracket(tournament);
     }
 
-    const player1Id = activeUserRole === "player1" ? globalToken?.id : null;
-    const player2Id = activeUserRole === "player2" ? globalToken?.id : null;
-
     await createMatch({
       tournamentId: tournamentId,
-      player1Id: player1Id,
-      player2Id: player2Id,
+      userId: activeUserRole ? globalToken?.id : null,
+      playedAs: activeUserRole,
       player1Nickname: gameState.player1,
       player2Nickname: gameState.player2,
       player1Score: gameState.player1Score,

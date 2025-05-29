@@ -90,26 +90,26 @@ export default class extends AbstractView {
 
       matches.forEach((match) => {
         console.log("activeUserId:", activeUserId);
-        console.log("match.player1Id:", match.player1Id);
-        console.log("match.player2Id:", match.player2Id);
+        console.log("match.userId:", match.userId);
+        console.log("match.playedAs:", match.playedAs);
         console.log("match.tournament:", match.tournament);
 
-        const isPlayer1ActiveUser = match.player1Id === activeUserId;
-        const isPlayer2ActiveUser = match.player2Id === activeUserId;
+        const isPlayerOne = match.playedAs === "PLAYERONE";
 
-        let result = "-";
-        if (isPlayer1ActiveUser) {
-          result = match.player1Score > match.player2Score ? "Won" : "Lost";
-        } else if (isPlayer2ActiveUser) {
-          result = match.player2Score > match.player1Score ? "Won" : "Lost";
-        }
+        const result = isPlayerOne
+          ? match.player1Score > match.player2Score
+            ? "Won"
+            : "Lost"
+          : match.player2Score > match.player1Score
+            ? "Won"
+            : "Lost";
 
-        const player1Display = isPlayer1ActiveUser
+        const player1Display = isPlayerOne
           ? `${match.player1Nickname} (You)`
           : match.player1Nickname;
-        const player2Display = isPlayer2ActiveUser
-          ? `${match.player2Nickname} (You)`
-          : match.player2Nickname;
+        const player2Display = isPlayerOne
+          ? match.player2Nickname
+          : `${match.player2Nickname} (You)`;
         const tournamentDisplay =
           match.tournament?.id && match.tournament?.name
             ? `ID: #${match.tournament.id} - Name: ${match.tournament.name}`
