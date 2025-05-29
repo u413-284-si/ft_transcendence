@@ -1,12 +1,8 @@
 import prisma from "../prisma/prismaClient.js";
 
-export const accessTokenSelect = {
+const tokenSelect = {
   id: true,
   username: true
-};
-
-export const refreshTokenSelect = {
-  id: true
 };
 
 const userSelect = {
@@ -71,12 +67,12 @@ export async function deleteUser(id) {
   return user;
 }
 
-export async function getTokenData(identifier, identifierType, selectType) {
+export async function getTokenData(identifier, identifierType) {
   const user = await prisma.user.findFirstOrThrow({
     where: {
       [identifierType]: identifier
     },
-    select: selectType
+    select: tokenSelect
   });
 
   return user;
