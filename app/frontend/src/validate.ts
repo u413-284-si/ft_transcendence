@@ -151,22 +151,78 @@ export function validatePassword(
   return true;
 }
 
-export function validateUsernameOrEmail(
+export function validateConfirmPassword(
+  inputElOne: HTMLInputElement,
+  inputElTwo: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
+  if (isEmptyString(inputElTwo.value)) {
+    markInvalid("Please re-enter your password.", inputElTwo, errorEl);
+    return false;
+  }
+
+  console.log("passwords: ", inputElOne.value, inputElTwo.value);
+  if (inputElOne.value !== inputElTwo.value) {
+    markInvalid("Passwords do not match.", inputElTwo, errorEl);
+    return false;
+  }
+
+  clearInvalid(inputElTwo, errorEl);
+  return true;
+}
+
+export function validateUsername(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
   const usernameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
+
+  if (isEmptyString(inputEl.value)) {
+    markInvalid("Please enter a username.", inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(inputEl.value, usernameRegex)) {
+    markInvalid(
+      "Username must be 3-20 characters long and can only include letters, numbers, or [-!?_$.]",
+      inputEl,
+      errorEl
+    );
+    return false;
+  }
+  clearInvalid(inputEl, errorEl);
+  return true;
+}
+
+export function validateEmail(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+  if (isEmptyString(inputEl.value)) {
+    markInvalid("Please enter an email.", inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(inputEl.value, emailRegex)) {
+    markInvalid("Email must be a valid email address.", inputEl, errorEl);
+    return false;
+  }
+  clearInvalid(inputEl, errorEl);
+  return true;
+}
+
+export function validateUsernameOrEmail(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
   if (isEmptyString(inputEl.value)) {
     markInvalid("Please enter a username or email address.", inputEl, errorEl);
     return false;
   }
 
-  if (
-    !validateAgainstRegex(inputEl.value, usernameRegex) &&
-    !validateAgainstRegex(inputEl.value, emailRegex)
-  ) {
+  if (!validateUsername(inputEl, errorEl) && !validateEmail(inputEl, errorEl)) {
     markInvalid(
       "Please enter a valid username (3-20 characters long) or email address",
       inputEl,
