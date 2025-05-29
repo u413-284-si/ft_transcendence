@@ -13,7 +13,7 @@ PRAGMA foreign_keys=OFF;
 CREATE TABLE "new_matches" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "userId" INTEGER,
-    "playedAs" TEXT DEFAULT 'PLAYERONE',
+    "playedAs" TEXT,
     "player1Nickname" TEXT NOT NULL,
     "player2Nickname" TEXT NOT NULL,
     "player1Score" INTEGER NOT NULL,

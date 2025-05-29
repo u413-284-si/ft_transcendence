@@ -79,7 +79,7 @@ model Friends {
 model Match {
     id               Int        @id @default(autoincrement())
     userId           Int?
-    playedAs         PlayedAs?  @default(PLAYERONE)
+    playedAs         PlayedAs?
     player1Nickname  String
     player2Nickname  String
     player1Score     Int
