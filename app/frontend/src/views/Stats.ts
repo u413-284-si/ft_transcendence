@@ -110,10 +110,9 @@ export default class extends AbstractView {
         const player2Display = isPlayerOne
           ? match.player2Nickname
           : `${match.player2Nickname} (You)`;
-        const tournamentDisplay =
-          match.tournament?.id && match.tournament?.name
-            ? `ID: #${match.tournament.id} - Name: ${match.tournament.name}`
-            : "N/A";
+        const tournamentDisplay = match.tournament?.name
+          ? `Name: ${match.tournament.name}`
+          : "N/A";
 
         const row = document.createElement("tr");
         row.innerHTML = /* HTML */ `
