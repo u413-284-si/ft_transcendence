@@ -33,7 +33,7 @@ export default class extends AbstractView {
             <label class="inline-flex items-center text-sm text-gray-600">
               <input
                 type="radio"
-                name="activeUser"
+                name="userChoice"
                 value="${i}"
                 class="mr-2"
                 ${isChecked}
@@ -97,12 +97,12 @@ export default class extends AbstractView {
     const nicknames = inputElements.map((input) => input.value);
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
-    const activeUserNumber = formData.get("activeUser");
+    const userNumber = formData.get("userChoice");
 
     const gameView = new GameView(
       nicknames[0],
       nicknames[1],
-      activeUserNumber == "1" ? "PLAYERONE" : "PLAYERTWO",
+      userNumber == "1" ? "PLAYERONE" : "PLAYERTWO",
       GameType.single,
       null
     );

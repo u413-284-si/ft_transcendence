@@ -94,15 +94,16 @@ model Match {
 }
 
 model Tournament {
-    id         Int              @id @default(autoincrement())
-    name       String
-    maxPlayers Int              @default(4)
-    isPrivate  Boolean          @default(false)
-    status     TournamentStatus @default(CREATED)
-    adminId    Int
-    bracket    Json
+    id            Int              @id @default(autoincrement())
+    name          String
+    maxPlayers    Int              @default(4)
+    isPrivate     Boolean          @default(false)
+    status        TournamentStatus @default(CREATED)
+    userId        Int
+    userNickname  String           @default("Mister Bombastic")
+    bracket       Json
 
-    admin   User    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     matches Match[]
 
     @@map("tournaments")

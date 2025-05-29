@@ -12,10 +12,16 @@ import { handlePrismaError } from "../utils/error.js";
 export async function createTournamentHandler(request, reply) {
   const action = "Create tournament";
   try {
-    const adminId = request.user.id;
-    const { name, maxPlayers, bracket } = request.body;
+    const userId = request.user.id;
+    const { name, maxPlayers, userNickname, bracket } = request.body;
 
-    const data = await createTournament(name, maxPlayers, adminId, bracket);
+    const data = await createTournament(
+      name,
+      maxPlayers,
+      userId,
+      userNickname,
+      bracket
+    );
     return reply
       .code(201)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -66,8 +72,8 @@ export async function patchTournamentHandler(request, reply) {
   const action = "Patch tournament";
   try {
     const id = parseInt(request.params.id, 10);
-    const adminId = parseInt(request.user.id, 10);
-    const data = await updateTournament(id, adminId, request.body);
+    const userId = parseInt(request.user.id, 10);
+    const data = await updateTournament(id, userId, request.body);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -100,8 +106,8 @@ export async function deleteTournamentHandler(request, reply) {
   const action = "Delete Tournament";
   try {
     const id = parseInt(request.params.id, 10);
-    const adminId = parseInt(request.user.id, 10);
-    const data = await deleteTournament(id, adminId);
+    const userId = parseInt(request.user.id, 10);
+    const data = await deleteTournament(id, userId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });

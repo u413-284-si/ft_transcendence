@@ -20,11 +20,11 @@ export default class extends AbstractView {
     this.player1 = match.player1;
     this.player2 = match.player2;
     this.matchNumber = match.matchId;
-    const activeUserNickname = tournament.getActiveUserNickname();
+    const userNickname = tournament.getUserNickname();
     this.activeUserRole =
-      this.player1 === activeUserNickname
+      this.player1 === userNickname
         ? "PLAYERONE"
-        : this.player2 === activeUserNickname
+        : this.player2 === userNickname
           ? "PLAYERTWO"
           : null;
   }

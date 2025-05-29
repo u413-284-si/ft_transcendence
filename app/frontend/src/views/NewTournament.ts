@@ -96,8 +96,8 @@ export default class extends AbstractView {
       const tournament = new Tournament(
         activeTournament.name,
         activeTournament.maxPlayers,
-        activeTournament.adminId,
-        activeTournament.activeUserNickname,
+        activeTournament.userId,
+        activeTournament.userNickname,
         bracket,
         activeTournament.id
       );

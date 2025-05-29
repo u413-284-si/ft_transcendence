@@ -5,8 +5,8 @@ export class Tournament {
   constructor(
     private tournamentName: string,
     private numberOfPlayers: number,
-    private adminId: number,
-    private activeUserNickname: string,
+    private userId: number,
+    private userNickname: string,
     private bracket: BracketMatch[],
     private tournamentId?: number
   ) {}
@@ -15,8 +15,8 @@ export class Tournament {
     playerNicknames: string[],
     tournamentName: string,
     numberOfPlayers: number,
-    activeUserNickname: string,
-    adminId: number
+    userNickname: string,
+    userId: number
   ): Tournament {
     const bracket = Tournament.generateBracket(
       playerNicknames,
@@ -25,8 +25,8 @@ export class Tournament {
     return new Tournament(
       tournamentName,
       numberOfPlayers,
-      adminId,
-      activeUserNickname,
+      userId,
+      userNickname,
       bracket
     );
   }
@@ -140,16 +140,16 @@ export class Tournament {
     return this.tournamentId;
   }
 
-  public getActiveUserNickname(): string | null {
-    return this.activeUserNickname;
+  public getUserNickname(): string | null {
+    return this.userNickname;
   }
 
   public toJSON(): TournamentDTO {
     return {
       name: this.tournamentName,
       maxPlayers: this.numberOfPlayers,
-      adminId: this.adminId,
-      activeUserNickname: this.activeUserNickname,
+      userId: this.userId,
+      userNickname: this.userNickname,
       bracket: JSON.stringify(this.bracket)
     };
   }

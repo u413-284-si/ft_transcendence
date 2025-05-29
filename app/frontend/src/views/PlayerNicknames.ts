@@ -33,7 +33,7 @@ export default class extends AbstractView {
             <label class="inline-flex items-center text-sm text-gray-600">
               <input
                 type="radio"
-                name="activeUser"
+                name="userChoice"
                 value="${i}"
                 class="mr-2"
                 ${isChecked}
@@ -107,7 +107,7 @@ export default class extends AbstractView {
     event.preventDefault();
     const form = document.getElementById("nicknames-form") as HTMLFormElement;
     const formData = new FormData(form);
-    const activeUserNumber = formData.get("activeUser");
+    const userNumber = formData.get("userChoice");
     const inputElements: HTMLInputElement[] = Array.from(
       form.querySelectorAll("input[type='text']")
     );
@@ -117,14 +117,12 @@ export default class extends AbstractView {
     const nicknames = inputElements.map((input) => input.value);
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
-    const activeUserNickname = formData.get(
-      `player${activeUserNumber}`
-    ) as string;
+    const userNickname = formData.get(`player${userNumber}`) as string;
     const tournament = Tournament.fromUsernames(
       nicknames,
       this.tournamentName,
       this.numberOfPlayers,
-      activeUserNickname,
+      userNickname,
       1 // FIXME: Hard coded username
     );
 
