@@ -15,7 +15,7 @@ export default class LoginView extends AbstractView {
     return /* HTML */ `
       <form
         id="login-form"
-        class="flex flex-col justify-center items-center h-screen gap-4"
+        class="flex flex-col justify-center items-center gap-4"
       >
         <div class="w-[300px]">
           <label for="usernameOrEmail">Username or Email:</label><br />

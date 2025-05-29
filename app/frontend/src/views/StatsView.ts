@@ -14,11 +14,7 @@ export default class StatsView extends AbstractView {
   private matchesHTML: string = "";
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
-
     return /* HTML */ `
-      ${navbarHTML}
       <h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
       <div class="overflow-x-auto">
         <table
@@ -59,7 +55,6 @@ export default class StatsView extends AbstractView {
           </tbody>
         </table>
       </div>
-      ${footerHTML}
     `;
   }
 
