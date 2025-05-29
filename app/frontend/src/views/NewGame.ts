@@ -11,41 +11,50 @@ export default class extends AbstractView {
   async createHTML() {
     const navbarHTML = await this.createNavbar();
     const footerHTML = await this.createFooter();
+
+    let nicknameInputs = "";
+    for (let i = 1; i <= 2; i++) {
+      const isChecked = i === 1 ? "checked" : "";
+
+      nicknameInputs += /* HTML */ `
+        <div class="w-[300px] border border-gray-200 p-4 rounded shadow-sm">
+          <label class="font-semibold text-blue-600">
+            Player ${i} Nickname:
+          </label>
+          <input
+            type="text"
+            name="player${i}"
+            id="nickname${i}"
+            placeholder="Enter your nickname"
+            class="border border-blue-500 focus:ring-2 focus:ring-blue-400 w-full px-2 py-1 mt-1 rounded"
+          />
+          <div class="mt-2">
+            <label class="inline-flex items-center text-sm text-gray-600">
+              <input
+                type="radio"
+                name="activeUser"
+                value="${i}"
+                class="mr-2"
+                ${isChecked}
+              />
+              This is me
+            </label>
+          </div>
+          <span
+            id="nickname-error${i}"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
+        </div>
+      `;
+    }
+
     return /* HTML */ `
       ${navbarHTML}
       <form
         id="register-form"
         class="flex flex-col justify-center items-center h-screen gap-4"
       >
-        <div class="w-[300px]">
-          <label for="nickname1" class="font-semibold text-blue-600">
-            Player 1 Nickname (You):
-          </label>
-          <input
-            type="text"
-            id="nickname1"
-            placeholder="Enter your nickname"
-            class="border border-blue-500 focus:ring-2 focus:ring-blue-400 w-full px-2 py-1 mt-1 rounded"
-          />
-          <span
-            id="nickname-error1"
-            class="error-message text-red-600 text-sm mt-1 hidden"
-          ></span>
-        </div>
-        <br /><br />
-        <div class="w-[300px]">
-          <label for="nickname2">Player 2 Nickname:</label>
-          <input
-            type="text"
-            id="nickname2"
-            placeholder="Enter opponent's nickname"
-            class="border w-full px-2 py-1 mt-1 rounded"
-          />
-          <span
-            id="nickname-error2"
-            class="error-message text-red-600 text-sm mt-1 hidden"
-          ></span>
-        </div>
+        ${nicknameInputs}
         <br /><br />
         <div class="w-[300px]">
           <button
@@ -74,6 +83,7 @@ export default class extends AbstractView {
   validateAndStartGame(event: Event) {
     event.preventDefault();
     const form = document.getElementById("register-form") as HTMLFormElement;
+    const formData = new FormData(form);
     const inputElements: HTMLInputElement[] = Array.from(
       form.querySelectorAll("input[type='text']")
     );
@@ -83,11 +93,12 @@ export default class extends AbstractView {
     const nicknames = inputElements.map((input) => input.value);
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
+    const activeUserNumber = formData.get("activeUser");
 
     const gameView = new GameView(
       nicknames[0],
       nicknames[1],
-      "player1",
+      activeUserNumber == "1" ? "PLAYERONE" : "PLAYERTWO",
       GameType.single,
       null
     );
