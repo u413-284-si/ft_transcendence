@@ -41,6 +41,14 @@ export async function createUserHandler(request, reply) {
       .code(201)
       .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
+    if (err.code === "P2002") {
+      return httpError(
+        reply,
+        409,
+        createResponseMessage(action, false),
+        "Email or username already exists"
+      );
+    }
     request.log.error(
       { err, body: request.body },
       `createUserHandler: ${createResponseMessage(action, false)}`

@@ -9,6 +9,7 @@ import {
 } from "../validate.js";
 import { registerUser } from "../services/userServices.js";
 import { router } from "../routing/Router.js";
+import { ApiError } from "../services/api.js";
 
 export default class LoginView extends AbstractView {
   constructor() {
@@ -135,7 +136,14 @@ export default class LoginView extends AbstractView {
     )
       return;
 
-    await registerUser(emailEL.value, userEl.value, passwordEl.value);
+    try {
+      await registerUser(emailEL.value, userEl.value, passwordEl.value);
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 409) {
+        alert("Email or username already exists");
+        return;
+      }
+    }
     router.navigate("/login", false);
   }
 }
