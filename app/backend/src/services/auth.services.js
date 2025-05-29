@@ -64,17 +64,13 @@ export async function getTokenHash(userId) {
   return authentication.refreshToken;
 }
 
-export async function createAuthTokens(
-  reply,
-  userDataAccessToken,
-  userDataRefreshToken
-) {
-  const accessToken = await createAccessToken(reply, userDataAccessToken);
-  const refreshToken = await createRefreshToken(reply, userDataRefreshToken);
+export async function createAuthTokens(reply, payload) {
+  const accessToken = await createAccessToken(reply, payload);
+  const refreshToken = await createRefreshToken(reply, { id: payload.id });
 
   const newHashedRefreshToken = await createHash(refreshToken);
 
-  await updateUserRefreshToken(userDataRefreshToken.id, newHashedRefreshToken);
+  await updateUserRefreshToken(payload.id, newHashedRefreshToken);
 
   return { accessToken, refreshToken };
 }

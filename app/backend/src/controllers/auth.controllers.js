@@ -5,11 +5,7 @@ import {
   createAuthTokens,
   getTokenHash
 } from "../services/auth.services.js";
-import {
-  getTokenData,
-  accessTokenSelect,
-  refreshTokenSelect
-} from "../services/users.services.js";
+import { getTokenData } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
@@ -20,33 +16,10 @@ export async function loginUserHandler(request, reply) {
   try {
     const { usernameOrEmail, password } = request.body;
 
-    let userDataAccessToken;
-    let userDataRefreshToken;
-    if (usernameOrEmail.includes("@")) {
-      userDataAccessToken = await getTokenData(
-        usernameOrEmail,
-        "email",
-        accessTokenSelect
-      );
-      userDataRefreshToken = await getTokenData(
-        usernameOrEmail,
-        "email",
-        refreshTokenSelect
-      );
-    } else {
-      userDataAccessToken = await getTokenData(
-        usernameOrEmail,
-        "username",
-        accessTokenSelect
-      );
-      userDataRefreshToken = await getTokenData(
-        usernameOrEmail,
-        "username",
-        refreshTokenSelect
-      );
-    }
+    const identifier = usernameOrEmail.includes("@") ? "email" : "username";
+    const payload = await getTokenData(usernameOrEmail, identifier);
 
-    const hashedPassword = await getPasswordHash(userDataAccessToken.id);
+    const hashedPassword = await getPasswordHash(payload.id);
 
     if (!(await verifyHash(hashedPassword, password))) {
       return httpError(
@@ -59,14 +32,13 @@ export async function loginUserHandler(request, reply) {
 
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
-      userDataAccessToken,
-      userDataRefreshToken
+      payload
     );
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: userDataAccessToken.username }
+        data: { username: payload.username }
       });
   } catch (err) {
     request.log.error(
@@ -118,10 +90,9 @@ export async function authRefreshHandler(request, reply) {
     const userId = userDataRefreshToken.id;
 
     const hashedRefreshToken = await getTokenHash(userId);
-    const userDataAccessToken = await getTokenData(
+    const payload = await getTokenData(
       userId,
       "id",
-      accessTokenSelect
     );
 
     if (!(await verifyHash(hashedRefreshToken, token))) {
@@ -135,8 +106,7 @@ export async function authRefreshHandler(request, reply) {
 
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
-      userDataAccessToken,
-      userDataRefreshToken
+	  payload
     );
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
