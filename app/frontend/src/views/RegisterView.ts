@@ -1,7 +1,12 @@
 import AbstractView from "./AbstractView.js";
 // FIXME: activate when password policy is applied
 //import { validatePassword, validateUsernameOrEmail } from "../validate.js";
-import { validateUsernameOrEmail } from "../validate.js";
+import {
+  validateEmail,
+  validateUsername,
+  validatePassword,
+  validateConfirmPassword
+} from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
 
@@ -14,7 +19,7 @@ export default class LoginView extends AbstractView {
   createHTML() {
     return /* HTML */ `
       <form
-        id="login-form"
+        id="register-form"
         class="flex flex-col justify-center items-center gap-4"
       >
         <h1>Register Here</h1>
@@ -57,6 +62,19 @@ export default class LoginView extends AbstractView {
             class="error-message text-red-600 text-sm mt-1 hidden"
           ></span>
         </div>
+        <div class="w-[300px]">
+          <label for="confirm-password">Confirm Password:</label><br />
+          <input
+            id="confirm-password"
+            name="confirm-password"
+            type="password"
+            class="w-full border border-gray-300 rounded px-2 py-1 transition-all duration-300"
+          />
+          <span
+            id="confirm-password-error"
+            class="error-message text-red-600 text-sm mt-1 hidden"
+          ></span>
+        </div>
         <div>
           <button type="submit" class="border-2 border-white rounded-sm p-2">
             Register
@@ -69,7 +87,9 @@ export default class LoginView extends AbstractView {
   protected addListeners() {
     document
       .getElementById("register-form")
-      ?.addEventListener("submit", (event) => this.validateAndLoginUser(event));
+      ?.addEventListener("submit", (event) =>
+        this.validateAndRegisterUser(event)
+      );
   }
 
   async render() {
@@ -81,26 +101,40 @@ export default class LoginView extends AbstractView {
     return "register";
   }
 
-  async validateAndLoginUser(event: Event) {
+  async validateAndRegisterUser(event: Event) {
     event.preventDefault();
-    const userEl = document.getElementById(
-      "usernameOrEmail"
-    ) as HTMLInputElement;
+    const emailEL = document.getElementById("email") as HTMLInputElement;
+    const emailErrorEl = document.getElementById("email-error") as HTMLElement;
+
+    const userEl = document.getElementById("username") as HTMLInputElement;
     const userErrorEl = document.getElementById(
-      "usernameOrEmail-error"
+      "username-error"
     ) as HTMLElement;
+
     const passwordEl = document.getElementById("password") as HTMLInputElement;
-    // FIXME: activate when password policy is applied
-    // const passwordErrorEl = document.getElementById(
-    //   "password-error"
-    // ) as HTMLElement;
+    const passwordErrorEl = document.getElementById(
+      "password-error"
+    ) as HTMLElement;
 
-    if (!validateUsernameOrEmail(userEl, userErrorEl)) return;
-    // FIXME: activate when password policy is applied
-    // if (!validatePassword(passwordEl, passwordErrorEl)) return;
+    const confirmPasswordEl = document.getElementById(
+      "confirm-password"
+    ) as HTMLInputElement;
+    const confirmPasswordErrorEl = document.getElementById(
+      "confirm-password-error"
+    ) as HTMLElement;
 
-    const isAllowed = await auth.login(userEl.value, passwordEl.value);
-    if (!isAllowed) return;
-    router.navigate("/home", false);
+    if (
+      !validateEmail(emailEL, emailErrorEl) ||
+      !validateUsername(userEl, userErrorEl) ||
+      !validatePassword(passwordEl, passwordErrorEl) ||
+      !validateConfirmPassword(
+        passwordEl,
+        confirmPasswordEl,
+        confirmPasswordErrorEl
+      )
+    )
+      return;
+
+    router.navigate("/login", false);
   }
 }
