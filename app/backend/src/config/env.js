@@ -6,7 +6,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const schema = {
   type: "object",
-  required: ["PORT", "LOG_LEVEL", "NODE_ENV", "DB_FILE"],
+  required: [
+    "PORT",
+    "LOG_LEVEL",
+    "NODE_ENV",
+    "DB_FILE",
+    "JWT_ACCESS_TOKEN_SECRET",
+    "JWT_REFRESH_TOKEN_SECRET",
+    "ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS",
+    "REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS"
+  ],
   properties: {
     NODE_ENV: {
       type: "string",
@@ -25,6 +34,22 @@ const schema = {
     DB_FILE: {
       type: "string",
       default: "pong.db"
+    },
+    JWT_ACCESS_TOKEN_SECRET: {
+      type: "string",
+      default: "access_secret"
+    },
+    JWT_REFRESH_TOKEN_SECRET: {
+      type: "string",
+      default: "refresh_secret"
+    },
+    ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS: {
+      type: "string",
+      default: "900000"
+    },
+    REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS: {
+      type: "string",
+      default: "86400000"
     }
   }
 };
@@ -40,7 +65,11 @@ const envConfig = {
   port: config.PORT,
   logLevel: config.LOG_LEVEL,
   nodeEnv: config.NODE_ENV,
-  dbFile: config.DB_FILE
+  dbFile: config.DB_FILE,
+  jwtAccessTokenSecret: config.JWT_ACCESS_TOKEN_SECRET,
+  jwtRefreshTokenSecret: config.JWT_REFRESH_TOKEN_SECRET,
+  accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
+  refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS
 };
 
 export default envConfig;
