@@ -1,55 +1,43 @@
 import { updatePaddlePositions } from "./input.js";
 import { draw } from "./draw.js";
 import { GameState } from "./types/IGameState.js";
-import NewGame from "./views/NewGame.js";
-import { GameType, GameKey } from "./views/GameView.js";
+import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
-import MatchAnnouncement from "./views/MatchAnnouncement.js";
-import ResultsView from "./views/ResultsView.js";
-import {
-  setTournamentFinished,
-  updateTournamentBracket
-} from "./services/tournamentService.js";
+import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { globalToken } from "./main.js";
+import { auth } from "./AuthManager.js";
+import { GameType } from "./views/GameView.js";
+
+let isAborted: boolean = false;
+
+export function getIsAborted(): boolean {
+  return isAborted;
+}
+
+export function setIsAborted(value: boolean) {
+  isAborted = value;
+}
 
 export async function startGame(
-  player1: string,
-  player2: string,
+  nickname1: string,
+  nickname2: string,
   activeUserRole: string | null,
-  type: GameType,
-  keys: Record<GameKey, boolean>,
-  controller: AbortController,
-  tournament: Tournament | null = null
+  gameType: GameType,
+  tournament: Tournament | null,
+  keys: Record<GameKey, boolean>
 ) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
 
-  const gameState = initGameState(canvas, player1, player2, keys);
+  setIsAborted(false);
+  const gameState = initGameState(canvas, nickname1, nickname2, keys);
   await new Promise<void>((resolve) => {
     gameLoop(canvas, ctx, gameState, resolve);
   });
-  await endGame(gameState, tournament, activeUserRole);
-  controller.abort();
-  if (type == GameType.single) {
-    const newGameView = new NewGame();
-    await newGameView.render();
-  } else if (type == GameType.tournament) {
-    if (tournament) {
-      if (tournament.getNextMatchToPlay()) {
-        const matchAnnouncementView = new MatchAnnouncement(tournament);
-        return await matchAnnouncementView.render();
-      }
-      try {
-        await setTournamentFinished(tournament.getId());
-        const resultsView = new ResultsView(tournament);
-        resultsView.render();
-      } catch (error) {
-        console.error(error);
-        // show error page
-      }
-    }
+  if (getIsAborted()) {
+    return;
   }
+  await endGame(gameState, tournament, activeUserRole);
 }
 
 function initGameState(
@@ -172,7 +160,7 @@ async function endGame(
       tournament: tournamentId
         ? { id: tournamentId, name: tournament!.getTournamentName() }
         : null,
-      userId: activeUserRole ? globalToken?.id : null,
+      userId: activeUserRole ? auth.getToken().id : null,
       playedAs: activeUserRole,
       player1Nickname: gameState.player1,
       player2Nickname: gameState.player2,

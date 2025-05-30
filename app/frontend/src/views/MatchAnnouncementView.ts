@@ -1,10 +1,12 @@
+import { router } from "../routing/Router.js";
 import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
-import NewTournament from "./NewTournament.js";
+import NewTournament from "./NewTournamentView.js";
+import { escapeHTML } from "../utility.js";
 
-export default class extends AbstractView {
+export default class MatchAnnouncementView extends AbstractView {
   private player1: string | null = null;
   private player2: string | null = null;
   private matchNumber: number | null = null;
@@ -29,7 +31,7 @@ export default class extends AbstractView {
           : null;
   }
 
-  async createHTML() {
+  createHTML() {
     return /* HTML */ `
       <h1
         style="
@@ -41,7 +43,8 @@ export default class extends AbstractView {
         Match ${this.matchNumber}
       </h1>
       <p style="margin-bottom: 20px; text-align: center; font-size: 1.5em;">
-        <strong>${this.player1}</strong> vs <strong>${this.player2}</strong>
+        <strong>${escapeHTML(this.player1)}</strong> vs
+        <strong>${escapeHTML(this.player2)}</strong>
       </p>
       <div style="text-align: center;">
         <form id="match-form">
@@ -80,7 +83,7 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
+  protected addListeners() {
     document
       .getElementById("match-form")
       ?.addEventListener("submit", (event) => this.callGameView(event));
@@ -90,7 +93,7 @@ export default class extends AbstractView {
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
     this.addListeners();
   }
 
@@ -112,17 +115,23 @@ export default class extends AbstractView {
       GameType.tournament,
       this.tournament
     );
-    gameView.render();
+    router.switchView(gameView);
   }
 
   private async abortTournament() {
     try {
+      const confirmed = confirm("Do you really want to abort the tournament?");
+      if (!confirmed) return;
       await deleteTournament(this.tournament.getId());
-      const newTournamentView = new NewTournament();
-      newTournamentView.render();
+      const view = new NewTournament();
+      router.switchView(view);
     } catch (error) {
       console.error(error);
       // show error page
     }
+  }
+
+  getName(): string {
+    return "match-announcement";
   }
 }

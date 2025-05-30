@@ -1,17 +1,20 @@
 import AbstractView from "./AbstractView.js";
 import { GameType, GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
-import { globalToken } from "../main.js";
+import { router } from "../routing/Router.js";
+import { auth } from "../AuthManager.js";
 
-export default class extends AbstractView {
+export default class NewGameView extends AbstractView {
+  private formEl!: HTMLFormElement;
+
   constructor() {
     super();
     this.setTitle("New Game");
   }
 
-  async createHTML() {
-    const navbarHTML = await this.createNavbar();
-    const footerHTML = await this.createFooter();
+  createHTML() {
+    const navbarHTML = this.createNavbar();
+    const footerHTML = this.createFooter();
 
     let nicknameInputs = "";
     for (let i = 1; i <= 2; i++) {
@@ -56,7 +59,7 @@ export default class extends AbstractView {
         class="flex flex-col justify-center items-center h-screen gap-4"
       >
         <p class="text-sm text-gray-500 mb-2 text-center">
-          Select which player will be controlled by ${globalToken?.username}.
+          Select which player will be controlled by ${auth.getToken().username}.
         </p>
         ${nicknameInputs}
         <br /><br />
@@ -73,14 +76,15 @@ export default class extends AbstractView {
     `;
   }
 
-  async addListeners() {
-    document
-      .getElementById("register-form")
-      ?.addEventListener("submit", (event) => this.validateAndStartGame(event));
+  protected addListeners() {
+    this.formEl.addEventListener("submit", (event) =>
+      this.validateAndStartGame(event)
+    );
   }
 
   async render() {
-    await this.updateHTML();
+    this.updateHTML();
+    this.formEl = document.querySelector("#register-form")!;
     this.addListeners();
   }
 
@@ -89,10 +93,10 @@ export default class extends AbstractView {
     const form = document.getElementById("register-form") as HTMLFormElement;
     const formData = new FormData(form);
     const inputElements: HTMLInputElement[] = Array.from(
-      form.querySelectorAll("input[type='text']")
+      this.formEl.querySelectorAll("input[type='text']")
     );
     const errorElements: HTMLElement[] = Array.from(
-      form.querySelectorAll("span.error-message")
+      this.formEl.querySelectorAll("span.error-message")
     );
     const nicknames = inputElements.map((input) => input.value);
 
@@ -106,6 +110,10 @@ export default class extends AbstractView {
       GameType.single,
       null
     );
-    gameView.render();
+    router.switchView(gameView);
+  }
+
+  getName(): string {
+    return "new-game";
   }
 }
