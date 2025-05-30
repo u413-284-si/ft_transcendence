@@ -41,12 +41,18 @@ export async function createMatch(
       });
     }
   }
-  return match;
+  return {
+    ...match,
+    date: match.date.toISOString()
+  };
 }
 
 export async function getAllMatches() {
   const matches = await prisma.match.findMany({ select: matchSelect });
-  return matches;
+  return matches.map((match) => ({
+    ...match,
+    date: match.date.toISOString()
+  }));
 }
 
 export async function getMatch(id) {
@@ -56,7 +62,10 @@ export async function getMatch(id) {
     },
     select: matchSelect
   });
-  return match;
+  return {
+    ...match,
+    date: match.date.toISOString()
+  };
 }
 
 export async function getUserMatches(id) {
@@ -66,5 +75,8 @@ export async function getUserMatches(id) {
     },
     select: matchSelect
   });
-  return matches;
+  return matches.map((match) => ({
+    ...match,
+    date: match.date.toISOString()
+  }));
 }
