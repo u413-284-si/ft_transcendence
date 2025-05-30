@@ -21,7 +21,7 @@ export function setIsAborted(value: boolean) {
 export async function startGame(
   nickname1: string,
   nickname2: string,
-  activeUserRole: string | null,
+  userRole: string | null,
   gameType: GameType,
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
@@ -37,7 +37,7 @@ export async function startGame(
   if (getIsAborted()) {
     return;
   }
-  await endGame(gameState, tournament, activeUserRole);
+  await endGame(gameState, tournament, userRole);
 }
 
 function initGameState(
@@ -138,7 +138,7 @@ function checkWinner(gameState: GameState) {
 async function endGame(
   gameState: GameState,
   tournament: Tournament | null,
-  activeUserRole: string | null
+  userRole: string | null
 ) {
   let tournamentId;
   try {
@@ -160,8 +160,8 @@ async function endGame(
       tournament: tournamentId
         ? { id: tournamentId, name: tournament!.getTournamentName() }
         : null,
-      userId: activeUserRole ? auth.getToken().id : null,
-      playedAs: activeUserRole,
+      userId: userRole ? auth.getToken().id : null,
+      playedAs: userRole,
       player1Nickname: gameState.player1,
       player2Nickname: gameState.player2,
       player1Score: gameState.player1Score,
