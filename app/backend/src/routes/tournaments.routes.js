@@ -18,7 +18,7 @@ export default async function tournamentRoutes(fastify) {
 
   fastify.patch("/:id/", optionsPatchTournament, patchTournamentHandler);
 
-  fastify.delete("/", deleteAllTournamentsHandler);
+  fastify.delete("/", optionsDeleteAllTournaments, deleteAllTournamentsHandler);
 
   fastify.delete("/:id/", optionsDeleteTournament, deleteTournamentHandler);
 }
@@ -62,6 +62,14 @@ const optionsDeleteTournament = {
     params: { $ref: "idSchema" },
     response: {
       200: { $ref: "tournamentResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteAllTournaments = {
+  schema: {
+    response: {
       ...errorResponses
     }
   }

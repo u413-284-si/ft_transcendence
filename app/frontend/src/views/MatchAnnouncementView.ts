@@ -10,6 +10,7 @@ export default class MatchAnnouncementView extends AbstractView {
   private player1: string | null = null;
   private player2: string | null = null;
   private matchNumber: number | null = null;
+  private userRole: string | null = null;
 
   constructor(private tournament: Tournament) {
     super();
@@ -21,6 +22,13 @@ export default class MatchAnnouncementView extends AbstractView {
     this.player1 = match.player1;
     this.player2 = match.player2;
     this.matchNumber = match.matchId;
+    const userNickname = tournament.getUserNickname();
+    this.userRole =
+      this.player1 === userNickname
+        ? "PLAYERONE"
+        : this.player2 === userNickname
+          ? "PLAYERTWO"
+          : null;
   }
 
   createHTML() {
@@ -103,6 +111,7 @@ export default class MatchAnnouncementView extends AbstractView {
     const gameView = new GameView(
       this.player1,
       this.player2,
+      this.userRole,
       GameType.tournament,
       this.tournament
     );

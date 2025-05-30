@@ -5,6 +5,7 @@ import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
+import { auth } from "./AuthManager.js";
 import { GameType } from "./views/GameView.js";
 
 let isAborted: boolean = false;
@@ -20,6 +21,7 @@ export function setIsAborted(value: boolean) {
 export async function startGame(
   nickname1: string,
   nickname2: string,
+  userRole: string | null,
   gameType: GameType,
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
@@ -35,7 +37,7 @@ export async function startGame(
   if (getIsAborted()) {
     return;
   }
-  await endGame(gameState, tournament);
+  await endGame(gameState, tournament, userRole);
 }
 
 function initGameState(
@@ -133,7 +135,11 @@ function checkWinner(gameState: GameState) {
   }
 }
 
-async function endGame(gameState: GameState, tournament: Tournament | null) {
+async function endGame(
+  gameState: GameState,
+  tournament: Tournament | null,
+  userRole: string | null
+) {
   let tournamentId;
   try {
     if (tournament) {
@@ -149,12 +155,17 @@ async function endGame(gameState: GameState, tournament: Tournament | null) {
       tournament.updateBracketWithResult(matchId, winner);
       await updateTournamentBracket(tournament);
     }
+
     await createMatch({
-      tournamentId: tournamentId,
-      playerNickname: gameState.player1,
-      opponentNickname: gameState.player2,
-      playerScore: gameState.player1Score,
-      opponentScore: gameState.player2Score
+      tournament: tournamentId
+        ? { id: tournamentId, name: tournament!.getTournamentName() }
+        : null,
+      userId: userRole ? auth.getToken().id : null,
+      playedAs: userRole,
+      player1Nickname: gameState.player1,
+      player2Nickname: gameState.player2,
+      player1Score: gameState.player1Score,
+      player2Score: gameState.player2Score
     });
   } catch (error) {
     console.error(error);
