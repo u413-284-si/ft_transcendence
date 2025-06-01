@@ -1,4 +1,4 @@
-import { authorizeUser } from "../middleware/auth.js";
+import { authorizeUserAccess } from "../middleware/auth.js";
 import {
   createMatchHandler,
   getAllMatchesHandler,
@@ -15,7 +15,7 @@ export default async function matchRoutes(fastify) {
 }
 
 const optionsCreateMatch = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     body: { $ref: "createMatchSchema" },
     response: {

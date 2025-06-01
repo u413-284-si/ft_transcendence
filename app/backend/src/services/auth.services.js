@@ -1,25 +1,76 @@
-import { JWT_ACCESS_TOKEN_SECRET } from "../config/jwt.js";
-import jwt from "jsonwebtoken";
 import pkg from "argon2";
+import prisma from "../prisma/prismaClient.js";
 
-export function verifyJWT(token) {
-  return jwt.verify(token, JWT_ACCESS_TOKEN_SECRET);
+export async function verifyAccessToken(request) {
+  return await request.accessTokenVerify();
 }
 
-export async function createHashedPassword(password) {
-  return await pkg.hash(password, {
+export async function verifyRefreshToken(request) {
+  return await request.refreshTokenVerify();
+}
+
+export async function createHash(value) {
+  return await pkg.hash(value, {
     type: pkg.argon2id,
     memoryCost: 47104,
     parallelism: 1
   });
 }
 
-export async function verifyPassword(databasePassword, loginPassword) {
-  return await pkg.verify(databasePassword, loginPassword);
+export async function verifyHash(hash, value) {
+  return await pkg.verify(hash, value);
 }
 
-export function createAccessToken(user, timeToExpire) {
-  return jwt.sign(user, JWT_ACCESS_TOKEN_SECRET, {
-    expiresIn: timeToExpire
+export async function createAccessToken(reply, user) {
+  return await reply.accessTokenSign(user);
+}
+
+export async function createRefreshToken(reply, user) {
+  return await reply.refreshTokenSign(user);
+}
+
+export async function updateUserRefreshToken(userId, hashedRefreshToken) {
+  await prisma.authentication.update({
+    where: {
+      userId: userId
+    },
+    data: {
+      refreshToken: hashedRefreshToken
+    }
   });
+}
+
+export async function getPasswordHash(userId) {
+  const authentication = await prisma.authentication.findUniqueOrThrow({
+    where: {
+      userId: userId
+    },
+    select: {
+      password: true
+    }
+  });
+  return authentication.password;
+}
+
+export async function getTokenHash(userId) {
+  const authentication = await prisma.authentication.findUniqueOrThrow({
+    where: {
+      userId: userId
+    },
+    select: {
+      refreshToken: true
+    }
+  });
+  return authentication.refreshToken;
+}
+
+export async function createAuthTokens(reply, payload) {
+  const accessToken = await createAccessToken(reply, payload);
+  const refreshToken = await createRefreshToken(reply, { id: payload.id });
+
+  const newHashedRefreshToken = await createHash(refreshToken);
+
+  await updateUserRefreshToken(payload.id, newHashedRefreshToken);
+
+  return { accessToken, refreshToken };
 }

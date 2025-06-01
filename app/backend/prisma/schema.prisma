@@ -34,6 +34,7 @@ model User {
 model Authentication {
     userId   Int     @id
     password String?
+	refreshToken String?
     // has2FA        Boolean @default(false)
     // totpSecret    String?
     // oauthProvider String?

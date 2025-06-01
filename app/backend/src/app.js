@@ -7,6 +7,7 @@ import fastifyGracefulShutdown from "fastify-graceful-shutdown";
 import fastifyStatic from "@fastify/static";
 import fastifyCookie from "@fastify/cookie";
 import fastifyRateLimit from "@fastify/rate-limit";
+import jwt from "@fastify/jwt";
 
 import env from "./config/env.js";
 
@@ -66,6 +67,28 @@ await fastify.register(fastifyRateLimit, {
   max: 1000,
   timeWindow: "15 minutes"
 });
+await fastify.register(jwt, {
+  namespace: "accessToken",
+  secret: env.jwtAccessTokenSecret,
+  jwtVerify: "accessTokenVerify",
+  jwtSign: "accessTokenSign",
+  sign: { expiresIn: env.accessTokenTimeToExpireInMs },
+  cookie: {
+    cookieName: "accessToken",
+    signed: false
+  }
+});
+await fastify.register(jwt, {
+  namespace: "refreshToken",
+  secret: env.jwtRefreshTokenSecret,
+  jwtVerify: "refreshTokenVerify",
+  jwtSign: "refreshTokenSign",
+  sign: { expiresIn: env.refreshTokenTimeToExpireInMS },
+  cookie: {
+    cookieName: "refreshToken",
+    signed: false
+  }
+});
 
 for (const schema of [
   ...commonSchemas,
@@ -94,3 +117,5 @@ fastify.listen({ host: "0.0.0.0", port: env.port }, (err, address) => {
   }
   fastify.log.info(`Pong game is running in ${env.nodeEnv} mode at ${address}`);
 });
+
+export default fastify;

@@ -1,4 +1,4 @@
-import { authorizeUser } from "../middleware/auth.js";
+import { authorizeUserAccess } from "../middleware/auth.js";
 import {
   createUserHandler,
   getUserHandler,
@@ -61,7 +61,7 @@ const optionsCreateUser = {
 };
 
 const optionsGetUser = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     params: { $ref: "idSchema" },
     response: {
@@ -113,7 +113,7 @@ const optionsDeleteUser = {
 };
 
 const optionsGetUserMatches = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "matchArrayResponseSchema" },
@@ -123,7 +123,7 @@ const optionsGetUserMatches = {
 };
 
 const optionsGetUserStats = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "userStatsResponseSchema" },
@@ -142,7 +142,7 @@ const optionsGetAllUserStats = {
 };
 
 const optionsGetUserTournaments = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "tournamentArrayResponseSchema" },
@@ -152,7 +152,7 @@ const optionsGetUserTournaments = {
 };
 
 const optionsGetUserActiveTournament = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "tournamentResponseSchema" },
