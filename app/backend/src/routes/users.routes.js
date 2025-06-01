@@ -7,7 +7,6 @@ import {
   deleteUserHandler,
   getUserMatchesHandler,
   patchUserHandler,
-  getAllUserStatsHandler,
   getUserStatsHandler,
   getUserTournamentsHandler,
   getUserActiveTournamentHandler
@@ -28,12 +27,6 @@ export default async function userRoutes(fastify) {
   fastify.delete("/:id/", optionsDeleteUser, deleteUserHandler);
 
   fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
-
-  fastify.get(
-    "/admin/user-stats/",
-    optionsGetAllUserStats,
-    getAllUserStatsHandler
-  );
 
   fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
 
@@ -127,15 +120,6 @@ const optionsGetUserStats = {
   schema: {
     response: {
       200: { $ref: "userStatsResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetAllUserStats = {
-  schema: {
-    response: {
-      200: { $ref: "userStatsArrayResponseSchema" },
       ...errorResponses
     }
   }

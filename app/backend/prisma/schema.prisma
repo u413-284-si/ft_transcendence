@@ -20,13 +20,13 @@ model User {
     avatar     String? // Store the file path or URL
     dateJoined DateTime @default(now())
 
-    authentication  Authentication?
-    stats           UserStats?
-    accountStatus   AccountStatus?
-    friends         Friends[]       @relation("fk_User_UserID")
-    friendsOf       Friends[]       @relation("fk_User_FriendID")
-    match           Match[]
-    tournament      Tournament[]
+    authentication    Authentication?
+    stats             UserStats?
+    accountStatus     AccountStatus?
+    friends           Friends[]       @relation("fk_User_UserID")
+    friendsOf         Friends[]       @relation("fk_User_FriendID")
+    matchesPlayed     Match[]         @relation("UserPlayed")
+    tournament        Tournament[]
 
     @@map("users") // Maps to users table in the database
 }
@@ -50,8 +50,6 @@ model UserStats {
     userId        Int   @id
     matchesPlayed Int   @default(0)
     matchesWon    Int   @default(0)
-    matchesLost   Int   @default(0)
-    winRate       Float @default(0.0)
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -80,42 +78,42 @@ model Friends {
 }
 
 model Match {
-    id               Int      @id @default(autoincrement())
-    playerId         Int
-    playerNickname   String
-    opponentNickname String
+    id               Int        @id @default(autoincrement())
+    userId           Int?
+    playedAs         PlayedAs?
+    player1Nickname  String
+    player2Nickname  String
+    player1Score     Int
+    player2Score     Int
     tournamentId     Int?
-    playerScore      Int
-    opponentScore    Int
-    // status           MatchStatus @default(NOT_PLAYED)
-    date             DateTime
+    date             DateTime   @default(now())
 
-    player     User        @relation(fields: [playerId], references: [id], onDelete: Cascade)
-    tournament Tournament? @relation(fields: [tournamentId], references: [id])
+    user       User?        @relation("UserPlayed", fields: [userId], references: [id], onDelete: Cascade)
+    tournament Tournament?  @relation(fields: [tournamentId], references: [id])
 
     @@map("matches")
 }
 
 model Tournament {
-    id         Int              @id @default(autoincrement())
-    name       String
-    maxPlayers Int              @default(4)
-    isPrivate  Boolean          @default(false)
-    status     TournamentStatus @default(CREATED)
-    adminId    Int
-    bracket    Json
+    id            Int              @id @default(autoincrement())
+    name          String
+    maxPlayers    Int              @default(4)
+    isPrivate     Boolean          @default(false)
+    status        TournamentStatus @default(CREATED)
+    userId        Int
+    userNickname  String           @default("Mister Bombastic")
+    bracket       Json
 
-    admin   User    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     matches Match[]
 
     @@map("tournaments")
 }
 
-// enum MatchStatus {
-//     NOT_PLAYED
-//     IN_PROGRESS
-//     FINISHED
-// }
+enum PlayedAs {
+    PLAYERONE
+    PLAYERTWO
+}
 
 enum TournamentStatus {
     CREATED
