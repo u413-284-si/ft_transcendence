@@ -162,7 +162,7 @@ const optionsGetUserActiveTournament = {
 };
 
 const optionsGetUserFriends = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "userArrayResponseSchema" },
@@ -172,7 +172,7 @@ const optionsGetUserFriends = {
 };
 
 const optionsCreateUserFriend = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     body: { $ref: "idSchema" },
     response: {
@@ -183,7 +183,7 @@ const optionsCreateUserFriend = {
 };
 
 const optionsDeleteUserFriend = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     params: { $ref: "idSchema" },
     response: {
@@ -193,7 +193,7 @@ const optionsDeleteUserFriend = {
 };
 
 const optionsSseOnline = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       ...errorResponses
