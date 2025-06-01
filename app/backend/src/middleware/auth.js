@@ -1,6 +1,6 @@
 import { verifyAccessToken } from "../services/auth.services.js";
 import { createResponseMessage } from "../utils/response.js";
-import { httpError } from "../utils/error.js";
+import { handlePrismaError, httpError } from "../utils/error.js";
 
 export async function authorizeUserAccess(request, reply) {
   const action = "Authorize user's access token";
