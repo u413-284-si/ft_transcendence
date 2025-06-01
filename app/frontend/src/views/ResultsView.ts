@@ -41,6 +41,8 @@ export default class ResultsView extends AbstractView {
           <h2 class="text-2xl font-bold text-gray-800">Tournament Bracket</h2>
           <div class="mb-6">${this.tournament.getBracketAsHTML()}</div>
         </div>
+
+        <!-- Button Section -->
         <div class="mt-4 space-x-4">
           <button
             id="finish-btn"
