@@ -42,7 +42,7 @@ const commonDefinitionsSchema = {
     },
     date: {
       type: "string",
-      format: "date",
+      format: "date-time",
       description: "A date in ISO 8601 format."
     }
   }
