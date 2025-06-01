@@ -2,7 +2,6 @@ import AbstractView from "./AbstractView.js";
 import { startGame, getIsAborted, setIsAborted } from "../game.js";
 import { router } from "../routing/Router.js";
 import MatchAnnouncement from "./MatchAnnouncementView.js";
-import { setTournamentFinished } from "../services/tournamentService.js";
 import ResultsView from "./ResultsView.js";
 import NewGameView from "./NewGameView.js";
 import { Tournament } from "../Tournament.js";
@@ -26,6 +25,7 @@ export class GameView extends AbstractView {
   constructor(
     private nickname1: string,
     private nickname2: string,
+    private userRole: string | null,
     private gameType: GameType,
     private tournament: Tournament | null
   ) {
@@ -84,6 +84,7 @@ export class GameView extends AbstractView {
       await startGame(
         this.nickname1,
         this.nickname2,
+        this.userRole,
         this.gameType,
         this.tournament,
         this.keys
@@ -100,14 +101,12 @@ export class GameView extends AbstractView {
             router.switchView(view);
             return;
           }
-          await setTournamentFinished(this.tournament.getId());
           const view = new ResultsView(this.tournament);
           router.switchView(view);
         }
       }
     } catch (error) {
-      console.error("Error in navigateAfterGame(): ", error);
-      // FIXME: show error page
+      router.handleError("Error in handleGame()", error);
     }
   }
 

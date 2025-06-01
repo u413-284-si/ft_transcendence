@@ -1,18 +1,27 @@
-import { getUserPassword } from "../services/users.services.js";
+import {
+  getPasswordHash,
+  verifyRefreshToken,
+  verifyHash,
+  createAuthTokens,
+  getTokenHash
+} from "../services/auth.services.js";
+import { getTokenData } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
-import { verifyPassword } from "../services/auth.services.js";
-import { createAccessToken } from "../services/auth.services.js";
+import { setAuthCookies } from "../utils/cookie.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
   try {
     const { usernameOrEmail, password } = request.body;
 
-    const data = await getUserPassword(usernameOrEmail);
+    const identifier = usernameOrEmail.includes("@") ? "email" : "username";
+    const payload = await getTokenData(usernameOrEmail, identifier);
 
-    if (!(await verifyPassword(data.authentication.password, password))) {
+    const hashedPassword = await getPasswordHash(payload.id);
+
+    if (!(await verifyHash(hashedPassword, password))) {
       return httpError(
         reply,
         401,
@@ -21,25 +30,15 @@ export async function loginUserHandler(request, reply) {
       );
     }
 
-    delete data.authentication;
-    console.log("user:", data);
-
-    const timeSpan = 15 * 60;
-    const inFifteenMinutes = new Date(new Date().getTime() + timeSpan * 1000);
-    const JWTAccessToken = createAccessToken(data, timeSpan);
-
-    return reply
-      .setCookie("authToken", JWTAccessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        path: "/",
-        expires: inFifteenMinutes
-      })
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+    return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: data.username }
+        data: { username: payload.username }
       });
   } catch (err) {
     request.log.error(
@@ -58,8 +57,8 @@ export async function loginUserHandler(request, reply) {
   }
 }
 
-export async function authAndDecodeHandler(request, reply) {
-  const action = "Auth and decode";
+export async function authAndDecodeAccessHandler(request, reply) {
+  const action = "Auth and decode access token";
   try {
     const data = request.user;
     return reply
@@ -68,7 +67,51 @@ export async function authAndDecodeHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authAndDecodeHandler: ${createResponseMessage(action, false)}`
+      `authAndDecodeAccessHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function authRefreshHandler(request, reply) {
+  const action = "Auth refresh token";
+  try {
+    const token = request.cookies.refreshToken;
+    if (!token) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "No refresh token provided"
+      );
+    }
+
+    const userDataRefreshToken = await verifyRefreshToken(request);
+    const userId = userDataRefreshToken.id;
+
+    const hashedRefreshToken = await getTokenHash(userId);
+    const payload = await getTokenData(userId, "id");
+
+    if (!(await verifyHash(hashedRefreshToken, token))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid refresh token"
+      );
+    }
+
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+    return setAuthCookies(reply, accessToken, refreshToken)
+      .code(200)
+      .send({ message: createResponseMessage(action, true) });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
