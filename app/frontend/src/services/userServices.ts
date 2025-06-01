@@ -12,8 +12,18 @@ export async function getUserMatches(): Promise<Match[]> {
   return apiResponse.data;
 }
 
-export async function getUserProfile() {
+export async function getUserProfile(): Promise<User> {
   const apiResponse = await apiFetch<User>("/api/users/", {
+    method: "GET",
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
+export async function getUserAvatar(): Promise<string> {
+  const apiResponse = await apiFetch<string>("/api/users/avatar/", {
     method: "GET",
     credentials: "same-origin"
   });

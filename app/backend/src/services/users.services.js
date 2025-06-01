@@ -75,6 +75,17 @@ export async function getTokenData(identifier, identifierType) {
     },
     select: tokenSelect
   });
-
   return user;
+}
+
+export async function getUserAvatar(id) {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id
+    },
+    select: {
+      avatar: true
+    }
+  });
+  return user.avatar;
 }

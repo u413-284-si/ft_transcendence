@@ -1,5 +1,5 @@
 import { sanitizeHTML } from "./sanitize.js";
-import { getUserProfile } from "./services/userServices.js";
+import { getUserAvatar } from "./services/userServices.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -41,8 +41,8 @@ export class Layout {
 
   private async getHeaderHTML(): Promise<string> {
     if (this.mode === "auth") {
-      const user = await getUserProfile();
-      const avatarUrl = user.avatar || "/images/default-avatar.png";
+      const userAvatarUrl: string =
+        (await getUserAvatar()) || "/images/default-avatar.png";
       return /* HTML */ ` <nav class="relative">
         <div class="container mx-auto flex justify-center space-x-8">
           <a href="/home" class="text-xl hover:text-blue-300" data-link>Home</a>
@@ -66,7 +66,7 @@ export class Layout {
           class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
         >
           <img
-            src="${avatarUrl}"
+            src="${userAvatarUrl}"
             alt="Avatar"
             class="w-14 h-14 rounded-full border-2 border-white shadow"
           />

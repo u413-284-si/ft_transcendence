@@ -3,7 +3,8 @@ import {
   getUser,
   getAllUsers,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserAvatar
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
@@ -286,6 +287,23 @@ export async function deleteUserFriendHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `deleteUserFriendHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getUserAvatarHandler(request, reply) {
+  const action = "Get user avatar";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const userAvatar = await getUserAvatar(userId);
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data: userAvatar });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserAvatarHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

@@ -12,7 +12,8 @@ import {
   getUserActiveTournamentHandler,
   getUserFriendsHandler,
   createUserFriendHandler,
-  deleteUserFriendHandler
+  deleteUserFriendHandler,
+  getUserAvatarHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseOnlineHandler } from "../controllers/online_status.controllers.js";
@@ -33,6 +34,8 @@ export default async function userRoutes(fastify) {
   fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
 
   fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
+
+  fastify.get("/avatar/", optionsGetUserAvatar, getUserAvatarHandler);
 
   fastify.get(
     "/tournaments/",
@@ -195,6 +198,16 @@ const optionsSseOnline = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserAvatar = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
+      200: { type: "string" },
       ...errorResponses
     }
   }
