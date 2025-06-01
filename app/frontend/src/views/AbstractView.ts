@@ -9,13 +9,13 @@ export default abstract class AbstractView {
 
   abstract createHTML(): string;
 
-  updateHTML() {
+  updateHTML(): void {
     const html = this.createHTML();
     const cleanHTML = sanitizeHTML(html);
     document.querySelector("#app-content")!.innerHTML = cleanHTML;
   }
 
-  async render() {}
+  abstract render(): Promise<void>;
 
   protected addListeners?(): void;
 
