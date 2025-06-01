@@ -5,10 +5,7 @@ import {
   updateUser,
   deleteUser
 } from "../services/users.services.js";
-import {
-  getAllUserStats,
-  getUserStats
-} from "../services/user_stats.services.js";
+import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
 import {
   getUserTournaments,
@@ -16,7 +13,7 @@ import {
 } from "../services/tournaments.services.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
-import { createHashedPassword } from "../services/auth.services.js";
+import { createHash } from "../services/auth.services.js";
 import {
   createFriendship,
   deleteFriendship,
@@ -33,7 +30,7 @@ export async function createUserHandler(request, reply) {
   try {
     const { username, email, password } = request.body;
 
-    const hashedPassword = await createHashedPassword(password);
+    const hashedPassword = await createHash(password);
 
     const data = await createUser(username, email, hashedPassword);
     return reply
@@ -155,25 +152,6 @@ export async function getUserMatchesHandler(request, reply) {
   }
 }
 
-export async function getAllUserStatsHandler(request, reply) {
-  const action = "Get all user stats";
-  try {
-    const data = await getAllUserStats();
-    const count = data.length;
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      count: count,
-      data: data
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getAllUserStats: ${createResponseMessage(action, false)}`
-    );
-    handlePrismaError(reply, action, err);
-  }
-}
-
 export async function getUserStatsHandler(request, reply) {
   const action = "Get user stats";
   try {
@@ -214,8 +192,8 @@ export async function getUserTournamentsHandler(request, reply) {
 export async function getUserActiveTournamentHandler(request, reply) {
   const action = "Get user active tournament";
   try {
-    const adminId = parseInt(request.user.id, 10);
-    const data = await getUserActiveTournament(adminId);
+    const userId = parseInt(request.user.id, 10);
+    const data = await getUserActiveTournament(userId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });

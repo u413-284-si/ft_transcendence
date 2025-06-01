@@ -1,26 +1,42 @@
 import { TournamentDTO } from "./types/ITournament";
 import { BracketMatch } from "./types/IMatch";
+import { BracketLayout } from "./types/BracketLayout";
 
 export class Tournament {
+  private matchSlotMap: Record<
+    number,
+    { slot1?: BracketMatch; slot2?: BracketMatch }
+  > = {};
+
   constructor(
     private tournamentName: string,
     private numberOfPlayers: number,
-    private adminId: number,
+    private userId: number,
+    private userNickname: string,
     private bracket: BracketMatch[],
     private tournamentId?: number
-  ) {}
+  ) {
+    this.buildMatchSlotMap();
+  }
 
   static fromUsernames(
     playerNicknames: string[],
     tournamentName: string,
     numberOfPlayers: number,
-    adminId: number
+    userNickname: string,
+    userId: number
   ): Tournament {
     const bracket = Tournament.generateBracket(
       playerNicknames,
       numberOfPlayers
     );
-    return new Tournament(tournamentName, numberOfPlayers, adminId, bracket);
+    return new Tournament(
+      tournamentName,
+      numberOfPlayers,
+      userId,
+      userNickname,
+      bracket
+    );
   }
 
   private static generateBracket(
@@ -68,8 +84,11 @@ export class Tournament {
 
     for (let i = 0; i < shuffled.length; i += 2) {
       const match = bracket.find((m) => m.matchId === firstRound[i / 2])!;
-      match.player1 = shuffled[i];
-      match.player2 = shuffled[i + 1];
+      const nickname1 = shuffled[i];
+      const nickname2 = shuffled[i + 1];
+
+      match.player1 = nickname1;
+      match.player2 = nickname2;
     }
 
     return bracket;
@@ -129,11 +148,16 @@ export class Tournament {
     return this.tournamentId;
   }
 
+  public getUserNickname(): string | null {
+    return this.userNickname;
+  }
+
   public toJSON(): TournamentDTO {
     return {
       name: this.tournamentName,
       maxPlayers: this.numberOfPlayers,
-      adminId: this.adminId,
+      userId: this.userId,
+      userNickname: this.userNickname,
       bracket: JSON.stringify(this.bracket)
     };
   }
@@ -160,5 +184,162 @@ export class Tournament {
 
   public getTournamentName(): string {
     return this.tournamentName;
+  }
+
+  public getBracketAsHTML(): string {
+    const layout = this.createBracketLayout();
+    return this.renderBracketHTML(layout);
+  }
+
+  private createBracketLayout(): BracketLayout {
+    const matchesByRound = this.groupBy(this.bracket, "round");
+    const totalRounds = Object.keys(matchesByRound).length;
+
+    const nextMatch = this.getNextMatchToPlay();
+    const nextMatchId = nextMatch?.matchId;
+
+    const rounds: BracketLayout["rounds"] = [];
+
+    for (let round = 1; round <= totalRounds; round++) {
+      const roundMatches = matchesByRound[round] || [];
+
+      const matches = roundMatches.map((match) => {
+        const isPlayed = !!match.winner;
+        const isNext = match.matchId === nextMatchId;
+        const matchSlots = this.matchSlotMap[match.matchId];
+
+        const player1Text =
+          match.player1 ??
+          (matchSlots?.slot1
+            ? `Winner Match ${matchSlots.slot1.matchId}`
+            : "TBD");
+
+        const player2Text =
+          match.player2 ??
+          (matchSlots?.slot2
+            ? `Winner Match ${matchSlots.slot2.matchId}`
+            : "TBD");
+
+        return {
+          matchId: match.matchId,
+          player1Text,
+          player2Text,
+          isPlayed,
+          isNext,
+          winner: match.winner
+        };
+      });
+
+      rounds.push({ round, matches });
+    }
+
+    return { rounds };
+  }
+
+  public renderBracketHTML(layout: BracketLayout): string {
+    let html = `
+    <div class="w-full overflow-x-auto">
+      <div class="flex flex-col md:flex-row justify-start gap-4 flex-wrap text-gray-900">
+  `;
+
+    for (const { round, matches } of layout.rounds) {
+      const roundSpacing = this.getRoundSpacing(round);
+
+      html += `
+      <div class="flex-1 flex flex-col">
+        <h3 class="text-center font-bold text-base md:text-lg uppercase border-b pb-1 text-blue-600 border-gray-300 mb-4">
+          Round ${round}
+        </h3>
+        <div class="flex flex-col h-full justify-between space-y-2 ${roundSpacing}">
+    `;
+
+      for (const match of matches) {
+        const cardBg = match.isPlayed
+          ? "bg-gray-300"
+          : match.isNext
+            ? "bg-yellow-100"
+            : "bg-gray-100";
+
+        const textColor = match.isPlayed ? "text-gray-500" : "text-gray-900";
+        const borderStyle = match.isNext
+          ? "border-2 border-yellow-400"
+          : "border";
+
+        html += `
+        <div class="${cardBg} ${textColor} p-4 rounded-md shadow ${borderStyle} text-xs md:text-sm">
+          <h4 class="font-bold text-center text-sm md:text-base mb-2">Match ${match.matchId}</h4>
+          <div class="flex justify-center items-center gap-2 text-sm md:text-base font-medium">
+
+            <!-- Player 1 -->
+            <div class="flex items-center gap-1 w-[150px]">
+              ${match.winner === match.player1Text ? "🏆" : ""}
+              <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis w-full" title="${match.player1Text}">
+                ${match.player1Text}
+              </span>
+            </div>
+
+            <!-- Separator -->
+            <span class="text-gray-400 font-normal">vs</span>
+
+            <!-- Player 2 -->
+            <div class="flex items-center gap-1 w-[150px]">
+              <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis w-full" title="${match.player2Text}">
+                ${match.player2Text}
+              </span>
+              ${match.winner === match.player2Text ? "🏆" : ""}
+            </div>
+          </div>
+        </div>
+      `;
+      }
+
+      html += `
+        </div>
+      </div>
+    `;
+    }
+
+    html += `
+      </div>
+    </div>
+  `;
+
+    return html;
+  }
+
+  private getRoundSpacing(round: number): string {
+    const roundSpacing: Record<number, string> = {
+      1: "my-0",
+      2: "my-0 md:my-16",
+      3: "my-0 md:my-44",
+      4: "my-0 md:my-100"
+    };
+    return roundSpacing[round] ?? "my-0";
+  }
+
+  private groupBy<T>(arr: T[], key: keyof T): Record<string, T[]> {
+    return arr.reduce(
+      (acc, item) => {
+        const group = String(item[key]);
+        if (!acc[group]) acc[group] = [];
+        acc[group].push(item);
+        return acc;
+      },
+      {} as Record<string, T[]>
+    );
+  }
+
+  private buildMatchSlotMap() {
+    this.matchSlotMap = {};
+
+    for (const match of this.bracket) {
+      if (!match.nextMatchId || !match.winnerSlot) {
+        continue;
+      }
+      this.matchSlotMap[match.nextMatchId] ??= {};
+
+      const slotKey = match.winnerSlot === 1 ? "slot1" : "slot2";
+      this.matchSlotMap[match.nextMatchId][slotKey] = match;
+    }
   }
 }

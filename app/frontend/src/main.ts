@@ -11,13 +11,17 @@ import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 
 router
-  .addRoute("/login", { view: Login, guard: guestOnlyGuard })
-  .addRoute("/home", { view: Home, guard: authGuard })
-  .addRoute("/newGame", { view: NewGame, guard: authGuard })
-  .addRoute("/newTournament", { view: NewTournament, guard: authGuard })
-  .addRoute("/settings", { view: Settings, guard: authGuard })
-  .addRoute("/stats", { view: Stats, guard: authGuard })
-  .addRoute("/friends", { view: Friends, guard: authGuard })
+  .addRoute("/login", { view: Login, guard: guestOnlyGuard, layout: "guest" })
+  .addRoute("/home", { view: Home, guard: authGuard, layout: "auth" })
+  .addRoute("/newGame", { view: NewGame, guard: authGuard, layout: "auth" })
+  .addRoute("/newTournament", {
+    view: NewTournament,
+    guard: authGuard,
+    layout: "auth"
+  })
+  .addRoute("/settings", { view: Settings, guard: authGuard, layout: "auth" })
+  .addRoute("/stats", { view: Stats, guard: authGuard, layout: "auth" })
+  .addRoute("/friends", { view: Friends, guard: authGuard, layout: "auth" })
   .addRouteChangeListener(logRouteChange)
   .addRouteChangeListener(updateUI);
 

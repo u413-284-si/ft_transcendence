@@ -1,5 +1,8 @@
 import { ApiError } from "./services/api.js";
-import { authAndDecode, userLogin } from "./services/authServices.js";
+import {
+  authAndDecodeAccessToken,
+  userLogin
+} from "./services/authServices.js";
 import {
   startOnlineStatusTracking,
   stopOnlineStatusTracking
@@ -47,7 +50,7 @@ export class AuthManager {
   public async initialize(): Promise<void> {
     console.log("Checking for existing auth token");
     try {
-      const token = await authAndDecode();
+      const token = await authAndDecodeAccessToken();
       this.updateAuthState(token);
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -61,7 +64,7 @@ export class AuthManager {
   public async login(username: string, password: string): Promise<boolean> {
     try {
       await userLogin(username, password);
-      const token = await authAndDecode();
+      const token = await authAndDecodeAccessToken();
       this.updateAuthState(token);
       console.log("User logged in");
       return true;
@@ -146,7 +149,7 @@ export class AuthManager {
     console.log("Refresh token");
     try {
       // FIXME: create route to directly refresh token
-      const newToken = await authAndDecode();
+      const newToken = await authAndDecodeAccessToken();
       this.updateAuthState(newToken);
     } catch {
       console.warn("Token refresh failed or expired. Logging out.");

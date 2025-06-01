@@ -21,16 +21,30 @@ export default class PlayerNicknamesView extends AbstractView {
   createHTML() {
     let nicknameInputs = "";
     for (let i = 1; i <= this.numberOfPlayers; i++) {
+      const isChecked = i === 1 ? "checked" : "";
+
       nicknameInputs += /* HTML */ `
-        <div class="w-[800px]">
-          <label style="display: block; margin-bottom: 10px;">
-            Player ${i} Nickname:
-            <input
-              type="text"
-              name="player${i}"
-              class="border border-gray-300 rounded px-2 py-1 transition-all duration-300"
-            />
-          </label>
+        <div class="w-[800px] border border-gray-200 p-4 rounded shadow-sm">
+          <label class="block mb-2 font-medium"> Player ${i} Nickname: </label>
+          <input
+            type="text"
+            name="player${i}"
+            id="nickname${i}"
+            placeholder="Enter your nickname"
+            class="border border-gray-300 rounded px-2 py-1 w-full"
+          />
+          <div class="mt-2">
+            <label class="inline-flex items-center text-sm text-gray-600">
+              <input
+                type="radio"
+                name="userChoice"
+                value="${i}"
+                class="mr-2"
+                ${isChecked}
+              />
+              I will play as Player ${i}
+            </label>
+          </div>
           <span
             id="player-error${i}"
             class="error-message text-red-600 text-sm mt-1 hidden"
@@ -54,8 +68,11 @@ export default class PlayerNicknamesView extends AbstractView {
       </p>
       <form
         id="nicknames-form"
-        class="flex flex-col justify-center items-center h-screen gap-4"
+        class="flex flex-col justify-center items-center gap-4"
       >
+        <p class="text-sm text-gray-500 mb-2 text-center">
+          Select which player will be controlled by ${auth.getToken().username}.
+        </p>
         ${nicknameInputs}
         <div>
           <button
@@ -91,6 +108,9 @@ export default class PlayerNicknamesView extends AbstractView {
 
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
+    const form = document.getElementById("nicknames-form") as HTMLFormElement;
+    const formData = new FormData(form);
+    const userNumber = formData.get("userChoice");
     const inputElements: HTMLInputElement[] = Array.from(
       this.formEl.querySelectorAll("input[type='text']")
     );
@@ -100,6 +120,7 @@ export default class PlayerNicknamesView extends AbstractView {
     const nicknames = inputElements.map((input) => input.value);
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
+    const userNickname = formData.get(`player${userNumber}`) as string;
 
     try {
       const userId = auth.getToken().id;
@@ -107,6 +128,7 @@ export default class PlayerNicknamesView extends AbstractView {
         nicknames,
         this.tournamentName,
         this.numberOfPlayers,
+        userNickname,
         userId
       );
 
@@ -115,14 +137,10 @@ export default class PlayerNicknamesView extends AbstractView {
       if (id) {
         tournament.setId(id);
       }
-      const nextMatch = tournament.getNextMatchToPlay();
-      if (!nextMatch) {
-        throw new Error("Match is undefined");
-      }
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.switchView(matchAnnouncementView);
     } catch (error) {
-      console.error("Error creating tournament", error);
+      router.handleError("Error creating tournament", error);
     }
   }
 

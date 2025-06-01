@@ -14,11 +14,7 @@ export default class StatsView extends AbstractView {
   private matchesHTML: string = "";
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
-
     return /* HTML */ `
-      ${navbarHTML}
       <h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
       <div class="overflow-x-auto">
         <table
@@ -46,12 +42,13 @@ export default class StatsView extends AbstractView {
         >
           <thead class="bg-blue-800">
             <tr>
-              <th class="border border-blue-500 px-4 py-2">Nickname</th>
-              <th class="border border-blue-500 px-4 py-2">Score</th>
-              <th class="border border-blue-500 px-4 py-2">Opponent</th>
-              <th class="border border-blue-500 px-4 py-2">Opponent Score</th>
+              <th class="border border-blue-500 px-4 py-2">Player1</th>
+              <th class="border border-blue-500 px-4 py-2">Player1 Score</th>
+              <th class="border border-blue-500 px-4 py-2">Player2</th>
+              <th class="border border-blue-500 px-4 py-2">Player2 Score</th>
               <th class="border border-blue-500 px-4 py-2">Result</th>
               <th class="border border-blue-500 px-4 py-2">Date</th>
+              <th class="border border-blue-500 px-4 py-2">Tournament</th~
             </tr>
           </thead>
           <tbody class="bg-blue-700 divide-y divide-blue-500">
@@ -59,19 +56,13 @@ export default class StatsView extends AbstractView {
           </tbody>
         </table>
       </div>
-      ${footerHTML}
     `;
   }
 
   async render() {
-    try {
-      this.userStatsHTML = await this.getUserStatsHTML();
-      this.matchesHTML = await this.getMatchesHTML();
-      this.updateHTML();
-    } catch (error) {
-      console.error(error);
-      // FIXME: show error page
-    }
+    this.userStatsHTML = await this.getUserStatsHTML();
+    this.matchesHTML = await this.getMatchesHTML();
+    this.updateHTML();
   }
 
   async getUserStatsHTML(): Promise<string> {
@@ -97,6 +88,7 @@ export default class StatsView extends AbstractView {
   }
 
   async getMatchesHTML(): Promise<string> {
+    const user: string = escapeHTML(auth.getToken().username);
     const matches = await getUserMatches();
 
     if (matches.length === 0) {
@@ -105,24 +97,45 @@ export default class StatsView extends AbstractView {
 
     return matches
       .map((match) => {
-        const result = match.playerScore > match.opponentScore ? "Won" : "Lost";
+        const isPlayerOne = match.playedAs === "PLAYERONE";
+
+        const result = isPlayerOne
+          ? match.player1Score > match.player2Score
+            ? "Won"
+            : "Lost"
+          : match.player2Score > match.player1Score
+            ? "Won"
+            : "Lost";
+
+        const player1Display = isPlayerOne
+          ? `${match.player1Nickname} (${user})`
+          : match.player1Nickname;
+        const player2Display = isPlayerOne
+          ? match.player2Nickname
+          : `${match.player2Nickname} (${user})`;
+        const tournamentDisplay = match.tournament?.name
+          ? `Name: ${match.tournament.name}`
+          : "N/A";
         return /* HTML */ `
           <tr>
             <td class="border border-blue-500 px-4 py-2">
-              ${escapeHTML(match.playerNickname)}
+              ${escapeHTML(player1Display)}
             </td>
             <td class="border border-blue-500 px-4 py-2">
-              ${match.playerScore}
+              ${match.player1Score}
             </td>
             <td class="border border-blue-500 px-4 py-2">
-              ${escapeHTML(match.opponentNickname)}
+              ${escapeHTML(player2Display)}
             </td>
             <td class="border border-blue-500 px-4 py-2">
-              ${match.opponentScore}
+              ${match.player2Score}
             </td>
             <td class="border border-blue-500 px-4 py-2">${result}</td>
             <td class="border border-blue-500 px-4 py-2">
               ${new Date(match.date!).toLocaleString()}
+            </td>
+            <td class="border border-blue-500 px-4 py-2">
+              ${tournamentDisplay}
             </td>
           </tr>
         `;

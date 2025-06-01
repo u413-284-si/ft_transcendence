@@ -9,6 +9,7 @@ import {
   validateTournamentName,
   validatePlayersSelection
 } from "../validate.js";
+import ResultsView from "./ResultsView.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -19,10 +20,7 @@ export default class NewTournamentView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
     return /* HTML */ `
-      ${navbarHTML}
       <h1
         style="
           margin-bottom: 40px;
@@ -59,7 +57,7 @@ export default class NewTournamentView extends AbstractView {
         <br /><br />
         <div id="player-options" class="rounded px-2 py-1 w-[300px]">
           <label class="block">
-            <input type="radio" name="players" value="4" /> 4 Players
+            <input type="radio" name="players" value="4" checked /> 4 Players
           </label>
           <label class="block">
             <input type="radio" name="players" value="8" /> 8 Players
@@ -74,7 +72,6 @@ export default class NewTournamentView extends AbstractView {
         </div>
         <button type="submit">Start Tournament</button>
       </form>
-      ${footerHTML}
     `;
   }
 
@@ -85,30 +82,29 @@ export default class NewTournamentView extends AbstractView {
   }
 
   async render() {
-    try {
-      const activeTournament = await getActiveTournament();
-      if (!activeTournament) {
-        console.log("No active tournament found");
-        this.updateHTML();
-        this.formEl = document.querySelector("#tournament-form")!;
-        this.addListeners();
-        return;
-      }
-      const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
-      const tournament = new Tournament(
-        activeTournament.name,
-        activeTournament.maxPlayers,
-        activeTournament.adminId,
-        bracket,
-        activeTournament.id
-      );
-      const matchAnnouncementView = new MatchAnnouncement(tournament);
-      router.switchView(matchAnnouncementView);
+    const activeTournament = await getActiveTournament();
+    if (!activeTournament) {
+      console.log("No active tournament found");
+      this.updateHTML();
+      this.formEl = document.querySelector("#tournament-form")!;
+      this.addListeners();
       return;
-    } catch (error) {
-      console.error(error);
-      // show error page
     }
+    const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
+    const tournament = new Tournament(
+      activeTournament.name,
+      activeTournament.maxPlayers,
+      activeTournament.userId,
+      activeTournament.userNickname,
+      bracket,
+      activeTournament.id
+    );
+    if (tournament.getNextMatchToPlay()) {
+      router.switchView(new MatchAnnouncement(tournament));
+    } else {
+      router.switchView(new ResultsView(tournament));
+    }
+    return;
   }
 
   async validateAndRequestNicknames(event: Event) {
