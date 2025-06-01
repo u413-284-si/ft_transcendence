@@ -1,9 +1,14 @@
 export interface Match {
-  tournamentId?: number;
-  playerNickname: string;
-  opponentNickname: string;
-  playerScore: number;
-  opponentScore: number;
+  tournament?: {
+    id: number;
+    name: string;
+  } | null;
+  userId?: number | null;
+  playedAs?: string | null;
+  player1Nickname: string;
+  player2Nickname: string;
+  player1Score: number;
+  player2Score: number;
   date?: string;
 }
 

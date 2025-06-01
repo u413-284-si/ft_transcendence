@@ -41,9 +41,10 @@ export const tournamentSchema = {
     status: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentStatus"
     },
-    adminId: { $ref: "commonDefinitionsSchema#/definitions/id" }
+    userId: { $ref: "commonDefinitionsSchema#/definitions/id" },
+    userNickname: { $ref: "commonDefinitionsSchema#/definitions/username" }
   },
-  required: ["id", "name", "maxPlayers", "bracket", "status", "adminId"],
+  required: ["id", "name", "maxPlayers", "bracket", "status", "userId"],
   additionalProperties: false
 };
 
@@ -83,11 +84,12 @@ const createTournamentSchema = {
     maxPlayers: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentMaxPlayers"
     },
+    userNickname: { $ref: "commonDefinitionsSchema#/definitions/username" },
     bracket: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentBracket"
     }
   },
-  required: ["name", "maxPlayers", "bracket"],
+  required: ["name", "maxPlayers", "userNickname", "bracket"],
   additionalProperties: false
 };
 

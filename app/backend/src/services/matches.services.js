@@ -1,42 +1,51 @@
 import prisma from "../prisma/prismaClient.js";
 
 const matchSelect = {
-  playerNickname: true,
-  opponentNickname: true,
-  tournamentId: true,
-  playerScore: true,
-  opponentScore: true,
-  date: true
+  userId: true,
+  playedAs: true,
+  player1Nickname: true,
+  player2Nickname: true,
+  player1Score: true,
+  player2Score: true,
+  date: true,
+  tournament: {
+    select: {
+      id: true,
+      name: true
+    }
+  }
 };
 
 export async function createMatch(
-  playerId,
-  playerNickname,
-  opponentNickname,
-  tournamentId,
-  playerScore,
-  opponentScore
+  userId,
+  playedAs,
+  player1Nickname,
+  player2Nickname,
+  player1Score,
+  player2Score,
+  tournament
 ) {
   const match = await prisma.match.create({
     data: {
-      playerId,
-      playerNickname,
-      opponentNickname,
-      tournamentId,
-      playerScore,
-      opponentScore,
+      userId,
+      playedAs,
+      player1Nickname,
+      player2Nickname,
+      player1Score,
+      player2Score,
+      tournamentId: tournament?.id || null,
       date: new Date()
     },
     select: matchSelect
   });
-  if (tournamentId) {
-    const tournament = await prisma.tournament.findUniqueOrThrow({
-      where: { id: tournamentId }
+  if (tournament?.id) {
+    const tournamentRecord = await prisma.tournament.findUniqueOrThrow({
+      where: { id: tournament?.id }
     });
 
-    if (tournament && tournament.status === "CREATED") {
+    if (tournamentRecord && tournamentRecord.status === "CREATED") {
       await prisma.tournament.update({
-        where: { id: tournament.id },
+        where: { id: tournamentRecord.id },
         data: { status: "IN_PROGRESS" }
       });
     }
@@ -59,12 +68,17 @@ export async function getMatch(id) {
   return match;
 }
 
-export async function getUserMatches(id) {
+export async function getUserMatches(userId) {
   const matches = await prisma.match.findMany({
     where: {
-      playerId: id
+      userId: userId
     },
     select: matchSelect
   });
+  return matches;
+}
+
+export async function deleteAllMatches() {
+  const matches = await prisma.match.deleteMany();
   return matches;
 }

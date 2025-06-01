@@ -1,4 +1,4 @@
-import { authorizeUser } from "../middleware/auth.js";
+import { authorizeUserAccess } from "../middleware/auth.js";
 import {
   createUserHandler,
   getUserHandler,
@@ -7,7 +7,6 @@ import {
   deleteUserHandler,
   getUserMatchesHandler,
   patchUserHandler,
-  getAllUserStatsHandler,
   getUserStatsHandler,
   getUserTournamentsHandler,
   getUserActiveTournamentHandler
@@ -28,12 +27,6 @@ export default async function userRoutes(fastify) {
   fastify.delete("/:id/", optionsDeleteUser, deleteUserHandler);
 
   fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
-
-  fastify.get(
-    "/admin/user-stats/",
-    optionsGetAllUserStats,
-    getAllUserStatsHandler
-  );
 
   fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
 
@@ -61,7 +54,7 @@ const optionsCreateUser = {
 };
 
 const optionsGetUser = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     params: { $ref: "idSchema" },
     response: {
@@ -113,7 +106,7 @@ const optionsDeleteUser = {
 };
 
 const optionsGetUserMatches = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "matchArrayResponseSchema" },
@@ -123,7 +116,7 @@ const optionsGetUserMatches = {
 };
 
 const optionsGetUserStats = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "userStatsResponseSchema" },
@@ -132,17 +125,8 @@ const optionsGetUserStats = {
   }
 };
 
-const optionsGetAllUserStats = {
-  schema: {
-    response: {
-      200: { $ref: "userStatsArrayResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
 const optionsGetUserTournaments = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "tournamentArrayResponseSchema" },
@@ -152,7 +136,7 @@ const optionsGetUserTournaments = {
 };
 
 const optionsGetUserActiveTournament = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "tournamentResponseSchema" },
