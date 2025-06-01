@@ -5,6 +5,7 @@ import {
   RouteChangeInfo,
   routeEvent
 } from "../types/Route.js";
+import { stopOnlineStatusTracking } from "../services/onlineStatusServices.js";
 
 export class Router {
   private static instance: Router;
@@ -30,6 +31,7 @@ export class Router {
 
   async start(): Promise<void> {
     window.addEventListener("popstate", this.handlePopState);
+    window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.body.addEventListener("click", this.handleLinkClick);
     await this.navigate(window.location.pathname, false);
   }
@@ -123,6 +125,11 @@ export class Router {
       const url = new URL(target.href);
       this.navigate(url.pathname, true);
     }
+  };
+
+  private handleBeforeUnload = () => {
+    console.log(`BeforeUnload triggered`);
+    stopOnlineStatusTracking();
   };
 
   private async evaluateGuard(route: RouteConfig): Promise<boolean> {
