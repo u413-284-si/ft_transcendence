@@ -12,6 +12,18 @@ const userStatsSchema = {
   additionalProperties: false
 };
 
+const createUserStatsResponseSchema = {
+  $id: "createUserStatsResponseSchema",
+  type: "object",
+  properties: {
+    matchesPlayed: { type: "number" },
+    matchesWon: { type: "number" },
+    userId: { $ref: "commonDefinitionsSchema#/definitions/id" }
+  },
+  required: ["matchesPlayed", "matchesWon", "userId"],
+  additionalProperties: false
+};
+
 const userStatsResponseSchema = {
   $id: "userStatsResponseSchema",
   type: "object",
@@ -40,6 +52,7 @@ const userStatsArrayResponseSchema = {
 
 export const userStatsSchemas = [
   userStatsSchema,
+  createUserStatsResponseSchema,
   userStatsResponseSchema,
   userStatsArrayResponseSchema
 ];

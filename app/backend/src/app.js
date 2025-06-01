@@ -7,6 +7,7 @@ import fastifyGracefulShutdown from "fastify-graceful-shutdown";
 import fastifyStatic from "@fastify/static";
 import fastifyCookie from "@fastify/cookie";
 import fastifyRateLimit from "@fastify/rate-limit";
+import jwt from "@fastify/jwt";
 
 import env from "./config/env.js";
 
@@ -15,6 +16,7 @@ import staticRoutes from "./routes/static.routes.js";
 import matchRoutes from "./routes/matches.routes.js";
 import tournamentRoutes from "./routes/tournaments.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import userstatsRoutes from "./routes/user_stats.routes.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/users.schema.js";
@@ -66,6 +68,28 @@ await fastify.register(fastifyRateLimit, {
   max: 1000,
   timeWindow: "15 minutes"
 });
+await fastify.register(jwt, {
+  namespace: "accessToken",
+  secret: env.jwtAccessTokenSecret,
+  jwtVerify: "accessTokenVerify",
+  jwtSign: "accessTokenSign",
+  sign: { expiresIn: env.accessTokenTimeToExpireInMs },
+  cookie: {
+    cookieName: "accessToken",
+    signed: false
+  }
+});
+await fastify.register(jwt, {
+  namespace: "refreshToken",
+  secret: env.jwtRefreshTokenSecret,
+  jwtVerify: "refreshTokenVerify",
+  jwtSign: "refreshTokenSign",
+  sign: { expiresIn: env.refreshTokenTimeToExpireInMS },
+  cookie: {
+    cookieName: "refreshToken",
+    signed: false
+  }
+});
 
 for (const schema of [
   ...commonSchemas,
@@ -83,6 +107,7 @@ await fastify.register(userRoutes, { prefix: "/api/users" });
 await fastify.register(matchRoutes, { prefix: "/api/matches" });
 await fastify.register(tournamentRoutes, { prefix: "/api/tournaments" });
 await fastify.register(authRoutes, { prefix: "/api/auth" });
+await fastify.register(userstatsRoutes, { prefix: "/api/user-stats" });
 await fastify.register(fastifyStatic, {
   root: "/workspaces/ft_transcendence/app/frontend/public"
 });
@@ -94,3 +119,5 @@ fastify.listen({ host: "0.0.0.0", port: env.port }, (err, address) => {
   }
   fastify.log.info(`Pong game is running in ${env.nodeEnv} mode at ${address}`);
 });
+
+export default fastify;
