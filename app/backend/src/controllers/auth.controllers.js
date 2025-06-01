@@ -90,10 +90,7 @@ export async function authRefreshHandler(request, reply) {
     const userId = userDataRefreshToken.id;
 
     const hashedRefreshToken = await getTokenHash(userId);
-    const payload = await getTokenData(
-      userId,
-      "id",
-    );
+    const payload = await getTokenData(userId, "id");
 
     if (!(await verifyHash(hashedRefreshToken, token))) {
       return httpError(
@@ -106,7 +103,7 @@ export async function authRefreshHandler(request, reply) {
 
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
-	  payload
+      payload
     );
     return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
