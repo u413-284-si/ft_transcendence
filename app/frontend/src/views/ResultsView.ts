@@ -1,6 +1,8 @@
 import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
 import { escapeHTML } from "../utility.js";
+import { setTournamentFinished } from "../services/tournamentService.js";
+import { router } from "../routing/Router.js";
 
 export default class ResultsView extends AbstractView {
   constructor(private tournament: Tournament) {
@@ -43,13 +45,37 @@ export default class ResultsView extends AbstractView {
           <h2 class="text-2xl font-bold text-gray-800">Tournament Bracket</h2>
           <div class="mb-6">${this.tournament.getBracketAsHTML()}</div>
         </div>
+        <div class="mt-4 space-x-4">
+          <button
+            id="finish-btn"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl shadow"
+          >
+            Set as finished
+          </button>
+        </div>
       </div>
       ${footerHTML}
     `;
   }
 
+  protected addListeners(): void {
+    document
+      .getElementById("finish-btn")!
+      .addEventListener("click", () => this.setFinished());
+  }
+
   async render() {
     this.updateHTML();
+    this.addListeners();
+  }
+
+  private async setFinished() {
+    try {
+      await setTournamentFinished(this.tournament.getId());
+      router.reload();
+    } catch (error) {
+      router.handleError("Error setting tournament as finished", error);
+    }
   }
 
   getName(): string {

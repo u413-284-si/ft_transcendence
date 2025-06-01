@@ -5,6 +5,7 @@ import {
   RouteChangeInfo,
   routeEvent
 } from "../types/Route.js";
+import ErrorView from "../views/ErrorView.js";
 
 export class Router {
   private static instance: Router;
@@ -37,7 +38,7 @@ export class Router {
   async navigate(path: string, push: boolean = true): Promise<void> {
     try {
       path = this.normalizePath(path);
-      if (this.currentPath === path) {
+      if (this.currentPath === path && push) {
         console.log(`Already on path ${path}`);
         return;
       }
@@ -69,7 +70,7 @@ export class Router {
 
       this.notifyRouteChange("nav");
     } catch (error) {
-      console.error("Error during navigate():", error);
+      this.handleError("Error in navigate()", error);
     }
   }
 
@@ -81,8 +82,18 @@ export class Router {
       await this.setView(view);
       this.notifyRouteChange("view");
     } catch (error) {
-      console.error("Error during switchView():", error);
+      this.handleError("Error in switchView()", error);
     }
+  }
+
+  async reload() {
+    await this.navigate(this.currentPath, false);
+  }
+
+  async handleError(message: string, error: unknown) {
+    console.error(message, error);
+    const view = new ErrorView(error);
+    await this.setView(view);
   }
 
   addRouteChangeListener(listener: RouteChangeListener): this {

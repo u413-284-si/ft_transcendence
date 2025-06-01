@@ -65,14 +65,9 @@ export default class StatsView extends AbstractView {
   }
 
   async render() {
-    try {
-      this.userStatsHTML = await this.getUserStatsHTML();
-      this.matchesHTML = await this.getMatchesHTML();
-      this.updateHTML();
-    } catch (error) {
-      console.error(error);
-      // FIXME: show error page
-    }
+    this.userStatsHTML = await this.getUserStatsHTML();
+    this.matchesHTML = await this.getMatchesHTML();
+    this.updateHTML();
   }
 
   async getUserStatsHTML(): Promise<string> {

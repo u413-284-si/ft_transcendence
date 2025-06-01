@@ -9,6 +9,7 @@ import {
   validateTournamentName,
   validatePlayersSelection
 } from "../validate.js";
+import ResultsView from "./ResultsView.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -85,31 +86,29 @@ export default class NewTournamentView extends AbstractView {
   }
 
   async render() {
-    try {
-      const activeTournament = await getActiveTournament();
-      if (!activeTournament) {
-        console.log("No active tournament found");
-        this.updateHTML();
-        this.formEl = document.querySelector("#tournament-form")!;
-        this.addListeners();
-        return;
-      }
-      const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
-      const tournament = new Tournament(
-        activeTournament.name,
-        activeTournament.maxPlayers,
-        activeTournament.userId,
-        activeTournament.userNickname,
-        bracket,
-        activeTournament.id
-      );
-      const matchAnnouncementView = new MatchAnnouncement(tournament);
-      router.switchView(matchAnnouncementView);
+    const activeTournament = await getActiveTournament();
+    if (!activeTournament) {
+      console.log("No active tournament found");
+      this.updateHTML();
+      this.formEl = document.querySelector("#tournament-form")!;
+      this.addListeners();
       return;
-    } catch (error) {
-      console.error(error);
-      // show error page
     }
+    const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
+    const tournament = new Tournament(
+      activeTournament.name,
+      activeTournament.maxPlayers,
+      activeTournament.userId,
+      activeTournament.userNickname,
+      bracket,
+      activeTournament.id
+    );
+    if (tournament.getNextMatchToPlay()) {
+      router.switchView(new MatchAnnouncement(tournament));
+    } else {
+      router.switchView(new ResultsView(tournament));
+    }
+    return;
   }
 
   async validateAndRequestNicknames(event: Event) {

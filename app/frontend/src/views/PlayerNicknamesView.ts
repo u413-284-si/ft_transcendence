@@ -137,14 +137,10 @@ export default class PlayerNicknamesView extends AbstractView {
       if (id) {
         tournament.setId(id);
       }
-      const nextMatch = tournament.getNextMatchToPlay();
-      if (!nextMatch) {
-        throw new Error("Match is undefined");
-      }
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.switchView(matchAnnouncementView);
     } catch (error) {
-      console.error("Error creating tournament", error);
+      router.handleError("Error creating tournament", error);
     }
   }
 

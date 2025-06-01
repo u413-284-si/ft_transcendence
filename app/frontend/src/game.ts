@@ -140,37 +140,27 @@ async function endGame(
   tournament: Tournament | null,
   userRole: string | null
 ) {
-  let tournamentId;
-  try {
-    if (tournament) {
-      const winner =
-        gameState.player1Score > gameState.player2Score
-          ? gameState.player1
-          : gameState.player2;
-      const matchId = tournament.getNextMatchToPlay()?.matchId;
-      if (!matchId) {
-        throw new Error("Match is undefined");
-      }
-      tournamentId = tournament.getId();
-      tournament.updateBracketWithResult(matchId, winner);
-      await updateTournamentBracket(tournament);
-    }
-
-    await createMatch({
-      tournament: tournamentId
-        ? { id: tournamentId, name: tournament!.getTournamentName() }
-        : null,
-      userId: userRole ? auth.getToken().id : null,
-      playedAs: userRole,
-      player1Nickname: gameState.player1,
-      player2Nickname: gameState.player2,
-      player1Score: gameState.player1Score,
-      player2Score: gameState.player2Score
-    });
-  } catch (error) {
-    console.error(error);
-    // show error page
+  if (tournament) {
+    const matchId = tournament.getNextMatchToPlay()!.matchId;
+    const winner =
+      gameState.player1Score > gameState.player2Score
+        ? gameState.player1
+        : gameState.player2;
+    tournament.updateBracketWithResult(matchId, winner);
+    await updateTournamentBracket(tournament);
   }
+
+  await createMatch({
+    tournament: tournament
+      ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
+      : null,
+    userId: userRole ? auth.getToken().id : null,
+    playedAs: userRole,
+    player1Nickname: gameState.player1,
+    player2Nickname: gameState.player2,
+    player1Score: gameState.player1Score,
+    player2Score: gameState.player2Score
+  });
 
   await waitForEnterKey();
 }
