@@ -26,11 +26,7 @@ export default class ErrorView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
-
     return /* HTML */ `
-      ${navbarHTML}
       <main class="p-6 flex flex-col items-center justify-center text-center">
         <div class="bg-red-100 p-6 rounded-xl shadow-md">
           <h1 class="text-3xl font-bold text-red-700">
@@ -50,7 +46,6 @@ export default class ErrorView extends AbstractView {
           </div>
         </div>
       </main>
-      ${footerHTML}
     `;
   }
 

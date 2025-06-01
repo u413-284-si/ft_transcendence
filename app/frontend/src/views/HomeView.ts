@@ -9,14 +9,10 @@ export default class HomeView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
     return /* HTML */ `
-      ${navbarHTML}
       <h1>Home</h1>
       <p>Hello ${escapeHTML(auth.getToken().username)}!</p>
       <p>This is the home page</p>
-      ${footerHTML}
     `;
   }
 

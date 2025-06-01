@@ -68,7 +68,7 @@ export default class PlayerNicknamesView extends AbstractView {
       </p>
       <form
         id="nicknames-form"
-        class="flex flex-col justify-center items-center h-screen gap-4"
+        class="flex flex-col justify-center items-center gap-4"
       >
         <p class="text-sm text-gray-500 mb-2 text-center">
           Select which player will be controlled by ${auth.getToken().username}.

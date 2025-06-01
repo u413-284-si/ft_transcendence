@@ -6,6 +6,7 @@ import {
   routeEvent
 } from "../types/Route.js";
 import ErrorView from "../views/ErrorView.js";
+import { Layout } from "../Layout.js";
 
 export class Router {
   private static instance: Router;
@@ -14,6 +15,7 @@ export class Router {
   private currentPath: string = "";
   private previousPath: string = "";
   private routeChangeListeners: RouteChangeListener[] = [];
+  private layout = new Layout("guest");
 
   private constructor() {}
 
@@ -64,6 +66,8 @@ export class Router {
       }
       this.previousPath = this.currentPath;
       this.currentPath = path;
+
+      this.layout.update(route.layout);
 
       const view = new route.view();
       await this.setView(view);

@@ -20,10 +20,7 @@ export default class NewTournamentView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
     return /* HTML */ `
-      ${navbarHTML}
       <h1
         style="
           margin-bottom: 40px;
@@ -75,7 +72,6 @@ export default class NewTournamentView extends AbstractView {
         </div>
         <button type="submit">Start Tournament</button>
       </form>
-      ${footerHTML}
     `;
   }
 

@@ -13,9 +13,6 @@ export default class NewGameView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
-
     let nicknameInputs = "";
     for (let i = 1; i <= 2; i++) {
       const isChecked = i === 1 ? "checked" : "";
@@ -53,10 +50,9 @@ export default class NewGameView extends AbstractView {
     }
 
     return /* HTML */ `
-      ${navbarHTML}
       <form
         id="register-form"
-        class="flex flex-col justify-center items-center h-screen gap-4"
+        class="flex flex-col justify-center items-center gap-4"
       >
         <p class="text-sm text-gray-500 mb-2 text-center">
           Select which player will be controlled by ${auth.getToken().username}.
@@ -72,7 +68,6 @@ export default class NewGameView extends AbstractView {
           </button>
         </div>
       </form>
-      ${footerHTML}
     `;
   }
 

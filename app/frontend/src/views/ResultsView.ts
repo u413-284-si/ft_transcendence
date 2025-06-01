@@ -11,11 +11,7 @@ export default class ResultsView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
-
     return /* HTML */ `
-      ${navbarHTML}
       <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
         <!-- Header Section -->
         <div
@@ -45,6 +41,8 @@ export default class ResultsView extends AbstractView {
           <h2 class="text-2xl font-bold text-gray-800">Tournament Bracket</h2>
           <div class="mb-6">${this.tournament.getBracketAsHTML()}</div>
         </div>
+
+        <!-- Button Section -->
         <div class="mt-4 space-x-4">
           <button
             id="finish-btn"
@@ -54,7 +52,6 @@ export default class ResultsView extends AbstractView {
           </button>
         </div>
       </div>
-      ${footerHTML}
     `;
   }
 

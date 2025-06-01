@@ -33,10 +33,7 @@ export default class MatchAnnouncementView extends AbstractView {
   }
 
   createHTML() {
-    const navbarHTML = this.createNavbar();
-    const footerHTML = this.createFooter();
     return /* HTML */ `
-      ${navbarHTML}
       <div class="max-w-4xl mx-auto px-4 py-8 space-y-10">
         <!-- Match Announcement Card -->
         <section>
@@ -90,7 +87,6 @@ export default class MatchAnnouncementView extends AbstractView {
           </div>
         </section>
       </div>
-      ${footerHTML}
     `;
   }
 
