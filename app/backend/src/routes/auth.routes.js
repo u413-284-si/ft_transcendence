@@ -15,6 +15,11 @@ export default async function authRoutes(fastify) {
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 }
 
+const authRateLimit = {
+  max: 10, // Maximum 10 requests
+  timeWindow: "1 minute" // Per minute
+};
+
 const optionsloginUser = {
   schema: {
     body: { $ref: "loginUserSchema" },
@@ -22,7 +27,8 @@ const optionsloginUser = {
       200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
-  }
+  },
+  rateLimit: authRateLimit
 };
 
 const optionsAuthUserAccess = {
@@ -31,7 +37,8 @@ const optionsAuthUserAccess = {
     response: {
       ...errorResponses
     }
-  }
+  },
+  rateLimit: authRateLimit
 };
 
 const optionsAuthUserRefresh = {
@@ -39,5 +46,6 @@ const optionsAuthUserRefresh = {
     response: {
       ...errorResponses
     }
-  }
+  },
+  rateLimit: authRateLimit
 };
