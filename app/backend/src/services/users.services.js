@@ -9,6 +9,7 @@ const userSelect = {
   id: true,
   username: true,
   email: true,
+  avatar: true,
   dateJoined: true
 };
 

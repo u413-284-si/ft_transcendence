@@ -72,7 +72,6 @@ const optionsCreateUser = {
 const optionsGetUser = {
   onRequest: [authorizeUserAccess],
   schema: {
-    params: { $ref: "idSchema" },
     response: {
       200: { $ref: "userResponseSchema" },
       ...errorResponses
