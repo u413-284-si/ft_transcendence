@@ -210,7 +210,7 @@ const optionsGetUserAvatar = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
-      200: { type: "string" },
+      200: { $ref: "getAvatarSchema" },
       ...errorResponses
     }
   }

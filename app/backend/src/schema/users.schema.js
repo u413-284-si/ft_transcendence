@@ -98,11 +98,23 @@ export const patchUserSchema = {
   ]
 };
 
+const getAvatarSchema = {
+  $id: "getAvatarSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: { type: "string" }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
 export const userSchemas = [
   userSchema,
   userResponseSchema,
   userArrayResponseSchema,
   createUserSchema,
   updateUserSchema,
-  patchUserSchema
+  patchUserSchema,
+  getAvatarSchema
 ];
