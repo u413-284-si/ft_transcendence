@@ -1,10 +1,10 @@
-import { verifyJWT } from "../services/auth.services.js";
+import { verifyAccessToken } from "../services/auth.services.js";
 import { createResponseMessage } from "../utils/response.js";
-import { httpError } from "../utils/error.js";
+import { handlePrismaError, httpError } from "../utils/error.js";
 
-export async function authorizeUser(request, reply) {
-  const action = "authorize user";
-  const token = request.cookies.authToken;
+export async function authorizeUserAccess(request, reply) {
+  const action = "Authorize user's access token";
+  const token = request.cookies.accessToken;
   if (!token) {
     return httpError(
       reply,
@@ -14,18 +14,16 @@ export async function authorizeUser(request, reply) {
     );
   }
   try {
-    const data = verifyJWT(token);
-    request.user = data;
+    const userData = await verifyAccessToken(request);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { authentication, ...userDataAccessToken } = userData;
+    request.user = userDataAccessToken;
   } catch (err) {
     request.log.error(
       { err, body: request.body },
       `authorizeUserHandler: ${createResponseMessage(action, false)}`
     );
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(action, false),
-      "Could not verify JWT"
-    );
+    handlePrismaError(reply, action, err);
   }
 }

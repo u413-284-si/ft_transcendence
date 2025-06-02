@@ -3,13 +3,14 @@ import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
-import NewTournament from "./NewTournamentView.js";
 import { escapeHTML } from "../utility.js";
 
 export default class MatchAnnouncementView extends AbstractView {
-  private player1: string | null = null;
-  private player2: string | null = null;
-  private matchNumber: number | null = null;
+  private player1: string;
+  private player2: string;
+  private matchNumber: number;
+  private roundNumber: number;
+  private userRole: "PLAYERONE" | "PLAYERTWO" | null = null;
 
   constructor(private tournament: Tournament) {
     super();
@@ -18,59 +19,73 @@ export default class MatchAnnouncementView extends AbstractView {
     if (!match) {
       throw new Error("Match is undefined");
     }
-    this.player1 = match.player1;
-    this.player2 = match.player2;
+    this.player1 = match.player1!;
+    this.player2 = match.player2!;
     this.matchNumber = match.matchId;
+    this.roundNumber = match.round;
+    const userNickname = tournament.getUserNickname();
+    this.userRole =
+      this.player1 === userNickname
+        ? "PLAYERONE"
+        : this.player2 === userNickname
+          ? "PLAYERTWO"
+          : null;
   }
 
   createHTML() {
     return /* HTML */ `
-      <h1
-        style="
-        margin-bottom: 20px;
-        font-size: 2em;
-        color: #007BFF;
-        text-align: center;"
-      >
-        Match ${this.matchNumber}
-      </h1>
-      <p style="margin-bottom: 20px; text-align: center; font-size: 1.5em;">
-        <strong>${escapeHTML(this.player1)}</strong> vs
-        <strong>${escapeHTML(this.player2)}</strong>
-      </p>
-      <div style="text-align: center;">
-        <form id="match-form">
-          <button
-            type="submit"
-            style="
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1em;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;"
+      <div class="max-w-4xl mx-auto px-4 py-8 space-y-10">
+        <!-- Match Announcement Card -->
+        <section>
+          <div
+            class="bg-blue-50 border-l-4 border-blue-400 rounded-2xl shadow p-6 text-center space-y-4"
           >
-            Start Match
-          </button>
-        </form>
-      </div>
-      <div>
-        <button
-          id="abort-tournament"
-          style="
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1em;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;"
-        >
-          Abort Tournament
-        </button>
+            <h1 class="text-4xl font-extrabold text-blue-700">
+              🎮 Next Match!
+            </h1>
+
+            <p class="text-lg text-gray-700">
+              <span class="font-medium">Round</span> ${this.roundNumber} &mdash;
+              <span class="font-medium">Match</span> ${this.matchNumber}
+            </p>
+
+            <p class="text-2xl text-gray-900">
+              <b>${escapeHTML(this.player1)}</b>
+              vs <b>${escapeHTML(this.player2)}</b>
+            </p>
+
+            <form id="match-form">
+              <button
+                type="submit"
+                class="mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+              >
+                Start Match
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Tournament Status Card -->
+        <section>
+          <div
+            class="bg-white border border-gray-300 rounded-2xl shadow p-6 text-center space-y-6"
+          >
+            <h2 class="text-2xl font-bold text-gray-800">
+              📊 Tournament Status
+            </h2>
+
+            <div class="mb-6">${this.tournament.getBracketAsHTML()}</div>
+
+            <div>
+              <button
+                id="abort-tournament"
+                class="px-6 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition"
+              >
+                Abort Tournament
+              </button>
+            </div>
+          </div>
+        </section>
       </div>
     `;
   }
@@ -95,14 +110,10 @@ export default class MatchAnnouncementView extends AbstractView {
       `Match ${this.matchNumber} started: ${this.player1} vs ${this.player2}`
     );
 
-    if (!this.player1 || !this.player2) {
-      console.error("Player names are not set.");
-      return;
-    }
-
     const gameView = new GameView(
       this.player1,
       this.player2,
+      this.userRole,
       GameType.tournament,
       this.tournament
     );
@@ -111,14 +122,11 @@ export default class MatchAnnouncementView extends AbstractView {
 
   private async abortTournament() {
     try {
-      const confirmed = confirm("Do you really want to abort the tournament?");
-      if (!confirmed) return;
+      if (!confirm("Do you really want to abort the tournament?")) return;
       await deleteTournament(this.tournament.getId());
-      const view = new NewTournament();
-      router.switchView(view);
+      router.reload();
     } catch (error) {
-      console.error(error);
-      // show error page
+      router.handleError("Error while deleting tournament", error);
     }
   }
 

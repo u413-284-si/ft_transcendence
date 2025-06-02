@@ -4,18 +4,26 @@ const tournamentSelect = {
   id: true,
   name: true,
   maxPlayers: true,
-  bracket: true,
   status: true,
-  adminId: true
+  userId: true,
+  userNickname: true,
+  bracket: true
 };
 
-export async function createTournament(name, maxPlayers, adminId, bracket) {
+export async function createTournament(
+  name,
+  maxPlayers,
+  userId,
+  userNickname,
+  bracket
+) {
   const tournament = await prisma.tournament.create({
     data: {
       name,
       maxPlayers,
-      adminId,
       status: "CREATED",
+      userId,
+      userNickname,
       bracket
     },
     select: tournamentSelect
@@ -40,11 +48,11 @@ export async function getTournament(id) {
   return tournament;
 }
 
-export async function updateTournament(id, adminId, updateData) {
+export async function updateTournament(id, userId, updateData) {
   const updatedTournament = await prisma.tournament.update({
     where: {
       id,
-      adminId
+      userId
     },
     data: updateData,
     select: tournamentSelect
@@ -57,31 +65,31 @@ export async function deleteAllTournaments() {
   return tournaments;
 }
 
-export async function deleteTournament(id, adminId) {
+export async function deleteTournament(id, userId) {
   const tournament = await prisma.tournament.delete({
     where: {
       id,
-      adminId
+      userId
     },
     select: tournamentSelect
   });
   return tournament;
 }
 
-export async function getUserTournaments(id) {
+export async function getUserTournaments(userId) {
   const tournaments = await prisma.tournament.findMany({
     where: {
-      adminId: id
+      userId
     },
     select: tournamentSelect
   });
   return tournaments;
 }
 
-export async function getUserActiveTournament(adminId) {
+export async function getUserActiveTournament(userId) {
   const tournament = await prisma.tournament.findFirst({
     where: {
-      adminId,
+      userId,
       status: {
         in: ["CREATED", "IN_PROGRESS"]
       }

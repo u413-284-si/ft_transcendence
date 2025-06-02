@@ -1,4 +1,4 @@
-import { authorizeUser } from "../middleware/auth.js";
+import { authorizeUserAccess } from "../middleware/auth.js";
 import {
   createUserHandler,
   getUserHandler,
@@ -7,12 +7,15 @@ import {
   deleteUserHandler,
   getUserMatchesHandler,
   patchUserHandler,
-  getAllUserStatsHandler,
   getUserStatsHandler,
   getUserTournamentsHandler,
-  getUserActiveTournamentHandler
+  getUserActiveTournamentHandler,
+  getUserFriendsHandler,
+  createUserFriendHandler,
+  deleteUserFriendHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
+import { sseOnlineHandler } from "../controllers/online_status.controllers.js";
 
 export default async function userRoutes(fastify) {
   fastify.post("/", optionsCreateUser, createUserHandler);
@@ -29,12 +32,6 @@ export default async function userRoutes(fastify) {
 
   fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
 
-  fastify.get(
-    "/admin/user-stats/",
-    optionsGetAllUserStats,
-    getAllUserStatsHandler
-  );
-
   fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
 
   fastify.get(
@@ -48,6 +45,18 @@ export default async function userRoutes(fastify) {
     optionsGetUserActiveTournament,
     getUserActiveTournamentHandler
   );
+
+  fastify.get("/friends/", optionsGetUserFriends, getUserFriendsHandler);
+
+  fastify.post("/friends/", optionsCreateUserFriend, createUserFriendHandler);
+
+  fastify.delete(
+    "/friends/:id/",
+    optionsDeleteUserFriend,
+    deleteUserFriendHandler
+  );
+
+  fastify.get("/online/", optionsSseOnline, sseOnlineHandler);
 }
 
 const optionsCreateUser = {
@@ -61,7 +70,7 @@ const optionsCreateUser = {
 };
 
 const optionsGetUser = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     params: { $ref: "idSchema" },
     response: {
@@ -113,7 +122,7 @@ const optionsDeleteUser = {
 };
 
 const optionsGetUserMatches = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "matchArrayResponseSchema" },
@@ -123,7 +132,7 @@ const optionsGetUserMatches = {
 };
 
 const optionsGetUserStats = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "userStatsResponseSchema" },
@@ -132,17 +141,8 @@ const optionsGetUserStats = {
   }
 };
 
-const optionsGetAllUserStats = {
-  schema: {
-    response: {
-      200: { $ref: "userStatsArrayResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
 const optionsGetUserTournaments = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "tournamentArrayResponseSchema" },
@@ -152,10 +152,50 @@ const optionsGetUserTournaments = {
 };
 
 const optionsGetUserActiveTournament = {
-  onRequest: [authorizeUser],
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "tournamentResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserFriends = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
+      200: { $ref: "userArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsCreateUserFriend = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    body: { $ref: "idSchema" },
+    response: {
+      201: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteUserFriend = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    params: { $ref: "idSchema" },
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsSseOnline = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
       ...errorResponses
     }
   }

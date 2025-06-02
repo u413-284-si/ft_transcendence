@@ -55,6 +55,9 @@ export class Layout {
           <a href="/settings" class="text-lg hover:text-blue-300" data-link
             >Settings</a
           >
+          <a href="/friends" class="text-lg hover:text-blue-300" data-link
+            >Friends</a
+          >
         </div>
       </nav>`;
     }

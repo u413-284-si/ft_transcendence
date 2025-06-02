@@ -5,10 +5,7 @@ import {
   updateUser,
   deleteUser
 } from "../services/users.services.js";
-import {
-  getAllUserStats,
-  getUserStats
-} from "../services/user_stats.services.js";
+import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
 import {
   getUserTournaments,
@@ -16,14 +13,24 @@ import {
 } from "../services/tournaments.services.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
-import { createHashedPassword } from "../services/auth.services.js";
+import { createHash } from "../services/auth.services.js";
+import {
+  createFriendship,
+  deleteFriendship,
+  getUserFriends,
+  isFriends
+} from "../services/friends.services.js";
+import {
+  addOnlineStatusToArray,
+  isUserOnline
+} from "../services/online_status.services.js";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
   try {
     const { username, email, password } = request.body;
 
-    const hashedPassword = await createHashedPassword(password);
+    const hashedPassword = await createHash(password);
 
     const data = await createUser(username, email, hashedPassword);
     return reply
@@ -153,25 +160,6 @@ export async function getUserMatchesHandler(request, reply) {
   }
 }
 
-export async function getAllUserStatsHandler(request, reply) {
-  const action = "Get all user stats";
-  try {
-    const data = await getAllUserStats();
-    const count = data.length;
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      count: count,
-      data: data
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getAllUserStats: ${createResponseMessage(action, false)}`
-    );
-    handlePrismaError(reply, action, err);
-  }
-}
-
 export async function getUserStatsHandler(request, reply) {
   const action = "Get user stats";
   try {
@@ -212,8 +200,8 @@ export async function getUserTournamentsHandler(request, reply) {
 export async function getUserActiveTournamentHandler(request, reply) {
   const action = "Get user active tournament";
   try {
-    const adminId = parseInt(request.user.id, 10);
-    const data = await getUserActiveTournament(adminId);
+    const userId = parseInt(request.user.id, 10);
+    const data = await getUserActiveTournament(userId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -221,6 +209,91 @@ export async function getUserActiveTournamentHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserActiveTournamentHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getUserFriendsHandler(request, reply) {
+  const action = "Get user friends";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const friends = await getUserFriends(userId);
+    const data = addOnlineStatusToArray(friends);
+    const count = data.length;
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserFriendsHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function createUserFriendHandler(request, reply) {
+  const action = "Create user friend";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const friendId = request.body.id;
+
+    if (userId === friendId) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Can't add yourself as a friend"
+      );
+    }
+
+    // Check friend exists
+    const friend = await getUser(friendId);
+
+    const alreadyFriend = await isFriends(userId, friendId);
+    if (alreadyFriend) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Already friends"
+      );
+    }
+
+    await createFriendship(userId, friendId);
+    const data = {
+      id: friend.id,
+      username: friend.username,
+      isOnline: isUserOnline(friend.id)
+    };
+    return reply
+      .code(201)
+      .send({ message: createResponseMessage(action, true), data: data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `createUserFriendHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function deleteUserFriendHandler(request, reply) {
+  const action = "Delete user friend";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const friendId = parseInt(request.params.id, 10);
+    const count = await deleteFriendship(userId, friendId);
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data: count });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `deleteUserFriendHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
