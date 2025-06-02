@@ -1,22 +1,32 @@
 import prisma from "../prisma/prismaClient.js";
 
-const friendSelect = {
-  friend: {
-    select: { id: true, username: true }
-  }
-};
-
 export async function getUserFriends(userId) {
-  const friends = await prisma.friends.findMany({
-    where: { userId: userId },
-    select: friendSelect
+  const acceptedRequests = await prisma.friendRequest.findMany({
+    where: {
+      status: "ACCEPTED",
+      OR: [{ senderId: userId }, { receiverId: userId }]
+    },
+    select: {
+      senderId: true,
+      receiverId: true,
+      sender: {
+        select: { id: true, username: true }
+      },
+      receiver: {
+        select: { id: true, username: true }
+      }
+    }
   });
-  const flattenedFriends = friends.map(({ friend }) => ({
-    id: friend.id,
-    username: friend.username
-  }));
+  const friends = acceptedRequests.map((req) => {
+    const isSender = req.senderId === userId;
+    const friend = isSender ? req.receiver : req.sender;
+    return {
+      id: friend.id,
+      username: friend.username
+    };
+  });
 
-  return flattenedFriends;
+  return friends;
 }
 
 export async function isFriends(userId, friendId) {
