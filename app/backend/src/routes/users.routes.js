@@ -11,11 +11,15 @@ import {
   getUserTournamentsHandler,
   getUserActiveTournamentHandler,
   getUserFriendsHandler,
-  createUserFriendHandler,
-  deleteUserFriendHandler
+  getUserFriendRequestsHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseOnlineHandler } from "../controllers/online_status.controllers.js";
+import {
+  createFriendRequestHandler,
+  deleteFriendRequestHandler,
+  updateFriendRequestHandler
+} from "../controllers/friend_request.controllers.js";
 
 export default async function userRoutes(fastify) {
   fastify.post("/", optionsCreateUser, createUserHandler);
@@ -48,12 +52,28 @@ export default async function userRoutes(fastify) {
 
   fastify.get("/friends/", optionsGetUserFriends, getUserFriendsHandler);
 
-  fastify.post("/friends/", optionsCreateUserFriend, createUserFriendHandler);
+  fastify.get(
+    "/friend-requests/",
+    optionsGetUserFriends,
+    getUserFriendRequestsHandler
+  );
+
+  fastify.post(
+    "/friend-requests/",
+    optionsCreateFriendRequest,
+    createFriendRequestHandler
+  );
+
+  fastify.patch(
+    "/friend-requests/:id/",
+    optionsUpdateFriendRequest,
+    updateFriendRequestHandler
+  );
 
   fastify.delete(
     "/friends/:id/",
     optionsDeleteUserFriend,
-    deleteUserFriendHandler
+    deleteFriendRequestHandler
   );
 
   fastify.get("/online/", optionsSseOnline, sseOnlineHandler);
@@ -165,18 +185,30 @@ const optionsGetUserFriends = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
-      200: { $ref: "userArrayResponseSchema" },
+      // 200: { $ref: "userArrayResponseSchema" },
       ...errorResponses
     }
   }
 };
 
-const optionsCreateUserFriend = {
+const optionsCreateFriendRequest = {
   onRequest: [authorizeUserAccess],
   schema: {
     body: { $ref: "idSchema" },
     response: {
-      201: { $ref: "userResponseSchema" },
+      // 201: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsUpdateFriendRequest = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    params: { $ref: "idSchema" },
+    // body: { $ref: "idSchema" },
+    response: {
+      // 201: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }
