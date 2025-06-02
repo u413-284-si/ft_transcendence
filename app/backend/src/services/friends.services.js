@@ -29,31 +29,71 @@ export async function getUserFriends(userId) {
   return friends;
 }
 
-export async function isFriends(userId, friendId) {
-  const existing = await prisma.friends.findUnique({
-    where: { userId_friendId: { userId: userId, friendId: friendId } }
+export async function getUserFriendRequests(userId) {
+  const requests = await prisma.friendRequest.findMany({
+    where: {
+      OR: [{ senderId: userId }, { receiverId: userId }]
+    }
+  });
+
+  return requests;
+}
+
+export async function isFriends(senderId, receiverId) {
+  const existing = await prisma.friendRequest.findFirst({
+    where: {
+      status: "ACCEPTED",
+      OR: [
+        { senderId, receiverId },
+        { senderId: receiverId, receiverId: senderId }
+      ]
+    }
   });
   return existing ? true : false;
 }
 
-export async function createFriendship(userId, friendId) {
-  const count = await prisma.friends.createMany({
-    data: [
-      { userId: userId, friendId: friendId },
-      { userId: friendId, friendId: userId }
-    ]
-  });
-  return count;
-}
-
-export async function deleteFriendship(userId, friendId) {
-  const count = await prisma.friends.deleteMany({
+export async function getPendingRequest(senderId, receiverId) {
+  const pending = await prisma.friendRequest.findFirst({
     where: {
+      status: "PENDING",
       OR: [
-        { userId: userId, friendId: friendId },
-        { userId: friendId, friendId: userId }
+        { senderId, receiverId },
+        { senderId: receiverId, receiverId: senderId }
       ]
     }
   });
-  return count;
+  return pending;
+}
+
+export async function createFriendRequest(senderId, receiverId) {
+  const request = await prisma.friendRequest.create({
+    data: {
+      senderId,
+      receiverId,
+      status: "PENDING"
+    }
+  });
+  return request;
+}
+
+export async function updateFriendRequest(id, status) {
+  const request = await prisma.friendRequest.update({
+    where: { id },
+    data: { status }
+  });
+  return request;
+}
+
+export async function deleteFriendRequest(id) {
+  const request = await prisma.friendRequest.delete({
+    where: { id }
+  });
+  return request;
+}
+
+export async function getFriendRequest(id) {
+  const request = await prisma.friendRequest.findUniqueOrThrow({
+    where: { id }
+  });
+  return request;
 }
