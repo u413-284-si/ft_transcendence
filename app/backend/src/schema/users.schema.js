@@ -71,7 +71,8 @@ export const patchUserSchema = {
     {
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-        email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+        avatar: { type: "string" }
       },
       required: ["username"],
       additionalProperties: false
@@ -79,9 +80,19 @@ export const patchUserSchema = {
     {
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-        email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+        avatar: { type: "string" }
       },
       required: ["email"],
+      additionalProperties: false
+    },
+    {
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+        avatar: { type: "string" }
+      },
+      required: ["avatar"],
       additionalProperties: false
     }
   ]

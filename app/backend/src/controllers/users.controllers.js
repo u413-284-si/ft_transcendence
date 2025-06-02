@@ -25,6 +25,8 @@ import {
   addOnlineStatusToArray,
   isUserOnline
 } from "../services/online_status.services.js";
+import fs from "fs";
+import path from "path";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -304,6 +306,43 @@ export async function getUserAvatarHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserAvatarHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function createUserAvatarHandler(request, reply) {
+  const action = "Create user avatar";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const parts = request.parts();
+    for await (const part of parts) {
+      if (part.fieldname === "avatar") {
+        const avatar = part;
+        if (!avatar) {
+          return reply.code(400).send({ message: "Avatar is required" });
+        }
+        const fileExt = path.extname(avatar.filename);
+        const newFileName = `user-${request.user.id}${fileExt}`;
+        const uploadDir = path.resolve("app/frontend/public/images");
+        if (!fs.existsSync(uploadDir))
+          fs.mkdirSync(uploadDir, { recursive: true });
+        const filePath = path.join(uploadDir, newFileName);
+        await fs.promises.writeFile(filePath, await avatar.toBuffer());
+        const avatarUrl = `/images/${newFileName}`;
+        const updatedUser = await updateUser(userId, { avatar: avatarUrl });
+        return reply.code(201).send({
+          message: createResponseMessage(action, true),
+          data: updatedUser
+        });
+      }
+    }
+    // If no avatar field found
+    return reply.code(400).send({ message: "Avatar file missing" });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `createUserAvatarHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
