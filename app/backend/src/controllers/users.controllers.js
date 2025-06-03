@@ -5,7 +5,8 @@ import {
   updateUser,
   deleteUser,
   getUserAvatar,
-  createUserAvatar
+  createUserAvatar,
+  deleteUserAvatar
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
@@ -336,6 +337,37 @@ export async function createUserAvatarHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `createUserAvatarHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function deleteUserAvatarHandler(request, reply) {
+  const action = "Delete user avatar";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const currentAvatarUrl = await getUserAvatar(userId);
+    if (!currentAvatarUrl) {
+      return httpError(
+        reply,
+        404,
+        createResponseMessage(action, false),
+        "No avatar found for user"
+      );
+    }
+    await deleteUserAvatar(currentAvatarUrl);
+
+    const updatedUser = await updateUser(userId, { avatar: null });
+    return reply
+      .code(200)
+      .send({
+        message: createResponseMessage(action, true),
+        data: updatedUser
+      });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `deleteUserAvatarHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

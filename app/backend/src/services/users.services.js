@@ -102,3 +102,11 @@ export async function createUserAvatar(id, avatar) {
   await fs.promises.writeFile(filePath, await avatar.toBuffer());
   return newFileName;
 }
+
+export async function deleteUserAvatar(currentAvatarUrl) {
+  const uploadDir = path.resolve("app/frontend/public/images/");
+  const previousPath = path.join(uploadDir, path.basename(currentAvatarUrl));
+  if (fs.existsSync(previousPath)) {
+    await fs.promises.unlink(previousPath);
+  }
+}

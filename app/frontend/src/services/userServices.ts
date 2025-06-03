@@ -53,3 +53,13 @@ export async function uploadAvatar(formData: FormData): Promise<User> {
   console.log(apiResponse);
   return apiResponse.data;
 }
+
+export async function deleteUserAvatar(): Promise<User> {
+  const apiResponse = await apiFetch<User>("/api/users/avatar/", {
+    method: "DELETE",
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}

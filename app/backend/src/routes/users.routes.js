@@ -14,7 +14,8 @@ import {
   createUserFriendHandler,
   deleteUserFriendHandler,
   getUserAvatarHandler,
-  createUserAvatarHandler
+  createUserAvatarHandler,
+  deleteUserAvatarHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseOnlineHandler } from "../controllers/online_status.controllers.js";
@@ -39,6 +40,8 @@ export default async function userRoutes(fastify) {
   fastify.get("/avatar/", optionsGetUserAvatar, getUserAvatarHandler);
 
   fastify.post("/avatar/", optionsCreateUserAvatar, createUserAvatarHandler);
+
+  fastify.delete("/avatar/", optionsDeleteUserAvatar, deleteUserAvatarHandler);
 
   fastify.get(
     "/tournaments/",
@@ -221,6 +224,15 @@ const optionsCreateUserAvatar = {
   schema: {
     response: {
       201: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteUserAvatar = {
+  schema: {
+    response: {
+      200: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }
