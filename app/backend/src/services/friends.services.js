@@ -29,7 +29,7 @@ export async function getUserFriends(userId) {
   return friends;
 }
 
-export async function getUserFriendRequests(userId) {
+export async function getAllUserFriendRequests(userId) {
   const requests = await prisma.friendRequest.findMany({
     where: {
       OR: [{ senderId: userId }, { receiverId: userId }]
@@ -91,9 +91,9 @@ export async function deleteFriendRequest(id) {
   return request;
 }
 
-export async function getFriendRequest(id) {
+export async function getUserFriendRequest(id, userId) {
   const request = await prisma.friendRequest.findUniqueOrThrow({
-    where: { id }
+    where: { id, OR: [{ senderId: userId }, { receiverId: userId }] }
   });
   return request;
 }

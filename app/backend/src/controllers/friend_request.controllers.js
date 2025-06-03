@@ -1,7 +1,7 @@
 import {
   createFriendRequest,
   deleteFriendRequest,
-  getFriendRequest,
+  getUserFriendRequest,
   getPendingRequest,
   isFriends,
   updateFriendRequest
@@ -81,7 +81,7 @@ export async function updateFriendRequestHandler(request, reply) {
     const requestId = parseInt(request.params.id, 10);
     const { status } = request.body;
 
-    const friedRequest = await getFriendRequest(requestId);
+    const friedRequest = await getUserFriendRequest(requestId, userId);
 
     if (friedRequest.status !== "PENDING") {
       return httpError(

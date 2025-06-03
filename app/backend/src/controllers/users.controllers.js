@@ -15,7 +15,7 @@ import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHash } from "../services/auth.services.js";
 import {
-  getUserFriendRequests,
+  getAllUserFriendRequests,
   getUserFriends
 } from "../services/friends.services.js";
 import { addOnlineStatusToArray } from "../services/online_status.services.js";
@@ -226,7 +226,7 @@ export async function getUserFriendRequestsHandler(request, reply) {
   const action = "Get user friend requests";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getUserFriendRequests(userId);
+    const data = await getAllUserFriendRequests(userId);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
