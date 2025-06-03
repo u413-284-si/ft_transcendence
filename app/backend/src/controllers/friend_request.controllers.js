@@ -1,6 +1,7 @@
 import {
   createFriendRequest,
   deleteFriendRequest,
+  getFriendRequest,
   getPendingRequest,
   isFriends,
   updateFriendRequest
@@ -77,9 +78,31 @@ export async function updateFriendRequestHandler(request, reply) {
   const action = "Update friend request";
   try {
     const userId = parseInt(request.user.id, 10);
-    const friendId = parseInt(request.params.id, 10);
+    const requestId = parseInt(request.params.id, 10);
     const { status } = request.body;
-    const data = await updateFriendRequest(userId, friendId, status);
+
+    const request = await getFriendRequest(requestId);
+
+    if (request.status !== "PENDING") {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "This friend request has already been handled."
+      );
+    }
+
+    if (request.receiverId !== userId) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Not authorized to perform this action."
+      );
+    }
+
+    const data = await updateFriendRequest(requestId, status);
+
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
