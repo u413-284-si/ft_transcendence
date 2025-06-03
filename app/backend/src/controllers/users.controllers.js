@@ -4,7 +4,8 @@ import {
   getAllUsers,
   updateUser,
   deleteUser,
-  getUserAvatar
+  getUserAvatar,
+  createUserAvatar
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
@@ -25,8 +26,6 @@ import {
   addOnlineStatusToArray,
   isUserOnline
 } from "../services/online_status.services.js";
-import fs from "fs";
-import path from "path";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -322,13 +321,7 @@ export async function createUserAvatarHandler(request, reply) {
         if (!avatar) {
           return reply.code(400).send({ message: "Avatar is required" });
         }
-        const fileExt = path.extname(avatar.filename);
-        const newFileName = `user-${request.user.id}${fileExt}`;
-        const uploadDir = path.resolve("app/frontend/public/images");
-        if (!fs.existsSync(uploadDir))
-          fs.mkdirSync(uploadDir, { recursive: true });
-        const filePath = path.join(uploadDir, newFileName);
-        await fs.promises.writeFile(filePath, await avatar.toBuffer());
+        const newFileName = await createUserAvatar(userId, avatar);
         const avatarUrl = `/images/${newFileName}`;
         const updatedUser = await updateUser(userId, { avatar: avatarUrl });
         return reply.code(201).send({
