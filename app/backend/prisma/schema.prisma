@@ -17,7 +17,7 @@ model User {
     id         Int      @id @default(autoincrement())
     username   String   @unique
     email      String?  @unique
-    avatar     String? // Store the file path or URL
+    avatar     String?
     dateJoined DateTime @default(now())
 
     authentication    Authentication?

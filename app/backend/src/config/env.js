@@ -50,6 +50,11 @@ const schema = {
     REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS: {
       type: "string",
       default: "86400000"
+    },
+    MAX_FILE_SIZE_IN_BYTES: {
+      type: "number",
+      default: 10485760, // 10 MB
+      description: "Maximum file size in bytes for uploads"
     }
   }
 };
@@ -69,7 +74,8 @@ const envConfig = {
   jwtAccessTokenSecret: config.JWT_ACCESS_TOKEN_SECRET,
   jwtRefreshTokenSecret: config.JWT_REFRESH_TOKEN_SECRET,
   accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
-  refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS
+  refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
+  maxFileSizeInBytes: config.MAX_FILE_SIZE_IN_BYTES
 };
 
 export default envConfig;

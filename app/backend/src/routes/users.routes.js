@@ -12,7 +12,10 @@ import {
   getUserActiveTournamentHandler,
   getUserFriendsHandler,
   createUserFriendHandler,
-  deleteUserFriendHandler
+  deleteUserFriendHandler,
+  getUserAvatarHandler,
+  createUserAvatarHandler,
+  deleteUserAvatarHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseOnlineHandler } from "../controllers/online_status.controllers.js";
@@ -33,6 +36,12 @@ export default async function userRoutes(fastify) {
   fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
 
   fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
+
+  fastify.get("/avatar/", optionsGetUserAvatar, getUserAvatarHandler);
+
+  fastify.post("/avatar/", optionsCreateUserAvatar, createUserAvatarHandler);
+
+  fastify.delete("/avatar/", optionsDeleteUserAvatar, deleteUserAvatarHandler);
 
   fastify.get(
     "/tournaments/",
@@ -72,7 +81,6 @@ const optionsCreateUser = {
 const optionsGetUser = {
   onRequest: [authorizeUserAccess],
   schema: {
-    params: { $ref: "idSchema" },
     response: {
       200: { $ref: "userResponseSchema" },
       ...errorResponses
@@ -196,6 +204,35 @@ const optionsSseOnline = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserAvatar = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
+      200: { $ref: "getAvatarSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsCreateUserAvatar = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
+      201: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsDeleteUserAvatar = {
+  schema: {
+    response: {
+      200: { $ref: "userResponseSchema" },
       ...errorResponses
     }
   }

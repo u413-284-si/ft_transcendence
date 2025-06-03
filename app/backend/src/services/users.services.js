@@ -1,4 +1,6 @@
 import prisma from "../prisma/prismaClient.js";
+import fs from "fs";
+import path from "path";
 
 const tokenSelect = {
   id: true,
@@ -9,6 +11,7 @@ const userSelect = {
   id: true,
   username: true,
   email: true,
+  avatar: true,
   dateJoined: true
 };
 
@@ -74,6 +77,36 @@ export async function getTokenData(identifier, identifierType) {
     },
     select: tokenSelect
   });
-
   return user;
+}
+
+export async function getUserAvatar(id) {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id
+    },
+    select: {
+      avatar: true
+    }
+  });
+  return user.avatar;
+}
+
+export async function createUserAvatar(id, avatar) {
+  const fileExt = path.extname(avatar.filename);
+  const newFileName = `user-${id}${fileExt}`;
+  const uploadDir = path.resolve("app/frontend/public/images/");
+
+  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+  const filePath = path.join(uploadDir, newFileName);
+  await fs.promises.writeFile(filePath, await avatar.toBuffer());
+  return newFileName;
+}
+
+export async function deleteUserAvatar(currentAvatarUrl) {
+  const uploadDir = path.resolve("app/frontend/public/images/");
+  const previousPath = path.join(uploadDir, path.basename(currentAvatarUrl));
+  if (fs.existsSync(previousPath)) {
+    await fs.promises.unlink(previousPath);
+  }
 }
