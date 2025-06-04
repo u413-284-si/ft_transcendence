@@ -161,7 +161,6 @@ export function validateConfirmPassword(
     return false;
   }
 
-  console.log("passwords: ", inputElOne.value, inputElTwo.value);
   if (inputElOne.value !== inputElTwo.value) {
     markInvalid("Passwords do not match.", inputElTwo, errorEl);
     return false;
