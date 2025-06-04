@@ -271,17 +271,23 @@ export default class LoginView extends AbstractView {
       "confirm-password-error"
     ) as HTMLElement;
 
+    const isEmailValid = validateEmail(emailEL, emailErrorEl);
+    const isUsernameValid = validateUsername(userEl, userErrorEl);
+    const isPasswordValid = validatePassword(passwordEl, passwordErrorEl);
+    const isConfirmPasswordValid = validateConfirmPassword(
+      passwordEl,
+      confirmPasswordEl,
+      confirmPasswordErrorEl
+    );
+
     if (
-      !validateEmail(emailEL, emailErrorEl) ||
-      !validateUsername(userEl, userErrorEl) ||
-      !validatePassword(passwordEl, passwordErrorEl) ||
-      !validateConfirmPassword(
-        passwordEl,
-        confirmPasswordEl,
-        confirmPasswordErrorEl
-      )
-    )
+      !isEmailValid ||
+      !isUsernameValid ||
+      !isPasswordValid ||
+      !isConfirmPasswordValid
+    ) {
       return;
+    }
 
     try {
       await registerUser(emailEL.value, userEl.value, passwordEl.value);
