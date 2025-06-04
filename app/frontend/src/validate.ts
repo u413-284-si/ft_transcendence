@@ -183,7 +183,9 @@ export function validateUsername(
 
   if (!validateAgainstRegex(inputEl.value, usernameRegex)) {
     markInvalid(
-      "Username must be 3-20 characters long and can only include letters, numbers, or [-!?_$.]",
+      "Username must be 3-20 characters long " +
+        "and can only include letters, numbers, or one of the " +
+        "following special characters inside brackets: [@$!%*?&].",
       inputEl,
       errorEl
     );
