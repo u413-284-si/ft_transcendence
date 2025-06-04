@@ -10,6 +10,7 @@ import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
 import { setAuthCookies } from "../utils/cookie.js";
+import fastify from "../app.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -53,6 +54,31 @@ export async function loginUserHandler(request, reply) {
         "Wrong credentials"
       );
     }
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function oAuth2LoginUserHandler(request, reply) {
+  const action = "OAuth2 login user";
+  try {
+    const { token } =
+      await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
+        request
+      );
+    console.log("token: ", token);
+    return;
+    // const { accessToken, refreshToken } = await createAuthTokens(
+    //   reply,
+    //   request.user
+    // );
+    // return setAuthCookies(reply, accessToken, refreshToken)
+    //   .code(200)
+    //   .send({ message: createResponseMessage(action, true) });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `oAuth2LoginUserHandler: ${createResponseMessage(action, false)}`
+    );
     handlePrismaError(reply, action, err);
   }
 }
