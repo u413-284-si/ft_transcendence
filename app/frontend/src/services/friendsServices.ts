@@ -22,3 +22,14 @@ export async function deleteFriend(friendId: number): Promise<Friend> {
   console.log(apiResponse);
   return apiResponse.data;
 }
+
+export async function sendFriendRequest(receiverId: number): Promise<null> {
+  const apiResponse = await apiFetch<null>("/api/users/friend-requests/", {
+    method: "POST",
+    body: JSON.stringify({ id: receiverId }),
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
