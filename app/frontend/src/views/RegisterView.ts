@@ -179,12 +179,35 @@ export default class LoginView extends AbstractView {
       ?.addEventListener("submit", (event) =>
         this.validateAndRegisterUser(event)
       );
+
+    const passwordEl = document.getElementById("password") as HTMLInputElement;
+    const confirmPasswordEl = document.getElementById(
+      "confirm-password"
+    ) as HTMLInputElement;
+
+    const showEyeEl = document.getElementById("show-eye") as HTMLElement;
+    const hideEyeEl = document.getElementById("hide-eye") as HTMLElement;
+    const confirmShowEyeEl = document.getElementById(
+      "confirm-show-eye"
+    ) as HTMLElement;
+    const confirmHideEyeEl = document.getElementById(
+      "confirm-hide-eye"
+    ) as HTMLElement;
+
     document
       .getElementById("password-toggle")
-      ?.addEventListener("click", () => this.togglePasswordVisibility());
+      ?.addEventListener("click", () =>
+        this.togglePasswordVisibility(passwordEl, showEyeEl, hideEyeEl)
+      );
     document
       .getElementById("confirm-password-toggle")
-      ?.addEventListener("click", () => this.toggleConfirmPasswordVisibility());
+      ?.addEventListener("click", () =>
+        this.togglePasswordVisibility(
+          confirmPasswordEl,
+          confirmShowEyeEl,
+          confirmHideEyeEl
+        )
+      );
   }
 
   async render() {
@@ -196,12 +219,11 @@ export default class LoginView extends AbstractView {
     return "register";
   }
 
-  private async togglePasswordVisibility() {
-    const passwordEl = document.getElementById("password") as HTMLInputElement;
-
-    const showEyeEl = document.getElementById("show-eye") as HTMLElement;
-    const hideEyeEl = document.getElementById("hide-eye") as HTMLElement;
-
+  private async togglePasswordVisibility(
+    passwordEl: HTMLInputElement,
+    showEyeEl: HTMLElement,
+    hideEyeEl: HTMLElement
+  ) {
     if (passwordEl.type === "password") {
       passwordEl.type = "text";
       showEyeEl.classList.add("hidden");
@@ -210,29 +232,6 @@ export default class LoginView extends AbstractView {
       passwordEl.type = "password";
       showEyeEl.classList.remove("hidden");
       hideEyeEl.classList.add("hidden");
-    }
-  }
-
-  private async toggleConfirmPasswordVisibility() {
-    const confirmPasswordEl = document.getElementById(
-      "confirm-password"
-    ) as HTMLInputElement;
-
-    const confirmShowEyeEl = document.getElementById(
-      "confirm-show-eye"
-    ) as HTMLElement;
-    const confirmHideEyeEl = document.getElementById(
-      "confirm-hide-eye"
-    ) as HTMLElement;
-
-    if (confirmPasswordEl.type === "password") {
-      confirmPasswordEl.type = "text";
-      confirmShowEyeEl.classList.add("hidden");
-      confirmHideEyeEl.classList.remove("hidden");
-    } else {
-      confirmPasswordEl.type = "password";
-      confirmShowEyeEl.classList.remove("hidden");
-      confirmHideEyeEl.classList.add("hidden");
     }
   }
 
