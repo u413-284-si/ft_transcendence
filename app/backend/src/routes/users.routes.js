@@ -11,7 +11,8 @@ import {
   getUserTournamentsHandler,
   getUserActiveTournamentHandler,
   getUserFriendsHandler,
-  getUserFriendRequestsHandler
+  getUserFriendRequestsHandler,
+  searchUserHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseOnlineHandler } from "../controllers/online_status.controllers.js";
@@ -77,6 +78,8 @@ export default async function userRoutes(fastify) {
   );
 
   fastify.get("/online/", optionsSseOnline, sseOnlineHandler);
+
+  fastify.get("/search/", optionsSearchUser, searchUserHandler);
 }
 
 const optionsCreateUser = {
@@ -227,6 +230,22 @@ const optionsDeleteUserFriend = {
 const optionsSseOnline = {
   onRequest: [authorizeUserAccess],
   schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsSearchUser = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    querystring: {
+      type: "object",
+      properties: {
+        username: { type: "string" }
+      },
+      required: ["username"]
+    },
     response: {
       ...errorResponses
     }

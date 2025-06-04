@@ -3,7 +3,8 @@ import {
   getUser,
   getAllUsers,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserByUsername
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
@@ -231,6 +232,24 @@ export async function getUserFriendRequestsHandler(request, reply) {
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       count: count,
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function searchUserHandler(request, reply) {
+  const action = "Search user";
+  try {
+    const { username } = request.query;
+    const data = await getUserByUsername(username);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
       data: data
     });
   } catch (err) {
