@@ -1,6 +1,17 @@
-import { deleteFriend, getUserFriends } from "../services/friendsServices.js";
+import { ApiError } from "../services/api.js";
+import {
+  deleteFriend,
+  getUserFriends,
+  sendFriendRequest
+} from "../services/friendsServices.js";
+import { getUserByUsername } from "../services/userServices.js";
 import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
 import { escapeHTML } from "../utility.js";
+import {
+  clearInvalid,
+  markInvalid,
+  validateUsernameOrEmail
+} from "../validate.js";
 import AbstractView from "./AbstractView.js";
 
 export default class FriendsView extends AbstractView {
@@ -24,10 +35,38 @@ export default class FriendsView extends AbstractView {
 
   createHTML(): string {
     return /* HTML */ `
-      <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-blue-900 mb-6">Your Friends</h1>
-        ${this.friendsHTML}
-      </div>
+      <section>
+        <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg">
+          <h1 class="text-2xl font-bold text-blue-900 mb-6">Your Friends</h1>
+          ${this.friendsHTML}
+        </div>
+      </section>
+
+      <section>
+        <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg">
+          <h2 class="text-2xl font-bold text-blue-900 mb-6">Add a Friend</h2>
+          <div>
+            <input
+              id="username-input"
+              type="text"
+              placeholder="Exact username"
+              class="w-full border border-gray-300 rounded px-3 py-3 text-blue-900 disabled:bg-gray-100 disabled:text-gray-500"
+            />
+            <span
+              id="error"
+              class="error-message text-red-600 text-sm mt-1 hidden"
+            ></span>
+          </div>
+          <div id="button-container">
+            <button
+              id="request-btn"
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Send request
+            </button>
+          </div>
+        </div>
+      </section>
     `;
   }
 
@@ -83,6 +122,11 @@ export default class FriendsView extends AbstractView {
         signal: this.controller.signal
       }
     );
+    document
+      .getElementById("request-btn")!
+      .addEventListener("click", this.handleFriendRequest, {
+        signal: this.controller.signal
+      });
   }
 
   private handleDeleteButton = async (event: Event) => {
@@ -118,6 +162,73 @@ export default class FriendsView extends AbstractView {
     statusSpan.textContent = isOnline ? "Online" : "Offline";
     statusSpan.classList.toggle("text-green-500", isOnline);
     statusSpan.classList.toggle("text-gray-400", !isOnline);
+  };
+
+  private handleFriendRequest = async (): Promise<void> => {
+    const inputEl = document.getElementById(
+      "username-input"
+    ) as HTMLInputElement;
+    const errorEl = document.getElementById("error")!;
+    const buttonContainer = document.getElementById("button-container")!;
+
+    clearInvalid(inputEl, errorEl);
+
+    if (!validateUsernameOrEmail(inputEl, errorEl)) return;
+
+    const username = inputEl.value.trim();
+    inputEl.disabled = true;
+
+    try {
+      const user = await getUserByUsername(username);
+
+      if (user === null) {
+        markInvalid("User not found.", inputEl, errorEl);
+        inputEl.disabled = false;
+        return;
+      }
+      clearInvalid(inputEl, errorEl);
+
+      await sendFriendRequest(user.id);
+
+      buttonContainer.innerHTML = /* HTML */ `
+        <p class="text-green-600 font-semibold mb-2">Friend request sent!</p>
+        <button
+          id="new-request-btn"
+          class="bg-gray-300 text-blue-900 px-4 py-2 rounded hover:bg-gray-400"
+        >
+          Send another request
+        </button>
+      `;
+
+      const newBtn = document.getElementById("new-request-btn")!;
+      newBtn.addEventListener("click", () => {
+        clearInvalid(inputEl, errorEl);
+        inputEl.value = "";
+        inputEl.disabled = false;
+
+        buttonContainer.innerHTML = /* HTML */ `
+          <button
+            id="request-btn"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Send request
+          </button>
+        `;
+
+        const newRequestBtn = document.getElementById("request-btn")!;
+        newRequestBtn.addEventListener("click", () =>
+          this.handleFriendRequest()
+        );
+      });
+    } catch (error) {
+      console.error(error);
+      let message = "Something went wrong.";
+      if (error instanceof ApiError) {
+        message = error.cause ? error.cause : error.message;
+      }
+      markInvalid(`${message}`, inputEl, errorEl);
+      inputEl.disabled = false;
+    }
   };
 
   unmount(): void {
