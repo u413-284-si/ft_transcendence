@@ -25,9 +25,11 @@ const commonDefinitionsSchema = {
       //   minLength: 14,
       //   maxLength: 30,
       //   pattern:
-      //     "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{14,30}$",
+      //     "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$",
       description:
-        "Password must be at least 14 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+        "Password must be 10-64 characters long and must contain at least one " +
+        "number, one uppercase and one lowercase letter and one of the " +
+        "following special characters inside brackets: [@$!%*?&]."
     },
     usernameOrEmail: {
       oneOf: [
