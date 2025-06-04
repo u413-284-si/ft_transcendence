@@ -33,10 +33,29 @@ export async function getAllUserFriendRequests(userId) {
   const requests = await prisma.friendRequest.findMany({
     where: {
       OR: [{ senderId: userId }, { receiverId: userId }]
+    },
+    include: {
+      sender: { select: { id: true, username: true } },
+      receiver: { select: { id: true, username: true } }
     }
   });
 
-  return requests;
+  const formatted = requests.map((req) => formatFriendRequest(req, userId));
+
+  return formatted;
+}
+
+function formatFriendRequest(request, userId) {
+  const isSender = request.senderId === userId;
+  const friend = isSender ? request.receiver : request.sender;
+
+  return {
+    id: request.id,
+    sender: isSender,
+    friendId: friend.id,
+    friendUsername: friend.username,
+    status: request.status
+  };
 }
 
 export async function isFriends(senderId, receiverId) {
