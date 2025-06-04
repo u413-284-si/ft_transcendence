@@ -131,7 +131,7 @@ export function validatePassword(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
-  const passwordRegex =
+  const passwordRegex: RegExp =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$/;
 
   clearInvalid(inputEl, errorEl);
@@ -177,7 +177,7 @@ export function validateUsername(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
-  const usernameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
+  const usernameRegex: RegExp = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
 
   if (isEmptyString(inputEl.value)) {
     markInvalid("Please enter a username.", inputEl, errorEl);
@@ -202,7 +202,7 @@ export function validateEmail(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   clearInvalid(inputEl, errorEl);
 
