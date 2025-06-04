@@ -1,6 +1,6 @@
 import { apiFetch } from "./api.js";
 import { Match } from "../types/IMatch.js";
-import { User } from "../types/IUserCreation.js";
+import { User } from "../types/User.js";
 
 export async function getUserMatches(): Promise<Match[]> {
   const apiResponse = await apiFetch<Match[]>("/api/users/matches/", {
