@@ -297,6 +297,7 @@ export default class LoginView extends AbstractView {
         return;
       }
     }
+    alert("Registration was successful!");
     router.navigate("/login", false);
   }
 }
