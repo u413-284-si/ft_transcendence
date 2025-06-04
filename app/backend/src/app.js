@@ -8,6 +8,7 @@ import fastifyStatic from "@fastify/static";
 import fastifyCookie from "@fastify/cookie";
 import fastifyRateLimit from "@fastify/rate-limit";
 import jwt from "@fastify/jwt";
+import oAuth2 from "@fastify/oauth2";
 
 import env from "./config/env.js";
 
@@ -88,6 +89,35 @@ await fastify.register(jwt, {
   cookie: {
     cookieName: "refreshToken",
     signed: false
+  }
+});
+
+await fastify.register(oAuth2, {
+  name: "googleOAuth2",
+  scope: ["email", "profile"],
+  credentials: {
+    client: {
+      id: env.oAuth2ClientId,
+      secret: env.oAuth2ClientSecret
+    },
+    auth: oAuth2.GOOGLE_CONFIGURATION
+  },
+  startRedirectPath: "/login/google",
+  callbackUri: "http://localhost:4000/api/auth/google/callback",
+
+  generateStateFunction: (request) => {
+    const state = request.query.customCode;
+    request.session.state = state;
+    return state;
+  },
+
+  checkStateFunction: (request) => {
+    console.log("request.query.state: ", request.query.state);
+    console.log("request.session.state: ", request.session.state);
+    if (request.query.state !== request.session.state) {
+      throw new Error("Invalid state");
+    }
+    return true;
   }
 });
 
