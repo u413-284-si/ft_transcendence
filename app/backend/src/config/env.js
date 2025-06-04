@@ -50,6 +50,18 @@ const schema = {
     REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS: {
       type: "string",
       default: "86400000"
+    },
+    OAUTH2_CLIENT_ID: {
+      type: "string",
+      default: "client_id"
+    },
+    OAUTH2_CLIENT_SECRET: {
+      type: "string",
+      default: "client_secret"
+    },
+    OAUTH2_CALLBACK_URL: {
+      type: "string",
+      default: "/google/callback"
     }
   }
 };
@@ -69,7 +81,10 @@ const envConfig = {
   jwtAccessTokenSecret: config.JWT_ACCESS_TOKEN_SECRET,
   jwtRefreshTokenSecret: config.JWT_REFRESH_TOKEN_SECRET,
   accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
-  refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS
+  refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
+  oAuth2ClientId: config.OAUTH2_CLIENT_ID,
+  oAuth2ClientSecret: config.OAUTH2_CLIENT_SECRET,
+  oAuth2CallbackUrl: config.OAUTH2_CALLBACK_URL
 };
 
 export default envConfig;
