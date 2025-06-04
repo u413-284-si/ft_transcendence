@@ -64,3 +64,18 @@ export async function respondToFriendRequest(
   console.log(apiResponse);
   return apiResponse.data;
 }
+
+export async function deleteFriendRequest(
+  requestId: number
+): Promise<FriendRequest> {
+  const apiResponse = await apiFetch<FriendRequest>(
+    `/api/users/friend-requests/${requestId}/`,
+    {
+      method: "DELETE",
+      credentials: "same-origin"
+    }
+  );
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}

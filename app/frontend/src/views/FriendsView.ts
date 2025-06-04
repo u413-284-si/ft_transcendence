@@ -1,6 +1,7 @@
 import { ApiError } from "../services/api.js";
 import {
   deleteFriend,
+  deleteFriendRequest,
   getUserFriendRequests,
   getUserFriends,
   respondToFriendRequest,
@@ -195,7 +196,14 @@ export default class FriendsView extends AbstractView {
               data-request-id="${req.id}"
             >
               <span class="truncate">${escapeHTML(req.friendUsername)}</span>
-              <span class="text-gray-500 italic">Pending...</span>
+              <div class="space-x-2">
+                <span class="text-gray-500 italic">Pending...</span>
+                <button
+                  class="delete-request-btn bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           `;
         }
@@ -351,6 +359,18 @@ export default class FriendsView extends AbstractView {
       btn.addEventListener("click", async () => {
         const id = this.getRequestIdFromButton(btn);
         await respondToFriendRequest(id, false);
+        await this.refreshPendingRequestView();
+      });
+    });
+
+    document.querySelectorAll(".delete-request-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const id = this.getRequestIdFromButton(btn);
+        const confirmed = confirm(
+          "Are you sure you want to delete this friend request?"
+        );
+        if (!confirmed) return;
+        await deleteFriendRequest(id);
         await this.refreshPendingRequestView();
       });
     });

@@ -72,7 +72,7 @@ export default async function userRoutes(fastify) {
   );
 
   fastify.delete(
-    "/friends/:id/",
+    "/friend-requests/:id/",
     optionsDeleteUserFriend,
     deleteFriendRequestHandler
   );

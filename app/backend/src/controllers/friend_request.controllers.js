@@ -119,8 +119,8 @@ export async function deleteFriendRequestHandler(request, reply) {
   const action = "Delete friend request";
   try {
     const userId = parseInt(request.user.id, 10);
-    const friendId = parseInt(request.params.id, 10);
-    const data = await deleteFriendRequest(userId, friendId);
+    const requestId = parseInt(request.params.id, 10);
+    const data = await deleteFriendRequest(requestId, userId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });

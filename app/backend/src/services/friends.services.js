@@ -103,9 +103,9 @@ export async function updateFriendRequest(id, status) {
   return request;
 }
 
-export async function deleteFriendRequest(id) {
+export async function deleteFriendRequest(id, userId) {
   const request = await prisma.friendRequest.delete({
-    where: { id }
+    where: { id, OR: [{ senderId: userId }, { receiverId: userId }] }
   });
   return request;
 }
