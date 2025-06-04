@@ -1,6 +1,4 @@
 import AbstractView from "./AbstractView.js";
-// FIXME: activate when password policy is applied
-//import { validatePassword, validateUsernameOrEmail } from "../validate.js";
 import {
   validateEmail,
   validateUsername,
