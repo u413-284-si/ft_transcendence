@@ -327,6 +327,10 @@ export async function createUserAvatarHandler(request, reply) {
             "Avatar is required"
           );
         }
+        const currentAvatarUrl = await getUserAvatar(userId);
+        if (currentAvatarUrl) {
+          await deleteUserAvatar(currentAvatarUrl);
+        }
         const newFileName = await createUserAvatar(userId, avatar);
         const avatarUrl = `/images/${newFileName}`;
         const updatedUser = await updateUser(userId, { avatar: avatarUrl });

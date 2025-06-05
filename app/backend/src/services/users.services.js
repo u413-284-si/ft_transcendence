@@ -105,7 +105,7 @@ export async function createUserAvatar(id, avatar) {
 }
 
 export async function deleteUserAvatar(currentAvatarUrl) {
-  const uploadDir = path.resolve("app/frontend/public/images/");
+  const uploadDir = path.resolve(env.imagePath);
   const previousPath = path.join(uploadDir, path.basename(currentAvatarUrl));
   if (fs.existsSync(previousPath)) {
     await fs.promises.unlink(previousPath);
