@@ -53,7 +53,7 @@ const schema = {
     },
     MAX_FILE_SIZE_IN_BYTES: {
       type: "number",
-      default: 10485760, // 10 MB
+      default: 5242880, // 5 MB
       description: "Maximum file size in bytes for uploads"
     }
   }
