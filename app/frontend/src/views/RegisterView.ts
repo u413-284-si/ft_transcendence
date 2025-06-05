@@ -10,13 +10,13 @@ import { router } from "../routing/Router.js";
 import { ApiError } from "../services/api.js";
 import { getEl, getInputEl } from "../utility.js";
 
-export default class LoginView extends AbstractView {
+export default class Register extends AbstractView {
   constructor() {
     super();
-    this.setTitle("Login");
+    this.setTitle("Register");
   }
 
-  private getShowEyeHtml() {
+  private getShowEyeHtml(): string {
     return /* HTML */ `
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@ export default class LoginView extends AbstractView {
     `;
   }
 
-  private getHideEyeHtml() {
+  private getHideEyeHtml(): string {
     return /* HTML */ ` <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -57,7 +57,7 @@ export default class LoginView extends AbstractView {
     </svg>`;
   }
 
-  createHTML() {
+  createHTML(): string {
     return /* HTML */ `
       <form
         id="register-form"
@@ -149,7 +149,7 @@ export default class LoginView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected addListeners(): void {
     document
       .getElementById("register-form")
       ?.addEventListener("submit", (event) =>
@@ -194,7 +194,7 @@ export default class LoginView extends AbstractView {
     passwordEl: HTMLInputElement,
     showEyeEl: HTMLElement,
     hideEyeEl: HTMLElement
-  ) {
+  ): void {
     if (passwordEl.type === "password") {
       passwordEl.type = "text";
       showEyeEl.classList.add("hidden");
@@ -206,7 +206,7 @@ export default class LoginView extends AbstractView {
     }
   }
 
-  private async validateAndRegisterUser(event: Event) {
+  private async validateAndRegisterUser(event: Event): Promise<void> {
     event.preventDefault();
     const emailEL = getInputEl("email");
     const emailErrorEl = getEl("email-error");
