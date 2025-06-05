@@ -320,7 +320,12 @@ export async function createUserAvatarHandler(request, reply) {
       if (part.fieldname === "avatar") {
         const avatar = part;
         if (!avatar) {
-          return reply.code(400).send({ message: "Avatar is required" });
+          return httpError(
+            reply,
+            400,
+            createResponseMessage(action, false),
+            "Avatar is required"
+          );
         }
         const newFileName = await createUserAvatar(userId, avatar);
         const avatarUrl = `/images/${newFileName}`;
@@ -332,7 +337,12 @@ export async function createUserAvatarHandler(request, reply) {
       }
     }
     // If no avatar field found
-    return reply.code(400).send({ message: "Avatar file missing" });
+    return httpError(
+      reply,
+      400,
+      createResponseMessage(action, false),
+      "Avatar file missing"
+    );
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -358,12 +368,10 @@ export async function deleteUserAvatarHandler(request, reply) {
     await deleteUserAvatar(currentAvatarUrl);
 
     const updatedUser = await updateUser(userId, { avatar: null });
-    return reply
-      .code(200)
-      .send({
-        message: createResponseMessage(action, true),
-        data: updatedUser
-      });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: updatedUser
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
