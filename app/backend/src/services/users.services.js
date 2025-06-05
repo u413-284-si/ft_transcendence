@@ -104,7 +104,7 @@ export async function createUserAvatar(id, buffer) {
   const newFileName = `user-${id}${correctExt}`;
   const uploadDir = path.resolve(env.imagePath);
 
-  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+  await fs.promises.mkdir(uploadDir, { recursive: true });
   const filePath = path.join(uploadDir, newFileName);
   await fs.promises.writeFile(filePath, buffer);
   return newFileName;
@@ -113,7 +113,13 @@ export async function createUserAvatar(id, buffer) {
 export async function deleteUserAvatar(currentAvatarUrl) {
   const uploadDir = path.resolve(env.imagePath);
   const previousPath = path.join(uploadDir, path.basename(currentAvatarUrl));
-  if (fs.existsSync(previousPath)) {
+  try {
     await fs.promises.unlink(previousPath);
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      console.error("Error deleting avatar file:", err);
+      throw err;
+    }
+    console.warn("Avatar file not found, nothing to delete.");
   }
 }
