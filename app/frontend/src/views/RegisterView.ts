@@ -156,18 +156,14 @@ export default class LoginView extends AbstractView {
         this.validateAndRegisterUser(event)
       );
 
-    const passwordEl: HTMLInputElement = getInputEl("password");
-    const confirmPasswordEl: HTMLInputElement = getInputEl("confirm-password");
+    const passwordEl = getInputEl("password");
+    const confirmPasswordEl = getInputEl("confirm-password");
 
-    const showEyeEl: HTMLElement = getEl("show-eye") as HTMLElement;
-    const hideEyeEl: HTMLElement = getEl("hide-eye") as HTMLElement;
+    const showEyeEl = getEl("show-eye");
+    const hideEyeEl = getEl("hide-eye");
 
-    const confirmShowEyeEl: HTMLElement = getEl(
-      "confirm-show-eye"
-    ) as HTMLElement;
-    const confirmHideEyeEl: HTMLElement = getEl(
-      "confirm-hide-eye"
-    ) as HTMLElement;
+    const confirmShowEyeEl = getEl("confirm-show-eye");
+    const confirmHideEyeEl = getEl("confirm-hide-eye");
 
     document
       .getElementById("password-toggle")
@@ -194,7 +190,7 @@ export default class LoginView extends AbstractView {
     return "register";
   }
 
-  private async togglePasswordVisibility(
+  private togglePasswordVisibility(
     passwordEl: HTMLInputElement,
     showEyeEl: HTMLElement,
     hideEyeEl: HTMLElement
@@ -212,17 +208,17 @@ export default class LoginView extends AbstractView {
 
   private async validateAndRegisterUser(event: Event) {
     event.preventDefault();
-    const emailEL: HTMLInputElement = getInputEl("email");
-    const emailErrorEl: HTMLElement = getEl("email-error");
+    const emailEL = getInputEl("email");
+    const emailErrorEl = getEl("email-error");
 
-    const userEl: HTMLInputElement = getInputEl("username");
-    const userErrorEl: HTMLElement = getEl("username-error");
+    const userEl = getInputEl("username");
+    const userErrorEl = getEl("username-error");
 
-    const passwordEl: HTMLInputElement = getInputEl("password");
-    const passwordErrorEl: HTMLElement = getEl("password-error");
+    const passwordEl = getInputEl("password");
+    const passwordErrorEl = getEl("password-error");
 
-    const confirmPasswordEl: HTMLInputElement = getInputEl("confirm-password");
-    const confirmPasswordErrorEl: HTMLElement = getEl("confirm-password-error");
+    const confirmPasswordEl = getInputEl("confirm-password");
+    const confirmPasswordErrorEl = getEl("confirm-password-error");
 
     const isEmailValid = validateEmail(emailEL, emailErrorEl);
     const isUsernameValid = validateUsername(userEl, userErrorEl);
