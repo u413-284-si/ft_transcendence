@@ -27,6 +27,7 @@ import {
   addOnlineStatusToArray,
   isUserOnline
 } from "../services/online_status.services.js";
+import { fileTypeFromBuffer } from "file-type";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -319,7 +320,7 @@ export async function createUserAvatarHandler(request, reply) {
     for await (const part of parts) {
       if (part.fieldname === "avatar") {
         const avatar = part;
-        if (!avatar) {
+        if (!avatar || !avatar.file) {
           return httpError(
             reply,
             400,
@@ -327,10 +328,18 @@ export async function createUserAvatarHandler(request, reply) {
             "Avatar is required"
           );
         }
+        // Validate actual file type using file-type
+        const fileBuffer = await avatar.toBuffer();
+        await validateImageFile(fileBuffer);
+
+        // Check if the user already has an avatar and delete it
         const currentAvatarUrl = await getUserAvatar(userId);
         if (currentAvatarUrl) {
           await deleteUserAvatar(currentAvatarUrl);
         }
+
+        // Create new avatar
+        avatar.toBuffer = async () => fileBuffer;
         const newFileName = await createUserAvatar(userId, avatar);
         const avatarUrl = `/images/${newFileName}`;
         const updatedUser = await updateUser(userId, { avatar: avatarUrl });
@@ -353,6 +362,18 @@ export async function createUserAvatarHandler(request, reply) {
       `createUserAvatarHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
+  }
+}
+
+async function validateImageFile(buffer) {
+  const allowedMimeTypes = ["image/png", "image/jpeg", "image/webp"];
+  const fileType = await fileTypeFromBuffer(buffer);
+  if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
+    console.error(
+      "Invalid image file type:",
+      fileType ? fileType.mime : "unknown"
+    );
+    throw new Error();
   }
 }
 
