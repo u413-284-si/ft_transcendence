@@ -1,6 +1,7 @@
 import prisma from "../prisma/prismaClient.js";
 import fs from "fs";
 import path from "path";
+import env from "../config/env.js";
 
 const tokenSelect = {
   id: true,
@@ -95,7 +96,7 @@ export async function getUserAvatar(id) {
 export async function createUserAvatar(id, avatar) {
   const fileExt = path.extname(avatar.filename);
   const newFileName = `user-${id}${fileExt}`;
-  const uploadDir = path.resolve("app/frontend/public/images/");
+  const uploadDir = path.resolve(env.imagePath);
 
   if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
   const filePath = path.join(uploadDir, newFileName);
