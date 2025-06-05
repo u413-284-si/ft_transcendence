@@ -2,6 +2,7 @@ import prisma from "../prisma/prismaClient.js";
 import fs from "fs";
 import path from "path";
 import env from "../config/env.js";
+import { fileTypeFromBuffer } from "file-type";
 
 const tokenSelect = {
   id: true,
@@ -93,14 +94,19 @@ export async function getUserAvatar(id) {
   return user.avatar;
 }
 
-export async function createUserAvatar(id, avatar) {
-  const fileExt = path.extname(avatar.filename);
-  const newFileName = `user-${id}${fileExt}`;
+export async function createUserAvatar(id, buffer) {
+  const fileType = await fileTypeFromBuffer(buffer);
+  if (!fileType) {
+    console.error("No image file type detected");
+    throw new Error();
+  }
+  const correctExt = `.${fileType.ext}`;
+  const newFileName = `user-${id}${correctExt}`;
   const uploadDir = path.resolve(env.imagePath);
 
   if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
   const filePath = path.join(uploadDir, newFileName);
-  await fs.promises.writeFile(filePath, await avatar.toBuffer());
+  await fs.promises.writeFile(filePath, buffer);
   return newFileName;
 }
 

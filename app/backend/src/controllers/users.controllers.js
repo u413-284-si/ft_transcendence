@@ -339,8 +339,7 @@ export async function createUserAvatarHandler(request, reply) {
         }
 
         // Create new avatar
-        avatar.toBuffer = async () => fileBuffer;
-        const newFileName = await createUserAvatar(userId, avatar);
+        const newFileName = await createUserAvatar(userId, fileBuffer);
         const avatarUrl = `/images/${newFileName}`;
         const updatedUser = await updateUser(userId, { avatar: avatarUrl });
         return reply.code(201).send({
@@ -367,6 +366,7 @@ export async function createUserAvatarHandler(request, reply) {
 
 async function validateImageFile(buffer) {
   const allowedMimeTypes = ["image/png", "image/jpeg", "image/webp"];
+
   const fileType = await fileTypeFromBuffer(buffer);
   if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
     console.error(
