@@ -78,7 +78,6 @@ model FriendRequest {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@unique([senderId, receiverId]) // Prevent duplicate requests
   @@map("friend_requests")
 }
 
@@ -129,5 +128,4 @@ enum TournamentStatus {
 enum FriendRequestStatus {
   PENDING
   ACCEPTED
-  DECLINED
 }
