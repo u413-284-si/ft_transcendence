@@ -2,9 +2,8 @@ import {
   createFriendRequest,
   deleteFriendRequest,
   getUserFriendRequest,
-  getPendingRequest,
-  isFriends,
-  updateFriendRequest
+  updateFriendRequest,
+  getFriendRequest
 } from "../services/friends.services.js";
 import { getUser } from "../services/users.services.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
@@ -13,10 +12,10 @@ import { createResponseMessage } from "../utils/response.js";
 export async function createFriendRequestHandler(request, reply) {
   const action = "Create friend request";
   try {
-    const senderId = parseInt(request.user.id, 10);
-    const receiverId = request.body.id;
+    const userId = parseInt(request.user.id, 10);
+    const friendId = request.body.id;
 
-    if (senderId === receiverId) {
+    if (userId === friendId) {
       return httpError(
         reply,
         400,
@@ -26,41 +25,37 @@ export async function createFriendRequestHandler(request, reply) {
     }
 
     // Check friend exists
-    await getUser(receiverId);
+    await getUser(friendId);
 
-    const alreadyFriend = await isFriends(senderId, receiverId);
-    if (alreadyFriend) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Already friends"
+    const existingRequest = await getUserFriendRequest(userId, friendId);
+
+    if (existingRequest) {
+      if (existingRequest.sender) {
+        return httpError(
+          reply,
+          400,
+          createResponseMessage(action, false),
+          "Friend request already sent."
+        );
+      } else if (existingRequest.status === "ACCEPTED") {
+        return httpError(
+          reply,
+          400,
+          createResponseMessage(action, false),
+          "Already friends"
+        );
+      }
+      const data = await updateFriendRequest(
+        existingRequest.id,
+        userId,
+        "ACCEPTED"
       );
-    }
-
-    const existingRequest = await getPendingRequest(senderId, receiverId);
-
-    if (
-      existingRequest &&
-      existingRequest.senderId === receiverId &&
-      existingRequest.receiverId === senderId
-    ) {
-      const data = await updateFriendRequest(existingRequest.id, "ACCEPTED");
       return reply
         .code(200)
         .send({ message: createResponseMessage(action, true), data: data });
     }
 
-    if (existingRequest) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Friend request already sent."
-      );
-    }
-
-    const data = await createFriendRequest(senderId, receiverId);
+    const data = await createFriendRequest(userId, friendId);
 
     return reply
       .code(201)
@@ -68,7 +63,7 @@ export async function createFriendRequestHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `createUserFriendHandler: ${createResponseMessage(action, false)}`
+      `createFriendRequestHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
@@ -81,7 +76,16 @@ export async function updateFriendRequestHandler(request, reply) {
     const requestId = parseInt(request.params.id, 10);
     const { status } = request.body;
 
-    const friedRequest = await getUserFriendRequest(requestId, userId);
+    const friedRequest = await getFriendRequest(requestId, userId);
+
+    if (friedRequest.sender) {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "Not permitted to perform this action."
+      );
+    }
 
     if (friedRequest.status !== "PENDING") {
       return httpError(
@@ -92,16 +96,7 @@ export async function updateFriendRequestHandler(request, reply) {
       );
     }
 
-    if (friedRequest.receiverId !== userId) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Not authorized to perform this action."
-      );
-    }
-
-    const data = await updateFriendRequest(requestId, status);
+    const data = await updateFriendRequest(requestId, userId, status);
 
     return reply
       .code(200)
