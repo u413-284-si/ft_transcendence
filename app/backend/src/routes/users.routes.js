@@ -185,7 +185,7 @@ const optionsGetUserFriends = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
-      // 200: { $ref: "userArrayResponseSchema" },
+      200: { $ref: "friendRequestArrayResponseSchema" },
       ...errorResponses
     }
   }
@@ -196,7 +196,7 @@ const optionsCreateFriendRequest = {
   schema: {
     body: { $ref: "idSchema" },
     response: {
-      // 201: { $ref: "userResponseSchema" },
+      201: { $ref: "friendRequestResponseSchema" },
       ...errorResponses
     }
   }
@@ -206,9 +206,9 @@ const optionsUpdateFriendRequest = {
   onRequest: [authorizeUserAccess],
   schema: {
     params: { $ref: "idSchema" },
-    // body: { $ref: "idSchema" },
+    body: { $ref: "idSchema" },
     response: {
-      // 201: { $ref: "userResponseSchema" },
+      201: { $ref: "friendRequestResponseSchema" },
       ...errorResponses
     }
   }
