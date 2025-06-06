@@ -1,22 +1,6 @@
 import prisma from "../prisma/prismaClient.js";
 import { isUserOnline } from "./online_status.services.js";
 
-function formatFriendRequest(request, userId) {
-  const isSender = request.senderId === userId;
-  const friend = isSender ? request.receiver : request.sender;
-  const isOnline =
-    request.status === "ACCEPTED" ? isUserOnline(friend.id) : false;
-
-  return {
-    id: request.id,
-    status: request.status,
-    sender: isSender,
-    friendId: friend.id,
-    friendUsername: friend.username,
-    isOnline: isOnline
-  };
-}
-
 export async function getUserFriends(userId) {
   const acceptedRequests = await prisma.friendRequest.findMany({
     where: {
@@ -46,6 +30,22 @@ export async function getUserFriends(userId) {
   return friends;
 }
 
+function formatFriendRequest(request, userId) {
+  const isSender = request.senderId === userId;
+  const friend = isSender ? request.receiver : request.sender;
+  const isOnline =
+    request.status === "ACCEPTED" ? isUserOnline(friend.id) : false;
+
+  return {
+    id: request.id,
+    status: request.status,
+    sender: isSender,
+    friendId: friend.id,
+    friendUsername: friend.username,
+    isOnline: isOnline
+  };
+}
+
 export async function getAllUserFriendRequests(userId) {
   const requests = await prisma.friendRequest.findMany({
     where: {
@@ -62,12 +62,12 @@ export async function getAllUserFriendRequests(userId) {
   return formatted;
 }
 
-export async function getUserFriendRequest(senderId, receiverId) {
+export async function getUserFriendRequest(userId, friendId) {
   const request = await prisma.friendRequest.findFirst({
     where: {
       OR: [
-        { senderId, receiverId },
-        { senderId: receiverId, receiverId: senderId }
+        { senderId: userId, receiverId: friendId },
+        { senderId: friendId, receiverId: userId }
       ]
     },
     include: {
@@ -76,15 +76,15 @@ export async function getUserFriendRequest(senderId, receiverId) {
     }
   });
   if (!request) return;
-  const formatted = formatFriendRequest(request, senderId);
+  const formatted = formatFriendRequest(request, userId);
   return formatted;
 }
 
-export async function createFriendRequest(senderId, receiverId) {
+export async function createFriendRequest(userId, friendId) {
   const request = await prisma.friendRequest.create({
     data: {
-      senderId,
-      receiverId,
+      senderId: userId,
+      receiverId: friendId,
       status: "PENDING"
     },
     include: {
@@ -92,7 +92,7 @@ export async function createFriendRequest(senderId, receiverId) {
       receiver: { select: { id: true, username: true } }
     }
   });
-  const formatted = formatFriendRequest(request, senderId);
+  const formatted = formatFriendRequest(request, userId);
   return formatted;
 }
 
@@ -117,7 +117,7 @@ export async function deleteFriendRequest(id, userId) {
       receiver: { select: { id: true, username: true } }
     }
   });
-  const formatted = formatFriendRequest(request);
+  const formatted = formatFriendRequest(request, userId);
   return formatted;
 }
 
