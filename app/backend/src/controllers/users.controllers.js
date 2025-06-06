@@ -3,7 +3,8 @@ import {
   getUser,
   getAllUsers,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserByUsername
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
@@ -14,16 +15,7 @@ import {
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHash } from "../services/auth.services.js";
-import {
-  createFriendship,
-  deleteFriendship,
-  getUserFriends,
-  isFriends
-} from "../services/friends.services.js";
-import {
-  addOnlineStatusToArray,
-  isUserOnline
-} from "../services/online_status.services.js";
+import { getAllUserFriendRequests } from "../services/friends.services.js";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -214,12 +206,11 @@ export async function getUserActiveTournamentHandler(request, reply) {
   }
 }
 
-export async function getUserFriendsHandler(request, reply) {
-  const action = "Get user friends";
+export async function getUserFriendRequestsHandler(request, reply) {
+  const action = "Get user friend requests";
   try {
     const userId = parseInt(request.user.id, 10);
-    const friends = await getUserFriends(userId);
-    const data = addOnlineStatusToArray(friends);
+    const data = await getAllUserFriendRequests(userId);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
@@ -229,71 +220,25 @@ export async function getUserFriendsHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `getUserFriendsHandler: ${createResponseMessage(action, false)}`
+      `getUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
 }
 
-export async function createUserFriendHandler(request, reply) {
-  const action = "Create user friend";
+export async function searchUserHandler(request, reply) {
+  const action = "Search user";
   try {
-    const userId = parseInt(request.user.id, 10);
-    const friendId = request.body.id;
-
-    if (userId === friendId) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Can't add yourself as a friend"
-      );
-    }
-
-    // Check friend exists
-    const friend = await getUser(friendId);
-
-    const alreadyFriend = await isFriends(userId, friendId);
-    if (alreadyFriend) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Already friends"
-      );
-    }
-
-    await createFriendship(userId, friendId);
-    const data = {
-      id: friend.id,
-      username: friend.username,
-      isOnline: isUserOnline(friend.id)
-    };
-    return reply
-      .code(201)
-      .send({ message: createResponseMessage(action, true), data: data });
+    const { username } = request.query;
+    const data = await getUserByUsername(username);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `createUserFriendHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function deleteUserFriendHandler(request, reply) {
-  const action = "Delete user friend";
-  try {
-    const userId = parseInt(request.user.id, 10);
-    const friendId = parseInt(request.params.id, 10);
-    const count = await deleteFriendship(userId, friendId);
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), data: count });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `deleteUserFriendHandler: ${createResponseMessage(action, false)}`
+      `getUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

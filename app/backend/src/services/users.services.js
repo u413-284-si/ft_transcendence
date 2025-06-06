@@ -77,3 +77,11 @@ export async function getTokenData(identifier, identifierType) {
 
   return user;
 }
+
+export async function getUserByUsername(username) {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    select: { id: true, username: true }
+  });
+  return user;
+}

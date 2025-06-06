@@ -13,7 +13,11 @@ import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard, layout: "guest" })
-  .addRoute("/register", { view: Register, guard: guestOnlyGuard, layout: "guest" })
+  .addRoute("/register", {
+    view: Register,
+    guard: guestOnlyGuard,
+    layout: "guest"
+  })
   .addRoute("/home", { view: Home, guard: authGuard, layout: "auth" })
   .addRoute("/newGame", { view: NewGame, guard: authGuard, layout: "auth" })
   .addRoute("/newTournament", {
