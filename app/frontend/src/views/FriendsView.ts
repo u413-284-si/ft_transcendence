@@ -11,11 +11,7 @@ import { getUserByUsername } from "../services/userServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
 import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
 import { escapeHTML, getEl, getInputEl } from "../utility.js";
-import {
-  clearInvalid,
-  markInvalid,
-  validateUsernameOrEmail
-} from "../validate.js";
+import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
 
 export default class FriendsView extends AbstractView {
@@ -353,7 +349,7 @@ export default class FriendsView extends AbstractView {
 
     clearInvalid(inputEl, errorEl);
 
-    if (!validateUsernameOrEmail(inputEl, errorEl)) return;
+    if (!validateUsername(inputEl, errorEl)) return;
 
     const username = inputEl.value.trim();
 
