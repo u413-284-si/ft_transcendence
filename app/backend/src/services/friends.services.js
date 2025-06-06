@@ -1,4 +1,5 @@
 import prisma from "../prisma/prismaClient.js";
+import { isUserOnline } from "./online_status.services.js";
 
 export async function getUserFriends(userId) {
   const acceptedRequests = await prisma.friendRequest.findMany({
@@ -48,13 +49,16 @@ export async function getAllUserFriendRequests(userId) {
 function formatFriendRequest(request, userId) {
   const isSender = request.senderId === userId;
   const friend = isSender ? request.receiver : request.sender;
+  const isOnline =
+    request.status === "ACCEPTED" ? isUserOnline(friend.id) : false;
 
   return {
     id: request.id,
+    status: request.status,
     sender: isSender,
     friendId: friend.id,
     friendUsername: friend.username,
-    status: request.status
+    isOnline: isOnline
   };
 }
 
