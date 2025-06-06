@@ -1,6 +1,6 @@
 import { apiFetch } from "./api.js";
 import { Match } from "../types/IMatch.js";
-import { Token } from "../types/Token.js";
+import { User } from "../types/User.js";
 
 export async function getUserMatches(): Promise<Match[]> {
   const apiResponse = await apiFetch<Match[]>("/api/users/matches/", {
@@ -12,10 +12,23 @@ export async function getUserMatches(): Promise<Match[]> {
   return apiResponse.data;
 }
 
+export async function registerUser(
+  email: string,
+  username: string,
+  password: string
+) {
+  const apiResponse = await apiFetch<User>("api/users/", {
+    method: "POST",
+    body: JSON.stringify({ email, username, password })
+  });
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
 export async function getUserByUsername(
   username: string
-): Promise<Token | null> {
-  const apiResponse = await apiFetch<Token | null>(
+): Promise<User | null> {
+  const apiResponse = await apiFetch<User | null>(
     `/api/users/search/?username=${encodeURIComponent(username)}`,
     {
       method: "GET",
