@@ -12,7 +12,7 @@ import {
   getUserTournaments,
   getUserActiveTournament
 } from "../services/tournaments.services.js";
-import { handlePrismaError } from "../utils/error.js";
+import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHash } from "../services/auth.services.js";
 import { getAllUserFriendRequests } from "../services/friends.services.js";
