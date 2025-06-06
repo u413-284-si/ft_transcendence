@@ -67,7 +67,7 @@ export default class FriendsView extends AbstractView {
           </div>
           <div id="button-container">
             <button
-              id="request-btn"
+              id="send-request-btn"
               class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
               Send request
@@ -209,12 +209,6 @@ export default class FriendsView extends AbstractView {
   }
 
   protected addListeners(): void {
-    document.querySelectorAll(".remove-friend-btn").forEach((btn) => {
-      btn.addEventListener("click", this.handleDeleteFriendButton, {
-        signal: this.controller.signal
-      });
-    });
-
     window.addEventListener(
       "friendStatusChange",
       this.handleFriendStatusChange,
@@ -224,10 +218,24 @@ export default class FriendsView extends AbstractView {
     );
 
     document
-      .getElementById("request-btn")!
-      .addEventListener("click", this.handleFriendRequest, {
+      .getElementById("send-request-btn")!
+      .addEventListener("click", this.handleSendRequestButton, {
         signal: this.controller.signal
       });
+
+    document.querySelectorAll(".remove-friend-btn").forEach((btn) => {
+      btn.addEventListener(
+        "click",
+        (event) =>
+          this.handleDeleteButton(
+            event,
+            "Are you sure you want to remove this friend?"
+          ),
+        {
+          signal: this.controller.signal
+        }
+      );
+    });
 
     document.querySelectorAll(".accept-btn").forEach((btn) => {
       btn.addEventListener("click", this.handleAcceptButton, {
@@ -236,29 +244,44 @@ export default class FriendsView extends AbstractView {
     });
 
     document.querySelectorAll(".decline-btn").forEach((btn) => {
-      btn.addEventListener("click", this.handleDeclineButton, {
-        signal: this.controller.signal
-      });
+      btn.addEventListener(
+        "click",
+        (event) =>
+          this.handleDeleteButton(
+            event,
+            "Are you sure you want to decline this request?"
+          ),
+        {
+          signal: this.controller.signal
+        }
+      );
     });
 
     document.querySelectorAll(".delete-request-btn").forEach((btn) => {
-      btn.addEventListener("click", this.handleDeclineButton, {
-        signal: this.controller.signal
-      });
+      btn.addEventListener(
+        "click",
+        (event) =>
+          this.handleDeleteButton(
+            event,
+            "Are you sure you want to delete this request?"
+          ),
+        {
+          signal: this.controller.signal
+        }
+      );
     });
   }
 
-  private handleDeleteFriendButton = async (event: Event) => {
+  private handleDeleteButton = async (event: Event, msg: string) => {
     try {
       const btn = event.currentTarget as HTMLButtonElement;
       const requestId = this.getRequestIdFromButton(btn);
-      const confirmed = confirm("Are you sure you want to remove this friend?");
-      if (!confirmed) return;
+      if (!confirm(msg)) return;
       const request = await deleteFriendRequest(requestId);
       this.removeFriendRequest(request.id);
       this.refresh();
     } catch (error) {
-      router.handleError("Could not delete friend.", error);
+      router.handleError("Error in handleDeleteButton()", error);
     }
   };
 
@@ -271,23 +294,7 @@ export default class FriendsView extends AbstractView {
       this.addFriendRequest(request);
       this.refresh();
     } catch (error) {
-      router.handleError("Could not accept friend request.", error);
-    }
-  };
-
-  private handleDeclineButton = async (event: Event) => {
-    try {
-      const btn = event.currentTarget as HTMLButtonElement;
-      const requestId = this.getRequestIdFromButton(btn);
-      const confirmed = confirm(
-        "Are you sure you want to delete this friend request?"
-      );
-      if (!confirmed) return;
-      const request = await deleteFriendRequest(requestId);
-      this.removeFriendRequest(request.id);
-      this.refresh();
-    } catch (error) {
-      router.handleError("Could not accept friend request.", error);
+      router.handleError("Error in handleAcceptButton()", error);
     }
   };
 
@@ -308,7 +315,7 @@ export default class FriendsView extends AbstractView {
     statusSpan.classList.toggle("text-gray-400", !isOnline);
   };
 
-  private handleFriendRequest = async (): Promise<void> => {
+  private handleSendRequestButton = async (): Promise<void> => {
     const inputEl = document.getElementById(
       "username-input"
     ) as HTMLInputElement;
