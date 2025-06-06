@@ -234,11 +234,13 @@ export default class FriendsView extends AbstractView {
       }
     );
 
-    document
-      .getElementById("send-request-btn")!
-      .addEventListener("click", this.handleSendRequestButton, {
+    getEl("send-request-btn").addEventListener(
+      "click",
+      this.handleSendRequestButton,
+      {
         signal: this.controller.signal
-      });
+      }
+    );
 
     this.addFriendListListeners();
     this.addRequestListListeners();
