@@ -91,7 +91,9 @@ export default class FriendsView extends AbstractView {
     );
 
     if (acceptedRequests.length === 0) {
-      return /* HTML */ ` <p>You have no friends yet 😢</p>`;
+      return /* HTML */ ` <p class="text-gray-500 italic">
+        You have no friends yet 😢
+      </p>`;
     }
 
     let html = `<ul class="space-y-4">`;
@@ -116,7 +118,7 @@ export default class FriendsView extends AbstractView {
               >${onlineStatusText}</span
             >
             <button
-              class="remove-friend-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+              class="remove-friend-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
             >
               Remove
             </button>
@@ -192,7 +194,7 @@ export default class FriendsView extends AbstractView {
             <div class="space-x-2">
               <span class="text-gray-500 italic">Pending...</span>
               <button
-                class="delete-request-btn bg-gray-300 text-gray-800 px-3 py-1 rounded hover:bg-gray-400"
+                class="delete-request-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
               >
                 Delete
               </button>
