@@ -367,10 +367,16 @@ export default class FriendsView extends AbstractView {
       clearInvalid(inputEl, errorEl);
 
       const request = await createFriendRequest(user.id);
+      this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
-      this.refreshRequestList();
       inputEl.value = "";
-      this.showStatusMessage("Sent friend request");
+      this.refreshRequestList();
+      if (request.status === "PENDING") {
+        this.showStatusMessage("Successfully sent friend request");
+      } else if (request.status === "ACCEPTED") {
+        this.showStatusMessage("Added friend!");
+        this.refreshFriendList();
+      }
     } catch (error) {
       console.error(error);
       let message = "Something went wrong.";
