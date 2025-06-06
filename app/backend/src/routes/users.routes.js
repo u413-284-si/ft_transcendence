@@ -10,7 +10,6 @@ import {
   getUserStatsHandler,
   getUserTournamentsHandler,
   getUserActiveTournamentHandler,
-  getUserFriendsHandler,
   getUserFriendRequestsHandler,
   searchUserHandler
 } from "../controllers/users.controllers.js";
@@ -50,8 +49,6 @@ export default async function userRoutes(fastify) {
     optionsGetUserActiveTournament,
     getUserActiveTournamentHandler
   );
-
-  fastify.get("/friends/", optionsGetUserFriends, getUserFriendsHandler);
 
   fastify.get(
     "/friend-requests/",

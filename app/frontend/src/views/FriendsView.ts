@@ -8,6 +8,7 @@ import {
   sendFriendRequest
 } from "../services/friendsServices.js";
 import { getUserByUsername } from "../services/userServices.js";
+import { FriendRequest } from "../types/FriendRequest.js";
 import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
 import { escapeHTML } from "../utility.js";
 import {
@@ -18,7 +19,7 @@ import {
 import AbstractView from "./AbstractView.js";
 
 export default class FriendsView extends AbstractView {
-  private friendsHTML: string = "";
+  private friendRequests: FriendRequest[] = [];
   private controller = new AbortController();
 
   constructor() {
@@ -31,7 +32,7 @@ export default class FriendsView extends AbstractView {
   }
 
   async render(): Promise<void> {
-    this.friendsHTML = await this.createFriendsHTML();
+    this.friendRequests = await getUserFriendRequests();
     this.updateHTML();
     this.addListeners();
     this.refreshPendingRequestView();
@@ -42,7 +43,7 @@ export default class FriendsView extends AbstractView {
       <section>
         <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg">
           <h1 class="text-2xl font-bold text-blue-900 mb-6">Your Friends</h1>
-          ${this.friendsHTML}
+          ${this.createFriendsHTML()}
         </div>
       </section>
 
@@ -94,8 +95,8 @@ export default class FriendsView extends AbstractView {
     `;
   }
 
-  private async createFriendsHTML(): Promise<string> {
-    const friends = await getUserFriends();
+  private createFriendsHTML(): string {
+    const friends = this.friendRequests.filter((r) => r.status === "ACCEPTED");
 
     if (friends.length === 0) {
       return /* HTML */ ` <p>You have no friends yet 😢</p>`;
@@ -112,9 +113,11 @@ export default class FriendsView extends AbstractView {
       html += /* HTML */ `
         <li
           class="bg-blue-800 p-4 rounded shadow-md flex justify-between items-center"
-          data-friend-id="${friend.id}"
+          data-friend-id="${friend.friendId}"
         >
-          <span class="flex-1 truncate">${escapeHTML(friend.username)}</span>
+          <span class="flex-1 truncate"
+            >${escapeHTML(friend.friendUsername)}</span
+          >
           <div class="flex items-center space-x-4">
             <span class="online-status font-semibold ${onlineStatusClass}"
               >${onlineStatusText}</span

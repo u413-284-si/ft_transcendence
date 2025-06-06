@@ -15,11 +15,7 @@ import {
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHash } from "../services/auth.services.js";
-import {
-  getAllUserFriendRequests,
-  getUserFriends
-} from "../services/friends.services.js";
-import { addOnlineStatusToArray } from "../services/online_status.services.js";
+import { getAllUserFriendRequests } from "../services/friends.services.js";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -197,27 +193,6 @@ export async function getUserActiveTournamentHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserActiveTournamentHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function getUserFriendsHandler(request, reply) {
-  const action = "Get user friends";
-  try {
-    const userId = parseInt(request.user.id, 10);
-    const friends = await getUserFriends(userId);
-    const data = addOnlineStatusToArray(friends);
-    const count = data.length;
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      count: count,
-      data: data
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getUserFriendsHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
