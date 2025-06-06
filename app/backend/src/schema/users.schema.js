@@ -5,8 +5,7 @@ const userSchema = {
     id: { $ref: "commonDefinitionsSchema#/definitions/id" },
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-    dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" },
-    isOnline: { type: "boolean" }
+    dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" }
   },
   required: ["id", "username"],
   additionalProperties: false
