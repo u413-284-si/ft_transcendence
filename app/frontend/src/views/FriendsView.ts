@@ -1,4 +1,5 @@
 import { router } from "../routing/Router.js";
+import { sanitizeHTML } from "../sanitize.js";
 import { ApiError } from "../services/api.js";
 import {
   deleteFriendRequest,
@@ -9,7 +10,7 @@ import {
 import { getUserByUsername } from "../services/userServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
 import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import {
   clearInvalid,
   markInvalid,
@@ -36,17 +37,25 @@ export default class FriendsView extends AbstractView {
     this.addListeners();
   }
 
-  private refresh(): void {
-    this.updateHTML();
-    this.addListeners();
+  private refreshFriendList(): void {
+    const html = this.createFriendListHTML();
+    const cleanHTML = sanitizeHTML(html);
+    getEl("friend-list").innerHTML = cleanHTML;
+    this.addFriendListListeners();
+  }
+
+  private refreshRequestList(): void {
+    const html = this.createRequestListHTML();
+    const cleanHTML = sanitizeHTML(html);
+    getEl("request-list").innerHTML = cleanHTML;
+    this.addRequestListListeners();
   }
 
   createHTML(): string {
     return /* HTML */ `
       <section>
-        <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg">
-          <h1 class="text-2xl font-bold text-blue-900 mb-6">Your Friends</h1>
-          ${this.createFriendsHTML()}
+        <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg" id="friend-list">
+          ${this.createFriendListHTML()}
         </div>
       </section>
 
@@ -61,7 +70,7 @@ export default class FriendsView extends AbstractView {
               class="w-full border border-gray-300 rounded px-3 py-3 text-blue-900 disabled:bg-gray-100 disabled:text-gray-500"
             />
             <span
-              id="error"
+              id="username-error"
               class="error-message text-red-600 text-sm mt-1 hidden"
             ></span>
           </div>
@@ -72,31 +81,37 @@ export default class FriendsView extends AbstractView {
             >
               Send request
             </button>
+            <span
+              id="status-message"
+              class="transition-opacity duration-500 opacity-0 text-green-600 text-sm mt-1"
+            ></span>
           </div>
         </div>
       </section>
 
       <section>
-        <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-blue-900 mb-6">Friend Requests</h1>
-          ${this.createPendingRequestsHTML()}
+        <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg" id="request-list">
+          ${this.createRequestListHTML()}
         </div>
       </section>
     `;
   }
 
-  private createFriendsHTML(): string {
+  private createFriendListHTML(): string {
     const acceptedRequests = this.friendRequests.filter(
       (r) => r.status === "ACCEPTED"
     );
 
+    let html = `<h1 class="text-2xl font-bold text-blue-900 mb-6">Your Friends</h1>`;
+
     if (acceptedRequests.length === 0) {
-      return /* HTML */ ` <p class="text-gray-500 italic">
+      html += /* HTML */ ` <p class="text-gray-500 italic">
         You have no friends yet 😢
       </p>`;
+      return html;
     }
 
-    let html = `<ul class="space-y-4">`;
+    html += `<ul class="space-y-4">`;
 
     for (const request of acceptedRequests) {
       const onlineStatusClass = request.isOnline
@@ -131,7 +146,7 @@ export default class FriendsView extends AbstractView {
     return html;
   }
 
-  private createPendingRequestsHTML(): string {
+  private createRequestListHTML(): string {
     const incoming = this.friendRequests.filter(
       (r) => !r.sender && r.status === "PENDING"
     );
@@ -139,7 +154,7 @@ export default class FriendsView extends AbstractView {
       (r) => r.sender && r.status === "PENDING"
     );
 
-    let html = "";
+    let html = `<h1 class="text-2xl font-bold text-blue-900 mb-6">Friend Requests</h1>`;
 
     // 🔹 Incoming Section
     html += `<div>
@@ -225,20 +240,29 @@ export default class FriendsView extends AbstractView {
         signal: this.controller.signal
       });
 
+    this.addFriendListListeners();
+    this.addRequestListListeners();
+  }
+
+  private addFriendListListeners = () => {
     document.querySelectorAll(".remove-friend-btn").forEach((btn) => {
       btn.addEventListener(
         "click",
-        (event) =>
-          this.handleDeleteButton(
+        async (event) => {
+          await this.handleDeleteButton(
             event,
             "Are you sure you want to remove this friend?"
-          ),
+          );
+          this.refreshFriendList();
+        },
         {
           signal: this.controller.signal
         }
       );
     });
+  };
 
+  private addRequestListListeners = () => {
     document.querySelectorAll(".accept-btn").forEach((btn) => {
       btn.addEventListener("click", this.handleAcceptButton, {
         signal: this.controller.signal
@@ -248,11 +272,13 @@ export default class FriendsView extends AbstractView {
     document.querySelectorAll(".decline-btn").forEach((btn) => {
       btn.addEventListener(
         "click",
-        (event) =>
-          this.handleDeleteButton(
+        async (event) => {
+          await this.handleDeleteButton(
             event,
             "Are you sure you want to decline this request?"
-          ),
+          );
+          this.refreshRequestList();
+        },
         {
           signal: this.controller.signal
         }
@@ -262,17 +288,19 @@ export default class FriendsView extends AbstractView {
     document.querySelectorAll(".delete-request-btn").forEach((btn) => {
       btn.addEventListener(
         "click",
-        (event) =>
-          this.handleDeleteButton(
+        async (event) => {
+          await this.handleDeleteButton(
             event,
             "Are you sure you want to delete this request?"
-          ),
+          );
+          this.refreshRequestList();
+        },
         {
           signal: this.controller.signal
         }
       );
     });
-  }
+  };
 
   private handleDeleteButton = async (event: Event, msg: string) => {
     try {
@@ -281,7 +309,6 @@ export default class FriendsView extends AbstractView {
       if (!confirm(msg)) return;
       const request = await deleteFriendRequest(requestId);
       this.removeFriendRequest(request.id);
-      this.refresh();
     } catch (error) {
       router.handleError("Error in handleDeleteButton()", error);
     }
@@ -294,7 +321,8 @@ export default class FriendsView extends AbstractView {
       const request = await acceptFriendRequest(requestid);
       this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
-      this.refresh();
+      this.refreshRequestList();
+      this.refreshFriendList();
     } catch (error) {
       router.handleError("Error in handleAcceptButton()", error);
     }
@@ -318,10 +346,8 @@ export default class FriendsView extends AbstractView {
   };
 
   private handleSendRequestButton = async (): Promise<void> => {
-    const inputEl = document.getElementById(
-      "username-input"
-    ) as HTMLInputElement;
-    const errorEl = document.getElementById("error")!;
+    const inputEl = getInputEl("username-input");
+    const errorEl = getEl("username-error");
 
     clearInvalid(inputEl, errorEl);
 
@@ -340,7 +366,9 @@ export default class FriendsView extends AbstractView {
 
       const request = await createFriendRequest(user.id);
       this.addFriendRequest(request);
-      this.refresh();
+      this.refreshRequestList();
+      inputEl.value = "";
+      this.showStatusMessage("Sent friend request");
     } catch (error) {
       console.error(error);
       let message = "Something went wrong.";
@@ -369,5 +397,20 @@ export default class FriendsView extends AbstractView {
 
   private removeFriendRequest(requestId: number): void {
     this.friendRequests = this.friendRequests.filter((r) => r.id !== requestId);
+  }
+
+  private showStatusMessage(text: string) {
+    const messageElement = getEl("status-message");
+    if (!messageElement) return;
+
+    messageElement.textContent = text;
+    messageElement.classList.remove("opacity-0");
+    messageElement.classList.add("opacity-100");
+
+    // Hide it after 1 second
+    setTimeout(() => {
+      messageElement.classList.remove("opacity-100");
+      messageElement.classList.add("opacity-0");
+    }, 1000);
   }
 }
