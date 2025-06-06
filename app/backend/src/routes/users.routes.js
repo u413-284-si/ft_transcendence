@@ -206,7 +206,7 @@ const optionsUpdateFriendRequest = {
   onRequest: [authorizeUserAccess],
   schema: {
     params: { $ref: "idSchema" },
-    body: { $ref: "idSchema" },
+    body: { $ref: "friendRequestUpdateSchema" },
     response: {
       201: { $ref: "friendRequestResponseSchema" },
       ...errorResponses

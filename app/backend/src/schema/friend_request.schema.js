@@ -1,9 +1,20 @@
+const friendRequestDefinitionsSchema = {
+  $id: "friendRequestDefinitionsSchema",
+  definitions: {
+    status: {
+      type: "string",
+      enum: ["PENDING", "ACCEPTED"],
+      description: "Status of a friend request"
+    }
+  }
+};
+
 const friendRequestSchema = {
   $id: "friendRequestSchema",
   type: "object",
   properties: {
     id: { $ref: "commonDefinitionsSchema#/definitions/id" },
-    status: { type: "string", enum: ["PENDING", "ACCEPTED"] },
+    status: { $ref: "friendRequestDefinitionsSchema#/definitions/status" },
     sender: { type: "boolean" },
     friendId: { $ref: "commonDefinitionsSchema#/definitions/id" },
     friendUsername: { $ref: "commonDefinitionsSchema#/definitions/username" },
@@ -43,8 +54,20 @@ const friendRequestArrayResponseSchema = {
   additionalProperties: false
 };
 
+const friendRequestUpdateSchema = {
+  $id: "friendRequestUpdateSchema",
+  type: "object",
+  properties: {
+    status: { $ref: "friendRequestDefinitionsSchema#/definitions/status" }
+  },
+  required: ["status"],
+  additionalProperties: false
+};
+
 export const friendRequestSchemas = [
+  friendRequestDefinitionsSchema,
   friendRequestSchema,
   friendRequestResponseSchema,
-  friendRequestArrayResponseSchema
+  friendRequestArrayResponseSchema,
+  friendRequestUpdateSchema
 ];
