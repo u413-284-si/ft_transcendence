@@ -3,6 +3,7 @@ import { auth } from "../AuthManager.js";
 import { escapeHTML } from "../utility.js";
 import { uploadAvatar } from "../services/userServices.js";
 import { router } from "../routing/Router.js";
+import { validateImageFile } from "../validate.js";
 
 export default class HomeView extends AbstractView {
   constructor() {
@@ -33,7 +34,15 @@ export default class HomeView extends AbstractView {
         >
           Upload Avatar
         </button>
-        <span id="avatar-upload-message" class="text-sm mt-2"></span>
+        <span
+          id="avatar-upload-error-message"
+          class="error-message text-red-600 font-bold text-sm mt-1 hidden"
+        ></span>
+        <span
+          id="avatar-upload-success-message"
+          class="success-message text-green-600 font-bold text-sm mt-1 hidden"
+          >Avatar uploaded successfully!</span
+        >
       </form>
     `;
   }
@@ -46,32 +55,27 @@ export default class HomeView extends AbstractView {
 
   private async uploadAvatar(event: Event) {
     event.preventDefault();
-    const form = event.target as HTMLFormElement;
-    const fileInput = form.querySelector<HTMLInputElement>("#avatar");
-    const messageEl = form.querySelector<HTMLSpanElement>(
-      "#avatar-upload-message"
-    );
+    const fileInputEl = document.getElementById("avatar") as HTMLInputElement;
+    const errorEl = document.getElementById(
+      "avatar-upload-error-message"
+    ) as HTMLElement;
+    const successEl = document.getElementById(
+      "avatar-upload-success-message"
+    ) as HTMLElement;
+    successEl.classList.add("hidden");
 
-    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-      messageEl!.textContent = "Please select a file to upload.";
-      return;
-    }
-
-    const file = fileInput.files[0];
-    if (!file.type.startsWith("image/")) {
-      messageEl!.textContent = "Please upload a valid image file.";
-      return;
-    }
+    if (!validateImageFile(fileInputEl, errorEl)) return;
 
     const formData = new FormData();
+    const file = fileInputEl!.files![0];
     formData.append("avatar", file);
     try {
       const response = await uploadAvatar(formData);
       console.log("Avatar upload response:", response);
-      messageEl!.textContent = "Avatar uploaded successfully!";
+      successEl.classList.remove("hidden");
+      fileInputEl.value = "";
     } catch (error) {
       router.handleError("Error in uploadAvatar()", error);
-      messageEl!.textContent = "Failed to upload avatar. Please try again.";
     }
   }
 
