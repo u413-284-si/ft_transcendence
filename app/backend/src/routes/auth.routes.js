@@ -1,7 +1,8 @@
 import {
   authAndDecodeAccessHandler,
   authRefreshHandler,
-  loginUserHandler
+  loginUserHandler,
+  logoutUserHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
@@ -12,6 +13,8 @@ export default async function authRoutes(fastify) {
   fastify.get("/", optionsAuthUserAccess, authAndDecodeAccessHandler);
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
+
+  fastify.post("/logout", optionsLogoutUser, logoutUserHandler);
 }
 
 const authRateLimit = {
@@ -47,4 +50,13 @@ const optionsAuthUserRefresh = {
     }
   },
   rateLimit: authRateLimit
+};
+
+const optionsLogoutUser = {
+  schema: {
+    response: {
+      //200: { $ref: "loginUserResponseSchema" },
+      ...errorResponses
+    }
+  }
 };

@@ -116,3 +116,30 @@ export async function authRefreshHandler(request, reply) {
     handlePrismaError(reply, action, err);
   }
 }
+
+export async function logoutUserHandler(request, reply) {
+  const action = "Logout user";
+  try {
+    reply.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/"
+    });
+    reply.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth/refresh"
+    });
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true) });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `logoutUserHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
