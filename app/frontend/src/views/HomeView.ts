@@ -51,7 +51,6 @@ export default class HomeView extends AbstractView {
     const messageEl = form.querySelector<HTMLSpanElement>(
       "#avatar-upload-message"
     );
-    const formData = new FormData();
 
     if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
       messageEl!.textContent = "Please select a file to upload.";
@@ -64,6 +63,7 @@ export default class HomeView extends AbstractView {
       return;
     }
 
+    const formData = new FormData();
     formData.append("avatar", file);
     try {
       const response = await uploadAvatar(formData);
