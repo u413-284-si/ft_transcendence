@@ -1,4 +1,4 @@
-import { apiFetch } from "./api.js";
+import { apiFetch, authApiFetch } from "./api.js";
 import { Match } from "../types/IMatch.js";
 import { User } from "../types/User.js";
 
@@ -23,7 +23,7 @@ export async function getUserProfile(): Promise<User> {
 }
 
 export async function patchUser(updateData: User): Promise<User> {
-  const apiResponse = await apiFetch<User>(`/api/users/${updateData.id}/`, {
+  const apiResponse = await authApiFetch<User>("/api/users/", {
     method: "PATCH",
     body: JSON.stringify(updateData),
     credentials: "same-origin"
