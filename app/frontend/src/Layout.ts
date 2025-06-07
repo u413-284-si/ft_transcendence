@@ -1,5 +1,6 @@
 import { sanitizeHTML } from "./sanitize.js";
 import { getUserAvatar } from "./services/userServices.js";
+import { auth } from "./AuthManager.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -25,24 +26,24 @@ export class Layout {
       "bg-blue-900 text-white min-h-screen min-w-screen flex flex-col font-mono";
   }
 
-  private async renderShell(): Promise<void> {
-    const html = await this.getShellHTML();
+  private renderShell(): void {
+    const html = this.getShellHTML();
     const cleanHTML = sanitizeHTML(html);
     this.rootEl.innerHTML = cleanHTML;
   }
 
-  private async getShellHTML(): Promise<string> {
+  private getShellHTML(): string {
     return `
-      <header class="bg-blue-800 text-white py-8 shadow-lg">${await this.getHeaderHTML()}</header>
+      <header class="bg-blue-800 text-white py-8 shadow-lg">${this.getHeaderHTML()}</header>
       <main id="app-content" class="flex-grow px-4 py-8"></main>
       <footer class="bg-blue-800 text-white py-4 shadow-lg">${this.getFooterHTML()}</footer>
     `;
   }
 
-  private async getHeaderHTML(): Promise<string> {
+  private getHeaderHTML(): string {
     if (this.mode === "auth") {
       const userAvatarUrl: string =
-        (await getUserAvatar()) || "/images/default-avatar.png";
+        auth.getUser().avatar || "/images/default-avatar.png";
       return /* HTML */ ` <nav class="relative">
         <div class="container mx-auto flex justify-center space-x-8">
           <a href="/home" class="text-xl hover:text-blue-300" data-link>Home</a>
