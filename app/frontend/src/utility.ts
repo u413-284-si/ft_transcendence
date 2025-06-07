@@ -7,3 +7,11 @@ export function escapeHTML(input: string | undefined | null): string {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+export function getInputEl(inputId: string): HTMLInputElement {
+  return document.getElementById(inputId) as HTMLInputElement;
+}
+
+export function getEl(elId: string): HTMLElement {
+  return document.getElementById(elId) as HTMLElement;
+}

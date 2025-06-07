@@ -50,6 +50,15 @@ export async function deleteUserAvatar(): Promise<User> {
     credentials: "same-origin"
   });
 
+export async function registerUser(
+  email: string,
+  username: string,
+  password: string
+) {
+  const apiResponse = await apiFetch<User>("api/users/", {
+    method: "POST",
+    body: JSON.stringify({ email, username, password })
+  });
   console.log(apiResponse);
   return apiResponse.data;
 }

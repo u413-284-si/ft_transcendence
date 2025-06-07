@@ -45,6 +45,14 @@ export async function createUserHandler(request, reply) {
       { err, body: request.body },
       `createUserHandler: ${createResponseMessage(action, false)}`
     );
+    if (err.code === "P2002") {
+      return httpError(
+        reply,
+        409,
+        createResponseMessage(action, false),
+        "Email or username already exists"
+      );
+    }
     return handlePrismaError(reply, action, err);
   }
 }
