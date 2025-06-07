@@ -1,5 +1,4 @@
 import { sanitizeHTML } from "./sanitize.js";
-import { getUserAvatar } from "./services/userServices.js";
 import { auth } from "./AuthManager.js";
 
 export type LayoutMode = "auth" | "guest";

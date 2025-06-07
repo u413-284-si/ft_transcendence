@@ -13,7 +13,6 @@ import {
   getUserFriendsHandler,
   createUserFriendHandler,
   deleteUserFriendHandler,
-  getUserAvatarHandler,
   createUserAvatarHandler,
   deleteUserAvatarHandler
 } from "../controllers/users.controllers.js";
@@ -36,8 +35,6 @@ export default async function userRoutes(fastify) {
   fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
 
   fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
-
-  fastify.get("/avatar/", optionsGetUserAvatar, getUserAvatarHandler);
 
   fastify.post("/avatar/", optionsCreateUserAvatar, createUserAvatarHandler);
 
@@ -204,16 +201,6 @@ const optionsSseOnline = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetUserAvatar = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      200: { $ref: "getAvatarSchema" },
       ...errorResponses
     }
   }

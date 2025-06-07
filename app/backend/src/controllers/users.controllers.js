@@ -295,23 +295,6 @@ export async function deleteUserFriendHandler(request, reply) {
   }
 }
 
-export async function getUserAvatarHandler(request, reply) {
-  const action = "Get user avatar";
-  try {
-    const userId = parseInt(request.user.id, 10);
-    const userAvatar = await getUserAvatar(userId);
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), data: userAvatar });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getUserAvatarHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
 export async function createUserAvatarHandler(request, reply) {
   const action = "Create user avatar";
   try {
