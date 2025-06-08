@@ -75,10 +75,6 @@ export async function oAuth2LoginUserHandler(request, reply) {
     console.log("token: ", token);
     console.log("access_token: ", token.access_token);
     console.log("refresh_token: ", token.refresh_token);
-    // const { accessToken, refreshToken } = await createAuthTokens(
-    //   reply,
-    //   request.user
-    // );
     return setAuthCookies(
       reply,
       token.access_token,
