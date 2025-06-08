@@ -1,7 +1,9 @@
 import { ApiError } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
-  userLogin
+  refreshAccessToken,
+  userLogin,
+  userLogout
 } from "./services/authServices.js";
 import {
   startOnlineStatusTracking,
@@ -80,7 +82,7 @@ export class AuthManager {
   }
 
   public async logout(): Promise<void> {
-    // FIXME: remove auth and refresh cookies via API
+    await userLogout();
     this.updateAuthState(null);
   }
 
@@ -135,9 +137,9 @@ export class AuthManager {
 
     const expiresAtMs = token.exp * 1000;
     const now = Date.now();
-    const refreshAtMs = expiresAtMs - 60_000; // 1 minute before expiry
-
-    const delay = Math.max(refreshAtMs - now, 0);
+    const refreshAtMs = expiresAtMs - 60_000;
+    const delay = Math.max(refreshAtMs - now, 1000);
+    console.log("Setting new refresh timer:", delay / 1000);
 
     if (this.refreshTimeout) clearTimeout(this.refreshTimeout);
     this.refreshTimeout = setTimeout(() => {
@@ -148,12 +150,12 @@ export class AuthManager {
   private async refreshToken(): Promise<void> {
     console.log("Refresh token");
     try {
-      // FIXME: create route to directly refresh token
+      await refreshAccessToken();
       const newToken = await authAndDecodeAccessToken();
       this.updateAuthState(newToken);
     } catch {
       console.warn("Token refresh failed or expired. Logging out.");
-      this.logout();
+      this.updateAuthState(null);
     }
   }
 
