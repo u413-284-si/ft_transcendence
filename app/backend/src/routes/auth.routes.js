@@ -53,6 +53,7 @@ const optionsAuthUserRefresh = {
 };
 
 const optionsLogoutUser = {
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       //200: { $ref: "loginUserResponseSchema" },

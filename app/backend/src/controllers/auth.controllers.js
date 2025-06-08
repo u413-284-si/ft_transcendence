@@ -121,6 +121,7 @@ export async function authRefreshHandler(request, reply) {
 export async function logoutUserHandler(request, reply) {
   const action = "Logout user";
   try {
+    const userId = parseInt(request.user.id, 10);
     reply.clearCookie("accessToken", {
       httpOnly: true,
       secure: true,
@@ -133,7 +134,7 @@ export async function logoutUserHandler(request, reply) {
       sameSite: "strict",
       path: "/api/auth/refresh"
     });
-    await deleteUserRefreshToken();
+    await deleteUserRefreshToken(userId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true) });
