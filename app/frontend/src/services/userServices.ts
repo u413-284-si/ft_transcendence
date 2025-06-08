@@ -49,6 +49,9 @@ export async function deleteUserAvatar(): Promise<User> {
     method: "DELETE",
     credentials: "same-origin"
   });
+  console.log(apiResponse);
+  return apiResponse.data;
+}
 
 export async function registerUser(
   email: string,
