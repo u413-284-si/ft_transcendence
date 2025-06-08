@@ -10,14 +10,18 @@ import {
   getUserStatsHandler,
   getUserTournamentsHandler,
   getUserActiveTournamentHandler,
-  getUserFriendsHandler,
-  createUserFriendHandler,
-  deleteUserFriendHandler,
+  getUserFriendRequestsHandler,
+  searchUserHandler,
   createUserAvatarHandler,
   deleteUserAvatarHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseOnlineHandler } from "../controllers/online_status.controllers.js";
+import {
+  createFriendRequestHandler,
+  deleteFriendRequestHandler,
+  updateFriendRequestHandler
+} from "../controllers/friend_request.controllers.js";
 
 export default async function userRoutes(fastify) {
   fastify.post("/", optionsCreateUser, createUserHandler);
@@ -52,17 +56,33 @@ export default async function userRoutes(fastify) {
     getUserActiveTournamentHandler
   );
 
-  fastify.get("/friends/", optionsGetUserFriends, getUserFriendsHandler);
+  fastify.get(
+    "/friend-requests/",
+    optionsGetUserFriends,
+    getUserFriendRequestsHandler
+  );
 
-  fastify.post("/friends/", optionsCreateUserFriend, createUserFriendHandler);
+  fastify.post(
+    "/friend-requests/",
+    optionsCreateFriendRequest,
+    createFriendRequestHandler
+  );
+
+  fastify.patch(
+    "/friend-requests/:id/",
+    optionsUpdateFriendRequest,
+    updateFriendRequestHandler
+  );
 
   fastify.delete(
-    "/friends/:id/",
+    "/friend-requests/:id/",
     optionsDeleteUserFriend,
-    deleteUserFriendHandler
+    deleteFriendRequestHandler
   );
 
   fastify.get("/online/", optionsSseOnline, sseOnlineHandler);
+
+  fastify.get("/search/", optionsSearchUser, searchUserHandler);
 }
 
 const optionsCreateUser = {
@@ -170,18 +190,30 @@ const optionsGetUserFriends = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
-      200: { $ref: "userArrayResponseSchema" },
+      200: { $ref: "friendRequestArrayResponseSchema" },
       ...errorResponses
     }
   }
 };
 
-const optionsCreateUserFriend = {
+const optionsCreateFriendRequest = {
   onRequest: [authorizeUserAccess],
   schema: {
     body: { $ref: "idSchema" },
     response: {
-      201: { $ref: "userResponseSchema" },
+      201: { $ref: "friendRequestResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsUpdateFriendRequest = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    params: { $ref: "idSchema" },
+    body: { $ref: "friendRequestUpdateSchema" },
+    response: {
+      201: { $ref: "friendRequestResponseSchema" },
       ...errorResponses
     }
   }
@@ -220,6 +252,22 @@ const optionsDeleteUserAvatar = {
   schema: {
     response: {
       200: { $ref: "userResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsSearchUser = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    querystring: {
+      type: "object",
+      properties: {
+        username: { type: "string" }
+      },
+      required: ["username"]
+    },
+    response: {
       ...errorResponses
     }
   }

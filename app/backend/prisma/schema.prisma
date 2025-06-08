@@ -23,8 +23,8 @@ model User {
     authentication    Authentication?
     stats             UserStats?
     accountStatus     AccountStatus?
-    friends           Friends[]       @relation("fk_User_UserID")
-    friendsOf         Friends[]       @relation("fk_User_FriendID")
+    sentRequests    FriendRequest[]  @relation("SentRequests")
+    receivedRequests FriendRequest[] @relation("ReceivedRequests")
     matchesPlayed     Match[]         @relation("UserPlayed")
     tournament        Tournament[]
 
@@ -66,15 +66,19 @@ model AccountStatus {
     @@map("account_status")
 }
 
-model Friends {
-    userId   Int
-    friendId Int
+model FriendRequest {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  status     FriendRequestStatus @default(PENDING)
 
-    user   User @relation("fk_User_UserID", fields: [userId], references: [id], onDelete: Cascade)
-    friend User @relation("fk_User_FriendID", fields: [friendId], references: [id], onDelete: Cascade)
+  sender     User     @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
 
-    @@id([userId, friendId]) // Composite primary key for many-to-many relationship
-    @@map("friends")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("friend_requests")
 }
 
 model Match {
@@ -119,4 +123,9 @@ enum TournamentStatus {
     CREATED
     IN_PROGRESS
     FINISHED
+}
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
 }

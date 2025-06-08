@@ -123,3 +123,11 @@ export async function deleteUserAvatar(currentAvatarUrl) {
     console.warn("Avatar file not found, nothing to delete.");
   }
 }
+
+export async function getUserByUsername(username) {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    select: { id: true, username: true }
+  });
+  return user;
+}

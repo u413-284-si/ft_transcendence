@@ -65,3 +65,18 @@ export async function registerUser(
   console.log(apiResponse);
   return apiResponse.data;
 }
+
+export async function getUserByUsername(
+  username: string
+): Promise<User | null> {
+  const apiResponse = await apiFetch<User | null>(
+    `/api/users/search/?username=${encodeURIComponent(username)}`,
+    {
+      method: "GET",
+      credentials: "same-origin"
+    }
+  );
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}

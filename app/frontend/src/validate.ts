@@ -8,7 +8,7 @@ function validateAgainstRegex(str: string, regex: RegExp): boolean {
   return regex.test(str);
 }
 
-function markInvalid(
+export function markInvalid(
   message: string,
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
@@ -26,7 +26,10 @@ function markInvalid(
   errorEl.textContent = message;
 }
 
-function clearInvalid(inputEl: HTMLInputElement, errorEl: HTMLElement): void {
+export function clearInvalid(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): void {
   inputEl.classList.remove(
     "border-2",
     "border-red-600",
