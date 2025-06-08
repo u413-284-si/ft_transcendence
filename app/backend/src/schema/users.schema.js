@@ -5,6 +5,7 @@ const userSchema = {
     id: { $ref: "commonDefinitionsSchema#/definitions/id" },
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+    avatar: { type: "string" },
     dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" },
     isOnline: { type: "boolean" }
   },
@@ -70,7 +71,8 @@ export const patchUserSchema = {
     {
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-        email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+        avatar: { type: "string" }
       },
       required: ["username"],
       additionalProperties: false
@@ -78,12 +80,33 @@ export const patchUserSchema = {
     {
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-        email: { $ref: "commonDefinitionsSchema#/definitions/email" }
+        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+        avatar: { type: "string" }
       },
       required: ["email"],
       additionalProperties: false
+    },
+    {
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+        avatar: { type: "string" }
+      },
+      required: ["avatar"],
+      additionalProperties: false
     }
   ]
+};
+
+const getAvatarSchema = {
+  $id: "getAvatarSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: { type: "string" }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
 };
 
 export const userSchemas = [
@@ -92,5 +115,6 @@ export const userSchemas = [
   userArrayResponseSchema,
   createUserSchema,
   updateUserSchema,
-  patchUserSchema
+  patchUserSchema,
+  getAvatarSchema
 ];

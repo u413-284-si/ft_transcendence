@@ -8,6 +8,7 @@ import fastifyStatic from "@fastify/static";
 import fastifyCookie from "@fastify/cookie";
 import fastifyRateLimit from "@fastify/rate-limit";
 import jwt from "@fastify/jwt";
+import fastifyMultipart from "@fastify/multipart";
 
 import env from "./config/env.js";
 
@@ -88,6 +89,11 @@ await fastify.register(jwt, {
   cookie: {
     cookieName: "refreshToken",
     signed: false
+  }
+});
+await fastify.register(fastifyMultipart, {
+  limits: {
+    fileSize: env.maxFileSizeInBytes
   }
 });
 

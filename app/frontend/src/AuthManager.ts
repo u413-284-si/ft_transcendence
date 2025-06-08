@@ -7,7 +7,9 @@ import {
   startOnlineStatusTracking,
   stopOnlineStatusTracking
 } from "./services/onlineStatusServices.js";
+import { getUserProfile } from "./services/userServices.js";
 import { Token } from "./types/Token.js";
+import { User } from "./types/User.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
 
@@ -16,6 +18,7 @@ export class AuthManager {
   private authenticated = false;
   private token: Token | null = null;
   private listeners: AuthChangeCallback[] = [];
+  private user: User | null = null;
 
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
@@ -52,6 +55,10 @@ export class AuthManager {
     try {
       const token = await authAndDecodeAccessToken();
       this.updateAuthState(token);
+      if (this.authenticated) {
+        this.user = await getUserProfile();
+        console.log("User profile fetched:", this.user);
+      }
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         console.log("JWT validation failed or no token found.");
@@ -67,6 +74,8 @@ export class AuthManager {
       const token = await authAndDecodeAccessToken();
       this.updateAuthState(token);
       console.log("User logged in");
+      this.user = await getUserProfile();
+      console.log("User profile fetched:", this.user);
       return true;
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -91,6 +100,11 @@ export class AuthManager {
   public getToken(): Token {
     if (!this.token) throw new Error("No active Token");
     return this.token;
+  }
+
+  public getUser(): User {
+    if (!this.user) throw new Error("User profile not loaded");
+    return this.user;
   }
 
   public onChange(callback: AuthChangeCallback): void {

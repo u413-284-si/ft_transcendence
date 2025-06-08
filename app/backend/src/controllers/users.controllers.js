@@ -3,7 +3,10 @@ import {
   getUser,
   getAllUsers,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserAvatar,
+  createUserAvatar,
+  deleteUserAvatar
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
@@ -24,6 +27,7 @@ import {
   addOnlineStatusToArray,
   isUserOnline
 } from "../services/online_status.services.js";
+import { fileTypeFromBuffer } from "file-type";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -294,6 +298,100 @@ export async function deleteUserFriendHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `deleteUserFriendHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function createUserAvatarHandler(request, reply) {
+  const action = "Create user avatar";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const parts = request.parts();
+    for await (const part of parts) {
+      if (part.fieldname === "avatar") {
+        const avatar = part;
+        if (!avatar || !avatar.file) {
+          return httpError(
+            reply,
+            400,
+            createResponseMessage(action, false),
+            "Avatar is required"
+          );
+        }
+        // Validate actual file type using file-type
+        const fileBuffer = await avatar.toBuffer();
+        await validateImageFile(fileBuffer);
+
+        // Check if the user already has an avatar and delete it
+        const currentAvatarUrl = await getUserAvatar(userId);
+        if (currentAvatarUrl) {
+          await deleteUserAvatar(currentAvatarUrl);
+        }
+
+        // Create new avatar
+        const newFileName = await createUserAvatar(userId, fileBuffer);
+        const avatarUrl = `/images/${newFileName}`;
+        const updatedUser = await updateUser(userId, { avatar: avatarUrl });
+        return reply.code(201).send({
+          message: createResponseMessage(action, true),
+          data: updatedUser
+        });
+      }
+    }
+    // If no avatar field found
+    return httpError(
+      reply,
+      400,
+      createResponseMessage(action, false),
+      "Avatar file missing"
+    );
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `createUserAvatarHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+async function validateImageFile(buffer) {
+  const allowedMimeTypes = ["image/png", "image/jpeg", "image/webp"];
+
+  const fileType = await fileTypeFromBuffer(buffer);
+  if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
+    console.error(
+      "Invalid image file type:",
+      fileType ? fileType.mime : "unknown"
+    );
+    throw new Error();
+  }
+}
+
+export async function deleteUserAvatarHandler(request, reply) {
+  const action = "Delete user avatar";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const currentAvatarUrl = await getUserAvatar(userId);
+    if (!currentAvatarUrl) {
+      return httpError(
+        reply,
+        404,
+        createResponseMessage(action, false),
+        "No avatar found for user"
+      );
+    }
+    await deleteUserAvatar(currentAvatarUrl);
+
+    const updatedUser = await updateUser(userId, { avatar: null });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: updatedUser
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `deleteUserAvatarHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
