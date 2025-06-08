@@ -3,7 +3,8 @@ import {
   verifyRefreshToken,
   verifyHash,
   createAuthTokens,
-  getTokenHash
+  getTokenHash,
+  deleteUserRefreshToken
 } from "../services/auth.services.js";
 import { getTokenData } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -112,6 +113,35 @@ export async function authRefreshHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function logoutUserHandler(request, reply) {
+  const action = "Logout user";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    reply.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/"
+    });
+    reply.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth/refresh"
+    });
+    await deleteUserRefreshToken(userId);
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true) });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `logoutUserHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }

@@ -1,4 +1,5 @@
-import { ApiResponse } from "../types/IApiResponse";
+import { auth } from "../AuthManager.js";
+import { ApiResponse } from "../types/IApiResponse.js";
 import { refreshAccessToken } from "./authServices.js";
 
 export class ApiError extends Error {
@@ -15,7 +16,8 @@ export class ApiError extends Error {
 
 export async function apiFetch<T>(
   url: string,
-  options?: RequestInit
+  options?: RequestInit,
+  retryWithRefresh = true
 ): Promise<ApiResponse<T>> {
   const headers = new Headers(options?.headers);
   if (options?.body && !(options.body instanceof FormData)) {
@@ -30,41 +32,19 @@ export async function apiFetch<T>(
     const json = await response.json();
 
     if (!response.ok) {
+      if (response.status === 401 && retryWithRefresh) {
+        try {
+          await refreshAccessToken();
+          return apiFetch<T>(url, options, false);
+        } catch (refreshError) {
+          console.error(refreshError);
+          auth.clearTokenOnError();
+          return json as ApiResponse<T>;
+        }
+      }
       throw new ApiError(response.status, json.message, json.cause);
     }
-    return json as ApiResponse<T>;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError(500, "Internal server error");
-  }
-}
 
-export async function authApiFetch<T>(
-  url: string,
-  options?: RequestInit
-): Promise<ApiResponse<T>> {
-  const headers = new Headers(options?.headers);
-  if (options?.body && !(options.body instanceof FormData)) {
-    headers.set("Content-Type", "application/json");
-  }
-  try {
-    const response = await fetch(url, {
-      ...options,
-      headers
-    });
-
-    if (response.status === 401) {
-      await refreshAccessToken();
-      return await apiFetch<T>(url, options);
-    }
-
-    const json = await response.json();
-
-    if (!response.ok) {
-      throw new ApiError(response.status, json.message, json.cause);
-    }
     return json as ApiResponse<T>;
   } catch (error) {
     if (error instanceof ApiError) {
