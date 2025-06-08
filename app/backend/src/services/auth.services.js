@@ -41,8 +41,9 @@ export async function updateUserRefreshToken(userId, hashedRefreshToken) {
 }
 
 export async function deleteUserRefreshToken(userId) {
-  await prisma.authentication.delete({
-    where: { userId: userId }
+  await prisma.authentication.update({
+    where: { userId: userId },
+    data: { refreshToken: null }
   });
 }
 
