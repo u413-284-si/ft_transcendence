@@ -38,8 +38,8 @@ export async function userLogin(
   return apiResponse.data;
 }
 
-export async function userLogout() {
-  const apiResponse = await apiFetch(
+export async function userLogout(): Promise<{ username: string }> {
+  const apiResponse = await apiFetch<{ username: string }>(
     "/api/auth/logout/",
     {
       method: "PATCH",
@@ -49,4 +49,5 @@ export async function userLogout() {
   );
 
   console.log(apiResponse);
+  return apiResponse.data;
 }
