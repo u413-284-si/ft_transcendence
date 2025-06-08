@@ -86,6 +86,10 @@ export class AuthManager {
     this.updateAuthState(null);
   }
 
+  public clearTokenOnError(): void {
+    this.updateAuthState(null);
+  }
+
   public isAuthenticated(): boolean {
     return this.authenticated;
   }
@@ -155,7 +159,7 @@ export class AuthManager {
       this.updateAuthState(newToken);
     } catch {
       console.warn("Token refresh failed or expired. Logging out.");
-      this.updateAuthState(null);
+      this.clearTokenOnError();
     }
   }
 
