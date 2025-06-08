@@ -1,6 +1,9 @@
 import AbstractView from "./AbstractView.js";
 import { ApiError } from "../services/api.js";
 import { router } from "../routing/Router.js";
+import { Header1 } from "../components/Header1.js";
+import { Paragraph } from "../components/Paragraph.js";
+import { Button } from "../components/Button.js";
 
 export default class ErrorView extends AbstractView {
   private message: string = "An unexpected error occurred.";
@@ -27,30 +30,29 @@ export default class ErrorView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
-      <main class="p-6 flex flex-col items-center justify-center text-center">
-        <div class="bg-red-100 p-6 rounded-xl shadow-md">
-          <h1 class="text-3xl font-bold text-red-700">
-            ⚠️ Error ${this.status}
-          </h1>
-          <p class="mt-2 text-gray-700">${this.message}</p>
-          ${this.cause
-            ? `<p class="mt-2 text-sm text-gray-500">Details: ${this.cause}</p>`
-            : ""}
-          <div class="mt-4 space-x-4">
-            <button
-              id="home-btn"
-              class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl shadow"
-            >
-              Reload
-            </button>
-          </div>
-        </div>
-      </main>
+      <div class="flex flex-col justify-center items-center gap-4">
+        ${Header1({
+          text: `⚠️ Error ${this.status}`,
+          id: "error-header",
+          variant: "error"
+        })}
+        ${Paragraph({ text: `${this.message}`, id: "error-message" })}
+        ${this.cause
+          ? `${Paragraph({ text: `Details: ${this.cause}`, id: "error-cause" })}`
+          : ""}
+        ${Button({
+          id: "reload-btn",
+          text: "Reload",
+          variant: "outline",
+          size: "md",
+          type: "button"
+        })}
+      </div>
     `;
   }
 
   protected addListeners(): void {
-    document.getElementById("home-btn")!.addEventListener("click", () => {
+    document.getElementById("reload-btn")!.addEventListener("click", () => {
       router.reload();
     });
   }

@@ -1,4 +1,5 @@
 export type ButtonOptions = {
+  id?: string;
   text: string;
   variant?: "default" | "outline" | "danger";
   size?: "sm" | "md" | "lg";
@@ -19,6 +20,7 @@ const buttonSizes: Record<string, string> = {
 };
 
 export function Button({
+  id,
   text,
   variant = "default",
   size = "md",
@@ -29,6 +31,6 @@ export function Button({
     buttonVariants[variant],
     buttonSizes[size]
   ].join(" ");
-
-  return `<button type="${type}" class="${classes}">${text}</button>`;
+  const idAttr = id ? ` id="${id}"` : "";
+  return `<button${idAttr} type="${type}" class="${classes}">${text}</button>`;
 }
