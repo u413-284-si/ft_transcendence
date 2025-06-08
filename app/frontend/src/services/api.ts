@@ -20,7 +20,7 @@ export async function apiFetch<T>(
   retryWithRefresh = true
 ): Promise<ApiResponse<T>> {
   const headers = new Headers(options?.headers);
-  if (options?.body && !headers.has("Content-Type")) {
+  if (options?.body && !(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
   try {

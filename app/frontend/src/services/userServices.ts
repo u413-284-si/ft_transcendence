@@ -12,6 +12,47 @@ export async function getUserMatches(): Promise<Match[]> {
   return apiResponse.data;
 }
 
+export async function getUserProfile(): Promise<User> {
+  const apiResponse = await apiFetch<User>("/api/users/", {
+    method: "GET",
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
+export async function patchUser(updateData: User): Promise<User> {
+  const apiResponse = await apiFetch<User>("/api/users/", {
+    method: "PATCH",
+    body: JSON.stringify(updateData),
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
+export async function uploadAvatar(formData: FormData): Promise<User> {
+  const apiResponse = await apiFetch<User>("/api/users/avatar/", {
+    method: "POST",
+    body: formData,
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
+export async function deleteUserAvatar(): Promise<User> {
+  const apiResponse = await apiFetch<User>("/api/users/avatar/", {
+    method: "DELETE",
+    credentials: "same-origin"
+  });
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
 export async function registerUser(
   email: string,
   username: string,
@@ -21,6 +62,21 @@ export async function registerUser(
     method: "POST",
     body: JSON.stringify({ email, username, password })
   });
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
+export async function getUserByUsername(
+  username: string
+): Promise<User | null> {
+  const apiResponse = await apiFetch<User | null>(
+    `/api/users/search/?username=${encodeURIComponent(username)}`,
+    {
+      method: "GET",
+      credentials: "same-origin"
+    }
+  );
+
   console.log(apiResponse);
   return apiResponse.data;
 }
