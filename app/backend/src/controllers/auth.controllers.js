@@ -35,7 +35,13 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return setAuthCookies(
+      reply,
+      accessToken,
+      "accessToken",
+      refreshToken,
+      "refreshToken"
+    )
       .code(200)
       .send({
         message: createResponseMessage(action, true),
@@ -61,19 +67,27 @@ export async function loginUserHandler(request, reply) {
 export async function oAuth2LoginUserHandler(request, reply) {
   const action = "OAuth2 login user";
   try {
+    console.log("request cookies: ", request.cookies);
     const { token } =
       await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
         request
       );
     console.log("token: ", token);
-    return;
+    console.log("access_token: ", token.access_token);
+    console.log("refresh_token: ", token.refresh_token);
     // const { accessToken, refreshToken } = await createAuthTokens(
     //   reply,
     //   request.user
     // );
-    // return setAuthCookies(reply, accessToken, refreshToken)
-    //   .code(200)
-    //   .send({ message: createResponseMessage(action, true) });
+    return setAuthCookies(
+      reply,
+      token.access_token,
+      "googleAccessToken",
+      token.refresh_token,
+      "googleRefreshToken"
+    )
+      .code(200)
+      .send({ message: createResponseMessage(action, true) });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -131,7 +145,13 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return setAuthCookies(
+      reply,
+      accessToken,
+      "accessToken",
+      refreshToken,
+      "refreshToken"
+    )
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {

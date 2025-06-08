@@ -1,6 +1,12 @@
 import env from "../config/env.js";
 
-export function setAuthCookies(reply, accessToken, refreshToken) {
+export function setAuthCookies(
+  reply,
+  accessToken,
+  accessTokenCookieName,
+  refreshToken,
+  refreshTokenCookieName
+) {
   const accessTokenTimeToExpire = new Date(
     Date.now() + parseInt(env.accessTokenTimeToExpireInMs)
   );
@@ -8,14 +14,14 @@ export function setAuthCookies(reply, accessToken, refreshToken) {
     Date.now() + parseInt(env.refreshTokenTimeToExpireInMS)
   );
   return reply
-    .setCookie("accessToken", accessToken, {
+    .setCookie(accessTokenCookieName, accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
       path: "/",
       expires: accessTokenTimeToExpire
     })
-    .setCookie("refreshToken", refreshToken, {
+    .setCookie(refreshTokenCookieName, refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
