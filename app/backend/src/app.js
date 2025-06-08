@@ -104,11 +104,8 @@ await fastify.register(oAuth2, {
   },
   startRedirectPath: "/login/google",
   callbackUri: "http://localhost:4000/api/auth/google/callback",
-
-  generateStateFunction: (request) => {
-    const state = request.query.customCode;
-    request.session.state = state;
-    return state;
+  callbackUriParams: {
+    access_type: "offline"
   },
 
   cookie: {
