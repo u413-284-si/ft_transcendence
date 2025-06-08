@@ -111,13 +111,10 @@ await fastify.register(oAuth2, {
     return state;
   },
 
-  checkStateFunction: (request) => {
-    console.log("request.query.state: ", request.query.state);
-    console.log("request.session.state: ", request.session.state);
-    if (request.query.state !== request.session.state) {
-      throw new Error("Invalid state");
-    }
-    return true;
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    path: "/"
   }
 });
 
