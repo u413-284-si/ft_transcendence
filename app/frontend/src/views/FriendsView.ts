@@ -13,6 +13,11 @@ import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
 import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
+import { Button } from "../components/Button.js";
+import { Input } from "../components/Input.js";
+import { Form } from "../components/Form.js";
+import { Span } from "../components/Span.js";
+import { Header1 } from "../components/Header1.js";
 
 export default class FriendsView extends AbstractView {
   private friendRequests: FriendRequest[] = [];
@@ -50,44 +55,57 @@ export default class FriendsView extends AbstractView {
   createHTML(): string {
     return /* HTML */ `
       <section>
-        <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg" id="friend-list">
-          ${this.createFriendListHTML()}
+        <div class="flex flex-col justify-center items-center gap-4 mb-12">
+          ${Header1({
+            text: "Your Friends",
+            id: "friends-header",
+            variant: "default"
+          })}
+          <div id="friend-list">${this.createFriendListHTML()}</div>
         </div>
       </section>
 
       <section>
-        <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg">
-          <h1 class="text-2xl font-bold text-blue-900 mb-6">Add a Friend</h2>
-          <div>
-            <input
-              id="username-input"
-              type="text"
-              placeholder="Exact username"
-              class="w-full border border-gray-300 rounded px-3 py-3 text-blue-900 disabled:bg-gray-100 disabled:text-gray-500"
-            />
-            <span
-              id="username-error"
-              class="error-message text-red-600 text-sm mt-1 hidden"
-            ></span>
-          </div>
-          <div id="button-container">
-            <button
-              id="send-request-btn"
-              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Send request
-            </button>
-            <span
-              id="status-message"
-              class="transition-opacity duration-500 opacity-0 text-green-600 text-sm mt-1"
-            ></span>
-          </div>
-        </div>
+        ${Form({
+          children: [
+            Header1({
+              text: "Add a Friend",
+              id: "send-request-header",
+              variant: "default"
+            }),
+            Input({
+              id: "username-input",
+              type: "text",
+              placeholder: "Exact username",
+              label: "Username",
+              errorId: "username-error"
+            }),
+            Button({
+              id: "send-request-btn",
+              text: "Send Friend Request",
+              variant: "default",
+              size: "md",
+              type: "submit"
+            }),
+            Span({
+              id: "status-message",
+              className:
+                "transition-opacity duration-500 opacity-0 text-green-600 text-sm mt-1",
+              variant: "success"
+            })
+          ],
+          id: "send-request-form"
+        })}
       </section>
 
       <section>
-        <div class="max-w-2xl mx-auto mt-12 bg-white p-6 rounded-lg shadow-lg" id="request-list">
-          ${this.createRequestListHTML()}
+        <div class="flex flex-col justify-center items-center gap-4 mb-12">
+          ${Header1({
+            text: "Friend Requests",
+            id: "friends-request-header",
+            variant: "default"
+          })}
+          <div id="request-list">${this.createRequestListHTML()}</div>
         </div>
       </section>
     `;
@@ -98,7 +116,7 @@ export default class FriendsView extends AbstractView {
       (r) => r.status === "ACCEPTED"
     );
 
-    let html = `<h1 class="text-2xl font-bold text-blue-900 mb-6">Your Friends</h1>`;
+    let html = ``;
 
     if (acceptedRequests.length === 0) {
       html += /* HTML */ ` <p class="text-gray-500 italic">
@@ -150,7 +168,7 @@ export default class FriendsView extends AbstractView {
       (r) => r.sender && r.status === "PENDING"
     );
 
-    let html = `<h1 class="text-2xl font-bold text-blue-900 mb-6">Friend Requests</h1>`;
+    let html = ``;
 
     // 🔹 Incoming Section
     html += `<div>
@@ -230,9 +248,9 @@ export default class FriendsView extends AbstractView {
       }
     );
 
-    getEl("send-request-btn").addEventListener(
-      "click",
-      this.handleSendRequestButton,
+    getEl("send-request-form").addEventListener(
+      "submit",
+      (event) => this.handleSendRequestButton(event),
       {
         signal: this.controller.signal
       }
@@ -343,7 +361,8 @@ export default class FriendsView extends AbstractView {
     statusSpan.classList.toggle("text-gray-400", !isOnline);
   };
 
-  private handleSendRequestButton = async (): Promise<void> => {
+  private handleSendRequestButton = async (event: Event): Promise<void> => {
+    event.preventDefault();
     const inputEl = getInputEl("username-input");
     const errorEl = getEl("username-error");
 

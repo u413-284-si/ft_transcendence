@@ -14,7 +14,7 @@ export function Form({
   id = ""
 }: FormOptions): string {
   const classes = [
-    "flex flex-col gap-4", // default styling
+    "flex flex-col justify-center items-center gap-4", // default styling
     className ?? ""
   ].join(" ");
 

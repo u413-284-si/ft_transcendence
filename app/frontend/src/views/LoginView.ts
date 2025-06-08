@@ -41,8 +41,7 @@ export default class LoginView extends AbstractView {
             type: "submit"
           })
         ],
-        id: "login-form",
-        className: "flex flex-col justify-center items-center gap-4"
+        id: "login-form"
       })}
     `;
   }
