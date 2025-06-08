@@ -40,6 +40,12 @@ export async function updateUserRefreshToken(userId, hashedRefreshToken) {
   });
 }
 
+export async function deleteUserRefreshToken(userId) {
+  await prisma.authentication.delete({
+    where: { userId: userId }
+  });
+}
+
 export async function getPasswordHash(userId) {
   const authentication = await prisma.authentication.findUniqueOrThrow({
     where: {

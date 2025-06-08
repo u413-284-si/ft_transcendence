@@ -3,7 +3,8 @@ import {
   verifyRefreshToken,
   verifyHash,
   createAuthTokens,
-  getTokenHash
+  getTokenHash,
+  deleteUserRefreshToken
 } from "../services/auth.services.js";
 import { getTokenData } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -132,6 +133,7 @@ export async function logoutUserHandler(request, reply) {
       sameSite: "strict",
       path: "/api/auth/refresh"
     });
+    await deleteUserRefreshToken();
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true) });
