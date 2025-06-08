@@ -1,8 +1,8 @@
-import { apiFetch, authApiFetch } from "./api.js";
+import { apiFetch } from "./api.js";
 import { Token } from "../types/Token.js";
 
 export async function authAndDecodeAccessToken(): Promise<Token> {
-  const apiResponse = await authApiFetch<Token>("/api/auth/", {
+  const apiResponse = await apiFetch<Token>("/api/auth/", {
     method: "GET",
     credentials: "same-origin"
   });
@@ -12,10 +12,16 @@ export async function authAndDecodeAccessToken(): Promise<Token> {
 }
 
 export async function refreshAccessToken() {
-  await apiFetch("/api/auth/refresh", {
-    method: "GET",
-    credentials: "same-origin"
-  });
+  const apiResponse = await apiFetch(
+    "/api/auth/refresh",
+    {
+      method: "GET",
+      credentials: "same-origin"
+    },
+    false
+  );
+
+  console.log(apiResponse);
 }
 
 export async function userLogin(
@@ -30,4 +36,17 @@ export async function userLogin(
 
   console.log(apiResponse);
   return apiResponse.data;
+}
+
+export async function userLogout() {
+  const apiResponse = await apiFetch(
+    "/api/auth/logout/",
+    {
+      method: "POST",
+      credentials: "same-origin"
+    },
+    false
+  );
+
+  console.log(apiResponse);
 }
