@@ -14,7 +14,7 @@ export default async function authRoutes(fastify) {
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 
-  fastify.post("/logout/", optionsLogoutUser, logoutUserHandler);
+  fastify.patch("/logout/", optionsLogoutUser, logoutUserHandler);
 }
 
 const authRateLimit = {

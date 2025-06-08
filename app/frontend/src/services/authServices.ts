@@ -42,7 +42,7 @@ export async function userLogout() {
   const apiResponse = await apiFetch(
     "/api/auth/logout/",
     {
-      method: "POST",
+      method: "PATCH",
       credentials: "same-origin"
     },
     false
