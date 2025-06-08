@@ -78,6 +78,7 @@ export async function validateTournamentName(
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
 
   clearInvalid(inputEl, errorEl);
+
   if (isEmptyString(inputEl.value)) {
     markInvalid("Tournament name is required.", inputEl, errorEl);
     return false;
@@ -120,11 +121,12 @@ export function validatePlayersSelection(
   selectionEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
+  clearInvalid(selectionEl, errorEl);
+
   if (!playersSelected) {
     markInvalid("Please select number of players.", selectionEl, errorEl);
     return false;
   }
-  clearInvalid(selectionEl, errorEl);
   return true;
 }
 
@@ -134,6 +136,8 @@ export function validatePassword(
 ): boolean {
   const passwordRegex: RegExp =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$/;
+
+  clearInvalid(inputEl, errorEl);
 
   if (isEmptyString(inputEl.value)) {
     markInvalid("Please enter a password.", inputEl, errorEl);
@@ -150,7 +154,6 @@ export function validatePassword(
     );
     return false;
   }
-  clearInvalid(inputEl, errorEl);
   return true;
 }
 
@@ -204,6 +207,7 @@ export function validateEmail(
 ): boolean {
   const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+  clearInvalid(inputEl, errorEl);
   if (isEmptyString(inputEl.value)) {
     markInvalid("Please enter an email.", inputEl, errorEl);
     return false;
@@ -221,6 +225,7 @@ export function validateUsernameOrEmail(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
+  clearInvalid(inputEl, errorEl);
   if (isEmptyString(inputEl.value)) {
     markInvalid("Please enter a username or email address.", inputEl, errorEl);
     return false;
@@ -234,6 +239,24 @@ export function validateUsernameOrEmail(
     );
     return false;
   }
+  return true;
+}
+
+export function validateImageFile(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
   clearInvalid(inputEl, errorEl);
+
+  if (!inputEl || !inputEl.files || inputEl.files.length === 0) {
+    markInvalid("Please select a file to upload.", inputEl, errorEl);
+    return false;
+  }
+
+  const file = inputEl.files![0];
+  if (!file.type.startsWith("image/")) {
+    markInvalid("Please upload a valid image file.", inputEl, errorEl);
+    return false;
+  }
   return true;
 }

@@ -122,7 +122,7 @@ export async function deleteFriendRequestHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `deleteUserFriendHandler: ${createResponseMessage(action, false)}`
+      `DeleteFriendRequestHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

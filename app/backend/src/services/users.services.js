@@ -1,4 +1,8 @@
 import prisma from "../prisma/prismaClient.js";
+import fs from "fs";
+import path from "path";
+import env from "../config/env.js";
+import { fileTypeFromBuffer } from "file-type";
 
 const tokenSelect = {
   id: true,
@@ -9,6 +13,7 @@ const userSelect = {
   id: true,
   username: true,
   email: true,
+  avatar: true,
   dateJoined: true
 };
 
@@ -74,8 +79,49 @@ export async function getTokenData(identifier, identifierType) {
     },
     select: tokenSelect
   });
-
   return user;
+}
+
+export async function getUserAvatar(id) {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      id
+    },
+    select: {
+      avatar: true
+    }
+  });
+  return user.avatar;
+}
+
+export async function createUserAvatar(id, buffer) {
+  const fileType = await fileTypeFromBuffer(buffer);
+  if (!fileType) {
+    console.error("No image file type detected");
+    throw new Error();
+  }
+  const correctExt = `.${fileType.ext}`;
+  const newFileName = `user-${id}${correctExt}`;
+  const uploadDir = path.resolve(env.imagePath);
+
+  await fs.promises.mkdir(uploadDir, { recursive: true });
+  const filePath = path.join(uploadDir, newFileName);
+  await fs.promises.writeFile(filePath, buffer);
+  return newFileName;
+}
+
+export async function deleteUserAvatar(currentAvatarUrl) {
+  const uploadDir = path.resolve(env.imagePath);
+  const previousPath = path.join(uploadDir, path.basename(currentAvatarUrl));
+  try {
+    await fs.promises.unlink(previousPath);
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      console.error("Error deleting avatar file:", err);
+      throw err;
+    }
+    console.warn("Avatar file not found, nothing to delete.");
+  }
 }
 
 export async function getUserByUsername(username) {
