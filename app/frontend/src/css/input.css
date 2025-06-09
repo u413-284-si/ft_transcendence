@@ -1,19 +1,72 @@
 @import "tailwindcss";
 
-@layer utilities {
-  @keyframes show-results {
-    from {
-      opacity: 0;
-      transform: translateY(0.5rem);
+@theme {
+  --background-dark: #020305;
+  --color-dark-emerald: #032527;
+  --color-emerald: #0b363d --color-light-emerald: #184d51;
+  --color-dark-teal: #184d51;
+  --color-light-teal: #49a2b2;
+  --color-neon-purple: #9b59b6;
+  --color-neon-pink: #ff00ff;
+  --color-neon-cyan: #00ffff;
+  --color-neon-blue: #3498db;
+  --color-neon-green: #2ecc71;
+  --color-neon-yellow: #fac322;
+  --color-neon-orange: #fc741e;
+  --color-neon-bordeaux: #6d120f;
+  --color-brown: #492f1e;
+
+  --font-sans: "Bungee", "Helvetica", "Arial", "sans-serif";
+
+  --shadow-neon-cyan: 0 0 30px rgba(0, 255, 255, 0.7);
+  --shadow-neon-orange: 0 0 30px rgba(252, 116, 30, 0.7);
+  --shadow-neon-yellow: 0 0 30px rgba(250, 195, 34, 0.7);
+
+  --animate-neonOrange: neonOrange 2.5s infinite ease-in-out;
+  @keyframes neonOrange {
+    0% {
+      text-shadow:
+        0 0 5px rgba(252, 116, 30, 0.55),
+        0 0 10px rgba(252, 116, 30, 0.65),
+        0 0 15px rgba(252, 116, 30, 0.75),
+        0 0 20px rgba(252, 116, 30, 0.85);
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    50% {
+      text-shadow:
+        0 0 7px #6d120f,
+        0 0 14px #6d120f,
+        0 0 21px #6d120f;
+    }
+    100% {
+      text-shadow:
+        0 0 5px rgba(252, 116, 30, 0.55),
+        0 0 10px rgba(252, 116, 30, 0.65),
+        0 0 15px rgba(252, 116, 30, 0.75),
+        0 0 20px rgba(252, 116, 30, 0.85);
     }
   }
-
-  .animate-show-results {
-    animation: show-results 0.6s ease-out forwards;
+  --animate-neonGlow: neonGlow 1.5s infinite alternate;
+  @keyframes neonGlow {
+    0% {
+      text-shadow:
+        0 0 5px #ff00ff,
+        0 0 10px #ff00ff,
+        0 0 15px #ff00ff,
+        0 0 20px #ff00ff;
+    }
+    50% {
+      text-shadow:
+        0 0 10px #00ffff,
+        0 0 20px #00ffff,
+        0 0 30px #00ffff,
+        0 0 40px #00ffff;
+    }
+    100% {
+      text-shadow:
+        0 0 5px #ff00ff,
+        0 0 10px #ff00ff,
+        0 0 15px #ff00ff,
+        0 0 20px #ff00ff;
+    }
   }
 }
-

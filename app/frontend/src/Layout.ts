@@ -49,25 +49,40 @@ export class Layout {
         auth.getUser().avatar || "/images/default-avatar.png";
       return /* HTML */ ` <nav class="relative">
         <div class="container mx-auto flex justify-center space-x-8">
-          <a href="/home" class="text-xl hover:text-orange-400" data-link
+          <a
+            href="/home"
+            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            data-link
             >Home</a
           >
-          <a href="/newGame" class="text-xl hover:text-orange-400" data-link
+          <a
+            href="/newGame"
+            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            data-link
             >New Game</a
           >
           <a
             href="/newTournament"
-            class="text-xl hover:text-orange-400"
+            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
             data-link
             >New Tournament</a
           >
-          <a href="/stats" class="text-xl hover:text-orange-400" data-link
+          <a
+            href="/stats"
+            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            data-link
             >Stats</a
           >
-          <a href="/settings" class="text-xl hover:text-orange-400" data-link
+          <a
+            href="/settings"
+            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            data-link
             >Settings</a
           >
-          <a href="/friends" class="text-xl hover:text-orange-400" data-link
+          <a
+            href="/friends"
+            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            data-link
             >Friends</a
           >
         </div>

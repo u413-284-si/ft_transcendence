@@ -27,7 +27,7 @@ export function Button({
   type = "button"
 }: ButtonOptions): string {
   const classes = [
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+    "inline-flex items-center justify-center hover:shadow-neon-cyan transition-all duration-500 ease-in-out rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2",
     buttonVariants[variant],
     buttonSizes[size]
   ].join(" ");
