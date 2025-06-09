@@ -6,8 +6,7 @@ import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
 import { escapeHTML } from "../utility.js";
-import { Input } from "../components/Input.js";
-import { Radio } from "../components/Radio.js";
+import { NicknameInput } from "../components/NicknameInput.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
@@ -38,7 +37,7 @@ export default class PlayerNicknamesView extends AbstractView {
           Paragraph({
             text: `Select which player will be controlled by ${escapeHTML(auth.getToken().username)}`
           }),
-          this.createNicknameInput(),
+          NicknameInput(this.numberOfPlayers),
           Button({
             text: "Submit Nicknames",
             variant: "default",
@@ -51,33 +50,6 @@ export default class PlayerNicknamesView extends AbstractView {
     `;
   }
 
-  createNicknameInput(): string {
-    let nicknameInputs = "";
-    for (let i = 1; i <= this.numberOfPlayers; i++) {
-      const isChecked = i === 1 ? true : false;
-
-      nicknameInputs += /* HTML */ `
-        <div class="w-[800px] border border-gray-200 p-4 rounded shadow-sm">
-          ${Input({
-            id: `nickname${i}`,
-            label: `Player ${i} Nickname`,
-            name: `player-${i}`,
-            placeholder: "Enter your nickname",
-            type: "text",
-            errorId: `player-error-${i}`
-          })}
-          ${Radio({
-            id: `choice-${i}`,
-            name: "userChoice",
-            value: `${i}`,
-            label: `I will play as Player ${i}`,
-            checked: isChecked
-          })}
-        </div>
-      `;
-    }
-    return nicknameInputs;
-  }
   protected addListeners() {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartTournament(event)
