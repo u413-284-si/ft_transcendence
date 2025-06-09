@@ -3,7 +3,7 @@ export type InputOptions = {
   label: string;
   name?: string;
   placeholder?: string;
-  type?: "text" | "password" | "email" | "file";
+  type?: "text" | "email" | "file";
   accept?: string;
   errorId?: string;
 };
