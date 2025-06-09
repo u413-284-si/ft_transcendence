@@ -22,7 +22,7 @@ export class Layout {
 
   private styleRootElement(): void {
     this.rootEl.className =
-      "bg-blue-900 text-white min-h-screen min-w-screen flex flex-col font-mono";
+      "bg-black text-cyan-300 min-h-screen min-w-screen flex flex-col font-mono";
   }
 
   private renderShell(): void {
@@ -33,9 +33,13 @@ export class Layout {
 
   private getShellHTML(): string {
     return `
-      <header class="bg-blue-800 text-white py-8 shadow-lg">${this.getHeaderHTML()}</header>
+      <header class="bg-black text-cyan-300 py-8 shadow-lg border-b-1 border-cyan-500/25">
+        ${this.getHeaderHTML()}
+      </header>
       <main id="app-content" class="flex-grow px-4 py-8"></main>
-      <footer class="bg-blue-800 text-white py-4 shadow-lg">${this.getFooterHTML()}</footer>
+      <footer class="bg-black text-cyan-300 py-4 shadow-lg border-t-1 border-cyan-500/25">
+        ${this.getFooterHTML()}
+      </footer>
     `;
   }
 
@@ -45,20 +49,25 @@ export class Layout {
         auth.getUser().avatar || "/images/default-avatar.png";
       return /* HTML */ ` <nav class="relative">
         <div class="container mx-auto flex justify-center space-x-8">
-          <a href="/home" class="text-xl hover:text-blue-300" data-link>Home</a>
-          <a href="/newGame" class="text-xl hover:text-blue-300" data-link
+          <a href="/home" class="text-xl hover:text-orange-400" data-link
+            >Home</a
+          >
+          <a href="/newGame" class="text-xl hover:text-orange-400" data-link
             >New Game</a
           >
-          <a href="/newTournament" class="text-xl hover:text-blue-300" data-link
+          <a
+            href="/newTournament"
+            class="text-xl hover:text-orange-400"
+            data-link
             >New Tournament</a
           >
-          <a href="/stats" class="text-xl hover:text-blue-300" data-link
+          <a href="/stats" class="text-xl hover:text-orange-400" data-link
             >Stats</a
           >
-          <a href="/settings" class="text-xl hover:text-blue-300" data-link
+          <a href="/settings" class="text-xl hover:text-orange-400" data-link
             >Settings</a
           >
-          <a href="/friends" class="text-xl hover:text-blue-300" data-link
+          <a href="/friends" class="text-xl hover:text-orange-400" data-link
             >Friends</a
           >
         </div>
@@ -68,15 +77,17 @@ export class Layout {
           <img
             src="${userAvatarUrl}"
             alt="Avatar"
-            class="w-14 h-14 rounded-full border-2 border-white shadow"
+            class="w-14 h-14 rounded-full border-2 border-orange-500 shadow-lg"
           />
         </div>
       </nav>`;
     }
-    return /* HTML */ `<nav>
+    return /* HTML */ ` <nav>
       <div class="container mx-auto flex justify-center space-x-8">
-        <a href="/login" class="text-lg hover:text-blue-300" data-link>Login</a>
-        <a href="/register" class="text-lg hover:text-blue-300" data-link
+        <a href="/login" class="text-lg hover:text-orange-400" data-link
+          >Login</a
+        >
+        <a href="/register" class="text-lg hover:text-orange-400" data-link
           >Register</a
         >
       </div>
@@ -84,7 +95,7 @@ export class Layout {
   }
 
   private getFooterHTML(): string {
-    return /* HTML */ `<div
+    return /* HTML */ ` <div
       class="container mx-auto flex justify-center space-x-8"
     >
       <p class="text-sm">Pong Game &copy; 2025</p>
