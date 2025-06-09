@@ -12,7 +12,6 @@ import { getEl, getInputEl } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
-import { PasswordInput } from "../components/PasswordInput.js";
 import { Form } from "../components/Form.js";
 
 export default class Register extends AbstractView {
@@ -44,17 +43,23 @@ export default class Register extends AbstractView {
           type: "text",
           errorId: "username-error"
         }),
-        PasswordInput({
+        Input({
           id: "password",
           label: "Password",
           name: "password",
-          errorId: "password-error"
+          placeholder: "Password",
+          type: "password",
+          errorId: "password-error",
+          hasToggle: true
         }),
-        PasswordInput({
+        Input({
           id: "confirm",
           label: "Confirm Password",
           name: "confirm",
-          errorId: "confirm-error"
+          placeholder: "Confirm Password",
+          type: "password",
+          errorId: "confirm-error",
+          hasToggle: true
         }),
         Button({
           text: "Register",
