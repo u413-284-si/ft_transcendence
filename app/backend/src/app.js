@@ -8,6 +8,7 @@ import fastifyStatic from "@fastify/static";
 import fastifyCookie from "@fastify/cookie";
 import fastifyRateLimit from "@fastify/rate-limit";
 import jwt from "@fastify/jwt";
+import fastifyMultipart from "@fastify/multipart";
 import oAuth2 from "@fastify/oauth2";
 
 import env from "./config/env.js";
@@ -25,6 +26,7 @@ import { matchSchemas } from "./schema/matches.schema.js";
 import { tournamentSchemas } from "./schema/tournaments.schema.js";
 import { authSchemas } from "./schema/auth.schema.js";
 import { userStatsSchemas } from "./schema/user_stats.schema.js";
+import { friendRequestSchemas } from "./schema/friend_request.schema.js";
 
 const fastify = Fastify({
   logger: {
@@ -91,6 +93,11 @@ await fastify.register(jwt, {
     signed: false
   }
 });
+await fastify.register(fastifyMultipart, {
+  limits: {
+    fileSize: env.maxFileSizeInBytes
+  }
+});
 
 await fastify.register(oAuth2, {
   name: "googleOAuth2",
@@ -121,7 +128,8 @@ for (const schema of [
   ...matchSchemas,
   ...tournamentSchemas,
   ...authSchemas,
-  ...userStatsSchemas
+  ...userStatsSchemas,
+  ...friendRequestSchemas
 ]) {
   fastify.addSchema(schema);
 }

@@ -8,7 +8,7 @@ function validateAgainstRegex(str: string, regex: RegExp): boolean {
   return regex.test(str);
 }
 
-function markInvalid(
+export function markInvalid(
   message: string,
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
@@ -26,7 +26,10 @@ function markInvalid(
   errorEl.textContent = message;
 }
 
-function clearInvalid(inputEl: HTMLInputElement, errorEl: HTMLElement): void {
+export function clearInvalid(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): void {
   inputEl.classList.remove(
     "border-2",
     "border-red-600",
@@ -75,6 +78,7 @@ export async function validateTournamentName(
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
 
   clearInvalid(inputEl, errorEl);
+
   if (isEmptyString(inputEl.value)) {
     markInvalid("Tournament name is required.", inputEl, errorEl);
     return false;
@@ -117,11 +121,12 @@ export function validatePlayersSelection(
   selectionEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
+  clearInvalid(selectionEl, errorEl);
+
   if (!playersSelected) {
     markInvalid("Please select number of players.", selectionEl, errorEl);
     return false;
   }
-  clearInvalid(selectionEl, errorEl);
   return true;
 }
 
@@ -129,8 +134,10 @@ export function validatePassword(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{14,30}$/;
+  const passwordRegex: RegExp =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$/;
+
+  clearInvalid(inputEl, errorEl);
 
   if (isEmptyString(inputEl.value)) {
     markInvalid("Please enter a password.", inputEl, errorEl);
@@ -139,12 +146,75 @@ export function validatePassword(
 
   if (!validateAgainstRegex(inputEl.value, passwordRegex)) {
     markInvalid(
-      "Password must be 14-30 characters long and must contain at least one " +
+      "Password must be 10-64 characters long and must contain at least one " +
         "number, one uppercase and one lowercase letter and one of the " +
-        "following special characters inside brackets: [-!?_$.].",
+        "following special characters inside brackets: [@$!%*?&].",
       inputEl,
       errorEl
     );
+    return false;
+  }
+  return true;
+}
+
+export function validateConfirmPassword(
+  inputElOne: HTMLInputElement,
+  inputElTwo: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
+  if (isEmptyString(inputElTwo.value)) {
+    markInvalid("Please re-enter your password.", inputElTwo, errorEl);
+    return false;
+  }
+
+  if (inputElOne.value !== inputElTwo.value) {
+    markInvalid("Passwords do not match.", inputElTwo, errorEl);
+    return false;
+  }
+
+  clearInvalid(inputElTwo, errorEl);
+  return true;
+}
+
+export function validateUsername(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
+  const usernameRegex: RegExp = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
+
+  if (isEmptyString(inputEl.value)) {
+    markInvalid("Please enter a username.", inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(inputEl.value, usernameRegex)) {
+    markInvalid(
+      "Username must be 3-20 characters long " +
+        "and can only include letters, numbers, or one of the " +
+        "following special characters inside brackets: [@$!%*?&].",
+      inputEl,
+      errorEl
+    );
+    return false;
+  }
+  clearInvalid(inputEl, errorEl);
+  return true;
+}
+
+export function validateEmail(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
+  const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  clearInvalid(inputEl, errorEl);
+  if (isEmptyString(inputEl.value)) {
+    markInvalid("Please enter an email.", inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(inputEl.value, emailRegex)) {
+    markInvalid("Email must be a valid email address.", inputEl, errorEl);
     return false;
   }
   clearInvalid(inputEl, errorEl);
@@ -155,18 +225,13 @@ export function validateUsernameOrEmail(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
-  const usernameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
+  clearInvalid(inputEl, errorEl);
   if (isEmptyString(inputEl.value)) {
     markInvalid("Please enter a username or email address.", inputEl, errorEl);
     return false;
   }
 
-  if (
-    !validateAgainstRegex(inputEl.value, usernameRegex) &&
-    !validateAgainstRegex(inputEl.value, emailRegex)
-  ) {
+  if (!validateUsername(inputEl, errorEl) && !validateEmail(inputEl, errorEl)) {
     markInvalid(
       "Please enter a valid username (3-20 characters long) or email address",
       inputEl,
@@ -174,6 +239,24 @@ export function validateUsernameOrEmail(
     );
     return false;
   }
+  return true;
+}
+
+export function validateImageFile(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
   clearInvalid(inputEl, errorEl);
+
+  if (!inputEl || !inputEl.files || inputEl.files.length === 0) {
+    markInvalid("Please select a file to upload.", inputEl, errorEl);
+    return false;
+  }
+
+  const file = inputEl.files![0];
+  if (!file.type.startsWith("image/")) {
+    markInvalid("Please upload a valid image file.", inputEl, errorEl);
+    return false;
+  }
   return true;
 }

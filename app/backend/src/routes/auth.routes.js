@@ -2,6 +2,7 @@ import {
   authAndDecodeAccessHandler,
   authRefreshHandler,
   loginUserHandler,
+  logoutUserHandler,
   oAuth2LoginUserHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
@@ -14,6 +15,8 @@ export default async function authRoutes(fastify) {
   fastify.get("/", optionsAuthUserAccess, authAndDecodeAccessHandler);
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
+
+  fastify.patch("/logout/", optionsLogoutUser, logoutUserHandler);
 
   fastify.get(env.oAuth2CallbackUrl, oAuth2LoginUserHandler);
 }
@@ -51,4 +54,14 @@ const optionsAuthUserRefresh = {
     }
   },
   rateLimit: authRateLimit
+};
+
+const optionsLogoutUser = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
+      200: { $ref: "loginUserResponseSchema" },
+      ...errorResponses
+    }
+  }
 };

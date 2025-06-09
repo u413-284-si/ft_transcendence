@@ -3,7 +3,11 @@ import {
   getUser,
   getAllUsers,
   updateUser,
-  deleteUser
+  deleteUser,
+  getUserAvatar,
+  createUserAvatar,
+  deleteUserAvatar,
+  getUserByUsername
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import { getUserMatches } from "../services/matches.services.js";
@@ -14,16 +18,8 @@ import {
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import { createHash } from "../services/auth.services.js";
-import {
-  createFriendship,
-  deleteFriendship,
-  getUserFriends,
-  isFriends
-} from "../services/friends.services.js";
-import {
-  addOnlineStatusToArray,
-  isUserOnline
-} from "../services/online_status.services.js";
+import { getAllUserFriendRequests } from "../services/friends.services.js";
+import { fileTypeFromBuffer } from "file-type";
 
 export async function createUserHandler(request, reply) {
   const action = "Create User";
@@ -41,6 +37,14 @@ export async function createUserHandler(request, reply) {
       { err, body: request.body },
       `createUserHandler: ${createResponseMessage(action, false)}`
     );
+    if (err.code === "P2002") {
+      return httpError(
+        reply,
+        409,
+        createResponseMessage(action, false),
+        "Email or username already exists"
+      );
+    }
     return handlePrismaError(reply, action, err);
   }
 }
@@ -206,12 +210,11 @@ export async function getUserActiveTournamentHandler(request, reply) {
   }
 }
 
-export async function getUserFriendsHandler(request, reply) {
-  const action = "Get user friends";
+export async function getUserFriendRequestsHandler(request, reply) {
+  const action = "Get user friend requests";
   try {
     const userId = parseInt(request.user.id, 10);
-    const friends = await getUserFriends(userId);
-    const data = addOnlineStatusToArray(friends);
+    const data = await getAllUserFriendRequests(userId);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
@@ -227,65 +230,113 @@ export async function getUserFriendsHandler(request, reply) {
   }
 }
 
-export async function createUserFriendHandler(request, reply) {
-  const action = "Create user friend";
+export async function createUserAvatarHandler(request, reply) {
+  const action = "Create user avatar";
   try {
     const userId = parseInt(request.user.id, 10);
-    const friendId = request.body.id;
+    const parts = request.parts();
+    for await (const part of parts) {
+      if (part.fieldname === "avatar") {
+        const avatar = part;
+        if (!avatar || !avatar.file) {
+          return httpError(
+            reply,
+            400,
+            createResponseMessage(action, false),
+            "Avatar is required"
+          );
+        }
+        // Validate actual file type using file-type
+        const fileBuffer = await avatar.toBuffer();
+        await validateImageFile(fileBuffer);
 
-    if (userId === friendId) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Can't add yourself as a friend"
-      );
+        // Check if the user already has an avatar and delete it
+        const currentAvatarUrl = await getUserAvatar(userId);
+        if (currentAvatarUrl) {
+          await deleteUserAvatar(currentAvatarUrl);
+        }
+
+        // Create new avatar
+        const newFileName = await createUserAvatar(userId, fileBuffer);
+        const avatarUrl = `/images/${newFileName}`;
+        const updatedUser = await updateUser(userId, { avatar: avatarUrl });
+        return reply.code(201).send({
+          message: createResponseMessage(action, true),
+          data: updatedUser
+        });
+      }
     }
-
-    // Check friend exists
-    const friend = await getUser(friendId);
-
-    const alreadyFriend = await isFriends(userId, friendId);
-    if (alreadyFriend) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Already friends"
-      );
-    }
-
-    await createFriendship(userId, friendId);
-    const data = {
-      id: friend.id,
-      username: friend.username,
-      isOnline: isUserOnline(friend.id)
-    };
-    return reply
-      .code(201)
-      .send({ message: createResponseMessage(action, true), data: data });
+    // If no avatar field found
+    return httpError(
+      reply,
+      400,
+      createResponseMessage(action, false),
+      "Avatar file missing"
+    );
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `createUserFriendHandler: ${createResponseMessage(action, false)}`
+      `createUserAvatarHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
 }
 
-export async function deleteUserFriendHandler(request, reply) {
-  const action = "Delete user friend";
+async function validateImageFile(buffer) {
+  const allowedMimeTypes = ["image/png", "image/jpeg", "image/webp"];
+
+  const fileType = await fileTypeFromBuffer(buffer);
+  if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
+    console.error(
+      "Invalid image file type:",
+      fileType ? fileType.mime : "unknown"
+    );
+    throw new Error();
+  }
+}
+
+export async function deleteUserAvatarHandler(request, reply) {
+  const action = "Delete user avatar";
   try {
     const userId = parseInt(request.user.id, 10);
-    const friendId = parseInt(request.params.id, 10);
-    const count = await deleteFriendship(userId, friendId);
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), data: count });
+    const currentAvatarUrl = await getUserAvatar(userId);
+    if (!currentAvatarUrl) {
+      return httpError(
+        reply,
+        404,
+        createResponseMessage(action, false),
+        "No avatar found for user"
+      );
+    }
+    await deleteUserAvatar(currentAvatarUrl);
+
+    const updatedUser = await updateUser(userId, { avatar: null });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: updatedUser
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `deleteUserFriendHandler: ${createResponseMessage(action, false)}`
+      `deleteUserAvatarHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function searchUserHandler(request, reply) {
+  const action = "Search user";
+  try {
+    const { username } = request.query;
+    const data = await getUserByUsername(username);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

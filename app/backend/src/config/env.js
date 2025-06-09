@@ -14,14 +14,11 @@ const schema = {
     "JWT_ACCESS_TOKEN_SECRET",
     "JWT_REFRESH_TOKEN_SECRET",
     "ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS",
-    "REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS"
+    "REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS",
+    "MAX_FILE_SIZE_IN_BYTES",
+    "IMAGE_PATH"
   ],
   properties: {
-    NODE_ENV: {
-      type: "string",
-      default: "development",
-      enum: ["development", "production", "testing", "staging"]
-    },
     PORT: {
       type: "number",
       default: 4000
@@ -30,6 +27,11 @@ const schema = {
       type: "string",
       default: "info",
       enum: ["info", "warn", "error"]
+    },
+    NODE_ENV: {
+      type: "string",
+      default: "development",
+      enum: ["development", "production", "testing", "staging"]
     },
     DB_FILE: {
       type: "string",
@@ -50,6 +52,16 @@ const schema = {
     REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS: {
       type: "string",
       default: "86400000"
+    },
+    MAX_FILE_SIZE_IN_BYTES: {
+      type: "number",
+      default: 5242880, // 5 MB
+      description: "Maximum file size in bytes for uploads"
+    },
+    IMAGE_PATH: {
+      type: "string",
+      default: "app/frontend/public/images/",
+      description: "Path to store uploaded images"
     },
     OAUTH2_CLIENT_ID: {
       type: "string",
@@ -82,6 +94,8 @@ const envConfig = {
   jwtRefreshTokenSecret: config.JWT_REFRESH_TOKEN_SECRET,
   accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
   refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
+  maxFileSizeInBytes: config.MAX_FILE_SIZE_IN_BYTES,
+  imagePath: config.IMAGE_PATH,
   oAuth2ClientId: config.OAUTH2_CLIENT_ID,
   oAuth2ClientSecret: config.OAUTH2_CLIENT_SECRET,
   oAuth2CallbackUrl: config.OAUTH2_CALLBACK_URL
