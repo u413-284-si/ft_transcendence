@@ -3,7 +3,8 @@ export type InputOptions = {
   label: string;
   name?: string;
   placeholder?: string;
-  type?: "text" | "password" | "email";
+  type?: "text" | "password" | "email" | "file";
+  accept?: string;
   errorId?: string;
 };
 
@@ -13,13 +14,16 @@ export function Input({
   name = "",
   placeholder = "",
   type = "text",
+  accept = "",
   errorId = ""
 }: InputOptions): string {
+  const acceptAttr = accept ? ` accept="${accept}"` : "";
   const input = `
     <label class="text-sm font-medium text-white">${label}</label>
     <input
       id="${id}"
       type="${type}"
+      ${acceptAttr}
       name="${name}"
       placeholder="${placeholder}"
       class="w-full bg-gray-800 text-white border border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
