@@ -6,6 +6,12 @@ import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
 import { escapeHTML } from "../utility.js";
+import { Input } from "../components/Input.js";
+import { Radio } from "../components/Radio.js";
+import { Header1 } from "../components/Header1.js";
+import { Paragraph } from "../components/Paragraph.js";
+import { Button } from "../components/Button.js";
+import { Form } from "../components/Form.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -19,81 +25,59 @@ export default class PlayerNicknamesView extends AbstractView {
   }
 
   createHTML() {
-    let nicknameInputs = "";
-    for (let i = 1; i <= this.numberOfPlayers; i++) {
-      const isChecked = i === 1 ? "checked" : "";
-
-      nicknameInputs += /* HTML */ `
-        <div class="w-[800px] border border-gray-200 p-4 rounded shadow-sm">
-          <label class="block mb-2 font-medium"> Player ${i} Nickname: </label>
-          <input
-            type="text"
-            name="player${i}"
-            id="nickname${i}"
-            placeholder="Enter your nickname"
-            class="border border-gray-300 rounded px-2 py-1 w-full"
-          />
-          <div class="mt-2">
-            <label class="inline-flex items-center text-sm text-gray-600">
-              <input
-                type="radio"
-                name="userChoice"
-                value="${i}"
-                class="mr-2"
-                ${isChecked}
-              />
-              I will play as Player ${i}
-            </label>
-          </div>
-          <span
-            id="player-error${i}"
-            class="error-message text-red-600 text-sm mt-1 hidden"
-          ></span>
-        </div>
-      `;
-    }
-
     return /* HTML */ `
-      <h1
-        style="
-              margin-bottom: 20px;
-              font-size: 2em;
-              color: #007BFF;
-              text-align: center;"
-      >
-        Enter Player Nicknames
-      </h1>
-      <p style="margin-bottom: 20px; text-align: center;">
-        Tournament: <strong>${escapeHTML(this.tournamentName)}</strong>
-      </p>
-      <form
-        id="nicknames-form"
-        class="flex flex-col justify-center items-center gap-4"
-      >
-        <p class="text-sm text-gray-500 mb-2 text-center">
-          Select which player will be controlled by ${auth.getToken().username}.
-        </p>
-        ${nicknameInputs}
-        <div>
-          <button
-            type="submit"
-            style="
-              margin-top: 20px;
-              padding: 10px 20px;
-              font-size: 1em;
-              background-color: #007BFF;
-              color: white;
-              border: none;
-              border-radius: 5px;
-              cursor: pointer;"
-          >
-            Submit Nicknames
-          </button>
-        </div>
-      </form>
+      ${Form({
+        children: [
+          Header1({
+            text: "Enter Player Nicknames",
+            variant: "default"
+          }),
+          Paragraph({
+            text: `Tournament: <strong>${escapeHTML(this.tournamentName)}</strong>`
+          }),
+          Paragraph({
+            text: `Select which player will be controlled by ${escapeHTML(auth.getToken().username)}`
+          }),
+          this.createNicknameInput(),
+          Button({
+            text: "Submit Nicknames",
+            variant: "default",
+            size: "md",
+            type: "submit"
+          })
+        ],
+        id: "nicknames-form"
+      })}
     `;
   }
 
+  createNicknameInput(): string {
+    let nicknameInputs = "";
+    for (let i = 1; i <= this.numberOfPlayers; i++) {
+      const isChecked = i === 1 ? true : false;
+
+      nicknameInputs += /* HTML */ `
+        <div class="w-[800px] border border-gray-200 p-4 rounded shadow-sm">
+          ${Input({
+            id: `nickname${i}`,
+            label: `Player ${i} Nickname`,
+            name: `player-${i}`,
+            placeholder: "Enter your nickname",
+            type: "text",
+            errorId: `player-error-${i}`
+          })}
+          ${Radio({
+            id: `choice-${i}`,
+            name: "userChoice",
+            value: `${i}`,
+            label: `I will play as Player ${i}`,
+            checked: isChecked
+          })}
+        </div>
+      `;
+    }
+    return nicknameInputs;
+  }
   protected addListeners() {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartTournament(event)
@@ -115,12 +99,13 @@ export default class PlayerNicknamesView extends AbstractView {
       this.formEl.querySelectorAll("input[type='text']")
     );
     const errorElements: HTMLElement[] = Array.from(
-      this.formEl.querySelectorAll("span.error-message")
+      this.formEl.querySelectorAll('[id^="player-error-"]')
     );
     const nicknames = inputElements.map((input) => input.value);
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
-    const userNickname = formData.get(`player${userNumber}`) as string;
+    const userNickname = formData.get(`player-${userNumber}`) as string;
+    console.log(userNickname);
 
     try {
       const userId = auth.getToken().id;
