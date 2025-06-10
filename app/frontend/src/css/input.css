@@ -1,72 +1,74 @@
 @import "tailwindcss";
 
 @theme {
-  --background-dark: #020305;
-  --color-dark-emerald: #032527;
-  --color-emerald: #0b363d --color-light-emerald: #184d51;
-  --color-dark-teal: #184d51;
-  --color-light-teal: #49a2b2;
-  --color-neon-purple: #9b59b6;
-  --color-neon-pink: #ff00ff;
-  --color-neon-cyan: #00ffff;
-  --color-neon-blue: #3498db;
-  --color-neon-green: #2ecc71;
-  --color-neon-yellow: #fac322;
-  --color-neon-orange: #fc741e;
-  --color-neon-bordeaux: #6d120f;
-  --color-brown: #492f1e;
+  --background-dark: oklch(0.08 0.01 278.67);
+  --color-dark-emerald: oklch(0.17 0.06 205.26);
+  --color-emerald: oklch(0.23 0.06 209.43);
+  --color-light-emerald: oklch(0.32 0.07 209.43);
+  --color-dark-teal: oklch(0.32 0.07 209.43);
+  --color-light-teal: oklch(0.64 0.12 210.87);
+  --color-neon-purple: oklch(0.56 0.26 328.61);
+  --color-neon-pink: oklch(0.72 0.32 328.23);
+  --color-neon-cyan: oklch(0.91 0.22 197.09);
+  --color-neon-blue: oklch(0.63 0.21 256.58);
+  --color-neon-green: oklch(0.74 0.18 145.78);
+  --color-neon-yellow: oklch(0.83 0.21 99.45);
+  --color-neon-orange: oklch(0.67 0.26 60.49);
+  --color-neon-bordeaux: oklch(0.23 0.19 28.41);
+  --color-brown: oklch(0.31 0.09 51.77);
 
   --font-sans: "Bungee", "Helvetica", "Arial", "sans-serif";
 
-  --shadow-neon-cyan: 0 0 30px rgba(0, 255, 255, 0.7);
-  --shadow-neon-orange: 0 0 30px rgba(252, 116, 30, 0.7);
-  --shadow-neon-yellow: 0 0 30px rgba(250, 195, 34, 0.7);
+  --shadow-neon-cyan: 0 0 30px color-mix(in oklch, oklch(0.91 0.22 197.09) 70%, transparent);
+  --shadow-neon-orange: 0 0 30px color-mix(in oklch, oklch(0.67 0.26 60.49) 70%, transparent);
+  --shadow-neon-yellow: 0 0 30px color-mix(in oklch, oklch(0.83 0.21 99.45) 70%, transparent);
 
   --animate-neonOrange: neonOrange 2.5s infinite ease-in-out;
   @keyframes neonOrange {
     0% {
       text-shadow:
-        0 0 5px rgba(252, 116, 30, 0.55),
-        0 0 10px rgba(252, 116, 30, 0.65),
-        0 0 15px rgba(252, 116, 30, 0.75),
-        0 0 20px rgba(252, 116, 30, 0.85);
+        0 0 5px color-mix(in oklch, oklch(0.67 0.26 60.49) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(0.67 0.26 60.49) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(0.67 0.26 60.49) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(0.67 0.26 60.49) 85%, transparent);
     }
     50% {
       text-shadow:
-        0 0 7px #6d120f,
-        0 0 14px #6d120f,
-        0 0 21px #6d120f;
+        0 0 7px oklch(0.23 0.19 28.41),
+        0 0 14px oklch(0.23 0.19 28.41),
+        0 0 21px oklch(0.23 0.19 28.41);
     }
     100% {
       text-shadow:
-        0 0 5px rgba(252, 116, 30, 0.55),
-        0 0 10px rgba(252, 116, 30, 0.65),
-        0 0 15px rgba(252, 116, 30, 0.75),
-        0 0 20px rgba(252, 116, 30, 0.85);
+        0 0 5px color-mix(in oklch, oklch(0.67 0.26 60.49) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(0.67 0.26 60.49) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(0.67 0.26 60.49) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(0.67 0.26 60.49) 85%, transparent);
     }
   }
+
   --animate-neonGlow: neonGlow 1.5s infinite alternate;
   @keyframes neonGlow {
     0% {
       text-shadow:
-        0 0 5px #ff00ff,
-        0 0 10px #ff00ff,
-        0 0 15px #ff00ff,
-        0 0 20px #ff00ff;
+        0 0 5px oklch(0.72 0.32 328.23),
+        0 0 10px oklch(0.72 0.32 328.23),
+        0 0 15px oklch(0.72 0.32 328.23),
+        0 0 20px oklch(0.72 0.32 328.23);
     }
     50% {
       text-shadow:
-        0 0 10px #00ffff,
-        0 0 20px #00ffff,
-        0 0 30px #00ffff,
-        0 0 40px #00ffff;
+        0 0 10px oklch(0.91 0.22 197.09),
+        0 0 20px oklch(0.91 0.22 197.09),
+        0 0 30px oklch(0.91 0.22 197.09),
+        0 0 40px oklch(0.91 0.22 197.09);
     }
     100% {
       text-shadow:
-        0 0 5px #ff00ff,
-        0 0 10px #ff00ff,
-        0 0 15px #ff00ff,
-        0 0 20px #ff00ff;
+        0 0 5px oklch(0.72 0.32 328.23),
+        0 0 10px oklch(0.72 0.32 328.23),
+        0 0 15px oklch(0.72 0.32 328.23),
+        0 0 20px oklch(0.72 0.32 328.23);
     }
   }
 }
