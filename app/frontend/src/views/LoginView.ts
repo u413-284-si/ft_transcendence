@@ -4,7 +4,7 @@ import AbstractView from "./AbstractView.js";
 import { validateUsernameOrEmail } from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
-import { Input } from "../components/Input.js";
+import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 
@@ -31,8 +31,9 @@ export default class LoginView extends AbstractView {
             label: "Password:",
             name: "password",
             placeholder: "Password",
-            type: "text",
-            errorId: "password-error"
+            type: "password",
+            errorId: "password-error",
+            hasToggle: true
           }),
           Button({
             text: "Login",
@@ -50,6 +51,8 @@ export default class LoginView extends AbstractView {
     document
       .getElementById("login-form")
       ?.addEventListener("submit", (event) => this.validateAndLoginUser(event));
+
+    addTogglePasswordListener("password");
   }
 
   async render() {
