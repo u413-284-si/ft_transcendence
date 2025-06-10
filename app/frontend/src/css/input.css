@@ -15,6 +15,7 @@
   --color-neon-green: oklch(0.74 0.18 145.78);
   --color-neon-yellow: oklch(0.83 0.21 99.45);
   --color-neon-orange: oklch(0.67 0.26 60.49);
+  --color-neon-red: oklch(0.7 0.5 30);
   --color-neon-bordeaux: oklch(0.23 0.19 28.41);
   --color-brown: oklch(0.31 0.09 51.77);
 
@@ -23,7 +24,7 @@
   --shadow-neon-cyan: 0 0 30px color-mix(in oklch, oklch(0.91 0.22 197.09) 70%, transparent);
   --shadow-neon-orange: 0 0 30px color-mix(in oklch, oklch(0.67 0.26 60.49) 70%, transparent);
   --shadow-neon-yellow: 0 0 30px color-mix(in oklch, oklch(0.83 0.21 99.45) 70%, transparent);
-  --shadow-neon-bordeaux: 0 0 30px color-mix(in oklch, oklch(0.23 0.19 28.41) 70%, transparent);
+  --shadow-neon-red: 0 0 30px color-mix(in oklch, oklch(0.7 0.5 30) 70%, transparent);
 
   --animate-neonOrange: neonOrange 2.5s infinite ease-in-out;
   @keyframes neonOrange {

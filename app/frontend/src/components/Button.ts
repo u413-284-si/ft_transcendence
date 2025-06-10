@@ -12,7 +12,7 @@ const buttonVariants: Record<string, string> = {
   outline:
     "border border-green-400 text-green-400 hover:bg-green-400 hover:text-white hover:shadow-neon-green transition-all duration-500 ease-in-out",
   danger:
-    "bg-red-500 text-white hover:shadow-neon-bordeaux hover:bg-neon-bordeaux transition-all duration-500 ease-in-out"
+    "bg-red-500 text-white hover:shadow-neon-red hover:bg-neon-red transition-all duration-500 ease-in-out"
 };
 
 const buttonSizes: Record<string, string> = {
