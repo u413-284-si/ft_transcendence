@@ -10,7 +10,7 @@ import { router } from "../routing/Router.js";
 import { ApiError } from "../services/api.js";
 import { getEl, getInputEl } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
-import { Input } from "../components/Input.js";
+import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 
@@ -79,28 +79,8 @@ export default class Register extends AbstractView {
         this.validateAndRegisterUser(event)
       );
 
-    const passwordEl = getInputEl("password");
-    const showEyeEl = getEl("password-show-eye");
-    const hideEyeEl = getEl("password-hide-eye");
-
-    const confirmPasswordEl = getInputEl("confirm");
-    const confirmShowEyeEl = getEl("confirm-show-eye");
-    const confirmHideEyeEl = getEl("confirm-hide-eye");
-
-    document
-      .getElementById("password-toggle")
-      ?.addEventListener("click", () =>
-        this.togglePasswordVisibility(passwordEl, showEyeEl, hideEyeEl)
-      );
-    document
-      .getElementById("confirm-toggle")
-      ?.addEventListener("click", () =>
-        this.togglePasswordVisibility(
-          confirmPasswordEl,
-          confirmShowEyeEl,
-          confirmHideEyeEl
-        )
-      );
+    addTogglePasswordListener("password");
+    addTogglePasswordListener("confirm");
   }
 
   async render() {
@@ -110,22 +90,6 @@ export default class Register extends AbstractView {
 
   getName(): string {
     return "register";
-  }
-
-  private togglePasswordVisibility(
-    passwordEl: HTMLInputElement,
-    showEyeEl: HTMLElement,
-    hideEyeEl: HTMLElement
-  ): void {
-    if (passwordEl.type === "password") {
-      passwordEl.type = "text";
-      showEyeEl.classList.add("hidden");
-      hideEyeEl.classList.remove("hidden");
-    } else {
-      passwordEl.type = "password";
-      showEyeEl.classList.remove("hidden");
-      hideEyeEl.classList.add("hidden");
-    }
   }
 
   private async validateAndRegisterUser(event: Event): Promise<void> {
