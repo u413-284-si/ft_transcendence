@@ -238,8 +238,8 @@ export class Tournament {
 
   public renderBracketHTML(layout: BracketLayout): string {
     let html = `
-    <div class="w-full overflow-x-auto">
-      <div class="flex flex-col md:flex-row justify-start gap-4 flex-wrap text-gray-900">
+    <div class="w-full overflow-x-auto bg-black/90 p-4 rounded-lg">
+      <div class="flex flex-col md:flex-row justify-start gap-6 flex-wrap text-cyan-300">
   `;
 
     for (const { round, matches } of layout.rounds) {
@@ -247,31 +247,33 @@ export class Tournament {
 
       html += `
       <div class="flex-1 flex flex-col">
-        <h3 class="text-center font-bold text-base md:text-lg uppercase border-b pb-1 text-blue-600 border-gray-300 mb-4">
+        <h3 class="text-center font-extrabold tracking-widest text-cyan-300 border-b-2 border-cyan-300 pb-2 mb-6 uppercase text-base md:text-lg">
           Round ${round}
         </h3>
-        <div class="flex flex-col h-full justify-between space-y-2 ${roundSpacing}">
+        <div class="flex flex-col h-full justify-between space-y-4 ${roundSpacing}">
     `;
 
       for (const match of matches) {
+        // Background and border for card
         const cardBg = match.isPlayed
-          ? "bg-gray-300"
+          ? "bg-slate-800"
           : match.isNext
-            ? "bg-yellow-100"
-            : "bg-gray-100";
+            ? "bg-black ring-2 ring-cyan-300"
+            : "bg-slate-900";
 
-        const textColor = match.isPlayed ? "text-gray-500" : "text-gray-900";
-        const borderStyle = match.isNext
-          ? "border-2 border-yellow-400"
-          : "border";
+        const borderGlow = match.isNext
+          ? "shadow-[0_0_15px_rgba(34,211,238,0.6)]"
+          : "shadow-inner";
+
+        const textColor = match.isPlayed ? "text-cyan-500" : "text-cyan-300";
 
         html += `
-        <div class="${cardBg} ${textColor} p-4 rounded-md shadow ${borderStyle} text-xs md:text-sm">
-          <h4 class="font-bold text-center text-sm md:text-base mb-2">Match ${match.matchId}</h4>
-          <div class="flex justify-center items-center gap-2 text-sm md:text-base font-medium">
+        <div class="${cardBg} ${textColor} p-4 rounded-lg ${borderGlow} text-xs md:text-sm transition-all duration-300 ease-in-out">
+          <h4 class="font-bold text-center text-sm md:text-base mb-3 uppercase tracking-wide">Match ${match.matchId}</h4>
+          <div class="flex justify-center items-center gap-3 md:gap-4 text-sm md:text-base font-semibold">
 
             <!-- Player 1 -->
-            <div class="flex items-center gap-1 w-[150px]">
+            <div class="flex items-center gap-2 w-[150px]">
               ${match.winner === match.player1Text ? "🏆" : ""}
               <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis w-full" title="${match.player1Text}">
                 ${match.player1Text}
@@ -279,10 +281,10 @@ export class Tournament {
             </div>
 
             <!-- Separator -->
-            <span class="text-gray-400 font-normal">vs</span>
+            <span class="text-cyan-400 font-light">VS</span>
 
             <!-- Player 2 -->
-            <div class="flex items-center gap-1 w-[150px]">
+            <div class="flex items-center gap-2 w-[150px]">
               <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis w-full" title="${match.player2Text}">
                 ${match.player2Text}
               </span>
