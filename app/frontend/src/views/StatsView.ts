@@ -3,6 +3,12 @@ import { getUserStats } from "../services/userStatsServices.js";
 import { getUserMatches } from "../services/userServices.js";
 import { escapeHTML } from "../utility.js";
 import { auth } from "../AuthManager.js";
+import { Header1 } from "../components/Header1.js";
+import { Table } from "../components/Table.js";
+import { UserStatsRow } from "../components/UserStatsRow.js";
+import { UserStats } from "../types/IUserStats.js";
+import { MatchRow } from "../components/MatchRow.js";
+import { Match } from "../types/IMatch.js";
 
 export default class StatsView extends AbstractView {
   constructor() {
@@ -15,47 +21,45 @@ export default class StatsView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
-      <h1 class="text-4xl font-bold text-blue-300 mb-8">Player Statistics</h1>
-      <div class="overflow-x-auto">
-        <table
-          class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500"
-        >
-          <thead class="bg-blue-800">
-            <tr>
-              <th class="border border-blue-500 px-4 py-2">Username</th>
-              <th class="border border-blue-500 px-4 py-2">Total Matches</th>
-              <th class="border border-blue-500 px-4 py-2">Matches Won</th>
-              <th class="border border-blue-500 px-4 py-2">Matches Lost</th>
-              <th class="border border-blue-500 px-4 py-2">Win Rate</th>
-            </tr>
-          </thead>
-          <tbody class="bg-blue-700 divide-y divide-blue-500">
-            ${this.userStatsHTML}
-          </tbody>
-        </table>
-      </div>
-
-      <h1 class="text-4xl font-bold text-blue-300 mt-12 mb-8">Match History</h1>
-      <div class="overflow-x-auto">
-        <table
-          class="table-auto w-full border-collapse border border-blue-500 text-white divide-y divide-blue-500"
-        >
-          <thead class="bg-blue-800">
-            <tr>
-              <th class="border border-blue-500 px-4 py-2">Player1</th>
-              <th class="border border-blue-500 px-4 py-2">Player1 Score</th>
-              <th class="border border-blue-500 px-4 py-2">Player2</th>
-              <th class="border border-blue-500 px-4 py-2">Player2 Score</th>
-              <th class="border border-blue-500 px-4 py-2">Result</th>
-              <th class="border border-blue-500 px-4 py-2">Date</th>
-              <th class="border border-blue-500 px-4 py-2">Tournament</th~
-            </tr>
-          </thead>
-          <tbody class="bg-blue-700 divide-y divide-blue-500">
-            ${this.matchesHTML}
-          </tbody>
-        </table>
-      </div>
+      ${Header1({
+        text: "Player Statistics",
+        id: "player-statistics-header",
+        variant: "default"
+      })}
+      ${Table({
+        id: "user-stats-table",
+        headers: [
+          "Username",
+          "Total Matches",
+          "Matches Won",
+          "Matches Lost",
+          "Win Rate"
+        ],
+        rows: [this.userStatsHTML]
+      })}
+      ${Header1({
+        text: "Match History",
+        id: "match-history-header",
+        variant: "default"
+      })}
+      ${Table({
+        id: "match-history-table",
+        headers: [
+          "Player1",
+          "Player1 Score",
+          "Player2",
+          "Player2 Score",
+          "Result",
+          "Date",
+          "Tournament"
+        ],
+        rows: this.matchesHTML
+          ? this.matchesHTML
+              .split("</tr>")
+              .filter(Boolean)
+              .map((row) => row + "</tr>")
+          : []
+      })}
     `;
   }
 
@@ -67,79 +71,27 @@ export default class StatsView extends AbstractView {
 
   async getUserStatsHTML(): Promise<string> {
     const user: string = escapeHTML(auth.getToken().username);
-    const userStats = await getUserStats();
-    const formattedWinRate = userStats.winRate.toFixed(2) + "%";
+    const userStatsRaw = await getUserStats();
+    const userStats: UserStats = {
+      matchesPlayed: userStatsRaw.matchesPlayed,
+      matchesWon: userStatsRaw.matchesWon,
+      matchesLost: userStatsRaw.matchesLost,
+      winRate: userStatsRaw.winRate
+    };
 
-    return /* HTML */ `
-      <tr>
-        <td class="border border-blue-500 px-4 py-2">${user}</td>
-        <td class="border border-blue-500 px-4 py-2">
-          ${userStats.matchesPlayed}
-        </td>
-        <td class="border border-blue-500 px-4 py-2">
-          ${userStats.matchesWon}
-        </td>
-        <td class="border border-blue-500 px-4 py-2">
-          ${userStats.matchesLost}
-        </td>
-        <td class="border border-blue-500 px-4 py-2">${formattedWinRate}</td>
-      </tr>
-    `;
+    return UserStatsRow(user, userStats);
   }
 
   async getMatchesHTML(): Promise<string> {
-    const user: string = escapeHTML(auth.getToken().username);
-    const matches = await getUserMatches();
+    const user = escapeHTML(auth.getToken().username);
+    const matchesRaw = await getUserMatches();
 
-    if (matches.length === 0) {
-      return `<tr><td colspan="6" class="text-center text-blue-200 py-4">No matches played yet</td></tr>`;
+    if (matchesRaw.length === 0) {
+      return `<tr><td colspan="7" class="text-center text-blue-200 py-4">No matches played yet</td></tr>`;
     }
 
-    return matches
-      .map((match) => {
-        const isPlayerOne = match.playedAs === "PLAYERONE";
-
-        const result = isPlayerOne
-          ? match.player1Score > match.player2Score
-            ? "Won"
-            : "Lost"
-          : match.player2Score > match.player1Score
-            ? "Won"
-            : "Lost";
-
-        const player1Display = isPlayerOne
-          ? `${match.player1Nickname} (${user})`
-          : match.player1Nickname;
-        const player2Display = isPlayerOne
-          ? match.player2Nickname
-          : `${match.player2Nickname} (${user})`;
-        const tournamentDisplay = match.tournament?.name
-          ? `Name: ${match.tournament.name}`
-          : "N/A";
-        return /* HTML */ `
-          <tr>
-            <td class="border border-blue-500 px-4 py-2">
-              ${escapeHTML(player1Display)}
-            </td>
-            <td class="border border-blue-500 px-4 py-2">
-              ${match.player1Score}
-            </td>
-            <td class="border border-blue-500 px-4 py-2">
-              ${escapeHTML(player2Display)}
-            </td>
-            <td class="border border-blue-500 px-4 py-2">
-              ${match.player2Score}
-            </td>
-            <td class="border border-blue-500 px-4 py-2">${result}</td>
-            <td class="border border-blue-500 px-4 py-2">
-              ${new Date(match.date!).toLocaleString()}
-            </td>
-            <td class="border border-blue-500 px-4 py-2">
-              ${tournamentDisplay}
-            </td>
-          </tr>
-        `;
-      })
+    return matchesRaw
+      .map((matchRaw: Match) => MatchRow(matchRaw, user))
       .join("");
   }
 
