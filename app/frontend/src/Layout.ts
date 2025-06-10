@@ -22,7 +22,7 @@ export class Layout {
 
   private styleRootElement(): void {
     this.rootEl.className =
-      "bg-black text-cyan-300 min-h-screen min-w-screen flex flex-col font-cyber tracking-widest uppercase";
+      "bg-tron-grid text-cyan-300 min-h-screen min-w-screen flex flex-col font-cyber tracking-widest uppercase";
   }
 
   private renderShell(): void {
