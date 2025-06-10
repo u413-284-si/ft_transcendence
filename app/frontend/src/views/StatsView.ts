@@ -21,45 +21,50 @@ export default class StatsView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
-      ${Header1({
-        text: "Player Statistics",
-        id: "player-statistics-header",
-        variant: "default"
-      })}
-      ${Table({
-        id: "user-stats-table",
-        headers: [
-          "Username",
-          "Total Matches",
-          "Matches Won",
-          "Matches Lost",
-          "Win Rate"
-        ],
-        rows: [this.userStatsHTML]
-      })}
-      ${Header1({
-        text: "Match History",
-        id: "match-history-header",
-        variant: "default"
-      })}
-      ${Table({
-        id: "match-history-table",
-        headers: [
-          "Player1",
-          "Player1 Score",
-          "Player2",
-          "Player2 Score",
-          "Result",
-          "Date",
-          "Tournament"
-        ],
-        rows: this.matchesHTML
-          ? this.matchesHTML
-              .split("</tr>")
-              .filter(Boolean)
-              .map((row) => row + "</tr>")
-          : []
-      })}
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+        ${Header1({
+          text: "Player Statistics",
+          id: "player-statistics-header",
+          variant: "default"
+        })}
+        ${Table({
+          id: "user-stats-table",
+          headers: [
+            "Username",
+            "Total Matches",
+            "Matches Won",
+            "Matches Lost",
+            "Win Rate"
+          ],
+          rows: [this.userStatsHTML]
+        })}
+      </div>
+
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+        ${Header1({
+          text: "Match History",
+          id: "match-history-header",
+          variant: "default"
+        })}
+        ${Table({
+          id: "match-history-table",
+          headers: [
+            "Player1",
+            "Player1 Score",
+            "Player2",
+            "Player2 Score",
+            "Result",
+            "Date",
+            "Tournament"
+          ],
+          rows: this.matchesHTML
+            ? this.matchesHTML
+                .split("</tr>")
+                .filter(Boolean)
+                .map((row) => row + "</tr>")
+            : []
+        })}
+      </div>
     `;
   }
 

@@ -26,19 +26,23 @@ export function MatchRow(match: Match, user: string): string {
 
   return /* HTML */ `
     <tr>
-      <td class="border border-blue-500 px-4 py-2">
+      <td class="border border-dark-emerald px-4 py-2">
         ${escapeHTML(player1Display)}
       </td>
-      <td class="border border-blue-500 px-4 py-2">${match.player1Score}</td>
-      <td class="border border-blue-500 px-4 py-2">
+      <td class="border border-dark-emerald px-4 py-2">
+        ${match.player1Score}
+      </td>
+      <td class="border border-dark-emerald px-4 py-2">
         ${escapeHTML(player2Display)}
       </td>
-      <td class="border border-blue-500 px-4 py-2">${match.player2Score}</td>
-      <td class="border border-blue-500 px-4 py-2">${result}</td>
-      <td class="border border-blue-500 px-4 py-2">
+      <td class="border border-dark-emerald px-4 py-2">
+        ${match.player2Score}
+      </td>
+      <td class="border border-dark-emerald px-4 py-2">${result}</td>
+      <td class="border border-dark-emerald px-4 py-2">
         ${new Date(match.date!).toLocaleString()}
       </td>
-      <td class="border border-blue-500 px-4 py-2">${tournamentDisplay}</td>
+      <td class="border border-dark-emerald px-4 py-2">${tournamentDisplay}</td>
     </tr>
   `;
 }
