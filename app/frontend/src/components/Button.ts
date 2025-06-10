@@ -7,10 +7,12 @@ export type ButtonOptions = {
 };
 
 const buttonVariants: Record<string, string> = {
-  default: "bg-green-400 text-white hover:bg-green-500",
+  default:
+    "bg-green-400 text-white hover:shadow-neon-cyan hover:bg-neon-cyan transition-all duration-500 ease-in-out",
   outline:
-    "border border-green-400 text-green-400 hover:bg-green-400 hover:text-white",
-  danger: "bg-red-500 text-white hover:bg-red-600"
+    "border border-green-400 text-green-400 hover:bg-green-400 hover:text-white hover:shadow-neon-green transition-all duration-500 ease-in-out",
+  danger:
+    "bg-red-500 text-white hover:shadow-neon-bordeaux hover:bg-neon-bordeaux transition-all duration-500 ease-in-out"
 };
 
 const buttonSizes: Record<string, string> = {
@@ -27,7 +29,7 @@ export function Button({
   type = "button"
 }: ButtonOptions): string {
   const classes = [
-    "inline-flex items-center justify-center hover:shadow-neon-cyan transition-all duration-500 ease-in-out rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2",
+    "inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus:ring-2 focus:ring-offset-2",
     buttonVariants[variant],
     buttonSizes[size]
   ].join(" ");
