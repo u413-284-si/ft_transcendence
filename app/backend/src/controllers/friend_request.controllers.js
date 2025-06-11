@@ -1,3 +1,4 @@
+import { notifyFriendRequestEvent } from "../services/events/sse.services.js";
 import {
   createFriendRequest,
   deleteFriendRequest,
@@ -50,12 +51,15 @@ export async function createFriendRequestHandler(request, reply) {
         userId,
         "ACCEPTED"
       );
+      notifyFriendRequestEvent(data.friendId, data.id, "ACCEPTED");
       return reply
         .code(200)
         .send({ message: createResponseMessage(action, true), data: data });
     }
 
     const data = await createFriendRequest(userId, friendId);
+
+    notifyFriendRequestEvent(friendId, data.id, "PENDING");
 
     return reply
       .code(201)
@@ -98,6 +102,8 @@ export async function updateFriendRequestHandler(request, reply) {
 
     const data = await updateFriendRequest(requestId, userId, status);
 
+    notifyFriendRequestEvent(data.friendId, data.id, status);
+
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -116,6 +122,7 @@ export async function deleteFriendRequestHandler(request, reply) {
     const userId = parseInt(request.user.id, 10);
     const requestId = parseInt(request.params.id, 10);
     const data = await deleteFriendRequest(requestId, userId);
+    notifyFriendRequestEvent(data.friendId, data.id, "DELETED");
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
