@@ -16,7 +16,7 @@ import {
   deleteUserAvatarHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
-import { sseOnlineHandler } from "../controllers/online_status.controllers.js";
+import { sseConnectionHandler } from "../controllers/sse.controllers.js";
 import {
   createFriendRequestHandler,
   deleteFriendRequestHandler,
@@ -80,7 +80,7 @@ export default async function userRoutes(fastify) {
     deleteFriendRequestHandler
   );
 
-  fastify.get("/online/", optionsSseOnline, sseOnlineHandler);
+  fastify.get("/online/", optionsSseOnline, sseConnectionHandler);
 
   fastify.get("/search/", optionsSearchUser, searchUserHandler);
 }
