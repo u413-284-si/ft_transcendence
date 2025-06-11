@@ -18,6 +18,7 @@ import { Input } from "../components/Input.js";
 import { Form } from "../components/Form.js";
 import { Span } from "../components/Span.js";
 import { Header1 } from "../components/Header1.js";
+import { FriendListItem } from "../components/FriendListItem.js";
 
 export default class FriendsView extends AbstractView {
   private friendRequests: FriendRequest[] = [];
@@ -128,32 +129,7 @@ export default class FriendsView extends AbstractView {
     html += `<ul class="space-y-4">`;
 
     for (const request of acceptedRequests) {
-      const onlineStatusClass = request.isOnline
-        ? "text-green-500"
-        : "text-gray-400";
-      const onlineStatusText = request.isOnline ? "Online" : "Offline";
-
-      html += /* HTML */ `
-        <li
-          class="bg-blue-800 p-4 rounded shadow-md flex justify-between items-center"
-          data-request-id="${request.id}"
-          data-friend-id="${request.friendId}"
-        >
-          <span class="flex-1 truncate"
-            >${escapeHTML(request.friendUsername)}</span
-          >
-          <div class="flex items-center space-x-4">
-            <span class="online-status font-semibold ${onlineStatusClass}"
-              >${onlineStatusText}</span
-            >
-            <button
-              class="remove-friend-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-            >
-              Remove
-            </button>
-          </div>
-        </li>
-      `;
+      html += FriendListItem(request);
     }
 
     html += `</ul>`;
