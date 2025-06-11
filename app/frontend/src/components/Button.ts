@@ -4,6 +4,7 @@ export type ButtonOptions = {
   variant?: "default" | "outline" | "danger";
   size?: "sm" | "md" | "lg";
   type?: "button" | "submit";
+  className?: string;
 };
 
 const buttonVariants: Record<string, string> = {
@@ -26,12 +27,14 @@ export function Button({
   text,
   variant = "default",
   size = "md",
-  type = "button"
+  type = "button",
+  className = ""
 }: ButtonOptions): string {
   const classes = [
     "inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus:ring-2 focus:ring-offset-2",
     buttonVariants[variant],
-    buttonSizes[size]
+    buttonSizes[size],
+    className
   ].join(" ");
   const idAttr = id ? ` id="${id}"` : "";
   return `<button${idAttr} type="${type}" class="${classes}">${text}</button>`;
