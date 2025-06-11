@@ -10,7 +10,7 @@ import {
 import { getUserByUsername } from "../services/userServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
 import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
-import { escapeHTML, getEl, getInputEl } from "../utility.js";
+import { getEl, getInputEl } from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
 import { Button } from "../components/Button.js";
@@ -129,7 +129,7 @@ export default class FriendsView extends AbstractView {
     html += `<ul class="space-y-4">`;
 
     for (const request of acceptedRequests) {
-      html += FriendListItem(request);
+      html += FriendListItem(request, "friend");
     }
 
     html += `</ul>`;
@@ -155,26 +155,7 @@ export default class FriendsView extends AbstractView {
     } else {
       html += `<ul class="space-y-2">`;
       for (const request of incoming) {
-        html += /* HTML */ `
-          <li
-            class="flex justify-between items-center border bg-blue-800 p-4 rounded shadow-md"
-            data-request-id="${request.id}"
-          >
-            <span class="truncate">${escapeHTML(request.friendUsername)}</span>
-            <div class="space-x-2">
-              <button
-                class="accept-btn bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-              >
-                Accept
-              </button>
-              <button
-                class="decline-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-              >
-                Decline
-              </button>
-            </div>
-          </li>
-        `;
+        html += FriendListItem(request, "incoming");
       }
       html += `</ul>`;
     }
@@ -190,22 +171,7 @@ export default class FriendsView extends AbstractView {
     } else {
       html += `<ul class="space-y-2">`;
       for (const request of outgoing) {
-        html += /* HTML */ `
-          <li
-            class="flex justify-between items-center border bg-blue-800 p-4 rounded shadow-md"
-            data-request-id="${request.id}"
-          >
-            <span class="truncate">${escapeHTML(request.friendUsername)}</span>
-            <div class="space-x-2">
-              <span class="text-gray-500 italic">Pending...</span>
-              <button
-                class="delete-request-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        `;
+        html += FriendListItem(request, "outgoing");
       }
       html += `</ul>`;
     }
