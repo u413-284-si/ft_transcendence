@@ -47,9 +47,14 @@ export default class FriendsView extends AbstractView {
   }
 
   private refreshRequestList(): void {
-    const html = this.createRequestListHTML();
-    const cleanHTML = sanitizeHTML(html);
-    getEl("request-list").innerHTML = cleanHTML;
+    const incoming = this.createRequestListHTML("incoming");
+    const cleanIncoming = sanitizeHTML(incoming);
+    getEl("request-list-in").innerHTML = cleanIncoming;
+
+    const outgoing = this.createRequestListHTML("outgoing");
+    const cleanOutgoing = sanitizeHTML(outgoing);
+    getEl("request-list-out").innerHTML = cleanOutgoing;
+
     this.addRequestListListeners();
   }
 
@@ -100,13 +105,28 @@ export default class FriendsView extends AbstractView {
       </section>
 
       <section>
-        <div class="flex flex-col justify-center items-center gap-4 mb-12">
+        <div class="flex flex-col justify-center items-center gap-4">
           ${Header1({
             text: "Friend Requests",
             id: "friends-request-header",
             variant: "default"
           })}
-          <div id="request-list">${this.createRequestListHTML()}</div>
+          <div class="mb-4">
+            <h2 class="text-xl font-bold text-blue-900 mb-2">
+              Incoming Friend Requests
+            </h2>
+            <div id="request-list-in">
+              ${this.createRequestListHTML("incoming")}
+            </div>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-blue-900 mb-2">
+              Outgoing Friend Requests
+            </h2>
+            <div id="request-list-out">
+              ${this.createRequestListHTML("outgoing")}
+            </div>
+          </div>
         </div>
       </section>
     `;
@@ -136,49 +156,21 @@ export default class FriendsView extends AbstractView {
     return html;
   }
 
-  private createRequestListHTML(): string {
-    const incoming = this.friendRequests.filter(
-      (r) => !r.sender && r.status === "PENDING"
-    );
-    const outgoing = this.friendRequests.filter(
-      (r) => r.sender && r.status === "PENDING"
+  private createRequestListHTML(type: "incoming" | "outgoing"): string {
+    const requests = this.friendRequests.filter(
+      (r) =>
+        (type === "incoming" ? !r.sender : r.sender) && r.status === "PENDING"
     );
 
-    let html = ``;
-
-    // 🔹 Incoming Section
-    html += `<div>
-      <h2 class="text-xl font-bold text-blue-900 mb-2">Incoming Friend Requests</h2>`;
-
-    if (incoming.length === 0) {
-      html += `<p class="text-gray-500 italic">No incoming requests</p>`;
-    } else {
-      html += `<ul class="space-y-2">`;
-      for (const request of incoming) {
-        html += FriendListItem(request, "incoming");
-      }
-      html += `</ul>`;
+    if (requests.length === 0) {
+      return `<p class="text-gray-500 italic">No ${type} requests</p>`;
     }
 
-    html += `</div>`;
-
-    // 🔹 Outgoing Section
-    html += `<div class="mt-8">
-      <h2 class="text-xl font-bold text-blue-900 mb-2">Outgoing Friend Requests</h2>`;
-
-    if (outgoing.length === 0) {
-      html += `<p class="text-gray-500 italic">No outgoing requests</p>`;
-    } else {
-      html += `<ul class="space-y-2">`;
-      for (const request of outgoing) {
-        html += FriendListItem(request, "outgoing");
-      }
-      html += `</ul>`;
-    }
-
-    html += `</div>`;
-
-    return html;
+    return `
+    <ul class="space-y-4">
+      ${requests.map((r) => FriendListItem(r, type)).join("")}
+    </ul>
+  `;
   }
 
   protected addListeners(): void {
