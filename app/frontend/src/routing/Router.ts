@@ -7,7 +7,7 @@ import {
 } from "../types/Route.js";
 import ErrorView from "../views/ErrorView.js";
 import { Layout } from "../Layout.js";
-import { stopOnlineStatusTracking } from "../services/onlineStatusServices.js";
+import { stopOnlineStatusTracking } from "../services/serverSentEventsServices.js";
 
 export class Router {
   private static instance: Router;

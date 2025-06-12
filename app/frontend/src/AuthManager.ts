@@ -8,7 +8,7 @@ import {
 import {
   startOnlineStatusTracking,
   stopOnlineStatusTracking
-} from "./services/onlineStatusServices.js";
+} from "./services/serverSentEventsServices.js";
 import { getUserProfile } from "./services/userServices.js";
 import { Token } from "./types/Token.js";
 import { User } from "./types/User.js";
