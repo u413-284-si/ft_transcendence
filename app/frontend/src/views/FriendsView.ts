@@ -226,7 +226,7 @@ export default class FriendsView extends AbstractView {
 
   protected addListeners(): void {
     window.addEventListener(
-      "friendStatusChange",
+      "app:FriendStatusChangeEvent",
       this.handleFriendStatusChange,
       {
         signal: this.controller.signal
