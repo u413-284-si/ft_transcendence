@@ -23,9 +23,9 @@ export function startOnlineStatusTracking() {
     (event: MessageEvent) => {
       console.log("📨 SSE message:", event.data);
       try {
-        const { userId, status } = JSON.parse(event.data);
+        const { requestId, status } = JSON.parse(event.data);
         const detail: FriendStatusChangeEvent["detail"] = {
-          userId,
+          requestId,
           isOnline: status === "online"
         };
         window.dispatchEvent(

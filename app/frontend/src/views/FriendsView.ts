@@ -122,7 +122,7 @@ export default class FriendsView extends AbstractView {
         <li
           class="bg-blue-800 p-4 rounded shadow-md flex justify-between items-center"
           data-request-id="${request.id}"
-          data-friend-id="${request.friendId}"
+          data-request-id="${request.friendId}"
         >
           <span class="flex-1 truncate"
             >${escapeHTML(request.friendUsername)}</span
@@ -339,9 +339,9 @@ export default class FriendsView extends AbstractView {
 
   private handleFriendStatusChange = (event: Event) => {
     const customEvent = event as FriendStatusChangeEvent;
-    const { userId, isOnline } = customEvent.detail;
+    const { requestId, isOnline } = customEvent.detail;
     const container = document.querySelector<HTMLElement>(
-      `li[data-friend-id="${userId}"]`
+      `li[data-request-id="${requestId}"]`
     );
     if (!container) {
       console.warn("Tried to update status, but container not found");

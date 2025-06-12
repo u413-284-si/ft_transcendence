@@ -8,22 +8,17 @@ export async function getUserFriends(userId) {
       OR: [{ senderId: userId }, { receiverId: userId }]
     },
     select: {
+      id: true,
       senderId: true,
-      receiverId: true,
-      sender: {
-        select: { id: true, username: true }
-      },
-      receiver: {
-        select: { id: true, username: true }
-      }
+      receiverId: true
     }
   });
   const friends = acceptedRequests.map((req) => {
     const isSender = req.senderId === userId;
-    const friend = isSender ? req.receiver : req.sender;
+    const friendId = isSender ? req.receiverId : req.senderId;
     return {
-      id: friend.id,
-      username: friend.username
+      id: friendId,
+      requestId: req.id
     };
   });
 

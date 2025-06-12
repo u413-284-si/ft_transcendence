@@ -36,7 +36,7 @@ async function notifyFriends(userId, status) {
 
   for (const friend of friends) {
     emitToUser(friend.id, "FriendStatusChangeEvent", {
-      userId: userId,
+      requestId: friend.requestId,
       status: status
     });
   }
