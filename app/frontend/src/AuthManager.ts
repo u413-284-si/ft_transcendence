@@ -6,7 +6,7 @@ import {
   userLogout
 } from "./services/authServices.js";
 import {
-  startOnlineStatusTracking,
+  openSSEConnection,
   stopOnlineStatusTracking
 } from "./services/serverSentEventsServices.js";
 import { getUserProfile } from "./services/userServices.js";
@@ -42,7 +42,7 @@ export class AuthManager {
       this.authenticated = true;
       this.scheduleTokenValidation(token);
       this.registerActivityListeners();
-      startOnlineStatusTracking();
+      openSSEConnection();
     } else {
       this.authenticated = false;
       this.clearRefreshTimer();

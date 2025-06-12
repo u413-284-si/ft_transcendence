@@ -5,7 +5,7 @@ import {
 
 let eventSource: EventSource | null = null;
 
-export function startOnlineStatusTracking() {
+export function openSSEConnection() {
   if (eventSource) {
     eventSource.close();
   }
@@ -15,7 +15,7 @@ export function startOnlineStatusTracking() {
   });
 
   eventSource.onopen = () => {
-    console.log("🟢 Connected to online status SSE");
+    console.log("🟢 Connected to SSE");
   };
 
   eventSource.addEventListener(
@@ -63,6 +63,6 @@ export function stopOnlineStatusTracking() {
   if (eventSource) {
     eventSource.close();
     eventSource = null;
-    console.log("🛑 Disconnected from online status SSE");
+    console.log("🛑 Disconnected from SSE");
   }
 }
