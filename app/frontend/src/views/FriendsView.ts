@@ -9,7 +9,10 @@ import {
 } from "../services/friendsServices.js";
 import { getUserByUsername } from "../services/userServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
-import { FriendStatusChangeEvent } from "../types/ServerSentEvents.js";
+import {
+  FriendRequestEvent,
+  FriendStatusChangeEvent
+} from "../types/ServerSentEvents.js";
 import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
@@ -230,6 +233,14 @@ export default class FriendsView extends AbstractView {
       }
     );
 
+    window.addEventListener(
+      "app:FriendRequestEvent",
+      this.handleFriendRequestEvent,
+      {
+        signal: this.controller.signal
+      }
+    );
+
     getEl("send-request-btn").addEventListener(
       "click",
       this.handleSendRequestButton,
@@ -417,4 +428,12 @@ export default class FriendsView extends AbstractView {
       messageElement.classList.add("opacity-0");
     }, 1000);
   }
+
+  private handleFriendRequestEvent = (event: Event) => {
+    const customEvent = event as FriendRequestEvent;
+    const { requestId, status } = customEvent.detail;
+    console.log(
+      `New friend request event: id: ${requestId}, status: ${status}`
+    );
+  };
 }

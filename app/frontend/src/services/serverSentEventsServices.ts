@@ -1,4 +1,7 @@
-import { FriendStatusChangeEvent } from "../types/ServerSentEvents";
+import {
+  FriendRequestEvent,
+  FriendStatusChangeEvent
+} from "../types/ServerSentEvents";
 
 let eventSource: EventSource | null = null;
 
@@ -24,6 +27,22 @@ export function startOnlineStatusTracking() {
         isOnline: status === "online"
       };
       window.dispatchEvent(new CustomEvent("friendStatusChange", { detail }));
+    } catch (e) {
+      console.error("Failed to parse SSE message", e);
+    }
+  });
+
+  eventSource.addEventListener("friendRequestEvent", (event: MessageEvent) => {
+    console.log("📨 SSE message:", event.data);
+    try {
+      const { requestId, status } = JSON.parse(event.data);
+      const detail: FriendRequestEvent["detail"] = {
+        requestId,
+        status
+      };
+      window.dispatchEvent(
+        new CustomEvent("app:FriendRequestEvent", { detail })
+      );
     } catch (e) {
       console.error("Failed to parse SSE message", e);
     }

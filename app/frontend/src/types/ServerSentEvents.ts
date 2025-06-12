@@ -4,6 +4,6 @@ export type FriendStatusChangeEvent = CustomEvent<{
 }>;
 
 export type FriendRequestEvent = CustomEvent<{
-  id: number;
+  requestId: number;
   status: "PENDING" | "ACCEPTED" | "DELETED";
 }>;
