@@ -40,7 +40,7 @@ export default class FriendsView extends AbstractView {
   }
 
   private refreshFriendList(): void {
-    const html = this.createFriendListHTML();
+    const html = this.createRequestListHTML("friend");
     const cleanHTML = sanitizeHTML(html);
     getEl("friend-list").innerHTML = cleanHTML;
     this.addFriendListListeners();
@@ -67,7 +67,7 @@ export default class FriendsView extends AbstractView {
             id: "friends-header",
             variant: "default"
           })}
-          <div id="friend-list">${this.createFriendListHTML()}</div>
+          <div id="friend-list">${this.createRequestListHTML("friend")}</div>
         </div>
       </section>
 
@@ -132,43 +132,40 @@ export default class FriendsView extends AbstractView {
     `;
   }
 
-  private createFriendListHTML(): string {
-    const acceptedRequests = this.friendRequests.filter(
-      (r) => r.status === "ACCEPTED"
-    );
+  private createRequestListHTML(
+    type: "friend" | "incoming" | "outgoing"
+  ): string {
+    let filtered: FriendRequest[] = [];
+    let emptyMessage = "";
 
-    let html = ``;
-
-    if (acceptedRequests.length === 0) {
-      html += /* HTML */ ` <p class="text-gray-500 italic">
-        You have no friends yet 😢
-      </p>`;
-      return html;
+    switch (type) {
+      case "friend":
+        filtered = this.friendRequests.filter((r) => r.status === "ACCEPTED");
+        emptyMessage = "You have no friends yet 😢";
+        break;
+      case "incoming":
+        filtered = this.friendRequests.filter(
+          (r) => r.status === "PENDING" && !r.sender
+        );
+        emptyMessage = "No incoming friend requests";
+        break;
+      case "outgoing":
+        filtered = this.friendRequests.filter(
+          (r) => r.status === "PENDING" && r.sender
+        );
+        emptyMessage = "No outgoing friend requests";
+        break;
+      default:
+        throw new Error(`Unknown request list type: ${type}`);
     }
 
-    html += `<ul class="space-y-4">`;
-
-    for (const request of acceptedRequests) {
-      html += FriendListItem(request, "friend");
-    }
-
-    html += `</ul>`;
-    return html;
-  }
-
-  private createRequestListHTML(type: "incoming" | "outgoing"): string {
-    const requests = this.friendRequests.filter(
-      (r) =>
-        (type === "incoming" ? !r.sender : r.sender) && r.status === "PENDING"
-    );
-
-    if (requests.length === 0) {
-      return `<p class="text-gray-500 italic">No ${type} requests</p>`;
+    if (filtered.length === 0) {
+      return `<p class="text-gray-500 italic">${emptyMessage}</p>`;
     }
 
     return `
     <ul class="space-y-4">
-      ${requests.map((r) => FriendListItem(r, type)).join("")}
+      ${filtered.map((r) => FriendListItem(r, type)).join("")}
     </ul>
   `;
   }
