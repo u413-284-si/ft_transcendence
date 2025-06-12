@@ -39,23 +39,32 @@ export default class FriendsView extends AbstractView {
     this.addListeners();
   }
 
-  private refreshFriendList(): void {
-    const html = this.createRequestListHTML("friend");
+  private refreshRequestList(type: "friend" | "incoming" | "outgoing"): void {
+    const html = this.createRequestListHTML(type);
     const cleanHTML = sanitizeHTML(html);
-    getEl("friend-list").innerHTML = cleanHTML;
-    this.addFriendListListeners();
-  }
 
-  private refreshRequestList(): void {
-    const incoming = this.createRequestListHTML("incoming");
-    const cleanIncoming = sanitizeHTML(incoming);
-    getEl("request-list-in").innerHTML = cleanIncoming;
+    let containerId = "";
+    let attachListeners: () => void;
 
-    const outgoing = this.createRequestListHTML("outgoing");
-    const cleanOutgoing = sanitizeHTML(outgoing);
-    getEl("request-list-out").innerHTML = cleanOutgoing;
+    switch (type) {
+      case "friend":
+        containerId = "friend-list";
+        attachListeners = () => this.addFriendListListeners();
+        break;
+      case "incoming":
+        containerId = "request-list-in";
+        attachListeners = () => this.addRequestListListeners(); // you could later split these too
+        break;
+      case "outgoing":
+        containerId = "request-list-out";
+        attachListeners = () => this.addRequestListListeners();
+        break;
+      default:
+        throw new Error(`Unknown list type: ${type}`);
+    }
 
-    this.addRequestListListeners();
+    getEl(containerId).innerHTML = cleanHTML;
+    attachListeners();
   }
 
   createHTML(): string {
@@ -200,7 +209,7 @@ export default class FriendsView extends AbstractView {
             event,
             "Are you sure you want to remove this friend?"
           );
-          this.refreshFriendList();
+          this.refreshRequestList("friend");
         },
         {
           signal: this.controller.signal
@@ -224,7 +233,7 @@ export default class FriendsView extends AbstractView {
             event,
             "Are you sure you want to decline this request?"
           );
-          this.refreshRequestList();
+          this.refreshRequestList("incoming");
         },
         {
           signal: this.controller.signal
@@ -240,7 +249,7 @@ export default class FriendsView extends AbstractView {
             event,
             "Are you sure you want to delete this request?"
           );
-          this.refreshRequestList();
+          this.refreshRequestList("outgoing");
         },
         {
           signal: this.controller.signal
@@ -268,8 +277,8 @@ export default class FriendsView extends AbstractView {
       const request = await acceptFriendRequest(requestid);
       this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
-      this.refreshRequestList();
-      this.refreshFriendList();
+      this.refreshRequestList("incoming");
+      this.refreshRequestList("friend");
     } catch (error) {
       router.handleError("Error in handleAcceptButton()", error);
     }
@@ -316,12 +325,12 @@ export default class FriendsView extends AbstractView {
       this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
       inputEl.value = "";
-      this.refreshRequestList();
+      this.refreshRequestList("outgoing");
       if (request.status === "PENDING") {
         this.showStatusMessage("Successfully sent friend request");
       } else if (request.status === "ACCEPTED") {
         this.showStatusMessage("Added friend!");
-        this.refreshFriendList();
+        this.refreshRequestList("friend");
       }
     } catch (error) {
       console.error(error);
