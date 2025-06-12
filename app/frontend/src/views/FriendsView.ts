@@ -20,6 +20,8 @@ import { Span } from "../components/Span.js";
 import { Header1 } from "../components/Header1.js";
 import { FriendListItem } from "../components/FriendListItem.js";
 
+type RequestListType = "friend" | "incoming" | "outgoing";
+
 export default class FriendsView extends AbstractView {
   private friendRequests: FriendRequest[] = [];
   private controller = new AbortController();
@@ -39,7 +41,7 @@ export default class FriendsView extends AbstractView {
     this.addListeners();
   }
 
-  private refreshRequestList(type: "friend" | "incoming" | "outgoing"): void {
+  private refreshRequestList(type: RequestListType): void {
     const html = this.createRequestListHTML(type);
     const cleanHTML = sanitizeHTML(html);
 
@@ -141,9 +143,7 @@ export default class FriendsView extends AbstractView {
     `;
   }
 
-  private createRequestListHTML(
-    type: "friend" | "incoming" | "outgoing"
-  ): string {
+  private createRequestListHTML(type: RequestListType): string {
     let filtered: FriendRequest[] = [];
     let emptyMessage = "";
 
