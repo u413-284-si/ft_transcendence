@@ -46,27 +46,23 @@ export default class FriendsView extends AbstractView {
     const cleanHTML = sanitizeHTML(html);
 
     let containerId = "";
-    let attachListeners: () => void;
 
     switch (type) {
       case "friend":
         containerId = "friend-list";
-        attachListeners = () => this.addFriendListListeners();
         break;
       case "incoming":
         containerId = "request-list-in";
-        attachListeners = () => this.addRequestListListeners(); // you could later split these too
         break;
       case "outgoing":
         containerId = "request-list-out";
-        attachListeners = () => this.addRequestListListeners();
         break;
       default:
         throw new Error(`Unknown list type: ${type}`);
     }
 
     getEl(containerId).innerHTML = cleanHTML;
-    attachListeners();
+    this.addRequestListListeners(type);
   }
 
   createHTML(): string {
@@ -196,20 +192,33 @@ export default class FriendsView extends AbstractView {
       }
     );
 
-    this.addFriendListListeners();
-    this.addRequestListListeners();
+    this.addRequestListListeners("friend");
+    this.addRequestListListeners("incoming");
+    this.addRequestListListeners("outgoing");
   }
 
-  private addFriendListListeners = () => {
-    document.querySelectorAll(".remove-friend-btn").forEach((btn) => {
+  private addButtonListeners = (
+    selector: string,
+    confirmMessage: string | null,
+    refreshTypes: RequestListType[] | null,
+    handler: (event: Event) => Promise<void> | void
+  ): void => {
+    document.querySelectorAll(selector).forEach((btn) => {
       btn.addEventListener(
         "click",
         async (event) => {
-          await this.handleDeleteButton(
-            event,
-            "Are you sure you want to remove this friend?"
-          );
-          this.refreshRequestList("friend");
+          if (confirmMessage) {
+            const confirmed = confirm(confirmMessage);
+            if (!confirmed) return;
+          }
+
+          await handler(event);
+
+          if (refreshTypes) {
+            for (const type of refreshTypes) {
+              this.refreshRequestList(type);
+            }
+          }
         },
         {
           signal: this.controller.signal
@@ -218,51 +227,47 @@ export default class FriendsView extends AbstractView {
     });
   };
 
-  private addRequestListListeners = () => {
-    document.querySelectorAll(".accept-btn").forEach((btn) => {
-      btn.addEventListener("click", this.handleAcceptButton, {
-        signal: this.controller.signal
-      });
-    });
+  private addRequestListListeners = (type: RequestListType) => {
+    switch (type) {
+      case "friend":
+        this.addButtonListeners(
+          ".remove-friend-btn",
+          "Are you sure you want to remove this friend?",
+          ["friend"],
+          this.handleDeleteButton
+        );
+        break;
 
-    document.querySelectorAll(".decline-btn").forEach((btn) => {
-      btn.addEventListener(
-        "click",
-        async (event) => {
-          await this.handleDeleteButton(
-            event,
-            "Are you sure you want to decline this request?"
-          );
-          this.refreshRequestList("incoming");
-        },
-        {
-          signal: this.controller.signal
-        }
-      );
-    });
+      case "incoming":
+        this.addButtonListeners(
+          ".accept-btn",
+          null,
+          ["incoming", "friend"],
+          this.handleAcceptButton
+        );
+        this.addButtonListeners(
+          ".decline-btn",
+          "Are you sure you want to decline this request?",
+          ["incoming"],
+          this.handleDeleteButton
+        );
+        break;
 
-    document.querySelectorAll(".delete-request-btn").forEach((btn) => {
-      btn.addEventListener(
-        "click",
-        async (event) => {
-          await this.handleDeleteButton(
-            event,
-            "Are you sure you want to delete this request?"
-          );
-          this.refreshRequestList("outgoing");
-        },
-        {
-          signal: this.controller.signal
-        }
-      );
-    });
+      case "outgoing":
+        this.addButtonListeners(
+          ".delete-request-btn",
+          "Are you sure you want to delete this request?",
+          ["outgoing"],
+          this.handleDeleteButton
+        );
+        break;
+    }
   };
 
-  private handleDeleteButton = async (event: Event, msg: string) => {
+  private handleDeleteButton = async (event: Event) => {
     try {
       const btn = event.currentTarget as HTMLButtonElement;
       const requestId = this.getRequestIdFromButton(btn);
-      if (!confirm(msg)) return;
       const request = await deleteFriendRequest(requestId);
       this.removeFriendRequest(request.id);
     } catch (error) {
@@ -277,8 +282,6 @@ export default class FriendsView extends AbstractView {
       const request = await acceptFriendRequest(requestid);
       this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
-      this.refreshRequestList("incoming");
-      this.refreshRequestList("friend");
     } catch (error) {
       router.handleError("Error in handleAcceptButton()", error);
     }
