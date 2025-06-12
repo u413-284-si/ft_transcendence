@@ -65,7 +65,7 @@ export function FriendListItem(
           ${username}
         </span>
         ${type === "friend"
-          ? `<span class="text-sm ${onlineStatusClass}">${onlineStatusText}</span>`
+          ? `<span class="online-status text-sm ${onlineStatusClass}">${onlineStatusText}</span>`
           : ""}
       </div>
       <div class="flex items-center space-x-2">${actionHTML}</div>
