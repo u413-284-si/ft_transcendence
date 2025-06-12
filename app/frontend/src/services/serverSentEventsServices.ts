@@ -1,4 +1,4 @@
-import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent";
+import { FriendStatusChangeEvent } from "../types/ServerSentEvents";
 
 let eventSource: EventSource | null = null;
 

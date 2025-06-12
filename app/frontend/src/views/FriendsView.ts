@@ -9,7 +9,7 @@ import {
 } from "../services/friendsServices.js";
 import { getUserByUsername } from "../services/userServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
-import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
+import { FriendStatusChangeEvent } from "../types/ServerSentEvents.js";
 import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
