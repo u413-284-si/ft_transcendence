@@ -38,7 +38,7 @@ export function Toast({ variant, text }: ToastOptions): string {
       data-variant="${variant}"
       class="
         relative flex justify-between items-center w-96 p-4 mb-2 rounded bg-white shadow-lg
-        transform translate-x-full transition duration-300
+        transform translate-x-full transition duration-300 group
       "
     >
       <div class="flex items-center">
@@ -46,7 +46,7 @@ export function Toast({ variant, text }: ToastOptions): string {
         <span class="ml-3 ${textColor}">${text}</span>
       </div>
       <button class="ml-4 text-gray-400 hover:text-black">&times;</button>
-      <span class="absolute bottom-0 left-0 h-1 ${progressColor} w-full animate-progress"></span>
+      <span class="absolute bottom-0 left-0 h-1 ${progressColor} w-full animate-progress group-hover:[animation-play-state:paused]"></span>
     </li>
   `;
 }
