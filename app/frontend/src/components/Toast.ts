@@ -52,7 +52,7 @@ export function Toast({ variant, text }: ToastOptions): string {
     <li
       class="relative flex justify-between items-center p-4 mb-2 rounded-md
       bg-black/60 border ${borderColor} ${shadowColor}
-      transition-transform duration-300 group max-w-sm break-words"
+      transition-transform duration-300 group max-w-sm break-words animate-fade-in-right"
     >
       <div class="flex items-center space-x-3">
         <span class="text-2xl">${icon}</span>

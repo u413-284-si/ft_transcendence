@@ -30,7 +30,7 @@ export class Toaster {
     if (data) clearTimeout(data.timeoutId);
     this.toastTimeouts.delete(toast);
 
-    toast.classList.add("translate-x-full");
+    toast.classList.add("animate-zoomout");
     setTimeout(() => toast.remove(), 300);
   }
 
