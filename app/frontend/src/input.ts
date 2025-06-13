@@ -14,10 +14,10 @@ export function updatePaddlePositions(
   )
     gameState.paddle1Y += gameState.paddleSpeed * deltaTime;
   if (gameState.keys["ArrowUp"] && gameState.paddle2Y > 0)
-    gameState.paddle2Y -= gameState.paddleSpeed * deltaTime;
+    gameState.paddle2Y -= gameState.ai.maxPaddleSpeed * deltaTime;
   if (
     gameState.keys["ArrowDown"] &&
     gameState.paddle2Y < canvas.height - gameState.paddleHeight
   )
-    gameState.paddle2Y += gameState.paddleSpeed * deltaTime;
+    gameState.paddle2Y += gameState.ai.maxPaddleSpeed * deltaTime;
 }
