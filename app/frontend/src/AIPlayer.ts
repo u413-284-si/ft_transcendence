@@ -19,21 +19,22 @@ export class AIPlayer {
     this.reactionInterval = reactionInterval;
   }
 
-  updatePerception(gameState: GameState, canvas: HTMLCanvasElement) {
+  updatePerception(gameState: GameState) {
     this.lastSeenBallX = gameState.ballX;
     this.lastSeenBallY = gameState.ballY;
     this.lastSeenBallSpeedX = gameState.ballSpeedX;
     this.lastSeenBallSpeedY = gameState.ballSpeedY;
 
-    this.predictionY = this.predictImpactY(canvas, gameState);
+    this.predictionY = this.predictImpactY(gameState);
     this.lastUpdate = performance.now();
   }
 
-  predictImpactY(canvas: HTMLCanvasElement, gameState: GameState): number {
+  predictImpactY(gameState: GameState): number {
+    const canvas = gameState.canvas;
     // Simple linear prediction with bounces
     let x = this.lastSeenBallX;
     let y = this.lastSeenBallY;
-    let vx = this.lastSeenBallSpeedX;
+    const vx = this.lastSeenBallSpeedX;
     let vy = this.lastSeenBallSpeedY;
 
     const paddleX = canvas.width - 20; // AI paddle X

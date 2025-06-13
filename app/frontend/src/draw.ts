@@ -1,11 +1,10 @@
 import { GameState } from "./types/IGameState.js";
 
-export function draw(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  gameState: GameState
-) {
-  ctx.fillStyle = "black";
+export function draw(gameState: GameState) {
+  const canvas = gameState.canvas;
+  const ctx = gameState.ctx;
+
+  gameState.ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   drawScores(canvas, ctx, gameState);
@@ -13,22 +12,23 @@ export function draw(
     drawWinningScreen(canvas, ctx, gameState);
     return;
   }
-  drawBall(ctx, gameState);
-  drawPaddles(canvas, ctx, gameState);
+  drawBall(gameState);
+  drawPaddles(gameState);
 }
 
-function drawBall(ctx: CanvasRenderingContext2D, gameState: GameState) {
+function drawBall(gameState: GameState) {
+  const ctx = gameState.ctx;
+
   ctx.fillStyle = "white";
   ctx.beginPath();
   ctx.arc(gameState.ballX, gameState.ballY, 10, 0, Math.PI * 2);
   ctx.fill();
 }
 
-function drawPaddles(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  gameState: GameState
-) {
+function drawPaddles(gameState: GameState) {
+  const ctx = gameState.ctx;
+  const canvas = gameState.canvas;
+
   ctx.fillStyle = "white";
   ctx.fillRect(
     10,
