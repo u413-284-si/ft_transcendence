@@ -7,6 +7,7 @@ import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
 import { auth } from "./AuthManager.js";
 import { GameType } from "./views/GameView.js";
+import { AIPlayer } from "./AIPlayer.js";
 
 let isAborted: boolean = false;
 
@@ -28,9 +29,10 @@ export async function startGame(
 ) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
+  const ai = new AIPlayer();
 
   setIsAborted(false);
-  const gameState = initGameState(canvas, nickname1, nickname2, keys);
+  const gameState = initGameState(canvas, nickname1, nickname2, keys, ai);
   await new Promise<void>((resolve) => {
     gameLoop(canvas, ctx, gameState, resolve);
   });
@@ -44,14 +46,15 @@ function initGameState(
   canvas: HTMLCanvasElement,
   player1: string,
   player2: string,
-  keys: Record<GameKey, boolean>
+  keys: Record<GameKey, boolean>,
+  ai: AIPlayer
 ): GameState {
   return {
     player1: player1,
     player2: player2,
     player1Score: 0,
     player2Score: 0,
-    winningScore: 1, // FIXME: needs to be a higher value
+    winningScore: 5, // FIXME: needs to be a higher value
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
     ballSpeedX: 7,
@@ -62,7 +65,8 @@ function initGameState(
     paddleWidth: 10,
     paddleSpeed: 6,
     gameOver: false,
-    keys: keys
+    keys: keys,
+    ai: ai
   };
 }
 
@@ -83,6 +87,21 @@ function gameLoop(
 
 function update(canvas: HTMLCanvasElement, gameState: GameState) {
   if (gameState.gameOver) return;
+
+  if (gameState.ai) {
+    const now = performance.now();
+    if (now - gameState.ai.lastUpdate >= gameState.ai.reactionInterval) {
+      gameState.ai.updatePerception(gameState, canvas);
+    }
+
+    const move = gameState.ai.decideMove(
+      gameState.paddle2Y,
+      gameState.paddleHeight
+    );
+
+    gameState.keys["ArrowUp"] = move === "up";
+    gameState.keys["ArrowDown"] = move === "down";
+  }
 
   updatePaddlePositions(canvas, gameState);
 
