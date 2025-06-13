@@ -36,6 +36,7 @@ export class Layout {
       <header class="bg-blue-800 text-white py-8 shadow-lg">${this.getHeaderHTML()}</header>
       <main id="app-content" class="flex-grow px-4 py-8"></main>
       <footer class="bg-blue-800 text-white py-4 shadow-lg">${this.getFooterHTML()}</footer>
+      <ul class="notifications fixed top-8 right-6 space-y-2 z-50"></ul>
     `;
   }
 
