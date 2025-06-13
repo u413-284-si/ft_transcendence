@@ -18,7 +18,7 @@ export class Toaster {
     let container = document.querySelector(containerSelector);
     if (!container) {
       container = document.createElement("ul");
-      container.className = "notifications fixed top-8 right-6 space-y-2 z-50";
+      container.className = "notifications fixed top-26 right-6 space-y-2 z-50";
       document.body.appendChild(container);
     }
     this.notifications = container as HTMLElement;
@@ -54,10 +54,6 @@ export class Toaster {
     toast.addEventListener("mouseleave", () => this.resumeToast(toast));
 
     this.notifications.appendChild(toast);
-
-    requestAnimationFrame(() => {
-      toast.classList.replace("translate-x-full", "translate-x-0");
-    });
 
     // Store data
     const timeoutId = window.setTimeout(() => this.removeToast(toast), timer);
