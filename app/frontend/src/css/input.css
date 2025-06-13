@@ -17,3 +17,11 @@
   }
 }
 
+@theme {
+  --animate-progress: progress 5s linear forwards;
+  @keyframes progress {
+    100% {
+      width: 0%;
+    }
+  }
+}
