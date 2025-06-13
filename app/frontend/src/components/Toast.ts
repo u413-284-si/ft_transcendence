@@ -1,4 +1,4 @@
-export type ToastVariant = "success" | "error" | "warning" | "info" | "random";
+export type ToastVariant = "success" | "error" | "warning" | "info";
 
 export type ToastOptions = {
   variant: ToastVariant;
@@ -28,11 +28,6 @@ const toastVariants: Record<
     icon: "ℹ️",
     textColor: "text-blue-600",
     progressColor: "bg-blue-600"
-  },
-  random: {
-    icon: "🌟",
-    textColor: "text-pink-500",
-    progressColor: "bg-pink-500"
   }
 };
 
