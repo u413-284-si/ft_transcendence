@@ -58,9 +58,11 @@ export function Toast({ variant, text }: ToastOptions): string {
         <span class="text-2xl">${icon}</span>
         <span class="${textColor}">${text}</span>
       </div>
-      <button class="ml-4 ${textColor} hover:text-white">&times;</button>
+      <button class="ml-4 text-2xl ${textColor} hover:text-white">
+        &times;
+      </button>
       <span
-        class="absolute bottom-0 left-0 h-1 w-full ${progressColor} shadow-[0_0_5px_rgba(0,255,255,0.8)] animate-progress group-hover:[animation-play-state:paused]"
+        class="absolute bottom-0 left-0 h-1 w-full ${progressColor} ${shadowColor} animate-progress group-hover:[animation-play-state:paused]"
       ></span>
     </li>
   `;
