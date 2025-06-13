@@ -1,21 +1,17 @@
 import { Toast, ToastVariant } from "./components/Toast.js";
 
-export class Toaster {
+class Toaster {
   private notifications: HTMLElement;
   private toastTimeouts = new Map<HTMLElement, number>();
   private defaultTimer: number;
 
   constructor(
-    containerSelector: string = ".notifications",
+    containerId: string = "notifications",
     defaultTimer: number = 5000
   ) {
-    let container = document.querySelector(containerSelector);
-    if (!container) {
-      // Auto-create the container if not found
-      container = document.createElement("ul");
-      container.className = "notifications fixed top-8 right-6 space-y-2 z-50";
-      document.body.appendChild(container);
-    }
+    const container = document.createElement("ul");
+    container.className = `${containerId} fixed top-8 right-6 space-y-2 z-50`;
+    document.body.appendChild(container);
     this.notifications = container as HTMLElement;
     this.defaultTimer = defaultTimer;
   }
@@ -68,3 +64,5 @@ export class Toaster {
     this.createToast("warning", text);
   }
 }
+
+export const toaster = new Toaster();
