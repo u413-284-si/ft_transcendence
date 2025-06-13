@@ -11,6 +11,9 @@ import { AIPlayer } from "./AIPlayer.js";
 
 let isAborted: boolean = false;
 
+let gameState: GameState;
+let lastTime: DOMHighResTimeStamp;
+
 export function getIsAborted(): boolean {
   return isAborted;
 }
@@ -32,10 +35,13 @@ export async function startGame(
   const ai = new AIPlayer();
 
   setIsAborted(false);
-  const gameState = initGameState(canvas, nickname1, nickname2, keys, ai);
-  await new Promise<void>((resolve) => {
-    gameLoop(canvas, ctx, gameState, resolve);
-  });
+  gameState = initGameState(canvas, ctx, nickname1, nickname2, keys, ai);
+  lastTime = performance.now();
+  resetBall(gameState);
+  gameState.ballSpeedX *= Math.random() < 0.5 ? -1 : 1;
+
+  requestAnimationFrame(gameLoop);
+
   if (getIsAborted()) {
     return;
   }
@@ -44,12 +50,15 @@ export async function startGame(
 
 function initGameState(
   canvas: HTMLCanvasElement,
+  ctx: CanvasRenderingContext2D,
   player1: string,
   player2: string,
   keys: Record<GameKey, boolean>,
   ai: AIPlayer
 ): GameState {
   return {
+    canvas: canvas,
+    ctx: ctx,
     player1: player1,
     player2: player2,
     player1Score: 0,
@@ -57,41 +66,41 @@ function initGameState(
     winningScore: 5, // FIXME: needs to be a higher value
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
-    ballSpeedX: 7,
-    ballSpeedY: 7,
+    ballSpeedX: 200,
+    ballSpeedY: 200,
+    initialBallSpeed: 400,
     paddle1Y: canvas.height / 2 - 40,
     paddle2Y: canvas.height / 2 - 40,
     paddleHeight: 80,
     paddleWidth: 10,
-    paddleSpeed: 6,
+    paddleSpeed: 300,
     gameOver: false,
     keys: keys,
     ai: ai
   };
 }
 
-function gameLoop(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  gameState: GameState,
-  resolve: () => void
-) {
+function gameLoop(time: DOMHighResTimeStamp) {
   if (gameState.gameOver) {
-    resolve();
     return;
   }
-  update(canvas, gameState);
-  draw(canvas, ctx, gameState);
-  requestAnimationFrame(() => gameLoop(canvas, ctx, gameState, resolve));
+
+  const deltaTime = (time - lastTime) / 1000;
+
+  update(gameState, deltaTime);
+  draw(gameState);
+  lastTime = time;
+
+  requestAnimationFrame(gameLoop);
 }
 
-function update(canvas: HTMLCanvasElement, gameState: GameState) {
+function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   if (gameState.gameOver) return;
 
   if (gameState.ai) {
     const now = performance.now();
     if (now - gameState.ai.lastUpdate >= gameState.ai.reactionInterval) {
-      gameState.ai.updatePerception(gameState, canvas);
+      gameState.ai.updatePerception(gameState);
     }
 
     const move = gameState.ai.decideMove(
@@ -103,46 +112,101 @@ function update(canvas: HTMLCanvasElement, gameState: GameState) {
     gameState.keys["ArrowDown"] = move === "down";
   }
 
-  updatePaddlePositions(canvas, gameState);
+  updatePaddlePositions(gameState, deltaTime);
 
   // Move the ball
-  gameState.ballX += gameState.ballSpeedX;
-  gameState.ballY += gameState.ballSpeedY;
+  gameState.ballX += gameState.ballSpeedX * deltaTime;
+  gameState.ballY += gameState.ballSpeedY * deltaTime;
+
+  const ballRadius = 10;
+
+  let result = handlePaddleCollision(
+    gameState.ballX,
+    gameState.ballY,
+    ballRadius,
+    10, // X of paddle front edge (paddle is at x=10, width=10)
+    gameState.paddle1Y,
+    gameState.paddleWidth,
+    gameState.paddleHeight,
+    gameState.ballSpeedX,
+    gameState.ballSpeedY
+  );
+
+  gameState.ballX = result.newX;
+  gameState.ballY = result.newY;
+
+  if (result.collided) {
+    const speedUpFactor = 1.05;
+    const newSpeed =
+      Math.hypot(result.newBallSpeedX, result.newBallSpeedY) * speedUpFactor;
+    const angle = Math.atan2(result.newBallSpeedY, result.newBallSpeedX);
+
+    gameState.ballSpeedX = Math.cos(angle) * newSpeed;
+    gameState.ballSpeedY = Math.sin(angle) * newSpeed;
+  } else {
+    gameState.ballSpeedX = result.newBallSpeedX;
+    gameState.ballSpeedY = result.newBallSpeedY;
+  }
+
+  // Right paddle
+  result = handlePaddleCollision(
+    gameState.ballX,
+    gameState.ballY,
+    ballRadius,
+    gameState.canvas.width - 20, // X of paddle front edge (canvas.width - paddle width - 10)
+    gameState.paddle2Y,
+    gameState.paddleWidth,
+    gameState.paddleHeight,
+    gameState.ballSpeedX,
+    gameState.ballSpeedY
+  );
+
+  gameState.ballX = result.newX;
+  gameState.ballY = result.newY;
+
+  if (result.collided) {
+    const speedUpFactor = 1.05;
+    const newSpeed =
+      Math.hypot(result.newBallSpeedX, result.newBallSpeedY) * speedUpFactor;
+    const angle = Math.atan2(result.newBallSpeedY, result.newBallSpeedX);
+
+    gameState.ballSpeedX = Math.cos(angle) * newSpeed;
+    gameState.ballSpeedY = Math.sin(angle) * newSpeed;
+  } else {
+    gameState.ballSpeedX = result.newBallSpeedX;
+    gameState.ballSpeedY = result.newBallSpeedY;
+  }
 
   // Ball collision with top & bottom
-  if (gameState.ballY <= 0 || gameState.ballY >= canvas.height)
+  if (gameState.ballY <= 0 || gameState.ballY >= gameState.canvas.height)
     gameState.ballSpeedY *= -1;
-
-  // Ball collision with paddles
-  if (
-    (gameState.ballX <= 20 &&
-      gameState.ballY >= gameState.paddle1Y &&
-      gameState.ballY <= gameState.paddle1Y + gameState.paddleHeight) ||
-    (gameState.ballX >= canvas.width - 20 &&
-      gameState.ballY >= gameState.paddle2Y &&
-      gameState.ballY <= gameState.paddle2Y + gameState.paddleHeight)
-  ) {
-    gameState.ballSpeedX *= -1; // Reverse ball direction
-  }
 
   // Ball out of bounds (scoring)
   if (gameState.ballX <= 0) {
     gameState.player2Score++;
     checkWinner(gameState);
-    resetBall(canvas, gameState);
+    resetBall(gameState);
   }
 
-  if (gameState.ballX >= canvas.width) {
+  if (gameState.ballX >= gameState.canvas.width) {
     gameState.player1Score++;
     checkWinner(gameState);
-    resetBall(canvas, gameState);
+    resetBall(gameState);
   }
 }
 
-function resetBall(canvas: HTMLCanvasElement, gameState: GameState) {
-  gameState.ballX = canvas.width / 2;
-  gameState.ballY = canvas.height / 2;
-  gameState.ballSpeedX *= -1; // Change direction after scoring
+function resetBall(gameState: GameState) {
+  gameState.ballX = gameState.canvas.width / 2;
+  gameState.ballY = gameState.canvas.height / 2;
+
+  const angle = (Math.random() * Math.PI) / 4 - Math.PI / 8; // -22.5° to +22.5°
+
+  const speed = gameState.initialBallSpeed;
+
+  const direction = Math.sign(gameState.ballSpeedX) * -1; // flip direction
+
+  gameState.ballSpeedX = direction * speed * Math.cos(angle);
+  gameState.ballSpeedY = speed * Math.sin(angle);
 }
 
 function checkWinner(gameState: GameState) {
@@ -194,4 +258,62 @@ function waitForEnterKey(): Promise<void> {
     }
     document.addEventListener("keydown", onKeyDown);
   });
+}
+
+export function handlePaddleCollision(
+  ballX: number,
+  ballY: number,
+  ballRadius: number,
+  paddleX: number,
+  paddleY: number,
+  paddleWidth: number,
+  paddleHeight: number,
+  ballSpeedX: number,
+  ballSpeedY: number
+) {
+  let collided = false;
+
+  // Axis-Aligned Bounding Box check with radius
+  if (
+    ballX + ballRadius > paddleX &&
+    ballX - ballRadius < paddleX + paddleWidth &&
+    ballY + ballRadius > paddleY &&
+    ballY - ballRadius < paddleY + paddleHeight
+  ) {
+    collided = true;
+
+    // Reverse horizontal speed
+    ballSpeedX *= -1;
+
+    // Compute offset: -1 (top edge) to +1 (bottom edge)
+    const paddleCenter = paddleY + paddleHeight / 2;
+    const offset = (ballY - paddleCenter) / (paddleHeight / 2);
+
+    // Max bounce angle (in radians)
+    const maxBounceAngle = Math.PI / 4; // 45 degrees
+
+    const bounceAngle = offset * maxBounceAngle;
+
+    // Keep total speed consistent
+    const speed = Math.hypot(ballSpeedX, ballSpeedY);
+
+    const direction = Math.sign(ballSpeedX);
+    ballSpeedX = direction * speed * Math.cos(bounceAngle);
+    ballSpeedY = speed * Math.sin(bounceAngle);
+
+    // Re-position: put the ball just outside the paddle edge to avoid sticking
+    if (ballSpeedX > 0) {
+      ballX = paddleX + paddleWidth + ballRadius;
+    } else {
+      ballX = paddleX - ballRadius;
+    }
+  }
+
+  return {
+    newX: ballX,
+    newY: ballY,
+    newBallSpeedX: ballSpeedX,
+    newBallSpeedY: ballSpeedY,
+    collided
+  };
 }
