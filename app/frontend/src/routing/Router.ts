@@ -16,6 +16,7 @@ export class Router {
   private routes: RouteEntry[] = [];
   private currentView: AbstractView | null = null;
   private currentPath: string = "";
+  private currentParams: Record<string, string> = {};
   private previousPath: string = "";
   private routeChangeListeners: RouteChangeListener[] = [];
   private layout = new Layout("guest");
@@ -85,15 +86,15 @@ export class Router {
         return;
       }
 
-      const params: Record<string, string> = {};
-      if (route.dynamicParam) {
-        const match = path.match(route.regex)!;
-        params[route.dynamicParam] = match[1];
-      }
-
       if (route.config.guard) {
         const isAllowed = await this.evaluateGuard(route.config.guard);
         if (!isAllowed) return;
+      }
+
+      this.currentParams = {};
+      if (route.dynamicParam) {
+        const match = path.match(route.regex)!;
+        this.currentParams[route.dynamicParam] = match[1];
       }
 
       if (push) {
@@ -224,6 +225,10 @@ export class Router {
 
   normalizePath(path: string): string {
     return path.replace(/\/+$/, "") || "/";
+  }
+
+  getParams(): Record<string, string> {
+    return this.currentParams;
   }
 }
 
