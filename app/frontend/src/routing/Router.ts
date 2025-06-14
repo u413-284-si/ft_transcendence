@@ -3,7 +3,9 @@ import {
   RouteConfig,
   RouteChangeListener,
   RouteChangeInfo,
-  routeEvent
+  routeEvent,
+  RouteEntry,
+  RouteGuard
 } from "../types/Route.js";
 import ErrorView from "../views/ErrorView.js";
 import { Layout } from "../Layout.js";
@@ -11,7 +13,7 @@ import { stopOnlineStatusTracking } from "../services/onlineStatusServices.js";
 
 export class Router {
   private static instance: Router;
-  private routes: Map<string, RouteConfig> = new Map();
+  private routes: RouteEntry[] = [];
   private currentView: AbstractView | null = null;
   private currentPath: string = "";
   private previousPath: string = "";
@@ -28,7 +30,34 @@ export class Router {
   }
 
   addRoute(path: string, config: RouteConfig): this {
-    this.routes.set(path, config);
+    let regex: RegExp;
+    let dynamicParam: string | undefined;
+
+    if (path.includes(":")) {
+      // Must be dynamic.
+      // Only allow one dynamic param at the end.
+      const match = path.match(/^(.*)\/:([a-zA-Z0-9_]+)$/);
+      if (!match) {
+        throw new Error(`Invalid dynamic route pattern: ${path}`);
+      }
+
+      const staticPart = match[1];
+      dynamicParam = match[2];
+
+      const paramRegex = config.regex ?? "[^/]+";
+      regex = new RegExp(`^${staticPart}/(${paramRegex})$`);
+    } else {
+      // Static: match exactly.
+      regex = new RegExp(`^${path}$`);
+    }
+
+    this.routes.push({
+      path,
+      regex,
+      dynamicParam,
+      config
+    });
+
     return this;
   }
 
@@ -49,15 +78,23 @@ export class Router {
 
       console.log(`Try to navigate to ${path} from ${this.currentPath}`);
 
-      const route = this.routes.get(path);
+      const route = this.routes.find((r) => r.regex.test(path));
       if (!route) {
         console.warn(`No route found for path: ${path}. Navigate to /home`);
         await this.navigate("/home", false);
         return;
       }
 
-      const isAllowed = await this.evaluateGuard(route);
-      if (!isAllowed) return;
+      const params: Record<string, string> = {};
+      if (route.dynamicParam) {
+        const match = path.match(route.regex)!;
+        params[route.dynamicParam] = match[1];
+      }
+
+      if (route.config.guard) {
+        const isAllowed = await this.evaluateGuard(route.config.guard);
+        if (!isAllowed) return;
+      }
 
       if (push) {
         console.log(`Push state for ${path}`);
@@ -69,9 +106,9 @@ export class Router {
       this.previousPath = this.currentPath;
       this.currentPath = path;
 
-      this.layout.update(route.layout);
+      this.layout.update(route.config.layout);
 
-      const view = new route.view();
+      const view = new route.config.view();
       await this.setView(view);
 
       this.notifyRouteChange("nav");
@@ -147,11 +184,9 @@ export class Router {
     stopOnlineStatusTracking();
   };
 
-  private async evaluateGuard(route: RouteConfig): Promise<boolean> {
-    if (!route.guard) return true;
-
+  private async evaluateGuard(guard: RouteGuard): Promise<boolean> {
     try {
-      const result = route.guard();
+      const result = guard();
       console.log(`Route guard result: ${result}`);
 
       if (result === false) {
