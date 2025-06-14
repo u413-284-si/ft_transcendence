@@ -92,7 +92,7 @@ export class Layout {
           <img
             src="${userAvatarUrl}"
             alt="Avatar"
-            class="w-14 h-14 rounded-full border-2 border-orange-500 shadow-lg"
+            class="w-14 h-14 rounded-full border-2 border-neon-orange shadow-lg"
           />
         </div>
       </nav>`;
