@@ -1,6 +1,7 @@
 import { sanitizeHTML } from "./sanitize.js";
 import { auth } from "./AuthManager.js";
 import { Link } from "./components/Link.js";
+import { Drawer } from "./components/Drawer.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -30,6 +31,7 @@ export class Layout {
     const html = this.getShellHTML();
     const cleanHTML = sanitizeHTML(html);
     this.rootEl.innerHTML = cleanHTML;
+    this.attachAvatarDrawerHandler();
   }
 
   private getShellHTML(): string {
@@ -82,5 +84,18 @@ export class Layout {
     >
       <p class="text-sm">Pong Game &copy; 2025</p>
     </div>`;
+  }
+
+  private attachAvatarDrawerHandler(): void {
+    const avatar = this.rootEl.querySelector("img[alt='Avatar']");
+    if (!avatar) return;
+
+    const drawer = new Drawer([
+      { label: "Edit Profile", href: "/profile" },
+      { label: "User Stats", href: "/stats" },
+      { label: "Settings", href: "/settings" }
+    ]);
+
+    avatar.addEventListener("click", () => drawer.open());
   }
 }
