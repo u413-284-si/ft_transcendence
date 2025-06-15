@@ -1,77 +1,77 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --background-dark: oklch(0.08 0.01 278.67);
-  --color-dark-emerald: oklch(0.17 0.06 205.26);
-  --color-emerald: oklch(0.23 0.06 209.43);
-  --color-light-emerald: oklch(0.32 0.07 209.43);
-  --color-dark-teal: oklch(0.32 0.07 209.43);
-  --color-light-teal: oklch(0.64 0.12 210.87);
-  --color-neon-purple: oklch(0.56 0.26 328.61);
-  --color-neon-pink: oklch(0.72 0.32 328.23);
-  --color-neon-cyan: oklch(0.91 0.22 197.09);
-  --color-neon-blue: oklch(0.63 0.21 256.58);
-  --color-neon-green: oklch(0.74 0.18 145.78);
-  --color-neon-yellow: oklch(0.83 0.21 99.45);
-  --color-neon-orange: oklch(0.67 0.26 60.49);
-  --color-neon-red: oklch(0.7 0.5 30);
-  --color-neon-bordeaux: oklch(0.23 0.19 28.41);
-  --color-brown: oklch(0.31 0.09 51.77);
-
   --font-cyber: "Orbitron", sans-serif;
 
-  --shadow-neon-cyan: 0 0 30px color-mix(in oklch, oklch(0.91 0.22 197.09) 70%, transparent);
-  --shadow-neon-orange: 0 0 30px color-mix(in oklch, oklch(0.67 0.26 60.49) 70%, transparent);
-  --shadow-neon-yellow: 0 0 30px color-mix(in oklch, oklch(0.83 0.21 99.45) 70%, transparent);
-  --shadow-neon-red: 0 0 30px color-mix(in oklch, oklch(0.7 0.5 30) 70%, transparent);
+  --color-black: oklch(0 0 0);
+  --color-emerald-dark: oklch(0.1985 0.0312 214.01);
+  --color-emerald: oklch(0.2387 0.0425 216.62);
+  --color-emerald-light: oklch(0.3266 0.0572 213.33);
+  --color-teal: oklch(0.4666 0.0472 215.33);
+  --color-neon-cyan: oklch(0.9054 0.1446 193.77);
+  --color-neon-yellow: oklch(0.83 0.16 95.93);
+  --color-neon-orange: oklch(0.646 0.222 41.116);
+  --color-neon-bordeaux: oklch(0.2538 0.1001 28.23);
+  --color-brown: oklch(0.3387 0.037 40.25);
+  --color-neon-red: oklch(0.6033 0.2388 28.49);
+  --color-neon-green: oklch(0.74 0.18 145.78);
+  --color-neon-purple: oklch(0.5616 0.2578 328.59);
 
-  --animate-neonOrange: neonOrange 2.5s infinite ease-in-out;
-  @keyframes neonOrange {
+  --shadow-neon-cyan: 0 0 30px
+    color-mix(in oklch, oklch(0.9054 0.1446 193.77) 70%, transparent);
+  --shadow-neon-orange: 0 0 30px
+    color-mix(in oklch, oklch(0.646 0.222 41.116) 70%, transparent);
+  --shadow-neon-yellow: 0 0 30px
+    color-mix(in oklch, oklch(0.83 0.16 95.93) 70%, transparent);
+  --shadow-neon-red: 0 0 30px
+    color-mix(in oklch, oklch(0.6033 0.2388 28.49) 70%, transparent);
+
+  --animate-glow-orange: glow-orange 2.5s infinite ease-in-out;
+  @keyframes glow-orange {
     0% {
       text-shadow:
-        0 0 5px color-mix(in oklch, oklch(0.67 0.26 60.49) 55%, transparent),
-        0 0 10px color-mix(in oklch, oklch(0.67 0.26 60.49) 65%, transparent),
-        0 0 15px color-mix(in oklch, oklch(0.67 0.26 60.49) 75%, transparent),
-        0 0 20px color-mix(in oklch, oklch(0.67 0.26 60.49) 85%, transparent);
+        0 0 5px color-mix(in oklch, oklch(0.646 0.222 41.116) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(0.646 0.222 41.116) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(0.646 0.222 41.116) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(0.646 0.222 41.116) 85%, transparent);
     }
     50% {
       text-shadow:
-        0 0 7px oklch(0.23 0.19 28.41),
-        0 0 14px oklch(0.23 0.19 28.41),
-        0 0 21px oklch(0.23 0.19 28.41);
+        0 0 7px oklch(0.2538 0.1001 28.23),
+        0 0 14px oklch(0.2538 0.1001 28.23),
+        0 0 21px oklch(0.2538 0.1001 28.23);
     }
     100% {
       text-shadow:
-        0 0 5px color-mix(in oklch, oklch(0.67 0.26 60.49) 55%, transparent),
-        0 0 10px color-mix(in oklch, oklch(0.67 0.26 60.49) 65%, transparent),
-        0 0 15px color-mix(in oklch, oklch(0.67 0.26 60.49) 75%, transparent),
-        0 0 20px color-mix(in oklch, oklch(0.67 0.26 60.49) 85%, transparent);
+        0 0 5px color-mix(in oklch, oklch(0.646 0.222 41.116) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(0.646 0.222 41.116) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(0.646 0.222 41.116) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(0.646 0.222 41.116) 85%, transparent);
     }
   }
 
-  --animate-neonGlow: neonGlow 1.5s infinite alternate ease-in-out;
-  @keyframes neonGlow {
+  --animate-glow-cyan: glow-cyan 2.5s infinite ease-in-out;
+  @keyframes glow-cyan {
     0% {
       text-shadow:
-        0 0 5px oklch(0.72 0.32 328.23),
-        0 0 10px oklch(0.72 0.32 328.23),
-        0 0 15px oklch(0.72 0.32 328.23),
-        0 0 20px oklch(0.72 0.32 328.23);
+        0 0 5px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 85%, transparent);
     }
     50% {
       text-shadow:
-        0 0 10px oklch(0.91 0.22 197.09),
-        0 0 20px oklch(0.91 0.22 197.09),
-        0 0 30px oklch(0.91 0.22 197.09),
-        0 0 40px oklch(0.91 0.22 197.09);
+        0 0 7px oklch(0.4666 0.0472 215.33),
+        0 0 14px oklch(0.4666 0.0472 215.33),
+        0 0 21px oklch(0.4666 0.0472 215.33);
     }
     100% {
       text-shadow:
-        0 0 5px oklch(0.72 0.32 328.23),
-        0 0 10px oklch(0.72 0.32 328.23),
-        0 0 15px oklch(0.72 0.32 328.23),
-        0 0 20px oklch(0.72 0.32 328.23);
+        0 0 5px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 85%, transparent);
     }
   }
 }
@@ -82,7 +82,6 @@
       linear-gradient(to right, rgba(0, 255, 255, 0.1) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
     background-size: 40px 40px;
-    background-color: oklch(0.08 0.01 278.67);
+    background-color: oklch(0 0 0);
   }
 }
-
