@@ -33,11 +33,11 @@ export class Layout {
 
   private getShellHTML(): string {
     return `
-      <header class="bg-black text-cyan-300 py-8 shadow-lg border-b-1 border-cyan-500/25">
+      <header class="bg-black text-teal py-8 shadow-lg border-b-1 border-teal/25">
         ${this.getHeaderHTML()}
       </header>
       <main id="app-content" class="flex-grow px-4 py-8"></main>
-      <footer class="bg-black text-cyan-300 py-4 shadow-lg border-t-1 border-cyan-500/25">
+      <footer class="bg-black text-neon-cyan py-4 shadow-lg border-t-1 border-teal/25">
         ${this.getFooterHTML()}
       </footer>
     `;
@@ -51,37 +51,37 @@ export class Layout {
         <div class="container mx-auto flex justify-center space-x-8">
           <a
             href="/home"
-            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
             data-link
             >Home</a
           >
           <a
             href="/newGame"
-            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
             data-link
             >New Game</a
           >
           <a
             href="/newTournament"
-            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
             data-link
             >New Tournament</a
           >
           <a
             href="/stats"
-            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
             data-link
             >Stats</a
           >
           <a
             href="/settings"
-            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
             data-link
             >Settings</a
           >
           <a
             href="/friends"
-            class="text-xl hover:text-neon-orange hover:animate-neonOrange"
+            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
             data-link
             >Friends</a
           >
