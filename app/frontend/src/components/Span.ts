@@ -13,11 +13,9 @@ export function Span({
 }: SpanOptions): string {
   const baseStyles = "text-sm font-medium";
   const variantStyles: Record<string, string> = {
-    default: "text-gray-800",
-    info: "text-blue-600",
-    success: "text-green-600",
-    warning: "text-yellow-600",
-    error: "text-red-600"
+    default: "text-white",
+    success: "text-neon-green",
+    error: "text-neon-red hidden"
   };
 
   const classes = `${baseStyles} ${variantStyles[variant]} ${className}`.trim();

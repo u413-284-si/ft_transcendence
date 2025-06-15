@@ -16,10 +16,9 @@ export function markInvalid(
   inputEl.focus();
   inputEl.classList.add(
     "border-2",
-    "border-red-600",
+    "border-neon-red",
     "ring-1",
-    "ring-red-500",
-    "bg-[rgba(255,0,0,0.25)]"
+    "ring-neon-red"
   );
 
   errorEl.classList.remove("hidden");
@@ -32,10 +31,9 @@ export function clearInvalid(
 ): void {
   inputEl.classList.remove(
     "border-2",
-    "border-red-600",
+    "border-neon-red",
     "ring-1",
-    "ring-red-500",
-    "bg-[rgba(255,0,0,0.25)]"
+    "ring-neon-red"
   );
   errorEl.classList.add("hidden");
   errorEl.textContent = "";

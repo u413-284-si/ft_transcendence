@@ -36,7 +36,7 @@ export function Input({
           ${acceptAttr}
           name="${name}"
           placeholder="${placeholder}"
-          class="w-full bg-gray-800 text-white border border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          class="w-full bg-emerald-dark text-white border border-emerald rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-cyan"
         />
         ${toggleButton}
       </div>
@@ -50,7 +50,7 @@ function getToggleButtonHTML(id: string): string {
     <button
       type="button"
       id="${id}-toggle"
-      class="absolute right-2 p-2 text-gray-300 hover:text-white"
+      class="absolute right-2 p-2 text-teal hover:text-white"
       aria-label="Toggle password visibility"
     >
       <span id="${id}-show-eye"> ${getShowEyeHtml()} </span>

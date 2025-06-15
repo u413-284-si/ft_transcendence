@@ -239,7 +239,7 @@ export class Tournament {
   public renderBracketHTML(layout: BracketLayout): string {
     let html = `
     <div class="w-full overflow-x-auto bg-black/90 p-4 rounded-lg">
-      <div class="flex flex-col md:flex-row justify-start gap-6 flex-wrap text-cyan-300">
+      <div class="flex flex-col md:flex-row justify-start gap-6 flex-wrap text-neon-cyan">
   `;
 
     for (const { round, matches } of layout.rounds) {
@@ -247,7 +247,7 @@ export class Tournament {
 
       html += `
       <div class="flex-1 flex flex-col">
-        <h3 class="text-center font-extrabold tracking-widest text-cyan-300 border-b-2 border-cyan-300 pb-2 mb-6 uppercase text-base md:text-lg">
+        <h3 class="text-center font-extrabold tracking-widest text-neon-cyan border-b-2 border-neon-cyan pb-2 mb-6 uppercase text-base md:text-lg">
           Round ${round}
         </h3>
         <div class="flex flex-col h-full justify-between space-y-4 ${roundSpacing}">
@@ -255,17 +255,14 @@ export class Tournament {
 
       for (const match of matches) {
         // Background and border for card
-        const cardBg = match.isPlayed
-          ? "bg-slate-800"
-          : match.isNext
-            ? "bg-black ring-2 ring-cyan-300"
-            : "bg-slate-900";
+        const cardBg =
+          !match.isPlayed && match.isNext
+            ? "bg-black ring-2 ring-neon-cyan"
+            : "bg-emerald";
 
-        const borderGlow = match.isNext
-          ? "shadow-[0_0_15px_rgba(34,211,238,0.6)]"
-          : "shadow-inner";
+        const borderGlow = match.isNext ? "shadow-neon-cyan" : "shadow-inner";
 
-        const textColor = match.isPlayed ? "text-cyan-500" : "text-cyan-300";
+        const textColor = match.isPlayed ? "text-teal" : "text-neon-cyan";
 
         html += `
         <div class="${cardBg} ${textColor} p-4 rounded-lg ${borderGlow} text-xs md:text-sm transition-all duration-300 ease-in-out">
@@ -281,7 +278,7 @@ export class Tournament {
             </div>
 
             <!-- Separator -->
-            <span class="text-cyan-400 font-light">VS</span>
+            <span class="font-light">VS</span>
 
             <!-- Player 2 -->
             <div class="flex items-center gap-2 w-[150px]">
