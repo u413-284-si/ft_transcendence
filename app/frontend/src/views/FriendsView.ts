@@ -19,6 +19,7 @@ import { Form } from "../components/Form.js";
 import { Span } from "../components/Span.js";
 import { Header1 } from "../components/Header1.js";
 import { FriendListItem } from "../components/FriendListItem.js";
+import { Header2 } from "../components/Header2.js";
 
 type RequestListType = "friend" | "incoming" | "outgoing";
 
@@ -102,8 +103,7 @@ export default class FriendsView extends AbstractView {
             }),
             Span({
               id: "status-message",
-              className:
-                "transition-opacity duration-500 opacity-0 text-green-600 text-sm mt-1",
+              className: "transition-opacity duration-500 opacity-0",
               variant: "success"
             })
           ],
@@ -119,17 +119,19 @@ export default class FriendsView extends AbstractView {
             variant: "default"
           })}
           <div class="mb-4">
-            <h2 class="text-xl font-bold text-blue-900 mb-2">
-              Incoming Friend Requests
-            </h2>
+            ${Header2({
+              text: "Incoming Friend Requests",
+              variant: "default"
+            })}
             <div id="request-list-in">
               ${this.createRequestListHTML("incoming")}
             </div>
           </div>
           <div>
-            <h2 class="text-xl font-bold text-blue-900 mb-2">
-              Outgoing Friend Requests
-            </h2>
+            ${Header2({
+              text: "Outgoing Friend Requests",
+              variant: "default"
+            })}
             <div id="request-list-out">
               ${this.createRequestListHTML("outgoing")}
             </div>
@@ -146,7 +148,7 @@ export default class FriendsView extends AbstractView {
     switch (type) {
       case "friend":
         filtered = this.friendRequests.filter((r) => r.status === "ACCEPTED");
-        emptyMessage = "You have no friends yet 😢";
+        emptyMessage = "You have no friends yet";
         break;
       case "incoming":
         filtered = this.friendRequests.filter(
@@ -165,7 +167,7 @@ export default class FriendsView extends AbstractView {
     }
 
     if (filtered.length === 0) {
-      return `<p class="text-gray-500 italic">${emptyMessage}</p>`;
+      return `<p class="text-grey">${emptyMessage}</p>`;
     }
 
     return `
@@ -300,8 +302,8 @@ export default class FriendsView extends AbstractView {
     const statusSpan = container.querySelector(".online-status")!;
 
     statusSpan.textContent = isOnline ? "Online" : "Offline";
-    statusSpan.classList.toggle("text-green-500", isOnline);
-    statusSpan.classList.toggle("text-gray-400", !isOnline);
+    statusSpan.classList.toggle("text-neon-green", isOnline);
+    statusSpan.classList.toggle("text-grey", !isOnline);
   };
 
   private handleSendRequestButton = async (event: Event): Promise<void> => {
