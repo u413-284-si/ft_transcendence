@@ -1,6 +1,7 @@
 import { sanitizeHTML } from "./sanitize.js";
 import { auth } from "./AuthManager.js";
 import { Link } from "./components/Link.js";
+import { Drawer } from "./components/Drawer.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -30,6 +31,7 @@ export class Layout {
     const html = this.getShellHTML();
     const cleanHTML = sanitizeHTML(html);
     this.rootEl.innerHTML = cleanHTML;
+    this.attachAvatarDrawerHandler();
   }
 
   private getShellHTML(): string {
@@ -63,7 +65,7 @@ export class Layout {
           <img
             src="${userAvatarUrl}"
             alt="Avatar"
-            class="w-14 h-14 rounded-full border-2 border-neon-orange shadow-lg"
+            class="w-14 h-14 rounded-full border-3 border-white shadow-lg cursor-pointer"
           />
         </div>
       </nav>`;
@@ -82,5 +84,27 @@ export class Layout {
     >
       <p class="text-sm">Pong Game &copy; 2025</p>
     </div>`;
+  }
+
+  private attachAvatarDrawerHandler(): void {
+    const avatar = this.rootEl.querySelector("img[alt='Avatar']");
+    if (!avatar) return;
+
+    const drawer = new Drawer([
+      { label: "Edit Profile", icon: "user", href: "/profile" },
+      { label: "User Stats", icon: "stats", href: "/stats" },
+      { label: "Friends", icon: "friends", href: "/friends" },
+      { label: "Settings", icon: "settings", href: "/settings" },
+      {
+        label: "Logout",
+        icon: "logout",
+        onClick: async () => {
+          await auth.logout();
+          this.update("guest");
+        }
+      }
+    ]);
+
+    avatar.addEventListener("click", () => drawer.open());
   }
 }
