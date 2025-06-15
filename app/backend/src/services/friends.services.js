@@ -1,5 +1,5 @@
 import prisma from "../prisma/prismaClient.js";
-import { isUserOnline } from "./online_status.services.js";
+import { isUserOnline } from "./events/presence.services.js";
 
 export async function getUserFriends(userId) {
   const acceptedRequests = await prisma.friendRequest.findMany({
