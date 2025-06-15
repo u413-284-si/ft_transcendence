@@ -28,6 +28,8 @@
     color-mix(in oklch, oklch(0.83 0.16 95.93) 70%, transparent);
   --shadow-neon-red: 0 0 30px
     color-mix(in oklch, oklch(0.6033 0.2388 28.49) 70%, transparent);
+      --shadow-neon-green: 0 0 30px
+    color-mix(in oklch, oklch(0.74 0.18 145.78) 70%, transparent);
 
   --animate-glow-orange: glow-orange 2.5s infinite ease-in-out;
   @keyframes glow-orange {
@@ -104,7 +106,7 @@
     }
   }
 
-  --animate-zoomout: zoomout 0.3s ease-out;
+  --animate-zoomout: zoomout 0.4s ease-out;
   @keyframes zoomout {
     0% {
       opacity: 1;

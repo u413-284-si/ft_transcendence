@@ -17,31 +17,31 @@ const toastVariants: Record<
 > = {
   success: {
     icon: "✅",
-    textColor: "text-green-400",
-    progressColor: "bg-green-400",
-    borderColor: "border-green-400",
-    shadowColor: "shadow-[0_0_10px_rgba(0,255,0,0.7)]"
+    textColor: "text-neon-green",
+    progressColor: "bg-neon-green",
+    borderColor: "border-neon-green",
+    shadowColor: "shadow-neon-green"
   },
   error: {
     icon: "⛔️",
-    textColor: "text-red-400",
-    progressColor: "bg-red-400",
-    borderColor: "border-red-400",
-    shadowColor: "shadow-[0_0_10px_rgba(255,0,0,0.7)]"
+    textColor: "text-neon-red",
+    progressColor: "bg-neon-red",
+    borderColor: "border-neon-red",
+    shadowColor: "shadow-neon-red"
   },
   warning: {
     icon: "⚡️",
-    textColor: "text-yellow-300",
-    progressColor: "bg-yellow-300",
-    borderColor: "border-yellow-300",
-    shadowColor: "shadow-[0_0_10px_rgba(255,255,0,0.7)]"
+    textColor: "text-neon-yellow",
+    progressColor: "bg-neon-yellow",
+    borderColor: "border-neon-yellow",
+    shadowColor: "shadow-neon-yellow"
   },
   info: {
     icon: "💡",
-    textColor: "text-cyan-300",
-    progressColor: "bg-cyan-300",
-    borderColor: "border-cyan-300",
-    shadowColor: "shadow-[0_0_10px_rgba(0,255,255,0.7)]"
+    textColor: "text-neon-cyan",
+    progressColor: "bg-neon-cyan",
+    borderColor: "border-neon-cyan",
+    shadowColor: "shadow-neon-cyan"
   }
 };
 
@@ -52,7 +52,7 @@ export function Toast({ variant, text }: ToastOptions): string {
     <li
       class="relative flex justify-between items-center p-4 mb-2 rounded-md
       bg-black/60 border ${borderColor} ${shadowColor}
-      transition-transform duration-300 group max-w-sm break-words animate-fade-in-right"
+      group max-w-sm break-words animate-fade-in-right"
     >
       <div class="flex items-center space-x-3">
         <span class="text-2xl">${icon}</span>
