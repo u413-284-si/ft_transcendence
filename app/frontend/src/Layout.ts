@@ -65,7 +65,7 @@ export class Layout {
           <img
             src="${userAvatarUrl}"
             alt="Avatar"
-            class="w-14 h-14 rounded-full border-2 border-neon-orange shadow-lg"
+            class="w-14 h-14 rounded-full border-3 border-white shadow-lg cursor-pointer"
           />
         </div>
       </nav>`;
