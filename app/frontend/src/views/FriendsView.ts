@@ -10,7 +10,7 @@ import {
 import { getUserByUsername } from "../services/userServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
 import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
-import { escapeHTML, getEl, getInputEl } from "../utility.js";
+import { getEl, getInputEl } from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
 import { Button } from "../components/Button.js";
@@ -18,6 +18,10 @@ import { Input } from "../components/Input.js";
 import { Form } from "../components/Form.js";
 import { Span } from "../components/Span.js";
 import { Header1 } from "../components/Header1.js";
+import { FriendListItem } from "../components/FriendListItem.js";
+import { Header2 } from "../components/Header2.js";
+
+type RequestListType = "friend" | "incoming" | "outgoing";
 
 export default class FriendsView extends AbstractView {
   private friendRequests: FriendRequest[] = [];
@@ -38,18 +42,28 @@ export default class FriendsView extends AbstractView {
     this.addListeners();
   }
 
-  private refreshFriendList(): void {
-    const html = this.createFriendListHTML();
+  private refreshRequestList(type: RequestListType): void {
+    const html = this.createRequestListHTML(type);
     const cleanHTML = sanitizeHTML(html);
-    getEl("friend-list").innerHTML = cleanHTML;
-    this.addFriendListListeners();
-  }
 
-  private refreshRequestList(): void {
-    const html = this.createRequestListHTML();
-    const cleanHTML = sanitizeHTML(html);
-    getEl("request-list").innerHTML = cleanHTML;
-    this.addRequestListListeners();
+    let containerId = "";
+
+    switch (type) {
+      case "friend":
+        containerId = "friend-list";
+        break;
+      case "incoming":
+        containerId = "request-list-in";
+        break;
+      case "outgoing":
+        containerId = "request-list-out";
+        break;
+      default:
+        throw new Error(`Unknown list type: ${type}`);
+    }
+
+    getEl(containerId).innerHTML = cleanHTML;
+    this.addRequestListListeners(type);
   }
 
   createHTML(): string {
@@ -61,7 +75,7 @@ export default class FriendsView extends AbstractView {
             id: "friends-header",
             variant: "default"
           })}
-          <div id="friend-list">${this.createFriendListHTML()}</div>
+          <div id="friend-list">${this.createRequestListHTML("friend")}</div>
         </div>
       </section>
 
@@ -89,8 +103,7 @@ export default class FriendsView extends AbstractView {
             }),
             Span({
               id: "status-message",
-              className:
-                "transition-opacity duration-500 opacity-0 text-green-600 text-sm mt-1",
+              className: "transition-opacity duration-500 opacity-0",
               variant: "success"
             })
           ],
@@ -99,144 +112,69 @@ export default class FriendsView extends AbstractView {
       </section>
 
       <section>
-        <div class="flex flex-col justify-center items-center gap-4 mb-12">
+        <div class="flex flex-col justify-center items-center gap-4">
           ${Header1({
             text: "Friend Requests",
             id: "friends-request-header",
             variant: "default"
           })}
-          <div id="request-list">${this.createRequestListHTML()}</div>
+          <div class="mb-4">
+            ${Header2({
+              text: "Incoming Friend Requests",
+              variant: "default"
+            })}
+            <div id="request-list-in">
+              ${this.createRequestListHTML("incoming")}
+            </div>
+          </div>
+          <div>
+            ${Header2({
+              text: "Outgoing Friend Requests",
+              variant: "default"
+            })}
+            <div id="request-list-out">
+              ${this.createRequestListHTML("outgoing")}
+            </div>
+          </div>
         </div>
       </section>
     `;
   }
 
-  private createFriendListHTML(): string {
-    const acceptedRequests = this.friendRequests.filter(
-      (r) => r.status === "ACCEPTED"
-    );
+  private createRequestListHTML(type: RequestListType): string {
+    let filtered: FriendRequest[] = [];
+    let emptyMessage = "";
 
-    let html = ``;
-
-    if (acceptedRequests.length === 0) {
-      html += /* HTML */ ` <p class="text-gray-500 italic">
-        You have no friends yet 😢
-      </p>`;
-      return html;
+    switch (type) {
+      case "friend":
+        filtered = this.friendRequests.filter((r) => r.status === "ACCEPTED");
+        emptyMessage = "You have no friends yet";
+        break;
+      case "incoming":
+        filtered = this.friendRequests.filter(
+          (r) => r.status === "PENDING" && !r.sender
+        );
+        emptyMessage = "No incoming friend requests";
+        break;
+      case "outgoing":
+        filtered = this.friendRequests.filter(
+          (r) => r.status === "PENDING" && r.sender
+        );
+        emptyMessage = "No outgoing friend requests";
+        break;
+      default:
+        throw new Error(`Unknown request list type: ${type}`);
     }
 
-    html += `<ul class="space-y-4">`;
-
-    for (const request of acceptedRequests) {
-      const onlineStatusClass = request.isOnline
-        ? "text-green-500"
-        : "text-gray-400";
-      const onlineStatusText = request.isOnline ? "Online" : "Offline";
-
-      html += /* HTML */ `
-        <li
-          class="bg-blue-800 p-4 rounded shadow-md flex justify-between items-center"
-          data-request-id="${request.id}"
-          data-friend-id="${request.friendId}"
-        >
-          <span class="flex-1 truncate"
-            >${escapeHTML(request.friendUsername)}</span
-          >
-          <div class="flex items-center space-x-4">
-            <span class="online-status font-semibold ${onlineStatusClass}"
-              >${onlineStatusText}</span
-            >
-            <button
-              class="remove-friend-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-            >
-              Remove
-            </button>
-          </div>
-        </li>
-      `;
+    if (filtered.length === 0) {
+      return `<p class="text-grey">${emptyMessage}</p>`;
     }
 
-    html += `</ul>`;
-    return html;
-  }
-
-  private createRequestListHTML(): string {
-    const incoming = this.friendRequests.filter(
-      (r) => !r.sender && r.status === "PENDING"
-    );
-    const outgoing = this.friendRequests.filter(
-      (r) => r.sender && r.status === "PENDING"
-    );
-
-    let html = ``;
-
-    // 🔹 Incoming Section
-    html += `<div>
-      <h2 class="text-xl font-bold text-blue-900 mb-2">Incoming Friend Requests</h2>`;
-
-    if (incoming.length === 0) {
-      html += `<p class="text-gray-500 italic">No incoming requests</p>`;
-    } else {
-      html += `<ul class="space-y-2">`;
-      for (const request of incoming) {
-        html += /* HTML */ `
-          <li
-            class="flex justify-between items-center border bg-blue-800 p-4 rounded shadow-md"
-            data-request-id="${request.id}"
-          >
-            <span class="truncate">${escapeHTML(request.friendUsername)}</span>
-            <div class="space-x-2">
-              <button
-                class="accept-btn bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-              >
-                Accept
-              </button>
-              <button
-                class="decline-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-              >
-                Decline
-              </button>
-            </div>
-          </li>
-        `;
-      }
-      html += `</ul>`;
-    }
-
-    html += `</div>`;
-
-    // 🔹 Outgoing Section
-    html += `<div class="mt-8">
-      <h2 class="text-xl font-bold text-blue-900 mb-2">Outgoing Friend Requests</h2>`;
-
-    if (outgoing.length === 0) {
-      html += `<p class="text-gray-500 italic">No outgoing requests</p>`;
-    } else {
-      html += `<ul class="space-y-2">`;
-      for (const request of outgoing) {
-        html += /* HTML */ `
-          <li
-            class="flex justify-between items-center border bg-blue-800 p-4 rounded shadow-md"
-            data-request-id="${request.id}"
-          >
-            <span class="truncate">${escapeHTML(request.friendUsername)}</span>
-            <div class="space-x-2">
-              <span class="text-gray-500 italic">Pending...</span>
-              <button
-                class="delete-request-btn bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        `;
-      }
-      html += `</ul>`;
-    }
-
-    html += `</div>`;
-
-    return html;
+    return `
+    <ul class="space-y-4">
+      ${filtered.map((r) => FriendListItem(r, type)).join("")}
+    </ul>
+  `;
   }
 
   protected addListeners(): void {
@@ -256,20 +194,33 @@ export default class FriendsView extends AbstractView {
       }
     );
 
-    this.addFriendListListeners();
-    this.addRequestListListeners();
+    this.addRequestListListeners("friend");
+    this.addRequestListListeners("incoming");
+    this.addRequestListListeners("outgoing");
   }
 
-  private addFriendListListeners = () => {
-    document.querySelectorAll(".remove-friend-btn").forEach((btn) => {
+  private addButtonListeners = (
+    selector: string,
+    confirmMessage: string | null,
+    refreshTypes: RequestListType[] | null,
+    handler: (event: Event) => Promise<void> | void
+  ): void => {
+    document.querySelectorAll(selector).forEach((btn) => {
       btn.addEventListener(
         "click",
         async (event) => {
-          await this.handleDeleteButton(
-            event,
-            "Are you sure you want to remove this friend?"
-          );
-          this.refreshFriendList();
+          if (confirmMessage) {
+            const confirmed = confirm(confirmMessage);
+            if (!confirmed) return;
+          }
+
+          await handler(event);
+
+          if (refreshTypes) {
+            for (const type of refreshTypes) {
+              this.refreshRequestList(type);
+            }
+          }
         },
         {
           signal: this.controller.signal
@@ -278,51 +229,47 @@ export default class FriendsView extends AbstractView {
     });
   };
 
-  private addRequestListListeners = () => {
-    document.querySelectorAll(".accept-btn").forEach((btn) => {
-      btn.addEventListener("click", this.handleAcceptButton, {
-        signal: this.controller.signal
-      });
-    });
+  private addRequestListListeners = (type: RequestListType) => {
+    switch (type) {
+      case "friend":
+        this.addButtonListeners(
+          ".remove-friend-btn",
+          "Are you sure you want to remove this friend?",
+          ["friend"],
+          this.handleDeleteButton
+        );
+        break;
 
-    document.querySelectorAll(".decline-btn").forEach((btn) => {
-      btn.addEventListener(
-        "click",
-        async (event) => {
-          await this.handleDeleteButton(
-            event,
-            "Are you sure you want to decline this request?"
-          );
-          this.refreshRequestList();
-        },
-        {
-          signal: this.controller.signal
-        }
-      );
-    });
+      case "incoming":
+        this.addButtonListeners(
+          ".accept-btn",
+          null,
+          ["incoming", "friend"],
+          this.handleAcceptButton
+        );
+        this.addButtonListeners(
+          ".decline-btn",
+          "Are you sure you want to decline this request?",
+          ["incoming"],
+          this.handleDeleteButton
+        );
+        break;
 
-    document.querySelectorAll(".delete-request-btn").forEach((btn) => {
-      btn.addEventListener(
-        "click",
-        async (event) => {
-          await this.handleDeleteButton(
-            event,
-            "Are you sure you want to delete this request?"
-          );
-          this.refreshRequestList();
-        },
-        {
-          signal: this.controller.signal
-        }
-      );
-    });
+      case "outgoing":
+        this.addButtonListeners(
+          ".delete-request-btn",
+          "Are you sure you want to delete this request?",
+          ["outgoing"],
+          this.handleDeleteButton
+        );
+        break;
+    }
   };
 
-  private handleDeleteButton = async (event: Event, msg: string) => {
+  private handleDeleteButton = async (event: Event) => {
     try {
       const btn = event.currentTarget as HTMLButtonElement;
       const requestId = this.getRequestIdFromButton(btn);
-      if (!confirm(msg)) return;
       const request = await deleteFriendRequest(requestId);
       this.removeFriendRequest(request.id);
     } catch (error) {
@@ -337,8 +284,6 @@ export default class FriendsView extends AbstractView {
       const request = await acceptFriendRequest(requestid);
       this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
-      this.refreshRequestList();
-      this.refreshFriendList();
     } catch (error) {
       router.handleError("Error in handleAcceptButton()", error);
     }
@@ -357,8 +302,8 @@ export default class FriendsView extends AbstractView {
     const statusSpan = container.querySelector(".online-status")!;
 
     statusSpan.textContent = isOnline ? "Online" : "Offline";
-    statusSpan.classList.toggle("text-green-500", isOnline);
-    statusSpan.classList.toggle("text-gray-400", !isOnline);
+    statusSpan.classList.toggle("text-neon-green", isOnline);
+    statusSpan.classList.toggle("text-grey", !isOnline);
   };
 
   private handleSendRequestButton = async (event: Event): Promise<void> => {
@@ -385,12 +330,12 @@ export default class FriendsView extends AbstractView {
       this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
       inputEl.value = "";
-      this.refreshRequestList();
+      this.refreshRequestList("outgoing");
       if (request.status === "PENDING") {
         this.showStatusMessage("Successfully sent friend request");
       } else if (request.status === "ACCEPTED") {
         this.showStatusMessage("Added friend!");
-        this.refreshFriendList();
+        this.refreshRequestList("friend");
       }
     } catch (error) {
       console.error(error);

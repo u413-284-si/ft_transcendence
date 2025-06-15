@@ -1,6 +1,11 @@
 import prisma from "../prisma/prismaClient.js";
 import { isUserOnline } from "./events/presence.services.js";
 
+const friendRequestInclude = {
+  sender: { select: { id: true, username: true, avatar: true } },
+  receiver: { select: { id: true, username: true, avatar: true } }
+};
+
 export async function getUserFriends(userId) {
   const acceptedRequests = await prisma.friendRequest.findMany({
     where: {
@@ -42,6 +47,7 @@ function formatFriendRequest(request, userId) {
     sender: isSender,
     friendId: friend.id,
     friendUsername: friend.username,
+    friendAvatar: friend.avatar,
     isOnline: isOnline
   };
 }
@@ -51,10 +57,7 @@ export async function getAllUserFriendRequests(userId) {
     where: {
       OR: [{ senderId: userId }, { receiverId: userId }]
     },
-    include: {
-      sender: { select: { id: true, username: true } },
-      receiver: { select: { id: true, username: true } }
-    }
+    include: friendRequestInclude
   });
 
   const formatted = requests.map((req) => formatFriendRequest(req, userId));
@@ -70,10 +73,7 @@ export async function getUserFriendRequest(userId, friendId) {
         { senderId: friendId, receiverId: userId }
       ]
     },
-    include: {
-      sender: { select: { id: true, username: true } },
-      receiver: { select: { id: true, username: true } }
-    }
+    include: friendRequestInclude
   });
   if (!request) return;
   const formatted = formatFriendRequest(request, userId);
@@ -87,10 +87,7 @@ export async function createFriendRequest(userId, friendId) {
       receiverId: friendId,
       status: "PENDING"
     },
-    include: {
-      sender: { select: { id: true, username: true } },
-      receiver: { select: { id: true, username: true } }
-    }
+    include: friendRequestInclude
   });
   const formatted = formatFriendRequest(request, userId);
   return formatted;
@@ -100,10 +97,7 @@ export async function updateFriendRequest(id, userId, status) {
   const request = await prisma.friendRequest.update({
     where: { id, OR: [{ senderId: userId }, { receiverId: userId }] },
     data: { status },
-    include: {
-      sender: { select: { id: true, username: true } },
-      receiver: { select: { id: true, username: true } }
-    }
+    include: friendRequestInclude
   });
   const formatted = formatFriendRequest(request, userId);
   return formatted;
@@ -112,10 +106,7 @@ export async function updateFriendRequest(id, userId, status) {
 export async function deleteFriendRequest(id, userId) {
   const request = await prisma.friendRequest.delete({
     where: { id, OR: [{ senderId: userId }, { receiverId: userId }] },
-    include: {
-      sender: { select: { id: true, username: true } },
-      receiver: { select: { id: true, username: true } }
-    }
+    include: friendRequestInclude
   });
   const formatted = formatFriendRequest(request, userId);
   return formatted;
@@ -124,10 +115,7 @@ export async function deleteFriendRequest(id, userId) {
 export async function getFriendRequest(id, userId) {
   const request = await prisma.friendRequest.findUniqueOrThrow({
     where: { id, OR: [{ senderId: userId }, { receiverId: userId }] },
-    include: {
-      sender: { select: { id: true, username: true } },
-      receiver: { select: { id: true, username: true } }
-    }
+    include: friendRequestInclude
   });
   const formatted = formatFriendRequest(request, userId);
   return formatted;
