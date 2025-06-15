@@ -110,15 +110,16 @@ await fastify.register(oAuth2, {
     client: {
       id: env.oAuth2ClientId,
       secret: env.oAuth2ClientSecret
-    },
-    auth: oAuth2.GOOGLE_CONFIGURATION
+    }
   },
   startRedirectPath: "/login/google",
   callbackUri: "http://localhost:4000/api/auth/google/callback",
   callbackUriParams: {
-    access_type: "offline"
+    prompt: "select_account"
   },
-
+  discovery: {
+    issuer: "https://accounts.google.com/.well-known/openid-configuration"
+  },
   cookie: {
     httpOnly: true,
     secure: true,
