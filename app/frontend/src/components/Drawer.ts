@@ -96,7 +96,7 @@ export class Drawer {
 
     const closeBtn = document.createElement("button");
     closeBtn.textContent = "Close";
-    closeBtn.className = "mt-4 text-red-500 hover:underline px-4 cursor-pointer";
+    closeBtn.className = "mt-4 text-neon-red hover:underline px-4 cursor-pointer";
     closeBtn.addEventListener("click", () => this.close());
     container.appendChild(closeBtn);
 
