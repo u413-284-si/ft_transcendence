@@ -91,12 +91,13 @@ export class Layout {
     if (!avatar) return;
 
     const drawer = new Drawer([
-      { label: "Edit Profile", href: "/profile" },
-      { label: "User Stats", href: "/stats" },
-      { label: "Friends", href: "/friends" },
-      { label: "Settings", href: "/settings" },
+      { label: "Edit Profile", icon: "user", href: "/profile" },
+      { label: "User Stats", icon: "stats", href: "/stats" },
+      { label: "Friends", icon: "friends", href: "/friends" },
+      { label: "Settings", icon: "settings", href: "/settings" },
       {
         label: "Logout",
+        icon: "logout",
         onClick: async () => {
           await auth.logout();
           this.update("guest");
