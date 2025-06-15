@@ -93,7 +93,15 @@ export class Layout {
     const drawer = new Drawer([
       { label: "Edit Profile", href: "/profile" },
       { label: "User Stats", href: "/stats" },
-      { label: "Settings", href: "/settings" }
+      { label: "Friends", href: "/friends" },
+      { label: "Settings", href: "/settings" },
+      {
+        label: "Logout",
+        onClick: async () => {
+          await auth.logout();
+          this.update("guest");
+        }
+      }
     ]);
 
     avatar.addEventListener("click", () => drawer.open());
