@@ -4,6 +4,10 @@ import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
 import { escapeHTML } from "../utility.js";
+import { Header1 } from "../components/Header1.js";
+import { Paragraph } from "../components/Paragraph.js";
+import { Button } from "../components/Button.js";
+import { Form } from "../components/Form.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -34,59 +38,49 @@ export default class MatchAnnouncementView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
-      <div class="max-w-4xl mx-auto px-4 py-8 space-y-10">
-        <!-- Match Announcement Card -->
-        <section>
-          <div
-            class="bg-blue-50 border-l-4 border-blue-400 rounded-2xl shadow p-6 text-center space-y-4"
-          >
-            <h1 class="text-4xl font-extrabold text-blue-700">
-              🎮 Next Match!
-            </h1>
+      <!-- Match Announcement -->
+      <section>
+        ${Form({
+          children: [
+            Header1({
+              text: "Next Match!",
+              variant: "default"
+            }),
+            Paragraph({
+              text: `Round ${this.roundNumber} - Match ${this.matchNumber}`
+            }),
+            Paragraph({
+              text: `<b>${escapeHTML(this.player1)}</b>
+              vs <b>${escapeHTML(this.player2)}</b>`
+            }),
+            Button({
+              text: "Start Match",
+              variant: "default",
+              type: "submit"
+            })
+          ],
+          id: "match-form"
+        })}
+      </section>
 
-            <p class="text-lg text-gray-700">
-              <span class="font-medium">Round</span> ${this.roundNumber} &mdash;
-              <span class="font-medium">Match</span> ${this.matchNumber}
-            </p>
+      <!-- Tournament Status -->
+      <section>
+        <div class="pt-18 p-6 text-center space-y-6">
+          ${Header1({
+            text: "Tournament Status",
+            variant: "default"
+          })}
 
-            <p class="text-2xl text-gray-900">
-              <b>${escapeHTML(this.player1)}</b>
-              vs <b>${escapeHTML(this.player2)}</b>
-            </p>
+          <div class="mb-6">${this.tournament.getBracketAsHTML()}</div>
 
-            <form id="match-form">
-              <button
-                type="submit"
-                class="mt-4 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
-              >
-                Start Match
-              </button>
-            </form>
-          </div>
-        </section>
-
-        <!-- Tournament Status Card -->
-        <section>
-          <div
-            class="bg-white border border-gray-300 rounded-2xl shadow p-6 text-center space-y-6"
-          >
-            <h2 class="text-2xl font-bold text-gray-800">
-              📊 Tournament Status
-            </h2>
-
-            <div class="mb-6">${this.tournament.getBracketAsHTML()}</div>
-
-            <div>
-              <button
-                id="abort-tournament"
-                class="px-6 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition"
-              >
-                Abort Tournament
-              </button>
-            </div>
-          </div>
-        </section>
-      </div>
+          ${Button({
+            id: "abort-tournament",
+            text: "Abort Tournament",
+            variant: "danger",
+            type: "button"
+          })}
+        </div>
+      </section>
     `;
   }
 
