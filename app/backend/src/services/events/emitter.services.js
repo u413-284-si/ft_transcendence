@@ -4,7 +4,12 @@ const userEmitters = new Map(); // userId → EventEmitter
 
 export function getOrCreateEmitter(userId) {
   if (!userEmitters.has(userId)) {
-    userEmitters.set(userId, new EventEmitter());
+    const newEmitter = new EventEmitter();
+    newEmitter.on("error", (error) => {
+      console.error("Whoops! There was an error: ", error);
+    });
+
+    userEmitters.set(userId, newEmitter);
   }
   return userEmitters.get(userId);
 }
