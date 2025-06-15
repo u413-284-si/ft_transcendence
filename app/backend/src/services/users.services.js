@@ -137,3 +137,19 @@ export async function getUserByUsername(username) {
   });
   return user;
 }
+
+export async function getUserByEmail(email) {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, username: true }
+  });
+  return user;
+}
+
+export async function getUserAuthProvider(id) {
+  const user = await prisma.authentication.findUniqueOrThrow({
+    where: { userId: id },
+    select: { authProvider: true }
+  });
+  return user.authProvider;
+}
