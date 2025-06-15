@@ -7,7 +7,7 @@ export function FriendListItem(
   type: "friend" | "incoming" | "outgoing"
 ): string {
   const isOnline = request.isOnline ?? false;
-  const onlineStatusClass = isOnline ? "text-cyan-400" : "text-gray-500";
+  const onlineStatusClass = isOnline ? "text-neon-green" : "text-grey";
   const onlineStatusText = isOnline ? "Online" : "Offline";
 
   const username = escapeHTML(request.friendUsername);
@@ -16,7 +16,7 @@ export function FriendListItem(
     <img
       src="${request.friendAvatar || "/images/default-avatar.png"}"
       alt="${username}'s avatar"
-      class="w-12 h-12 rounded-full border-2 border-cyan-400 shadow-md shadow-cyan-500/30 object-cover"
+      class="w-12 h-12 rounded-full border-2 border-neon-cyan object-cover"
     />
   `;
 
@@ -44,7 +44,7 @@ export function FriendListItem(
     `;
   } else if (type === "outgoing") {
     actionHTML = `
-      <span class="text-gray-500 italic">Pending...</span>
+      <span class="text-grey0 italic">Pending...</span>
       ${Button({
         text: "Delete",
         variant: "danger",
@@ -55,13 +55,13 @@ export function FriendListItem(
 
   return /* HTML */ `
     <li
-      class="bg-[#0f0f0f] border border-cyan-400/50 rounded-xl p-4 shadow-md shadow-cyan-500/20 flex items-center space-x-4 hover:shadow-cyan-400/40 transition duration-300"
+      class="bg-emerald-dark border border-teal rounded-xl p-4 shadow-md flex items-center space-x-4 hover:shadow-neon-cyan transition duration-300 w-xl h-24"
       data-request-id="${request.id}"
       data-friend-id="${request.friendId}"
     >
       ${avatar}
       <div class="flex-1 overflow-hidden">
-        <span class="block text-cyan-200 font-mono text-lg truncate">
+        <span class="block text-neon-cyan text-lg normal-case truncate">
           ${username}
         </span>
         ${type === "friend"
