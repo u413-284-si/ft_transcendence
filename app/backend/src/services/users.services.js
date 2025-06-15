@@ -17,7 +17,12 @@ const userSelect = {
   dateJoined: true
 };
 
-export async function createUser(username, email, hashedPassword) {
+export async function createUser(
+  username,
+  email,
+  hashedPassword,
+  authProvider
+) {
   const user = await prisma.user.create({
     data: {
       username: username,
@@ -25,7 +30,8 @@ export async function createUser(username, email, hashedPassword) {
       dateJoined: new Date(),
       authentication: {
         create: {
-          password: hashedPassword
+          password: hashedPassword,
+          authProvider: authProvider
         }
       },
       stats: { create: {} },
