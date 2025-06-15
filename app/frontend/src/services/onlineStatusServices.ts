@@ -1,4 +1,5 @@
-import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent";
+import { toaster } from "../Toaster.js";
+import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
 
 let eventSource: EventSource | null = null;
 
@@ -23,6 +24,7 @@ export function startOnlineStatusTracking() {
         userId,
         isOnline: status === "online"
       };
+      toaster.info("A friend came online");
       window.dispatchEvent(new CustomEvent("friendStatusChange", { detail }));
     } catch (e) {
       console.error("Failed to parse SSE message", e);
