@@ -36,7 +36,7 @@ export function Button({
     text = googleSVG();
   }
   const classes = [
-    "inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 uppercase",
+    "inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan uppercase",
     buttonVariants[variant],
     buttonSizes[size],
     className
