@@ -1,4 +1,4 @@
-export type HeaderVariant = "default" | "error" | "success" | "warning";
+export type HeaderVariant = "default" | "error";
 
 export type Header2Options = {
   text: string;
@@ -8,9 +8,7 @@ export type Header2Options = {
 
 const headerVariants: Record<HeaderVariant, string> = {
   default: "text-3xl font-bold text-white",
-  error: "text-3xl font-bold text-neon-bordeaux",
-  success: "text-3xl font-bold text-neon-green",
-  warning: "text-3xl font-bold text-neon-yellow"
+  error: "text-3xl font-bold text-neon-red"
 };
 
 export function Header2({

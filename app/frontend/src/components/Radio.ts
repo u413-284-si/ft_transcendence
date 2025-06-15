@@ -23,7 +23,7 @@ export function Radio({
         name="${name}"
         value="${value}"
         ${checked ? "checked" : ""}
-        class="text-orange-500 focus:ring-2 focus:ring-orange-400"
+        class="accent-neon-cyan focus:outline-none focus-visible:ring-2 focus-visible:ring-teal"
       />
       <label for="${id}" class="text-white text-sm">${label}</label>
     </div>

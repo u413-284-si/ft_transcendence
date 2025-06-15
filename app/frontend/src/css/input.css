@@ -6,6 +6,7 @@
 
   --color-black: oklch(0 0 0);
   --color-white: oklch(1 0 0);
+  --color-grey: oklch(0.872 0.01 258.338);
   --color-emerald-dark: oklch(0.1985 0.0312 214.01);
   --color-emerald: oklch(0.2387 0.0425 216.62);
   --color-emerald-light: oklch(0.3266 0.0572 213.33);

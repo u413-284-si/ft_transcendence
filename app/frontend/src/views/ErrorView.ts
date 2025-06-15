@@ -43,7 +43,7 @@ export default class ErrorView extends AbstractView {
         ${Button({
           id: "reload-btn",
           text: "Reload",
-          variant: "outline",
+          variant: "default",
           size: "md",
           type: "button"
         })}

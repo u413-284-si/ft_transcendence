@@ -18,9 +18,7 @@ export default class ResultsView extends AbstractView {
     return /* HTML */ `
       <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
         <!-- Header Section -->
-        <div
-          class="border border-cyan-500/25 rounded-2xl shadow p-6 text-center space-y-4"
-        >
+        <div class="p-6 text-center space-y-4">
           ${Header1({
             text: "Tournament Results",
             id: "tournament-results-header",
@@ -33,9 +31,7 @@ export default class ResultsView extends AbstractView {
         </div>
 
         <!-- Winner Section -->
-        <div
-          class="border border-cyan-500/25 rounded-2xl shadow p-6 text-center space-y-4"
-        >
+        <div class="p-6 text-center space-y-4">
           ${Header2({
             text: "Champion",
             id: "tournament-champion-header",

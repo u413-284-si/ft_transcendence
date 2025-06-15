@@ -1,4 +1,5 @@
 import { Radio } from "./Radio.js";
+import { Span } from "./Span.js";
 
 export type RadioGroupOption = {
   id: string;
@@ -34,6 +35,7 @@ export function RadioGroup({
       })
     )
     .join("\n");
+  const errorSpan = errorId ? Span({ id: errorId, variant: "error" }) : "";
 
   return /* HTML */ `
     <div class="flex flex-col gap-1">
@@ -41,9 +43,7 @@ export function RadioGroup({
         ? `<span class="text-sm font-medium text-white">${label}</span>`
         : ""}
       <div class="flex ${layoutClass}">${radios}</div>
-      ${errorId
-        ? `<span id="${errorId}" class="text-red-600 text-sm mt-1 hidden"></span>`
-        : ""}
     </div>
+    ${errorSpan}
   `;
 }
