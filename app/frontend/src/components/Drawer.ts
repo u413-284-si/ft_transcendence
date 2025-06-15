@@ -1,13 +1,13 @@
 import { auth } from "../AuthManager.js";
 
-export type DrawerLink = { label: string; href: string };
+export type DrawerItem = { label: string; href?: string; onClick?: () => void };
 
 export class Drawer {
-  private links: DrawerLink[];
+  private links: DrawerItem[];
   private drawerEl: HTMLElement;
   private overlayEl: HTMLElement;
 
-  constructor(links: DrawerLink[]) {
+  constructor(links: DrawerItem[]) {
     this.links = links;
     this.drawerEl = this.createDrawer();
     this.overlayEl = this.createOverlay();
@@ -56,14 +56,25 @@ export class Drawer {
 
     const linkContainer = document.createElement("div");
     linkContainer.className = "mt-12 space-y-2";
-    for (const { label, href } of this.links) {
+
+    for (const { label, href, onClick } of this.links) {
       const link = document.createElement("a");
-      link.href = href;
+      link.href = href || "#";
       link.textContent = label;
       link.setAttribute("data-link", "");
       link.className = "block hover:underline text-left px-4";
+
+      if (onClick) {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          onClick();
+          this.close();
+        });
+      }
+
       linkContainer.appendChild(link);
     }
+
     container.appendChild(linkContainer);
 
     const closeBtn = document.createElement("button");
