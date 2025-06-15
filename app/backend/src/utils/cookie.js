@@ -23,3 +23,7 @@ export function setAuthCookies(reply, accessToken, refreshToken) {
       expires: refreshTokenTimeToExpire
     });
 }
+
+export function clearCookies(reply, firstCookieName, secondCookieName) {
+  return reply.clearCookie(firstCookieName).clearCookie(secondCookieName);
+}
