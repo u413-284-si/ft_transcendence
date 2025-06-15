@@ -6,11 +6,12 @@ import {
   getTokenHash,
   deleteUserRefreshToken
 } from "../services/auth.services.js";
-import { getTokenData } from "../services/users.services.js";
+import { getTokenData, getUserByEmail } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
-import { setAuthCookies } from "../utils/cookie.js";
+import { setAuthCookies, clearCookies } from "../utils/cookie.js";
+import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
 
 export async function loginUserHandler(request, reply) {
@@ -20,6 +21,16 @@ export async function loginUserHandler(request, reply) {
 
     const identifier = usernameOrEmail.includes("@") ? "email" : "username";
     const payload = await getTokenData(usernameOrEmail, identifier);
+
+    const authProvider = await getUserAuthProvider(payload.id);
+    if (authProvider !== "LOCAL") {
+      return httpError(
+        reply,
+        409,
+        createResponseMessage(action, false),
+        "User already registered with " + authProvider
+      );
+    }
 
     const hashedPassword = await getPasswordHash(payload.id);
 
@@ -36,13 +47,7 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(
-      reply,
-      accessToken,
-      "accessToken",
-      refreshToken,
-      "refreshToken"
-    )
+    return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
