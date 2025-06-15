@@ -4,6 +4,7 @@ import { handlePrismaError, httpError } from "../utils/error.js";
 
 export async function authorizeUserAccess(request, reply) {
   const action = "Authorize user's access token";
+
   const token = request.cookies.accessToken;
   if (!token) {
     return httpError(
