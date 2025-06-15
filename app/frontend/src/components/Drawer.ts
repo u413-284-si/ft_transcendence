@@ -42,7 +42,7 @@ export class Drawer {
   private createDrawer(): HTMLElement {
     const aside = document.createElement("aside");
     aside.className =
-      "fixed top-0 right-0 h-full w-75 bg-emerald-dark text-neon-cyan z-40 shadow-lg transform transition-transform duration-300 translate-x-full";
+      "fixed top-0 right-0 h-full w-75 bg-emerald-dark text-neon-cyan border-l-2 border-emerald-light rounded-l-2xl z-40 shadow-lg transform transition-transform duration-300 translate-x-full";
 
     const container = document.createElement("div");
     container.className = "p-6 space-y-4";
@@ -51,7 +51,7 @@ export class Drawer {
     avatarImg.src = auth.getUser().avatar || "/images/default-avatar.png";
     avatarImg.alt = "User avatar";
     avatarImg.className =
-      "w-20 h-20 rounded-full border-2 border-white mx-auto shadow";
+      "w-20 h-20 rounded-full border-3 border-white mx-auto shadow";
     container.appendChild(avatarImg);
 
     const heading = document.createElement("h2");
@@ -96,7 +96,7 @@ export class Drawer {
 
     const closeBtn = document.createElement("button");
     closeBtn.textContent = "Close";
-    closeBtn.className = "mt-4 text-red-500 hover:underline px-4";
+    closeBtn.className = "mt-4 text-red-500 hover:underline px-4 cursor-pointer";
     closeBtn.addEventListener("click", () => this.close());
     container.appendChild(closeBtn);
 
