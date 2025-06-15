@@ -43,7 +43,7 @@ export class Drawer {
     container.className = "p-6 space-y-4";
 
     const avatarImg = document.createElement("img");
-    avatarImg.src = auth.getUser().avatar || "/default-avatar.png";
+    avatarImg.src = auth.getUser().avatar || "/images/default-avatar.png";
     avatarImg.alt = "User avatar";
     avatarImg.className =
       "w-20 h-20 rounded-full border-2 border-white mx-auto shadow";
