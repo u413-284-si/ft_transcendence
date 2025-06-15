@@ -55,10 +55,14 @@
   @keyframes glow-cyan {
     0% {
       text-shadow:
-        0 0 5px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 55%, transparent),
-        0 0 10px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 65%, transparent),
-        0 0 15px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 75%, transparent),
-        0 0 20px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 85%, transparent);
+        0 0 5px
+          color-mix(in oklch, oklch(0.9054 0.1446 193.77) 55%, transparent),
+        0 0 10px
+          color-mix(in oklch, oklch(0.9054 0.1446 193.77) 65%, transparent),
+        0 0 15px
+          color-mix(in oklch, oklch(0.9054 0.1446 193.77) 75%, transparent),
+        0 0 20px
+          color-mix(in oklch, oklch(0.9054 0.1446 193.77) 85%, transparent);
     }
     50% {
       text-shadow:
@@ -68,11 +72,21 @@
     }
     100% {
       text-shadow:
-        0 0 5px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 55%, transparent),
-        0 0 10px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 65%, transparent),
-        0 0 15px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 75%, transparent),
-        0 0 20px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 85%, transparent);
+        0 0 5px
+          color-mix(in oklch, oklch(0.9054 0.1446 193.77) 55%, transparent),
+        0 0 10px
+          color-mix(in oklch, oklch(0.9054 0.1446 193.77) 65%, transparent),
+        0 0 15px
+          color-mix(in oklch, oklch(0.9054 0.1446 193.77) 75%, transparent),
+        0 0 20px
+          color-mix(in oklch, oklch(0.9054 0.1446 193.77) 85%, transparent);
     }
+  }
+}
+
+@layer base {
+  body {
+    background-color: oklch(0 0 0);
   }
 }
 
