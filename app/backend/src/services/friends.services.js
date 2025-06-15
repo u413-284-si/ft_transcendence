@@ -1,5 +1,5 @@
 import prisma from "../prisma/prismaClient.js";
-import { isUserOnline } from "./online_status.services.js";
+import { isUserOnline } from "./events/presence.services.js";
 
 const friendRequestInclude = {
   sender: { select: { id: true, username: true, avatar: true } },
