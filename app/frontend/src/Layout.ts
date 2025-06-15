@@ -1,5 +1,6 @@
 import { sanitizeHTML } from "./sanitize.js";
 import { auth } from "./AuthManager.js";
+import { Link } from "./components/Link.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -48,43 +49,13 @@ export class Layout {
       const userAvatarUrl: string =
         auth.getUser().avatar || "/images/default-avatar.png";
       return /* HTML */ ` <nav class="relative">
-        <div class="container mx-auto flex justify-center space-x-8">
-          <a
-            href="/home"
-            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
-            data-link
-            >Home</a
-          >
-          <a
-            href="/newGame"
-            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
-            data-link
-            >New Game</a
-          >
-          <a
-            href="/newTournament"
-            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
-            data-link
-            >New Tournament</a
-          >
-          <a
-            href="/stats"
-            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
-            data-link
-            >Stats</a
-          >
-          <a
-            href="/settings"
-            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
-            data-link
-            >Settings</a
-          >
-          <a
-            href="/friends"
-            class="text-xl hover:text-neon-orange hover:animate-glow-orange"
-            data-link
-            >Friends</a
-          >
+        <div class="container mx-auto flex justify-center space-x-8 ">
+          ${Link({ text: "Home", href: "/home" })}
+          ${Link({ text: "New Game", href: "/newGame" })}
+          ${Link({ text: "New Tournament", href: "/newTournament" })}
+          ${Link({ text: "Stats", href: "/stats" })}
+          ${Link({ text: "Settings", href: "/settings" })}
+          ${Link({ text: "Friends", href: "/friends" })}
         </div>
         <div
           class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
@@ -99,12 +70,8 @@ export class Layout {
     }
     return /* HTML */ ` <nav>
       <div class="container mx-auto flex justify-center space-x-8">
-        <a href="/login" class="text-lg hover:text-orange-400" data-link
-          >Login</a
-        >
-        <a href="/register" class="text-lg hover:text-orange-400" data-link
-          >Register</a
-        >
+        ${Link({ text: "Login", href: "/login" })}
+        ${Link({ text: "Register", href: "/register" })}
       </div>
     </nav>`;
   }
