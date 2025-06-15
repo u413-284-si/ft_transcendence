@@ -78,18 +78,33 @@ export async function oAuth2LoginUserHandler(request, reply) {
       await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
         request
       );
-    console.log("token: ", token);
-    console.log("access_token: ", token.access_token);
-    console.log("refresh_token: ", token.refresh_token);
-    return setAuthCookies(
+    if (!token) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "No token provided"
+      );
+    }
+
+    const userData = await fastify.googleOAuth2.userinfo(token.access_token);
+    if (!(await getUserByEmail(userData.email)))
+      await createUser(userData.name, userData.email, "", "GOOGLE");
+
+    const payload = await getTokenData(userData.email, "email");
+    const { accessToken, refreshToken } = await createAuthTokens(
       reply,
-      token.access_token,
-      "googleAccessToken",
-      token.refresh_token,
-      "googleRefreshToken"
-    )
-      .code(200)
-      .send({ message: createResponseMessage(action, true) });
+      payload
+    );
+
+    reply = clearCookies(
+      reply,
+      "oauth2-code-verifier",
+      "oauth2-redirect-state"
+    );
+    reply = setAuthCookies(reply, accessToken, refreshToken);
+
+    return reply.redirect("http://localhost:4000/home");
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -147,13 +162,7 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(
-      reply,
-      accessToken,
-      "accessToken",
-      refreshToken,
-      "refreshToken"
-    )
+    return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {
