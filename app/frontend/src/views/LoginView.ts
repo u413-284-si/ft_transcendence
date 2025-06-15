@@ -103,7 +103,9 @@ export default class LoginView extends AbstractView {
           </button>
         </div>
         <div>
-          <button id="google-login">${this.getGoogleLoginHtml()}</button>
+          <button type="button" id="google-login">
+            ${this.getGoogleLoginHtml()}
+          </button>
         </div>
       </form>
     `;
