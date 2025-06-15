@@ -59,7 +59,11 @@ await fastify.register(fastifyHelmet, {
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      connectSrc: ["'self'", "http://localhost:4000"]
+      connectSrc: [
+        "'self'",
+        "http://localhost:4000",
+        "https://accounts.google.com"
+      ]
     }
   }
 });
