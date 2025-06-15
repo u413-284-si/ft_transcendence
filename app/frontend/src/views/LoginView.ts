@@ -97,12 +97,12 @@ export default class LoginView extends AbstractView {
             class="error-message text-red-600 text-sm mt-1 hidden"
           ></span>
         </div>
-        <div class="flex flex-row">
-          <div>
-            <button type="submit" class="border-2 border-white rounded-sm p-2">
-              Login
-            </button>
-          </div>
+        <div>
+          <button type="submit" class="border-2 border-white rounded-sm p-2">
+            Login
+          </button>
+        </div>
+        <div>
           <button id="google-login">${this.getGoogleLoginHtml()}</button>
         </div>
       </form>
