@@ -1,5 +1,7 @@
 import { DrawerItem } from "../Drawer.js";
 import { Header3 } from "./Header3.js";
+import { Button } from "./Button.js";
+
 export function Sidebar(
   user: { username: string; avatar?: string },
   links: DrawerItem[]
@@ -39,12 +41,16 @@ export function Sidebar(
           className: "mx-auto text-center"
         })}
         <div class="mt-12 space-y-2">${linkItems}</div>
-        <button
-          class="mt-4 text-neon-red hover:underline px-4 cursor-pointer"
-          id="drawer-close"
-        >
-          Close
-        </button>
+        <div class="flex justify-center mt-6">
+          ${Button({
+            id: "drawer-close",
+            text: "Close",
+            variant: "default",
+            size: "sm",
+            type: "button",
+            className: " mt-6"
+          })}
+        </div>
       </div>
     </aside>
   `;
