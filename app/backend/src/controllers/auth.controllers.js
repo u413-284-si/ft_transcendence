@@ -73,7 +73,6 @@ export async function loginUserHandler(request, reply) {
 export async function oAuth2LoginUserHandler(request, reply) {
   const action = "OAuth2 login user";
   try {
-    console.log("request cookies: ", request.cookies);
     const { token } =
       await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
         request
