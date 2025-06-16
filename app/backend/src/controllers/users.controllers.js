@@ -210,11 +210,13 @@ export async function getUserActiveTournamentHandler(request, reply) {
   }
 }
 
-export async function getUserFriendRequestsHandler(request, reply) {
-  const action = "Get user friend requests";
+export async function getAllUserFriendRequestsHandler(request, reply) {
+  const action = "Get all user friend requests";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getAllUserFriendRequests(userId);
+    const { username } = request.query;
+    console.log(username);
+    const data = await getAllUserFriendRequests(userId, username);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
@@ -224,7 +226,7 @@ export async function getUserFriendRequestsHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `getUserFriendsHandler: ${createResponseMessage(action, false)}`
+      `getAllUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

@@ -10,7 +10,7 @@ import {
   getUserStatsHandler,
   getUserTournamentsHandler,
   getUserActiveTournamentHandler,
-  getUserFriendRequestsHandler,
+  getAllUserFriendRequestsHandler,
   searchUserHandler,
   createUserAvatarHandler,
   deleteUserAvatarHandler
@@ -58,8 +58,8 @@ export default async function userRoutes(fastify) {
 
   fastify.get(
     "/friend-requests/",
-    optionsGetUserFriends,
-    getUserFriendRequestsHandler
+    optionsGetAllUserFriendRequests,
+    getAllUserFriendRequestsHandler
   );
 
   fastify.post(
@@ -186,9 +186,16 @@ const optionsGetUserActiveTournament = {
   }
 };
 
-const optionsGetUserFriends = {
+const optionsGetAllUserFriendRequests = {
   onRequest: [authorizeUserAccess],
   schema: {
+    querystring: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: []
+    },
     response: {
       200: { $ref: "friendRequestArrayResponseSchema" },
       ...errorResponses
