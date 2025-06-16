@@ -10,6 +10,12 @@ import {
   validatePlayersSelection
 } from "../validate.js";
 import ResultsView from "./ResultsView.js";
+import { Header1 } from "../components/Header1.js";
+import { Paragraph } from "../components/Paragraph.js";
+import { Input } from "../components/Input.js";
+import { Button } from "../components/Button.js";
+import { RadioGroup } from "../components/RadioGroup.js";
+import { Form } from "../components/Form.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -21,57 +27,43 @@ export default class NewTournamentView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
-      <h1
-        style="
-          margin-bottom: 40px;
-          font-size: 2.5em;
-          color: #FF00AA;
-          text-align: center;
-          text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);"
-      >
-        New Tournament
-      </h1>
-      <p class="text-center mb-5">
-        Enter the tournament name and select the number of players:
-      </p>
-      <form
-        id="tournament-form"
-        class="flex flex-col justify-center items-center gap-4"
-      >
-        <div class="w-[300px]">
-          <label
-            style="font-size: 1.2em; font-weight: bold; display: block; margin-bottom: 10px;"
-          >
-            Tournament Name:
-            <input
-              type="text"
-              name="tournamentName"
-              class="border border-gray-300 rounded px-2 py-1 transition-all duration-300"
-            />
-          </label>
-          <span
-            id="tournamentName-error"
-            class="error-message text-red-600 text-sm mt-1 hidden"
-          ></span>
-        </div>
-        <br /><br />
-        <div id="player-options" class="rounded px-2 py-1 w-[300px]">
-          <label class="block">
-            <input type="radio" name="players" value="4" checked /> 4 Players
-          </label>
-          <label class="block">
-            <input type="radio" name="players" value="8" /> 8 Players
-          </label>
-          <label class="block">
-            <input type="radio" name="players" value="16" /> 16 Players
-          </label>
-          <span
-            id="player-error"
-            class="error-message text-red-600 text-sm mt-1 hidden"
-          ></span>
-        </div>
-        <button type="submit">Start Tournament</button>
-      </form>
+      ${Form({
+        children: [
+          Header1({
+            text: "New Tournament",
+            variant: "default"
+          }),
+          Paragraph({
+            text: "Enter the tournament name and select the number of players"
+          }),
+          Input({
+            id: "tournament-name-input",
+            label: "Tournament Name:",
+            name: "tournament-name",
+            type: "text",
+            errorId: "tournament-name-error"
+          }),
+          RadioGroup({
+            name: "players",
+            label: "Number of players",
+            options: [
+              { id: "players-4", value: "4", label: "4 players" },
+              { id: "players-8", value: "8", label: "8 players" },
+              { id: "players-16", value: "16", label: "16 players" }
+            ],
+            selectedValue: "4",
+            errorId: "player-error",
+            layout: "vertical"
+          }),
+          Button({
+            text: "Start Tournament",
+            variant: "default",
+            size: "md",
+            type: "submit"
+          })
+        ],
+        id: "tournament-form"
+      })}
     `;
   }
 
@@ -112,14 +104,14 @@ export default class NewTournamentView extends AbstractView {
     const playersSelected = this.formEl.querySelector(
       'input[name="players"]:checked'
     ) as HTMLInputElement;
-    const tournamentNameEl = this.formEl.querySelector(
-      'input[name="tournamentName"]'
+    const tournamentNameEl = document.getElementById(
+      "tournament-name-input"
     ) as HTMLInputElement;
-    const selectionEl = document.getElementById(
-      "player-options"
+    const selectionEl = document.querySelector(
+      'input[name="players"]'
     ) as HTMLInputElement;
     const tournamentErrorEl = document.getElementById(
-      "tournamentName-error"
+      "tournament-name-error"
     ) as HTMLElement;
     const playerErrorEl = document.getElementById(
       "player-error"
