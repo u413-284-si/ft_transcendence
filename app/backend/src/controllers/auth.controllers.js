@@ -93,15 +93,6 @@ export async function oAuth2LoginUserHandler(request, reply) {
 
     const payload = await getTokenData(userData.email, "email");
 
-    const authProvider = await getUserAuthProvider(payload.id);
-    if (authProvider !== "GOOGLE") {
-      reply = httpError(
-        reply,
-        409,
-        createResponseMessage(action, false),
-        "User already registered with " + authProvider
-      );
-    }
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
       payload
@@ -112,6 +103,7 @@ export async function oAuth2LoginUserHandler(request, reply) {
       "oauth2-code-verifier",
       "oauth2-redirect-state"
     );
+
     reply = setAuthCookies(reply, accessToken, refreshToken);
 
     return reply.redirect("http://localhost:4000/home");
