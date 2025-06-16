@@ -2,10 +2,12 @@ import {
   authAndDecodeAccessHandler,
   authRefreshHandler,
   loginUserHandler,
-  logoutUserHandler
+  logoutUserHandler,
+  oAuth2LoginUserHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
+import env from "../config/env.js";
 
 export default async function authRoutes(fastify) {
   fastify.post("/", optionsloginUser, loginUserHandler);
@@ -15,6 +17,8 @@ export default async function authRoutes(fastify) {
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 
   fastify.patch("/logout/", optionsLogoutUser, logoutUserHandler);
+
+  fastify.get(env.oAuth2CallbackUrl, oAuth2LoginUserHandler);
 }
 
 const authRateLimit = {

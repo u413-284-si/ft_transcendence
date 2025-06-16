@@ -9,6 +9,7 @@ import fastifyCookie from "@fastify/cookie";
 import fastifyRateLimit from "@fastify/rate-limit";
 import jwt from "@fastify/jwt";
 import fastifyMultipart from "@fastify/multipart";
+import oAuth2 from "@fastify/oauth2";
 
 import env from "./config/env.js";
 
@@ -58,7 +59,11 @@ await fastify.register(fastifyHelmet, {
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      connectSrc: ["'self'", "http://localhost:4000"]
+      connectSrc: [
+        "'self'",
+        "http://localhost:4000",
+        "https://accounts.google.com"
+      ]
     }
   }
 });
@@ -95,6 +100,30 @@ await fastify.register(jwt, {
 await fastify.register(fastifyMultipart, {
   limits: {
     fileSize: env.maxFileSizeInBytes
+  }
+});
+
+await fastify.register(oAuth2, {
+  name: "googleOAuth2",
+  scope: ["email", "profile"],
+  credentials: {
+    client: {
+      id: env.oAuth2ClientId,
+      secret: env.oAuth2ClientSecret
+    }
+  },
+  startRedirectPath: "/login/google",
+  callbackUri: "http://localhost:4000/api/auth/google/callback",
+  callbackUriParams: {
+    prompt: "select_account"
+  },
+  discovery: {
+    issuer: "https://accounts.google.com/.well-known/openid-configuration"
+  },
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    path: "/"
   }
 });
 

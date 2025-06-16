@@ -35,6 +35,7 @@ model Authentication {
     userId   Int     @id
     password String?
 	refreshToken String?
+	authProvider AuthProviderType @default(LOCAL)
     // has2FA        Boolean @default(false)
     // totpSecret    String?
     // oauthProvider String?
@@ -128,4 +129,9 @@ enum TournamentStatus {
 enum FriendRequestStatus {
   PENDING
   ACCEPTED
+}
+
+enum AuthProviderType {
+	LOCAL
+	GOOGLE
 }
