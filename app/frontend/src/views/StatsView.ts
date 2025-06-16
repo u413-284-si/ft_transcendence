@@ -16,7 +16,7 @@ export default class StatsView extends AbstractView {
   }
 
   private userStatsHTML: string = "";
-  private matchesHTML: string = "";
+  private matchesHTML: string[] = [];
 
   createHTML() {
     return /* HTML */ `
@@ -57,11 +57,6 @@ export default class StatsView extends AbstractView {
             "Tournament"
           ],
           rows: this.matchesHTML
-            ? this.matchesHTML
-                .split("</tr>")
-                .filter(Boolean)
-                .map((row) => row + "</tr>")
-            : []
         })}
       </div>
     `;
@@ -80,17 +75,16 @@ export default class StatsView extends AbstractView {
     return UserStatsRow(user, userStats);
   }
 
-  async getMatchesHTML(): Promise<string> {
+  async getMatchesHTML(): Promise<string[]> {
     const user = escapeHTML(auth.getToken().username);
     const matchesRaw = await getUserMatches();
 
     if (matchesRaw.length === 0) {
-      return `<tr><td colspan="7" class="text-center text-teal py-4">No matches played yet</td></tr>`;
+      return [
+        `<tr><td colspan="7" class="text-center text-teal py-4">No matches played yet</td></tr>`
+      ];
     }
-
-    return matchesRaw
-      .map((matchRaw: Match) => MatchRow(matchRaw, user))
-      .join("");
+    return matchesRaw.map((matchRaw: Match) => MatchRow(matchRaw, user));
   }
 
   getName(): string {
