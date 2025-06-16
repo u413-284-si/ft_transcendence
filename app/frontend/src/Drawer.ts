@@ -1,6 +1,7 @@
 import { auth } from "./AuthManager.js";
 import { Sidebar } from "./components/Sidebar.js";
 import { Overlay } from "./components/Overlay.js";
+import { sanitizeHTML } from "./sanitize.js";
 
 export type DrawerItem = {
   label: string;
@@ -16,11 +17,11 @@ export class Drawer {
   constructor(private links: DrawerItem[]) {
     const user = auth.getUser();
     const wrapper = document.createElement("div");
-    wrapper.innerHTML = Sidebar(user, links);
+    wrapper.innerHTML = sanitizeHTML((Sidebar(user, links)));
     this.drawerEl = wrapper.firstElementChild as HTMLElement;
 
     const overlayWrapper = document.createElement("div");
-    overlayWrapper.innerHTML = Overlay();
+    overlayWrapper.innerHTML = sanitizeHTML(Overlay());
     this.overlayEl = overlayWrapper.firstElementChild as HTMLElement;
 
     document.body.appendChild(this.drawerEl);
