@@ -6,7 +6,6 @@ import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
 import { Table } from "../components/Table.js";
 import { UserStatsRow } from "../components/UserStatsRow.js";
-import { UserStats } from "../types/IUserStats.js";
 import { MatchRow } from "../components/MatchRow.js";
 import { Match } from "../types/IMatch.js";
 
@@ -76,13 +75,7 @@ export default class StatsView extends AbstractView {
 
   async getUserStatsHTML(): Promise<string> {
     const user: string = escapeHTML(auth.getToken().username);
-    const userStatsRaw = await getUserStats();
-    const userStats: UserStats = {
-      matchesPlayed: userStatsRaw.matchesPlayed,
-      matchesWon: userStatsRaw.matchesWon,
-      matchesLost: userStatsRaw.matchesLost,
-      winRate: userStatsRaw.winRate
-    };
+    const userStats = await getUserStats();
 
     return UserStatsRow(user, userStats);
   }
