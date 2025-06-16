@@ -1,7 +1,7 @@
 import { sanitizeHTML } from "./sanitize.js";
 import { auth } from "./AuthManager.js";
 import { Link } from "./components/Link.js";
-import { Drawer } from "./components/Drawer.js";
+import { Drawer } from "./Drawer.js";
 
 export type LayoutMode = "auth" | "guest";
 
