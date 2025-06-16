@@ -1,5 +1,5 @@
 import { DrawerItem } from "../Drawer.js";
-
+import { Header3 } from "./Header3.js";
 export function Sidebar(
   user: { username: string; avatar?: string },
   links: DrawerItem[]
@@ -23,14 +23,28 @@ export function Sidebar(
     .join("");
 
   return /* HTML */ `
-    <aside class="fixed top-0 right-0 h-full w-75 bg-emerald-dark text-neon-cyan border-l-2 border-emerald-light rounded-l-2xl z-40 shadow-lg transform transition-transform duration-300 translate-x-full" id="drawer-sidebar">
+    <aside
+      class="fixed top-0 right-0 h-full w-75 bg-emerald-dark text-neon-cyan border-l-2 border-emerald-light rounded-l-2xl z-40 shadow-lg transform transition-transform duration-300 translate-x-full"
+      id="drawer-sidebar"
+    >
       <div class="p-6 space-y-4">
-        <img src="${avatar}" alt="User avatar" class="w-20 h-20 rounded-full border-3 border-white mx-auto shadow" />
-        <h2 class="text-xl font-bold mx-auto text-center">${user.username}</h2>
-        <div class="mt-12 space-y-2">
-          ${linkItems}
-        </div>
-        <button class="mt-4 text-neon-red hover:underline px-4 cursor-pointer" id="drawer-close">Close</button>
+        <img
+          src="${avatar}"
+          alt="User avatar"
+          class="w-20 h-20 rounded-full border-3 border-white mx-auto shadow"
+        />
+        ${Header3({
+          text: `${user.username}`,
+          variant: "default",
+          className: "mx-auto text-center"
+        })}
+        <div class="mt-12 space-y-2">${linkItems}</div>
+        <button
+          class="mt-4 text-neon-red hover:underline px-4 cursor-pointer"
+          id="drawer-close"
+        >
+          Close
+        </button>
       </div>
     </aside>
   `;
