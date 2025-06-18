@@ -1,6 +1,6 @@
 export type HeaderVariant = "default" | "error";
 
-export type Header2Options = {
+export type Header3Options = {
   text: string;
   id?: string;
   variant?: HeaderVariant;
@@ -8,20 +8,20 @@ export type Header2Options = {
 };
 
 const headerVariants: Record<HeaderVariant, string> = {
-  default: "text-3xl font-bold text-white",
-  error: "text-3xl font-bold text-neon-red"
+  default: "text-xl font-bold text-neon-cyan",
+  error: "text-xl font-bold text-neon-red"
 };
 
-export function Header2({
+export function Header3({
   text,
   id = "",
   variant = "default",
   className = ""
-}: Header2Options): string {
+}: Header3Options): string {
   const classes = [
     headerVariants[variant] || headerVariants.default,
     className
   ].join(" ");
   const idAttr = id ? ` id="${id}"` : "";
-  return `<h2${idAttr} class="${classes}">${text}</h2>`;
+  return `<h3${idAttr} class="${classes}">${text}</h3>`;
 }
