@@ -6,7 +6,7 @@ import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
 import { Table } from "../components/Table.js";
 import { UserStatsRow } from "../components/UserStatsRow.js";
-import { MatchRow } from "../components/MatchRow.js";
+import { MatchRow, NoMatchesRow } from "../components/MatchRow.js";
 import { Match } from "../types/IMatch.js";
 
 export default class StatsView extends AbstractView {
@@ -80,9 +80,7 @@ export default class StatsView extends AbstractView {
     const matchesRaw = await getUserMatches();
 
     if (matchesRaw.length === 0) {
-      return [
-        `<tr><td colspan="7" class="text-center text-teal py-4">No matches played yet</td></tr>`
-      ];
+      return [NoMatchesRow()];
     }
     return matchesRaw.map((matchRaw: Match) => MatchRow(matchRaw, user));
   }
