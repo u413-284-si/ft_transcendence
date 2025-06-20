@@ -8,8 +8,15 @@ import { Table } from "../components/Table.js";
 import { UserStatsRow } from "../components/UserStatsRow.js";
 import { MatchRow, NoMatchesRow } from "../components/MatchRow.js";
 import { Match } from "../types/IMatch.js";
+import { router } from "../routing/Router.js";
+import { getUserFriendRequestByUsername } from "../services/friendsServices.js";
+import { FriendRequest } from "../types/FriendRequest.js";
 
 export default class StatsView extends AbstractView {
+  private viewType: "self" | "friend" | "public" = "public";
+  private username = router.getParams().username;
+  private friendRequest: FriendRequest | null = null;
+
   constructor() {
     super();
     this.setTitle("Stats");
@@ -19,50 +26,54 @@ export default class StatsView extends AbstractView {
   private matchesHTML: string[] = [];
 
   createHTML() {
-    return /* HTML */ `
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
-        ${Header1({
-          text: "Player Statistics",
-          id: "player-statistics-header",
-          variant: "default"
-        })}
-        ${Table({
-          id: "user-stats-table",
-          headers: [
-            "Username",
-            "Total Matches",
-            "Matches Won",
-            "Matches Lost",
-            "Win Rate"
-          ],
-          rows: [this.userStatsHTML]
-        })}
-      </div>
+    if (this.viewType === "self") {
+      return /* HTML */ `
+        <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+          ${Header1({
+            text: "Player Statistics",
+            id: "player-statistics-header",
+            variant: "default"
+          })}
+          ${Table({
+            id: "user-stats-table",
+            headers: [
+              "Username",
+              "Total Matches",
+              "Matches Won",
+              "Matches Lost",
+              "Win Rate"
+            ],
+            rows: [this.userStatsHTML]
+          })}
+        </div>
 
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
-        ${Header1({
-          text: "Match History",
-          id: "match-history-header",
-          variant: "default"
-        })}
-        ${Table({
-          id: "match-history-table",
-          headers: [
-            "Player1",
-            "Player1 Score",
-            "Player2",
-            "Player2 Score",
-            "Result",
-            "Date",
-            "Tournament"
-          ],
-          rows: this.matchesHTML
-        })}
-      </div>
-    `;
+        <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+          ${Header1({
+            text: "Match History",
+            id: "match-history-header",
+            variant: "default"
+          })}
+          ${Table({
+            id: "match-history-table",
+            headers: [
+              "Player1",
+              "Player1 Score",
+              "Player2",
+              "Player2 Score",
+              "Result",
+              "Date",
+              "Tournament"
+            ],
+            rows: this.matchesHTML
+          })}
+        </div>
+      `;
+    }
+    return "";
   }
 
   async render() {
+    await this.setViewType();
     this.userStatsHTML = await this.getUserStatsHTML();
     this.matchesHTML = await this.getMatchesHTML();
     this.updateHTML();
@@ -87,5 +98,18 @@ export default class StatsView extends AbstractView {
 
   getName(): string {
     return "stats";
+  }
+
+  async setViewType() {
+    if (this.username === auth.getUser().username) {
+      this.viewType = "self";
+      return;
+    }
+    this.friendRequest = await getUserFriendRequestByUsername(this.username);
+    if (this.friendRequest?.status === "ACCEPTED") {
+      this.viewType = "friend";
+    } else {
+      this.viewType = "public";
+    }
   }
 }
