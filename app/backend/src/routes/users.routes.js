@@ -13,7 +13,8 @@ import {
   getAllUserFriendRequestsHandler,
   searchUserHandler,
   createUserAvatarHandler,
-  deleteUserAvatarHandler
+  deleteUserAvatarHandler,
+  getUserMatchesByUsernameHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseConnectionHandler } from "../controllers/sse.controllers.js";
@@ -37,6 +38,12 @@ export default async function userRoutes(fastify) {
   fastify.delete("/:id/", optionsDeleteUser, deleteUserHandler);
 
   fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
+
+  fastify.get(
+    "/:username/matches/",
+    optionsGetUserMatchesByUsername,
+    getUserMatchesByUsernameHandler
+  );
 
   fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
 
@@ -149,6 +156,23 @@ const optionsDeleteUser = {
 const optionsGetUserMatches = {
   onRequest: [authorizeUserAccess],
   schema: {
+    response: {
+      200: { $ref: "matchArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserMatchesByUsername = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    params: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: ["username"]
+    },
     response: {
       200: { $ref: "matchArrayResponseSchema" },
       ...errorResponses

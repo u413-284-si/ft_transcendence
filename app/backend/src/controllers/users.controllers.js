@@ -10,7 +10,10 @@ import {
   getUserByUsername
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
-import { getUserMatches } from "../services/matches.services.js";
+import {
+  getUserMatches,
+  getUserMatchesByUsername
+} from "../services/matches.services.js";
 import {
   getUserTournaments,
   getUserActiveTournament
@@ -151,6 +154,33 @@ export async function getUserMatchesHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserMatchesHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getUserMatchesByUsernameHandler(request, reply) {
+  const action = "Get user matches by username";
+  try {
+    const id = parseInt(request.user.id, 10);
+    const { username } = request.params;
+    if (username !== request.user.username) {
+      const friend = await getAllUserFriendRequests(id, username);
+      if (!friend.length || !friend.some((req) => req.status === "ACCEPTED")) {
+        return httpError(reply, 401, "You need to be friends");
+      }
+    }
+    const data = await getUserMatchesByUsername(username);
+    const count = data.length;
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserMatchesByUsernameHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
