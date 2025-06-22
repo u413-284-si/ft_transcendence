@@ -63,15 +63,15 @@ const schema = {
       default: "app/frontend/public/images/",
       description: "Path to store uploaded images"
     },
-    OAUTH2_CLIENT_ID: {
+    GOOGLE_OAUTH2_CLIENT_ID: {
       type: "string",
       default: "client_id"
     },
-    OAUTH2_CLIENT_SECRET: {
+    GOOGLE_OAUTH2_CLIENT_SECRET: {
       type: "string",
       default: "client_secret"
     },
-    OAUTH2_CALLBACK_URL: {
+    GOOGLE_OAUTH2_CALLBACK_URL: {
       type: "string",
       default: "/google/callback"
     }
@@ -96,9 +96,9 @@ const envConfig = {
   refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
   maxFileSizeInBytes: config.MAX_FILE_SIZE_IN_BYTES,
   imagePath: config.IMAGE_PATH,
-  oAuth2ClientId: config.OAUTH2_CLIENT_ID,
-  oAuth2ClientSecret: config.OAUTH2_CLIENT_SECRET,
-  oAuth2CallbackUrl: config.OAUTH2_CALLBACK_URL
+  googleOauth2ClientId: config.GOOGLE_OAUTH2_CLIENT_ID,
+  googleOauth2ClientSecret: config.GOOGLE_OAUTH2_CLIENT_SECRET,
+  googleOauth2CallbackUrl: config.GOOGLE_OAUTH2_CALLBACK_URL
 };
 
 export default envConfig;

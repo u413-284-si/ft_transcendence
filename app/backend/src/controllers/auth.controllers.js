@@ -70,11 +70,11 @@ export async function loginUserHandler(request, reply) {
   }
 }
 
-export async function oAuth2LoginUserHandler(request, reply) {
+export async function googleOauth2LoginHandler(request, reply) {
   const action = "OAuth2 login user";
   try {
     const { token } =
-      await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
+      await fastify.googleOauth2.getAccessTokenFromAuthorizationCodeFlow(
         request
       );
     if (!token) {
@@ -86,7 +86,7 @@ export async function oAuth2LoginUserHandler(request, reply) {
       );
     }
 
-    const userData = await fastify.googleOAuth2.userinfo(token.access_token);
+    const userData = await fastify.googleOauth2.userinfo(token.access_token);
     if (!(await getUserByEmail(userData.email)))
       await createUser(userData.name, userData.email, "", "GOOGLE");
 

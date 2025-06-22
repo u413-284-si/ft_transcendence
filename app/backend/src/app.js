@@ -104,12 +104,12 @@ await fastify.register(fastifyMultipart, {
 });
 
 await fastify.register(oAuth2, {
-  name: "googleOAuth2",
+  name: "googleOauth2",
   scope: ["email", "profile"],
   credentials: {
     client: {
-      id: env.oAuth2ClientId,
-      secret: env.oAuth2ClientSecret
+      id: env.googleOauth2ClientId,
+      secret: env.googleOauth2ClientSecret
     }
   },
   startRedirectPath: "/login/google",

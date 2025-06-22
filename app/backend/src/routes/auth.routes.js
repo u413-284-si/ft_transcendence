@@ -3,7 +3,7 @@ import {
   authRefreshHandler,
   loginUserHandler,
   logoutUserHandler,
-  oAuth2LoginUserHandler
+  googleOauth2LoginHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
@@ -18,7 +18,7 @@ export default async function authRoutes(fastify) {
 
   fastify.patch("/logout/", optionsLogoutUser, logoutUserHandler);
 
-  fastify.get(env.oAuth2CallbackUrl, oAuth2LoginUserHandler);
+  fastify.get(env.googleOauth2CallbackUrl, googleOauth2LoginHandler);
 }
 
 const authRateLimit = {
