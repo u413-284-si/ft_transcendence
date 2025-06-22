@@ -18,7 +18,11 @@ export default async function authRoutes(fastify) {
 
   fastify.patch("/logout/", optionsLogoutUser, logoutUserHandler);
 
-  fastify.get(env.googleOauth2CallbackRoute, googleOauth2LoginHandler);
+  fastify.get(
+    env.googleOauth2CallbackRoute,
+    optionsGoogleOauth2Login,
+    googleOauth2LoginHandler
+  );
 }
 
 const authRateLimit = {
@@ -64,4 +68,13 @@ const optionsLogoutUser = {
       ...errorResponses
     }
   }
+};
+
+const optionsGoogleOauth2Login = {
+  schema: {
+    response: {
+      ...errorResponses
+    }
+  },
+  rateLimit: authRateLimit
 };
