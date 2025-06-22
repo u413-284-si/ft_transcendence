@@ -10,7 +10,7 @@ import { getTokenData, getUserByEmail } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
-import { setAuthCookies, clearCookies } from "../utils/cookie.js";
+import { setAuthCookies } from "../utils/cookie.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
 
@@ -97,13 +97,11 @@ export async function googleOauth2LoginHandler(request, reply) {
       payload
     );
 
-    reply = clearCookies(
-      reply,
-      "oauth2-code-verifier",
-      "oauth2-redirect-state"
-    );
-
     reply = setAuthCookies(reply, accessToken, refreshToken);
+
+    reply
+      .clearCookie("oauth2-code-verifier")
+      .clearCookie("oauth2-redirect-state");
 
     return reply.redirect("http://localhost:4000/home");
   } catch (err) {
