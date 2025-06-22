@@ -21,24 +21,29 @@ function drawBall(gameState: GameState) {
 
   ctx.fillStyle = "white";
   ctx.beginPath();
-  ctx.arc(gameState.ballX, gameState.ballY, 10, 0, Math.PI * 2);
+  ctx.arc(
+    gameState.ballX,
+    gameState.ballY,
+    gameState.ballRadius,
+    0,
+    Math.PI * 2
+  );
   ctx.fill();
 }
 
 function drawPaddles(gameState: GameState) {
   const ctx = gameState.ctx;
-  const canvas = gameState.canvas;
 
   ctx.fillStyle = "white";
   ctx.fillRect(
-    10,
-    gameState.paddle1Y,
+    gameState.paddleLeftX,
+    gameState.paddleLeftY,
     gameState.paddleWidth,
     gameState.paddleHeight
   );
   ctx.fillRect(
-    canvas.width - 20,
-    gameState.paddle2Y,
+    gameState.paddleRightX,
+    gameState.paddleRightY,
     gameState.paddleWidth,
     gameState.paddleHeight
   );

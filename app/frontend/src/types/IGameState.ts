@@ -9,13 +9,16 @@ export interface GameState {
   player1Score: number;
   player2Score: number;
   winningScore: number;
+  ballRadius: number;
   ballX: number;
   ballY: number;
   ballSpeedX: number;
   ballSpeedY: number;
   initialBallSpeed: number;
-  paddle1Y: number;
-  paddle2Y: number;
+  paddleLeftX: number;
+  paddleLeftY: number;
+  paddleRightX: number;
+  paddleRightY: number;
   paddleHeight: number;
   paddleWidth: number;
   paddleSpeed: number;

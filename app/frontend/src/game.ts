@@ -64,13 +64,16 @@ function initGameState(
     player1Score: 0,
     player2Score: 0,
     winningScore: 5, // FIXME: needs to be a higher value
+    ballRadius: 10,
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
     ballSpeedX: 200,
     ballSpeedY: 200,
     initialBallSpeed: 400,
-    paddle1Y: canvas.height / 2 - 40,
-    paddle2Y: canvas.height / 2 - 40,
+    paddleLeftX: 10,
+    paddleLeftY: canvas.height / 2 - 40,
+    paddleRightX: canvas.width - 20,
+    paddleRightY: canvas.height / 2 - 40,
     paddleHeight: 80,
     paddleWidth: 10,
     paddleSpeed: 300,
@@ -98,13 +101,10 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   if (gameState.gameOver) return;
 
   if (gameState.ai) {
-    const now = performance.now();
-    if (now - gameState.ai.lastUpdate >= gameState.ai.reactionInterval) {
-      gameState.ai.updatePerception(gameState);
-    }
+    gameState.ai.updatePerception(gameState);
 
     const move = gameState.ai.decideMove(
-      gameState.paddle2Y,
+      gameState.paddleRightY,
       gameState.paddleHeight
     );
 
@@ -118,14 +118,12 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   gameState.ballX += gameState.ballSpeedX * deltaTime;
   gameState.ballY += gameState.ballSpeedY * deltaTime;
 
-  const ballRadius = 10;
-
   let result = handlePaddleCollision(
     gameState.ballX,
     gameState.ballY,
-    ballRadius,
-    10, // X of paddle front edge (paddle is at x=10, width=10)
-    gameState.paddle1Y,
+    gameState.ballRadius,
+    gameState.paddleLeftX,
+    gameState.paddleLeftY,
     gameState.paddleWidth,
     gameState.paddleHeight,
     gameState.ballSpeedX,
@@ -152,9 +150,9 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   result = handlePaddleCollision(
     gameState.ballX,
     gameState.ballY,
-    ballRadius,
-    gameState.canvas.width - 20, // X of paddle front edge (canvas.width - paddle width - 10)
-    gameState.paddle2Y,
+    gameState.ballRadius,
+    gameState.paddleRightX,
+    gameState.paddleRightY,
     gameState.paddleWidth,
     gameState.paddleHeight,
     gameState.ballSpeedX,
