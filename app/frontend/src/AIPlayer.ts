@@ -30,7 +30,7 @@ export class AIPlayer {
     this.lastUpdate = performance.now();
 
     this.reactionInterval = options.reactionInterval ?? 1000;
-    this.predictionError = options.predictionError ?? 0;
+    this.predictionError = options.predictionError ?? 80;
     this.maxPaddleSpeed = options.maxPaddleSpeed ?? 300;
     this.tolerance = options.tolerance ?? 10;
   }
