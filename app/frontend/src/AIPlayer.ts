@@ -27,7 +27,7 @@ export class AIPlayer {
     this.lastSeenBallSpeedX = 0;
     this.lastSeenBallSpeedY = 0;
     this.predictionY = 0;
-    this.lastUpdate = performance.now();
+    this.lastUpdate = 0;
 
     this.reactionInterval = options.reactionInterval ?? 1000;
     this.predictionError = options.predictionError ?? 80;
@@ -96,5 +96,10 @@ export class AIPlayer {
     } else {
       return "none";
     }
+  }
+
+  reset() {
+    this.lastUpdate = 0;
+    this.predictionY = 0;
   }
 }
