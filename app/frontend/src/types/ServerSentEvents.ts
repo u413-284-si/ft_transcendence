@@ -1,5 +1,6 @@
 export type FriendStatusChangeEvent = CustomEvent<{
   requestId: number;
+  username: string;
   isOnline: boolean;
 }>;
 

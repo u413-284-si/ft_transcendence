@@ -15,15 +15,21 @@ export async function getUserFriends(userId) {
     select: {
       id: true,
       senderId: true,
-      receiverId: true
+      receiverId: true,
+      sender: { select: { username: true } },
+      receiver: { select: { username: true } }
     }
   });
   const friends = acceptedRequests.map((req) => {
     const isSender = req.senderId === userId;
     const friendId = isSender ? req.receiverId : req.senderId;
+    const friendUsername = isSender
+      ? req.receiver.username
+      : req.sender.username;
     return {
-      id: friendId,
-      requestId: req.id
+      requestId: req.id,
+      friendId: friendId,
+      friendUsername: friendUsername
     };
   });
 

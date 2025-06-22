@@ -1,7 +1,8 @@
+import { toaster } from "../Toaster.js";
 import {
   FriendRequestEvent,
   FriendStatusChangeEvent
-} from "../types/ServerSentEvents";
+} from "../types/ServerSentEvents.js";
 
 let eventSource: EventSource | null = null;
 
@@ -23,11 +24,13 @@ export function openSSEConnection() {
     (event: MessageEvent) => {
       console.log("📨 SSE message:", event.data);
       try {
-        const { requestId, status } = JSON.parse(event.data);
+        const { requestId, username, status } = JSON.parse(event.data);
         const detail: FriendStatusChangeEvent["detail"] = {
           requestId,
+          username,
           isOnline: status === "online"
         };
+        toaster.info(`${username} is ${status}`);
         window.dispatchEvent(
           new CustomEvent("app:FriendStatusChangeEvent", { detail })
         );
