@@ -12,7 +12,6 @@ import { escapeHTML } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
 import { Table } from "../components/Table.js";
-import { UserStatsRow } from "../components/UserStatsRow.js";
 import { MatchRow, NoMatchesRow } from "../components/MatchRow.js";
 import { Match } from "../types/IMatch.js";
 import { router } from "../routing/Router.js";
@@ -20,6 +19,8 @@ import { getUserFriendRequestByUsername } from "../services/friendsServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
 import { User } from "../types/User.js";
 import { UserStats } from "../types/IUserStats.js";
+import { Paragraph } from "../components/Paragraph.js";
+import { StatFieldGroup } from "../components/StatField.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -36,45 +37,42 @@ export default class StatsView extends AbstractView {
   private matches: Match[] | null = null;
 
   createHTML() {
-    let html;
-    html = this.getUserStatsHTML();
-    if (this.viewType === "self" || this.viewType === "friend") {
-      html += this.getMatchesHTML();
-    }
-    return html;
+    return /* HTML */ `<div
+        class="flex flex-row items-center gap-y-6 gap-x-8 mb-12 pl-6"
+      >
+        <!-- Avatar -->
+        <img
+          src=${this.user?.avatar || "/images/default-avatar.png"}
+          alt="Avatar"
+          class="w-20 h-20 rounded-full border-2 border-neon-cyan shadow-neon-cyan"
+        />
+
+        <div class="flex flex-col md:flex-row md:items-center md:gap-x-8">
+          <div>
+            ${Header1({
+              text: this.username,
+              variant: "username"
+            })}
+            ${Paragraph({
+              text: `Joined: ${this.user?.dateJoined.slice(0, 10)}`
+            })}
+          </div>
+
+          ${StatFieldGroup([
+            { value: `${this.userStats?.matchesPlayed}`, text: "Played" },
+            { value: `${this.userStats?.matchesWon}`, text: "Won" },
+            { value: `${this.userStats?.matchesLost}`, text: "Lost" },
+            { value: `${this.userStats?.winRate} %`, text: "Win Rate" }
+          ])}
+        </div>
+      </div>
+      ${this.getMatchesHTML()} `;
   }
 
   async render() {
     await this.setViewType();
     await this.fetchData();
     this.updateHTML();
-  }
-
-  getUserStatsHTML(): string {
-    if (!this.userStats) throw new Error("UserStats is null");
-
-    const userStatsRow = UserStatsRow(this.username, this.userStats);
-
-    return /* HTML */ ` <div
-      class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8"
-    >
-      ${Header1({
-        text: "Player Statistics",
-        id: "player-statistics-header",
-        variant: "default"
-      })}
-      ${Table({
-        id: "user-stats-table",
-        headers: [
-          "Username",
-          "Total Matches",
-          "Matches Won",
-          "Matches Lost",
-          "Win Rate"
-        ],
-        rows: [userStatsRow]
-      })}
-    </div>`;
   }
 
   getMatchesHTML(): string {
@@ -118,6 +116,7 @@ export default class StatsView extends AbstractView {
   async setViewType() {
     if (this.username === auth.getUser().username) {
       this.viewType = "self";
+      this.user = auth.getUser();
       return;
     }
     this.user = await getUserByUsername(this.username);
