@@ -4,13 +4,13 @@ import {
   verifyHash,
   createAuthTokens,
   getTokenHash,
-  deleteUserRefreshToken
+  deleteUserRefreshToken,
+  setCookies
 } from "../services/auth.services.js";
 import { getTokenData, getUserByEmail } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
-import { setAuthCookies } from "../utils/cookie.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
 
@@ -47,7 +47,7 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return setCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
@@ -97,7 +97,7 @@ export async function googleOauth2LoginHandler(request, reply) {
       payload
     );
 
-    reply = setAuthCookies(reply, accessToken, refreshToken);
+    reply = setCookies(reply, accessToken, refreshToken);
 
     reply
       .clearCookie("oauth2-code-verifier")
@@ -161,7 +161,7 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return setCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {
