@@ -40,13 +40,11 @@ export default class StatsView extends AbstractView {
     return /* HTML */ `<div
         class="flex flex-row items-center gap-y-6 gap-x-8 mb-12 pl-6"
       >
-        <!-- Avatar -->
         <img
           src=${this.user?.avatar || "/images/default-avatar.png"}
           alt="Avatar"
           class="w-20 h-20 rounded-full border-2 border-neon-cyan shadow-neon-cyan"
         />
-
         <div class="flex flex-col md:flex-row md:items-center md:gap-x-8">
           <div>
             ${Header1({
@@ -66,7 +64,14 @@ export default class StatsView extends AbstractView {
           ])}
         </div>
       </div>
-      ${this.getMatchesHTML()} `;
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+        ${Header1({
+          text: "Match History",
+          id: "match-history-header",
+          variant: "default"
+        })}
+        ${this.getMatchesHTML()}
+      </div> `;
   }
 
   async render() {
@@ -76,6 +81,12 @@ export default class StatsView extends AbstractView {
   }
 
   getMatchesHTML(): string {
+    if (this.viewType === "public") {
+      return /* HTML */ ` ${Paragraph({
+        text: "You need to be friends to view Match History"
+      })}`;
+    }
+
     if (!this.matches) throw new Error("Matches is null");
 
     const matchesRows =
@@ -85,28 +96,19 @@ export default class StatsView extends AbstractView {
             MatchRow(matchRaw, this.username)
           );
 
-    return /* HTML */ ` <div
-      class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8"
-    >
-      ${Header1({
-        text: "Match History",
-        id: "match-history-header",
-        variant: "default"
-      })}
-      ${Table({
-        id: "match-history-table",
-        headers: [
-          "Player1",
-          "Player1 Score",
-          "Player2",
-          "Player2 Score",
-          "Result",
-          "Date",
-          "Tournament"
-        ],
-        rows: matchesRows
-      })}
-    </div>`;
+    return /* HTML */ `${Table({
+      id: "match-history-table",
+      headers: [
+        "Player1",
+        "Player1 Score",
+        "Player2",
+        "Player2 Score",
+        "Result",
+        "Date",
+        "Tournament"
+      ],
+      rows: matchesRows
+    })}`;
   }
 
   getName(): string {
