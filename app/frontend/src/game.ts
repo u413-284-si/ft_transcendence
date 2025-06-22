@@ -130,18 +130,9 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
     gameState.ballSpeedY
   );
 
-  gameState.ballX = result.newX;
-  gameState.ballY = result.newY;
-
-  if (result.collided) {
-    const speedUpFactor = 1.05;
-    const newSpeed =
-      Math.hypot(result.newBallSpeedX, result.newBallSpeedY) * speedUpFactor;
-    const angle = Math.atan2(result.newBallSpeedY, result.newBallSpeedX);
-
-    gameState.ballSpeedX = Math.cos(angle) * newSpeed;
-    gameState.ballSpeedY = Math.sin(angle) * newSpeed;
-  } else {
+  if (result) {
+    gameState.ballX = result.newX;
+    gameState.ballY = result.newY;
     gameState.ballSpeedX = result.newBallSpeedX;
     gameState.ballSpeedY = result.newBallSpeedY;
   }
@@ -159,18 +150,9 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
     gameState.ballSpeedY
   );
 
-  gameState.ballX = result.newX;
-  gameState.ballY = result.newY;
-
-  if (result.collided) {
-    const speedUpFactor = 1.05;
-    const newSpeed =
-      Math.hypot(result.newBallSpeedX, result.newBallSpeedY) * speedUpFactor;
-    const angle = Math.atan2(result.newBallSpeedY, result.newBallSpeedX);
-
-    gameState.ballSpeedX = Math.cos(angle) * newSpeed;
-    gameState.ballSpeedY = Math.sin(angle) * newSpeed;
-  } else {
+  if (result) {
+    gameState.ballX = result.newX;
+    gameState.ballY = result.newY;
     gameState.ballSpeedX = result.newBallSpeedX;
     gameState.ballSpeedY = result.newBallSpeedY;
   }
@@ -184,12 +166,14 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
     gameState.player2Score++;
     checkWinner(gameState);
     resetBall(gameState);
+    gameState.ai.reset();
   }
 
   if (gameState.ballX >= gameState.canvas.width) {
     gameState.player1Score++;
     checkWinner(gameState);
     resetBall(gameState);
+    gameState.ai.reset();
   }
 }
 
@@ -267,51 +251,51 @@ export function handlePaddleCollision(
   paddleWidth: number,
   paddleHeight: number,
   ballSpeedX: number,
-  ballSpeedY: number
+  ballSpeedY: number,
+  speedUpFactor: number = 1.05
 ) {
-  let collided = false;
-
   // Axis-Aligned Bounding Box check with radius
-  if (
+  const collided =
     ballX + ballRadius > paddleX &&
     ballX - ballRadius < paddleX + paddleWidth &&
     ballY + ballRadius > paddleY &&
-    ballY - ballRadius < paddleY + paddleHeight
-  ) {
-    collided = true;
+    ballY - ballRadius < paddleY + paddleHeight;
 
-    // Reverse horizontal speed
-    ballSpeedX *= -1;
+  if (!collided) {
+    return;
+  }
 
-    // Compute offset: -1 (top edge) to +1 (bottom edge)
-    const paddleCenter = paddleY + paddleHeight / 2;
-    const offset = (ballY - paddleCenter) / (paddleHeight / 2);
+  const originalSpeed = Math.hypot(ballSpeedX, ballSpeedY);
 
-    // Max bounce angle (in radians)
-    const maxBounceAngle = Math.PI / 4; // 45 degrees
+  // Compute offset: -1 (top edge) to +1 (bottom edge)
+  const paddleCenter = paddleY + paddleHeight / 2;
+  const offset = (ballY - paddleCenter) / (paddleHeight / 2);
 
-    const bounceAngle = offset * maxBounceAngle;
+  // Max bounce angle (in radians)
+  const maxBounceAngle = Math.PI / 4; // 45 degrees
 
-    // Keep total speed consistent
-    const speed = Math.hypot(ballSpeedX, ballSpeedY);
+  const bounceAngle = offset * maxBounceAngle;
 
-    const direction = Math.sign(ballSpeedX);
-    ballSpeedX = direction * speed * Math.cos(bounceAngle);
-    ballSpeedY = speed * Math.sin(bounceAngle);
+  // Apply speed boost
+  const newSpeed = originalSpeed * speedUpFactor;
 
-    // Re-position: put the ball just outside the paddle edge to avoid sticking
-    if (ballSpeedX > 0) {
-      ballX = paddleX + paddleWidth + ballRadius;
-    } else {
-      ballX = paddleX - ballRadius;
-    }
+  // Determine direction: ball always bounces *away* from paddle
+  const newDirection = ballSpeedX > 0 ? -1 : 1;
+
+  ballSpeedX = newDirection * newSpeed * Math.cos(bounceAngle);
+  ballSpeedY = newSpeed * Math.sin(bounceAngle);
+
+  // Re-position: put the ball just outside the paddle edge to avoid sticking
+  if (ballSpeedX > 0) {
+    ballX = paddleX + paddleWidth + ballRadius;
+  } else {
+    ballX = paddleX - ballRadius;
   }
 
   return {
     newX: ballX,
     newY: ballY,
     newBallSpeedX: ballSpeedX,
-    newBallSpeedY: ballSpeedY,
-    collided
+    newBallSpeedY: ballSpeedY
   };
 }
