@@ -12,7 +12,6 @@ export class AIPlayer {
   private predictionError: number;
   maxPaddleSpeed: number;
   private tolerance: number;
-  private smoothingFactor: number;
 
   constructor(
     options: {
@@ -31,10 +30,9 @@ export class AIPlayer {
     this.lastUpdate = performance.now();
 
     this.reactionInterval = options.reactionInterval ?? 1000;
-    this.predictionError = options.predictionError ?? 10;
+    this.predictionError = options.predictionError ?? 0;
     this.maxPaddleSpeed = options.maxPaddleSpeed ?? 300;
     this.tolerance = options.tolerance ?? 10;
-    this.smoothingFactor = options.smoothingFactor ?? 0.1;
   }
 
   updatePerception(gameState: GameState) {
@@ -49,12 +47,7 @@ export class AIPlayer {
 
     // update for right or left ai
     const paddleX = gameState.paddleRightX;
-    const rawPrediction = this.predictImpactY(gameState, paddleX);
-
-    // Smooth it: blend old and new
-    this.predictionY =
-      this.predictionY * (1 - this.smoothingFactor) +
-      rawPrediction * this.smoothingFactor;
+    this.predictionY = this.predictImpactY(gameState, paddleX);
 
     this.lastUpdate = performance.now();
   }
