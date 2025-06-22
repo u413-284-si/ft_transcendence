@@ -15,11 +15,13 @@ export class AIPlayer {
   smoothingFactor: number;
 
   constructor(
-    reactionInterval = 1000,
-    predictionError = 0,
-    maxPaddleSpeed = 300,
-    tolerance = 15,
-    smoothingFactor: 0.2
+    options: {
+      reactionInterval?: number;
+      predictionError?: number;
+      maxPaddleSpeed?: number;
+      tolerance?: number;
+      smoothingFactor?: number;
+    } = {}
   ) {
     this.lastSeenBallX = 0;
     this.lastSeenBallY = 0;
@@ -28,11 +30,11 @@ export class AIPlayer {
     this.predictionY = 0;
     this.lastUpdate = performance.now();
 
-    this.reactionInterval = reactionInterval;
-    this.predictionError = predictionError;
-    this.maxPaddleSpeed = maxPaddleSpeed;
-    this.tolerance = tolerance;
-    this.smoothingFactor = smoothingFactor;
+    this.reactionInterval = options.reactionInterval ?? 1000;
+    this.predictionError = options.predictionError ?? 0;
+    this.maxPaddleSpeed = options.maxPaddleSpeed ?? 300;
+    this.tolerance = options.tolerance ?? 15;
+    this.smoothingFactor = options.smoothingFactor ?? 0.2;
   }
 
   updatePerception(gameState: GameState) {
