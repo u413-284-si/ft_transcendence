@@ -43,9 +43,15 @@ async function notifyFriends(userId, status) {
   }
 }
 
-export function notifyFriendRequestEvent(receiverId, requestId, status) {
+export function notifyFriendRequestEvent(
+  receiverId,
+  requestId,
+  username,
+  status
+) {
   emitToUser(receiverId, "FriendRequestEvent", {
     requestId: requestId,
+    username: username,
     status: status
   });
 }

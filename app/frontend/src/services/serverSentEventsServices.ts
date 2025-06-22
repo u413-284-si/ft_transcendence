@@ -43,11 +43,23 @@ export function openSSEConnection() {
   eventSource.addEventListener("FriendRequestEvent", (event: MessageEvent) => {
     console.log("📨 SSE message:", event.data);
     try {
-      const { requestId, status } = JSON.parse(event.data);
+      const { requestId, username, status } = JSON.parse(event.data);
       const detail: FriendRequestEvent["detail"] = {
         requestId,
+        username,
         status
       };
+      switch (status) {
+        case "PENDING":
+          toaster.info(`${username} sent you a friend request`);
+          break;
+        case "ACCEPTED":
+          toaster.info(`${username} accepted your friend request`);
+          break;
+        case "DELETED":
+          toaster.info(`${username} terminated friendship`);
+          break;
+      }
       window.dispatchEvent(
         new CustomEvent("app:FriendRequestEvent", { detail })
       );
