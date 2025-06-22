@@ -134,6 +134,7 @@ celerybeat.pid
 
 # Environments
 .venv
+.env
 env/
 venv/
 ENV/
@@ -173,5 +174,3 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-
-app/backend/.env
