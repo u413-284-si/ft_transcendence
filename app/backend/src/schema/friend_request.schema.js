@@ -18,6 +18,7 @@ const friendRequestSchema = {
     sender: { type: "boolean" },
     friendId: { $ref: "commonDefinitionsSchema#/definitions/id" },
     friendUsername: { $ref: "commonDefinitionsSchema#/definitions/username" },
+    friendAvatar: { type: ["string", "null"] },
     isOnline: { type: "boolean" }
   },
   required: [
@@ -26,6 +27,7 @@ const friendRequestSchema = {
     "sender",
     "friendId",
     "friendUsername",
+    "friendAvatar",
     "isOnline"
   ],
   additionalProperties: false

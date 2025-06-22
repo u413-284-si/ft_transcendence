@@ -80,9 +80,9 @@ export async function updateFriendRequestHandler(request, reply) {
     const requestId = parseInt(request.params.id, 10);
     const { status } = request.body;
 
-    const friedRequest = await getFriendRequest(requestId, userId);
+    const friendRequest = await getFriendRequest(requestId, userId);
 
-    if (friedRequest.sender) {
+    if (friendRequest.sender) {
       return httpError(
         reply,
         403,
@@ -91,7 +91,7 @@ export async function updateFriendRequestHandler(request, reply) {
       );
     }
 
-    if (friedRequest.status !== "PENDING") {
+    if (friendRequest.status !== "PENDING") {
       return httpError(
         reply,
         400,
