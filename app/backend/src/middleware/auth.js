@@ -15,9 +15,7 @@ export async function authorizeUserAccess(request, reply) {
     );
   }
   try {
-    const userData = await verifyAccessToken(request);
-
-    request.user = userData;
+    await verifyAccessToken(request);
   } catch (err) {
     request.log.error(
       { err, body: request.body },
