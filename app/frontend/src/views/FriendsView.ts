@@ -401,11 +401,23 @@ export default class FriendsView extends AbstractView {
     }, 1000);
   }
 
-  private handleFriendRequestEvent = (event: Event) => {
+  private handleFriendRequestEvent = async (event: Event) => {
     const customEvent = event as FriendRequestEvent;
     const { requestId, status } = customEvent.detail;
-    console.log(
-      `New friend request event: id: ${requestId}, status: ${status}`
-    );
+    switch (status) {
+      case "PENDING":
+        this.friendRequests = await getUserFriendRequests();
+        this.refreshRequestList("incoming");
+        break;
+      case "ACCEPTED":
+        this.friendRequests = await getUserFriendRequests();
+        this.refreshRequestList("friend");
+        this.refreshRequestList("outgoing");
+        break;
+      case "DELETED":
+        this.removeFriendRequest(requestId);
+        this.refreshRequestList("friend");
+        break;
+    }
   };
 }
