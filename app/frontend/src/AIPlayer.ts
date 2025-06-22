@@ -1,18 +1,18 @@
 import { GameState } from "./types/IGameState";
 
 export class AIPlayer {
-  lastSeenBallX: number;
-  lastSeenBallY: number;
-  lastSeenBallSpeedX: number;
-  lastSeenBallSpeedY: number;
-  predictionY: number;
-  lastUpdate: number;
+  private lastSeenBallX: number;
+  private lastSeenBallY: number;
+  private lastSeenBallSpeedX: number;
+  private lastSeenBallSpeedY: number;
+  private predictionY: number;
+  private lastUpdate: number;
 
-  reactionInterval: number;
-  predictionError: number;
+  private reactionInterval: number;
+  private predictionError: number;
   maxPaddleSpeed: number;
-  tolerance: number;
-  smoothingFactor: number;
+  private tolerance: number;
+  private smoothingFactor: number;
 
   constructor(
     options: {
@@ -31,19 +31,25 @@ export class AIPlayer {
     this.lastUpdate = performance.now();
 
     this.reactionInterval = options.reactionInterval ?? 1000;
-    this.predictionError = options.predictionError ?? 0;
+    this.predictionError = options.predictionError ?? 10;
     this.maxPaddleSpeed = options.maxPaddleSpeed ?? 300;
-    this.tolerance = options.tolerance ?? 15;
-    this.smoothingFactor = options.smoothingFactor ?? 0.2;
+    this.tolerance = options.tolerance ?? 10;
+    this.smoothingFactor = options.smoothingFactor ?? 0.1;
   }
 
   updatePerception(gameState: GameState) {
+    const now = performance.now();
+    if (now - this.lastUpdate < this.reactionInterval) {
+      return; // skip this update
+    }
     this.lastSeenBallX = gameState.ballX;
     this.lastSeenBallY = gameState.ballY;
     this.lastSeenBallSpeedX = gameState.ballSpeedX;
     this.lastSeenBallSpeedY = gameState.ballSpeedY;
 
-    const rawPrediction = this.predictImpactY(gameState);
+    // update for right or left ai
+    const paddleX = gameState.paddleRightX;
+    const rawPrediction = this.predictImpactY(gameState, paddleX);
 
     // Smooth it: blend old and new
     this.predictionY =
@@ -53,15 +59,13 @@ export class AIPlayer {
     this.lastUpdate = performance.now();
   }
 
-  predictImpactY(gameState: GameState): number {
-    const canvas = gameState.canvas;
+  predictImpactY(gameState: GameState, paddleX: number): number {
+    const { canvas } = gameState;
     // Simple linear prediction with bounces
     const x0 = this.lastSeenBallX;
     const y0 = this.lastSeenBallY;
     const vx = this.lastSeenBallSpeedX;
     const vy = this.lastSeenBallSpeedY;
-
-    const paddleX = canvas.width - 20; // AI paddle X
 
     // If ball is moving away from AI, fallback to just current Y
     if (vx <= 0) return y0;
