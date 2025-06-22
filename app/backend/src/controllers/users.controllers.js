@@ -245,7 +245,6 @@ export async function getAllUserFriendRequestsHandler(request, reply) {
   try {
     const userId = parseInt(request.user.id, 10);
     const { username } = request.query;
-    console.log(username);
     const data = await getAllUserFriendRequests(userId, username);
     const count = data.length;
     return reply.code(200).send({
