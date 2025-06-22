@@ -112,8 +112,8 @@ await fastify.register(oAuth2, {
       secret: env.googleOauth2ClientSecret
     }
   },
-  startRedirectPath: "/login/google",
-  callbackUri: "http://localhost:4000/api/auth/google/callback",
+  startRedirectPath: env.googleOauth2RedirectPath,
+  callbackUri: env.googleOauth2CallbackUrl,
   callbackUriParams: {
     prompt: "select_account"
   },

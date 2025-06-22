@@ -71,9 +71,17 @@ const schema = {
       type: "string",
       default: "client_secret"
     },
-    GOOGLE_OAUTH2_CALLBACK_URL: {
+    GOOGLE_OAUTH2_REDIRECT_PATH: {
+      type: "string",
+      default: "/google/login"
+    },
+    GOOGLE_OAUTH2_CALLBACK_ROUTE: {
       type: "string",
       default: "/google/callback"
+    },
+    GOOGLE_OAUTH2_CALLBACK_URL: {
+      type: "string",
+      default: "http://localhost:4000/api/auth/google/callback"
     }
   }
 };
@@ -98,6 +106,8 @@ const envConfig = {
   imagePath: config.IMAGE_PATH,
   googleOauth2ClientId: config.GOOGLE_OAUTH2_CLIENT_ID,
   googleOauth2ClientSecret: config.GOOGLE_OAUTH2_CLIENT_SECRET,
+  googleOauth2RedirectPath: config.GOOGLE_OAUTH2_REDIRECT_PATH,
+  googleOauth2CallbackRoute: config.GOOGLE_OAUTH2_CALLBACK_ROUTE,
   googleOauth2CallbackUrl: config.GOOGLE_OAUTH2_CALLBACK_URL
 };
 
