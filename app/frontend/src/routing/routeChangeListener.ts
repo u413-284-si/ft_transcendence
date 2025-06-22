@@ -16,9 +16,9 @@ export const updateUI: RouteChangeListener = (info) => {
   navItems.forEach((item) => {
     const href = item.getAttribute("href");
     if (href === info.to) {
-      item.classList.add("text-blue-300", "font-semibold", "underline");
+      item.classList.add("active-link");
     } else {
-      item.classList.remove("text-blue-300", "font-semibold", "underline");
+      item.classList.remove("active-link");
     }
   });
 };

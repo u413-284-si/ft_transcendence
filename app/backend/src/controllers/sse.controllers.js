@@ -1,13 +1,9 @@
-import {
-  addOnlineUser,
-  notifyFriends,
-  removeOnlineUser
-} from "../services/online_status.services.js";
+import { registerSSEConnection } from "../services/events/sse.services.js";
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
-export async function sseOnlineHandler(request, reply) {
-  const action = "SSE Online";
+export async function sseConnectionHandler(request, reply) {
+  const action = "SSE Connection";
   try {
     const userId = parseInt(request.user.id, 10);
 
@@ -17,18 +13,7 @@ export async function sseOnlineHandler(request, reply) {
     reply.raw.setHeader("Connection", "keep-alive");
     reply.raw.flushHeaders();
 
-    const isNowOnline = addOnlineUser(userId, reply);
-    if (isNowOnline) {
-      notifyFriends(userId, "online");
-    }
-
-    // Clean up when client disconnects
-    request.raw.on("close", () => {
-      const isNowOffline = removeOnlineUser(userId, reply);
-      if (isNowOffline) {
-        notifyFriends(userId, "offline");
-      }
-    });
+    await registerSSEConnection(userId, reply);
   } catch (err) {
     request.log.error(
       { err, body: request.body },
