@@ -2,11 +2,13 @@ import { toaster } from "../Toaster.js";
 import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
 
 let eventSource: EventSource | null = null;
+let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 3;
+const reconnectDelay = 5000;
 
 export function startOnlineStatusTracking() {
-  if (eventSource) {
-    eventSource.close();
-  }
+  stopOnlineStatusTracking();
 
   eventSource = new EventSource("/api/users/online/", {
     withCredentials: true
@@ -14,6 +16,7 @@ export function startOnlineStatusTracking() {
 
   eventSource.onopen = () => {
     console.log("🟢 Connected to online status SSE");
+    reconnectAttempts = 0;
   };
 
   eventSource.addEventListener("friendStatusChange", (event: MessageEvent) => {
@@ -33,7 +36,25 @@ export function startOnlineStatusTracking() {
 
   eventSource.onerror = (error) => {
     console.error("🔴 SSE error:", error);
-    // Reconnect logic could go here
+
+    stopOnlineStatusTracking();
+
+    if (reconnectAttempts < maxReconnectAttempts) {
+      reconnectAttempts++;
+      console.log(
+        `🔁 Reconnecting in ${reconnectDelay / 1000} seconds... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`
+      );
+      toaster.warn(
+        `Lost connection — retrying in ${reconnectDelay / 1000} seconds... (Attempt ${reconnectAttempts} of ${maxReconnectAttempts})`
+      );
+      reconnectTimeout = setTimeout(() => {
+        reconnectTimeout = null;
+        startOnlineStatusTracking();
+      }, reconnectDelay);
+    } else {
+      console.error("🛑 Max reconnect attempts reached. Not trying again.");
+      toaster.error("Unable to reconnect. Stop until refresh.");
+    }
   };
 }
 
@@ -42,5 +63,9 @@ export function stopOnlineStatusTracking() {
     eventSource.close();
     eventSource = null;
     console.log("🛑 Disconnected from online status SSE");
+  }
+  if (reconnectTimeout) {
+    clearTimeout(reconnectTimeout);
+    reconnectTimeout = null;
   }
 }
