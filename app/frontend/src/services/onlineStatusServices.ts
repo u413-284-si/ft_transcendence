@@ -17,7 +17,12 @@ export function startOnlineStatusTracking() {
   eventSource.onopen = () => {
     console.log("Connected to online status SSE");
     reconnectAttempts = 0;
+    toaster.success("Connection reestablished");
   };
+
+  eventSource.addEventListener("heartbeatEvent", (event: MessageEvent) => {
+    console.log("SSE message:", event.data);
+  });
 
   eventSource.addEventListener("friendStatusChange", (event: MessageEvent) => {
     console.log("SSE message:", event.data);
