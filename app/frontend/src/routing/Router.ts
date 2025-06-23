@@ -103,7 +103,7 @@ export class Router {
     console.error(message, error);
     if (error instanceof ApiError && error.status === 401) {
       console.error("Could not verify user");
-      toaster.error("Could not verify user, sending to Login page");
+      toaster.error("Could not verify user:<br>Sending to Login page");
       auth.clearTokenOnError();
       return;
     }
