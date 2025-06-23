@@ -15,12 +15,12 @@ export function startOnlineStatusTracking() {
   });
 
   eventSource.onopen = () => {
-    console.log("🟢 Connected to online status SSE");
+    console.log("Connected to online status SSE");
     reconnectAttempts = 0;
   };
 
   eventSource.addEventListener("friendStatusChange", (event: MessageEvent) => {
-    console.log("📨 SSE message:", event.data);
+    console.log("SSE message:", event.data);
     try {
       const { userId, status } = JSON.parse(event.data);
       const detail: FriendStatusChangeEvent["detail"] = {
@@ -35,14 +35,14 @@ export function startOnlineStatusTracking() {
   });
 
   eventSource.onerror = (error) => {
-    console.error("🔴 SSE error:", error);
+    console.error("SSE error:", error);
 
     stopOnlineStatusTracking();
 
     if (reconnectAttempts < maxReconnectAttempts) {
       reconnectAttempts++;
       console.log(
-        `🔁 Reconnecting in ${reconnectDelay / 1000} seconds... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`
+        `Reconnecting in ${reconnectDelay / 1000} seconds... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`
       );
       toaster.warn(
         `Lost connection — retrying in ${reconnectDelay / 1000} seconds... (Attempt ${reconnectAttempts} of ${maxReconnectAttempts})`
@@ -52,7 +52,7 @@ export function startOnlineStatusTracking() {
         startOnlineStatusTracking();
       }, reconnectDelay);
     } else {
-      console.error("🛑 Max reconnect attempts reached. Not trying again.");
+      console.error("Max reconnect attempts reached. Not trying again.");
       toaster.error("Unable to reconnect. Stop until refresh.");
     }
   };
@@ -62,7 +62,7 @@ export function stopOnlineStatusTracking() {
   if (eventSource) {
     eventSource.close();
     eventSource = null;
-    console.log("🛑 Disconnected from online status SSE");
+    console.log("Disconnected from online status SSE");
   }
   if (reconnectTimeout) {
     clearTimeout(reconnectTimeout);
