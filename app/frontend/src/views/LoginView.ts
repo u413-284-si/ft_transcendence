@@ -40,6 +40,13 @@ export default class LoginView extends AbstractView {
             variant: "default",
             size: "md",
             type: "submit"
+          }),
+          Button({
+            id: "google-login",
+            text: "",
+            variant: "google",
+            size: "empty",
+            type: "button"
           })
         ],
         id: "login-form"
@@ -53,6 +60,9 @@ export default class LoginView extends AbstractView {
       ?.addEventListener("submit", (event) => this.validateAndLoginUser(event));
 
     addTogglePasswordListener("password");
+    document
+      .getElementById("google-login")
+      ?.addEventListener("click", () => auth.loginWithGoogle());
   }
 
   async render() {
@@ -64,7 +74,7 @@ export default class LoginView extends AbstractView {
     return "login";
   }
 
-  async validateAndLoginUser(event: Event) {
+  private async validateAndLoginUser(event: Event) {
     event.preventDefault();
     const userEl = document.getElementById(
       "usernameOrEmail"
