@@ -6,6 +6,7 @@ let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
 let reconnectAttempts = 0;
 const maxReconnectAttempts = 3;
 const reconnectDelay = 5000;
+let isFirstConnection = true;
 
 export function startOnlineStatusTracking() {
   stopOnlineStatusTracking();
@@ -17,7 +18,12 @@ export function startOnlineStatusTracking() {
   eventSource.onopen = () => {
     console.log("Connected to online status SSE");
     reconnectAttempts = 0;
-    toaster.success("Connection reestablished");
+
+    if (isFirstConnection) {
+      isFirstConnection = false;
+    } else {
+      toaster.success("Connection reestablished");
+    }
   };
 
   eventSource.addEventListener("heartbeatEvent", (event: MessageEvent) => {
