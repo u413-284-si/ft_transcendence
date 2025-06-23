@@ -30,6 +30,15 @@ export function Sidebar(
       id="drawer-sidebar"
     >
       <div class="p-6 space-y-4">
+        <div class="flex flex-row justify-end">
+          ${Button({
+            id: "drawer-close",
+            text: "X",
+            variant: "default",
+            size: "sm",
+            type: "button"
+          })}
+        </div>
         <img
           src="${avatar}"
           alt="User avatar"
@@ -41,16 +50,6 @@ export function Sidebar(
           className: "mx-auto text-center"
         })}
         <div class="mt-12 space-y-2">${linkItems}</div>
-        <div class="flex justify-center mt-6">
-          ${Button({
-            id: "drawer-close",
-            text: "Close",
-            variant: "default",
-            size: "sm",
-            type: "button",
-            className: " mt-6"
-          })}
-        </div>
       </div>
     </aside>
   `;
