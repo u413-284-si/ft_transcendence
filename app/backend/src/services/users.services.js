@@ -17,7 +17,12 @@ const userSelect = {
   dateJoined: true
 };
 
-export async function createUser(username, email, hashedPassword) {
+export async function createUser(
+  username,
+  email,
+  hashedPassword,
+  authProvider
+) {
   const user = await prisma.user.create({
     data: {
       username: username,
@@ -25,7 +30,8 @@ export async function createUser(username, email, hashedPassword) {
       dateJoined: new Date(),
       authentication: {
         create: {
-          password: hashedPassword
+          password: hashedPassword,
+          authProvider: authProvider
         }
       },
       stats: { create: {} },
@@ -130,4 +136,20 @@ export async function getUserByUsername(username) {
     select: { id: true, username: true, dateJoined: true }
   });
   return user;
+}
+
+export async function getUserByEmail(email) {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, username: true }
+  });
+  return user;
+}
+
+export async function getUserAuthProvider(id) {
+  const user = await prisma.authentication.findUniqueOrThrow({
+    where: { userId: id },
+    select: { authProvider: true }
+  });
+  return user.authProvider;
 }

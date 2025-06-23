@@ -31,7 +31,7 @@ export async function createUserHandler(request, reply) {
 
     const hashedPassword = await createHash(password);
 
-    const data = await createUser(username, email, hashedPassword);
+    const data = await createUser(username, email, hashedPassword, "LOCAL");
     return reply
       .code(201)
       .send({ message: createResponseMessage(action, true), data: data });
