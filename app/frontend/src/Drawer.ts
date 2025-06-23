@@ -95,14 +95,24 @@ export class Drawer {
   };
 
   private bindEvents() {
-    this.drawerEl.querySelectorAll("[data-label]").forEach((el) => {
-      el.addEventListener("click", (e) => {
-        e.preventDefault();
-        const label = el.getAttribute("data-label");
-        const item = this.links.find((l) => l.label === label);
-        if (item) this.onLinkClick(item);
+    this.drawerEl
+      .querySelectorAll<HTMLElement>("[data-label]")
+      .forEach((el) => {
+        el.addEventListener("click", () => {
+          const label = el.getAttribute("data-label");
+          const item = this.links.find((l) => l.label === label);
+          if (item) this.onLinkClick(item);
+        });
+
+        el.addEventListener("keydown", (e: KeyboardEvent) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            const label = el.getAttribute("data-label");
+            const item = this.links.find((l) => l.label === label);
+            if (item) this.onLinkClick(item);
+          }
+        });
       });
-    });
 
     const closeBtn = this.drawerEl.querySelector("#drawer-close");
     closeBtn?.addEventListener("click", () => this.close());
