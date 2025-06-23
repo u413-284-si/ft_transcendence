@@ -62,6 +62,26 @@ const schema = {
       type: "string",
       default: "app/frontend/public/images/",
       description: "Path to store uploaded images"
+    },
+    GOOGLE_OAUTH2_CLIENT_ID: {
+      type: "string",
+      default: "client_id"
+    },
+    GOOGLE_OAUTH2_CLIENT_SECRET: {
+      type: "string",
+      default: "client_secret"
+    },
+    GOOGLE_OAUTH2_REDIRECT_PATH: {
+      type: "string",
+      default: "/google/login"
+    },
+    GOOGLE_OAUTH2_CALLBACK_ROUTE: {
+      type: "string",
+      default: "/google/callback"
+    },
+    GOOGLE_OAUTH2_CALLBACK_URL: {
+      type: "string",
+      default: "http://localhost:4000/api/auth/google/callback"
     }
   }
 };
@@ -83,7 +103,12 @@ const envConfig = {
   accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
   refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
   maxFileSizeInBytes: config.MAX_FILE_SIZE_IN_BYTES,
-  imagePath: config.IMAGE_PATH
+  imagePath: config.IMAGE_PATH,
+  googleOauth2ClientId: config.GOOGLE_OAUTH2_CLIENT_ID,
+  googleOauth2ClientSecret: config.GOOGLE_OAUTH2_CLIENT_SECRET,
+  googleOauth2RedirectPath: config.GOOGLE_OAUTH2_REDIRECT_PATH,
+  googleOauth2CallbackRoute: config.GOOGLE_OAUTH2_CALLBACK_ROUTE,
+  googleOauth2CallbackUrl: config.GOOGLE_OAUTH2_CALLBACK_URL
 };
 
 export default envConfig;
