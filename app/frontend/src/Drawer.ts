@@ -2,6 +2,7 @@ import { auth } from "./AuthManager.js";
 import { Sidebar } from "./components/Sidebar.js";
 import { Overlay } from "./components/Overlay.js";
 import { sanitizeHTML } from "./sanitize.js";
+import { router } from "./routing/Router.js";
 
 export type DrawerItem = {
   label: string;
@@ -13,11 +14,12 @@ export type DrawerItem = {
 export class Drawer {
   private drawerEl: HTMLElement;
   private overlayEl: HTMLElement;
+  private previouslyFocusedElement: HTMLElement | null = null;
 
   constructor(private links: DrawerItem[]) {
     const user = auth.getUser();
     const wrapper = document.createElement("div");
-    wrapper.innerHTML = sanitizeHTML((Sidebar(user, links)));
+    wrapper.innerHTML = sanitizeHTML(Sidebar(user, links));
     this.drawerEl = wrapper.firstElementChild as HTMLElement;
 
     const overlayWrapper = document.createElement("div");
@@ -32,8 +34,10 @@ export class Drawer {
   }
 
   public open() {
+    this.previouslyFocusedElement = document.activeElement as HTMLElement;
     this.drawerEl.classList.remove("translate-x-full");
     this.overlayEl.classList.remove("hidden");
+    this.drawerEl.focus();
     document.addEventListener("keydown", this.onKeyDown);
   }
 
@@ -41,6 +45,7 @@ export class Drawer {
     this.drawerEl.classList.add("translate-x-full");
     this.overlayEl.classList.add("hidden");
     document.removeEventListener("keydown", this.onKeyDown);
+    this.previouslyFocusedElement?.focus();
   }
 
   private hide() {
@@ -49,12 +54,44 @@ export class Drawer {
   }
 
   private onLinkClick = (item: DrawerItem) => {
-    item.onClick?.();
+    if (item.onClick) {
+      item.onClick();
+    } else if (item.href) {
+      router.navigate(item.href);
+    }
     this.close();
   };
 
   private onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") this.close();
+    if (e.key === "Escape") {
+      this.close();
+      return;
+    }
+
+    if (e.key === "Tab") {
+      const focusableEls = this.drawerEl.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      );
+      const focusable = Array.from(focusableEls).filter(
+        (el) => el.offsetParent !== null
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (!first || !last) return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
   };
 
   private bindEvents() {

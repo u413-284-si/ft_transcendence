@@ -11,14 +11,15 @@ export function Sidebar(
   const linkItems = links
     .map((item) => {
       const icon = item.icon ? svgIconString(item.icon) : "";
-      const href = item.href ? `href="${item.href}"` : "";
       return /* HTML */ `
         <div
-          class="flex items-center space-x-2 px-4 hover:underline text-left cursor-pointer"
+          class="flex items-center space-x-2 px-4 hover:underline text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
           data-label="${item.label}"
+          tabindex="0"
+          role="button"
         >
           ${icon}
-          <a ${href} data-link><span>${item.label}</span></a>
+          <span>${item.label}</span>
         </div>
       `;
     })
@@ -26,7 +27,8 @@ export function Sidebar(
 
   return /* HTML */ `
     <aside
-      class="fixed top-0 right-0 h-full w-75 bg-emerald-dark text-neon-cyan border-l-2 border-emerald-light rounded-l-2xl z-40 shadow-lg transform transition-transform duration-300 translate-x-full"
+      class="fixed top-0 right-0 h-full w-75 bg-emerald-dark text-neon-cyan border-l-2 border-emerald-light rounded-l-2xl z-40 shadow-lg transform transition-transform duration-300 translate-x-full focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+      tabindex="-1"
       id="drawer-sidebar"
     >
       <div class="p-6 space-y-4">
