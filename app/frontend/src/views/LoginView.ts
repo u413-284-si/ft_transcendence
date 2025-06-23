@@ -45,8 +45,8 @@ export default class LoginView extends AbstractView {
             id: "google-login",
             text: "",
             variant: "google",
-            size: "",
-            type: "button",
+            size: "empty",
+            type: "button"
           })
         ],
         id: "login-form"

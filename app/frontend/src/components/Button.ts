@@ -2,7 +2,7 @@ export type ButtonOptions = {
   id?: string;
   text: string;
   variant?: "default" | "outline" | "danger" | "google";
-  size?: "sm" | "md" | "lg" | "";
+  size?: "sm" | "md" | "lg" | "empty";
   type?: "button" | "submit";
   className?: string;
 };
@@ -19,7 +19,8 @@ const buttonVariants: Record<string, string> = {
 const buttonSizes: Record<string, string> = {
   sm: "px-3 py-1 text-sm",
   md: "px-4 py-2 text-base",
-  lg: "px-6 py-3 text-lg"
+  lg: "px-6 py-3 text-lg",
+  empty: ""
 };
 
 export function Button({
@@ -31,8 +32,21 @@ export function Button({
   className = ""
 }: ButtonOptions): string {
   if (variant === "google") {
-    size = "";
-    text = `<svg
+    size = "empty";
+    text = googleSVG();
+  }
+  const classes = [
+    "inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 uppercase",
+    buttonVariants[variant],
+    buttonSizes[size],
+    className
+  ].join(" ");
+  const idAttr = id ? ` id="${id}"` : "";
+  return `<button${idAttr} type="${type}" class="${classes}">${text}</button>`;
+}
+
+function googleSVG(): string {
+  return `<svg
         width="189"
         height="40"
         viewBox="0 0 189 40"
@@ -81,13 +95,4 @@ export function Button({
           </clipPath>
         </defs>
       </svg>`;
-  }
-  const classes = [
-    "inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 uppercase",
-    buttonVariants[variant],
-    buttonSizes[size],
-    className
-  ].join(" ");
-  const idAttr = id ? ` id="${id}"` : "";
-  return `<button${idAttr} type="${type}" class="${classes}">${text}</button>`;
 }
