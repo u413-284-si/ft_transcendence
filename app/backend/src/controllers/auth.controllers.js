@@ -4,13 +4,15 @@ import {
   verifyHash,
   createAuthTokens,
   getTokenHash,
-  deleteUserRefreshToken
+  deleteUserRefreshToken,
+  setCookies
 } from "../services/auth.services.js";
-import { getTokenData } from "../services/users.services.js";
+import { getTokenData, getUserByEmail } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
-import { setAuthCookies } from "../utils/cookie.js";
+import { createUser, getUserAuthProvider } from "../services/users.services.js";
+import fastify from "../app.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -19,6 +21,16 @@ export async function loginUserHandler(request, reply) {
 
     const identifier = usernameOrEmail.includes("@") ? "email" : "username";
     const payload = await getTokenData(usernameOrEmail, identifier);
+
+    const authProvider = await getUserAuthProvider(payload.id);
+    if (authProvider !== "LOCAL") {
+      return httpError(
+        reply,
+        409,
+        createResponseMessage(action, false),
+        "User already registered with " + authProvider
+      );
+    }
 
     const hashedPassword = await getPasswordHash(payload.id);
 
@@ -35,7 +47,7 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return setCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
@@ -54,6 +66,49 @@ export async function loginUserHandler(request, reply) {
         "Wrong credentials"
       );
     }
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function googleOauth2LoginHandler(request, reply) {
+  const action = "OAuth2 login user";
+  try {
+    const { token } =
+      await fastify.googleOauth2.getAccessTokenFromAuthorizationCodeFlow(
+        request
+      );
+    if (!token) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "No token provided"
+      );
+    }
+
+    const userData = await fastify.googleOauth2.userinfo(token.access_token);
+    if (!(await getUserByEmail(userData.email)))
+      await createUser(userData.name, userData.email, "", "GOOGLE");
+
+    const payload = await getTokenData(userData.email, "email");
+
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+
+    reply = setCookies(reply, accessToken, refreshToken);
+
+    reply
+      .clearCookie("oauth2-code-verifier")
+      .clearCookie("oauth2-redirect-state");
+
+    return reply.redirect("http://localhost:4000/home");
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `oAuth2LoginUserHandler: ${createResponseMessage(action, false)}`
+    );
     handlePrismaError(reply, action, err);
   }
 }
@@ -106,7 +161,7 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return setCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {
