@@ -38,7 +38,9 @@ const optionsloginUser = {
       ...errorResponses
     }
   },
-  rateLimit: authRateLimit
+  config: {
+    rateLimit: authRateLimit
+  }
 };
 
 const optionsAuthUserAccess = {
