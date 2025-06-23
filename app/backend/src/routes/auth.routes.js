@@ -48,7 +48,9 @@ const optionsAuthUserAccess = {
       ...errorResponses
     }
   },
-  rateLimit: authRateLimit
+  config: {
+    rateLimit: authRateLimit
+  }
 };
 
 const optionsAuthUserRefresh = {
@@ -57,7 +59,9 @@ const optionsAuthUserRefresh = {
       ...errorResponses
     }
   },
-  rateLimit: authRateLimit
+  config: {
+    rateLimit: authRateLimit
+  }
 };
 
 const optionsLogoutUser = {
@@ -76,5 +80,7 @@ const optionsGoogleOauth2Login = {
       ...errorResponses
     }
   },
-  rateLimit: authRateLimit
+  config: {
+    rateLimit: authRateLimit
+  }
 };
