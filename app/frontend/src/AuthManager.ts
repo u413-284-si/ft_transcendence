@@ -90,6 +90,10 @@ export class AuthManager {
     }
   }
 
+  public loginWithGoogle() {
+    window.location.pathname = "/login/google";
+  }
+
   public async logout(): Promise<void> {
     await userLogout();
     this.updateAuthState(null);

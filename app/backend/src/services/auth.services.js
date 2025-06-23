@@ -1,5 +1,6 @@
 import pkg from "argon2";
 import prisma from "../prisma/prismaClient.js";
+import env from "../config/env.js";
 
 export async function verifyAccessToken(request) {
   return await request.accessTokenVerify();
@@ -80,4 +81,28 @@ export async function createAuthTokens(reply, payload) {
   await updateUserRefreshToken(payload.id, newHashedRefreshToken);
 
   return { accessToken, refreshToken };
+}
+
+export function setCookies(reply, accessToken, refreshToken) {
+  const accessTokenTimeToExpire = new Date(
+    Date.now() + parseInt(env.accessTokenTimeToExpireInMs)
+  );
+  const refreshTokenTimeToExpire = new Date(
+    Date.now() + parseInt(env.refreshTokenTimeToExpireInMS)
+  );
+  return reply
+    .setCookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+      expires: accessTokenTimeToExpire
+    })
+    .setCookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth/refresh",
+      expires: refreshTokenTimeToExpire
+    });
 }
