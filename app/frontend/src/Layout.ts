@@ -65,7 +65,8 @@ export class Layout {
           <img
             src="${userAvatarUrl}"
             alt="Avatar"
-            class="w-14 h-14 rounded-full border-3 border-white hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer"
+            tabindex="0"
+            class="w-14 h-14 rounded-full border-3 border-white hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
           />
         </div>
       </nav>`;
@@ -87,7 +88,7 @@ export class Layout {
   }
 
   private attachAvatarDrawerHandler(): void {
-    const avatar = this.rootEl.querySelector("img[alt='Avatar']");
+    const avatar = this.rootEl.querySelector<HTMLElement>("img[alt='Avatar']");
     if (!avatar) return;
 
     const drawer = new Drawer([
@@ -106,5 +107,10 @@ export class Layout {
     ]);
 
     avatar.addEventListener("click", () => drawer.open());
+    avatar.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        drawer.open();
+      }
+    });
   }
 }
