@@ -14,7 +14,6 @@ export type DrawerItem = {
 export class Drawer {
   private drawerEl: HTMLElement;
   private overlayEl: HTMLElement;
-  private previouslyFocusedElement: HTMLElement | null = null;
 
   constructor(private links: DrawerItem[]) {
     const user = auth.getUser();
@@ -34,7 +33,6 @@ export class Drawer {
   }
 
   public open() {
-    this.previouslyFocusedElement = document.activeElement as HTMLElement;
     this.drawerEl.classList.remove("translate-x-full");
     this.overlayEl.classList.remove("hidden");
     this.drawerEl.focus();
@@ -45,7 +43,6 @@ export class Drawer {
     this.drawerEl.classList.add("translate-x-full");
     this.overlayEl.classList.add("hidden");
     document.removeEventListener("keydown", this.onKeyDown);
-    this.previouslyFocusedElement?.focus();
   }
 
   private hide() {
