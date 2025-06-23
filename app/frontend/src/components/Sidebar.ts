@@ -13,7 +13,7 @@ export function Sidebar(
       const icon = item.icon ? svgIconString(item.icon) : "";
       return /* HTML */ `
         <div
-          class="flex items-center space-x-2 px-4 hover:underline text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+          class="flex items-center space-x-2 px-4 hover:underline text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan rounded-md"
           data-label="${item.label}"
           tabindex="0"
           role="button"
