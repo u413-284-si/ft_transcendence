@@ -13,12 +13,8 @@ import oAuth2 from "@fastify/oauth2";
 
 import env from "./config/env.js";
 
-import userRoutes from "./routes/users.routes.js";
 import staticRoutes from "./routes/static.routes.js";
-import matchRoutes from "./routes/matches.routes.js";
-import tournamentRoutes from "./routes/tournaments.routes.js";
-import authRoutes from "./routes/auth.routes.js";
-import userstatsRoutes from "./routes/user_stats.routes.js";
+import apiRoutes from "./routes/api.routes.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/users.schema.js";
@@ -139,11 +135,7 @@ for (const schema of [
 }
 
 await fastify.register(staticRoutes);
-await fastify.register(userRoutes, { prefix: "/api/users" });
-await fastify.register(matchRoutes, { prefix: "/api/matches" });
-await fastify.register(tournamentRoutes, { prefix: "/api/tournaments" });
-await fastify.register(authRoutes, { prefix: "/api/auth" });
-await fastify.register(userstatsRoutes, { prefix: "/api/user-stats" });
+await fastify.register(apiRoutes);
 
 fastify.listen({ host: "0.0.0.0", port: env.port }, (err, address) => {
   if (err) {
