@@ -12,9 +12,9 @@ export default async function apiRoutes(fastify) {
     max: 50,
     timeWindow: "1 minute"
   });
-  await fastify.register(userRoutes, { prefix: "/api/users" });
-  await fastify.register(matchRoutes, { prefix: "/api/matches" });
-  await fastify.register(tournamentRoutes, { prefix: "/api/tournaments" });
-  await fastify.register(authRoutes, { prefix: "/api/auth" });
-  await fastify.register(userstatsRoutes, { prefix: "/api/user-stats" });
+  await fastify.register(userRoutes, { prefix: "/users" });
+  await fastify.register(matchRoutes, { prefix: "/matches" });
+  await fastify.register(tournamentRoutes, { prefix: "/tournaments" });
+  await fastify.register(authRoutes, { prefix: "/auth" });
+  await fastify.register(userstatsRoutes, { prefix: "/user-stats" });
 }

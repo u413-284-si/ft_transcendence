@@ -135,7 +135,7 @@ for (const schema of [
 }
 
 await fastify.register(staticRoutes);
-await fastify.register(apiRoutes);
+await fastify.register(apiRoutes, { prefix: "/api" });
 
 fastify.listen({ host: "0.0.0.0", port: env.port }, (err, address) => {
   if (err) {
