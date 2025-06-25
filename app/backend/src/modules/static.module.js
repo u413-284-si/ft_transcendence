@@ -1,7 +1,7 @@
 import fastifyRateLimit from "@fastify/rate-limit";
 import fastifyStatic from "@fastify/static";
 
-export default async function staticRoutes(fastify) {
+export default async function staticModule(fastify) {
   await fastify.register(fastifyRateLimit, {
     max: 1000,
     timeWindow: "15 minutes"

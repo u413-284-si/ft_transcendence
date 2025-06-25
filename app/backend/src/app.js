@@ -13,8 +13,8 @@ import oAuth2 from "@fastify/oauth2";
 
 import env from "./config/env.js";
 
-import staticRoutes from "./routes/static.routes.js";
-import apiRoutes from "./routes/api.routes.js";
+import staticModule from "./modules/static.module.js";
+import apiModule from "./modules/api.module.js";
 
 import { commonSchemas } from "./schema/common.schema.js";
 import { userSchemas } from "./schema/users.schema.js";
@@ -135,8 +135,8 @@ for (const schema of [
   fastify.addSchema(schema);
 }
 
-await fastify.register(staticRoutes);
-await fastify.register(apiRoutes, { prefix: "/api" });
+await fastify.register(staticModule);
+await fastify.register(apiModule, { prefix: "/api" });
 
 fastify.listen({ host: "0.0.0.0", port: env.port }, (err, address) => {
   if (err) {
