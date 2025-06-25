@@ -258,7 +258,7 @@ export async function createUserAvatarHandler(request, reply) {
 
         // Create new avatar
         const newFileName = await createUserAvatar(userId, fileBuffer);
-        const avatarUrl = `/images/${newFileName}`;
+        const avatarUrl = `/static/images/${newFileName}`;
         const updatedUser = await updateUser(userId, { avatar: avatarUrl });
         return reply.code(201).send({
           message: createResponseMessage(action, true),
