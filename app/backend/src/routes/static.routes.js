@@ -1,6 +1,14 @@
+import fastifyRateLimit from "@fastify/rate-limit";
+import fastifyStatic from "@fastify/static";
+
 export default async function staticRoutes(fastify) {
-  fastify.get("/", (req, reply) => {
-    return reply.sendFile("index.html");
+  await fastify.register(fastifyRateLimit, {
+    max: 1000,
+    timeWindow: "15 minutes"
+  });
+
+  await fastify.register(fastifyStatic, {
+    root: "/workspaces/ft_transcendence/app/frontend/public"
   });
 
   fastify.setNotFoundHandler((req, reply) => {

@@ -6,9 +6,7 @@ import fastifyCors from "@fastify/cors";
 import fastifyHelmet from "@fastify/helmet";
 import fastifyCompress from "@fastify/compress";
 import fastifyGracefulShutdown from "fastify-graceful-shutdown";
-import fastifyStatic from "@fastify/static";
 import fastifyCookie from "@fastify/cookie";
-import fastifyRateLimit from "@fastify/rate-limit";
 import jwt from "@fastify/jwt";
 import fastifyMultipart from "@fastify/multipart";
 import oAuth2 from "@fastify/oauth2";
@@ -76,10 +74,6 @@ await fastify.register(fastifyCompress);
 await fastify.register(fastifyGracefulShutdown);
 await fastify.register(fastifyFormbody);
 await fastify.register(fastifyCookie);
-await fastify.register(fastifyRateLimit, {
-  max: 1000,
-  timeWindow: "15 minutes"
-});
 await fastify.register(jwt, {
   namespace: "accessToken",
   secret: env.jwtAccessTokenSecret,
@@ -150,9 +144,6 @@ await fastify.register(matchRoutes, { prefix: "/api/matches" });
 await fastify.register(tournamentRoutes, { prefix: "/api/tournaments" });
 await fastify.register(authRoutes, { prefix: "/api/auth" });
 await fastify.register(userstatsRoutes, { prefix: "/api/user-stats" });
-await fastify.register(fastifyStatic, {
-  root: "/workspaces/ft_transcendence/app/frontend/public"
-});
 
 fastify.listen({ host: "0.0.0.0", port: env.port }, (err, address) => {
   if (err) {
