@@ -1,4 +1,6 @@
 import Fastify from "fastify";
+import FastifyOverview from "fastify-overview";
+import fastifyOverviewUi from "fastify-overview-ui";
 import fastifyFormbody from "@fastify/formbody";
 import fastifyCors from "@fastify/cors";
 import fastifyHelmet from "@fastify/helmet";
@@ -50,6 +52,9 @@ const fastify = Fastify({
     }
   }
 });
+
+await fastify.register(FastifyOverview, { addSource: true, hideEmpty: true });
+await fastify.register(fastifyOverviewUi);
 
 await fastify.register(fastifyCors, {
   origin: true,
