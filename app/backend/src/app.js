@@ -25,6 +25,7 @@ import { userStatsSchemas } from "./schema/user_stats.schema.js";
 import { friendRequestSchemas } from "./schema/friend_request.schema.js";
 
 const fastify = Fastify({
+  exposeHeadRoutes: false,
   logger: {
     level: env.logLevel,
     transport: {
