@@ -26,8 +26,8 @@ export default async function authRoutes(fastify) {
 }
 
 const authRateLimit = {
-  max: 10,
-  timeWindow: "1 minute"
+  max: env.authRateLimitMax,
+  timeWindow: env.authRateLimitTimeInMS
 };
 
 const optionsloginUser = {

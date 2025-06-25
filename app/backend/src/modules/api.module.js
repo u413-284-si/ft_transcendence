@@ -4,11 +4,12 @@ import tournamentRoutes from "../routes/tournaments.routes.js";
 import userstatsRoutes from "../routes/user_stats.routes.js";
 import userRoutes from "../routes/users.routes.js";
 import authRoutes from "../routes/auth.routes.js";
+import env from "../config/env.js";
 
 export default async function apiModule(fastify) {
   await fastify.register(fastifyRateLimit, {
-    max: 50,
-    timeWindow: "1 minute",
+    max: env.apiRateLimitMax,
+    timeWindow: env.apiRateLimitTimeInMS,
     hook: "preHandler",
     keyGenerator: function (request) {
       return request.user?.id ?? request.ip;

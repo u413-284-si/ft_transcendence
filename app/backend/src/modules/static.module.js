@@ -1,10 +1,11 @@
 import fastifyRateLimit from "@fastify/rate-limit";
 import fastifyStatic from "@fastify/static";
+import env from "../config/env.js";
 
 export default async function staticModule(fastify) {
   await fastify.register(fastifyRateLimit, {
-    max: 1000,
-    timeWindow: "15 minutes"
+    max: env.staticRateLimitMax,
+    timeWindow: env.staticRateLimitTimeInMS
   });
 
   await fastify.register(fastifyStatic, {
