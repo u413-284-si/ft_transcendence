@@ -42,11 +42,10 @@ export default async function staticModule(fastify) {
     });
   });
 
-  fastify.setErrorHandler((error, request, reply) => {
-    if (error.statusCode === 429) {
-      const accept = request.headers["accept"] || "";
-      if (accept.includes("text/html")) {
-        reply.code(429).type("text/html").send(`
+  fastify.setErrorHandler(function (error, request, reply) {
+    const accept = request.headers["accept"] || "";
+    if (error.statusCode === 429 && accept.includes("text/html")) {
+      reply.code(429).type("text/html").send(`
         <!DOCTYPE html>
         <html>
           <head>
@@ -58,7 +57,6 @@ export default async function staticModule(fastify) {
           </body>
         </html>
       `);
-      }
     } else {
       reply.send(error);
     }
