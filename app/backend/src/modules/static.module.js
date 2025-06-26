@@ -4,7 +4,6 @@ import env from "../config/env.js";
 
 export default async function staticModule(fastify) {
   await fastify.register(fastifyRateLimit, {
-    global: false,
     max: env.staticRateLimitMax,
     timeWindow: env.staticRateLimitTimeInMS
   });
@@ -19,7 +18,7 @@ export default async function staticModule(fastify) {
   });
 
   // Explicitly reduce caching of assets that don't use cache bursting techniques
-  fastify.get("/", { config: { rateLimit: {} } }, function (request, reply) {
+  fastify.get("/", function (request, reply) {
     // index.html should never be cached
     reply.sendFile("index.html", {
       maxAge: 0,
@@ -27,28 +26,21 @@ export default async function staticModule(fastify) {
     });
   });
 
-  fastify.get(
-    "/favicon.ico",
-    { config: { rateLimit: {} } },
-    function (request, reply) {
-      // favicon can be cached for a short period
-      reply.sendFile("favicon.ico", {
-        maxAge: "1d",
-        immutable: false
-      });
-    }
-  );
+  fastify.get("/favicon.ico", function (request, reply) {
+    // favicon can be cached for a short period
+    reply.sendFile("favicon.ico", {
+      maxAge: "1d",
+      immutable: false
+    });
+  });
 
-  fastify.setNotFoundHandler(
-    { preHandler: fastify.rateLimit() },
-    function (request, reply) {
-      request.log.info("Static NotFoundHandler");
-      return reply.status(200).sendFile("index.html", {
-        maxAge: 0,
-        immutable: false
-      });
-    }
-  );
+  fastify.setNotFoundHandler(function (request, reply) {
+    request.log.info("Static NotFoundHandler");
+    return reply.status(200).sendFile("index.html", {
+      maxAge: 0,
+      immutable: false
+    });
+  });
 
   fastify.setErrorHandler((error, request, reply) => {
     if (error.statusCode === 429) {
