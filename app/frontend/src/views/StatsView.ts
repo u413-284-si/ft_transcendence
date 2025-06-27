@@ -60,7 +60,10 @@ export default class StatsView extends AbstractView {
             { value: `${this.userStats?.matchesPlayed}`, text: "Played" },
             { value: `${this.userStats?.matchesWon}`, text: "Won" },
             { value: `${this.userStats?.matchesLost}`, text: "Lost" },
-            { value: `${this.userStats?.winRate} %`, text: "Win Rate" }
+            {
+              value: `${this.userStats?.winRate.toFixed(2)} %`,
+              text: "Win Rate"
+            }
           ])}
         </div>
       </div>
