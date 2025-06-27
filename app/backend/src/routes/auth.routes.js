@@ -8,8 +8,17 @@ import {
 import { errorResponses } from "../utils/error.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
 import env from "../config/env.js";
+import fastifyRateLimit from "@fastify/rate-limit";
 
 export default async function authRoutes(fastify) {
+  await fastify.register(fastifyRateLimit, {
+    max: env.authRateLimitMax,
+    timeWindow: env.authRateLimitTimeInMS,
+    hook: "preHandler",
+    keyGenerator: function (request) {
+      return request.user?.id ?? request.ip;
+    }
+  });
   fastify.post("/", optionsloginUser, loginUserHandler);
 
   fastify.get("/", optionsAuthUserAccess, authAndDecodeAccessHandler);
@@ -25,11 +34,6 @@ export default async function authRoutes(fastify) {
   );
 }
 
-const authRateLimit = {
-  max: env.authRateLimitMax,
-  timeWindow: env.authRateLimitTimeInMS
-};
-
 const optionsloginUser = {
   schema: {
     body: { $ref: "loginUserSchema" },
@@ -37,9 +41,6 @@ const optionsloginUser = {
       200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
-  },
-  config: {
-    rateLimit: authRateLimit
   }
 };
 
@@ -49,9 +50,6 @@ const optionsAuthUserAccess = {
     response: {
       ...errorResponses
     }
-  },
-  config: {
-    rateLimit: authRateLimit
   }
 };
 
@@ -60,9 +58,6 @@ const optionsAuthUserRefresh = {
     response: {
       ...errorResponses
     }
-  },
-  config: {
-    rateLimit: authRateLimit
   }
 };
 
@@ -81,8 +76,5 @@ const optionsGoogleOauth2Login = {
     response: {
       ...errorResponses
     }
-  },
-  config: {
-    rateLimit: authRateLimit
   }
 };
