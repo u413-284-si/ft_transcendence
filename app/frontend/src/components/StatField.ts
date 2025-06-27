@@ -6,7 +6,7 @@ export type StatFieldOptions = {
 
 export function StatField({ value, text, id = "" }: StatFieldOptions): string {
   const classes =
-    "w-30 px-4 py-2 border border-neon-cyan rounded hover:shadow-neon-cyan text-center";
+    "w-max px-4 py-2 border border-neon-cyan rounded hover:shadow-neon-cyan text-center";
   const idAttr = id ? ` id="${id}"` : "";
 
   return /* HTML */ `
