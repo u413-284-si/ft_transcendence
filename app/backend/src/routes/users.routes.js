@@ -253,6 +253,7 @@ const optionsCreateUserAvatar = {
 };
 
 const optionsDeleteUserAvatar = {
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "userResponseSchema" },
