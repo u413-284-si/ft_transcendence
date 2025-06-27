@@ -10,36 +10,21 @@ export default async function staticModule(fastify) {
 
   await fastify.register(fastifyStatic, {
     root: "/workspaces/ft_transcendence/app/frontend/public",
-    // By default all assets are immutable and can be cached for a long period due to cache bursting techniques
     wildcard: false,
-    maxAge: "30d",
-    immutable: true,
     prefix: "/static/"
   });
 
-  // Explicitly reduce caching of assets that don't use cache bursting techniques
   fastify.get("/", function (request, reply) {
-    // index.html should never be cached
-    reply.sendFile("index.html", {
-      maxAge: 0,
-      immutable: false
-    });
+    reply.sendFile("index.html", {});
   });
 
   fastify.get("/favicon.ico", function (request, reply) {
-    // favicon can be cached for a short period
-    reply.sendFile("favicon.ico", {
-      maxAge: "1d",
-      immutable: false
-    });
+    reply.sendFile("favicon.ico", {});
   });
 
   fastify.setNotFoundHandler(function (request, reply) {
     request.log.info("Static NotFoundHandler");
-    return reply.status(200).sendFile("index.html", {
-      maxAge: 0,
-      immutable: false
-    });
+    return reply.status(200).sendFile("index.html", {});
   });
 
   fastify.setErrorHandler(function (error, request, reply) {
