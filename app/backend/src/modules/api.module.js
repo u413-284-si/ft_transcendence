@@ -13,6 +13,17 @@ export default async function apiModule(fastify) {
     hook: "preHandler",
     keyGenerator: function (request) {
       return request.user?.id ?? request.ip;
+    },
+    onExceeded: (request) => {
+      if (request.user?.id) {
+        request.log.warn(
+          `Rate limit exceeded for user id: ${request.user.id} - URL: ${request.raw.url}`
+        );
+      } else {
+        request.log.warn(
+          `Rate limit exceeded for IP: ${request.ip} - URL: ${request.raw.url}`
+        );
+      }
     }
   });
 

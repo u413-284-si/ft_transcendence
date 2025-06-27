@@ -5,7 +5,12 @@ import env from "../config/env.js";
 export default async function staticModule(fastify) {
   await fastify.register(fastifyRateLimit, {
     max: env.staticRateLimitMax,
-    timeWindow: env.staticRateLimitTimeInMS
+    timeWindow: env.staticRateLimitTimeInMS,
+    onExceeded: (request) => {
+      request.log.warn(
+        `Rate limit exceeded for IP: ${request.ip} - URL: ${request.raw.url}`
+      );
+    }
   });
 
   await fastify.register(fastifyStatic, {
