@@ -26,9 +26,9 @@ import {
 export default async function userRoutes(fastify) {
   fastify.post("/", optionsCreateUser, createUserHandler);
 
-  fastify.get("/", optionsGetUser, getUserHandler);
+  fastify.get("/me", optionsGetUser, getUserHandler);
 
-  fastify.get("/admin", optionsGetAllUsers, getAllUsersHandler);
+  fastify.get("/", optionsGetAllUsers, getAllUsersHandler);
 
   fastify.put("/:id", optionsUpdateUser, updateUserHandler);
 
@@ -36,51 +36,55 @@ export default async function userRoutes(fastify) {
 
   fastify.delete("/:id", optionsDeleteUser, deleteUserHandler);
 
-  fastify.get("/matches", optionsGetUserMatches, getUserMatchesHandler);
+  fastify.get("/me/matches", optionsGetUserMatches, getUserMatchesHandler);
 
-  fastify.get("/user-stats", optionsGetUserStats, getUserStatsHandler);
+  fastify.get("/me/user-stats", optionsGetUserStats, getUserStatsHandler);
 
-  fastify.post("/avatar", optionsCreateUserAvatar, createUserAvatarHandler);
+  fastify.post("/me/avatar", optionsCreateUserAvatar, createUserAvatarHandler);
 
-  fastify.delete("/avatar", optionsDeleteUserAvatar, deleteUserAvatarHandler);
+  fastify.delete(
+    "/me/avatar",
+    optionsDeleteUserAvatar,
+    deleteUserAvatarHandler
+  );
 
   fastify.get(
-    "/tournaments",
+    "/me/tournaments",
     optionsGetUserTournaments,
     getUserTournamentsHandler
   );
 
   fastify.get(
-    "/tournaments/active",
+    "/me/tournaments/active",
     optionsGetUserActiveTournament,
     getUserActiveTournamentHandler
   );
 
   fastify.get(
-    "/friend-requests",
+    "/me/friend-requests",
     optionsGetUserFriends,
     getUserFriendRequestsHandler
   );
 
   fastify.post(
-    "/friend-requests",
+    "/me/friend-requests",
     optionsCreateFriendRequest,
     createFriendRequestHandler
   );
 
   fastify.patch(
-    "/friend-requests/:id",
+    "/me/friend-requests/:id",
     optionsUpdateFriendRequest,
     updateFriendRequestHandler
   );
 
   fastify.delete(
-    "/friend-requests/:id",
+    "/me/friend-requests/:id",
     optionsDeleteUserFriend,
     deleteFriendRequestHandler
   );
 
-  fastify.get("/online", optionsSseOnline, sseConnectionHandler);
+  fastify.get("/me/online", optionsSseOnline, sseConnectionHandler);
 
   fastify.get("/search", optionsSearchUser, searchUserHandler);
 }
