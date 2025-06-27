@@ -14,7 +14,13 @@ export default async function staticModule(fastify) {
 
   fastify.setNotFoundHandler(function (request, reply) {
     request.log.info("Static NotFoundHandler");
-    return reply.status(200).sendFile("index.html", {});
+    if (request.raw.url && request.raw.url.startsWith("/api")) {
+      return reply.status(404).send({
+        message: `Fail: ${request.raw.url}`,
+        cause: "Route does not exist"
+      });
+    }
+    return reply.status(200).sendFile("index.html");
   });
 
   fastify.setErrorHandler(function (error, request, reply) {

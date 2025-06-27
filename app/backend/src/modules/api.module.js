@@ -21,11 +21,4 @@ export default async function apiModule(fastify) {
   await fastify.register(tournamentRoutes, { prefix: "/tournaments" });
   await fastify.register(userstatsRoutes, { prefix: "/user-stats" });
   await fastify.register(authRoutes, { prefix: "/auth" });
-
-  fastify.setNotFoundHandler(function (req, reply) {
-    return reply.status(404).send({
-      message: `Fail: ${req.raw.url}`,
-      cause: "Route does not exist"
-    });
-  });
 }
