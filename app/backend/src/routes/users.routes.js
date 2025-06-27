@@ -30,59 +30,59 @@ export default async function userRoutes(fastify) {
 
   fastify.get("/admin", optionsGetAllUsers, getAllUsersHandler);
 
-  fastify.put("/:id/", optionsUpdateUser, updateUserHandler);
+  fastify.put("/:id", optionsUpdateUser, updateUserHandler);
 
-  fastify.patch("/:id/", optionsPatchUser, patchUserHandler);
+  fastify.patch("/:id", optionsPatchUser, patchUserHandler);
 
-  fastify.delete("/:id/", optionsDeleteUser, deleteUserHandler);
+  fastify.delete("/:id", optionsDeleteUser, deleteUserHandler);
 
-  fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
+  fastify.get("/matches", optionsGetUserMatches, getUserMatchesHandler);
 
-  fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
+  fastify.get("/user-stats", optionsGetUserStats, getUserStatsHandler);
 
-  fastify.post("/avatar/", optionsCreateUserAvatar, createUserAvatarHandler);
+  fastify.post("/avatar", optionsCreateUserAvatar, createUserAvatarHandler);
 
-  fastify.delete("/avatar/", optionsDeleteUserAvatar, deleteUserAvatarHandler);
+  fastify.delete("/avatar", optionsDeleteUserAvatar, deleteUserAvatarHandler);
 
   fastify.get(
-    "/tournaments/",
+    "/tournaments",
     optionsGetUserTournaments,
     getUserTournamentsHandler
   );
 
   fastify.get(
-    "/tournaments/active/",
+    "/tournaments/active",
     optionsGetUserActiveTournament,
     getUserActiveTournamentHandler
   );
 
   fastify.get(
-    "/friend-requests/",
+    "/friend-requests",
     optionsGetUserFriends,
     getUserFriendRequestsHandler
   );
 
   fastify.post(
-    "/friend-requests/",
+    "/friend-requests",
     optionsCreateFriendRequest,
     createFriendRequestHandler
   );
 
   fastify.patch(
-    "/friend-requests/:id/",
+    "/friend-requests/:id",
     optionsUpdateFriendRequest,
     updateFriendRequestHandler
   );
 
   fastify.delete(
-    "/friend-requests/:id/",
+    "/friend-requests/:id",
     optionsDeleteUserFriend,
     deleteFriendRequestHandler
   );
 
-  fastify.get("/online/", optionsSseOnline, sseConnectionHandler);
+  fastify.get("/online", optionsSseOnline, sseConnectionHandler);
 
-  fastify.get("/search/", optionsSearchUser, searchUserHandler);
+  fastify.get("/search", optionsSearchUser, searchUserHandler);
 }
 
 const optionsCreateUser = {
