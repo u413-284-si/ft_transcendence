@@ -7,7 +7,7 @@ export function NicknameInput(players: number): string {
     const isChecked = i === 1 ? true : false;
 
     nicknameInputs += /* HTML */ `
-      <div class="border border-teal p-4 rounded shadow-sm">
+      <div class="border border-teal p-4 rounded shadow-sm flex flex-col space-y-4">
         ${Input({
           id: `nickname${i}`,
           label: `Player ${i} Nickname`,
