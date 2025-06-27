@@ -9,17 +9,7 @@ export default async function staticModule(fastify) {
   });
 
   await fastify.register(fastifyStatic, {
-    root: "/workspaces/ft_transcendence/app/frontend/public",
-    wildcard: false,
-    prefix: "/static/"
-  });
-
-  fastify.get("/", function (request, reply) {
-    reply.sendFile("index.html", {});
-  });
-
-  fastify.get("/favicon.ico", function (request, reply) {
-    reply.sendFile("favicon.ico", {});
+    root: "/workspaces/ft_transcendence/app/frontend/public"
   });
 
   fastify.setNotFoundHandler(function (request, reply) {

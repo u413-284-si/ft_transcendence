@@ -47,7 +47,7 @@ export class Layout {
   private getHeaderHTML(): string {
     if (this.mode === "auth") {
       const userAvatarUrl: string =
-        auth.getUser().avatar || "/static/images/default-avatar.png";
+        auth.getUser().avatar || "/images/default-avatar.png";
       return /* HTML */ ` <nav class="relative">
         <div class="container mx-auto flex justify-center space-x-8 ">
           ${Link({ text: "Home", href: "/home" })}

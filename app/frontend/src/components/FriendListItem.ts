@@ -14,7 +14,7 @@ export function FriendListItem(
 
   const avatar = `
     <img
-      src="${request.friendAvatar || "/static/images/default-avatar.png"}"
+      src="${request.friendAvatar || "/images/default-avatar.png"}"
       alt="${username}'s avatar"
       class="w-12 h-12 rounded-full border-2 border-neon-cyan object-cover"
     />
