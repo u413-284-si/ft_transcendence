@@ -32,7 +32,7 @@ export default async function userRoutes(fastify) {
 
   fastify.put("/:id", optionsUpdateUser, updateUserHandler);
 
-  fastify.patch("/:id", optionsPatchUser, patchUserHandler);
+  fastify.patch("/me", optionsPatchUser, patchUserHandler);
 
   fastify.delete("/:id", optionsDeleteUser, deleteUserHandler);
 
@@ -130,8 +130,8 @@ const optionsUpdateUser = {
 };
 
 const optionsPatchUser = {
+  onRequest: [authorizeUserAccess],
   schema: {
-    params: { $ref: "idSchema" },
     body: { $ref: "patchUserSchema" },
     response: {
       200: { $ref: "userResponseSchema" },
