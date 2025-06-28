@@ -10,6 +10,7 @@ import { router } from "./routing/Router.js";
 import { authGuard, guestOnlyGuard } from "./routing/routeGuard.js";
 import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
+import Charts from "./views/ChartsView.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard, layout: "guest" })
@@ -28,6 +29,7 @@ router
   .addRoute("/settings", { view: Settings, guard: authGuard, layout: "auth" })
   .addRoute("/stats", { view: Stats, guard: authGuard, layout: "auth" })
   .addRoute("/friends", { view: Friends, guard: authGuard, layout: "auth" })
+  .addRoute("/charts", { view: Charts, guard: authGuard, layout: "auth" })
   .addRouteChangeListener(logRouteChange)
   .addRouteChangeListener(updateUI);
 
