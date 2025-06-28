@@ -177,6 +177,7 @@ export async function logoutUserHandler(request, reply) {
   const action = "Logout user";
   try {
     const userId = parseInt(request.user.id, 10);
+    const username = request.user.username;
     reply.clearCookie("accessToken", {
       httpOnly: true,
       secure: true,
@@ -192,7 +193,10 @@ export async function logoutUserHandler(request, reply) {
     await deleteUserRefreshToken(userId);
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true) });
+      .send({
+        message: createResponseMessage(action, true),
+        data: { username: username }
+      });
   } catch (err) {
     request.log.error(
       { err, body: request.body },

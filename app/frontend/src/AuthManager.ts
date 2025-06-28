@@ -97,6 +97,9 @@ export class AuthManager {
   public async logout(): Promise<void> {
     await userLogout();
     this.updateAuthState(null);
+
+    const sidebar = document.getElementById("drawer-sidebar");
+    if (sidebar) sidebar.remove();
   }
 
   public clearTokenOnError(): void {
