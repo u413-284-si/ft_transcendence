@@ -8,7 +8,7 @@ export function startOnlineStatusTracking() {
     eventSource.close();
   }
 
-  eventSource = new EventSource("/api/users/online/", {
+  eventSource = new EventSource("/api/users/me/online", {
     withCredentials: true
   });
 
