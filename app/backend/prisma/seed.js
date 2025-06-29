@@ -1,6 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 
+import { seedUsers } from "./seeders/seedUser.js";
+import { seedMatches } from "./seeders/seedMatches.js";
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -8,20 +11,11 @@ async function main() {
 
   faker.seed(1);
 
-  for (let i = 0; i < 10; i++) {
-    const username = faker.internet.username();
-    const email = faker.internet.email({ firstName: username });
-    const avatar = "/images/default-avatar.png";
-    const dateJoined = faker.date.past({ years: 1 });
+  const users = await seedUsers(10);
 
-    await prisma.user.create({
-      data: {
-        username,
-        email,
-        avatar,
-        dateJoined
-      }
-    });
+  for (const user of users) {
+    const matchCount = faker.number.int({ min: 1, max: 10 });
+    await seedMatches(user.id, matchCount);
   }
 
   console.log("Seeding complete!");
