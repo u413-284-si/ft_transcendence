@@ -5,7 +5,7 @@ let eventSource: EventSource | null = null;
 let reconnectTimeoutID: ReturnType<typeof setTimeout> | null = null;
 let reconnectAttempts = 0;
 const maxReconnectAttempts = 3;
-const reconnectDelay = 5000;
+const reconnectDelayInMS = 5000;
 let isFirstConnection = true;
 
 export function startOnlineStatusTracking() {
@@ -53,15 +53,15 @@ export function startOnlineStatusTracking() {
     if (reconnectAttempts < maxReconnectAttempts) {
       reconnectAttempts++;
       console.log(
-        `Reconnecting in ${reconnectDelay / 1000} seconds... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`
+        `Reconnecting in ${reconnectDelayInMS / 1000} seconds... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`
       );
       toaster.warn(
-        `Lost connection — retrying in ${reconnectDelay / 1000} seconds... (Attempt ${reconnectAttempts} of ${maxReconnectAttempts})`
+        `Lost connection — retrying in ${reconnectDelayInMS / 1000} seconds... (Attempt ${reconnectAttempts} of ${maxReconnectAttempts})`
       );
       reconnectTimeoutID = setTimeout(() => {
         reconnectTimeoutID = null;
         startOnlineStatusTracking();
-      }, reconnectDelay);
+      }, reconnectDelayInMS);
     } else {
       console.error("Max reconnect attempts reached. Not trying again.");
       toaster.error("Unable to reconnect. Stop until refresh.");
