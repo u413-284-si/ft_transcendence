@@ -133,7 +133,7 @@ export async function deleteUserAvatar(currentAvatarUrl) {
 export async function getUserByUsername(username) {
   const user = await prisma.user.findUnique({
     where: { username },
-    select: { id: true, username: true }
+    select: { id: true, username: true, dateJoined: true }
   });
   return user;
 }

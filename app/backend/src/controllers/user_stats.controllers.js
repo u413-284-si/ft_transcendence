@@ -8,7 +8,12 @@ import { createResponseMessage } from "../utils/response.js";
 export async function getAllUserStatsHandler(request, reply) {
   const action = "Get all user stats";
   try {
-    const data = await getAllUserStats();
+    const filter = {
+      username: request.query.username,
+      limit: request.query.limit,
+      offset: request.query.offset
+    };
+    const data = await getAllUserStats(filter);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),

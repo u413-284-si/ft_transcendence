@@ -78,6 +78,16 @@ export async function getUserMatches(userId) {
   return matches;
 }
 
+export async function getUserMatchesByUsername(username) {
+  const matches = await prisma.match.findMany({
+    where: {
+      user: { username: username }
+    },
+    select: matchSelect
+  });
+  return matches;
+}
+
 export async function deleteAllMatches() {
   const matches = await prisma.match.deleteMany();
   return matches;

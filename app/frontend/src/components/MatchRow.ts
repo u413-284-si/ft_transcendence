@@ -46,3 +46,13 @@ export function MatchRow(match: Match, user: string): string {
     </tr>
   `;
 }
+
+export function NoMatchesRow(): string {
+  return /* HTML */ `
+    <tr>
+      <td colspan="7" class="text-center text-teal py-4">
+        No matches played yet
+      </td>
+    </tr>
+  `;
+}
