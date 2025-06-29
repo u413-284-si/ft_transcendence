@@ -2,7 +2,7 @@ import { toaster } from "../Toaster.js";
 import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
 
 let eventSource: EventSource | null = null;
-let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+let reconnectTimeoutID: ReturnType<typeof setTimeout> | null = null;
 let reconnectAttempts = 0;
 const maxReconnectAttempts = 3;
 const reconnectDelay = 5000;
@@ -58,8 +58,8 @@ export function startOnlineStatusTracking() {
       toaster.warn(
         `Lost connection — retrying in ${reconnectDelay / 1000} seconds... (Attempt ${reconnectAttempts} of ${maxReconnectAttempts})`
       );
-      reconnectTimeout = setTimeout(() => {
-        reconnectTimeout = null;
+      reconnectTimeoutID = setTimeout(() => {
+        reconnectTimeoutID = null;
         startOnlineStatusTracking();
       }, reconnectDelay);
     } else {
@@ -75,8 +75,8 @@ export function stopOnlineStatusTracking() {
     eventSource = null;
     console.log("Disconnected from online status SSE");
   }
-  if (reconnectTimeout) {
-    clearTimeout(reconnectTimeout);
-    reconnectTimeout = null;
+  if (reconnectTimeoutID) {
+    clearTimeout(reconnectTimeoutID);
+    reconnectTimeoutID = null;
   }
 }
