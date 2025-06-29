@@ -19,9 +19,10 @@ export async function registerSSEConnection(userId, reply) {
 
   notifyHeartbeat(userId, "connected");
 
+  const pingDelayInMs = 20000;
   const heartbeatInterval = setInterval(() => {
     notifyHeartbeat(userId, "ping");
-  }, 20000);
+  }, pingDelayInMs);
 
   reply.raw.on("close", async () => {
     clearInterval(heartbeatInterval);
