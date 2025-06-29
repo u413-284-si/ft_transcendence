@@ -108,7 +108,7 @@ export async function updateUserHandler(request, reply) {
 export async function patchUserHandler(request, reply) {
   const action = "Patch user";
   try {
-    const id = parseInt(request.params.id, 10);
+    const id = parseInt(request.user.id, 10);
     const data = await updateUser(id, request.body);
     return reply
       .code(200)
