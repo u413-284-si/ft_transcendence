@@ -28,7 +28,9 @@ export function Input({
 
   return /* HTML */ `
     <div class="w-[300px] flex flex-col gap-1">
-      <label for="${id}" class="text-sm font-medium text-white">${label}</label>
+      <label for="${id}" class="block mb-2 text-sm font-medium text-white"
+        >${label}</label
+      >
       <div class="relative flex items-center">
         <input
           id="${id}"

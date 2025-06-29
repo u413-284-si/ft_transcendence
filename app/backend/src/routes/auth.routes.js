@@ -30,13 +30,13 @@ export default async function authRoutes(fastify) {
       }
     }
   });
-  fastify.post("/", optionsloginUser, loginUserHandler);
+  fastify.post("/login", optionsloginUser, loginUserHandler);
 
-  fastify.get("/", optionsAuthUserAccess, authAndDecodeAccessHandler);
+  fastify.get("/token", optionsAuthUserAccess, authAndDecodeAccessHandler);
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 
-  fastify.patch("/logout/", optionsLogoutUser, logoutUserHandler);
+  fastify.patch("/logout", optionsLogoutUser, logoutUserHandler);
 
   fastify.get(
     env.googleOauth2CallbackRoute,

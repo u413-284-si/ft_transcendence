@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     auth.onChange(async (isAuth) => {
       const path = window.location.pathname;
       if (!isAuth && path !== "/login") {
-        alert("User was logged out");
+        console.log("Redirecting to login");
         await router.navigate("/login", false);
       }
     });
