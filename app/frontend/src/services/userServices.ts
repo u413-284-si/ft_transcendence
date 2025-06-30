@@ -22,7 +22,7 @@ export async function getUserProfile(): Promise<User> {
   return apiResponse.data;
 }
 
-export async function patchUser(updateData: User): Promise<User> {
+export async function patchUser(updateData: Partial<User>): Promise<User> {
   const apiResponse = await apiFetch<User>("/api/users/me", {
     method: "PATCH",
     body: JSON.stringify(updateData),

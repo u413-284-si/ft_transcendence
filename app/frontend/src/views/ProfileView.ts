@@ -11,7 +11,9 @@ import {
   validateUsername,
   validateEmail,
   validatePassword,
-  validateImageFile
+  validateImageFile,
+  markInvalid,
+  clearInvalid
 } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { getInputEl, getEl } from "../utility.js";
@@ -56,7 +58,7 @@ export default class ProfileView extends AbstractView {
             className: "hidden"
           })
         ]
-      })},
+      })}
       ${Form({
         id: "profile-form",
         children: [
@@ -84,7 +86,7 @@ export default class ProfileView extends AbstractView {
             size: "md"
           })
         ]
-      })},
+      })}
       ${Form({
         id: "password-form",
         children: [
@@ -149,19 +151,36 @@ export default class ProfileView extends AbstractView {
     const usernameErrorEl = getEl("username-error");
     const emailEL = getInputEl("email-input");
     const emailErrorEl = getEl("email-error");
+    let valid = true;
+    const username = usernameEl.value;
+    const email = emailEL.value;
 
-    if (
-      !validateUsername(usernameEl, usernameErrorEl) ||
-      !validateEmail(emailEL, emailErrorEl)
-    )
-      return;
+    clearInvalid(usernameEl, usernameErrorEl);
+    clearInvalid(emailEL, emailErrorEl);
 
-    const updatedUser: User = {
+    if (username !== "" && !validateUsername(usernameEl, usernameErrorEl)) {
+      valid = false;
+    }
+    if (email !== "" && !validateEmail(emailEL, emailErrorEl)) {
+      valid = false;
+    }
+    if (username === "" && email === "") {
+      markInvalid("Please fill in at least one field.", usernameEl, usernameErrorEl);
+      markInvalid("Please fill in at least one field.", emailEL, emailErrorEl);
+      valid = false;
+    }
+    if (!valid) return;
+
+    const updatedUser: Partial<User> = {
       id: auth.getUser().id,
-      username: usernameEl.value,
-      email: emailEL.value,
       dateJoined: auth.getUser().dateJoined
     };
+    if (username !== "") {
+      updatedUser.username = username;
+    }
+    if (email !== "") {
+      updatedUser.email = email;
+    }
 
     try {
       const userResponse: User = await patchUser(updatedUser);
@@ -205,12 +224,12 @@ export default class ProfileView extends AbstractView {
     const successEl = getEl("password-success-message");
     successEl.classList.add("hidden");
 
-    if (
-      !validatePassword(currentPasswordEl, currentPasswordErrorEl) ||
-      !validatePassword(newPasswordEl, newPasswordErrorEl)
-    ) {
-      return;
-    }
+    // if (
+    //   !validatePassword(currentPasswordEl, currentPasswordErrorEl) ||
+    //   !validatePassword(newPasswordEl, newPasswordErrorEl)
+    // ) {
+    //   return;
+    // }
 
     try {
       await updateUserPassword(currentPasswordEl.value, newPasswordEl.value);
