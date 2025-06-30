@@ -3,7 +3,7 @@ import { Match } from "../types/IMatch.js";
 import { User } from "../types/User.js";
 
 export async function getUserMatches(): Promise<Match[]> {
-  const apiResponse = await apiFetch<Match[]>("/api/users/matches/", {
+  const apiResponse = await apiFetch<Match[]>("/api/users/me/matches", {
     method: "GET",
     credentials: "same-origin"
   });
@@ -13,7 +13,7 @@ export async function getUserMatches(): Promise<Match[]> {
 }
 
 export async function getUserProfile(): Promise<User> {
-  const apiResponse = await apiFetch<User>("/api/users/", {
+  const apiResponse = await apiFetch<User>("/api/users/me", {
     method: "GET",
     credentials: "same-origin"
   });
@@ -23,7 +23,7 @@ export async function getUserProfile(): Promise<User> {
 }
 
 export async function patchUser(updateData: User): Promise<User> {
-  const apiResponse = await apiFetch<User>("/api/users/", {
+  const apiResponse = await apiFetch<User>("/api/users/me", {
     method: "PATCH",
     body: JSON.stringify(updateData),
     credentials: "same-origin"
@@ -34,7 +34,7 @@ export async function patchUser(updateData: User): Promise<User> {
 }
 
 export async function uploadAvatar(formData: FormData): Promise<User> {
-  const apiResponse = await apiFetch<User>("/api/users/avatar/", {
+  const apiResponse = await apiFetch<User>("/api/users/me/avatar", {
     method: "POST",
     body: formData,
     credentials: "same-origin"
@@ -45,7 +45,7 @@ export async function uploadAvatar(formData: FormData): Promise<User> {
 }
 
 export async function deleteUserAvatar(): Promise<User> {
-  const apiResponse = await apiFetch<User>("/api/users/avatar/", {
+  const apiResponse = await apiFetch<User>("/api/users/me/avatar", {
     method: "DELETE",
     credentials: "same-origin"
   });
@@ -70,12 +70,27 @@ export async function getUserByUsername(
   username: string
 ): Promise<User | null> {
   const apiResponse = await apiFetch<User | null>(
-    `/api/users/search/?username=${encodeURIComponent(username)}`,
+    `/api/users/search?username=${encodeURIComponent(username)}`,
     {
       method: "GET",
       credentials: "same-origin"
     }
   );
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
+export async function getUserMatchesByUsername(
+  username: string
+): Promise<Match[]> {
+  const encoded = encodeURIComponent(username);
+  const url = `/api/users/${encoded}/matches/`;
+
+  const apiResponse = await apiFetch<Match[]>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
 
   console.log(apiResponse);
   return apiResponse.data;

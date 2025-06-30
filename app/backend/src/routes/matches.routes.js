@@ -12,7 +12,7 @@ export default async function matchRoutes(fastify) {
 
   fastify.get("/", optionsGetAllMatches, getAllMatchesHandler);
 
-  fastify.get("/:id/", optionsGetMatch, getMatchHandler);
+  fastify.get("/:id", optionsGetMatch, getMatchHandler);
 
   fastify.delete("/", optionsDeleteAllMatches, deleteAllMatchesHandler);
 }
