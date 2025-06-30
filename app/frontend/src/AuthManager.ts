@@ -10,8 +10,10 @@ import {
   stopOnlineStatusTracking
 } from "./services/onlineStatusServices.js";
 import { getUserProfile } from "./services/userServices.js";
+import { toaster } from "./Toaster.js";
 import { Token } from "./types/Token.js";
 import { User } from "./types/User.js";
+import { getCookieValueByName } from "./utility.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
 
@@ -55,6 +57,10 @@ export class AuthManager {
   public async initialize(): Promise<void> {
     console.log("Checking for existing auth token");
     try {
+      if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
+        toaster.error("Email address already in use.");
+        return;
+      }
       const token = await authAndDecodeAccessToken();
       this.updateAuthState(token);
       if (this.authenticated) {
