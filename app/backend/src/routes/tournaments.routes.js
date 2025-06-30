@@ -14,13 +14,13 @@ export default async function tournamentRoutes(fastify) {
 
   fastify.get("/", getAllTournamentsHandler);
 
-  fastify.get("/:id/", optionsGetTournament, getTournamentHandler);
+  fastify.get("/:id", optionsGetTournament, getTournamentHandler);
 
-  fastify.patch("/:id/", optionsPatchTournament, patchTournamentHandler);
+  fastify.patch("/:id", optionsPatchTournament, patchTournamentHandler);
 
   fastify.delete("/", optionsDeleteAllTournaments, deleteAllTournamentsHandler);
 
-  fastify.delete("/:id/", optionsDeleteTournament, deleteTournamentHandler);
+  fastify.delete("/:id", optionsDeleteTournament, deleteTournamentHandler);
 }
 
 const optionsCreateTournament = {

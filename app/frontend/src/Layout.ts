@@ -1,6 +1,7 @@
 import { sanitizeHTML } from "./sanitize.js";
 import { auth } from "./AuthManager.js";
 import { Link } from "./components/Link.js";
+import { Drawer } from "./Drawer.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -30,6 +31,7 @@ export class Layout {
     const html = this.getShellHTML();
     const cleanHTML = sanitizeHTML(html);
     this.rootEl.innerHTML = cleanHTML;
+    this.attachAvatarDrawerHandler();
   }
 
   private getShellHTML(): string {
@@ -53,7 +55,7 @@ export class Layout {
           ${Link({ text: "Home", href: "/home" })}
           ${Link({ text: "New Game", href: "/newGame" })}
           ${Link({ text: "New Tournament", href: "/newTournament" })}
-          ${Link({ text: "Stats", href: "/stats" })}
+          ${Link({ text: "Stats", href: `/stats/${auth.getUser().username}` })}
           ${Link({ text: "Settings", href: "/settings" })}
           ${Link({ text: "Friends", href: "/friends" })}
         </div>
@@ -63,7 +65,8 @@ export class Layout {
           <img
             src="${userAvatarUrl}"
             alt="Avatar"
-            class="w-14 h-14 rounded-full border-2 border-neon-orange shadow-lg"
+            tabindex="0"
+            class="w-14 h-14 rounded-full border-3 border-white hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
           />
         </div>
       </nav>`;
@@ -82,5 +85,32 @@ export class Layout {
     >
       <p class="text-sm">Pong Game &copy; 2025</p>
     </div>`;
+  }
+
+  private attachAvatarDrawerHandler(): void {
+    const avatar = this.rootEl.querySelector<HTMLElement>("img[alt='Avatar']");
+    if (!avatar) return;
+
+    const drawer = new Drawer([
+      { label: "Edit Profile", icon: "user", href: "/profile" },
+      { label: "User Stats", icon: "stats", href: "/stats" },
+      { label: "Friends", icon: "friends", href: "/friends" },
+      { label: "Settings", icon: "settings", href: "/settings" },
+      {
+        label: "Logout",
+        icon: "logout",
+        onClick: async () => {
+          await auth.logout();
+          this.update("guest");
+        }
+      }
+    ]);
+
+    avatar.addEventListener("click", () => drawer.open());
+    avatar.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        drawer.open();
+      }
+    });
   }
 }

@@ -17,7 +17,15 @@ export async function registerSSEConnection(userId, reply) {
 
   emitter.on("message", handler);
 
+  notifyHeartbeat(userId, "connected");
+
+  const pingDelayInMs = 20000;
+  const heartbeatInterval = setInterval(() => {
+    notifyHeartbeat(userId, "ping");
+  }, pingDelayInMs);
+
   reply.raw.on("close", async () => {
+    clearInterval(heartbeatInterval);
     emitter.off("message", handler);
     const isOffline = removeOnlineUser(userId, reply);
     if (isOffline) {
@@ -54,4 +62,8 @@ export function notifyFriendRequestEvent(
     username: username,
     status: status
   });
+}
+
+function notifyHeartbeat(userId, msg) {
+  emitToUser(userId, "heartbeatEvent", msg);
 }

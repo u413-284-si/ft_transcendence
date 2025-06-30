@@ -53,11 +53,19 @@ function formatFriendRequest(request, userId) {
   };
 }
 
-export async function getAllUserFriendRequests(userId) {
+export async function getAllUserFriendRequests(userId, friendUsername) {
+  const OR = [];
+
+  if (friendUsername) {
+    OR.push(
+      { senderId: userId, receiver: { username: friendUsername } },
+      { sender: { username: friendUsername }, receiverId: userId }
+    );
+  } else {
+    OR.push({ senderId: userId }, { receiverId: userId });
+  }
   const requests = await prisma.friendRequest.findMany({
-    where: {
-      OR: [{ senderId: userId }, { receiverId: userId }]
-    },
+    where: { OR },
     include: friendRequestInclude
   });
 

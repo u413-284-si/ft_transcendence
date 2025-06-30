@@ -10,10 +10,11 @@ import {
   getUserStatsHandler,
   getUserTournamentsHandler,
   getUserActiveTournamentHandler,
-  getUserFriendRequestsHandler,
+  getAllUserFriendRequestsHandler,
   searchUserHandler,
   createUserAvatarHandler,
-  deleteUserAvatarHandler
+  deleteUserAvatarHandler,
+  getUserMatchesByUsernameHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseConnectionHandler } from "../controllers/sse.controllers.js";
@@ -26,63 +27,73 @@ import {
 export default async function userRoutes(fastify) {
   fastify.post("/", optionsCreateUser, createUserHandler);
 
-  fastify.get("/", optionsGetUser, getUserHandler);
+  fastify.get("/me", optionsGetUser, getUserHandler);
 
-  fastify.get("/admin", optionsGetAllUsers, getAllUsersHandler);
+  fastify.get("/", optionsGetAllUsers, getAllUsersHandler);
 
-  fastify.put("/:id/", optionsUpdateUser, updateUserHandler);
+  fastify.put("/:id", optionsUpdateUser, updateUserHandler);
 
-  fastify.patch("/:id/", optionsPatchUser, patchUserHandler);
+  fastify.patch("/me", optionsPatchUser, patchUserHandler);
 
-  fastify.delete("/:id/", optionsDeleteUser, deleteUserHandler);
+  fastify.delete("/:id", optionsDeleteUser, deleteUserHandler);
 
-  fastify.get("/matches/", optionsGetUserMatches, getUserMatchesHandler);
-
-  fastify.get("/user-stats/", optionsGetUserStats, getUserStatsHandler);
-
-  fastify.post("/avatar/", optionsCreateUserAvatar, createUserAvatarHandler);
-
-  fastify.delete("/avatar/", optionsDeleteUserAvatar, deleteUserAvatarHandler);
+  fastify.get("/me/matches", optionsGetUserMatches, getUserMatchesHandler);
 
   fastify.get(
-    "/tournaments/",
+    "/:username/matches/",
+    optionsGetUserMatchesByUsername,
+    getUserMatchesByUsernameHandler
+  );
+
+  fastify.get("/me/user-stats", optionsGetUserStats, getUserStatsHandler);
+
+  fastify.post("/me/avatar", optionsCreateUserAvatar, createUserAvatarHandler);
+
+  fastify.delete(
+    "/me/avatar",
+    optionsDeleteUserAvatar,
+    deleteUserAvatarHandler
+  );
+
+  fastify.get(
+    "/me/tournaments",
     optionsGetUserTournaments,
     getUserTournamentsHandler
   );
 
   fastify.get(
-    "/tournaments/active/",
+    "/me/tournaments/active",
     optionsGetUserActiveTournament,
     getUserActiveTournamentHandler
   );
 
   fastify.get(
-    "/friend-requests/",
-    optionsGetUserFriends,
-    getUserFriendRequestsHandler
+    "/me/friend-requests",
+    optionsGetAllUserFriendRequests,
+    getAllUserFriendRequestsHandler
   );
 
   fastify.post(
-    "/friend-requests/",
+    "/me/friend-requests",
     optionsCreateFriendRequest,
     createFriendRequestHandler
   );
 
   fastify.patch(
-    "/friend-requests/:id/",
+    "/me/friend-requests/:id",
     optionsUpdateFriendRequest,
     updateFriendRequestHandler
   );
 
   fastify.delete(
-    "/friend-requests/:id/",
+    "/me/friend-requests/:id",
     optionsDeleteUserFriend,
     deleteFriendRequestHandler
   );
 
-  fastify.get("/online/", optionsSseOnline, sseConnectionHandler);
+  fastify.get("/me/online", optionsSseOnline, sseConnectionHandler);
 
-  fastify.get("/search/", optionsSearchUser, searchUserHandler);
+  fastify.get("/search", optionsSearchUser, searchUserHandler);
 }
 
 const optionsCreateUser = {
@@ -126,8 +137,8 @@ const optionsUpdateUser = {
 };
 
 const optionsPatchUser = {
+  onRequest: [authorizeUserAccess],
   schema: {
-    params: { $ref: "idSchema" },
     body: { $ref: "patchUserSchema" },
     response: {
       200: { $ref: "userResponseSchema" },
@@ -149,6 +160,23 @@ const optionsDeleteUser = {
 const optionsGetUserMatches = {
   onRequest: [authorizeUserAccess],
   schema: {
+    response: {
+      200: { $ref: "matchArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserMatchesByUsername = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    params: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: ["username"]
+    },
     response: {
       200: { $ref: "matchArrayResponseSchema" },
       ...errorResponses
@@ -186,9 +214,16 @@ const optionsGetUserActiveTournament = {
   }
 };
 
-const optionsGetUserFriends = {
+const optionsGetAllUserFriendRequests = {
   onRequest: [authorizeUserAccess],
   schema: {
+    querystring: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: []
+    },
     response: {
       200: { $ref: "friendRequestArrayResponseSchema" },
       ...errorResponses
@@ -249,6 +284,7 @@ const optionsCreateUserAvatar = {
 };
 
 const optionsDeleteUserAvatar = {
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       200: { $ref: "userResponseSchema" },

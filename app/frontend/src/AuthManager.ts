@@ -7,7 +7,7 @@ import {
 } from "./services/authServices.js";
 import {
   openSSEConnection,
-  stopOnlineStatusTracking
+  closeSSEConnection
 } from "./services/serverSentEventsServices.js";
 import { getUserProfile } from "./services/userServices.js";
 import { Token } from "./types/Token.js";
@@ -47,7 +47,7 @@ export class AuthManager {
       this.authenticated = false;
       this.clearRefreshTimer();
       this.removeActivityListeners();
-      stopOnlineStatusTracking();
+      closeSSEConnection();
     }
     this.notify();
   }
@@ -97,6 +97,9 @@ export class AuthManager {
   public async logout(): Promise<void> {
     await userLogout();
     this.updateAuthState(null);
+
+    const sidebar = document.getElementById("drawer-sidebar");
+    if (sidebar) sidebar.remove();
   }
 
   public clearTokenOnError(): void {
