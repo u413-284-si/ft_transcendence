@@ -5,7 +5,6 @@ export enum playedAs {
 }
 
 export interface Match {
-  userId?: number;
   playedAs: playedAs;
   player1Nickname: string;
   player2Nickname: string;

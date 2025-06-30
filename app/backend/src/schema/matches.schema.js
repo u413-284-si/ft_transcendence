@@ -13,10 +13,6 @@ const matchSchema = {
   $id: "matchSchema",
   type: "object",
   properties: {
-    userId: {
-      $ref: "commonDefinitionsSchema#/definitions/id",
-      description: "The unique identifier for the logged-in user"
-    },
     playedAs: { $ref: "matchDefinitionsSchema#/definitions/playedAs" },
     player1Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
@@ -54,7 +50,6 @@ const matchSchema = {
     }
   },
   required: [
-    "userId",
     "playedAs",
     "player1Nickname",
     "player2Nickname",
