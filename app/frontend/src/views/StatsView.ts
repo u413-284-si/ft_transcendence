@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { getUserStats } from "../services/userStatsServices.js";
-import { getUserMatches } from "../services/userServices.js";
+import { getUserPlayedMatches } from "../services/userServices.js";
 import { escapeHTML } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
@@ -89,7 +89,7 @@ export default class StatsView extends AbstractView {
 
   async getMatchesHTML(): Promise<string> {
     const user = escapeHTML(auth.getToken().username);
-    const matchesRaw = await getUserMatches();
+    const matchesRaw = await getUserPlayedMatches();
 
     if (matchesRaw.length === 0) {
       return `<tr><td colspan="7" class="text-center text-teal py-4">No matches played yet</td></tr>`;
