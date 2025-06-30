@@ -4,6 +4,8 @@ import path from "path";
 import env from "../config/env.js";
 import { fileTypeFromBuffer } from "file-type";
 import { randProductAdjective, randWord, randNumber } from "@ngneat/falso";
+import fastify from "../app.js";
+import Ajv from "ajv";
 
 const tokenSelect = {
   id: true,
@@ -51,6 +53,16 @@ export function createRandomUsername() {
     "_" +
     randNumber({ min: 1000, max: 9999 })
   );
+}
+
+export function isUserNameValid(username) {
+  const ajv = new Ajv();
+  const commonDefinitionsSchema = fastify.getSchema("commonDefinitionsSchema");
+  ajv.addSchema(commonDefinitionsSchema);
+  const validateUsername = ajv.compile({
+    $ref: "commonDefinitionsSchema#/definitions/username"
+  });
+  return validateUsername(username);
 }
 
 export async function getUser(id) {

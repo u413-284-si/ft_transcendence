@@ -11,7 +11,8 @@ import {
   getTokenData,
   getUserByEmail,
   getUserByUsername,
-  createRandomUsername
+  createRandomUsername,
+  isUserNameValid
 } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
@@ -94,7 +95,10 @@ export async function googleOauth2LoginHandler(request, reply) {
     const userData = await fastify.googleOauth2.userinfo(token.access_token);
     if (!(await getUserByEmail(userData.email))) {
       let username = createRandomUsername();
-      while (await getUserByUsername(username)) {
+      while (
+        (await getUserByUsername(username)) ||
+        !isUserNameValid(username)
+      ) {
         username = createRandomUsername();
       }
       await createUser(username, userData.email, "", "GOOGLE");
