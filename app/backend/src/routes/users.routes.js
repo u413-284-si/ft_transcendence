@@ -96,7 +96,7 @@ export default async function userRoutes(fastify) {
 
   fastify.get("/search", optionsSearchUser, searchUserHandler);
 
-  fastify.patch("me/password", optionsUpdatePassword, updateUserPasswordHandler);
+  fastify.patch("/me/password", optionsUpdatePassword, updateUserPasswordHandler);
 }
 
 const optionsCreateUser = {
