@@ -15,12 +15,13 @@ import {
 } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { getInputEl, getEl } from "../utility.js";
-import { patchUser } from "../services/userServices.js";
+import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 
 export default class ProfileView extends AbstractView {
-  private profileFormEl!: HTMLFormElement;
   private avatarFormEl!: HTMLFormElement;
+  private profileFormEl!: HTMLFormElement;
+  private passwordFormEl!: HTMLFormElement;
 
   constructor() {
     super();
@@ -76,18 +77,43 @@ export default class ProfileView extends AbstractView {
             placeholder: `${escapeHTML(user.email)}`,
             errorId: "email-error"
           }),
-          Input({
-            id: "password-input",
-            label: "New Password",
-            name: "password",
-            type: "password",
-            placeholder: "Leave blank to keep current"
-          }),
           Button({
             text: "Save Changes",
             type: "submit",
             variant: "default",
             size: "md"
+          })
+        ]
+      })},
+      ${Form({
+        id: "password-form",
+        children: [
+          Paragraph({ text: "Change your password below." }),
+          Input({
+            id: "current-password-input",
+            label: "Current Password",
+            name: "currentPassword",
+            type: "password",
+            errorId: "current-password-error"
+          }),
+          Input({
+            id: "new-password-input",
+            label: "New Password",
+            name: "newPassword",
+            type: "password",
+            errorId: "new-password-error"
+          }),
+          Button({
+            text: "Change Password",
+            type: "submit",
+            variant: "default",
+            size: "md"
+          }),
+          Span({
+            id: "password-success-message",
+            text: "Password updated successfully!",
+            variant: "success",
+            className: "hidden"
           })
         ]
       })}
@@ -102,12 +128,17 @@ export default class ProfileView extends AbstractView {
     this.avatarFormEl.addEventListener("submit", (event) =>
       this.uploadAvatar(event)
     );
+
+    this.passwordFormEl.addEventListener("submit", (event) =>
+      this.handlePasswordChange(event)
+    );
   }
 
   async render(): Promise<void> {
     this.updateHTML();
-    this.profileFormEl = document.querySelector("#profile-form")!;
     this.avatarFormEl = document.querySelector("#avatar-upload-form")!;
+    this.profileFormEl = document.querySelector("#profile-form")!;
+    this.passwordFormEl = document.querySelector("#password-form")!;
     this.addListeners();
   }
 
@@ -118,33 +149,23 @@ export default class ProfileView extends AbstractView {
     const usernameErrorEl = getEl("username-error");
     const emailEL = getInputEl("email-input");
     const emailErrorEl = getEl("email-error");
-    const passwordEl = getInputEl("password-input");
-    const passwordErrorEl = getEl("password-error");
 
-    const formData = new FormData(this.profileFormEl);
     if (
       !validateUsername(usernameEl, usernameErrorEl) ||
-      !validateEmail(emailEL, emailErrorEl) ||
-      !validatePassword(passwordEl, passwordErrorEl)
+      !validateEmail(emailEL, emailErrorEl)
     )
       return;
 
     const updatedUser: User = {
       id: auth.getUser().id,
       username: usernameEl.value,
-      email: emailEL.value
+      email: emailEL.value,
+      dateJoined: auth.getUser().dateJoined
     };
-    const password: string = formData.get("password")?.toString() ?? "";
-    let passwordResponse: any = null;
 
     try {
       const userResponse: User = await patchUser(updatedUser);
-      // passwordResponse
-      if (password) {
-        passwordResponse = await updatePassword(password); // create API endpoint for this
-      }
       console.log("Profile update response:", userResponse);
-      console.log("Password update response:", passwordResponse);
       // success toast
     } catch (err) {
       router.handleError("Error in patchUser()", err);
@@ -171,6 +192,33 @@ export default class ProfileView extends AbstractView {
       fileInputEl.value = "";
     } catch (error) {
       router.handleError("Error in uploadAvatar()", error);
+    }
+  }
+
+  async handlePasswordChange(event: Event) {
+    event.preventDefault();
+
+    const currentPasswordEl = getInputEl("current-password-input");
+    const currentPasswordErrorEl = getEl("current-password-error");
+    const newPasswordEl = getInputEl("new-password-input");
+    const newPasswordErrorEl = getEl("new-password-error");
+    const successEl = getEl("password-success-message");
+    successEl.classList.add("hidden");
+
+    if (
+      !validatePassword(currentPasswordEl, currentPasswordErrorEl) ||
+      !validatePassword(newPasswordEl, newPasswordErrorEl)
+    ) {
+      return;
+    }
+
+    try {
+      await updateUserPassword(currentPasswordEl.value, newPasswordEl.value);
+      successEl.classList.remove("hidden");
+      currentPasswordEl.value = "";
+      newPasswordEl.value = "";
+    } catch (err) {
+      router.handleError("Error in updateUserPassword()", err);
     }
   }
 

@@ -95,3 +95,13 @@ export async function getUserMatchesByUsername(
   console.log(apiResponse);
   return apiResponse.data;
 }
+
+export async function updateUserPassword(currentPassword: string, newPassword: string): Promise<void> {
+  const apiResponse = await apiFetch<User>("/api/users/me/password", {
+    method: "PATCH",
+    body: JSON.stringify({ currentPassword, newPassword }),
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+}
