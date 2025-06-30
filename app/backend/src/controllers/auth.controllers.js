@@ -191,12 +191,10 @@ export async function logoutUserHandler(request, reply) {
       path: "/api/auth/refresh"
     });
     await deleteUserRefreshToken(userId);
-    return reply
-      .code(200)
-      .send({
-        message: createResponseMessage(action, true),
-        data: { username: username }
-      });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: { username: username }
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
