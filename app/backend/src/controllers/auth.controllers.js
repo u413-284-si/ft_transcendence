@@ -99,7 +99,7 @@ export async function googleOauth2LoginHandler(request, reply) {
       (await getUserByEmail(googleUser.email)) &&
       (await getUserAuthProvider(dbUser.id)) !== "GOOGLE"
     ) {
-      reply
+      return reply
         .setCookie("authProviderConflict", "GOOGLE", {
           secure: true,
           path: "/login",
