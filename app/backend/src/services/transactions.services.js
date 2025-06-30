@@ -10,7 +10,8 @@ export async function transactionMatch(
   player2Nickname,
   player1Score,
   player2Score,
-  tournament
+  tournament,
+  date
 ) {
   return prisma.$transaction(async (tx) => {
     const match = await createMatchTx(
@@ -21,7 +22,8 @@ export async function transactionMatch(
       player2Nickname,
       player1Score,
       player2Score,
-      tournament
+      tournament,
+      date
     );
     if (tournament?.id) {
       const tournamentRecord = await getTournamentTx(tx, tournament.id);

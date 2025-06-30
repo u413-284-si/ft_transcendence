@@ -26,6 +26,7 @@ export async function seedMatches(userId, count = 10) {
     const player1Nickname = faker.internet.username();
     const player2Nickname = faker.internet.username();
     const { player1Score, player2Score } = generateNonTiedScores(0, 10);
+    const date = faker.date.past();
 
     const match = await transactionMatch(
       userId,
@@ -34,7 +35,8 @@ export async function seedMatches(userId, count = 10) {
       player2Nickname,
       player1Score,
       player2Score,
-      null
+      null,
+      date
     );
 
     matches.push(match);

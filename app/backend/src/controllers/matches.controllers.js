@@ -19,6 +19,7 @@ export async function createMatchHandler(request, reply) {
       player2Score,
       tournament
     } = request.body;
+    const date = new Date();
 
     const data = await transactionMatch(
       userId,
@@ -27,7 +28,8 @@ export async function createMatchHandler(request, reply) {
       player2Nickname,
       player1Score,
       player2Score,
-      tournament
+      tournament,
+      date
     );
 
     return reply
