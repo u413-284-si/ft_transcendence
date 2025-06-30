@@ -397,7 +397,7 @@ export async function updateUserPasswordHandler(request, reply) {
     if (!(await verifyHash(hashedPassword, currentPassword))) {
       return httpError(
         reply,
-        401,
+        400,
         createResponseMessage(action, false),
         "Current password is incorrect"
       );
