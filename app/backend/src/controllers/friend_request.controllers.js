@@ -141,7 +141,11 @@ export async function deleteFriendRequestHandler(request, reply) {
       data.friendId,
       data.id,
       request.user.username,
-      "DELETED"
+      data.status === "ACCEPTED"
+        ? "DELETED"
+        : data.sender
+          ? "RESCINDED"
+          : "DECLINED"
     );
     return reply
       .code(200)

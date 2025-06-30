@@ -70,6 +70,12 @@ export function openSSEConnection() {
         case "ACCEPTED":
           toaster.info(`${username} accepted your friend request`);
           break;
+        case "DECLINED":
+          toaster.info(`${username} declined friend request`);
+          break;
+        case "RESCINDED":
+          toaster.info(`${username} rescinded friend request`);
+          break;
         case "DELETED":
           toaster.info(`${username} terminated friendship`);
           break;

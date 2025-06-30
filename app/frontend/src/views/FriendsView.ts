@@ -5,7 +5,8 @@ import {
   deleteFriendRequest,
   getUserFriendRequests,
   acceptFriendRequest,
-  createFriendRequest
+  createFriendRequest,
+  getUserFriendRequestByUsername
 } from "../services/friendsServices.js";
 import { getUserByUsername } from "../services/userServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
@@ -378,6 +379,11 @@ export default class FriendsView extends AbstractView {
     return Number(li.dataset.requestId);
   }
 
+  private getFriendRequest(requestId: number): FriendRequest {
+    const request = this.friendRequests.find((r) => r.id === requestId);
+    if (!request) throw new Error(`Did not find request with id ${requestId}`);
+    return request;
+  }
   private addFriendRequest(request: FriendRequest): void {
     this.friendRequests.push(request);
   }
@@ -402,22 +408,46 @@ export default class FriendsView extends AbstractView {
   }
 
   private handleFriendRequestEvent = async (event: Event) => {
-    const customEvent = event as FriendRequestEvent;
-    const { requestId, status } = customEvent.detail;
-    switch (status) {
-      case "PENDING":
-        this.friendRequests = await getUserFriendRequests();
-        this.refreshRequestList("incoming");
-        break;
-      case "ACCEPTED":
-        this.friendRequests = await getUserFriendRequests();
-        this.refreshRequestList("friend");
-        this.refreshRequestList("outgoing");
-        break;
-      case "DELETED":
-        this.removeFriendRequest(requestId);
-        this.refreshRequestList("friend");
-        break;
+    try {
+      const customEvent = event as FriendRequestEvent;
+      const { requestId, username, status } = customEvent.detail;
+      switch (status) {
+        case "PENDING": {
+          const request = await getUserFriendRequestByUsername(username);
+          if (request) {
+            this.addFriendRequest(request);
+            this.refreshRequestList("incoming");
+          }
+          break;
+        }
+        case "ACCEPTED": {
+          const request = await getUserFriendRequestByUsername(username);
+          if (request) {
+            this.removeFriendRequest(requestId);
+            this.addFriendRequest(request);
+            this.refreshRequestList("friend");
+            this.refreshRequestList("outgoing");
+          }
+          break;
+        }
+        case "DECLINED": {
+          this.removeFriendRequest(requestId);
+          this.refreshRequestList("outgoing");
+          break;
+        }
+        case "RESCINDED": {
+          this.removeFriendRequest(requestId);
+          this.refreshRequestList("incoming");
+          break;
+        }
+        case "DELETED": {
+          this.removeFriendRequest(requestId);
+          this.refreshRequestList("friend");
+          break;
+        }
+      }
+    } catch (error) {
+      router.handleError("Error in handleFriendRequestEvent()", error);
     }
   };
 }
