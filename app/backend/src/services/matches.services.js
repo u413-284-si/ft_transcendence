@@ -16,7 +16,8 @@ const matchSelect = {
   }
 };
 
-export async function createMatch(
+export async function createMatchTx(
+  tx,
   userId,
   playedAs,
   player1Nickname,
@@ -25,7 +26,7 @@ export async function createMatch(
   player2Score,
   tournament
 ) {
-  const match = await prisma.match.create({
+  const match = await tx.match.create({
     data: {
       userId,
       playedAs,
@@ -38,18 +39,6 @@ export async function createMatch(
     },
     select: matchSelect
   });
-  if (tournament?.id) {
-    const tournamentRecord = await prisma.tournament.findUniqueOrThrow({
-      where: { id: tournament?.id }
-    });
-
-    if (tournamentRecord && tournamentRecord.status === "CREATED") {
-      await prisma.tournament.update({
-        where: { id: tournamentRecord.id },
-        data: { status: "IN_PROGRESS" }
-      });
-    }
-  }
   return match;
 }
 

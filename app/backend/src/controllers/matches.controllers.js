@@ -1,12 +1,11 @@
 import {
-  createMatch,
   getAllMatches,
   getMatch,
   deleteAllMatches
 } from "../services/matches.services.js";
-import { updateUserStats } from "../services/user_stats.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
+import { transactionMatch } from "../services/transactions.services.js";
 
 export async function createMatchHandler(request, reply) {
   const action = "Create match";
@@ -21,7 +20,7 @@ export async function createMatchHandler(request, reply) {
       tournament
     } = request.body;
 
-    const match = await createMatch(
+    const data = await transactionMatch(
       userId,
       playedAs,
       player1Nickname,
@@ -31,17 +30,6 @@ export async function createMatchHandler(request, reply) {
       tournament
     );
 
-    let stats = null;
-    if (userId !== null) {
-      const isPlayerOne = playedAs === "PLAYERONE";
-      stats = await updateUserStats(
-        userId,
-        (isPlayerOne ? player1Score : player2Score) >
-          (isPlayerOne ? player2Score : player1Score)
-      );
-    }
-
-    const data = { match, stats };
     return reply
       .code(201)
       .send({ message: createResponseMessage(action, true), data });

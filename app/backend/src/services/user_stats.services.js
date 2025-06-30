@@ -6,20 +6,12 @@ const userStatsSelect = {
   matchesWon: true
 };
 
-export async function updateUserStats(userId, hasWon) {
-  const userStats = await prisma.userStats.findUnique({
-    where: { userId },
-    select: { matchesPlayed: true, matchesWon: true }
-  });
-
-  const matchesPlayed = userStats.matchesPlayed + 1;
-  const matchesWon = userStats.matchesWon + (hasWon ? 1 : 0);
-
-  const stats = await prisma.userStats.update({
+export async function updateUserStatsTx(tx, userId, hasWon) {
+  const stats = await tx.userStats.update({
     where: { userId },
     data: {
-      matchesPlayed,
-      matchesWon
+      matchesPlayed: { increment: 1 },
+      matchesWon: hasWon ? { increment: 1 } : undefined
     },
     select: userStatsSelect
   });
