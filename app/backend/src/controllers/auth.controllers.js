@@ -7,7 +7,12 @@ import {
   deleteUserRefreshToken,
   setCookies
 } from "../services/auth.services.js";
-import { getTokenData, getUserByEmail } from "../services/users.services.js";
+import {
+  getTokenData,
+  getUserByEmail,
+  getUserByUsername,
+  createRandomUsername
+} from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
@@ -87,8 +92,13 @@ export async function googleOauth2LoginHandler(request, reply) {
     }
 
     const userData = await fastify.googleOauth2.userinfo(token.access_token);
-    if (!(await getUserByEmail(userData.email)))
-      await createUser(userData.name, userData.email, "", "GOOGLE");
+    if (!(await getUserByEmail(userData.email))) {
+      let username = createRandomUsername();
+      while (await getUserByUsername(username)) {
+        username = createRandomUsername();
+      }
+      await createUser(username, userData.email, "", "GOOGLE");
+    }
 
     const payload = await getTokenData(userData.email, "email");
 
