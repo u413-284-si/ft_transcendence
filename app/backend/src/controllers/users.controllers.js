@@ -20,7 +20,12 @@ import {
 } from "../services/tournaments.services.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
-import { createHash } from "../services/auth.services.js";
+import {
+  createHash,
+  getPasswordHash,
+  updatePassword,
+  verifyHash
+} from "../services/auth.services.js";
 import { getAllUserFriendRequests } from "../services/friends.services.js";
 import { fileTypeFromBuffer } from "file-type";
 
@@ -368,6 +373,49 @@ export async function searchUserHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function updateUserPasswordHandler(request, reply) {
+  const action = "Update user password";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const { currentPassword, newPassword } = request.body;
+
+    if (!currentPassword || !newPassword) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Current and new passwords are required"
+      );
+    }
+
+    const hashedPassword = await getPasswordHash(userId);
+    if (!(await verifyHash(hashedPassword, currentPassword))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Current password is incorrect"
+      );
+    }
+
+    // Hash the new password
+    const hashedNewPassword = await createHash(newPassword);
+
+    // Update the user's password
+    await updatePassword(userId, hashedNewPassword);
+
+    return reply.code(200).send({
+      message: createResponseMessage(action, true)
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `updateUserPasswordHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
