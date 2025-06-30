@@ -32,6 +32,31 @@ export default class ProfileView extends AbstractView {
 
     return /* HTML */ `
       ${Form({
+        id: "avatar-upload-form",
+        children: [
+          Input({
+            id: "avatar-input",
+            label: "Change your avatar:",
+            name: "avatar",
+            type: "file",
+            accept: "image/*",
+            errorId: "avatar-upload-error-message"
+          }),
+          Button({
+            text: "Upload Avatar",
+            variant: "default",
+            size: "md",
+            type: "submit"
+          }),
+          Span({
+            text: "Avatar uploaded successfully!",
+            id: "avatar-upload-success-message",
+            variant: "success",
+            className: "hidden"
+          })
+        ]
+      })},
+      ${Form({
         id: "profile-form",
         children: [
           Paragraph({ text: "Update your profile information below." }),
@@ -63,31 +88,6 @@ export default class ProfileView extends AbstractView {
             type: "submit",
             variant: "default",
             size: "md"
-          })
-        ]
-      })},
-      ${Form({
-        id: "avatar-upload-form",
-        children: [
-          Input({
-            id: "avatar-input",
-            label: "Change your avatar:",
-            name: "avatar",
-            type: "file",
-            accept: "image/*",
-            errorId: "avatar-upload-error-message"
-          }),
-          Button({
-            text: "Upload Avatar",
-            variant: "default",
-            size: "md",
-            type: "submit"
-          }),
-          Span({
-            text: "Avatar uploaded successfully!",
-            id: "avatar-upload-success-message",
-            variant: "success",
-            className: "hidden"
           })
         ]
       })}
@@ -134,10 +134,11 @@ export default class ProfileView extends AbstractView {
       username: usernameEl.value,
       email: emailEL.value
     };
-    const password: string = formData.get("password");
+    const password: string = formData.get("password")?.toString() ?? "";
+    let passwordResponse: any = null;
 
     try {
-      const userResponse = await patchUser(updatedUser);
+      const userResponse: User = await patchUser(updatedUser);
       // passwordResponse
       if (password) {
         passwordResponse = await updatePassword(password); // create API endpoint for this
