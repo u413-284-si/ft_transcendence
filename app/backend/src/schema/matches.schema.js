@@ -141,11 +141,25 @@ export const createMatchResponseSchema = {
   additionalProperties: false
 };
 
+export const querystringMatchSchema = {
+  $id: "querystringMatchSchema",
+  type: "object",
+  properties: {
+    playedAs: {
+      type: "array",
+      items: { $ref: "matchDefinitionsSchema#/definitions/playedAs" },
+      description: "Filter roles (array of values)"
+    }
+  },
+  additionalProperties: false
+};
+
 export const matchSchemas = [
   matchDefinitionsSchema,
   matchSchema,
   matchResponseSchema,
   matchArrayResponseSchema,
   createMatchSchema,
-  createMatchResponseSchema
+  createMatchResponseSchema,
+  querystringMatchSchema
 ];

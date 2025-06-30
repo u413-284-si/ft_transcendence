@@ -153,6 +153,7 @@ const optionsDeleteUser = {
 const optionsGetUserMatches = {
   onRequest: [authorizeUserAccess],
   schema: {
+    querystring: { $ref: "querystringMatchSchema" },
     response: {
       200: { $ref: "matchArrayResponseSchema" },
       ...errorResponses

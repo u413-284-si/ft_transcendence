@@ -140,7 +140,8 @@ export async function getUserMatchesHandler(request, reply) {
   const action = "Get user matches";
   try {
     const id = parseInt(request.user.id, 10);
-    const data = await getUserMatches(id);
+    const { playedAs } = request.query;
+    const data = await getUserMatches(id, playedAs);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),

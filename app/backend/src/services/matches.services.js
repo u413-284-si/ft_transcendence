@@ -67,10 +67,11 @@ export async function getMatch(id) {
   return match;
 }
 
-export async function getUserMatches(userId) {
+export async function getUserMatches(userId, playedAs) {
   const matches = await prisma.match.findMany({
     where: {
-      userId: userId
+      userId: userId,
+      ...(playedAs ? { playedAs: { in: playedAs } } : {})
     },
     select: matchSelect
   });
