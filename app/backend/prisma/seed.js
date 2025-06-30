@@ -3,6 +3,7 @@ import { faker } from "@faker-js/faker";
 
 import { seedUsers } from "./seeders/seedUser.js";
 import { seedMatches } from "./seeders/seedMatches.js";
+import { seedFriendRequest } from "./seeders/seedFriendRequest.js";
 
 const prisma = new PrismaClient();
 
@@ -17,6 +18,8 @@ async function main() {
     const matchCount = faker.number.int({ min: 1, max: 10 });
     await seedMatches(user.id, matchCount);
   }
+
+  await seedFriendRequest(users);
 
   console.log("Seeding complete!");
 }
