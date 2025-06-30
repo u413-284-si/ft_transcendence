@@ -1,7 +1,7 @@
 export enum playedAs {
-  NONE,
-  PLAYERONE,
-  PLAYERTWO
+  NONE = "NONE",
+  PLAYERONE = "PLAYERONE",
+  PLAYERTWO = "PLAYERTWO"
 }
 
 export interface Match {
