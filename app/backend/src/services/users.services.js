@@ -45,9 +45,9 @@ export async function createUser(
 
 export function createRandomUsername() {
   return (
-    randProductAdjective() +
+    randProductAdjective().toLowerCase() +
     "_" +
-    randWord() +
+    randWord().toLowerCase() +
     "_" +
     randNumber({ min: 1000, max: 9999 })
   );
