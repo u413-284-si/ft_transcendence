@@ -55,6 +55,7 @@ export class Layout {
           ${Link({ text: "Home", href: "/home" })}
           ${Link({ text: "New Game", href: "/newGame" })}
           ${Link({ text: "New Tournament", href: "/newTournament" })}
+          ${Link({ text: "Profile", href: `/profile` })}
           ${Link({ text: "Stats", href: `/stats/${auth.getUser().username}` })}
           ${Link({ text: "Settings", href: "/settings" })}
           ${Link({ text: "Friends", href: "/friends" })}
