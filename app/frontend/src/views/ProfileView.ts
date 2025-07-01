@@ -36,7 +36,7 @@ export default class ProfileView extends AbstractView {
     const user = auth.getUser();
 
     return /* HTML */ `
-    <div class="max-w-7xl mx-auto px-6 py-10">
+    <div class="max-w-full mx-auto px-80 py-10">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
         <div class="md:col-span-7 flex gap-12">
           <!-- Avatar Image -->
