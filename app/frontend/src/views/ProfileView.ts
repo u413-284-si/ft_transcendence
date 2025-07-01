@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { Form } from "../components/Form.js";
-import { Input } from "../components/Input.js";
+import { Input, addTogglePasswordListener } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Span } from "../components/Span.js";
@@ -11,6 +11,7 @@ import {
   validateUsername,
   validateEmail,
   validatePassword,
+  validateConfirmPassword,
   validateImageFile,
   markInvalid,
   clearInvalid
@@ -34,91 +35,117 @@ export default class ProfileView extends AbstractView {
     const user = auth.getUser();
 
     return /* HTML */ `
-      ${Form({
-        id: "avatar-upload-form",
-        children: [
-          Input({
-            id: "avatar-input",
-            label: "Change your avatar:",
-            name: "avatar",
-            type: "file",
-            accept: "image/*",
-            errorId: "avatar-upload-error-message"
-          }),
-          Button({
-            text: "Upload Avatar",
-            variant: "default",
-            size: "md",
-            type: "submit"
-          }),
-          Span({
-            text: "Avatar uploaded successfully!",
-            id: "avatar-upload-success-message",
-            variant: "success",
-            className: "hidden"
-          })
-        ]
-      })}
-      ${Form({
-        id: "profile-form",
-        children: [
-          Paragraph({ text: "Update your profile information below." }),
-          Input({
-            id: "username-input",
-            label: "Username",
-            name: "username",
-            type: "text",
-            placeholder: `${escapeHTML(user.username)}`,
-            errorId: "username-error"
-          }),
-          Input({
-            id: "email-input",
-            label: "Email",
-            name: "email",
-            type: "email",
-            placeholder: `${escapeHTML(user.email)}`,
-            errorId: "email-error"
-          }),
-          Button({
-            text: "Save Changes",
-            type: "submit",
-            variant: "default",
-            size: "md"
-          })
-        ]
-      })}
-      ${Form({
-        id: "password-form",
-        children: [
-          Paragraph({ text: "Change your password below." }),
-          Input({
-            id: "current-password-input",
-            label: "Current Password",
-            name: "currentPassword",
-            type: "password",
-            errorId: "current-password-error"
-          }),
-          Input({
-            id: "new-password-input",
-            label: "New Password",
-            name: "newPassword",
-            type: "password",
-            errorId: "new-password-error"
-          }),
-          Button({
-            text: "Change Password",
-            type: "submit",
-            variant: "default",
-            size: "md"
-          }),
-          Span({
-            id: "password-success-message",
-            text: "Password updated successfully!",
-            variant: "success",
-            className: "hidden"
-          })
-        ]
-      })}
+      <div class="flex flex-col md:flex-row gap-10 justify-center">
+        <div
+          class="flex flex-col items-center md:items-start w-full md:w-1/3 gap-16 ml-150"
+        >
+          <img
+            src=${auth.getUser().avatar || "/images/default-avatar.png"}
+            alt="Avatar"
+            class="w-50 h-50 rounded-full border-2 border-neon-cyan shadow-neon-cyan"
+          />
+          ${Form({
+            id: "avatar-upload-form",
+            children: [
+              Input({
+                id: "avatar-input",
+                label: "Change your avatar:",
+                name: "avatar",
+                type: "file",
+                accept: "image/*",
+                errorId: "avatar-upload-error-message"
+              }),
+              Button({
+                text: "Upload Avatar",
+                variant: "default",
+                size: "md",
+                type: "submit"
+              }),
+              Span({
+                text: "Avatar uploaded successfully!",
+                id: "avatar-upload-success-message",
+                variant: "success",
+                className: "hidden"
+              })
+            ]
+          })}
+        </div>
+        <div class="flex flex-col w-full md:w-2/3 gap-40">
+          ${Form({
+            id: "profile-form",
+            children: [
+              Paragraph({ text: "Update your profile information below." }),
+              Input({
+                id: "username-input",
+                label: "Username",
+                name: "username",
+                type: "text",
+                placeholder: `${escapeHTML(user.username)}`,
+                errorId: "username-error"
+              }),
+              Input({
+                id: "email-input",
+                label: "Email",
+                name: "email",
+                type: "email",
+                placeholder: `${escapeHTML(user.email)}`,
+                errorId: "email-error"
+              }),
+              Button({
+                text: "Save Changes",
+                type: "submit",
+                variant: "default",
+                size: "md"
+              })
+            ]
+          })}
+          ${Form({
+            id: "password-form",
+            children: [
+              Paragraph({ text: "Change your password below." }),
+              Input({
+                id: "current-password-input",
+                label: "Current Password",
+                name: "currentPassword",
+                placeholder: "Current Password",
+                type: "password",
+                errorId: "current-password-error",
+                hasToggle: true
+              }),
+              Input({
+                id: "new-password-input",
+                label: "New Password",
+                name: "newPassword",
+                placeholder: "New Password",
+                type: "password",
+                errorId: "new-password-error",
+                hasToggle: true
+              }),
+              Input({
+                id: "confirm-new-password-input",
+                label: "Confirm New Password",
+                name: "confirmNewPassword",
+                placeholder: "Confirm New Password",
+                type: "password",
+                errorId: "confirm-error",
+                hasToggle: true
+              }),
+              Button({
+                text: "Change Password",
+                type: "submit",
+                variant: "default",
+                size: "md"
+              }),
+              Span({
+                id: "password-success-message",
+                text: "Password updated successfully!",
+                variant: "success",
+                className: "hidden"
+              })
+            ]
+          })}
+        </div>
+      </div>
     `;
   }
 
@@ -134,6 +161,10 @@ export default class ProfileView extends AbstractView {
     this.passwordFormEl.addEventListener("submit", (event) =>
       this.handlePasswordChange(event)
     );
+
+    addTogglePasswordListener("current-password-input");
+    addTogglePasswordListener("new-password-input");
+    addTogglePasswordListener("confirm-new-password-input");
   }
 
   async render(): Promise<void> {
@@ -165,7 +196,11 @@ export default class ProfileView extends AbstractView {
       valid = false;
     }
     if (username === "" && email === "") {
-      markInvalid("Please fill in at least one field.", usernameEl, usernameErrorEl);
+      markInvalid(
+        "Please fill in at least one field.",
+        usernameEl,
+        usernameErrorEl
+      );
       markInvalid("Please fill in at least one field.", emailEL, emailErrorEl);
       valid = false;
     }
@@ -218,12 +253,23 @@ export default class ProfileView extends AbstractView {
     event.preventDefault();
 
     const currentPasswordEl = getInputEl("current-password-input");
-    const currentPasswordErrorEl = getEl("current-password-error");
+    // FIXME: activate when pw policy active
+    // const currentPasswordErrorEl = getEl("current-password-error");
     const newPasswordEl = getInputEl("new-password-input");
-    const newPasswordErrorEl = getEl("new-password-error");
+    // FIXME: activate when pw policy active
+    // const newPasswordErrorEl = getEl("new-password-error");
+    const confirmPasswordEl = getInputEl("confirm-new-password-input");
+    const confirmPasswordErrorEl = getEl("confirm-error");
     const successEl = getEl("password-success-message");
     successEl.classList.add("hidden");
 
+    if (!validateConfirmPassword(
+      newPasswordEl,
+      confirmPasswordEl,
+      confirmPasswordErrorEl)) {
+      return;
+    }
+    // FIXME: activate when pw policy active
     // if (
     //   !validatePassword(currentPasswordEl, currentPasswordErrorEl) ||
     //   !validatePassword(newPasswordEl, newPasswordErrorEl)
@@ -236,6 +282,7 @@ export default class ProfileView extends AbstractView {
       successEl.classList.remove("hidden");
       currentPasswordEl.value = "";
       newPasswordEl.value = "";
+      confirmPasswordEl.value = "";
     } catch (err) {
       router.handleError("Error in updateUserPassword()", err);
     }
