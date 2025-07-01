@@ -36,38 +36,47 @@ export default class ProfileView extends AbstractView {
     const user = auth.getUser();
 
     return /* HTML */ `
-      <div class="flex flex-col md:flex-row gap-10 justify-center">
-        <div
-          class="flex flex-col items-center md:items-start w-full md:w-1/3 gap-16 ml-150"
-        >
+    <div class="max-w-7xl mx-auto px-6 py-10">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+        <div class="md:col-span-7 flex gap-12">
+          <!-- Avatar Image -->
           <img
-            src=${auth.getUser().avatar || "/images/default-avatar.png"}
+            src=${user.avatar || "/images/default-avatar.png"}
             alt="Avatar"
-            class="w-50 h-50 rounded-full border-2 border-neon-cyan shadow-neon-cyan"
+            class="w-60 h-60 rounded-full border-4 border-neon-cyan shadow-neon-cyan"
           />
-          ${Form({
-            id: "avatar-upload-form",
-            children: [
-              Input({
-                id: "avatar-input",
-                label: "Change your avatar:",
-                name: "avatar",
-                type: "file",
-                accept: "image/*",
-                errorId: "avatar-upload-error-message"
-              }),
-              Button({
-                text: "Upload Avatar",
-                variant: "default",
-                size: "md",
-                type: "submit"
-              })
-            ]
-          })}
+          <!-- Avatar Upload Form -->
+          <div class="flex flex-col max-w-s">
+            ${Form({
+              id: "avatar-upload-form",
+              className: "flex flex-col gap-4 w-full",
+              children: [
+                Paragraph({ text: "Change your avatar below." }),
+                Input({
+                  id: "avatar-input",
+                  label: "Upload Avatar:",
+                  name: "avatar",
+                  type: "file",
+                  accept: "image/*",
+                  errorId: "avatar-upload-error-message"
+                }),
+                Button({
+                  text: "Upload Avatar",
+                  variant: "default",
+                  size: "md",
+                  type: "submit",
+                  className: "mt-2"
+                })
+              ]
+            })}
+          </div>
         </div>
-        <div class="flex flex-col w-full md:w-2/3 gap-40">
+
+        <!-- Profile + Password Forms -->
+        <div class="md:col-span-5 flex flex-col gap-24">
           ${Form({
             id: "profile-form",
+            className: "flex flex-col gap-4",
             children: [
               Paragraph({ text: "Update your profile information below." }),
               Input({
@@ -88,14 +97,17 @@ export default class ProfileView extends AbstractView {
               }),
               Button({
                 text: "Save Changes",
-                type: "submit",
                 variant: "default",
-                size: "md"
+                size: "md",
+                type: "submit",
+                className: "mt-4 self-start"
               })
             ]
           })}
+
           ${Form({
             id: "password-form",
+            className: "flex flex-col gap-4",
             children: [
               Paragraph({ text: "Change your password below." }),
               Input({
@@ -127,16 +139,18 @@ export default class ProfileView extends AbstractView {
               }),
               Button({
                 text: "Change Password",
-                type: "submit",
                 variant: "default",
-                size: "md"
+                size: "md",
+                type: "submit",
+                className: "mt-4 self-start"
               })
             ]
           })}
         </div>
       </div>
-    `;
-  }
+    </div>
+  `;
+}
 
   protected addListeners() {
     this.profileFormEl.addEventListener("submit", (event) =>
@@ -249,10 +263,13 @@ export default class ProfileView extends AbstractView {
     const confirmPasswordEl = getInputEl("confirm-new-password-input");
     const confirmPasswordErrorEl = getEl("confirm-error");
 
-    if (!validateConfirmPassword(
-      newPasswordEl,
-      confirmPasswordEl,
-      confirmPasswordErrorEl)) {
+    if (
+      !validateConfirmPassword(
+        newPasswordEl,
+        confirmPasswordEl,
+        confirmPasswordErrorEl
+      )
+    ) {
       return;
     }
     // FIXME: activate when pw policy active
