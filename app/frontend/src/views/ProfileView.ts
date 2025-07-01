@@ -20,6 +20,7 @@ import { router } from "../routing/Router.js";
 import { getInputEl, getEl } from "../utility.js";
 import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
+import { toaster } from "../Toaster.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
@@ -60,12 +61,6 @@ export default class ProfileView extends AbstractView {
                 variant: "default",
                 size: "md",
                 type: "submit"
-              }),
-              Span({
-                text: "Avatar uploaded successfully!",
-                id: "avatar-upload-success-message",
-                variant: "success",
-                className: "hidden"
               })
             ]
           })}
@@ -135,12 +130,6 @@ export default class ProfileView extends AbstractView {
                 type: "submit",
                 variant: "default",
                 size: "md"
-              }),
-              Span({
-                id: "password-success-message",
-                text: "Password updated successfully!",
-                variant: "success",
-                className: "hidden"
               })
             ]
           })}
@@ -220,10 +209,10 @@ export default class ProfileView extends AbstractView {
     try {
       const userResponse: User = await patchUser(updatedUser);
       console.log("Profile update response:", userResponse);
-      // success toast
+      toaster.success("Profile updated successfully!");
     } catch (err) {
+      toaster.error("Failed to update profile. Please try again.");
       router.handleError("Error in patchUser()", err);
-      // error toast
     }
   }
 
@@ -231,8 +220,6 @@ export default class ProfileView extends AbstractView {
     event.preventDefault();
     const fileInputEl = getInputEl("avatar-input");
     const errorEl = getEl("avatar-upload-error-message");
-    const successEl = getEl("avatar-upload-success-message");
-    successEl.classList.add("hidden");
 
     if (!validateImageFile(fileInputEl, errorEl)) return;
 
@@ -242,9 +229,10 @@ export default class ProfileView extends AbstractView {
     try {
       const response = await uploadAvatar(formData);
       console.log("Avatar upload response:", response);
-      successEl.classList.remove("hidden");
+      toaster.success("Avatar uploaded successfully!");
       fileInputEl.value = "";
     } catch (error) {
+      toaster.error("Failed to upload avatar. Please try again.");
       router.handleError("Error in uploadAvatar()", error);
     }
   }
@@ -260,8 +248,6 @@ export default class ProfileView extends AbstractView {
     // const newPasswordErrorEl = getEl("new-password-error");
     const confirmPasswordEl = getInputEl("confirm-new-password-input");
     const confirmPasswordErrorEl = getEl("confirm-error");
-    const successEl = getEl("password-success-message");
-    successEl.classList.add("hidden");
 
     if (!validateConfirmPassword(
       newPasswordEl,
@@ -279,11 +265,12 @@ export default class ProfileView extends AbstractView {
 
     try {
       await updateUserPassword(currentPasswordEl.value, newPasswordEl.value);
-      successEl.classList.remove("hidden");
+      toaster.success("Password updated successfully!");
       currentPasswordEl.value = "";
       newPasswordEl.value = "";
       confirmPasswordEl.value = "";
     } catch (err) {
+      toaster.error("Failed to update password. Please try again.");
       router.handleError("Error in updateUserPassword()", err);
     }
   }
