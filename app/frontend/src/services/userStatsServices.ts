@@ -44,7 +44,7 @@ export async function getUserActivityMatrix(): Promise<HeatmapSeries> {
 export async function getUserTournamentProgress(): Promise<
   TournamentProgress[]
 > {
-  const url = "/api/user-stats/me/activity-matrix";
+  const url = "/api/user-stats/me/tournament-progress";
 
   const apiResponse = await apiFetch<TournamentProgress[]>(url, {
     method: "GET",

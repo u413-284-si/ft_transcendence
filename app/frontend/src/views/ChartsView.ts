@@ -1,7 +1,8 @@
 import { getUserMatches } from "../services/userServices.js";
 import {
   getUserActivityMatrix,
-  getUserStats
+  getUserStats,
+  getUserTournamentProgress
 } from "../services/userStatsServices.js";
 import type { Match } from "../types/IMatch.js";
 import { UserStats } from "../types/IUserStats.js";
@@ -11,6 +12,7 @@ export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
   private matches: Match[] | null = null;
   private activityMatrix: HeatmapSeries | null = null;
+  private tournamentProgress: TournamentProgress[] | null = null;
 
   constructor() {
     super();
@@ -18,13 +20,18 @@ export default class ChartsView extends AbstractView {
   }
 
   createHTML() {
-    return /* HTML */ ` <div
-      class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 place-items-center"
-    >
-      <div id="win-loss-chart" class="w-[300px] h-[300px]"></div>
-      <div id="winrate-chart" class="w-[500px] h-[300px]"></div>
-      <div id="score-diff-chart" class="w-[500px] h-[300px]"></div>
-      <div id="activity-heatmap-chart" class="w-[500px] h-[300px]"></div>
+    return /* HTML */ `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+      <div id="win-loss-chart" class="w-full min-w-[400px] h-[300px]"></div>
+      <div id="winrate-chart" class="w-full min-w-[500px] h-[300px]"></div>
+      <div id="score-diff-chart" class="w-full min-w-[500px] h-[300px]"></div>
+      <div
+        id="activity-heatmap-chart"
+        class="w-full min-w-[500px] h-[300px]"
+      ></div>
+      <div
+        id="tournament-progress-chart"
+        class="w-full min-w-[500px] h-[300px]"
+      ></div>
     </div>`;
   }
 
@@ -32,11 +39,13 @@ export default class ChartsView extends AbstractView {
     this.userStats = await getUserStats();
     this.matches = await getUserMatches();
     this.activityMatrix = await getUserActivityMatrix();
+    this.tournamentProgress = await getUserTournamentProgress();
     this.updateHTML();
     this.rederWinLossChart(this.userStats);
     this.renderWinrateChart();
     this.renderScoreDiffChart();
     this.renderActivityHeatMap();
+    this.renderTournamentProgress();
   }
 
   getName(): string {
@@ -293,7 +302,7 @@ export default class ChartsView extends AbstractView {
       dataLabels: {
         enabled: false
       },
-      colors: ["#00A100"], // You can use your Tailwind colors or any hex
+      colors: ["#00A100"],
       title: {
         text: "User Activity Heatmap",
         style: {
@@ -317,6 +326,90 @@ export default class ChartsView extends AbstractView {
     const chartEl = document.querySelector("#activity-heatmap-chart");
     if (!chartEl)
       throw new Error("Chart element activity-heatmap-chart not found");
+
+    const chart = new ApexCharts(chartEl, options);
+    chart.render();
+  }
+
+  renderTournamentProgress() {
+    if (!this.tournamentProgress) throw new Error("TournamentProgress is null");
+
+    const sizeColorMap: Record<number, string> = {
+      4: "var(--color-neon-green)",
+      8: "var(--color-neon-cyan)",
+      16: "var(--color-neon-purple)"
+    };
+
+    const sizeLegendMap: Record<number, string> = {
+      4: "4 Players",
+      8: "8 Players",
+      16: "16 Players"
+    };
+
+    const options: ApexCharts.ApexOptions = {
+      chart: {
+        type: "bar",
+        background: "transparent",
+        fontFamily: "inherit",
+        toolbar: { show: false }
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          distributed: true
+        }
+      },
+      xaxis: {
+        title: {
+          text: "Progress (%)"
+        },
+        max: 100
+      },
+      yaxis: {
+        labels: {
+          style: {
+            colors: "var(--color-grey)"
+          }
+        }
+      },
+      tooltip: {
+        y: {
+          formatter: (val: number, opts: { dataPointIndex: number }) => {
+            const t = this.tournamentProgress![opts.dataPointIndex];
+            return `${t.name} (${t.maxPlayers} players): ${val}%`;
+          }
+        }
+      },
+      legend: {
+        show: true,
+        markers: {
+          fillColors: Object.values(sizeColorMap)
+        },
+        labels: {
+          colors: "var(--color-grey)"
+        },
+        customLegendItems: Object.values(sizeLegendMap)
+      },
+      colors: this.tournamentProgress.map((t) => sizeColorMap[t.maxPlayers]),
+      series: [
+        {
+          name: "Tournament Progress",
+          data: this.tournamentProgress.map((t) => t.progress)
+        }
+      ],
+      labels: this.tournamentProgress.map((t) => t.name),
+      title: {
+        text: "Tournament Progress",
+        style: {
+          fontSize: "20px",
+          color: "var(--color-grey)"
+        }
+      }
+    };
+
+    const chartEl = document.querySelector("#tournament-progress-chart");
+    if (!chartEl)
+      throw new Error("Chart element tournament-progress-chart not found");
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();
