@@ -73,7 +73,7 @@
   },
   "prisma": {
     "schema": "./app/backend/prisma/schema.prisma",
-    "seed": "node ./app/backend/prisma/seed.js"
+    "seed": "ts-node ./app/backend/prisma/seed.ts"
   },
   "prettier": {
     "singleQuote": false,

@@ -3,13 +3,15 @@ import {
   createFriendRequest,
   updateFriendRequest
 } from "../../src/services/friends.services.js";
+import type { FriendRequest } from "../../../frontend/src/types/FriendRequest.ts";
+import type { User } from "@prisma/client";
 
-function makePairKey(a, b) {
+function makePairKey(a: number, b: number) {
   const [min, max] = a < b ? [a, b] : [b, a];
   return `${min}:${max}`;
 }
 
-export async function seedFriendRequest(users, count = 30) {
+export async function seedFriendRequest(users: User[], count = 30) {
   const userIds = users.map((user) => user.id);
 
   if (userIds.length < 2) {
@@ -19,7 +21,7 @@ export async function seedFriendRequest(users, count = 30) {
 
   const friendRequests = new Set();
 
-  const createdRequests = [];
+  const createdRequests: FriendRequest[] = [];
 
   for (let i = 0; i < count; i++) {
     let senderId = rand(userIds);

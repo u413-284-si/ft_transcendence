@@ -2,16 +2,17 @@ import { randUserName, randEmail } from "@ngneat/falso";
 
 import { createUser } from "../../src/services/users.services.js";
 import { createHash } from "../../src/services/auth.services.js";
+import type { User } from "@prisma/client";
 
 export async function seedUsers(count = 10) {
-  const users = [];
+  const users: User[] = [];
 
   const adminUsername = "admin";
   const adminEmail = "admin@example.com";
   const adminPassword = await createHash("123");
   const authProvider = "LOCAL";
 
-  const adminUser = await createUser(
+  const adminUser: User = await createUser(
     adminUsername,
     adminEmail,
     adminPassword,

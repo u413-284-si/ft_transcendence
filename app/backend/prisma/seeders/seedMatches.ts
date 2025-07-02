@@ -7,6 +7,7 @@ import {
 } from "@ngneat/falso";
 
 import { transactionMatch } from "../../src/services/transactions.services.js";
+import type { Match } from "../../../frontend/src/types/IMatch.ts";
 
 function generateNonTiedScores(min = 0, max = 10) {
   const baseScore = randNumber({ min, max: max - 1 });
@@ -25,8 +26,8 @@ function generateNonTiedScores(min = 0, max = 10) {
   }
 }
 
-export async function seedMatches(userId, count = 10) {
-  const matches = [];
+export async function seedMatches(userId: number, count = 10) {
+  const matches: Match[] = [];
 
   for (let i = 0; i < count; i++) {
     const playedAs = rand(["PLAYERONE", "PLAYERTWO"]);
@@ -54,7 +55,7 @@ export async function seedMatches(userId, count = 10) {
 }
 
 export async function seedMatchesPerUser(users, min, max) {
-  const allMatches = [];
+  const allMatches: Match[] = [];
 
   for (const user of users) {
     const matchCount = randNumber({ min, max });

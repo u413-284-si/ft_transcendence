@@ -1,14 +1,14 @@
 import { seed } from "@ngneat/falso";
 import prisma from "../src/prisma/prismaClient.js";
 
-import { seedUsers } from "./seeders/seedUsers.js";
-import { seedMatchesPerUser } from "./seeders/seedMatches.js";
-import { seedFriendRequest } from "./seeders/seedFriendRequests.js";
+import { seedUsers } from "./seeders/seedUsers.ts";
+import { seedMatchesPerUser } from "./seeders/seedMatches.ts";
+import { seedFriendRequest } from "./seeders/seedFriendRequests.ts";
 
 async function main() {
   console.log("Seeding database...");
 
-  seed(1);
+  seed("42");
 
   const users = await seedUsers(10);
 
