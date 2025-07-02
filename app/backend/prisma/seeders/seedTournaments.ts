@@ -63,7 +63,7 @@ export async function seedTournament(userId: number) {
     const date = dateFactory();
 
     tournament.updateBracketWithResult(nextMatch.matchId, winner);
-    const match = await transactionMatch(
+    await transactionMatch(
       userId,
       playedAs === "NONE" ? null : playedAs,
       nextMatch.player1,
