@@ -1,8 +1,8 @@
-import { seed, randNumber } from "@ngneat/falso";
+import { seed } from "@ngneat/falso";
 import prisma from "../src/prisma/prismaClient.js";
 
 import { seedUsers } from "./seeders/seedUser.js";
-import { seedMatches } from "./seeders/seedMatches.js";
+import { seedMatchesPerUser } from "./seeders/seedMatches.js";
 import { seedFriendRequest } from "./seeders/seedFriendRequest.js";
 
 async function main() {
@@ -12,10 +12,7 @@ async function main() {
 
   const users = await seedUsers(10);
 
-  for (const user of users) {
-    const matchCount = randNumber({ min: 1, max: 10 });
-    await seedMatches(user.id, matchCount);
-  }
+  await seedMatchesPerUser(users, 1, 10);
 
   await seedFriendRequest(users);
 

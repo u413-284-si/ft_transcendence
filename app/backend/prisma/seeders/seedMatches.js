@@ -35,7 +35,7 @@ export async function seedMatches(userId, count = 10) {
     const { player1Score, player2Score } = generateNonTiedScores(0, 10);
     const date = randPastDate();
 
-    const match = await transactionMatch(
+    const { match } = await transactionMatch(
       userId,
       playedAs,
       player1Nickname,
@@ -51,4 +51,17 @@ export async function seedMatches(userId, count = 10) {
 
   console.log(`Seeded ${matches.length} matches for userId ${userId}`);
   return matches;
+}
+
+export async function seedMatchesPerUser(users, min, max) {
+  const allMatches = [];
+
+  for (const user of users) {
+    const matchCount = randNumber({ min, max });
+    const matches = await seedMatches(user.id, matchCount);
+    allMatches.push(...matches);
+  }
+
+  console.log(`Seeded ${allMatches.length} matches`);
+  return allMatches;
 }
