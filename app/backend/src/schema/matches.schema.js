@@ -166,10 +166,23 @@ export const createMatchResponseSchema = {
   additionalProperties: false
 };
 
+export const querystringMatchSchema = {
+  $id: "querystringMatchSchema",
+  type: "object",
+  properties: {
+    limit: { type: "integer", minimum: 1, maximum: 50, default: 10 },
+    offset: { type: "integer", minimum: 0 },
+    sort: { type: "string", enum: ["asc", "desc"], default: "desc" }
+  },
+  required: [],
+  additionalProperties: false
+};
+
 export const matchSchemas = [
   matchSchema,
   matchResponseSchema,
   matchArrayResponseSchema,
   createMatchSchema,
-  createMatchResponseSchema
+  createMatchResponseSchema,
+  querystringMatchSchema
 ];

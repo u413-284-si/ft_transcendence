@@ -142,8 +142,13 @@ export async function deleteUserHandler(request, reply) {
 export async function getUserMatchesHandler(request, reply) {
   const action = "Get user matches";
   try {
+    const filter = {
+      limit: request.query.limit,
+      offset: request.query.offset,
+      sort: request.query.sort
+    };
     const id = parseInt(request.user.id, 10);
-    const data = await getUserMatches(id);
+    const data = await getUserMatches(id, filter);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
