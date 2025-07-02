@@ -9,6 +9,19 @@ import {
 import type { Match } from "../../../frontend/src/types/IMatch.ts";
 import type { User } from "@prisma/client";
 
+export async function seedMatchesPerUser(users: User[], min = 1, max = 10) {
+  const allMatches: Match[] = [];
+
+  for (const user of users) {
+    const matchCount = randNumber({ min, max });
+    const matches = await seedMatches(user.id, matchCount);
+    allMatches.push(...matches);
+  }
+
+  console.log(`Seeded ${allMatches.length} matches`);
+  return allMatches;
+}
+
 export async function seedMatches(userId: number, count = 10) {
   const matches: Match[] = [];
   const nextDate = randomIncrementalDateFactory({
@@ -40,21 +53,4 @@ export async function seedMatches(userId: number, count = 10) {
 
   console.log(`Seeded ${matches.length} matches for userId ${userId}`);
   return matches;
-}
-
-export async function seedMatchesPerUser(
-  users: User[],
-  min: number,
-  max: number
-) {
-  const allMatches: Match[] = [];
-
-  for (const user of users) {
-    const matchCount = randNumber({ min, max });
-    const matches = await seedMatches(user.id, matchCount);
-    allMatches.push(...matches);
-  }
-
-  console.log(`Seeded ${allMatches.length} matches`);
-  return allMatches;
 }
