@@ -19,9 +19,15 @@ export async function updateUserStatsTx(tx, userId, hasWon) {
   return stats;
 }
 
-export async function getAllUserStats() {
+export async function getAllUserStats(filter) {
+  const whereFilter = filter.username
+    ? { user: { username: filter.username } }
+    : {};
   const userStats = await prisma.userStats.findMany({
-    select: userStatsSelect
+    select: userStatsSelect,
+    where: whereFilter,
+    take: filter.limit,
+    skip: filter.offset
   });
   return userStats.map(assembleUserStats);
 }

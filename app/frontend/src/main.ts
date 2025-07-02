@@ -27,7 +27,12 @@ router
     layout: "auth"
   })
   .addRoute("/settings", { view: Settings, guard: authGuard, layout: "auth" })
-  .addRoute("/stats", { view: Stats, guard: authGuard, layout: "auth" })
+  .addRoute("/stats/:username", {
+    view: Stats,
+    guard: authGuard,
+    layout: "auth",
+    regex: "[a-zA-Z0-9-!?_$.]{3,20}"
+  })
   .addRoute("/friends", { view: Friends, guard: authGuard, layout: "auth" })
   .addRoute("/charts", { view: Charts, guard: authGuard, layout: "auth" })
   .addRouteChangeListener(logRouteChange)
