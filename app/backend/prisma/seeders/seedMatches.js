@@ -1,10 +1,17 @@
-import { faker } from "@faker-js/faker";
+import {
+  rand,
+  randBoolean,
+  randNumber,
+  randPastDate,
+  randUserName
+} from "@ngneat/falso";
+
 import { transactionMatch } from "../../src/services/transactions.services.js";
 
 function generateNonTiedScores(min = 0, max = 10) {
-  const baseScore = faker.number.int({ min, max: max - 1 });
-  const player1Wins = faker.datatype.boolean();
-  const winningScore = faker.number.int({ min: baseScore + 1, max });
+  const baseScore = randNumber({ min, max: max - 1 });
+  const player1Wins = randBoolean();
+  const winningScore = randNumber({ min: baseScore + 1, max });
   if (player1Wins) {
     return {
       player1Score: winningScore,
@@ -22,11 +29,11 @@ export async function seedMatches(userId, count = 10) {
   const matches = [];
 
   for (let i = 0; i < count; i++) {
-    const playedAs = faker.helpers.arrayElement(["PLAYERONE", "PLAYERTWO"]);
-    const player1Nickname = faker.internet.username();
-    const player2Nickname = faker.internet.username();
+    const playedAs = rand(["PLAYERONE", "PLAYERTWO"]);
+    const player1Nickname = randUserName({ withAccents: false });
+    const player2Nickname = randUserName({ withAccents: false });
     const { player1Score, player2Score } = generateNonTiedScores(0, 10);
-    const date = faker.date.past();
+    const date = randPastDate();
 
     const match = await transactionMatch(
       userId,

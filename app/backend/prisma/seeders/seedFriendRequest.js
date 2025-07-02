@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { rand, randChanceBoolean } from "@ngneat/falso";
 import {
   createFriendRequest,
   updateFriendRequest
@@ -22,16 +22,16 @@ export async function seedFriendRequest(users, count = 30) {
   const createdRequests = [];
 
   for (let i = 0; i < count; i++) {
-    let senderId = faker.helpers.arrayElement(userIds);
-    let receiverId = faker.helpers.arrayElement(userIds);
+    let senderId = rand(userIds);
+    let receiverId = rand(userIds);
 
     // Ensure no self-request and no duplicate
     while (
       senderId === receiverId ||
       friendRequests.has(makePairKey(senderId, receiverId))
     ) {
-      senderId = faker.helpers.arrayElement(userIds);
-      receiverId = faker.helpers.arrayElement(userIds);
+      senderId = rand(userIds);
+      receiverId = rand(userIds);
     }
 
     friendRequests.add(makePairKey(senderId, receiverId));
@@ -43,7 +43,7 @@ export async function seedFriendRequest(users, count = 30) {
 
   // Decide randomly to accept or decline
   for (const request of createdRequests) {
-    const accept = faker.datatype.boolean();
+    const accept = randChanceBoolean({ chanceTrue: 0.7 });
 
     if (accept) {
       await updateFriendRequest(request.id, request.friendId, "ACCEPTED");

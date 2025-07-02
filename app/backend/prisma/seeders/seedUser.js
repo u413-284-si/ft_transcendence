@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { randUserName, randEmail } from "@ngneat/falso";
 
 import { createUser } from "../../src/services/users.services.js";
 import { createHash } from "../../src/services/auth.services.js";
@@ -21,8 +21,8 @@ export async function seedUsers(count = 10) {
   users.push(adminUser);
 
   for (let i = 1; i < count; i++) {
-    const username = faker.internet.username();
-    const email = faker.internet.email();
+    const username = randUserName({ withAccents: false });
+    const email = randEmail();
     const hashedPassword = await createHash("123");
     const authProvider = "LOCAL";
 
