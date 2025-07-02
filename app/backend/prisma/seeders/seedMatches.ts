@@ -1,20 +1,28 @@
 import { rand, randNumber, randPastDate, randUserName } from "@ngneat/falso";
 
 import { transactionMatch } from "../../src/services/transactions.services.js";
-import { generateNonTiedScores } from "./utils.ts";
+import {
+  generateNonTiedScores,
+  randomIncrementalDateFactory
+} from "./utils.ts";
 
 import type { Match } from "../../../frontend/src/types/IMatch.ts";
 import type { User } from "@prisma/client";
 
 export async function seedMatches(userId: number, count = 10) {
   const matches: Match[] = [];
+  const nextDate = randomIncrementalDateFactory({
+    from: randPastDate(),
+    minStepMinutes: 30,
+    maxStepMinutes: 3000
+  });
 
   for (let i = 0; i < count; i++) {
     const playedAs = rand(["PLAYERONE", "PLAYERTWO"]);
     const player1Nickname = randUserName({ withAccents: false });
     const player2Nickname = randUserName({ withAccents: false });
     const { player1Score, player2Score } = generateNonTiedScores(0, 10);
-    const date = randPastDate();
+    const date = nextDate();
 
     const { match } = await transactionMatch(
       userId,
