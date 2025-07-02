@@ -14,12 +14,13 @@ export default class ChartsView extends AbstractView {
   }
 
   createHTML() {
-    return /* HTML */ `<div
-        id="win-loss-chart"
-        class="w-[400px] h-[400px]"
-      ></div>
+    return /* HTML */ ` <div
+      class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 place-items-center"
+    >
+      <div id="win-loss-chart" class="w-[300px] h-[300px]"></div>
       <div id="winrate-chart" class="w-[500px] h-[300px]"></div>
-      <div id="score-diff-chart"></div>`;
+      <div id="score-diff-chart" class="w-[300px] h-[300px]"></div>
+    </div>`;
   }
 
   async render() {
@@ -150,28 +151,40 @@ export default class ChartsView extends AbstractView {
 
     // Render ApexCharts with this data (same as above)
     const options = {
-      chart: { type: "line", height: 350 },
+      chart: { type: "line", fontFamily: "inherit", background: "transparent" },
       series: [
         {
-          name: "Winrate (%)",
+          name: "Winrate",
           data: winrateProgression.map((wr) => Number(wr.toFixed(2)))
         }
       ],
+      colors: ["var(--color-neon-cyan)"],
+      title: {
+        text: "Winrate Progression",
+        align: "center",
+        style: {
+          color: "var(--color-grey)",
+          fontSize: "20px"
+        },
+        offsetY: 10
+      },
       xaxis: {
         categories: lastTenMatchesWithResults.map(
           (_, i) => `Match ${matchesBeforeLastTen + i + 1}`
-        ),
-        title: { text: "Match Number" }
+        )
       },
       yaxis: {
         min: yAxisMin,
         max: yAxisMax,
-        title: { text: "Winrate (%)" },
+        title: { text: "Winrate" },
         labels: { formatter: (val: number) => `${val}%` }
       },
       stroke: { curve: "smooth", width: 3 },
       markers: { size: 5 },
-      tooltip: { y: { formatter: (val: number) => `${val.toFixed(2)}%` } }
+      tooltip: {
+        theme: "dark",
+        y: { formatter: (val: number) => `${val.toFixed(2)}%` }
+      }
     };
 
     const chartEl = document.querySelector("#winrate-chart");
