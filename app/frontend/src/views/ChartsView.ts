@@ -19,7 +19,7 @@ export default class ChartsView extends AbstractView {
     >
       <div id="win-loss-chart" class="w-[300px] h-[300px]"></div>
       <div id="winrate-chart" class="w-[500px] h-[300px]"></div>
-      <div id="score-diff-chart" class="w-[300px] h-[300px]"></div>
+      <div id="score-diff-chart" class="w-[500px] h-[300px]"></div>
     </div>`;
   }
 
@@ -160,7 +160,7 @@ export default class ChartsView extends AbstractView {
       ],
       colors: ["var(--color-neon-cyan)"],
       title: {
-        text: "Winrate Progression",
+        text: "Winrate Progression (Last 10)",
         align: "center",
         style: {
           color: "var(--color-grey)",
@@ -206,7 +206,8 @@ export default class ChartsView extends AbstractView {
     const options = {
       chart: {
         type: "bar",
-        height: 350
+        fontFamily: "inherit",
+        background: "transparent"
       },
       series: [
         {
@@ -228,12 +229,12 @@ export default class ChartsView extends AbstractView {
               {
                 from: -100,
                 to: -1,
-                color: "#ef4444" // red for losses
+                color: "var(--color-neon-red)"
               },
               {
                 from: 0,
                 to: 100,
-                color: "#22c55e" // green for wins
+                color: "var(--color-neon-cyan)"
               }
             ]
           }
@@ -248,8 +249,20 @@ export default class ChartsView extends AbstractView {
         }
       },
       tooltip: {
+        theme: "dark",
         y: {
           formatter: (val: number) => `${val > 0 ? "+" : ""}${val}`
+        }
+      },
+      legend: {
+        show: false
+      },
+      title: {
+        text: "Score Differential (Last 10)",
+        align: "center",
+        style: {
+          color: "var(--color-grey)",
+          fontSize: "20px"
         }
       }
     };
