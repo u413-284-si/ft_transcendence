@@ -302,7 +302,7 @@ export default class ChartsView extends AbstractView {
       dataLabels: {
         enabled: false
       },
-      colors: ["#00A100"],
+      colors: ["#0094a1"],
       title: {
         text: "User Activity Heatmap",
         style: {
@@ -317,6 +317,7 @@ export default class ChartsView extends AbstractView {
         title: { text: "Day of Week" }
       },
       tooltip: {
+        theme: "dark",
         y: {
           formatter: (val: number) => `${val} match${val !== 1 ? "es" : ""}`
         }
@@ -373,6 +374,7 @@ export default class ChartsView extends AbstractView {
         }
       },
       tooltip: {
+        theme: "dark",
         y: {
           formatter: (val: number, opts: { dataPointIndex: number }) => {
             const t = this.tournamentProgress![opts.dataPointIndex];
