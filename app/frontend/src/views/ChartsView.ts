@@ -1,5 +1,9 @@
-import { getUserMatches } from "../services/userServices.js";
+import {
+  getUserActivityMatrix,
+  getUserMatches
+} from "../services/userServices.js";
 import { getUserStats } from "../services/userStatsServices.js";
+import { HeatmapSeries } from "../types/heatmap.js";
 import type { Match } from "../types/IMatch.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
@@ -7,6 +11,7 @@ import AbstractView from "./AbstractView.js";
 export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
   private matches: Match[] | null = null;
+  private activityMatrix: HeatmapSeries | null = null;
 
   constructor() {
     super();
@@ -20,16 +25,19 @@ export default class ChartsView extends AbstractView {
       <div id="win-loss-chart" class="w-[300px] h-[300px]"></div>
       <div id="winrate-chart" class="w-[500px] h-[300px]"></div>
       <div id="score-diff-chart" class="w-[500px] h-[300px]"></div>
+      <div id="activity-heatmap-chart" class="w-[500px] h-[300px]"></div>
     </div>`;
   }
 
   async render() {
     this.userStats = await getUserStats();
     this.matches = await getUserMatches();
+    this.activityMatrix = await getUserActivityMatrix();
     this.updateHTML();
     this.rederWinLossChart(this.userStats);
     this.renderWinrateChart();
     this.renderScoreDiffChart();
+    this.renderActivityHeatMap();
   }
 
   getName(): string {
@@ -269,6 +277,47 @@ export default class ChartsView extends AbstractView {
 
     const chartEl = document.querySelector("#score-diff-chart");
     if (!chartEl) throw new Error("Chart element score-diff-chart not found");
+
+    const chart = new ApexCharts(chartEl, options);
+    chart.render();
+  }
+
+  renderActivityHeatMap() {
+    const options = {
+      chart: {
+        type: "heatmap",
+        height: 350,
+        fontFamily: "inherit",
+        background: "transparent"
+      },
+      series: this.activityMatrix,
+      dataLabels: {
+        enabled: false
+      },
+      colors: ["#00A100"], // You can use your Tailwind colors or any hex
+      title: {
+        text: "User Activity Heatmap",
+        style: {
+          fontSize: "20px",
+          color: "var(--color-grey)"
+        }
+      },
+      xaxis: {
+        title: { text: "Hour of Day" }
+      },
+      yaxis: {
+        title: { text: "Day of Week" }
+      },
+      tooltip: {
+        y: {
+          formatter: (val: number) => `${val} match${val !== 1 ? "es" : ""}`
+        }
+      }
+    };
+
+    const chartEl = document.querySelector("#activity-heatmap-chart");
+    if (!chartEl)
+      throw new Error("Chart element activity-heatmap-chart not found");
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();

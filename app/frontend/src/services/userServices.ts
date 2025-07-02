@@ -1,6 +1,7 @@
 import { apiFetch } from "./api.js";
 import { Match } from "../types/IMatch.js";
 import { User } from "../types/User.js";
+import { HeatmapSeries } from "../types/heatmap.js";
 
 export async function getUserMatches(): Promise<Match[]> {
   const apiResponse = await apiFetch<Match[]>("/api/users/me/matches", {
@@ -88,6 +89,18 @@ export async function getUserMatchesByUsername(
   const url = `/api/users/${encoded}/matches/`;
 
   const apiResponse = await apiFetch<Match[]>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
+export async function getUserActivityMatrix(): Promise<HeatmapSeries> {
+  const url = "/api/users/me/activity-matrix";
+
+  const apiResponse = await apiFetch<HeatmapSeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });
