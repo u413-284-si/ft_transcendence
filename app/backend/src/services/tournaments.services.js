@@ -120,3 +120,51 @@ export async function getUserActiveTournament(userId) {
   });
   return tournament;
 }
+
+export async function getUserTournamentProgress(userId) {
+  const tournaments = await prisma.tournament.findMany({
+    where: {
+      userId,
+      status: "FINISHED"
+    },
+    select: {
+      name: true,
+      maxPlayers: true,
+      userNickname: true,
+      matches: true
+    }
+  });
+
+  return tournaments.map((tournament) => {
+    const currentUser = tournament.userNickname;
+    const matches = tournament.matches;
+    const totalRounds = Math.log2(tournament.maxPlayers);
+    let wins = 0;
+
+    for (const match of matches) {
+      let playedAs = null;
+
+      if (match.player1Nickname === currentUser) {
+        playedAs = "PLAYERONE";
+      } else if (match.player2Nickname === currentUser) {
+        playedAs = "PLAYERTWO";
+      }
+
+      const won =
+        (playedAs === "PLAYERONE" && match.player1Score > match.player2Score) ||
+        (playedAs === "PLAYERTWO" && match.player2Score > match.player1Score);
+
+      if (won) {
+        wins++;
+      }
+    }
+
+    const progress = Math.min((wins / totalRounds) * 100, 100);
+
+    return {
+      name: tournament.name,
+      maxPlayers: tournament.maxPlayers,
+      progress: Math.round(progress)
+    };
+  });
+}
