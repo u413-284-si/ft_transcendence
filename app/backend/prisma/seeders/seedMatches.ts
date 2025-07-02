@@ -1,30 +1,10 @@
-import {
-  rand,
-  randBoolean,
-  randNumber,
-  randPastDate,
-  randUserName
-} from "@ngneat/falso";
+import { rand, randNumber, randPastDate, randUserName } from "@ngneat/falso";
 
 import { transactionMatch } from "../../src/services/transactions.services.js";
-import type { Match } from "../../../frontend/src/types/IMatch.ts";
+import { generateNonTiedScores } from "./utils.ts";
 
-function generateNonTiedScores(min = 0, max = 10) {
-  const baseScore = randNumber({ min, max: max - 1 });
-  const player1Wins = randBoolean();
-  const winningScore = randNumber({ min: baseScore + 1, max });
-  if (player1Wins) {
-    return {
-      player1Score: winningScore,
-      player2Score: baseScore
-    };
-  } else {
-    return {
-      player1Score: baseScore,
-      player2Score: winningScore
-    };
-  }
-}
+import type { Match } from "../../../frontend/src/types/IMatch.ts";
+import type { User } from "@prisma/client";
 
 export async function seedMatches(userId: number, count = 10) {
   const matches: Match[] = [];
@@ -54,7 +34,11 @@ export async function seedMatches(userId: number, count = 10) {
   return matches;
 }
 
-export async function seedMatchesPerUser(users, min, max) {
+export async function seedMatchesPerUser(
+  users: User[],
+  min: number,
+  max: number
+) {
   const allMatches: Match[] = [];
 
   for (const user of users) {
