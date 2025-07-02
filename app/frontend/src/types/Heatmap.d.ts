@@ -17,4 +17,4 @@ type HeatmapSeriesItem = {
   data: HeatmapDataPoint[];
 };
 
-export type HeatmapSeries = HeatmapSeriesItem[];
+type HeatmapSeries = HeatmapSeriesItem[];

@@ -3,7 +3,6 @@ import {
   getUserActivityMatrix,
   getUserStats
 } from "../services/userStatsServices.js";
-import { HeatmapSeries } from "../types/heatmap.js";
 import type { Match } from "../types/IMatch.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
