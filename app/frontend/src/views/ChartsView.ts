@@ -14,7 +14,10 @@ export default class ChartsView extends AbstractView {
   }
 
   createHTML() {
-    return /* HTML */ `<div id="chart" class="w-[300px] h-[300px]"></div>
+    return /* HTML */ `<div
+        id="win-loss-chart"
+        class="w-[400px] h-[400px]"
+      ></div>
       <div id="winrate-chart" class="w-[500px] h-[300px]"></div>
       <div id="score-diff-chart"></div>`;
   }
@@ -35,28 +38,63 @@ export default class ChartsView extends AbstractView {
   rederWinLossChart(stats: UserStats) {
     const options = {
       chart: {
-        type: "pie",
+        type: "donut",
         fontFamily: "inherit",
         background: "transparent"
       },
       labels: ["Wins", "Losses"],
       series: [stats.matchesWon, stats.matchesLost],
-      colors: ["#00ffff", "#ff0044"],
+      colors: ["var(--color-neon-cyan)", "var(--color-neon-red)"],
       title: {
         text: "Wins vs Losses",
+        align: "center",
         style: {
-          color: "#00ffff",
+          color: "var(--color-grey)",
           fontSize: "20px"
         }
       },
       legend: {
+        position: "bottom",
         labels: {
-          colors: ["#00ffff", "#00ffff"]
+          colors: ["var(--color-grey)", "var(--color-grey)"]
+        }
+      },
+      stroke: {
+        show: true,
+        width: 1,
+        colors: ["var(--color-grey)"]
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: "50%",
+            labels: {
+              show: true,
+              name: {
+                show: true,
+                offsetY: -10,
+                color: "var(--color-grey)",
+                fontSize: "10px"
+              },
+              total: {
+                show: true,
+                label: "Win Rate",
+                color: "var(--color-grey)",
+                fontSize: "10px",
+                formatter: function () {
+                  return `${stats.winRate.toFixed(1)}%`;
+                }
+              }
+            }
+          }
         }
       }
     };
 
-    const chart = new ApexCharts(document.querySelector("#chart"), options);
+    const chartEl = document.querySelector("#win-loss-chart");
+    if (!chartEl) throw new Error("win-loss-chart element not found");
+
+    const chart = new ApexCharts(chartEl, options);
     chart.render();
   }
 
