@@ -1,6 +1,7 @@
 import {
   getAllUserStatsHandler,
-  deleteAllUserStatsHandler
+  deleteAllUserStatsHandler,
+  getActivityMatrixHandler
 } from "../controllers/user_stats.controllers.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
 import { errorResponses } from "../utils/error.js";
@@ -9,6 +10,12 @@ export default async function userstatsRoutes(fastify) {
   fastify.get("/", optionsGetAllUserStats, getAllUserStatsHandler);
 
   fastify.delete("/", optionsDeleteAllUserStats, deleteAllUserStatsHandler);
+
+  fastify.get(
+    "/me/activity-matrix",
+    optionsGetActivityMatrix,
+    getActivityMatrixHandler
+  );
 }
 
 const optionsGetAllUserStats = {
@@ -31,6 +38,15 @@ const optionsGetAllUserStats = {
 };
 
 const optionsDeleteAllUserStats = {
+  schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetActivityMatrix = {
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       ...errorResponses

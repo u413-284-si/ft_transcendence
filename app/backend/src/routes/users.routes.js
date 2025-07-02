@@ -14,8 +14,7 @@ import {
   searchUserHandler,
   createUserAvatarHandler,
   deleteUserAvatarHandler,
-  getUserMatchesByUsernameHandler,
-  getActivityMatrixHandler
+  getUserMatchesByUsernameHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseConnectionHandler } from "../controllers/sse.controllers.js";
@@ -95,12 +94,6 @@ export default async function userRoutes(fastify) {
   fastify.get("/me/online", optionsSseOnline, sseConnectionHandler);
 
   fastify.get("/search", optionsSearchUser, searchUserHandler);
-
-  fastify.get(
-    "/me/activity-matrix",
-    optionsGetActivityMatrix,
-    getActivityMatrixHandler
-  );
 }
 
 const optionsCreateUser = {
@@ -311,15 +304,6 @@ const optionsSearchUser = {
       },
       required: ["username"]
     },
-    response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetActivityMatrix = {
-  onRequest: [authorizeUserAccess],
-  schema: {
     response: {
       ...errorResponses
     }

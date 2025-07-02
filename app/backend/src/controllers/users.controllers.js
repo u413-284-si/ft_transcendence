@@ -11,7 +11,6 @@ import {
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import {
-  getActivityMatrix,
   getUserMatches,
   getUserMatchesByUsername
 } from "../services/matches.services.js";
@@ -374,24 +373,6 @@ export async function searchUserHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function getActivityMatrixHandler(request, reply) {
-  const action = "Get activity matrix";
-  try {
-    const userId = parseInt(request.user.id, 10);
-    const data = await getActivityMatrix(userId);
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      data: data
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getActivityMatrixHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

@@ -1,5 +1,6 @@
 import { apiFetch } from "./api.js";
 import { UserStats } from "../types/IUserStats.js";
+import { HeatmapSeries } from "../types/heatmap.js";
 
 export async function getUserStats(): Promise<UserStats> {
   const apiResponse = await apiFetch<UserStats>(`/api/users/me/user-stats`, {
@@ -27,4 +28,16 @@ export async function getUserStatsByUsername(
   }
 
   return apiResponse.data[0];
+}
+
+export async function getUserActivityMatrix(): Promise<HeatmapSeries> {
+  const url = "/api/user-stats/me/activity-matrix";
+
+  const apiResponse = await apiFetch<HeatmapSeries>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
 }

@@ -1,3 +1,4 @@
+import { getActivityMatrix } from "../services/matches.services.js";
 import {
   getAllUserStats,
   deleteAllUserStats
@@ -42,5 +43,23 @@ export async function deleteAllUserStatsHandler(request, reply) {
       `deleteAllUserStatsHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getActivityMatrixHandler(request, reply) {
+  const action = "Get activity matrix";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const data = await getActivityMatrix(userId);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getActivityMatrixHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
   }
 }

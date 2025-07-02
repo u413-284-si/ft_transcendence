@@ -1,8 +1,8 @@
+import { getUserMatches } from "../services/userServices.js";
 import {
   getUserActivityMatrix,
-  getUserMatches
-} from "../services/userServices.js";
-import { getUserStats } from "../services/userStatsServices.js";
+  getUserStats
+} from "../services/userStatsServices.js";
 import { HeatmapSeries } from "../types/heatmap.js";
 import type { Match } from "../types/IMatch.js";
 import { UserStats } from "../types/IUserStats.js";
