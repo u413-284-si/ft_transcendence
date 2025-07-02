@@ -1,9 +1,9 @@
 import { seed } from "@ngneat/falso";
 import prisma from "../src/prisma/prismaClient.js";
 
-import { seedUsers } from "./seeders/seedUser.js";
+import { seedUsers } from "./seeders/seedUsers.js";
 import { seedMatchesPerUser } from "./seeders/seedMatches.js";
-import { seedFriendRequest } from "./seeders/seedFriendRequest.js";
+import { seedFriendRequest } from "./seeders/seedFriendRequests.js";
 
 async function main() {
   console.log("Seeding database...");
