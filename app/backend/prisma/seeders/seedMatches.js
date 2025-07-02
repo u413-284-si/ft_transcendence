@@ -49,5 +49,6 @@ export async function seedMatches(userId, count = 10) {
     matches.push(match);
   }
 
+  console.log(`Seeded ${matches.length} matches for userId ${userId}`);
   return matches;
 }

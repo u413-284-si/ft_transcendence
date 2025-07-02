@@ -36,5 +36,6 @@ export async function seedUsers(count = 10) {
     users.push(user);
   }
 
+  console.log(`Seeded ${users.length} users`);
   return users;
 }
