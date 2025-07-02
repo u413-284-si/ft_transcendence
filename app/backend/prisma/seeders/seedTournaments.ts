@@ -2,6 +2,7 @@ import {
   incrementalDate,
   rand,
   randNoun,
+  randNumber,
   randPastDate,
   randUserName
 } from "@ngneat/falso";
@@ -14,8 +15,38 @@ import { transactionMatch } from "../../src/services/transactions.services.js";
 import { generateNonTiedScores } from "./utils.ts";
 
 import type { BracketMatch } from "../../../frontend/src/types/IMatch.ts";
+import type { Tournament as TournamentType, User } from "@prisma/client";
+type PublicTournament = Omit<TournamentType, "isPrivate">;
 
-export async function seedTournament(userId: number) {
+export async function seedTournamentsPerUser(
+  users: User[],
+  min: number,
+  max: number
+) {
+  const allTournaments: PublicTournament[] = [];
+
+  for (const user of users) {
+    const tournamentCount = randNumber({ min, max });
+    const tournaments = await seedTournaments(user.id, tournamentCount);
+    allTournaments.push(...tournaments);
+  }
+
+  console.log(`Seeded ${allTournaments.length} tournaments`);
+  return allTournaments;
+}
+
+export async function seedTournaments(userId: number, count: number) {
+  const tournaments: PublicTournament[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const tournament = await seedSingleTournament(userId);
+    tournaments.push(tournament);
+  }
+  console.log(`Seeded ${tournaments.length} tournaments for userId ${userId}`);
+  return tournaments;
+}
+
+export async function seedSingleTournament(userId: number) {
   const tournamentName = randNoun();
   const numberOfPlayers = rand([4, 8, 16]);
   const playerNicknames = Array.from({ length: numberOfPlayers }, () =>
@@ -23,7 +54,7 @@ export async function seedTournament(userId: number) {
   );
   const userNickname = rand(playerNicknames);
 
-  const tournament = Tournament.fromUsernames(
+  const tournamentClass = Tournament.fromUsernames(
     playerNicknames,
     tournamentName,
     numberOfPlayers,
@@ -31,7 +62,7 @@ export async function seedTournament(userId: number) {
     userId
   );
 
-  const bracket = JSON.stringify(tournament.getBracket());
+  const bracket = JSON.stringify(tournamentClass.getBracket());
 
   const { id } = await createTournament(
     tournamentName,
@@ -41,7 +72,7 @@ export async function seedTournament(userId: number) {
     bracket
   );
 
-  tournament.setId(id);
+  tournamentClass.setId(id);
 
   const randomStartDate = randPastDate({ years: 1 });
   const dateFactory = incrementalDate({
@@ -50,7 +81,7 @@ export async function seedTournament(userId: number) {
   });
 
   let nextMatch: BracketMatch | null;
-  while ((nextMatch = tournament.getNextMatchToPlay()) != null) {
+  while ((nextMatch = tournamentClass.getNextMatchToPlay()) != null) {
     const playedAs =
       userNickname === nextMatch.player1!
         ? "PLAYERONE"
@@ -62,7 +93,7 @@ export async function seedTournament(userId: number) {
       player1Score > player2Score ? nextMatch.player1! : nextMatch.player2!;
     const date = dateFactory();
 
-    tournament.updateBracketWithResult(nextMatch.matchId, winner);
+    tournamentClass.updateBracketWithResult(nextMatch.matchId, winner);
     await transactionMatch(
       userId,
       playedAs === "NONE" ? null : playedAs,
@@ -70,16 +101,19 @@ export async function seedTournament(userId: number) {
       nextMatch.player2,
       player1Score,
       player2Score,
-      { id: tournament!.getId(), name: tournament!.getTournamentName() },
+      {
+        id: tournamentClass!.getId(),
+        name: tournamentClass!.getTournamentName()
+      },
       date
     );
   }
-  const newTournament = await updateTournament(tournament.getId(), userId, {
-    bracket: tournament.getBracket(),
+  const tournament = await updateTournament(tournamentClass.getId(), userId, {
+    bracket: tournamentClass.getBracket(),
     status: "FINISHED"
   });
   console.log(
     `Seeded tournament ${tournamentName} with ${numberOfPlayers} players`
   );
-  return newTournament;
+  return tournament;
 }

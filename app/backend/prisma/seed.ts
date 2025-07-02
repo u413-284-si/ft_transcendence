@@ -4,7 +4,7 @@ import prisma from "../src/prisma/prismaClient.js";
 import { seedUsers } from "./seeders/seedUsers.ts";
 import { seedMatchesPerUser } from "./seeders/seedMatches.ts";
 import { seedFriendRequests } from "./seeders/seedFriendRequests.ts";
-import { seedTournament } from "./seeders/seedTournaments.ts";
+import { seedTournamentsPerUser } from "./seeders/seedTournaments.ts";
 
 async function main() {
   console.log("Seeding database...");
@@ -15,9 +15,9 @@ async function main() {
 
   await seedMatchesPerUser(users, 1, 10);
 
-  await seedFriendRequests(users);
+  await seedFriendRequests(users, 30);
 
-  await seedTournament(users[0].id);
+  await seedTournamentsPerUser(users, 1, 10);
 
   console.log("Seeding complete!");
 }
