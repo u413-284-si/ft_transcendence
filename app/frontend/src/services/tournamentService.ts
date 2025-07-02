@@ -18,7 +18,7 @@ export async function setTournamentFinished(
   tournamentId: number
 ): Promise<TournamentDTO> {
   const apiResponse = await apiFetch<TournamentDTO>(
-    `/api/tournaments/${tournamentId}/`,
+    `/api/tournaments/${tournamentId}`,
     {
       method: "PATCH",
       body: JSON.stringify({ status: "FINISHED" })
@@ -34,7 +34,7 @@ export async function updateTournamentBracket(
 ): Promise<TournamentDTO> {
   const tournamentId = tournament.getId();
   const apiResponse = await apiFetch<TournamentDTO>(
-    `/api/tournaments/${tournamentId}/`,
+    `/api/tournaments/${tournamentId}`,
     {
       method: "PATCH",
       body: JSON.stringify({ bracket: JSON.stringify(tournament.getBracket()) })
@@ -47,7 +47,7 @@ export async function updateTournamentBracket(
 
 export async function getUserTournaments(): Promise<TournamentDTO[]> {
   const apiResponse = await apiFetch<TournamentDTO[]>(
-    "/api/users/tournaments/",
+    "/api/users/me/tournaments",
     {
       method: "GET",
       credentials: "same-origin"
@@ -60,7 +60,7 @@ export async function getUserTournaments(): Promise<TournamentDTO[]> {
 
 export async function getActiveTournament(): Promise<TournamentDTO | null> {
   const apiResponse = await apiFetch<TournamentDTO | null>(
-    `/api/users/tournaments/active/`,
+    `/api/users/me/tournaments/active`,
     {
       method: "GET"
     }
@@ -71,7 +71,7 @@ export async function getActiveTournament(): Promise<TournamentDTO | null> {
 }
 
 export async function deleteTournament(id: number): Promise<TournamentDTO> {
-  const apiResponse = await apiFetch<TournamentDTO>(`/api/tournaments/${id}/`, {
+  const apiResponse = await apiFetch<TournamentDTO>(`/api/tournaments/${id}`, {
     method: "DELETE"
   });
 

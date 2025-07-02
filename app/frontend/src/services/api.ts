@@ -1,4 +1,3 @@
-import { auth } from "../AuthManager.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 import { refreshAccessToken } from "./authServices.js";
 
@@ -33,14 +32,8 @@ export async function apiFetch<T>(
 
     if (!response.ok) {
       if (response.status === 401 && retryWithRefresh) {
-        try {
-          await refreshAccessToken();
-          return apiFetch<T>(url, options, false);
-        } catch (refreshError) {
-          console.error(refreshError);
-          auth.clearTokenOnError();
-          return json as ApiResponse<T>;
-        }
+        await refreshAccessToken();
+        return apiFetch<T>(url, options, false);
       }
       throw new ApiError(response.status, json.message, json.cause);
     }

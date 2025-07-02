@@ -5,7 +5,7 @@ export async function createFriendRequest(
   receiverId: number
 ): Promise<FriendRequest> {
   const apiResponse = await apiFetch<FriendRequest>(
-    "/api/users/friend-requests/",
+    "/api/users/me/friend-requests",
     {
       method: "POST",
       body: JSON.stringify({ id: receiverId }),
@@ -19,7 +19,7 @@ export async function createFriendRequest(
 
 export async function getUserFriendRequests(): Promise<FriendRequest[]> {
   const apiResponse = await apiFetch<FriendRequest[]>(
-    "/api/users/friend-requests/",
+    "/api/users/me/friend-requests",
     {
       method: "GET",
       credentials: "same-origin"
@@ -34,7 +34,7 @@ export async function acceptFriendRequest(
   requestId: number
 ): Promise<FriendRequest> {
   const apiResponse = await apiFetch<FriendRequest>(
-    `/api/users/friend-requests/${requestId}/`,
+    `/api/users/me/friend-requests/${requestId}`,
     {
       method: "PATCH",
       body: JSON.stringify({ status: "ACCEPTED" }),
@@ -50,7 +50,7 @@ export async function deleteFriendRequest(
   requestId: number
 ): Promise<FriendRequest> {
   const apiResponse = await apiFetch<FriendRequest>(
-    `/api/users/friend-requests/${requestId}/`,
+    `/api/users/me/friend-requests/${requestId}`,
     {
       method: "DELETE",
       credentials: "same-origin"
