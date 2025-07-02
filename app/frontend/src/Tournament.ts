@@ -1,21 +1,33 @@
-import { TournamentDTO } from "./types/ITournament";
-import { BracketMatch } from "./types/IMatch";
-import { BracketLayout } from "./types/BracketLayout";
+import type { TournamentDTO } from "./types/ITournament.ts";
+import type { BracketMatch } from "./types/IMatch.ts";
+import type { BracketLayout } from "./types/BracketLayout.ts";
 
 export class Tournament {
   private matchSlotMap: Record<
     number,
     { slot1?: BracketMatch; slot2?: BracketMatch }
   > = {};
+  private tournamentName: string;
+  private numberOfPlayers: number;
+  private userId: number;
+  private userNickname: string;
+  private bracket: BracketMatch[];
+  private tournamentId?: number;
 
   constructor(
-    private tournamentName: string,
-    private numberOfPlayers: number,
-    private userId: number,
-    private userNickname: string,
-    private bracket: BracketMatch[],
-    private tournamentId?: number
+    tournamentName: string,
+    numberOfPlayers: number,
+    userId: number,
+    userNickname: string,
+    bracket: BracketMatch[],
+    tournamentId?: number
   ) {
+    this.tournamentName = tournamentName;
+    this.numberOfPlayers = numberOfPlayers;
+    this.userId = userId;
+    this.userNickname = userNickname;
+    this.bracket = bracket;
+    this.tournamentId = tournamentId;
     this.buildMatchSlotMap();
   }
 
