@@ -36,121 +36,126 @@ export default class ProfileView extends AbstractView {
     const user = auth.getUser();
 
     return /* HTML */ `
-    <div class="max-w-full mx-auto px-80 py-10">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
-        <div class="md:col-span-7 flex gap-12">
-          <!-- Avatar Image -->
-          <img
-            src=${user.avatar || "/images/default-avatar.png"}
-            alt="Avatar"
-            class="w-60 h-60 rounded-full border-4 border-neon-cyan shadow-neon-cyan"
-          />
-          <!-- Avatar Upload Form -->
-          <div class="flex flex-col max-w-s">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div
+          class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start"
+        >
+          <!-- Avatar Section -->
+          <div
+            class="md:col-span-7 flex flex-col sm:flex-row gap-8 sm:gap-12 items-center sm:items-start"
+          >
+            <!-- Avatar Image -->
+            <img
+              src=${user.avatar || "/images/default-avatar.png"}
+              alt="Avatar"
+              class="w-32 h-32 sm:w-40 sm:h-40 md:w-60 md:h-60 rounded-full border-4 border-neon-cyan shadow-neon-cyan object-cover"
+            />
+
+            <!-- Avatar Upload Form -->
+            <div class="flex flex-col w-full max-w-xs">
+              ${Form({
+                id: "avatar-upload-form",
+                className: "flex flex-col gap-4",
+                children: [
+                  Paragraph({ text: "Change your avatar below." }),
+                  Input({
+                    id: "avatar-input",
+                    label: "Upload Avatar:",
+                    name: "avatar",
+                    type: "file",
+                    accept: "image/*",
+                    errorId: "avatar-upload-error-message"
+                  }),
+                  Button({
+                    text: "Upload Avatar",
+                    variant: "default",
+                    size: "md",
+                    type: "submit",
+                    className: "mt-2 self-start"
+                  })
+                ]
+              })}
+            </div>
+          </div>
+
+          <!-- Profile and Password Forms -->
+          <div class="md:col-span-5 flex flex-col gap-16 sm:gap-24">
             ${Form({
-              id: "avatar-upload-form",
-              className: "flex flex-col gap-4 w-full",
+              id: "profile-form",
+              className: "flex flex-col gap-4",
               children: [
-                Paragraph({ text: "Change your avatar below." }),
+                Paragraph({ text: "Update your profile information below." }),
                 Input({
-                  id: "avatar-input",
-                  label: "Upload Avatar:",
-                  name: "avatar",
-                  type: "file",
-                  accept: "image/*",
-                  errorId: "avatar-upload-error-message"
+                  id: "username-input",
+                  label: "Username",
+                  name: "username",
+                  type: "text",
+                  placeholder: `${escapeHTML(user.username)}`,
+                  errorId: "username-error"
+                }),
+                Input({
+                  id: "email-input",
+                  label: "Email",
+                  name: "email",
+                  type: "email",
+                  placeholder: `${escapeHTML(user.email)}`,
+                  errorId: "email-error"
                 }),
                 Button({
-                  text: "Upload Avatar",
+                  text: "Save Changes",
                   variant: "default",
                   size: "md",
                   type: "submit",
-                  className: "mt-2"
+                  className: "mt-4 self-start"
+                })
+              ]
+            })}
+            ${Form({
+              id: "password-form",
+              className: "flex flex-col gap-4",
+              children: [
+                Paragraph({ text: "Change your password below." }),
+                Input({
+                  id: "current-password-input",
+                  label: "Current Password",
+                  name: "currentPassword",
+                  placeholder: "Current Password",
+                  type: "password",
+                  errorId: "current-password-error",
+                  hasToggle: true
+                }),
+                Input({
+                  id: "new-password-input",
+                  label: "New Password",
+                  name: "newPassword",
+                  placeholder: "New Password",
+                  type: "password",
+                  errorId: "new-password-error",
+                  hasToggle: true
+                }),
+                Input({
+                  id: "confirm-new-password-input",
+                  label: "Confirm New Password",
+                  name: "confirmNewPassword",
+                  placeholder: "Confirm New Password",
+                  type: "password",
+                  errorId: "confirm-error",
+                  hasToggle: true
+                }),
+                Button({
+                  text: "Change Password",
+                  variant: "default",
+                  size: "md",
+                  type: "submit",
+                  className: "mt-4 self-start"
                 })
               ]
             })}
           </div>
         </div>
-
-        <!-- Profile + Password Forms -->
-        <div class="md:col-span-5 flex flex-col gap-24">
-          ${Form({
-            id: "profile-form",
-            className: "flex flex-col gap-4",
-            children: [
-              Paragraph({ text: "Update your profile information below." }),
-              Input({
-                id: "username-input",
-                label: "Username",
-                name: "username",
-                type: "text",
-                placeholder: `${escapeHTML(user.username)}`,
-                errorId: "username-error"
-              }),
-              Input({
-                id: "email-input",
-                label: "Email",
-                name: "email",
-                type: "email",
-                placeholder: `${escapeHTML(user.email)}`,
-                errorId: "email-error"
-              }),
-              Button({
-                text: "Save Changes",
-                variant: "default",
-                size: "md",
-                type: "submit",
-                className: "mt-4 self-start"
-              })
-            ]
-          })}
-
-          ${Form({
-            id: "password-form",
-            className: "flex flex-col gap-4",
-            children: [
-              Paragraph({ text: "Change your password below." }),
-              Input({
-                id: "current-password-input",
-                label: "Current Password",
-                name: "currentPassword",
-                placeholder: "Current Password",
-                type: "password",
-                errorId: "current-password-error",
-                hasToggle: true
-              }),
-              Input({
-                id: "new-password-input",
-                label: "New Password",
-                name: "newPassword",
-                placeholder: "New Password",
-                type: "password",
-                errorId: "new-password-error",
-                hasToggle: true
-              }),
-              Input({
-                id: "confirm-new-password-input",
-                label: "Confirm New Password",
-                name: "confirmNewPassword",
-                placeholder: "Confirm New Password",
-                type: "password",
-                errorId: "confirm-error",
-                hasToggle: true
-              }),
-              Button({
-                text: "Change Password",
-                variant: "default",
-                size: "md",
-                type: "submit",
-                className: "mt-4 self-start"
-              })
-            ]
-          })}
-        </div>
       </div>
-    </div>
-  `;
-}
+    `;
+  }
 
   protected addListeners() {
     this.profileFormEl.addEventListener("submit", (event) =>
