@@ -20,18 +20,54 @@ export default class ChartsView extends AbstractView {
   }
 
   createHTML() {
-    return /* HTML */ `<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
-      <div id="win-loss-chart" class="w-full min-w-[400px] h-[300px]"></div>
-      <div id="winrate-chart" class="w-full min-w-[500px] h-[300px]"></div>
-      <div id="score-diff-chart" class="w-full min-w-[500px] h-[300px]"></div>
-      <div
-        id="activity-heatmap-chart"
-        class="w-full min-w-[500px] h-[300px]"
-      ></div>
-      <div
-        id="tournament-progress-chart"
-        class="w-full min-w-[500px] h-[300px]"
-      ></div>
+    return /* HTML */ ` <div class="p-6 mx-auto space-y-8 min-h-screen">
+      <!-- Row 1: Summary -->
+      <div class="flex flex-cols-2 gap-8">
+        <!-- Wins vs Losses (small donut) -->
+        <div
+          class="bg-emerald-dark/80 border border-neon-cyan rounded-lg p-6 transition-shadow duration-300 hover:shadow-neon-cyan hover:scale-[1.02]"
+        >
+          <h2 class="text-xl font-semibold mb-4">Wins vs Losses</h2>
+          <div id="win-loss-chart" class="mt-8"></div>
+        </div>
+
+        <!-- Winrate Progression -->
+        <div
+          class="bg-emerald-dark/80 border border-neon-cyan rounded-lg p-6 transition-shadow duration-300 hover:shadow-neon-cyan hover:scale-[1.02]"
+        >
+          <h2 class="text-xl font-semibold mb-4">
+            Winrate Progression (Last 10 Matches)
+          </h2>
+          <div id="winrate-chart"></div>
+        </div>
+      </div>
+
+      <!-- Row 2: Performance -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-gray-900 rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Score Differential</h2>
+          <div
+            id="score-diff-chart"
+            class="w-full min-w-[500px] h-[300px]"
+          ></div>
+        </div>
+        <div class="bg-gray-900 rounded-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Tournament Progress</h2>
+          <div
+            id="tournament-progress-chart"
+            class="w-full min-w-[500px] h-[300px]"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Row 3: Heatmap -->
+      <div class="bg-gray-900 rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Activity Heatmap</h2>
+        <div
+          id="activity-heatmap-chart"
+          class="w-full min-w-[500px] h-[300px]"
+        ></div>
+      </div>
     </div>`;
   }
 
@@ -57,19 +93,13 @@ export default class ChartsView extends AbstractView {
       chart: {
         type: "donut",
         fontFamily: "inherit",
-        background: "transparent"
+        background: "transparent",
+        width: 450,
+        height: 300
       },
       labels: ["Wins", "Losses"],
       series: [stats.matchesWon, stats.matchesLost],
       colors: ["var(--color-neon-cyan)", "var(--color-neon-red)"],
-      title: {
-        text: "Wins vs Losses",
-        align: "center",
-        style: {
-          color: "var(--color-grey)",
-          fontSize: "20px"
-        }
-      },
       legend: {
         position: "bottom",
         labels: {
@@ -153,7 +183,7 @@ export default class ChartsView extends AbstractView {
     const maxWinrate = Math.max(...winrateProgression);
 
     // Calculate min and max with padding
-    const padding = 5;
+    const padding = 3;
     let yAxisMin = Math.max(0, Math.floor(minWinrate - padding));
     let yAxisMax = Math.min(100, Math.ceil(maxWinrate + padding));
 
@@ -165,9 +195,14 @@ export default class ChartsView extends AbstractView {
       yAxisMax = Math.min(100, mid + halfRange);
     }
 
-    // Render ApexCharts with this data (same as above)
     const options = {
-      chart: { type: "line", fontFamily: "inherit", background: "transparent" },
+      chart: {
+        type: "line",
+        fontFamily: "inherit",
+        background: "transparent",
+        width: 750,
+        height: 300
+      },
       series: [
         {
           name: "Winrate",
@@ -175,23 +210,12 @@ export default class ChartsView extends AbstractView {
         }
       ],
       colors: ["var(--color-neon-cyan)"],
-      title: {
-        text: "Winrate Progression (Last 10)",
-        align: "center",
-        style: {
-          color: "var(--color-grey)",
-          fontSize: "20px"
-        },
-        offsetY: 10
-      },
       xaxis: {
         categories: lastTenMatchesWithResults.map(
-          (_, i) => `Match ${matchesBeforeLastTen + i + 1}`
+          (_, i) => `#${matchesBeforeLastTen + i + 1}`
         )
       },
       yaxis: {
-        min: yAxisMin,
-        max: yAxisMax,
         title: { text: "Winrate" },
         labels: { formatter: (val: number) => `${val}%` }
       },
@@ -272,14 +296,6 @@ export default class ChartsView extends AbstractView {
       },
       legend: {
         show: false
-      },
-      title: {
-        text: "Score Differential (Last 10)",
-        align: "center",
-        style: {
-          color: "var(--color-grey)",
-          fontSize: "20px"
-        }
       }
     };
 
@@ -303,13 +319,6 @@ export default class ChartsView extends AbstractView {
         enabled: false
       },
       colors: ["#0094a1"],
-      title: {
-        text: "User Activity Heatmap",
-        style: {
-          fontSize: "20px",
-          color: "var(--color-grey)"
-        }
-      },
       xaxis: {
         title: { text: "Hour of Day" }
       },
@@ -399,14 +408,7 @@ export default class ChartsView extends AbstractView {
           data: this.tournamentProgress.map((t) => t.progress)
         }
       ],
-      labels: this.tournamentProgress.map((t) => t.name),
-      title: {
-        text: "Tournament Progress",
-        style: {
-          fontSize: "20px",
-          color: "var(--color-grey)"
-        }
-      }
+      labels: this.tournamentProgress.map((t) => t.name)
     };
 
     const chartEl = document.querySelector("#tournament-progress-chart");
