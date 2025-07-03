@@ -95,10 +95,7 @@ export async function googleOauth2LoginHandler(request, reply) {
 
     if (!dbUser)
       await createUser(googleUser.name, googleUser.email, "", "GOOGLE");
-    else if (
-      (await getUserByEmail(googleUser.email)) &&
-      (await getUserAuthProvider(dbUser.id)) !== "GOOGLE"
-    ) {
+    else if ((await getUserAuthProvider(dbUser.id)) !== "GOOGLE") {
       return reply
         .setCookie("authProviderConflict", "GOOGLE", {
           secure: true,
