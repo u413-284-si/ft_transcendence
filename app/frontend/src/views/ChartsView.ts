@@ -12,7 +12,7 @@ export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
   private matches: Match[] | null = null;
   private activityMatrix: HeatmapSeries | null = null;
-  private tournamentProgress: TournamentProgress[] | null = null;
+  private tournamentProgress: TournamentProgress | null = null;
 
   constructor() {
     super();
@@ -52,7 +52,7 @@ export default class ChartsView extends AbstractView {
           ></div>
         </div>
         <div class="bg-gray-900 rounded-lg p-6">
-          <h2 class="text-xl font-semibold mb-4">Tournament Progress</h2>
+          <h2 class="text-xl font-semibold mb-4">Tournament Summary</h2>
           <div
             id="tournament-progress-chart"
             class="w-full min-w-[500px] h-[300px]"
@@ -344,73 +344,74 @@ export default class ChartsView extends AbstractView {
   renderTournamentProgress() {
     if (!this.tournamentProgress) throw new Error("TournamentProgress is null");
 
-    const sizeColorMap: Record<number, string> = {
-      4: "var(--color-neon-green)",
-      8: "var(--color-neon-cyan)",
-      16: "var(--color-neon-purple)"
-    };
+    const sizes = Object.keys(this.tournamentProgress)
+      .map(Number)
+      .sort((a, b) => a - b);
 
-    const sizeLegendMap: Record<number, string> = {
-      4: "4 Players",
-      8: "8 Players",
-      16: "16 Players"
-    };
+    const wonData = sizes.map((size) => this.tournamentProgress![size].won);
+    const lostData = sizes.map(
+      (size) =>
+        this.tournamentProgress![size].played -
+        this.tournamentProgress![size].won
+    );
 
-    const options: ApexCharts.ApexOptions = {
+    const options = {
       chart: {
         type: "bar",
-        background: "transparent",
+        stacked: true,
         fontFamily: "inherit",
-        toolbar: { show: false }
+        background: "transparent",
+        toolbar: {
+          show: false
+        }
       },
       plotOptions: {
         bar: {
-          horizontal: true,
-          distributed: true
+          horizontal: false,
+          borderRadius: 4
         }
       },
-      xaxis: {
-        title: {
-          text: "Progress (%)"
+      colors: ["var(--color-neon-green)", "var(--color-neon-red)"],
+      series: [
+        {
+          name: "Won",
+          data: wonData
         },
-        max: 100
+        {
+          name: "Lost",
+          data: lostData
+        }
+      ],
+      xaxis: {
+        categories: sizes.map((size) => `${size}-Player`),
+        title: {
+          text: "Tournament Size"
+        }
       },
       yaxis: {
+        title: {
+          text: "Number of Tournaments"
+        },
+        min: 0,
+        forceNiceScale: true,
         labels: {
-          style: {
-            colors: "var(--color-grey)"
-          }
+          formatter: (val: number) => `${val}`
         }
       },
       tooltip: {
         theme: "dark",
         y: {
-          formatter: (val: number, opts: { dataPointIndex: number }) => {
-            const t = this.tournamentProgress![opts.dataPointIndex];
-            return `${t.name} (${t.maxPlayers} players): ${val}%`;
-          }
+          formatter: (val: number) => `${val}`
         }
       },
       legend: {
-        show: true,
-        markers: {
-          fillColors: Object.values(sizeColorMap)
-        },
+        position: "top",
+        horizontalAlign: "right",
         labels: {
           colors: "var(--color-grey)"
-        },
-        customLegendItems: Object.values(sizeLegendMap)
-      },
-      colors: this.tournamentProgress.map((t) => sizeColorMap[t.maxPlayers]),
-      series: [
-        {
-          name: "Tournament Progress",
-          data: this.tournamentProgress.map((t) => t.progress)
         }
-      ],
-      labels: this.tournamentProgress.map((t) => t.name)
+      }
     };
-
     const chartEl = document.querySelector("#tournament-progress-chart");
     if (!chartEl)
       throw new Error("Chart element tournament-progress-chart not found");

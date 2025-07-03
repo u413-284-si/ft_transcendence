@@ -128,43 +128,49 @@ export async function getUserTournamentProgress(userId) {
       status: "FINISHED"
     },
     select: {
-      name: true,
       maxPlayers: true,
       userNickname: true,
-      matches: true
+      matches: {
+        select: {
+          player1Nickname: true,
+          player2Nickname: true,
+          player1Score: true,
+          player2Score: true
+        }
+      }
     }
   });
 
-  return tournaments.map((tournament) => {
-    const currentUser = tournament.userNickname;
-    const matches = tournament.matches;
-    const totalRounds = Math.log2(tournament.maxPlayers);
+  const summary = {};
+
+  for (const tournament of tournaments) {
+    const size = tournament.maxPlayers;
+    const user = tournament.userNickname;
+    const totalRounds = Math.log2(size);
     let wins = 0;
 
-    for (const match of matches) {
+    for (const match of tournament.matches) {
       let playedAs = null;
 
-      if (match.player1Nickname === currentUser) {
-        playedAs = "PLAYERONE";
-      } else if (match.player2Nickname === currentUser) {
-        playedAs = "PLAYERTWO";
-      }
+      if (match.player1Nickname === user) playedAs = "PLAYERONE";
+      else if (match.player2Nickname === user) playedAs = "PLAYERTWO";
 
       const won =
         (playedAs === "PLAYERONE" && match.player1Score > match.player2Score) ||
         (playedAs === "PLAYERTWO" && match.player2Score > match.player1Score);
 
-      if (won) {
-        wins++;
-      }
+      if (won) wins++;
     }
 
-    const progress = Math.min((wins / totalRounds) * 100, 100);
+    const wonTournament = wins === totalRounds;
 
-    return {
-      name: tournament.name,
-      maxPlayers: tournament.maxPlayers,
-      progress: Math.round(progress)
-    };
-  });
+    if (!summary[size]) {
+      summary[size] = { played: 0, won: 0 };
+    }
+
+    summary[size].played++;
+    if (wonTournament) summary[size].won++;
+  }
+
+  return summary;
 }

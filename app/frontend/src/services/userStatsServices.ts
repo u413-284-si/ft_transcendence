@@ -41,12 +41,10 @@ export async function getUserActivityMatrix(): Promise<HeatmapSeries> {
   return apiResponse.data;
 }
 
-export async function getUserTournamentProgress(): Promise<
-  TournamentProgress[]
-> {
+export async function getUserTournamentProgress(): Promise<TournamentProgress> {
   const url = "/api/user-stats/me/tournament-progress";
 
-  const apiResponse = await apiFetch<TournamentProgress[]>(url, {
+  const apiResponse = await apiFetch<TournamentProgress>(url, {
     method: "GET",
     credentials: "same-origin"
   });

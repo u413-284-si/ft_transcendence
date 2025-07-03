@@ -1,5 +1,6 @@
 type TournamentProgress = {
-  name: string;
-  maxPlayers: number;
-  progress: number;
+  [size: number]: {
+    played: number;
+    won: number;
+  };
 };
