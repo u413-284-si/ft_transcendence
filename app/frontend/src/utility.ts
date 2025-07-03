@@ -22,7 +22,7 @@ export function getButtonEl(buttonId: string): HTMLButtonElement {
 
 export function getCookieValueByName(cookieName: string): string {
   const match = document.cookie.match(
-    new RegExp("(^| )" + cookieName + "=([^;]+)")
+    new RegExp("(^|; )" + cookieName + "=([^;]+)")
   );
   return match ? match[2] : "";
 }
