@@ -19,3 +19,10 @@ export function getEl(elId: string): HTMLElement {
 export function getButtonEl(buttonId: string): HTMLButtonElement {
   return document.getElementById(buttonId) as HTMLButtonElement;
 }
+
+export function getCookieValueByName(cookieName: string): string {
+  const match = document.cookie.match(
+    new RegExp("(^|; )" + cookieName + "=([^;]+)")
+  );
+  return match ? match[2] : "";
+}

@@ -73,7 +73,7 @@ const schema = {
     },
     GOOGLE_OAUTH2_REDIRECT_PATH: {
       type: "string",
-      default: "/google/login"
+      default: "/login/google"
     },
     GOOGLE_OAUTH2_CALLBACK_ROUTE: {
       type: "string",
