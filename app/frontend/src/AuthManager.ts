@@ -59,6 +59,8 @@ export class AuthManager {
     try {
       if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
         toaster.error("Email address already in use.");
+        document.cookie =
+          "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
         return;
       }
       const token = await authAndDecodeAccessToken();
