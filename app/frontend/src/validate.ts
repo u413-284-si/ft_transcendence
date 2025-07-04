@@ -1,4 +1,6 @@
 import { getUserTournaments } from "./services/tournamentService.js";
+import { getUserByUsername, getUserByEmail } from "./services/userServices.js";
+import { toaster } from "./Toaster.js";
 
 function isEmptyString(str: string): boolean {
   return str === "";
@@ -74,15 +76,16 @@ export async function validateTournamentName(
   errorEl: HTMLElement
 ): Promise<boolean> {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
+  const tournamentName: string = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
 
-  if (isEmptyString(inputEl.value)) {
+  if (isEmptyString(tournamentName)) {
     markInvalid("Tournament name is required.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, tournamentNameRegex)) {
+  if (!validateAgainstRegex(tournamentName, tournamentNameRegex)) {
     markInvalid(
       "Tournament name must be 3–20 characters long and can only contain letters, numbers, or [-!?_$.].",
       inputEl,
@@ -98,7 +101,7 @@ export async function validateTournamentName(
     }
 
     const tournamentNames = tournaments.map((tournament) => tournament.name);
-    if (tournamentNames.includes(inputEl.value)) {
+    if (tournamentNames.includes(tournamentName)) {
       markInvalid(
         "Tournament name already exists. Please choose a different name.",
         inputEl,
@@ -134,15 +137,16 @@ export function validatePassword(
 ): boolean {
   const passwordRegex: RegExp =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$/;
+  const password: string = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
 
-  if (isEmptyString(inputEl.value)) {
+  if (isEmptyString(password)) {
     markInvalid("Please enter a password.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, passwordRegex)) {
+  if (!validateAgainstRegex(password, passwordRegex)) {
     markInvalid(
       "Password must be 10-64 characters long and must contain at least one " +
         "number, one uppercase and one lowercase letter and one of the " +
@@ -174,18 +178,21 @@ export function validateConfirmPassword(
   return true;
 }
 
-export function validateUsername(
+export async function validateUsername(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
-): boolean {
+): Promise<boolean> {
   const usernameRegex: RegExp = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
+  const username: string = inputEl.value;
 
-  if (isEmptyString(inputEl.value)) {
+  clearInvalid(inputEl, errorEl);
+
+  if (isEmptyString(username)) {
     markInvalid("Please enter a username.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, usernameRegex)) {
+  if (!validateAgainstRegex(username, usernameRegex)) {
     markInvalid(
       "Username must be 3-20 characters long " +
         "and can only include letters, numbers, or one of the " +
@@ -195,27 +202,56 @@ export function validateUsername(
     );
     return false;
   }
-  clearInvalid(inputEl, errorEl);
+
+  try {
+    const user = await getUserByUsername(username);
+    if (user !== null) {
+      markInvalid("Username already in use.", inputEl, errorEl);
+      console.log("Username already in use:", user);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error fetching user by username:", error);
+    toaster.error(
+      "An error occurred while validating the username. Please try again."
+    );
+    return false;
+  }
   return true;
 }
 
-export function validateEmail(
+export async function validateEmail(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
-): boolean {
+): Promise<boolean> {
   const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const email: string = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
-  if (isEmptyString(inputEl.value)) {
+
+  if (isEmptyString(email)) {
     markInvalid("Please enter an email.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, emailRegex)) {
+  if (!validateAgainstRegex(email, emailRegex)) {
     markInvalid("Email must be a valid email address.", inputEl, errorEl);
     return false;
   }
-  clearInvalid(inputEl, errorEl);
+
+  try {
+    const user = await getUserByEmail(email);
+    if (user !== null) {
+      markInvalid("Email already in use.", inputEl, errorEl);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error fetching user by email:", error);
+    toaster.error(
+      "An error occurred while validating the email. Please try again."
+    );
+    return false;
+  }
   return true;
 }
 

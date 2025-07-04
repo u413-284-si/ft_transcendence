@@ -14,7 +14,8 @@ import {
   searchUserHandler,
   createUserAvatarHandler,
   deleteUserAvatarHandler,
-  getUserMatchesByUsernameHandler
+  getUserMatchesByUsernameHandler,
+  updateUserPasswordHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseConnectionHandler } from "../controllers/sse.controllers.js";
@@ -94,6 +95,12 @@ export default async function userRoutes(fastify) {
   fastify.get("/me/online", optionsSseOnline, sseConnectionHandler);
 
   fastify.get("/search", optionsSearchUser, searchUserHandler);
+
+  fastify.patch(
+    "/me/password",
+    optionsUpdatePassword,
+    updateUserPasswordHandler
+  );
 }
 
 const optionsCreateUser = {
@@ -297,12 +304,32 @@ const optionsSearchUser = {
   onRequest: [authorizeUserAccess],
   schema: {
     querystring: {
-      type: "object",
-      properties: {
-        username: { type: "string" }
-      },
-      required: ["username"]
+      anyOf: [
+        {
+          type: "object",
+          properties: {
+            username: { type: "string" }
+          },
+          required: ["username"]
+        },
+        {
+          type: "object",
+          properties: {
+            email: { type: "string", format: "email" }
+          },
+          required: ["email"]
+        }
+      ]
     },
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsUpdatePassword = {
+  onRequest: [authorizeUserAccess],
+  schema: {
     response: {
       ...errorResponses
     }

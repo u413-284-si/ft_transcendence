@@ -141,7 +141,7 @@ export async function getUserByUsername(username) {
 export async function getUserByEmail(email) {
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { id: true, username: true }
+    select: { id: true, username: true , email: true, dateJoined: true }
   });
   return user;
 }

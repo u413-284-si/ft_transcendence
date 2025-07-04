@@ -106,8 +106,8 @@ export default class Register extends AbstractView {
     const confirmPasswordEl = getInputEl("confirm");
     const confirmPasswordErrorEl = getEl("confirm-error");
 
-    const isEmailValid = validateEmail(emailEL, emailErrorEl);
-    const isUsernameValid = validateUsername(userEl, userErrorEl);
+    const isEmailValid = await validateEmail(emailEL, emailErrorEl);
+    const isUsernameValid = await validateUsername(userEl, userErrorEl);
     const isPasswordValid = validatePassword(passwordEl, passwordErrorEl);
     const isConfirmPasswordValid = validateConfirmPassword(
       passwordEl,

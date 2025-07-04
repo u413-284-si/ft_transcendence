@@ -3,6 +3,7 @@ import Register from "./views/RegisterView.js";
 import Home from "./views/HomeView.js";
 import NewGame from "./views/NewGameView.js";
 import NewTournament from "./views/NewTournamentView.js";
+import Profile from "./views/ProfileView.js";
 import Settings from "./views/SettingsView.js";
 import Stats from "./views/StatsView.js";
 import Friends from "./views/FriendsView.js";
@@ -25,6 +26,7 @@ router
     guard: authGuard,
     layout: "auth"
   })
+  .addRoute("/profile", { view: Profile, guard: authGuard, layout: "auth" })
   .addRoute("/settings", { view: Settings, guard: authGuard, layout: "auth" })
   .addRoute("/stats/:username", {
     view: Stats,
