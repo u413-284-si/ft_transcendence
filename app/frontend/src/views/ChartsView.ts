@@ -86,6 +86,12 @@ export default class ChartsView extends AbstractView {
         <h2 class="text-xl font-semibold mb-4">Win Streak</h2>
         <div id="win-streak-chart" class="w-full min-w-[500px] h-[300px]"></div>
       </div>
+
+      <!-- Row 5: Another Win Streak -->
+      <div class="bg-gray-900 rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Win Streak Radial</h2>
+        <div id="streak-chart" class="w-full min-w-[500px] h-[300px]"></div>
+      </div>
     </div>`;
   }
 
@@ -102,7 +108,8 @@ export default class ChartsView extends AbstractView {
     this.renderScoreDiffChart();
     this.renderActivityHeatMap();
     this.renderTournamentProgress();
-    this.renderWinStreak();
+    this.renderWinStreakChart();
+    this.renderWinStreakRadialChart();
   }
 
   getName(): string {
@@ -381,7 +388,7 @@ export default class ChartsView extends AbstractView {
     chart.render();
   }
 
-  renderWinStreak() {
+  renderWinStreakChart() {
     if (!this.winStreak) throw new Error("winStreak is null");
 
     const options = {
@@ -429,6 +436,49 @@ export default class ChartsView extends AbstractView {
 
     const chartEl = document.querySelector("#win-streak-chart");
     if (!chartEl) throw new Error("Chart element win-streak-chart not found");
+
+    const chart = new ApexCharts(chartEl, options);
+    chart.render();
+  }
+
+  renderWinStreakRadialChart() {
+    if (!this.winStreak) throw new Error("winStreak is null");
+
+    const current = this.winStreak.currentStreak;
+    const max = this.winStreak.maxStreak;
+    const percent = max > 0 ? (current / max) * 100 : 0;
+    const options = {
+      chart: {
+        type: "radialBar",
+        height: 350
+      },
+      series: [percent], // e.g., 57.14 (if current = 4, max = 7)
+      plotOptions: {
+        radialBar: {
+          hollow: {
+            size: "60%"
+          },
+          dataLabels: {
+            name: {
+              show: true,
+              fontSize: "18px",
+              offsetY: -10,
+              color: "#666",
+              text: "Current Streak"
+            },
+            value: {
+              formatter: () => `${current}/${max}`,
+              fontSize: "22px",
+              show: true
+            }
+          }
+        }
+      },
+      labels: ["Win Streak"]
+    };
+
+    const chartEl = document.querySelector("#streak-chart");
+    if (!chartEl) throw new Error("Chart element streak-chart not found");
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();
