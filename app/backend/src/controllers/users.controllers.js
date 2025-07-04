@@ -164,6 +164,7 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
   const action = "Get user matches by username";
   try {
     const id = parseInt(request.user.id, 10);
+    const { playedAs } = request.query;
     const { username } = request.params;
     if (username !== request.user.username) {
       const friend = await getAllUserFriendRequests(id, username);
@@ -171,7 +172,7 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
         return httpError(reply, 401, "You need to be friends");
       }
     }
-    const data = await getUserMatchesByUsername(username);
+    const data = await getUserMatchesByUsername(username, playedAs);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),

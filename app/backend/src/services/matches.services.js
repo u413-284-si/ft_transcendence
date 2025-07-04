@@ -78,10 +78,11 @@ export async function getUserMatches(userId, playedAs) {
   return matches;
 }
 
-export async function getUserMatchesByUsername(username) {
+export async function getUserMatchesByUsername(username, playedAs) {
   const matches = await prisma.match.findMany({
     where: {
-      user: { username: username }
+      user: { username: username },
+      ...(playedAs ? { playedAs: { in: playedAs } } : {})
     },
     select: matchSelect
   });
