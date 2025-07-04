@@ -1,5 +1,6 @@
 import {
   getActivityMatrix,
+  getUserScoreDiff,
   getUserWinrateProgression
 } from "../services/matches.services.js";
 import { getUserTournamentProgress } from "../services/tournaments.services.js";
@@ -99,6 +100,24 @@ export async function getWinrateProgressionHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getWinrateProgressionHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getScoreDiffHandler(request, reply) {
+  const action = "Get score diff";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const data = await getUserScoreDiff(userId);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getScoreDiffHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

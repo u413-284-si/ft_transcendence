@@ -1,18 +1,18 @@
-import { getUserMatches } from "../services/userServices.js";
 import {
   getUserActivityMatrix,
+  getUserScoreDiff,
   getUserStats,
   getUserTournamentProgress,
   getUserWinrateProgression
 } from "../services/userStatsServices.js";
-import { WinrateProgression } from "../types/DataSeries.js";
-import type { Match } from "../types/IMatch.js";
+import { ScoreDiffSeries, WinrateSeries } from "../types/DataSeries.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
 
 export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
-  private winrateProgression: WinrateProgression | null = null;
+  private winrateSeries: WinrateSeries | null = null;
+  private scoreDiffSeries: ScoreDiffSeries | null = null;
   private activityMatrix: HeatmapSeries | null = null;
   private tournamentProgress: TournamentProgress | null = null;
 
@@ -47,7 +47,9 @@ export default class ChartsView extends AbstractView {
       <!-- Row 2: Performance -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="bg-gray-900 rounded-lg p-6">
-          <h2 class="text-xl font-semibold mb-4">Score Differential</h2>
+          <h2 class="text-xl font-semibold mb-4">
+            Score Differential (Last 10 Matches)
+          </h2>
           <div
             id="score-diff-chart"
             class="w-full min-w-[500px] h-[300px]"
@@ -75,13 +77,14 @@ export default class ChartsView extends AbstractView {
 
   async render() {
     this.userStats = await getUserStats();
-    this.winrateProgression = await getUserWinrateProgression();
+    this.winrateSeries = await getUserWinrateProgression();
     this.activityMatrix = await getUserActivityMatrix();
     this.tournamentProgress = await getUserTournamentProgress();
+    this.scoreDiffSeries = await getUserScoreDiff();
     this.updateHTML();
     this.rederWinLossChart(this.userStats);
     this.renderWinrateChart();
-    //this.renderScoreDiffChart();
+    this.renderScoreDiffChart();
     this.renderActivityHeatMap();
     this.renderTournamentProgress();
   }
@@ -148,7 +151,7 @@ export default class ChartsView extends AbstractView {
   }
 
   renderWinrateChart() {
-    if (!this.winrateProgression) throw new Error("winrateProgression is null");
+    if (!this.winrateSeries) throw new Error("winrateProgression is null");
 
     const options = {
       chart: {
@@ -161,7 +164,7 @@ export default class ChartsView extends AbstractView {
       series: [
         {
           name: "Winrate",
-          data: this.winrateProgression
+          data: this.winrateSeries
         }
       ],
       colors: ["var(--color-neon-cyan)"],
@@ -190,77 +193,76 @@ export default class ChartsView extends AbstractView {
     chart.render();
   }
 
-  // renderScoreDiffChart() {
-  //   if (!this.matches) throw new Error("Matches is null");
+  renderScoreDiffChart() {
+    if (!this.scoreDiffSeries) throw new Error("scoreDiffSeries is null");
 
-  //   const scoreDiffs = this.matches.reverse().map(this.getScoreDiff);
+    const localizedData = this.scoreDiffSeries.map((point) => ({
+      x: new Date(point.x).toLocaleDateString(),
+      y: point.y
+    }));
 
-  //   const matchLabels = this.matches.map((match, i) =>
-  //     match.date ? new Date(match.date).toLocaleDateString() : `Match ${i + 1}`
-  //   );
+    const options = {
+      chart: {
+        type: "bar",
+        fontFamily: "inherit",
+        background: "transparent"
+      },
+      series: [
+        {
+          name: "Score Difference",
+          data: localizedData
+        }
+      ],
+      xaxis: {
+        type: "category",
+        title: {
+          text: "Matches"
+        }
+      },
+      plotOptions: {
+        bar: {
+          distributed: true,
+          colors: {
+            ranges: [
+              {
+                from: -100,
+                to: -1,
+                color: "var(--color-neon-red)"
+              },
+              {
+                from: 0,
+                to: 100,
+                color: "var(--color-neon-cyan)"
+              }
+            ]
+          }
+        }
+      },
+      yaxis: {
+        title: {
+          text: "Score Differential"
+        },
+        labels: {
+          formatter: (val: number) => `${val}`
+        }
+      },
+      tooltip: {
+        theme: "dark",
+        y: {
+          formatter: (val: number) => `${val > 0 ? "+" : ""}${val}`
+        }
+      },
+      legend: {
+        show: false
+      }
+    };
 
-  //   const options = {
-  //     chart: {
-  //       type: "bar",
-  //       fontFamily: "inherit",
-  //       background: "transparent"
-  //     },
-  //     series: [
-  //       {
-  //         name: "Score Difference",
-  //         data: scoreDiffs
-  //       }
-  //     ],
-  //     xaxis: {
-  //       categories: matchLabels,
-  //       title: {
-  //         text: "Matches"
-  //       }
-  //     },
-  //     plotOptions: {
-  //       bar: {
-  //         distributed: true,
-  //         colors: {
-  //           ranges: [
-  //             {
-  //               from: -100,
-  //               to: -1,
-  //               color: "var(--color-neon-red)"
-  //             },
-  //             {
-  //               from: 0,
-  //               to: 100,
-  //               color: "var(--color-neon-cyan)"
-  //             }
-  //           ]
-  //         }
-  //       }
-  //     },
-  //     yaxis: {
-  //       title: {
-  //         text: "Score Differential"
-  //       },
-  //       labels: {
-  //         formatter: (val: number) => `${val}`
-  //       }
-  //     },
-  //     tooltip: {
-  //       theme: "dark",
-  //       y: {
-  //         formatter: (val: number) => `${val > 0 ? "+" : ""}${val}`
-  //       }
-  //     },
-  //     legend: {
-  //       show: false
-  //     }
-  //   };
+    const chartEl = document.querySelector("#score-diff-chart");
+    if (!chartEl) throw new Error("Chart element score-diff-chart not found");
 
-  //   const chartEl = document.querySelector("#score-diff-chart");
-  //   if (!chartEl) throw new Error("Chart element score-diff-chart not found");
-
-  //   const chart = new ApexCharts(chartEl, options);
-  //   chart.render();
-  // }
+    const chart = new ApexCharts(chartEl, options);
+    chart.render();
+  }
 
   renderActivityHeatMap() {
     const options = {
@@ -374,16 +376,5 @@ export default class ChartsView extends AbstractView {
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();
-  }
-
-  getScoreDiff(match: Match): number {
-    if (!match.playedAs) return 0;
-
-    const userScore =
-      match.playedAs === "PLAYERONE" ? match.player1Score : match.player2Score;
-    const opponentScore =
-      match.playedAs === "PLAYERONE" ? match.player2Score : match.player1Score;
-
-    return userScore - opponentScore;
   }
 }

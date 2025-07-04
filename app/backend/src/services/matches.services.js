@@ -158,16 +158,16 @@ export async function getUserWinrateProgression(userId) {
   let cumulativeWins = Math.max(0, userStats.matchesWon - winsInLastTen);
   let cumulativeMatches = matchesBeforeLastTen;
 
-  let progression = [];
+  let data = [];
   lastTenMatchesWithResults.forEach((match) => {
     if (match.result) cumulativeWins++;
     cumulativeMatches++;
     const matchNo = cumulativeMatches;
     const winrate = (cumulativeWins / cumulativeMatches) * 100;
-    progression.push({ x: matchNo.toString(), y: winrate });
+    data.push({ x: matchNo.toString(), y: winrate });
   });
 
-  return progression;
+  return data;
 }
 
 function didUserWin(match) {
@@ -180,4 +180,33 @@ function didUserWin(match) {
   }
 
   return false;
+}
+
+export async function getUserScoreDiff(userId) {
+  const lastTenMatches = await prisma.match.findMany({
+    where: { userId },
+    orderBy: {
+      date: "desc"
+    },
+    take: 10
+  });
+  const data = lastTenMatches
+    .map((match) => ({
+      x: match.date,
+      y: calcScoreDiff(match)
+    }))
+    .reverse();
+
+  return data;
+}
+
+function calcScoreDiff(match) {
+  if (!match.playedAs) return 0;
+
+  const userScore =
+    match.playedAs === "PLAYERONE" ? match.player1Score : match.player2Score;
+  const opponentScore =
+    match.playedAs === "PLAYERONE" ? match.player2Score : match.player1Score;
+
+  return userScore - opponentScore;
 }
