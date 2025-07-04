@@ -10,3 +10,21 @@ export async function getUserStats(): Promise<UserStats> {
   console.log(apiResponse);
   return apiResponse.data;
 }
+
+export async function getUserStatsByUsername(
+  username: string
+): Promise<UserStats | null> {
+  const encoded = encodeURIComponent(username);
+  const url = `/api/user-stats/?username=${encoded}`;
+
+  const apiResponse = await apiFetch<UserStats[]>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+
+  if (!apiResponse.data.length) {
+    return null;
+  }
+
+  return apiResponse.data[0];
+}

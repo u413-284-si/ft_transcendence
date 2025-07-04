@@ -10,7 +10,10 @@ import {
   getUserByUsername
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
-import { getUserMatches } from "../services/matches.services.js";
+import {
+  getUserMatches,
+  getUserMatchesByUsername
+} from "../services/matches.services.js";
 import {
   getUserTournaments,
   getUserActiveTournament
@@ -157,6 +160,33 @@ export async function getUserMatchesHandler(request, reply) {
   }
 }
 
+export async function getUserMatchesByUsernameHandler(request, reply) {
+  const action = "Get user matches by username";
+  try {
+    const id = parseInt(request.user.id, 10);
+    const { username } = request.params;
+    if (username !== request.user.username) {
+      const friend = await getAllUserFriendRequests(id, username);
+      if (!friend.length || !friend.some((req) => req.status === "ACCEPTED")) {
+        return httpError(reply, 401, "You need to be friends");
+      }
+    }
+    const data = await getUserMatchesByUsername(username);
+    const count = data.length;
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserMatchesByUsernameHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
 export async function getUserStatsHandler(request, reply) {
   const action = "Get user stats";
   try {
@@ -211,11 +241,12 @@ export async function getUserActiveTournamentHandler(request, reply) {
   }
 }
 
-export async function getUserFriendRequestsHandler(request, reply) {
-  const action = "Get user friend requests";
+export async function getAllUserFriendRequestsHandler(request, reply) {
+  const action = "Get all user friend requests";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getAllUserFriendRequests(userId);
+    const { username } = request.query;
+    const data = await getAllUserFriendRequests(userId, username);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
@@ -225,7 +256,7 @@ export async function getUserFriendRequestsHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `getUserFriendsHandler: ${createResponseMessage(action, false)}`
+      `getAllUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

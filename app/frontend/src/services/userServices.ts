@@ -83,3 +83,18 @@ export async function getUserByUsername(
   console.log(apiResponse);
   return apiResponse.data;
 }
+
+export async function getUserMatchesByUsername(
+  username: string
+): Promise<Match[]> {
+  const encoded = encodeURIComponent(username);
+  const url = `/api/users/${encoded}/matches/`;
+
+  const apiResponse = await apiFetch<Match[]>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}

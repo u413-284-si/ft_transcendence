@@ -10,10 +10,11 @@ import {
   getUserStatsHandler,
   getUserTournamentsHandler,
   getUserActiveTournamentHandler,
-  getUserFriendRequestsHandler,
+  getAllUserFriendRequestsHandler,
   searchUserHandler,
   createUserAvatarHandler,
-  deleteUserAvatarHandler
+  deleteUserAvatarHandler,
+  getUserMatchesByUsernameHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseConnectionHandler } from "../controllers/sse.controllers.js";
@@ -37,6 +38,12 @@ export default async function userRoutes(fastify) {
   fastify.delete("/:id", optionsDeleteUser, deleteUserHandler);
 
   fastify.get("/me/matches", optionsGetUserMatches, getUserMatchesHandler);
+
+  fastify.get(
+    "/:username/matches/",
+    optionsGetUserMatchesByUsername,
+    getUserMatchesByUsernameHandler
+  );
 
   fastify.get("/me/user-stats", optionsGetUserStats, getUserStatsHandler);
 
@@ -62,8 +69,8 @@ export default async function userRoutes(fastify) {
 
   fastify.get(
     "/me/friend-requests",
-    optionsGetUserFriends,
-    getUserFriendRequestsHandler
+    optionsGetAllUserFriendRequests,
+    getAllUserFriendRequestsHandler
   );
 
   fastify.post(
@@ -161,6 +168,23 @@ const optionsGetUserMatches = {
   }
 };
 
+const optionsGetUserMatchesByUsername = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    params: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: ["username"]
+    },
+    response: {
+      200: { $ref: "matchArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
 const optionsGetUserStats = {
   onRequest: [authorizeUserAccess],
   schema: {
@@ -191,9 +215,16 @@ const optionsGetUserActiveTournament = {
   }
 };
 
-const optionsGetUserFriends = {
+const optionsGetAllUserFriendRequests = {
   onRequest: [authorizeUserAccess],
   schema: {
+    querystring: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: []
+    },
     response: {
       200: { $ref: "friendRequestArrayResponseSchema" },
       ...errorResponses
