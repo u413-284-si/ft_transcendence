@@ -94,7 +94,7 @@ export class Layout {
 
     const drawer = new Drawer([
       { label: "Edit Profile", icon: "user", href: "/profile" },
-      { label: "User Stats", icon: "stats", href: "/stats" },
+      { label: "User Stats", icon: "stats", href: `/stats/${auth.getUser().username}` },
       { label: "Friends", icon: "friends", href: "/friends" },
       { label: "Settings", icon: "settings", href: "/settings" },
       {
