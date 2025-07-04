@@ -25,11 +25,6 @@ export default async function authRoutes(fastify) {
   );
 }
 
-const authRateLimit = {
-  max: 10, // Maximum 10 requests
-  timeWindow: "1 minute" // Per minute
-};
-
 const optionsloginUser = {
   schema: {
     body: { $ref: "loginUserSchema" },
@@ -37,9 +32,6 @@ const optionsloginUser = {
       200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
-  },
-  config: {
-    rateLimit: authRateLimit
   }
 };
 
@@ -49,9 +41,6 @@ const optionsAuthUserAccess = {
     response: {
       ...errorResponses
     }
-  },
-  config: {
-    rateLimit: authRateLimit
   }
 };
 
@@ -60,9 +49,6 @@ const optionsAuthUserRefresh = {
     response: {
       ...errorResponses
     }
-  },
-  config: {
-    rateLimit: authRateLimit
   }
 };
 
@@ -81,8 +67,5 @@ const optionsGoogleOauth2Login = {
     response: {
       ...errorResponses
     }
-  },
-  config: {
-    rateLimit: authRateLimit
   }
 };
