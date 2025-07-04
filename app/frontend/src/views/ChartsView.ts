@@ -2,15 +2,17 @@ import { getUserMatches } from "../services/userServices.js";
 import {
   getUserActivityMatrix,
   getUserStats,
-  getUserTournamentProgress
+  getUserTournamentProgress,
+  getUserWinrateProgression
 } from "../services/userStatsServices.js";
+import { WinrateProgression } from "../types/DataSeries.js";
 import type { Match } from "../types/IMatch.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
 
 export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
-  private matches: Match[] | null = null;
+  private winrateProgression: WinrateProgression | null = null;
   private activityMatrix: HeatmapSeries | null = null;
   private tournamentProgress: TournamentProgress | null = null;
 
@@ -73,13 +75,13 @@ export default class ChartsView extends AbstractView {
 
   async render() {
     this.userStats = await getUserStats();
-    this.matches = await getUserMatches();
+    this.winrateProgression = await getUserWinrateProgression();
     this.activityMatrix = await getUserActivityMatrix();
     this.tournamentProgress = await getUserTournamentProgress();
     this.updateHTML();
     this.rederWinLossChart(this.userStats);
     this.renderWinrateChart();
-    this.renderScoreDiffChart();
+    //this.renderScoreDiffChart();
     this.renderActivityHeatMap();
     this.renderTournamentProgress();
   }
@@ -146,54 +148,7 @@ export default class ChartsView extends AbstractView {
   }
 
   renderWinrateChart() {
-    if (!this.matches) throw new Error("Matches is null");
-    if (!this.userStats) throw new Error("User Stats is null");
-
-    const hasPlayedFewerThanTen = this.userStats.matchesPlayed < 10;
-    const lastTenMatchesWithResults = this.matches
-      .map((match) => ({
-        ...match,
-        result: this.didUserWin(match)
-      }))
-      .reverse();
-
-    const winsInLastTen = lastTenMatchesWithResults.reduce(
-      (acc, m) => acc + (m.result ? 1 : 0),
-      0
-    );
-
-    const matchesBeforeLastTen = hasPlayedFewerThanTen
-      ? 0
-      : this.userStats.matchesPlayed - lastTenMatchesWithResults.length;
-
-    let cumulativeWins = hasPlayedFewerThanTen
-      ? 0
-      : this.userStats.matchesWon - winsInLastTen;
-    let cumulativeMatches = hasPlayedFewerThanTen
-      ? 0
-      : this.userStats.matchesPlayed - lastTenMatchesWithResults.length;
-
-    const winrateProgression = lastTenMatchesWithResults.map((match) => {
-      if (match.result) cumulativeWins++;
-      cumulativeMatches++;
-      return (cumulativeWins / cumulativeMatches) * 100;
-    });
-
-    const minWinrate = Math.min(...winrateProgression);
-    const maxWinrate = Math.max(...winrateProgression);
-
-    // Calculate min and max with padding
-    const padding = 3;
-    let yAxisMin = Math.max(0, Math.floor(minWinrate - padding));
-    let yAxisMax = Math.min(100, Math.ceil(maxWinrate + padding));
-
-    // Ensure minimum range for clarity
-    if (yAxisMax - yAxisMin < 10) {
-      const mid = (yAxisMax + yAxisMin) / 2;
-      const halfRange = 5;
-      yAxisMin = Math.max(0, mid - halfRange);
-      yAxisMax = Math.min(100, mid + halfRange);
-    }
+    if (!this.winrateProgression) throw new Error("winrateProgression is null");
 
     const options = {
       chart: {
@@ -206,14 +161,15 @@ export default class ChartsView extends AbstractView {
       series: [
         {
           name: "Winrate",
-          data: winrateProgression.map((wr) => Number(wr.toFixed(2)))
+          data: this.winrateProgression
         }
       ],
       colors: ["var(--color-neon-cyan)"],
       xaxis: {
-        categories: lastTenMatchesWithResults.map(
-          (_, i) => `#${matchesBeforeLastTen + i + 1}`
-        )
+        type: "category",
+        labels: {
+          formatter: (val: string) => `#${val}`
+        }
       },
       yaxis: {
         title: { text: "Winrate" },
@@ -234,77 +190,77 @@ export default class ChartsView extends AbstractView {
     chart.render();
   }
 
-  renderScoreDiffChart() {
-    if (!this.matches) throw new Error("Matches is null");
+  // renderScoreDiffChart() {
+  //   if (!this.matches) throw new Error("Matches is null");
 
-    const scoreDiffs = this.matches.reverse().map(this.getScoreDiff);
+  //   const scoreDiffs = this.matches.reverse().map(this.getScoreDiff);
 
-    const matchLabels = this.matches.map((match, i) =>
-      match.date ? new Date(match.date).toLocaleDateString() : `Match ${i + 1}`
-    );
+  //   const matchLabels = this.matches.map((match, i) =>
+  //     match.date ? new Date(match.date).toLocaleDateString() : `Match ${i + 1}`
+  //   );
 
-    const options = {
-      chart: {
-        type: "bar",
-        fontFamily: "inherit",
-        background: "transparent"
-      },
-      series: [
-        {
-          name: "Score Difference",
-          data: scoreDiffs
-        }
-      ],
-      xaxis: {
-        categories: matchLabels,
-        title: {
-          text: "Matches"
-        }
-      },
-      plotOptions: {
-        bar: {
-          distributed: true,
-          colors: {
-            ranges: [
-              {
-                from: -100,
-                to: -1,
-                color: "var(--color-neon-red)"
-              },
-              {
-                from: 0,
-                to: 100,
-                color: "var(--color-neon-cyan)"
-              }
-            ]
-          }
-        }
-      },
-      yaxis: {
-        title: {
-          text: "Score Differential"
-        },
-        labels: {
-          formatter: (val: number) => `${val}`
-        }
-      },
-      tooltip: {
-        theme: "dark",
-        y: {
-          formatter: (val: number) => `${val > 0 ? "+" : ""}${val}`
-        }
-      },
-      legend: {
-        show: false
-      }
-    };
+  //   const options = {
+  //     chart: {
+  //       type: "bar",
+  //       fontFamily: "inherit",
+  //       background: "transparent"
+  //     },
+  //     series: [
+  //       {
+  //         name: "Score Difference",
+  //         data: scoreDiffs
+  //       }
+  //     ],
+  //     xaxis: {
+  //       categories: matchLabels,
+  //       title: {
+  //         text: "Matches"
+  //       }
+  //     },
+  //     plotOptions: {
+  //       bar: {
+  //         distributed: true,
+  //         colors: {
+  //           ranges: [
+  //             {
+  //               from: -100,
+  //               to: -1,
+  //               color: "var(--color-neon-red)"
+  //             },
+  //             {
+  //               from: 0,
+  //               to: 100,
+  //               color: "var(--color-neon-cyan)"
+  //             }
+  //           ]
+  //         }
+  //       }
+  //     },
+  //     yaxis: {
+  //       title: {
+  //         text: "Score Differential"
+  //       },
+  //       labels: {
+  //         formatter: (val: number) => `${val}`
+  //       }
+  //     },
+  //     tooltip: {
+  //       theme: "dark",
+  //       y: {
+  //         formatter: (val: number) => `${val > 0 ? "+" : ""}${val}`
+  //       }
+  //     },
+  //     legend: {
+  //       show: false
+  //     }
+  //   };
 
-    const chartEl = document.querySelector("#score-diff-chart");
-    if (!chartEl) throw new Error("Chart element score-diff-chart not found");
+  //   const chartEl = document.querySelector("#score-diff-chart");
+  //   if (!chartEl) throw new Error("Chart element score-diff-chart not found");
 
-    const chart = new ApexCharts(chartEl, options);
-    chart.render();
-  }
+  //   const chart = new ApexCharts(chartEl, options);
+  //   chart.render();
+  // }
 
   renderActivityHeatMap() {
     const options = {
@@ -418,18 +374,6 @@ export default class ChartsView extends AbstractView {
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();
-  }
-
-  didUserWin(match: Match): boolean {
-    if (!match.playedAs) return false;
-
-    if (match.playedAs === "PLAYERONE") {
-      return match.player1Score > match.player2Score;
-    } else if (match.playedAs === "PLAYERTWO") {
-      return match.player2Score > match.player1Score;
-    }
-
-    return false;
   }
 
   getScoreDiff(match: Match): number {

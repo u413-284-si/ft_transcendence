@@ -1,4 +1,5 @@
 import prisma from "../prisma/prismaClient.js";
+import { getUserStats } from "./user_stats.services.js";
 
 const matchSelect = {
   userId: true,
@@ -125,4 +126,58 @@ export async function getActivityMatrix(userId) {
   }));
 
   return series;
+}
+
+export async function getUserWinrateProgression(userId) {
+  const userStats = await getUserStats(userId);
+
+  const lastTenMatches = await prisma.match.findMany({
+    where: { userId },
+    orderBy: {
+      date: "desc"
+    },
+    take: 10
+  });
+  const lastTenMatchesWithResults = lastTenMatches
+    .map((match) => ({
+      ...match,
+      result: didUserWin(match)
+    }))
+    .reverse();
+
+  const winsInLastTen = lastTenMatchesWithResults.reduce(
+    (acc, m) => acc + (m.result ? 1 : 0),
+    0
+  );
+
+  const matchesBeforeLastTen = Math.max(
+    0,
+    userStats.matchesPlayed - lastTenMatchesWithResults.length
+  );
+
+  let cumulativeWins = Math.max(0, userStats.matchesWon - winsInLastTen);
+  let cumulativeMatches = matchesBeforeLastTen;
+
+  let progression = [];
+  lastTenMatchesWithResults.forEach((match) => {
+    if (match.result) cumulativeWins++;
+    cumulativeMatches++;
+    const matchNo = cumulativeMatches;
+    const winrate = (cumulativeWins / cumulativeMatches) * 100;
+    progression.push({ x: matchNo.toString(), y: winrate });
+  });
+
+  return progression;
+}
+
+function didUserWin(match) {
+  if (!match.playedAs) return false;
+
+  if (match.playedAs === "PLAYERONE") {
+    return match.player1Score > match.player2Score;
+  } else if (match.playedAs === "PLAYERTWO") {
+    return match.player2Score > match.player1Score;
+  }
+
+  return false;
 }

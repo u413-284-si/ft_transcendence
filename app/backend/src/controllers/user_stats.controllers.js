@@ -1,4 +1,7 @@
-import { getActivityMatrix } from "../services/matches.services.js";
+import {
+  getActivityMatrix,
+  getUserWinrateProgression
+} from "../services/matches.services.js";
 import { getUserTournamentProgress } from "../services/tournaments.services.js";
 import {
   getAllUserStats,
@@ -78,6 +81,24 @@ export async function getTournamentProgressHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getActivityMatrixHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getWinrateProgressionHandler(request, reply) {
+  const action = "Get winrate progression";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const data = await getUserWinrateProgression(userId);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getWinrateProgressionHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

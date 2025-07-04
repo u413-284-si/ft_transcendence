@@ -2,7 +2,8 @@ import {
   getAllUserStatsHandler,
   deleteAllUserStatsHandler,
   getActivityMatrixHandler,
-  getTournamentProgressHandler
+  getTournamentProgressHandler,
+  getWinrateProgressionHandler
 } from "../controllers/user_stats.controllers.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
 import { errorResponses } from "../utils/error.js";
@@ -22,6 +23,12 @@ export default async function userstatsRoutes(fastify) {
     "/me/tournament-progress",
     optionsGetTournamentProgress,
     getTournamentProgressHandler
+  );
+
+  fastify.get(
+    "/me/winrate-progression",
+    optionsGetWinrateProgression,
+    getWinrateProgressionHandler
   );
 }
 
@@ -62,6 +69,15 @@ const optionsGetActivityMatrix = {
 };
 
 const optionsGetTournamentProgress = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetWinrateProgression = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
