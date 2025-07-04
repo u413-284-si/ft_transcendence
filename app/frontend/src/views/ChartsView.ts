@@ -159,7 +159,10 @@ export default class ChartsView extends AbstractView {
         fontFamily: "inherit",
         background: "transparent",
         width: 750,
-        height: 300
+        height: 300,
+        zoom: {
+          enabled: false
+        }
       },
       series: [
         {
