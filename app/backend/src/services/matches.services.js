@@ -210,3 +210,37 @@ function calcScoreDiff(match) {
 
   return userScore - opponentScore;
 }
+
+export async function getUserWinStreak(userId) {
+  const matches = await prisma.match.findMany({
+    where: { userId },
+    orderBy: {
+      date: "asc"
+    }
+  });
+  const data = [];
+  let currentStreak = 0;
+  let maxStreak = 0;
+
+  matches.forEach((match) => {
+    const didWin = didUserWin(match);
+
+    if (didWin) {
+      currentStreak++;
+      if (currentStreak > maxStreak) maxStreak = currentStreak;
+    } else {
+      currentStreak = 0;
+    }
+
+    data.push({
+      x: match.date,
+      y: currentStreak
+    });
+  });
+
+  return {
+    maxStreak,
+    currentStreak,
+    data
+  };
+}

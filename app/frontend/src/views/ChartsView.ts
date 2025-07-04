@@ -3,13 +3,15 @@ import {
   getUserScoreDiff,
   getUserStats,
   getUserTournamentProgress,
-  getUserWinrateProgression
+  getUserWinrateProgression,
+  getUserWinStreak
 } from "../services/userStatsServices.js";
 import {
   HeatmapSeries,
   ScoreDiffSeries,
   TournamentProgressSeries,
-  WinrateSeries
+  WinrateSeries,
+  WinStreakStats
 } from "../types/DataSeries.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
@@ -20,6 +22,7 @@ export default class ChartsView extends AbstractView {
   private scoreDiffSeries: ScoreDiffSeries | null = null;
   private activityMatrix: HeatmapSeries | null = null;
   private tournamentProgressSeries: TournamentProgressSeries | null = null;
+  private winStreak: WinStreakStats | null = null;
 
   constructor() {
     super();
@@ -77,6 +80,12 @@ export default class ChartsView extends AbstractView {
           class="w-full min-w-[500px] h-[300px]"
         ></div>
       </div>
+
+      <!-- Row 4: Win Streak -->
+      <div class="bg-gray-900 rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Win Streak</h2>
+        <div id="win-streak-chart" class="w-full min-w-[500px] h-[300px]"></div>
+      </div>
     </div>`;
   }
 
@@ -86,12 +95,14 @@ export default class ChartsView extends AbstractView {
     this.activityMatrix = await getUserActivityMatrix();
     this.tournamentProgressSeries = await getUserTournamentProgress();
     this.scoreDiffSeries = await getUserScoreDiff();
+    this.winStreak = await getUserWinStreak();
     this.updateHTML();
     this.rederWinLossChart(this.userStats);
     this.renderWinrateChart();
     this.renderScoreDiffChart();
     this.renderActivityHeatMap();
     this.renderTournamentProgress();
+    this.renderWinStreak();
   }
 
   getName(): string {
@@ -365,6 +376,59 @@ export default class ChartsView extends AbstractView {
     const chartEl = document.querySelector("#tournament-progress-chart");
     if (!chartEl)
       throw new Error("Chart element tournament-progress-chart not found");
+
+    const chart = new ApexCharts(chartEl, options);
+    chart.render();
+  }
+
+  renderWinStreak() {
+    if (!this.winStreak) throw new Error("winStreak is null");
+
+    const options = {
+      chart: {
+        type: "line",
+        height: 300
+      },
+      series: [
+        {
+          name: "Win Streak",
+          data: this.winStreak.data
+        }
+      ],
+      xaxis: {
+        title: { text: "Date" },
+        type: "datetime",
+        labels: {
+          datetimeFormatter: {
+            year: "yyyy",
+            month: "MMM 'yy",
+            day: "dd MMM",
+            hour: "HH:mm"
+          }
+        }
+      },
+      yaxis: {
+        title: { text: "Win Streak" },
+        min: 0,
+        stepSize: 1
+      },
+      stroke: {
+        curve: "stepline"
+      },
+      tooltip: {
+        theme: "dark",
+        x: {
+          format: "dd MMM yyyy HH:mm"
+        },
+        y: {
+          formatter: (val: number) =>
+            `${val} win${val === 1 ? "" : "s"} in a row`
+        }
+      }
+    };
+
+    const chartEl = document.querySelector("#win-streak-chart");
+    if (!chartEl) throw new Error("Chart element win-streak-chart not found");
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();
