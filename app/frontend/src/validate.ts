@@ -76,15 +76,16 @@ export async function validateTournamentName(
   errorEl: HTMLElement
 ): Promise<boolean> {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
+  const tournamentName: string = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
 
-  if (isEmptyString(inputEl.value)) {
+  if (isEmptyString(tournamentName)) {
     markInvalid("Tournament name is required.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, tournamentNameRegex)) {
+  if (!validateAgainstRegex(tournamentName, tournamentNameRegex)) {
     markInvalid(
       "Tournament name must be 3–20 characters long and can only contain letters, numbers, or [-!?_$.].",
       inputEl,
@@ -100,7 +101,7 @@ export async function validateTournamentName(
     }
 
     const tournamentNames = tournaments.map((tournament) => tournament.name);
-    if (tournamentNames.includes(inputEl.value)) {
+    if (tournamentNames.includes(tournamentName)) {
       markInvalid(
         "Tournament name already exists. Please choose a different name.",
         inputEl,
@@ -136,15 +137,16 @@ export function validatePassword(
 ): boolean {
   const passwordRegex: RegExp =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$/;
+  const password: string = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
 
-  if (isEmptyString(inputEl.value)) {
+  if (isEmptyString(password)) {
     markInvalid("Please enter a password.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, passwordRegex)) {
+  if (!validateAgainstRegex(password, passwordRegex)) {
     markInvalid(
       "Password must be 10-64 characters long and must contain at least one " +
         "number, one uppercase and one lowercase letter and one of the " +
