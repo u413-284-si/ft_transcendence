@@ -34,7 +34,7 @@ type HeatmapSeriesItem = {
 export type HeatmapSeries = HeatmapSeriesItem[];
 
 type TournamentProgressPoint = {
-  x: number; // tournament size
+  x: string; // tournament size
   y: number; // number of games won/lost
 };
 

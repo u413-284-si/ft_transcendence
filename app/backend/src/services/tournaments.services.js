@@ -172,5 +172,23 @@ export async function getUserTournamentProgress(userId) {
     if (wonTournament) summary[size].won++;
   }
 
-  return summary;
+  const wonSeriesData = [];
+  const lostSeriesData = [];
+
+  for (const size in summary) {
+    const label = `${size}`;
+    const { played, won } = summary[size];
+    const lost = played - won;
+
+    wonSeriesData.push({ x: label, y: won });
+    lostSeriesData.push({ x: label, y: lost });
+  }
+
+  wonSeriesData.sort((a, b) => a.x - b.x);
+  lostSeriesData.sort((a, b) => a.x - b.x);
+
+  return [
+    { name: "won", data: wonSeriesData },
+    { name: "lost", data: lostSeriesData }
+  ];
 }
