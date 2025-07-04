@@ -1,6 +1,11 @@
 import { apiFetch } from "./api.js";
 import { UserStats } from "../types/IUserStats.js";
-import { ScoreDiffSeries, WinrateSeries } from "../types/DataSeries.js";
+import {
+  HeatmapSeries,
+  ScoreDiffSeries,
+  TournamentProgressSeries,
+  WinrateSeries
+} from "../types/DataSeries.js";
 
 export async function getUserStats(): Promise<UserStats> {
   const apiResponse = await apiFetch<UserStats>(`/api/users/me/user-stats`, {
@@ -42,10 +47,10 @@ export async function getUserActivityMatrix(): Promise<HeatmapSeries> {
   return apiResponse.data;
 }
 
-export async function getUserTournamentProgress(): Promise<TournamentProgress> {
+export async function getUserTournamentProgress(): Promise<TournamentProgressSeries> {
   const url = "/api/user-stats/me/tournament-progress";
 
-  const apiResponse = await apiFetch<TournamentProgress>(url, {
+  const apiResponse = await apiFetch<TournamentProgressSeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });

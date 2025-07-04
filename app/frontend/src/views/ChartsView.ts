@@ -5,7 +5,12 @@ import {
   getUserTournamentProgress,
   getUserWinrateProgression
 } from "../services/userStatsServices.js";
-import { ScoreDiffSeries, WinrateSeries } from "../types/DataSeries.js";
+import {
+  HeatmapSeries,
+  ScoreDiffSeries,
+  TournamentProgressSeries,
+  WinrateSeries
+} from "../types/DataSeries.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
 
@@ -14,7 +19,7 @@ export default class ChartsView extends AbstractView {
   private winrateSeries: WinrateSeries | null = null;
   private scoreDiffSeries: ScoreDiffSeries | null = null;
   private activityMatrix: HeatmapSeries | null = null;
-  private tournamentProgress: TournamentProgress | null = null;
+  private tournamentProgressSeries: TournamentProgressSeries | null = null;
 
   constructor() {
     super();
@@ -79,7 +84,7 @@ export default class ChartsView extends AbstractView {
     this.userStats = await getUserStats();
     this.winrateSeries = await getUserWinrateProgression();
     this.activityMatrix = await getUserActivityMatrix();
-    this.tournamentProgress = await getUserTournamentProgress();
+    this.tournamentProgressSeries = await getUserTournamentProgress();
     this.scoreDiffSeries = await getUserScoreDiff();
     this.updateHTML();
     this.rederWinLossChart(this.userStats);
@@ -303,18 +308,8 @@ export default class ChartsView extends AbstractView {
   }
 
   renderTournamentProgress() {
-    if (!this.tournamentProgress) throw new Error("TournamentProgress is null");
-
-    const sizes = Object.keys(this.tournamentProgress)
-      .map(Number)
-      .sort((a, b) => a - b);
-
-    const wonData = sizes.map((size) => this.tournamentProgress![size].won);
-    const lostData = sizes.map(
-      (size) =>
-        this.tournamentProgress![size].played -
-        this.tournamentProgress![size].won
-    );
+    if (!this.tournamentProgressSeries)
+      throw new Error("tournamentProgressSeries is null");
 
     const options = {
       chart: {
@@ -333,20 +328,14 @@ export default class ChartsView extends AbstractView {
         }
       },
       colors: ["var(--color-neon-green)", "var(--color-neon-red)"],
-      series: [
-        {
-          name: "Won",
-          data: wonData
-        },
-        {
-          name: "Lost",
-          data: lostData
-        }
-      ],
+      series: this.tournamentProgressSeries,
       xaxis: {
-        categories: sizes.map((size) => `${size}-Player`),
+        type: "category",
         title: {
           text: "Tournament Size"
+        },
+        labels: {
+          formatter: (val: number) => `${val}-Player`
         }
       },
       yaxis: {
