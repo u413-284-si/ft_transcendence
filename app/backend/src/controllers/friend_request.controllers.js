@@ -51,7 +51,12 @@ export async function createFriendRequestHandler(request, reply) {
         userId,
         "ACCEPTED"
       );
-      notifyFriendRequestEvent(data.friendId, data.id, "ACCEPTED");
+      notifyFriendRequestEvent(
+        data.friendId,
+        data.id,
+        request.user.username,
+        "ACCEPTED"
+      );
       return reply
         .code(200)
         .send({ message: createResponseMessage(action, true), data: data });
@@ -59,7 +64,12 @@ export async function createFriendRequestHandler(request, reply) {
 
     const data = await createFriendRequest(userId, friendId);
 
-    notifyFriendRequestEvent(friendId, data.id, "PENDING");
+    notifyFriendRequestEvent(
+      friendId,
+      data.id,
+      request.user.username,
+      "PENDING"
+    );
 
     return reply
       .code(201)
@@ -102,7 +112,12 @@ export async function updateFriendRequestHandler(request, reply) {
 
     const data = await updateFriendRequest(requestId, userId, status);
 
-    notifyFriendRequestEvent(data.friendId, data.id, status);
+    notifyFriendRequestEvent(
+      data.friendId,
+      data.id,
+      request.user.username,
+      status
+    );
 
     return reply
       .code(200)
@@ -122,7 +137,16 @@ export async function deleteFriendRequestHandler(request, reply) {
     const userId = parseInt(request.user.id, 10);
     const requestId = parseInt(request.params.id, 10);
     const data = await deleteFriendRequest(requestId, userId);
-    notifyFriendRequestEvent(data.friendId, data.id, "DELETED");
+    notifyFriendRequestEvent(
+      data.friendId,
+      data.id,
+      request.user.username,
+      data.status === "ACCEPTED"
+        ? "DELETED"
+        : data.sender
+          ? "RESCINDED"
+          : "DECLINED"
+    );
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });

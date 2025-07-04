@@ -6,9 +6,9 @@ import {
   userLogout
 } from "./services/authServices.js";
 import {
-  startOnlineStatusTracking,
-  stopOnlineStatusTracking
-} from "./services/onlineStatusServices.js";
+  openSSEConnection,
+  closeSSEConnection
+} from "./services/serverSentEventsServices.js";
 import { getUserProfile } from "./services/userServices.js";
 import { toaster } from "./Toaster.js";
 import { Token } from "./types/Token.js";
@@ -44,12 +44,12 @@ export class AuthManager {
       this.authenticated = true;
       this.scheduleTokenValidation(token);
       this.registerActivityListeners();
-      startOnlineStatusTracking();
+      openSSEConnection();
     } else {
       this.authenticated = false;
       this.clearRefreshTimer();
       this.removeActivityListeners();
-      stopOnlineStatusTracking();
+      closeSSEConnection();
     }
     this.notify();
   }

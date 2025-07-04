@@ -65,7 +65,7 @@ export async function getUserFriendRequestByUsername(
   username: string
 ): Promise<FriendRequest | null> {
   const encoded = encodeURIComponent(username);
-  const url = `/api/users/friend-requests/?username=${encoded}`;
+  const url = `/api/users/me/friend-requests?username=${encoded}`;
 
   const apiResponse = await apiFetch<FriendRequest[]>(url, {
     method: "GET",
