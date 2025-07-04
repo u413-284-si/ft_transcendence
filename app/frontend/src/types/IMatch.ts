@@ -1,14 +1,19 @@
+export enum playedAs {
+  NONE = "NONE",
+  PLAYERONE = "PLAYERONE",
+  PLAYERTWO = "PLAYERTWO"
+}
+
 export interface Match {
-  tournament?: {
-    id: number;
-    name: string;
-  } | null;
-  userId?: number | null;
-  playedAs?: string | null;
+  playedAs: playedAs;
   player1Nickname: string;
   player2Nickname: string;
   player1Score: number;
   player2Score: number;
+  tournament?: {
+    id: number;
+    name: string;
+  } | null;
   date?: string;
 }
 

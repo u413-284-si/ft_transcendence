@@ -40,7 +40,7 @@ export default async function userRoutes(fastify) {
   fastify.get("/me/matches", optionsGetUserMatches, getUserMatchesHandler);
 
   fastify.get(
-    "/:username/matches/",
+    "/:username/matches",
     optionsGetUserMatchesByUsername,
     getUserMatchesByUsernameHandler
   );
@@ -160,6 +160,7 @@ const optionsDeleteUser = {
 const optionsGetUserMatches = {
   onRequest: [authorizeUserAccess],
   schema: {
+    querystring: { $ref: "querystringMatchSchema" },
     response: {
       200: { $ref: "matchArrayResponseSchema" },
       ...errorResponses
@@ -170,6 +171,7 @@ const optionsGetUserMatches = {
 const optionsGetUserMatchesByUsername = {
   onRequest: [authorizeUserAccess],
   schema: {
+    querystring: { $ref: "querystringMatchSchema" },
     params: {
       type: "object",
       properties: {

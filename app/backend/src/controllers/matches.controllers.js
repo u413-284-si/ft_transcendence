@@ -11,8 +11,8 @@ import { handlePrismaError } from "../utils/error.js";
 export async function createMatchHandler(request, reply) {
   const action = "Create match";
   try {
+    const userId = parseInt(request.user.id, 10);
     const {
-      userId,
       playedAs,
       player1Nickname,
       player2Nickname,
@@ -32,7 +32,7 @@ export async function createMatchHandler(request, reply) {
     );
 
     let stats = null;
-    if (userId !== null) {
+    if (playedAs !== "NONE") {
       const isPlayerOne = playedAs === "PLAYERONE";
       stats = await updateUserStats(
         userId,

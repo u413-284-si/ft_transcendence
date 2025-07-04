@@ -5,6 +5,7 @@ import MatchAnnouncement from "./MatchAnnouncementView.js";
 import ResultsView from "./ResultsView.js";
 import NewGameView from "./NewGameView.js";
 import { Tournament } from "../Tournament.js";
+import { playedAs } from "../types/IMatch.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -25,7 +26,7 @@ export class GameView extends AbstractView {
   constructor(
     private nickname1: string,
     private nickname2: string,
-    private userRole: string | null,
+    private userRole: playedAs,
     private gameType: GameType,
     private tournament: Tournament | null
   ) {

@@ -2,11 +2,14 @@ import { apiFetch } from "./api.js";
 import { Match } from "../types/IMatch.js";
 import { User } from "../types/User.js";
 
-export async function getUserMatches(): Promise<Match[]> {
-  const apiResponse = await apiFetch<Match[]>("/api/users/me/matches", {
-    method: "GET",
-    credentials: "same-origin"
-  });
+export async function getUserPlayedMatches(): Promise<Match[]> {
+  const apiResponse = await apiFetch<Match[]>(
+    "/api/users/me/matches?playedAs=PLAYERONE&playedAs=PLAYERTWO",
+    {
+      method: "GET",
+      credentials: "same-origin"
+    }
+  );
 
   console.log(apiResponse);
   return apiResponse.data;
@@ -81,11 +84,11 @@ export async function getUserByUsername(
   return apiResponse.data;
 }
 
-export async function getUserMatchesByUsername(
+export async function getUserPlayedMatchesByUsername(
   username: string
 ): Promise<Match[]> {
   const encoded = encodeURIComponent(username);
-  const url = `/api/users/${encoded}/matches/`;
+  const url = `/api/users/${encoded}/matches?playedAs=PLAYERONE&playedAs=PLAYERTWO`;
 
   const apiResponse = await apiFetch<Match[]>(url, {
     method: "GET",
