@@ -11,7 +11,7 @@ import { getUserByUsername } from "../services/userServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
 import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
 import { getEl, getInputEl } from "../utility.js";
-import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
+import { clearInvalid, markInvalid } from "../validate.js";
 import AbstractView from "./AbstractView.js";
 import { Button } from "../components/Button.js";
 import { Input } from "../components/Input.js";
