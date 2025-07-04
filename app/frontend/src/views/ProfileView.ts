@@ -197,10 +197,10 @@ export default class ProfileView extends AbstractView {
     clearInvalid(usernameEl, usernameErrorEl);
     clearInvalid(emailEL, emailErrorEl);
 
-    if (username !== "" && !validateUsername(usernameEl, usernameErrorEl)) {
+    if (username !== "" && !(await validateUsername(usernameEl, usernameErrorEl))) {
       valid = false;
     }
-    if (email !== "" && !validateEmail(emailEL, emailErrorEl)) {
+    if (email !== "" && !(await validateEmail(emailEL, emailErrorEl))) {
       valid = false;
     }
     if (username === "" && email === "") {

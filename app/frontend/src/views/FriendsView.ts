@@ -313,8 +313,6 @@ export default class FriendsView extends AbstractView {
 
     clearInvalid(inputEl, errorEl);
 
-    if (!validateUsername(inputEl, errorEl)) return;
-
     const username = inputEl.value.trim();
 
     try {

@@ -81,6 +81,21 @@ export async function getUserByUsername(
   return apiResponse.data;
 }
 
+export async function getUserByEmail(
+  email: string
+): Promise<User | null> {
+  const apiResponse = await apiFetch<User | null>(
+    `/api/users/search?email=${encodeURIComponent(email)}`,
+    {
+      method: "GET",
+      credentials: "same-origin"
+    }
+  );
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
 export async function getUserMatchesByUsername(
   username: string
 ): Promise<Match[]> {

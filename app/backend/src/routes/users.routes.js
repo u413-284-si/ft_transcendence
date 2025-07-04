@@ -96,7 +96,11 @@ export default async function userRoutes(fastify) {
 
   fastify.get("/search", optionsSearchUser, searchUserHandler);
 
-  fastify.patch("/me/password", optionsUpdatePassword, updateUserPasswordHandler);
+  fastify.patch(
+    "/me/password",
+    optionsUpdatePassword,
+    updateUserPasswordHandler
+  );
 }
 
 const optionsCreateUser = {
@@ -300,11 +304,22 @@ const optionsSearchUser = {
   onRequest: [authorizeUserAccess],
   schema: {
     querystring: {
-      type: "object",
-      properties: {
-        username: { type: "string" }
-      },
-      required: ["username"]
+      anyOf: [
+        {
+          type: "object",
+          properties: {
+            username: { type: "string" }
+          },
+          required: ["username"]
+        },
+        {
+          type: "object",
+          properties: {
+            email: { type: "string", format: "email" }
+          },
+          required: ["email"]
+        }
+      ]
     },
     response: {
       ...errorResponses

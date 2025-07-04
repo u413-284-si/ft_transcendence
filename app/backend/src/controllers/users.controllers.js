@@ -7,7 +7,8 @@ import {
   getUserAvatar,
   createUserAvatar,
   deleteUserAvatar,
-  getUserByUsername
+  getUserByUsername,
+  getUserByEmail
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import {
@@ -362,9 +363,25 @@ export async function deleteUserAvatarHandler(request, reply) {
 
 export async function searchUserHandler(request, reply) {
   const action = "Search user";
+
   try {
-    const { username } = request.query;
-    const data = await getUserByUsername(username);
+    const { username, email } = request.query;
+
+    if (!username && !email) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Missing 'username' or 'email' query parameter."
+      );
+    }
+
+    const isEmail = email !== undefined;
+
+    const data = isEmail
+      ? await getUserByEmail(email)
+      : await getUserByUsername(username);
+
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: data
