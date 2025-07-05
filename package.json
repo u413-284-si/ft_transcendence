@@ -7,7 +7,7 @@
   "scripts": {
     "style": "npx @tailwindcss/cli -i ./app/frontend/src/css/input.css -o ./app/frontend/public/css/styles.css",
     "dep": "npx madge --circular --extensions ts ./app/frontend/src",
-    "build": "npx tsc --project ./app/frontend/tsconfig.json",
+    "build": "npm run copy:vendor && tsc --project ./app/frontend/tsconfig.json",
     "build:noEmit": "npx tsc --project ./app/frontend/tsconfig.json --noEmit",
     "start": "node ./app/backend/src/app.js",
     "watch-frontend": "nodemon --watch ./app/frontend/src --ext ts --exec \"npm run style && npm run build && npm run start\"",
@@ -15,7 +15,8 @@
     "watch": "nodemon --watch ./app/frontend/src --watch ./app/backend/src  --ext ts,js --exec \"npm run style && npm run build && npm run start\"",
     "db-init": "npx prisma migrate dev",
     "dev": "npm run db-init && npm run watch",
-    "prepare": "husky"
+    "prepare": "husky",
+    "copy:vendor": "node scripts/copy-ext-files.js"
   },
   "repository": {
     "type": "git",
@@ -42,11 +43,15 @@
     "@prisma/client": "^6.9.0",
     "@types/argon2": "^0.14.1",
     "ajv-formats": "^3.0.1",
+    "apexcharts": "^4.7.0",
     "argon2": "^0.41.1",
     "better-sqlite3": "^11.8.1",
+    "dompurify": "^3.2.6",
     "env-schema": "^6.0.0",
     "fastify": "^5.2.1",
     "fastify-graceful-shutdown": "^4.0.1",
+    "fastify-overview": "^4.0.0",
+    "fastify-overview-ui": "^3.0.0",
     "fastify-plugin": "^5.0.1",
     "file-type": "^21.0.0",
     "install": "^0.13.0",

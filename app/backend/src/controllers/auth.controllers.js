@@ -92,8 +92,13 @@ export async function googleOauth2LoginHandler(request, reply) {
       );
     }
 
-    const userData = await fastify.googleOauth2.userinfo(token.access_token);
-    if (!(await getUserByEmail(userData.email))) {
+    reply
+      .clearCookie("oauth2-code-verifier")
+      .clearCookie("oauth2-redirect-state");
+
+    const googleUser = await fastify.googleOauth2.userinfo(token.access_token);
+    const dbUser = await getUserByEmail(googleUser.email);
+    if (!dbUser) {
       let username = createRandomUsername();
       while (
         (await getUserByUsername(username)) ||
@@ -102,9 +107,15 @@ export async function googleOauth2LoginHandler(request, reply) {
         username = createRandomUsername();
       }
       await createUser(username, userData.email, "", "GOOGLE");
+    } else if ((await getUserAuthProvider(dbUser.id)) !== "GOOGLE") {
+      return reply
+        .setCookie("authProviderConflict", "GOOGLE", {
+          secure: true,
+          path: "/login",
+          maxAge: 10
+        })
+        .redirect("http://localhost:4000/login");
     }
-
-    const payload = await getTokenData(userData.email, "email");
 
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
@@ -112,10 +123,6 @@ export async function googleOauth2LoginHandler(request, reply) {
     );
 
     reply = setCookies(reply, accessToken, refreshToken);
-
-    reply
-      .clearCookie("oauth2-code-verifier")
-      .clearCookie("oauth2-redirect-state");
 
     return reply.redirect("http://localhost:4000/home");
   } catch (err) {
