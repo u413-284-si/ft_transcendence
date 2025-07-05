@@ -106,7 +106,7 @@ export async function googleOauth2LoginHandler(request, reply) {
       ) {
         username = createRandomUsername();
       }
-      await createUser(username, userData.email, "", "GOOGLE");
+      await createUser(username, googleUser.email, "", "GOOGLE");
     } else if ((await getUserAuthProvider(dbUser.id)) !== "GOOGLE") {
       return reply
         .setCookie("authProviderConflict", "GOOGLE", {
@@ -116,6 +116,8 @@ export async function googleOauth2LoginHandler(request, reply) {
         })
         .redirect("http://localhost:4000/login");
     }
+
+    const payload = await getTokenData(googleUser.email, "email");
 
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
