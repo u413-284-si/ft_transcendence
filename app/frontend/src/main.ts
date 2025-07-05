@@ -36,7 +36,21 @@ router
   .addRouteChangeListener(logRouteChange)
   .addRouteChangeListener(updateUI);
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const res = await fetch("/locales/fr.json");
+  if (!res.ok) {
+    console.error("Failed to load translation file");
+    return;
+  }
+  const fr = await res.json();
+
+  await i18next.init({
+    lng: "fr", // default language
+    resources: {
+      fr: { translation: fr }
+    }
+  });
+
   auth.initialize().then(() => {
     router.start();
     auth.onChange(async (isAuth) => {

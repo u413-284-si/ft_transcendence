@@ -1,0 +1,10 @@
+{
+  "welcome": "Bienvenue",
+  "login": "Login",
+  "register": "Registrer",
+  "home": "Accueil",
+  "helloUser": "Bonjour {{username}} !<br />Ceci est la page d'accueil",
+  "uploadYourAvatar": "Téléchargez votre avatar :",
+  "uploadAvatar": "Télécharger l'avatar",
+  "avatarUploadedSuccessfully": "Avatar téléchargé avec succès !"
+}
