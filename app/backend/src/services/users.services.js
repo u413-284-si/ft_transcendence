@@ -55,14 +55,10 @@ export function createRandomUsername() {
   );
 }
 
-export function isUserNameValid(username) {
-  const ajv = new Ajv();
-  const commonDefinitionsSchema = fastify.getSchema("commonDefinitionsSchema");
-  ajv.addSchema(commonDefinitionsSchema);
-  const validateUsername = ajv.compile({
+export function isUserNameValid(request, username) {
+  return request.validateInput(username, {
     $ref: "commonDefinitionsSchema#/definitions/username"
   });
-  return validateUsername(username);
 }
 
 export async function getUser(id) {

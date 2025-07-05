@@ -102,7 +102,7 @@ export async function googleOauth2LoginHandler(request, reply) {
       let username = createRandomUsername();
       while (
         (await getUserByUsername(username)) ||
-        !isUserNameValid(username)
+        !isUserNameValid(request, username)
       ) {
         username = createRandomUsername();
       }
