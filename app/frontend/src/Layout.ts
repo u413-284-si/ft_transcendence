@@ -52,19 +52,19 @@ export class Layout {
         auth.getUser().avatar || "/images/default-avatar.png";
       return /* HTML */ ` <nav class="relative">
         <div class="container mx-auto flex justify-center space-x-8 ">
-          ${Link({ text: "Home", href: "/home" })}
-          ${Link({ text: "New Game", href: "/newGame" })}
-          ${Link({ text: "New Tournament", href: "/newTournament" })}
-          ${Link({ text: "Stats", href: `/stats/${auth.getUser().username}` })}
-          ${Link({ text: "Settings", href: "/settings" })}
-          ${Link({ text: "Friends", href: "/friends" })}
+          ${Link({ text: i18next.t("home"), href: "/home" })}
+          ${Link({ text: i18next.t("newGame"), href: "/newGame" })}
+          ${Link({ text: i18next.t("newTournament"), href: "/newTournament" })}
+          ${Link({ text: i18next.t("stats"), href: `/stats/${auth.getUser().username}` })}
+          ${Link({ text: i18next.t("settings"), href: "/settings" })}
+          ${Link({ text: i18next.t("friends"), href: "/friends" })}
         </div>
         <div
           class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
         >
           <img
             src="${userAvatarUrl}"
-            alt="Avatar"
+            alt="${i18next.t("avatar")}"
             tabindex="0"
             class="w-14 h-14 rounded-full border-3 border-white hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
           />
@@ -73,8 +73,8 @@ export class Layout {
     }
     return /* HTML */ ` <nav>
       <div class="container mx-auto flex justify-center space-x-8">
-        ${Link({ text: "Login", href: "/login" })}
-        ${Link({ text: "Register", href: "/register" })}
+        ${Link({ text: i18next.t("login"), href: "/login" })}
+        ${Link({ text: i18next.t("register"), href: "/register" })}
       </div>
     </nav>`;
   }
@@ -83,7 +83,7 @@ export class Layout {
     return /* HTML */ ` <div
       class="container mx-auto flex justify-center space-x-8"
     >
-      <p class="text-sm">Pong Game &copy; 2025</p>
+      <p class="text-sm">${i18next.t("pongGame")} &copy; 2025</p>
     </div>`;
   }
 
@@ -92,12 +92,12 @@ export class Layout {
     if (!avatar) return;
 
     const drawer = new Drawer([
-      { label: "Edit Profile", icon: "user", href: "/profile" },
-      { label: "User Stats", icon: "stats", href: "/stats" },
-      { label: "Friends", icon: "friends", href: "/friends" },
-      { label: "Settings", icon: "settings", href: "/settings" },
+      { label: i18next.t("editProfile"), icon: "user", href: "/profile" },
+      { label: i18next.t("stats"), icon: "stats", href: "/stats" },
+      { label: i18next.t("friends"), icon: "friends", href: "/friends" },
+      { label: i18next.t("settings"), icon: "settings", href: "/settings" },
       {
-        label: "Logout",
+        label: i18next.t("logout"),
         icon: "logout",
         onClick: async () => {
           await auth.logout();
