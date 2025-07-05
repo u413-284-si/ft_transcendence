@@ -15,5 +15,9 @@
   "avatar": "Avatar",
   "pongGame": "Jeu Pong",
   "editProfile": "Modifier le profil",
-  "logout": "Déconnexion"
+  "logout": "Déconnexion",
+  "errorTitle": "⚠️ Erreur {{status}}",
+  "unexpectedError": "Une erreur inattendue s'est produite.",
+  "details": "Détails : {{cause}}",
+  "reload": "Recharger"
 }
