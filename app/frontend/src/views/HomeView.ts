@@ -22,14 +22,12 @@ export default class HomeView extends AbstractView {
     return /* HTML */ `
       <div class="flex flex-col justify-center items-center gap-4 mb-12">
         ${Header1({
-          text: "Home",
+          text: `${i18next.t("home")}`,
           id: "home-header",
           variant: "default"
         })}
         ${Paragraph({
-          text: `Hello ${escapeHTML(auth.getToken().username)}!
-            <br />
-            This is the home page`
+          text: i18next.t("helloUser", { username: escapeHTML(auth.getToken().username) })
         })}
       </div>
 
