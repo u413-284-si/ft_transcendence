@@ -310,14 +310,14 @@ const optionsSearchUser = {
         {
           type: "object",
           properties: {
-            username: { type: "string" }
+            username: { $ref: "commonDefinitionsSchema#/definitions/username" }
           },
           required: ["username"]
         },
         {
           type: "object",
           properties: {
-            email: { type: "string", format: "email" }
+            email: { $ref: "commonDefinitionsSchema#/definitions/email" }
           },
           required: ["email"]
         }
