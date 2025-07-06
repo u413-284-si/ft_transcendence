@@ -77,6 +77,17 @@ export default class ProfileView extends AbstractView {
     })}`;
   }
 
+  private getEmailInput(user: User): string {
+    return Input({
+      id: "email-input",
+      label: "Email",
+      name: "email",
+      type: "email",
+      placeholder: `${escapeHTML(user.email)}`,
+      errorId: "email-error"
+    });
+  }
+
   createHTML(): string {
     const user = auth.getUser();
 
@@ -138,14 +149,9 @@ export default class ProfileView extends AbstractView {
                   placeholder: `${escapeHTML(user.username)}`,
                   errorId: "username-error"
                 }),
-                Input({
-                  id: "email-input",
-                  label: "Email",
-                  name: "email",
-                  type: "email",
-                  placeholder: `${escapeHTML(user.email)}`,
-                  errorId: "email-error"
-                }),
+                auth.getUser().authentication.authProvider === "LOCAL"
+                  ? this.getEmailInput(user)
+                  : "",
                 Button({
                   text: "Save Changes",
                   variant: "default",
