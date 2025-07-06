@@ -20,10 +20,10 @@ import AbstractView from "./AbstractView.js";
 import { Button } from "../components/Button.js";
 import { Input } from "../components/Input.js";
 import { Form } from "../components/Form.js";
-import { Span } from "../components/Span.js";
 import { Header1 } from "../components/Header1.js";
 import { FriendListItem } from "../components/FriendListItem.js";
 import { Header2 } from "../components/Header2.js";
+import { toaster } from "../Toaster.js";
 
 type RequestListType = "friend" | "incoming" | "outgoing";
 
@@ -104,11 +104,6 @@ export default class FriendsView extends AbstractView {
               variant: "default",
               size: "md",
               type: "submit"
-            }),
-            Span({
-              id: "status-message",
-              className: "transition-opacity duration-500 opacity-0",
-              variant: "success"
             })
           ],
           id: "send-request-form"
@@ -352,9 +347,10 @@ export default class FriendsView extends AbstractView {
       inputEl.value = "";
       this.refreshRequestList("outgoing");
       if (request.status === "PENDING") {
-        this.showStatusMessage("Successfully sent friend request");
+        toaster.success(`Sent friend request to ${username}`);
       } else if (request.status === "ACCEPTED") {
-        this.showStatusMessage("Added friend!");
+        toaster.success(`Accepted friend request of ${username}`, "❤️");
+        this.refreshRequestList("incoming");
         this.refreshRequestList("friend");
       }
     } catch (error) {
@@ -390,21 +386,6 @@ export default class FriendsView extends AbstractView {
 
   private removeFriendRequest(requestId: number): void {
     this.friendRequests = this.friendRequests.filter((r) => r.id !== requestId);
-  }
-
-  private showStatusMessage(text: string) {
-    const messageElement = getEl("status-message");
-    if (!messageElement) return;
-
-    messageElement.textContent = text;
-    messageElement.classList.remove("opacity-0");
-    messageElement.classList.add("opacity-100");
-
-    // Hide it after 1 second
-    setTimeout(() => {
-      messageElement.classList.remove("opacity-100");
-      messageElement.classList.add("opacity-0");
-    }, 1000);
   }
 
   private handleFriendRequestEvent = async (event: Event) => {
