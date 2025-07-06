@@ -143,6 +143,7 @@ export class AuthManager {
       ...this.user!,
       ...update
     };
+    this.notify();
   }
 
   private notify(): void {

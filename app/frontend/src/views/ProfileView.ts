@@ -227,7 +227,6 @@ export default class ProfileView extends AbstractView {
       await patchUser(updatedUser);
       toaster.success("Profile updated successfully!");
       auth.updateUser(updatedUser);
-      layout.update("auth");
       router.reload();
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
@@ -256,7 +255,6 @@ export default class ProfileView extends AbstractView {
         ...(avatar ? { avatar } : {}),
       };
       auth.updateUser(updatedUser);
-      layout.update("auth");
       router.reload();
     } catch (error) {
       toaster.error("Failed to upload avatar. Please try again.");
