@@ -8,7 +8,6 @@ import {
   RouteGuard
 } from "../types/Route.js";
 import ErrorView from "../views/ErrorView.js";
-import { Layout } from "../Layout.js";
 import { closeSSEConnection } from "../services/serverSentEventsServices.js";
 import { ApiError } from "../services/api.js";
 import { auth } from "../AuthManager.js";

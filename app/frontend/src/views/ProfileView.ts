@@ -9,7 +9,7 @@ import { uploadAvatar } from "../services/userServices.js";
 import {
   validateUsername,
   validateEmail,
-  validatePassword,
+  //FIXME: validatePassword,
   validateConfirmPassword,
   validateImageFile,
   markInvalid,
@@ -194,8 +194,8 @@ export default class ProfileView extends AbstractView {
     let valid = true;
     const username = usernameEl.value;
     const email = emailEL.value;
-    const hasUsername = !isEmptyString(username)
-    const hasEmail = !isEmptyString(email)
+    const hasUsername = !isEmptyString(username);
+    const hasEmail = !isEmptyString(email);
 
     clearInvalid(usernameEl, usernameErrorEl);
     clearInvalid(emailEL, emailErrorEl);
