@@ -130,6 +130,22 @@ export class AuthManager {
     this.listeners.push(callback);
   }
 
+  public updateUser(update: Partial<User>) {
+    if (!this.authenticated) {
+      console.log("User not authenticated. Cannot update user.");
+      return;
+    }
+    if (!update) {
+      console.log("No update data provided.");
+      return;
+    }
+
+    this.user = {
+      ...this.user!,
+      ...update
+    };
+  }
+
   private notify(): void {
     for (const callback of this.listeners) {
       callback(this.authenticated, this.token);

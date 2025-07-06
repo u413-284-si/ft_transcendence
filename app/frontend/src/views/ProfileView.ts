@@ -225,8 +225,8 @@ export default class ProfileView extends AbstractView {
     try {
       await patchUser(updatedUser);
       toaster.success("Profile updated successfully!");
-      usernameEl.value = "";
-      emailEL.value = "";
+      auth.updateUser(updatedUser);
+      router.reload();
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         toaster.error("Email or username already exists");
