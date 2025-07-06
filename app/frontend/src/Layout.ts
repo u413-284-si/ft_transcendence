@@ -17,7 +17,6 @@ export class Layout {
   }
 
   public update(newMode: LayoutMode): void {
-    if (this.mode === newMode) return;
     this.mode = newMode;
     this.renderShell();
   }
@@ -90,7 +89,11 @@ export class Layout {
 
     const drawer = new Drawer([
       { label: "Edit Profile", icon: "user", href: "/profile" },
-      { label: "User Stats", icon: "stats", href: `/stats/${auth.getUser().username}` },
+      {
+        label: "User Stats",
+        icon: "stats",
+        href: `/stats/${auth.getUser().username}`
+      },
       { label: "Friends", icon: "friends", href: "/friends" },
       { label: "Settings", icon: "settings", href: "/settings" },
       {
@@ -98,7 +101,6 @@ export class Layout {
         icon: "logout",
         onClick: async () => {
           await auth.logout();
-          this.update("guest");
         }
       }
     ]);
@@ -111,3 +113,5 @@ export class Layout {
     });
   }
 }
+
+export const layout = new Layout("guest");

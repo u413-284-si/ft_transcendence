@@ -81,9 +81,9 @@ export class AuthManager {
     try {
       await userLogin(username, password);
       const token = await authAndDecodeAccessToken();
-      this.updateAuthState(token);
-      console.log("User logged in");
       this.user = await getUserProfile();
+      console.log("User logged in");
+      this.updateAuthState(token);
       return true;
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -102,10 +102,11 @@ export class AuthManager {
 
   public async logout(): Promise<void> {
     await userLogout();
-    this.updateAuthState(null);
 
     const sidebar = document.getElementById("drawer-sidebar");
     if (sidebar) sidebar.remove();
+
+    this.updateAuthState(null);
   }
 
   public clearTokenOnError(): void {

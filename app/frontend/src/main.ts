@@ -11,6 +11,7 @@ import { router } from "./routing/Router.js";
 import { authGuard, guestOnlyGuard } from "./routing/routeGuard.js";
 import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
+import { layout } from "./Layout.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard, layout: "guest" })
@@ -39,6 +40,11 @@ router
   .addRouteChangeListener(updateUI);
 
 document.addEventListener("DOMContentLoaded", () => {
+  auth.onChange(async (isAuth) => {
+    console.log("Listener for layout");
+    if (isAuth) layout.update("auth");
+    else layout.update("guest");
+  });
   auth.initialize().then(() => {
     router.start();
     auth.onChange(async (isAuth) => {
