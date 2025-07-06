@@ -45,5 +45,7 @@
   "confirmRemoveFriend": "Êtes-vous sûr de vouloir supprimer cet ami ?",
   "confirmDeclineRequest": "Êtes-vous sûr de vouloir refuser cette demande ?",
   "confirmDeleteRequest": "Êtes-vous sûr de vouloir supprimer cette demande ?",
-  "nowPlaying": "Now Playing"
+  "nowPlaying": "Now Playing",
+  "usernameOrEmail": "Nom d'utilisateur ou Email",
+  "password": "Mot de passe"
 }
