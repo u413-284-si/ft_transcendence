@@ -68,16 +68,16 @@ export function openSSEConnection() {
           toaster.info(`${username} sent you a friend request`);
           break;
         case "ACCEPTED":
-          toaster.info(`${username} accepted your friend request`);
+          toaster.info(`${username} accepted your friend request`, "❤️");
           break;
         case "DECLINED":
-          toaster.info(`${username} declined friend request`);
+          toaster.info(`${username} declined friend request`, "💔");
           break;
         case "RESCINDED":
-          toaster.info(`${username} rescinded friend request`);
+          toaster.info(`${username} rescinded friend request`, "💔");
           break;
         case "DELETED":
-          toaster.info(`${username} terminated friendship`);
+          toaster.info(`${username} terminated friendship`, "💀");
           break;
       }
       window.dispatchEvent(
