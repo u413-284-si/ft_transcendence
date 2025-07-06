@@ -13,7 +13,8 @@ import {
   validateConfirmPassword,
   validateImageFile,
   markInvalid,
-  clearInvalid
+  clearInvalid,
+  isEmptyString
 } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { getInputEl, getEl } from "../utility.js";
@@ -215,15 +216,9 @@ export default class ProfileView extends AbstractView {
     if (!valid) return;
 
     const updatedUser: Partial<User> = {
-      id: auth.getUser().id,
-      dateJoined: auth.getUser().dateJoined
+      ...(username ? { username } : {}),
+      ...(email ? { email } : {})
     };
-    if (username !== "") {
-      updatedUser.username = username;
-    }
-    if (email !== "") {
-      updatedUser.email = email;
-    }
 
     try {
       const userResponse: User = await patchUser(updatedUser);
