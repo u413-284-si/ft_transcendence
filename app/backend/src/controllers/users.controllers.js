@@ -7,7 +7,8 @@ import {
   getUserAvatar,
   createUserAvatar,
   deleteUserAvatar,
-  getUserByUsername
+  getUserByUsername,
+  getUserByEmail
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import {
@@ -20,7 +21,12 @@ import {
 } from "../services/tournaments.services.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
-import { createHash } from "../services/auth.services.js";
+import {
+  createHash,
+  getPasswordHash,
+  updatePassword,
+  verifyHash
+} from "../services/auth.services.js";
 import { getAllUserFriendRequests } from "../services/friends.services.js";
 import { fileTypeFromBuffer } from "file-type";
 
@@ -118,6 +124,14 @@ export async function patchUserHandler(request, reply) {
       { err, body: request.body },
       `patchUserHandler: ${createResponseMessage(action, false)}`
     );
+    if (err.code === "P2002") {
+      return httpError(
+        reply,
+        409,
+        createResponseMessage(action, false),
+        "Email or username already exists"
+      );
+    }
     return handlePrismaError(reply, action, err);
   }
 }
@@ -359,9 +373,16 @@ export async function deleteUserAvatarHandler(request, reply) {
 
 export async function searchUserHandler(request, reply) {
   const action = "Search user";
+
   try {
-    const { username } = request.query;
-    const data = await getUserByUsername(username);
+    const { username, email } = request.query;
+
+    const isEmail = email !== undefined;
+
+    const data = isEmail
+      ? await getUserByEmail(email)
+      : await getUserByUsername(username);
+
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: data
@@ -370,6 +391,40 @@ export async function searchUserHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function updateUserPasswordHandler(request, reply) {
+  const action = "Update user password";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const { currentPassword, newPassword } = request.body;
+
+    const hashedPassword = await getPasswordHash(userId);
+    if (!(await verifyHash(hashedPassword, currentPassword))) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Current password is incorrect"
+      );
+    }
+
+    // Hash the new password
+    const hashedNewPassword = await createHash(newPassword);
+
+    // Update the user's password
+    await updatePassword(userId, hashedNewPassword);
+
+    return reply.code(200).send({
+      message: createResponseMessage(action, true)
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `updateUserPasswordHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

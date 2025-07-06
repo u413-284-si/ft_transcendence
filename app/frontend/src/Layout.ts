@@ -55,9 +55,6 @@ export class Layout {
           ${Link({ text: "Home", href: "/home" })}
           ${Link({ text: "New Game", href: "/newGame" })}
           ${Link({ text: "New Tournament", href: "/newTournament" })}
-          ${Link({ text: "Stats", href: `/stats/${auth.getUser().username}` })}
-          ${Link({ text: "Settings", href: "/settings" })}
-          ${Link({ text: "Friends", href: "/friends" })}
         </div>
         <div
           class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
@@ -66,7 +63,7 @@ export class Layout {
             src="${userAvatarUrl}"
             alt="Avatar"
             tabindex="0"
-            class="w-14 h-14 rounded-full border-3 border-white hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+            class="w-14 h-14 rounded-full border-3 border-neon-cyan shadow-neon-cyan hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
           />
         </div>
       </nav>`;
@@ -93,7 +90,7 @@ export class Layout {
 
     const drawer = new Drawer([
       { label: "Edit Profile", icon: "user", href: "/profile" },
-      { label: "User Stats", icon: "stats", href: "/stats" },
+      { label: "User Stats", icon: "stats", href: `/stats/${auth.getUser().username}` },
       { label: "Friends", icon: "friends", href: "/friends" },
       { label: "Settings", icon: "settings", href: "/settings" },
       {
