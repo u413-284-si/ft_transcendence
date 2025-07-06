@@ -1,9 +1,7 @@
 import { getUserTournaments } from "./services/tournamentService.js";
-import { getUserByUsername, getUserByEmail } from "./services/userServices.js";
 import { toaster } from "./Toaster.js";
-import { getInputEl } from "./utility.js";
 
-function isEmptyString(str: string): boolean {
+export function isEmptyString(str: string): boolean {
   return str === "";
 }
 

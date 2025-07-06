@@ -194,17 +194,19 @@ export default class ProfileView extends AbstractView {
     let valid = true;
     const username = usernameEl.value;
     const email = emailEL.value;
+    const hasUsername = !isEmptyString(username)
+    const hasEmail = !isEmptyString(email)
 
     clearInvalid(usernameEl, usernameErrorEl);
     clearInvalid(emailEL, emailErrorEl);
 
-    if (username !== "" && !validateUsername(usernameEl, usernameErrorEl)) {
+    if (hasUsername && !validateUsername(usernameEl, usernameErrorEl)) {
       valid = false;
     }
-    if (email !== "" && !validateEmail(emailEL, emailErrorEl)) {
+    if (hasEmail && !validateEmail(emailEL, emailErrorEl)) {
       valid = false;
     }
-    if (username === "" && email === "") {
+    if (!hasUsername && !hasEmail) {
       markInvalid(
         "Please fill in at least one field.",
         usernameEl,
