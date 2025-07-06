@@ -5,8 +5,8 @@ import {
 } from "../services/userStatsServices.js";
 import {
   getUserByUsername,
-  getUserMatches,
-  getUserMatchesByUsername
+  getUserPlayedMatches,
+  getUserPlayedMatchesByUsername
 } from "../services/userServices.js";
 import { escapeHTML } from "../utility.js";
 import { auth } from "../AuthManager.js";
@@ -139,13 +139,13 @@ export default class StatsView extends AbstractView {
   async fetchData() {
     if (this.viewType === "self") {
       this.userStats = await getUserStats();
-      this.matches = await getUserMatches();
+      this.matches = await getUserPlayedMatches();
       return;
     }
     this.userStats = await getUserStatsByUsername(this.username);
     if (!this.userStats) throw new Error("Could not fetch user-stats");
     if (this.viewType === "friend") {
-      this.matches = await getUserMatchesByUsername(this.username);
+      this.matches = await getUserPlayedMatchesByUsername(this.username);
     }
   }
 }
