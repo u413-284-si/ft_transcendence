@@ -3,6 +3,7 @@ export type ToastVariant = "success" | "error" | "warning" | "info";
 export type ToastOptions = {
   variant: ToastVariant;
   text: string;
+  customIcon?: string;
 };
 
 const toastVariants: Record<
@@ -45,9 +46,11 @@ const toastVariants: Record<
   }
 };
 
-export function Toast({ variant, text }: ToastOptions): string {
-  const { icon, textColor, progressColor, borderColor, shadowColor } =
+export function Toast({ variant, text, customIcon }: ToastOptions): string {
+  const { textColor, progressColor, borderColor, shadowColor } =
     toastVariants[variant];
+  const icon = customIcon ? customIcon : toastVariants[variant].icon;
+
   return /* HTML */ `
     <li
       class="relative flex justify-between items-center p-4 mb-2 rounded-md
