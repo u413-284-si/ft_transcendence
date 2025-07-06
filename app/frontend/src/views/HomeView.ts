@@ -15,7 +15,7 @@ import { toaster } from "../Toaster.js";
 export default class HomeView extends AbstractView {
   constructor() {
     super();
-    this.setTitle("Home");
+    this.setTitle(i18next.t("home"));
   }
 
   createHTML() {
