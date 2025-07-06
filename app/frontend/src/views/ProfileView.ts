@@ -3,7 +3,6 @@ import { Form } from "../components/Form.js";
 import { Input, addTogglePasswordListener } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Paragraph } from "../components/Paragraph.js";
-import { Span } from "../components/Span.js";
 import { escapeHTML } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { uploadAvatar } from "../services/userServices.js";
