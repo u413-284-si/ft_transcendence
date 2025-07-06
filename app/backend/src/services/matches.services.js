@@ -15,16 +15,18 @@ const matchSelect = {
   }
 };
 
-export async function createMatch(
+export async function createMatchTx(
+  tx,
   userId,
   playedAs,
   player1Nickname,
   player2Nickname,
   player1Score,
   player2Score,
-  tournament
+  tournament,
+  date
 ) {
-  const match = await prisma.match.create({
+  const match = await tx.match.create({
     data: {
       userId,
       playedAs,
@@ -33,22 +35,10 @@ export async function createMatch(
       player1Score,
       player2Score,
       tournamentId: tournament?.id || null,
-      date: new Date()
+      date: date
     },
     select: matchSelect
   });
-  if (tournament?.id) {
-    const tournamentRecord = await prisma.tournament.findUniqueOrThrow({
-      where: { id: tournament?.id }
-    });
-
-    if (tournamentRecord && tournamentRecord.status === "CREATED") {
-      await prisma.tournament.update({
-        where: { id: tournamentRecord.id },
-        data: { status: "IN_PROGRESS" }
-      });
-    }
-  }
   return match;
 }
 
