@@ -332,6 +332,7 @@ const optionsSearchUser = {
 const optionsUpdatePassword = {
   onRequest: [authorizeUserAccess],
   schema: {
+    body: { $ref: "updateUserPasswordSchema" },
     response: {
       ...errorResponses
     }
