@@ -7,7 +7,13 @@ import {
   deleteUserRefreshToken,
   setCookies
 } from "../services/auth.services.js";
-import { getTokenData, getUserByEmail } from "../services/users.services.js";
+import {
+  getTokenData,
+  getUserByEmail,
+  getUserByUsername,
+  createRandomUsername,
+  isUserNameValid
+} from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
@@ -86,11 +92,32 @@ export async function googleOauth2LoginHandler(request, reply) {
       );
     }
 
-    const userData = await fastify.googleOauth2.userinfo(token.access_token);
-    if (!(await getUserByEmail(userData.email)))
-      await createUser(userData.name, userData.email, "", "GOOGLE");
+    reply
+      .clearCookie("oauth2-code-verifier")
+      .clearCookie("oauth2-redirect-state");
 
-    const payload = await getTokenData(userData.email, "email");
+    const googleUser = await fastify.googleOauth2.userinfo(token.access_token);
+    const dbUser = await getUserByEmail(googleUser.email);
+    if (!dbUser) {
+      let username = createRandomUsername();
+      while (
+        (await getUserByUsername(username)) ||
+        !isUserNameValid(request, username)
+      ) {
+        username = createRandomUsername();
+      }
+      await createUser(username, googleUser.email, "", "GOOGLE");
+    } else if ((await getUserAuthProvider(dbUser.id)) !== "GOOGLE") {
+      return reply
+        .setCookie("authProviderConflict", "GOOGLE", {
+          secure: true,
+          path: "/login",
+          maxAge: 10
+        })
+        .redirect("http://localhost:4000/login");
+    }
+
+    const payload = await getTokenData(googleUser.email, "email");
 
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
@@ -98,10 +125,6 @@ export async function googleOauth2LoginHandler(request, reply) {
     );
 
     reply = setCookies(reply, accessToken, refreshToken);
-
-    reply
-      .clearCookie("oauth2-code-verifier")
-      .clearCookie("oauth2-redirect-state");
 
     return reply.redirect("http://localhost:4000/home");
   } catch (err) {
@@ -191,12 +214,10 @@ export async function logoutUserHandler(request, reply) {
       path: "/api/auth/refresh"
     });
     await deleteUserRefreshToken(userId);
-    return reply
-      .code(200)
-      .send({
-        message: createResponseMessage(action, true),
-        data: { username: username }
-      });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: { username: username }
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },

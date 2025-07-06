@@ -6,12 +6,14 @@ import {
   userLogout
 } from "./services/authServices.js";
 import {
-  startOnlineStatusTracking,
-  stopOnlineStatusTracking
-} from "./services/onlineStatusServices.js";
+  openSSEConnection,
+  closeSSEConnection
+} from "./services/serverSentEventsServices.js";
 import { getUserProfile } from "./services/userServices.js";
+import { toaster } from "./Toaster.js";
 import { Token } from "./types/Token.js";
 import { User } from "./types/User.js";
+import { getCookieValueByName } from "./utility.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
 
@@ -42,12 +44,12 @@ export class AuthManager {
       this.authenticated = true;
       this.scheduleTokenValidation(token);
       this.registerActivityListeners();
-      startOnlineStatusTracking();
+      openSSEConnection();
     } else {
       this.authenticated = false;
       this.clearRefreshTimer();
       this.removeActivityListeners();
-      stopOnlineStatusTracking();
+      closeSSEConnection();
     }
     this.notify();
   }
@@ -55,6 +57,12 @@ export class AuthManager {
   public async initialize(): Promise<void> {
     console.log("Checking for existing auth token");
     try {
+      if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
+        toaster.error("Email address already in use.");
+        document.cookie =
+          "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
+        return;
+      }
       const token = await authAndDecodeAccessToken();
       this.updateAuthState(token);
       if (this.authenticated) {

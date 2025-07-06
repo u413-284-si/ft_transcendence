@@ -60,3 +60,21 @@ export async function deleteFriendRequest(
   console.log(apiResponse);
   return apiResponse.data;
 }
+
+export async function getUserFriendRequestByUsername(
+  username: string
+): Promise<FriendRequest | null> {
+  const encoded = encodeURIComponent(username);
+  const url = `/api/users/me/friend-requests?username=${encoded}`;
+
+  const apiResponse = await apiFetch<FriendRequest[]>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+
+  if (!apiResponse.data.length) {
+    return null;
+  }
+
+  return apiResponse.data[0];
+}

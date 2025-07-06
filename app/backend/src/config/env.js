@@ -73,7 +73,7 @@ const schema = {
     },
     GOOGLE_OAUTH2_REDIRECT_PATH: {
       type: "string",
-      default: "/google/login"
+      default: "/login/google"
     },
     GOOGLE_OAUTH2_CALLBACK_ROUTE: {
       type: "string",
@@ -82,6 +82,39 @@ const schema = {
     GOOGLE_OAUTH2_CALLBACK_URL: {
       type: "string",
       default: "http://localhost:4000/api/auth/google/callback"
+    },
+    STATIC_RATE_LIMIT_MAX: {
+      type: "number",
+      default: 1000,
+      description:
+        "Maximum number of requests inside a timeWindow for staticModule"
+    },
+    STATIC_RATE_LIMIT_TIME_IN_MS: {
+      type: "number",
+      default: 900000, // 15 min
+      description: "Duration of the time window for staticModule"
+    },
+    API_RATE_LIMIT_MAX: {
+      type: "number",
+      default: 50,
+      description:
+        "Maximum number of requests inside a timeWindow for apiModule"
+    },
+    API_RATE_LIMIT_TIME_IN_MS: {
+      type: "number",
+      default: 60000, // 1 min
+      description: "Duration of the time window for apiModule"
+    },
+    AUTH_RATE_LIMIT_MAX: {
+      type: "number",
+      default: 10,
+      description:
+        "Maximum number of requests inside a timeWindow for auth routes"
+    },
+    AUTH_RATE_LIMIT_TIME_IN_MS: {
+      type: "number",
+      default: 60000, // 1 min
+      description: "Duration of the time window for auth routes"
     }
   }
 };
@@ -108,7 +141,13 @@ const envConfig = {
   googleOauth2ClientSecret: config.GOOGLE_OAUTH2_CLIENT_SECRET,
   googleOauth2RedirectPath: config.GOOGLE_OAUTH2_REDIRECT_PATH,
   googleOauth2CallbackRoute: config.GOOGLE_OAUTH2_CALLBACK_ROUTE,
-  googleOauth2CallbackUrl: config.GOOGLE_OAUTH2_CALLBACK_URL
+  googleOauth2CallbackUrl: config.GOOGLE_OAUTH2_CALLBACK_URL,
+  staticRateLimitMax: config.STATIC_RATE_LIMIT_MAX,
+  staticRateLimitTimeInMS: config.STATIC_RATE_LIMIT_TIME_IN_MS,
+  apiRateLimitMax: config.API_RATE_LIMIT_MAX,
+  apiRateLimitTimeInMS: config.API_RATE_LIMIT_TIME_IN_MS,
+  authRateLimitMax: config.AUTH_RATE_LIMIT_MAX,
+  authRateLimitTimeInMS: config.AUTH_RATE_LIMIT_TIME_IN_MS
 };
 
 export default envConfig;

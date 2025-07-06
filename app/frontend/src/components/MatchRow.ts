@@ -1,8 +1,8 @@
-import { Match } from "../types/IMatch.js";
+import { Match, playedAs } from "../types/IMatch.js";
 import { escapeHTML } from "../utility.js";
 
 export function MatchRow(match: Match, user: string): string {
-  const isPlayerOne = match.playedAs === "PLAYERONE";
+  const isPlayerOne = match.playedAs === playedAs.PLAYERONE;
 
   const result = isPlayerOne
     ? match.player1Score > match.player2Score
@@ -43,6 +43,16 @@ export function MatchRow(match: Match, user: string): string {
         ${new Date(match.date!).toLocaleString()}
       </td>
       <td class="border border-dark-emerald px-4 py-2">${tournamentDisplay}</td>
+    </tr>
+  `;
+}
+
+export function NoMatchesRow(): string {
+  return /* HTML */ `
+    <tr>
+      <td colspan="7" class="text-center text-teal py-4">
+        No matches played yet
+      </td>
     </tr>
   `;
 }
