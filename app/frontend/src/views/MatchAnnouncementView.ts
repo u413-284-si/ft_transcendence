@@ -8,13 +8,14 @@ import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
+import { playedAs } from "../types/IMatch.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
   private player2: string;
   private matchNumber: number;
   private roundNumber: number;
-  private userRole: "PLAYERONE" | "PLAYERTWO" | null = null;
+  private userRole: playedAs;
 
   constructor(private tournament: Tournament) {
     super();
@@ -30,10 +31,10 @@ export default class MatchAnnouncementView extends AbstractView {
     const userNickname = tournament.getUserNickname();
     this.userRole =
       this.player1 === userNickname
-        ? "PLAYERONE"
+        ? playedAs.PLAYERONE
         : this.player2 === userNickname
-          ? "PLAYERTWO"
-          : null;
+          ? playedAs.PLAYERTWO
+          : playedAs.NONE;
   }
 
   createHTML() {

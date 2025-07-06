@@ -2,7 +2,6 @@ import prisma from "../prisma/prismaClient.js";
 import { getUserStats } from "./user_stats.services.js";
 
 const matchSelect = {
-  userId: true,
   playedAs: true,
   player1Nickname: true,
   player2Nickname: true,
@@ -59,10 +58,11 @@ export async function getMatch(id) {
   return match;
 }
 
-export async function getUserMatches(userId, filter) {
+export async function getUserMatches(userId, playedAs, filter) {
   const matches = await prisma.match.findMany({
     where: {
-      userId: userId
+      userId: userId,
+      ...(playedAs ? { playedAs: { in: playedAs } } : {})
     },
     select: matchSelect,
     take: filter.limit,
@@ -74,10 +74,11 @@ export async function getUserMatches(userId, filter) {
   return matches;
 }
 
-export async function getUserMatchesByUsername(username) {
+export async function getUserMatchesByUsername(username, playedAs) {
   const matches = await prisma.match.findMany({
     where: {
-      user: { username: username }
+      user: { username: username },
+      ...(playedAs ? { playedAs: { in: playedAs } } : {})
     },
     select: matchSelect
   });

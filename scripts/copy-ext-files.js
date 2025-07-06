@@ -1,9 +1,13 @@
-// scripts/copy-vendor-files.js
-
-import { existsSync, mkdirSync, statSync, copyFileSync } from "fs";
+import {
+  existsSync,
+  mkdirSync,
+  statSync,
+  copyFileSync,
+  readFileSync,
+  writeFileSync
+} from "fs";
 import { dirname, resolve } from "path";
 
-// Define files to copy
 const filesToCopy = [
   {
     from: "node_modules/apexcharts/dist/apexcharts.min.js",
@@ -11,18 +15,17 @@ const filesToCopy = [
   },
   {
     from: "node_modules/dompurify/dist/purify.min.js",
-    to: "./app/frontend/public/ext/purify.js"
+    to: "./app/frontend/public/ext/purify.js",
+    stripSourceMap: true
   }
 ];
 
-// Ensure target directory exists
 function ensureDir(dir) {
   if (!existsSync(dir)) {
     mkdirSync(dir, { recursive: true });
   }
 }
 
-// Compare file modification times
 function shouldCopy(source, destination) {
   try {
     const srcStat = statSync(source);
@@ -34,24 +37,34 @@ function shouldCopy(source, destination) {
   }
 }
 
-// Copy file if needed
-function copyFile(from, to) {
+function copyFile(from, to, stripSourceMap = false) {
   ensureDir(dirname(to));
 
   if (shouldCopy(from, to)) {
     copyFileSync(from, to);
-    console.log(`Copied: ${from} → ${to}`);
+
+    if (stripSourceMap) {
+      try {
+        let content = readFileSync(to, "utf8");
+        content = content.replace(/\/\/# sourceMappingURL=.*\n?$/, "");
+        writeFileSync(to, content, "utf8");
+        console.log(`Copied and stripped source map: ${from} → ${to}`);
+      } catch (err) {
+        console.warn(`Failed to strip source map from ${to}:`, err.message);
+      }
+    } else {
+      console.log(`Copied: ${from} → ${to}`);
+    }
   } else {
     console.log(`Skipped (up to date): ${to}`);
   }
 }
 
-// Run for all files
-filesToCopy.forEach(({ from, to }) => {
+filesToCopy.forEach(({ from, to, stripSourceMap }) => {
   const sourcePath = resolve(from);
   const destPath = resolve(to);
   try {
-    copyFile(sourcePath, destPath);
+    copyFile(sourcePath, destPath, stripSourceMap);
   } catch (err) {
     console.error(`Failed to copy ${from}:`, err.message);
   }

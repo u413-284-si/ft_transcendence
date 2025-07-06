@@ -106,3 +106,14 @@ export function setCookies(reply, accessToken, refreshToken) {
       expires: refreshTokenTimeToExpire
     });
 }
+
+export async function updatePassword(userId, hashedNewPassword) {
+  await prisma.authentication.update({
+    where: {
+      userId: userId
+    },
+    data: {
+      password: hashedNewPassword
+    }
+  });
+}
