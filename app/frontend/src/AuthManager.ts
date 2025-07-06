@@ -64,10 +64,8 @@ export class AuthManager {
         return;
       }
       const token = await authAndDecodeAccessToken();
+      this.user = await getUserProfile();
       this.updateAuthState(token);
-      if (this.authenticated) {
-        this.user = await getUserProfile();
-      }
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         console.log("JWT validation failed or no token found.");
