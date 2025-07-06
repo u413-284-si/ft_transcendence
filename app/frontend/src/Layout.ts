@@ -55,10 +55,6 @@ export class Layout {
           ${Link({ text: "Home", href: "/home" })}
           ${Link({ text: "New Game", href: "/newGame" })}
           ${Link({ text: "New Tournament", href: "/newTournament" })}
-          ${Link({ text: "Profile", href: `/profile` })}
-          ${Link({ text: "Stats", href: `/stats/${auth.getUser().username}` })}
-          ${Link({ text: "Settings", href: "/settings" })}
-          ${Link({ text: "Friends", href: "/friends" })}
         </div>
         <div
           class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
