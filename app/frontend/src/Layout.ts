@@ -6,18 +6,24 @@ import { Drawer } from "./Drawer.js";
 export type LayoutMode = "auth" | "guest";
 
 export class Layout {
-  private mode: LayoutMode;
+  private static instance: Layout;
+  private mode: LayoutMode = "guest";
   private rootEl: HTMLElement;
 
-  constructor(initialMode: LayoutMode) {
-    this.mode = initialMode;
+  constructor() {
     this.rootEl = document.getElementById("app")!;
     this.styleRootElement();
     this.renderShell();
   }
 
+  public static getInstance(): Layout {
+    if (!Layout.instance) {
+      Layout.instance = new Layout();
+    }
+    return Layout.instance;
+  }
+
   public update(newMode: LayoutMode): void {
-    if (this.mode === newMode) return;
     this.mode = newMode;
     this.renderShell();
   }
@@ -55,9 +61,6 @@ export class Layout {
           ${Link({ text: i18next.t("home"), href: "/home" })}
           ${Link({ text: i18next.t("newGame"), href: "/newGame" })}
           ${Link({ text: i18next.t("newTournament"), href: "/newTournament" })}
-          ${Link({ text: i18next.t("stats"), href: `/stats/${auth.getUser().username}` })}
-          ${Link({ text: i18next.t("settings"), href: "/settings" })}
-          ${Link({ text: i18next.t("friends"), href: "/friends" })}
         </div>
         <div
           class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
@@ -66,7 +69,7 @@ export class Layout {
             src="${userAvatarUrl}"
             alt="${i18next.t("avatar")}"
             tabindex="0"
-            class="w-14 h-14 rounded-full border-3 border-white hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+            class="w-14 h-14 rounded-full border-3 border-neon-cyan shadow-neon-cyan hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
           />
         </div>
       </nav>`;
@@ -93,7 +96,7 @@ export class Layout {
 
     const drawer = new Drawer([
       { label: i18next.t("editProfile"), icon: "user", href: "/profile" },
-      { label: i18next.t("stats"), icon: "stats", href: "/stats" },
+      { label: i18next.t("stats"), icon: "stats", href: `/stats/${auth.getUser().username}` },
       { label: i18next.t("friends"), icon: "friends", href: "/friends" },
       { label: i18next.t("settings"), icon: "settings", href: "/settings" },
       {
@@ -101,7 +104,6 @@ export class Layout {
         icon: "logout",
         onClick: async () => {
           await auth.logout();
-          this.update("guest");
         }
       }
     ]);
@@ -114,3 +116,5 @@ export class Layout {
     });
   }
 }
+
+export const layout = Layout.getInstance();

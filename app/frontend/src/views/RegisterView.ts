@@ -3,7 +3,7 @@ import {
   validateEmail,
   validateUsername,
   validatePassword,
-  validateConfirmPassword
+  validateConfirmPassword,
 } from "../validate.js";
 import { registerUser } from "../services/userServices.js";
 import { router } from "../routing/Router.js";
@@ -13,6 +13,7 @@ import { Header1 } from "../components/Header1.js";
 import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
+import { toaster } from "../Toaster.js";
 
 export default class Register extends AbstractView {
   constructor() {
@@ -128,11 +129,11 @@ export default class Register extends AbstractView {
       await registerUser(emailEL.value, userEl.value, passwordEl.value);
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
-        alert("Email or username already exists");
+        toaster.error("Email or username already exists");
         return;
       }
     }
-    alert("Registration was successful!");
+    toaster.info("Registration was successful!");
     router.navigate("/login", false);
   }
 }

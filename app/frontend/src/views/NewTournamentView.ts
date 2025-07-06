@@ -7,7 +7,8 @@ import MatchAnnouncement from "./MatchAnnouncementView.js";
 import PlayerNicknames from "./PlayerNicknamesView.js";
 import {
   validateTournamentName,
-  validatePlayersSelection
+  validatePlayersSelection,
+  isTournamentNameAvailable
 } from "../validate.js";
 import ResultsView from "./ResultsView.js";
 import { Header1 } from "../components/Header1.js";
@@ -118,7 +119,10 @@ export default class NewTournamentView extends AbstractView {
     ) as HTMLElement;
     let isValid = true;
 
-    if (!(await validateTournamentName(tournamentNameEl, tournamentErrorEl))) {
+    if (
+      !validateTournamentName(tournamentNameEl, tournamentErrorEl) ||
+      !(await isTournamentNameAvailable(tournamentNameEl, tournamentErrorEl))
+    ) {
       isValid = false;
     }
     if (

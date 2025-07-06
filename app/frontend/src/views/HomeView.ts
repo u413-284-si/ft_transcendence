@@ -1,15 +1,8 @@
 import AbstractView from "./AbstractView.js";
 import { auth } from "../AuthManager.js";
 import { escapeHTML } from "../utility.js";
-import { uploadAvatar } from "../services/userServices.js";
-import { router } from "../routing/Router.js";
-import { validateImageFile } from "../validate.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
-import { Input } from "../components/Input.js";
-import { Button } from "../components/Button.js";
-import { Span } from "../components/Span.js";
-import { Form } from "../components/Form.js";
 import { toaster } from "../Toaster.js";
 
 export default class HomeView extends AbstractView {
@@ -27,35 +20,9 @@ export default class HomeView extends AbstractView {
           variant: "default"
         })}
         ${Paragraph({
-          text: i18next.t("helloUser", { username: escapeHTML(auth.getToken().username) })
+          text: i18next.t("helloUser", { username: escapeHTML(auth.getUser().username) })
         })}
       </div>
-
-      ${Form({
-        children: [
-          Input({
-            id: "avatar",
-            label: "Upload Your Avatar:",
-            name: "avatar",
-            type: "file",
-            accept: "image/*",
-            errorId: "avatar-upload-error-message"
-          }),
-          Button({
-            text: "Upload Avatar",
-            variant: "default",
-            size: "md",
-            type: "submit"
-          }),
-          Span({
-            text: "Avatar uploaded successfully!",
-            id: "avatar-upload-success-message",
-            variant: "success",
-            className: "hidden"
-          })
-        ],
-        id: "avatar-upload-form"
-      })}
 
       <div>
         <h1 class="mt-12">Test Buttons for toast</h1>
@@ -76,10 +43,6 @@ export default class HomeView extends AbstractView {
   }
 
   protected addListeners() {
-    document
-      .querySelector("#avatar-upload-form")!
-      .addEventListener("submit", (event) => this.uploadAvatar(event));
-
     document.getElementById("button1")!.addEventListener("click", () => {
       toaster.success("This is a succesful toast");
     });
@@ -94,32 +57,6 @@ export default class HomeView extends AbstractView {
     document.getElementById("button4")!.addEventListener("click", () => {
       toaster.info("A info toast to show that something happened");
     });
-  }
-
-  private async uploadAvatar(event: Event) {
-    event.preventDefault();
-    const fileInputEl = document.getElementById("avatar") as HTMLInputElement;
-    const errorEl = document.getElementById(
-      "avatar-upload-error-message"
-    ) as HTMLElement;
-    const successEl = document.getElementById(
-      "avatar-upload-success-message"
-    ) as HTMLElement;
-    successEl.classList.add("hidden");
-
-    if (!validateImageFile(fileInputEl, errorEl)) return;
-
-    const formData = new FormData();
-    const file = fileInputEl!.files![0];
-    formData.append("avatar", file);
-    try {
-      const response = await uploadAvatar(formData);
-      console.log("Avatar upload response:", response);
-      successEl.classList.remove("hidden");
-      fileInputEl.value = "";
-    } catch (error) {
-      router.handleError("Error in uploadAvatar()", error);
-    }
   }
 
   async render() {
