@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import env from "../config/env.js";
 import { fileTypeFromBuffer } from "file-type";
+import { randAdjective, randWord, randSequence } from "@ngneat/falso";
 
 const tokenSelect = {
   id: true,
@@ -40,6 +41,22 @@ export async function createUser(
     select: userSelect
   });
   return user;
+}
+
+export function createRandomUsername() {
+  return (
+    randAdjective().toLowerCase() +
+    "_" +
+    randWord().toLowerCase() +
+    "_" +
+    randSequence({ size: 4, charType: "numeric" })
+  );
+}
+
+export function isUserNameValid(request, username) {
+  return request.validateInput(username, {
+    $ref: "commonDefinitionsSchema#/definitions/username"
+  });
 }
 
 export async function getUser(id) {
