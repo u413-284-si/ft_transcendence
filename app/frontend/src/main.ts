@@ -14,28 +14,25 @@ import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 import { layout } from "./Layout.js";
 
 router
-  .addRoute("/login", { view: Login, guard: guestOnlyGuard, layout: "guest" })
+  .addRoute("/login", { view: Login, guard: guestOnlyGuard })
   .addRoute("/register", {
     view: Register,
-    guard: guestOnlyGuard,
-    layout: "guest"
+    guard: guestOnlyGuard
   })
-  .addRoute("/home", { view: Home, guard: authGuard, layout: "auth" })
-  .addRoute("/newGame", { view: NewGame, guard: authGuard, layout: "auth" })
+  .addRoute("/home", { view: Home, guard: authGuard })
+  .addRoute("/newGame", { view: NewGame, guard: authGuard })
   .addRoute("/newTournament", {
     view: NewTournament,
-    guard: authGuard,
-    layout: "auth"
+    guard: authGuard
   })
-  .addRoute("/profile", { view: Profile, guard: authGuard, layout: "auth" })
-  .addRoute("/settings", { view: Settings, guard: authGuard, layout: "auth" })
+  .addRoute("/profile", { view: Profile, guard: authGuard })
+  .addRoute("/settings", { view: Settings, guard: authGuard })
   .addRoute("/stats/:username", {
     view: Stats,
     guard: authGuard,
-    layout: "auth",
     regex: "[a-zA-Z0-9-!?_$.]{3,20}"
   })
-  .addRoute("/friends", { view: Friends, guard: authGuard, layout: "auth" })
+  .addRoute("/friends", { view: Friends, guard: authGuard })
   .addRouteChangeListener(logRouteChange)
   .addRouteChangeListener(updateUI);
 
