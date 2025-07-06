@@ -14,7 +14,7 @@ import {
   FriendRequestEvent,
   FriendStatusChangeEvent
 } from "../types/ServerSentEvents.js";
-import { getEl, getInputEl } from "../utility.js";
+import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
 import { Button } from "../components/Button.js";
@@ -218,23 +218,31 @@ export default class FriendsView extends AbstractView {
     selector: string,
     confirmMessage: string | null,
     refreshTypes: RequestListType[] | null,
-    handler: (event: Event) => Promise<void> | void
+    handler: (event: Event) => Promise<string>,
+    toastMessage: string,
+    toastIcon?: string
   ): void => {
     document.querySelectorAll(selector).forEach((btn) => {
       btn.addEventListener(
         "click",
         async (event) => {
-          if (confirmMessage) {
-            const confirmed = confirm(confirmMessage);
-            if (!confirmed) return;
-          }
-
-          await handler(event);
-
-          if (refreshTypes) {
-            for (const type of refreshTypes) {
-              this.refreshRequestList(type);
+          try {
+            if (confirmMessage) {
+              const confirmed = confirm(confirmMessage);
+              if (!confirmed) return;
             }
+
+            const username = await handler(event);
+
+            if (refreshTypes) {
+              for (const type of refreshTypes) {
+                this.refreshRequestList(type);
+              }
+            }
+
+            toaster.success(`${toastMessage} ${username}`, toastIcon);
+          } catch (error) {
+            router.handleError("Error handling friend request buttons", error);
           }
         },
         {
@@ -251,7 +259,9 @@ export default class FriendsView extends AbstractView {
           ".remove-friend-btn",
           "Are you sure you want to remove this friend?",
           ["friend"],
-          this.handleDeleteButton
+          this.handleDeleteButton,
+          "Terminated frienship with",
+          "💀"
         );
         break;
 
@@ -260,13 +270,17 @@ export default class FriendsView extends AbstractView {
           ".accept-btn",
           null,
           ["incoming", "friend"],
-          this.handleAcceptButton
+          this.handleAcceptButton,
+          "Accepted friend request of",
+          "❤️"
         );
         this.addButtonListeners(
           ".decline-btn",
           "Are you sure you want to decline this request?",
           ["incoming"],
-          this.handleDeleteButton
+          this.handleDeleteButton,
+          "Declined friend request of",
+          "💔"
         );
         break;
 
@@ -275,33 +289,31 @@ export default class FriendsView extends AbstractView {
           ".delete-request-btn",
           "Are you sure you want to delete this request?",
           ["outgoing"],
-          this.handleDeleteButton
+          this.handleDeleteButton,
+          "Deleted friend request to",
+          "💔"
         );
         break;
     }
   };
 
-  private handleDeleteButton = async (event: Event) => {
-    try {
-      const btn = event.currentTarget as HTMLButtonElement;
-      const requestId = this.getRequestIdFromButton(btn);
-      const request = await deleteFriendRequest(requestId);
-      this.removeFriendRequest(request.id);
-    } catch (error) {
-      router.handleError("Error in handleDeleteButton()", error);
-    }
+  private handleDeleteButton = async (event: Event): Promise<string> => {
+    const btn = event.currentTarget as HTMLButtonElement;
+    const requestId = this.getRequestIdFromButton(btn);
+    const request = await deleteFriendRequest(requestId);
+    this.removeFriendRequest(request.id);
+    const username = escapeHTML(request.friendUsername);
+    return username;
   };
 
-  private handleAcceptButton = async (event: Event) => {
-    try {
-      const btn = event.currentTarget as HTMLButtonElement;
-      const requestid = this.getRequestIdFromButton(btn);
-      const request = await acceptFriendRequest(requestid);
-      this.removeFriendRequest(request.id);
-      this.addFriendRequest(request);
-    } catch (error) {
-      router.handleError("Error in handleAcceptButton()", error);
-    }
+  private handleAcceptButton = async (event: Event): Promise<string> => {
+    const btn = event.currentTarget as HTMLButtonElement;
+    const requestid = this.getRequestIdFromButton(btn);
+    const request = await acceptFriendRequest(requestid);
+    this.removeFriendRequest(request.id);
+    this.addFriendRequest(request);
+    const username = escapeHTML(request.friendUsername);
+    return username;
   };
 
   private handleFriendStatusChange = (event: Event) => {
