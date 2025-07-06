@@ -223,8 +223,7 @@ export default class ProfileView extends AbstractView {
     };
 
     try {
-      const userResponse: User = await patchUser(updatedUser);
-      console.log("Profile update response:", userResponse);
+      await patchUser(updatedUser);
       toaster.success("Profile updated successfully!");
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
@@ -247,8 +246,7 @@ export default class ProfileView extends AbstractView {
     const file = fileInputEl!.files![0];
     formData.append("avatar", file);
     try {
-      const response = await uploadAvatar(formData);
-      console.log("Avatar upload response:", response);
+      await uploadAvatar(formData);
       toaster.success("Avatar uploaded successfully!");
       fileInputEl.value = "";
     } catch (error) {

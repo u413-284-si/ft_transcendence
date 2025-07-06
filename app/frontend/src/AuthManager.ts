@@ -67,7 +67,6 @@ export class AuthManager {
       this.updateAuthState(token);
       if (this.authenticated) {
         this.user = await getUserProfile();
-        console.log("User profile fetched:", this.user);
       }
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -85,7 +84,6 @@ export class AuthManager {
       this.updateAuthState(token);
       console.log("User logged in");
       this.user = await getUserProfile();
-      console.log("User profile fetched:", this.user);
       return true;
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
