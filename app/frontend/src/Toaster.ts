@@ -37,9 +37,9 @@ export class Toaster {
   private createToast(
     variant: ToastVariant,
     text: string,
-    timer: number = this.defaultTimer
+    customIcon?: string
   ) {
-    const html = Toast({ variant, text });
+    const html = Toast({ variant, text, customIcon });
     const template = document.createElement("template");
     template.innerHTML = html.trim();
     const toast = template.content.firstElementChild as HTMLElement;
@@ -56,11 +56,14 @@ export class Toaster {
     this.notifications.appendChild(toast);
 
     // Store data
-    const timeoutId = window.setTimeout(() => this.removeToast(toast), timer);
+    const timeoutId = window.setTimeout(
+      () => this.removeToast(toast),
+      this.defaultTimer
+    );
     this.toastTimeouts.set(toast, {
       timeoutId,
       startTime: Date.now(),
-      remaining: timer
+      remaining: this.defaultTimer
     });
   }
 
@@ -82,20 +85,20 @@ export class Toaster {
     );
   }
 
-  public success(text: string, timer?: number) {
-    this.createToast("success", text, timer);
+  public success(text: string, customIcon?: string) {
+    this.createToast("success", text, customIcon);
   }
 
-  public error(text: string, timer?: number) {
-    this.createToast("error", text, timer);
+  public error(text: string, customIcon?: string) {
+    this.createToast("error", text, customIcon);
   }
 
-  public info(text: string, timer?: number) {
-    this.createToast("info", text, timer);
+  public info(text: string, customIcon?: string) {
+    this.createToast("info", text, customIcon);
   }
 
-  public warn(text: string, timer?: number) {
-    this.createToast("warning", text, timer);
+  public warn(text: string, customIcon?: string) {
+    this.createToast("warning", text, customIcon);
   }
 }
 
