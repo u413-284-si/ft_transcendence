@@ -377,15 +377,6 @@ export async function searchUserHandler(request, reply) {
   try {
     const { username, email } = request.query;
 
-    if (!username && !email) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Missing 'username' or 'email' query parameter."
-      );
-    }
-
     const isEmail = email !== undefined;
 
     const data = isEmail
@@ -410,15 +401,6 @@ export async function updateUserPasswordHandler(request, reply) {
   try {
     const userId = parseInt(request.user.id, 10);
     const { currentPassword, newPassword } = request.body;
-
-    if (!currentPassword || !newPassword) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Current and new passwords are required"
-      );
-    }
 
     const hashedPassword = await getPasswordHash(userId);
     if (!(await verifyHash(hashedPassword, currentPassword))) {
