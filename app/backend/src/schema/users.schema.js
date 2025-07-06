@@ -6,7 +6,12 @@ const userSchema = {
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
     avatar: { type: "string" },
-    dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" }
+    dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" },
+    authentication: {
+      authProvider: {
+        $ref: "commonDefinitionsSchema#/definitions/authProvider"
+      }
+    }
   },
   required: ["id", "username"],
   additionalProperties: false
