@@ -30,7 +30,7 @@ export class GameView extends AbstractView {
     private tournament: Tournament | null
   ) {
     super();
-    this.setTitle("Now playing");
+    this.setTitle(i18next.t("nowPlaying"));
   }
 
   createHTML() {
