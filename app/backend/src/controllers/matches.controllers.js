@@ -32,17 +32,6 @@ export async function createMatchHandler(request, reply) {
       date
     );
 
-    let stats = null;
-    if (playedAs !== "NONE") {
-      const isPlayerOne = playedAs === "PLAYERONE";
-      stats = await updateUserStats(
-        userId,
-        (isPlayerOne ? player1Score : player2Score) >
-          (isPlayerOne ? player2Score : player1Score)
-      );
-    }
-
-    const data = { match, stats };
     return reply
       .code(201)
       .send({ message: createResponseMessage(action, true), data });

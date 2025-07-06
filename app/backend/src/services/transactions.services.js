@@ -35,7 +35,7 @@ export async function transactionMatch(
     }
 
     let stats = null;
-    if (userId !== null) {
+    if (playedAs !== "NONE") {
       const isPlayerOne = playedAs === "PLAYERONE";
       stats = await updateUserStatsTx(
         tx,
