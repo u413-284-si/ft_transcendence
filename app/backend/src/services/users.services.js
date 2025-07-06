@@ -3,9 +3,7 @@ import fs from "fs";
 import path from "path";
 import env from "../config/env.js";
 import { fileTypeFromBuffer } from "file-type";
-import { randProductAdjective, randWord, randNumber } from "@ngneat/falso";
-import fastify from "../app.js";
-import Ajv from "ajv";
+import { randAdjective, randWord, randSequence } from "@ngneat/falso";
 
 const tokenSelect = {
   id: true,
@@ -47,11 +45,11 @@ export async function createUser(
 
 export function createRandomUsername() {
   return (
-    randProductAdjective().toLowerCase() +
+    randAdjective().toLowerCase() +
     "_" +
     randWord().toLowerCase() +
     "_" +
-    randNumber({ min: 1000, max: 9999 })
+    randSequence({ size: 4, charType: "numeric" })
   );
 }
 
