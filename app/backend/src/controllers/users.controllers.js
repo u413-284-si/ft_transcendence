@@ -124,6 +124,14 @@ export async function patchUserHandler(request, reply) {
       { err, body: request.body },
       `patchUserHandler: ${createResponseMessage(action, false)}`
     );
+    if (err.code === "P2002") {
+      return httpError(
+        reply,
+        409,
+        createResponseMessage(action, false),
+        "Email or username already exists"
+      );
+    }
     return handlePrismaError(reply, action, err);
   }
 }

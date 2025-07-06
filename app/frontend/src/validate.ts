@@ -1,6 +1,7 @@
 import { getUserTournaments } from "./services/tournamentService.js";
 import { getUserByUsername, getUserByEmail } from "./services/userServices.js";
 import { toaster } from "./Toaster.js";
+import { getInputEl } from "./utility.js";
 
 function isEmptyString(str: string): boolean {
   return str === "";
@@ -71,10 +72,10 @@ export function validateNicknames(
   return isValid;
 }
 
-export async function validateTournamentName(
+export function validateTournamentName(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
-): Promise<boolean> {
+): boolean {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
   const tournamentName: string = inputEl.value;
 
@@ -93,7 +94,13 @@ export async function validateTournamentName(
     );
     return false;
   }
+  return true;
+}
 
+export async function isTournamentNameAvailable(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): Promise<boolean> {
   try {
     const tournaments = await getUserTournaments();
     if (tournaments.length === 0) {
@@ -101,7 +108,7 @@ export async function validateTournamentName(
     }
 
     const tournamentNames = tournaments.map((tournament) => tournament.name);
-    if (tournamentNames.includes(tournamentName)) {
+    if (tournamentNames.includes(inputEl.value)) {
       markInvalid(
         "Tournament name already exists. Please choose a different name.",
         inputEl,
@@ -111,7 +118,7 @@ export async function validateTournamentName(
     }
   } catch (error) {
     console.error("Error fetching tournaments:", error);
-    alert("An error occurred while validating the tournament name.");
+    toaster.error("An error occurred while validating the tournament name.");
     return false;
   }
   return true;
@@ -178,10 +185,10 @@ export function validateConfirmPassword(
   return true;
 }
 
-export async function validateUsername(
+export function validateUsername(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
-): Promise<boolean> {
+): boolean {
   const usernameRegex: RegExp = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
   const username: string = inputEl.value;
 
@@ -202,28 +209,13 @@ export async function validateUsername(
     );
     return false;
   }
-
-  try {
-    const user = await getUserByUsername(username);
-    if (user !== null) {
-      markInvalid("Username already in use.", inputEl, errorEl);
-      console.log("Username already in use:", user);
-      return false;
-    }
-  } catch (error) {
-    console.error("Error fetching user by username:", error);
-    toaster.error(
-      "An error occurred while validating the username. Please try again."
-    );
-    return false;
-  }
   return true;
 }
 
-export async function validateEmail(
+export function validateEmail(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
-): Promise<boolean> {
+): boolean {
   const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const email: string = inputEl.value;
 
@@ -236,20 +228,6 @@ export async function validateEmail(
 
   if (!validateAgainstRegex(email, emailRegex)) {
     markInvalid("Email must be a valid email address.", inputEl, errorEl);
-    return false;
-  }
-
-  try {
-    const user = await getUserByEmail(email);
-    if (user !== null) {
-      markInvalid("Email already in use.", inputEl, errorEl);
-      return false;
-    }
-  } catch (error) {
-    console.error("Error fetching user by email:", error);
-    toaster.error(
-      "An error occurred while validating the email. Please try again."
-    );
     return false;
   }
   return true;

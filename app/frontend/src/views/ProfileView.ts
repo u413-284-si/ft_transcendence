@@ -20,6 +20,7 @@ import { getInputEl, getEl } from "../utility.js";
 import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
+import { ApiError } from "../services/api.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
@@ -196,10 +197,10 @@ export default class ProfileView extends AbstractView {
     clearInvalid(usernameEl, usernameErrorEl);
     clearInvalid(emailEL, emailErrorEl);
 
-    if (username !== "" && !(await validateUsername(usernameEl, usernameErrorEl))) {
+    if (username !== "" && !validateUsername(usernameEl, usernameErrorEl)) {
       valid = false;
     }
-    if (email !== "" && !(await validateEmail(emailEL, emailErrorEl))) {
+    if (email !== "" && !validateEmail(emailEL, emailErrorEl)) {
       valid = false;
     }
     if (username === "" && email === "") {
@@ -229,6 +230,10 @@ export default class ProfileView extends AbstractView {
       console.log("Profile update response:", userResponse);
       toaster.success("Profile updated successfully!");
     } catch (err) {
+      if (err instanceof ApiError && err.status === 409) {
+        toaster.error("Email or username already exists");
+        return;
+      }
       toaster.error("Failed to update profile. Please try again.");
       router.handleError("Error in patchUser()", err);
     }
