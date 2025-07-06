@@ -20,7 +20,7 @@ export default class HomeView extends AbstractView {
           variant: "default"
         })}
         ${Paragraph({
-          text: `Hello ${escapeHTML(auth.getToken().username)}!
+          text: `Hello ${escapeHTML(auth.getUser().username)}!
             <br />
             This is the home page`
         })}

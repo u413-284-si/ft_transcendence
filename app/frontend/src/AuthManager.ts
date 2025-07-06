@@ -64,10 +64,8 @@ export class AuthManager {
         return;
       }
       const token = await authAndDecodeAccessToken();
+      this.user = await getUserProfile();
       this.updateAuthState(token);
-      if (this.authenticated) {
-        this.user = await getUserProfile();
-      }
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
         console.log("JWT validation failed or no token found.");
@@ -81,9 +79,9 @@ export class AuthManager {
     try {
       await userLogin(username, password);
       const token = await authAndDecodeAccessToken();
-      this.updateAuthState(token);
-      console.log("User logged in");
       this.user = await getUserProfile();
+      console.log("User logged in");
+      this.updateAuthState(token);
       return true;
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -102,10 +100,11 @@ export class AuthManager {
 
   public async logout(): Promise<void> {
     await userLogout();
-    this.updateAuthState(null);
 
     const sidebar = document.getElementById("drawer-sidebar");
     if (sidebar) sidebar.remove();
+
+    this.updateAuthState(null);
   }
 
   public clearTokenOnError(): void {
@@ -128,6 +127,23 @@ export class AuthManager {
 
   public onChange(callback: AuthChangeCallback): void {
     this.listeners.push(callback);
+  }
+
+  public updateUser(update: Partial<User>) {
+    if (!this.authenticated) {
+      console.log("User not authenticated. Cannot update user.");
+      return;
+    }
+    if (!update) {
+      console.log("No update data provided.");
+      return;
+    }
+
+    this.user = {
+      ...this.user!,
+      ...update
+    };
+    this.notify();
   }
 
   private notify(): void {

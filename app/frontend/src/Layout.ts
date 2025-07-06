@@ -6,18 +6,24 @@ import { Drawer } from "./Drawer.js";
 export type LayoutMode = "auth" | "guest";
 
 export class Layout {
-  private mode: LayoutMode;
+  private static instance: Layout;
+  private mode: LayoutMode = "guest";
   private rootEl: HTMLElement;
 
-  constructor(initialMode: LayoutMode) {
-    this.mode = initialMode;
+  constructor() {
     this.rootEl = document.getElementById("app")!;
     this.styleRootElement();
     this.renderShell();
   }
 
+  public static getInstance(): Layout {
+    if (!Layout.instance) {
+      Layout.instance = new Layout();
+    }
+    return Layout.instance;
+  }
+
   public update(newMode: LayoutMode): void {
-    if (this.mode === newMode) return;
     this.mode = newMode;
     this.renderShell();
   }
@@ -90,7 +96,11 @@ export class Layout {
 
     const drawer = new Drawer([
       { label: "Edit Profile", icon: "user", href: "/profile" },
-      { label: "User Stats", icon: "stats", href: `/stats/${auth.getUser().username}` },
+      {
+        label: "User Stats",
+        icon: "stats",
+        href: `/stats/${auth.getUser().username}`
+      },
       { label: "Friends", icon: "friends", href: "/friends" },
       { label: "Settings", icon: "settings", href: "/settings" },
       {
@@ -98,7 +108,6 @@ export class Layout {
         icon: "logout",
         onClick: async () => {
           await auth.logout();
-          this.update("guest");
         }
       }
     ]);
@@ -111,3 +120,5 @@ export class Layout {
     });
   }
 }
+
+export const layout = Layout.getInstance();
