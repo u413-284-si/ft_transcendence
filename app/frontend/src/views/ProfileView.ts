@@ -201,34 +201,53 @@ export default class ProfileView extends AbstractView {
   async validateUserDataAndUpdate(event: Event) {
     event.preventDefault();
 
+    let valid = true;
+
     const usernameEl = getInputEl("username-input");
     const usernameErrorEl = getEl("username-error");
-    const emailEL = getInputEl("email-input");
-    const emailErrorEl = getEl("email-error");
-    let valid = true;
     const username = usernameEl.value;
-    const email = emailEL.value;
     const hasUsername = !isEmptyString(username);
-    const hasEmail = !isEmptyString(email);
 
     clearInvalid(usernameEl, usernameErrorEl);
-    clearInvalid(emailEL, emailErrorEl);
 
     if (hasUsername && !validateUsername(usernameEl, usernameErrorEl)) {
       valid = false;
     }
-    if (hasEmail && !validateEmail(emailEL, emailErrorEl)) {
+
+    let emailEl: HTMLInputElement | null = null;
+    let email = "";
+    if (auth.getUser().authentication.authProvider === "LOCAL") {
+      emailEl = getInputEl("email-input");
+      const emailErrorEl = getEl("email-error");
+      email = emailEl.value;
+      const hasEmail = !isEmptyString(email);
+
+      clearInvalid(emailEl, emailErrorEl);
+
+      if (hasEmail && !validateEmail(emailEl, emailErrorEl)) {
+        valid = false;
+      }
+
+      if (!hasUsername && !hasEmail) {
+        markInvalid(
+          "Please fill in at least one field.",
+          usernameEl,
+          usernameErrorEl
+        );
+        markInvalid(
+          "Please fill in at least one field.",
+          emailEl,
+          emailErrorEl
+        );
+        valid = false;
+      }
+    }
+
+    if (!hasUsername && !emailEl) {
+      markInvalid("Please fill in a username.", usernameEl, usernameErrorEl);
       valid = false;
     }
-    if (!hasUsername && !hasEmail) {
-      markInvalid(
-        "Please fill in at least one field.",
-        usernameEl,
-        usernameErrorEl
-      );
-      markInvalid("Please fill in at least one field.", emailEL, emailErrorEl);
-      valid = false;
-    }
+
     if (!valid) return;
 
     const updatedUser: Partial<User> = {
@@ -240,7 +259,7 @@ export default class ProfileView extends AbstractView {
       await patchUser(updatedUser);
       toaster.success("Profile updated successfully!");
       usernameEl.value = "";
-      emailEL.value = "";
+      if (emailEl) emailEl.value = "";
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         toaster.error("Email or username already exists");
