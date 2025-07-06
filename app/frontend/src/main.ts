@@ -38,7 +38,7 @@ router
 
 document.addEventListener("DOMContentLoaded", () => {
   auth.onChange(async (isAuth) => {
-    console.log("Listener for layout");
+    console.info("Layout listener initialized.");
     if (isAuth) layout.update("auth");
     else layout.update("guest");
   });
