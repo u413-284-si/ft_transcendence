@@ -306,7 +306,7 @@ const optionsSearchUser = {
   onRequest: [authorizeUserAccess],
   schema: {
     querystring: {
-      anyOf: [
+      oneOf: [
         {
           type: "object",
           properties: {
