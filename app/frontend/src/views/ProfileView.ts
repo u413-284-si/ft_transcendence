@@ -9,7 +9,7 @@ import { uploadAvatar } from "../services/userServices.js";
 import {
   validateUsername,
   validateEmail,
-  validatePassword,
+  // FIXME: validatePassword,
   validateConfirmPassword,
   validateImageFile,
   markInvalid,
