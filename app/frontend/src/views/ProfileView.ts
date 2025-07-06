@@ -33,6 +33,50 @@ export default class ProfileView extends AbstractView {
     this.setTitle("Your Profile");
   }
 
+  private getPasswordFormHTML(): string {
+    return /* HTML */ ` ${Form({
+      id: "password-form",
+      className: "flex flex-col gap-4",
+      children: [
+        Paragraph({ text: "Change your password below." }),
+        Input({
+          id: "current-password-input",
+          label: "Current Password",
+          name: "currentPassword",
+          placeholder: "Current Password",
+          type: "password",
+          errorId: "current-password-error",
+          hasToggle: true
+        }),
+        Input({
+          id: "new-password-input",
+          label: "New Password",
+          name: "newPassword",
+          placeholder: "New Password",
+          type: "password",
+          errorId: "new-password-error",
+          hasToggle: true
+        }),
+        Input({
+          id: "confirm-new-password-input",
+          label: "Confirm New Password",
+          name: "confirmNewPassword",
+          placeholder: "Confirm New Password",
+          type: "password",
+          errorId: "confirm-error",
+          hasToggle: true
+        }),
+        Button({
+          text: "Change Password",
+          variant: "default",
+          size: "md",
+          type: "submit",
+          className: "mt-4 self-start"
+        })
+      ]
+    })}`;
+  }
+
   createHTML(): string {
     const user = auth.getUser();
 
@@ -111,47 +155,9 @@ export default class ProfileView extends AbstractView {
                 })
               ]
             })}
-            ${Form({
-              id: "password-form",
-              className: "flex flex-col gap-4",
-              children: [
-                Paragraph({ text: "Change your password below." }),
-                Input({
-                  id: "current-password-input",
-                  label: "Current Password",
-                  name: "currentPassword",
-                  placeholder: "Current Password",
-                  type: "password",
-                  errorId: "current-password-error",
-                  hasToggle: true
-                }),
-                Input({
-                  id: "new-password-input",
-                  label: "New Password",
-                  name: "newPassword",
-                  placeholder: "New Password",
-                  type: "password",
-                  errorId: "new-password-error",
-                  hasToggle: true
-                }),
-                Input({
-                  id: "confirm-new-password-input",
-                  label: "Confirm New Password",
-                  name: "confirmNewPassword",
-                  placeholder: "Confirm New Password",
-                  type: "password",
-                  errorId: "confirm-error",
-                  hasToggle: true
-                }),
-                Button({
-                  text: "Change Password",
-                  variant: "default",
-                  size: "md",
-                  type: "submit",
-                  className: "mt-4 self-start"
-                })
-              ]
-            })}
+            ${auth.getUser().authentication.authProvider === "LOCAL"
+              ? this.getPasswordFormHTML()
+              : ""}
           </div>
         </div>
       </div>
@@ -167,13 +173,15 @@ export default class ProfileView extends AbstractView {
       this.uploadAvatar(event)
     );
 
-    this.passwordFormEl.addEventListener("submit", (event) =>
-      this.handlePasswordChange(event)
-    );
+    if (auth.getUser().authentication.authProvider === "LOCAL") {
+      this.passwordFormEl.addEventListener("submit", (event) =>
+        this.handlePasswordChange(event)
+      );
 
-    addTogglePasswordListener("current-password-input");
-    addTogglePasswordListener("new-password-input");
-    addTogglePasswordListener("confirm-new-password-input");
+      addTogglePasswordListener("current-password-input");
+      addTogglePasswordListener("new-password-input");
+      addTogglePasswordListener("confirm-new-password-input");
+    }
   }
 
   async render(): Promise<void> {
@@ -194,8 +202,8 @@ export default class ProfileView extends AbstractView {
     let valid = true;
     const username = usernameEl.value;
     const email = emailEL.value;
-    const hasUsername = !isEmptyString(username)
-    const hasEmail = !isEmptyString(email)
+    const hasUsername = !isEmptyString(username);
+    const hasEmail = !isEmptyString(email);
 
     clearInvalid(usernameEl, usernameErrorEl);
     clearInvalid(emailEL, emailErrorEl);

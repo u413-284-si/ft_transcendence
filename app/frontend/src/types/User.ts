@@ -4,4 +4,7 @@ export type User = {
   email?: string;
   avatar?: string;
   dateJoined: string;
+  authentication: {
+    authProvider: string;
+  };
 };
