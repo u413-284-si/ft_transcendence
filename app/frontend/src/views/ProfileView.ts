@@ -22,6 +22,7 @@ import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
 import { ApiError } from "../services/api.js";
+import { layout } from "../Layout.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
@@ -226,6 +227,7 @@ export default class ProfileView extends AbstractView {
       await patchUser(updatedUser);
       toaster.success("Profile updated successfully!");
       auth.updateUser(updatedUser);
+      layout.update("auth");
       router.reload();
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
@@ -248,9 +250,14 @@ export default class ProfileView extends AbstractView {
     const file = fileInputEl!.files![0];
     formData.append("avatar", file);
     try {
-      await uploadAvatar(formData);
+      const { avatar } = await uploadAvatar(formData);
       toaster.success("Avatar uploaded successfully!");
-      fileInputEl.value = "";
+      const updatedUser: Partial<User> = {
+        ...(avatar ? { avatar } : {}),
+      };
+      auth.updateUser(updatedUser);
+      layout.update("auth");
+      router.reload();
     } catch (error) {
       toaster.error("Failed to upload avatar. Please try again.");
       router.handleError("Error in uploadAvatar()", error);
