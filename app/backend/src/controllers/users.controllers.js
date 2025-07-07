@@ -418,7 +418,7 @@ export async function updateUserPasswordHandler(request, reply) {
         reply,
         403,
         createResponseMessage(action, false),
-        "User uses Google auth provider"
+        "Password can not be changed. User uses Google auth provider"
       );
     }
 
