@@ -60,9 +60,7 @@ export async function apiFetch<T>(
 
     return success(json.message, json.data);
   } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
+    console.error("Unknown error:", error);
     throw new ApiError("Internal server error", 500);
   }
 }
