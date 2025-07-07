@@ -55,7 +55,7 @@ export async function apiFetch<T>(
   }
 }
 
-export function extractData<T>(response: ApiResponse<T>): T {
+export function unwrap<T>(response: ApiResponse<T>): T {
   if (response.success) {
     return response.data;
   } else {
