@@ -3,7 +3,8 @@ import {
   authRefreshHandler,
   loginUserHandler,
   logoutUserHandler,
-  googleOauth2LoginHandler
+  googleOauth2LoginHandler,
+  authTwoFaQRCodeHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
@@ -15,6 +16,8 @@ export default async function authRoutes(fastify) {
   fastify.get("/token", optionsAuthUserAccess, authAndDecodeAccessHandler);
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
+
+  fastify.get("/2fa", authTwoFaQRCodeHandler);
 
   fastify.patch("/logout", optionsLogoutUser, logoutUserHandler);
 

@@ -19,6 +19,7 @@ import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
+import * as otpAuth from "otpauth";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -194,6 +195,32 @@ export async function authRefreshHandler(request, reply) {
     );
     handlePrismaError(reply, action, err);
   }
+}
+
+export async function authTwoFaQRCodeHandler(request, reply) {
+  const action = "Generate 2FA QR Code";
+  //   const { username } = request.user;
+  const username = "test";
+
+  const issuer = "ft_transcendence";
+  const secret = new otpAuth.Secret({
+    size: 20
+  });
+  const totp = new otpAuth.TOTP({
+    issuer: issuer,
+    label: username,
+    algorithm: "SHA1",
+    digits: 6,
+    period: 30,
+    secret: secret
+  });
+
+  const token = totp.generate();
+
+  console.log("token: ", token);
+  return reply.code(200).send({
+    message: createResponseMessage(action, true)
+  });
 }
 
 export async function logoutUserHandler(request, reply) {
