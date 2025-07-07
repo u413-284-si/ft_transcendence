@@ -1,6 +1,6 @@
 import { router } from "../routing/Router.js";
 import { sanitizeHTML } from "../sanitize.js";
-import { ApiError, unwrap } from "../services/api.js";
+import { unwrap } from "../services/api.js";
 import {
   deleteFriendRequest,
   getUserFriendRequests,
@@ -358,13 +358,7 @@ export default class FriendsView extends AbstractView {
         this.refreshRequestList("friend");
       }
     } catch (error) {
-      console.error(error);
-      let message = "Something went wrong.";
-      if (error instanceof ApiError) {
-        message = error.cause ? error.cause : error.message;
-      }
-      markInvalid(`${message}`, inputEl, errorEl);
-      inputEl.disabled = false;
+      router.handleError("handleSendRequestButton()", error);
     }
   };
 
@@ -413,7 +407,9 @@ export default class FriendsView extends AbstractView {
       const { requestId, username, status } = customEvent.detail;
       switch (status) {
         case "PENDING": {
-          const requests = unwrap(await getUserFriendRequestByUsername(username));
+          const requests = unwrap(
+            await getUserFriendRequestByUsername(username)
+          );
           if (requests[0]) {
             this.addFriendRequest(requests[0]);
             this.refreshRequestList("incoming");
@@ -421,7 +417,9 @@ export default class FriendsView extends AbstractView {
           break;
         }
         case "ACCEPTED": {
-          const request = unwrap(await getUserFriendRequestByUsername(username));
+          const request = unwrap(
+            await getUserFriendRequestByUsername(username)
+          );
           if (request[0]) {
             this.removeFriendRequest(requestId);
             this.addFriendRequest(request[0]);
