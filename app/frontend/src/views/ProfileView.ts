@@ -28,6 +28,7 @@ export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
   private profileFormEl!: HTMLFormElement;
   private passwordFormEl!: HTMLFormElement;
+  private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
   constructor() {
     super();
@@ -150,9 +151,7 @@ export default class ProfileView extends AbstractView {
                   placeholder: `${escapeHTML(user.username)}`,
                   errorId: "username-error"
                 }),
-                auth.getUser().authProvider === "LOCAL"
-                  ? this.getEmailInput(user)
-                  : "",
+                this.hasLocalAuth ? this.getEmailInput(user) : "",
                 Button({
                   text: "Save Changes",
                   variant: "default",
@@ -162,7 +161,7 @@ export default class ProfileView extends AbstractView {
                 })
               ]
             })}
-            ${auth.getUser().authProvider === "LOCAL"
+            ${this.hasLocalAuth
               ? this.getPasswordFormHTML()
               : TextBox({
                   text: "Signed in with Google:\n\nYou cannot change your password or email address.",
