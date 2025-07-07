@@ -22,7 +22,7 @@ import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
 import { ApiError } from "../services/api.js";
-import { layout } from "../Layout.js";
+import { TextBox } from "../components/TextBox.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
@@ -164,7 +164,13 @@ export default class ProfileView extends AbstractView {
             })}
             ${auth.getUser().authentication.authProvider === "LOCAL"
               ? this.getPasswordFormHTML()
-              : ""}
+              : TextBox({
+                  text: "Signed in with Google:\n\nYou cannot change your password or email address.\n\nPlease update your Google account settings instead.",
+                  variant: "warning",
+                  size: "lg",
+                  id: "random-text",
+                  className: "text-center"
+                })}
           </div>
         </div>
       </div>
@@ -285,7 +291,7 @@ export default class ProfileView extends AbstractView {
       const { avatar } = await uploadAvatar(formData);
       toaster.success("Avatar uploaded successfully!");
       const updatedUser: Partial<User> = {
-        ...(avatar ? { avatar } : {}),
+        ...(avatar ? { avatar } : {})
       };
       auth.updateUser(updatedUser);
       router.reload();
