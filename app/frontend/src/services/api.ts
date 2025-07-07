@@ -5,11 +5,19 @@ export class ApiError extends Error {
   status: number;
   cause?: string;
 
-  constructor(status: number, message: string, cause?: string) {
-    super(message);
+  constructor(message: string, status: number, cause?: string);
+  constructor(fail: ApiFail);
+  constructor(arg1: string | ApiFail, arg2?: number, arg3?: string) {
+    if (typeof arg1 === "object") {
+      super(arg1.message);
+      this.status = arg1.status;
+      this.cause = arg1.cause;
+    } else {
+      super(arg1);
+      this.status = arg2 ?? 500;
+      this.cause = arg3;
+    }
     this.name = "APIError";
-    this.status = status;
-    this.cause = cause;
   }
 }
 
@@ -40,7 +48,7 @@ export async function apiFetch<T>(
 
     if (!response.ok) {
       if (response.status === 401 && retryWithRefresh) {
-        await refreshAccessToken();
+        unwrap(await refreshAccessToken());
         return apiFetch<T>(url, options, false);
       }
       return error(json.message, response.status, json.cause);
@@ -51,7 +59,7 @@ export async function apiFetch<T>(
     if (error instanceof ApiError) {
       throw error;
     }
-    throw new ApiError(500, "Internal server error");
+    throw new ApiError("Internal server error", 500);
   }
 }
 
@@ -59,6 +67,6 @@ export function unwrap<T>(response: ApiResponse<T>): T {
   if (response.success) {
     return response.data;
   } else {
-    throw new ApiError(response.status, response.message, response.cause);
+    throw new ApiError(response);
   }
 }
