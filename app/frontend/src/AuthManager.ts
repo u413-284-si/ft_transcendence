@@ -1,4 +1,5 @@
-import { ApiError } from "./services/api.js";
+import { router } from "./routing/Router.js";
+import { ApiError, unwrap } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
   refreshAccessToken,
@@ -63,33 +64,41 @@ export class AuthManager {
           "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
         return;
       }
-      const token = await authAndDecodeAccessToken();
-      this.user = await getUserProfile();
+      const apiResponse = await authAndDecodeAccessToken();
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          console.log("JWT validation failed or no token found.");
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const token = apiResponse.data;
+      this.user = unwrap(await getUserProfile());
       this.updateAuthState(token);
     } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        console.log("JWT validation failed or no token found.");
-      } else {
-        console.error("Unexpected error:", error);
-      }
+      router.handleError("Error while initialize:", error);
     }
   }
 
   public async login(username: string, password: string): Promise<boolean> {
     try {
-      await userLogin(username, password);
-      const token = await authAndDecodeAccessToken();
-      this.user = await getUserProfile();
+      const apiResponse = await userLogin(username, password);
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          toaster.error("Invalid username or password");
+          return false;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const token = unwrap(await authAndDecodeAccessToken());
+      this.user = unwrap(await getUserProfile());
       console.log("User logged in");
       this.updateAuthState(token);
       return true;
     } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        alert("Invalid username or password");
-      } else {
-        console.error("Unexpected login error:", error);
-        alert("An unexpected error occurred.");
-      }
+      router.handleError("Login error", error);
       return false;
     }
   }
@@ -197,11 +206,20 @@ export class AuthManager {
   private async refreshToken(): Promise<void> {
     console.log("Refresh token");
     try {
-      await refreshAccessToken();
-      const newToken = await authAndDecodeAccessToken();
+      const apiResponse = await refreshAccessToken();
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          toaster.error("Token refresh failed. Logging out");
+          this.clearTokenOnError();
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const newToken = unwrap(await authAndDecodeAccessToken());
       this.updateAuthState(newToken);
-    } catch {
-      console.warn("Token refresh failed or expired. Logging out.");
+    } catch (error) {
+      console.warn("Token refresh failed", error);
       this.clearTokenOnError();
     }
   }

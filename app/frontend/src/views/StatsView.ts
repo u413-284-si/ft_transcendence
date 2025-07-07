@@ -21,6 +21,7 @@ import { User } from "../types/User.js";
 import { UserStats } from "../types/IUserStats.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { StatFieldGroup } from "../components/StatField.js";
+import { unwrap } from "../services/api.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -124,12 +125,16 @@ export default class StatsView extends AbstractView {
       this.user = auth.getUser();
       return;
     }
-    this.user = await getUserByUsername(this.username);
+    this.user = unwrap(await getUserByUsername(this.username));
     if (!this.user) {
       throw Error("User not found");
     }
-    this.friendRequest = await getUserFriendRequestByUsername(this.username);
-    if (this.friendRequest?.status === "ACCEPTED") {
+    const requests = unwrap(
+      await getUserFriendRequestByUsername(this.username)
+    );
+    if (!requests[0]) return;
+    this.friendRequest = requests[0];
+    if (this.friendRequest.status === "ACCEPTED") {
       this.viewType = "friend";
     } else {
       this.viewType = "public";
@@ -138,14 +143,17 @@ export default class StatsView extends AbstractView {
 
   async fetchData() {
     if (this.viewType === "self") {
-      this.userStats = await getUserStats();
-      this.matches = await getUserPlayedMatches();
+      this.userStats = unwrap(await getUserStats());
+      this.matches = unwrap(await getUserPlayedMatches());
       return;
     }
-    this.userStats = await getUserStatsByUsername(this.username);
-    if (!this.userStats) throw new Error("Could not fetch user-stats");
+    const userStatsArray = unwrap(await getUserStatsByUsername(this.username));
+    if (!userStatsArray[0]) throw new Error("Could not fetch user-stats");
+    this.userStats = userStatsArray[0];
     if (this.viewType === "friend") {
-      this.matches = await getUserPlayedMatchesByUsername(this.username);
+      this.matches = unwrap(
+        await getUserPlayedMatchesByUsername(this.username)
+      );
     }
   }
 }

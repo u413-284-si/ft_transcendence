@@ -21,8 +21,7 @@ import { getInputEl, getEl } from "../utility.js";
 import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
-import { ApiError } from "../services/api.js";
-import { layout } from "../Layout.js";
+import { ApiError, unwrap } from "../services/api.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
@@ -249,7 +248,7 @@ export default class ProfileView extends AbstractView {
     const file = fileInputEl!.files![0];
     formData.append("avatar", file);
     try {
-      const { avatar } = await uploadAvatar(formData);
+      const { avatar } = unwrap(await uploadAvatar(formData));
       toaster.success("Avatar uploaded successfully!");
       const updatedUser: Partial<User> = {
         ...(avatar ? { avatar } : {}),
