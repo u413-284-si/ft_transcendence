@@ -1,4 +1,4 @@
-import { ApiResponse } from "../types/IApiResponse.js";
+import { ApiResponse, ApiSuccess, ApiFail } from "../types/IApiResponse.js";
 import { refreshAccessToken } from "./authServices.js";
 
 export class ApiError extends Error {
@@ -11,6 +11,14 @@ export class ApiError extends Error {
     this.status = status;
     this.cause = cause;
   }
+}
+
+function success<T>(data: T, message: string): ApiSuccess<T> {
+  return { success: true, message, data };
+}
+
+function error(message: string, status: number, cause?: string): ApiFail {
+  return { success: false, message, status, cause };
 }
 
 export async function apiFetch<T>(
@@ -35,14 +43,22 @@ export async function apiFetch<T>(
         await refreshAccessToken();
         return apiFetch<T>(url, options, false);
       }
-      throw new ApiError(response.status, json.message, json.cause);
+      return error(json.message, response.status, json.cause);
     }
 
-    return json as ApiResponse<T>;
+    return success(json.message, json.data);
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
     }
     throw new ApiError(500, "Internal server error");
+  }
+}
+
+export function extractData<T>(response: ApiResponse<T>): T {
+  if (response.success) {
+    return response.data;
+  } else {
+    throw new ApiError(response.status, response.message, response.error.code);
   }
 }
