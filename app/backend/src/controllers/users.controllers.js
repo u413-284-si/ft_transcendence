@@ -8,7 +8,8 @@ import {
   createUserAvatar,
   deleteUserAvatar,
   getUserByUsername,
-  getUserByEmail
+  getUserByEmail,
+  getUserAuthProvider
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import {
@@ -400,6 +401,17 @@ export async function updateUserPasswordHandler(request, reply) {
   const action = "Update user password";
   try {
     const userId = parseInt(request.user.id, 10);
+    console.log(getUserAuthProvider(userId));
+
+    if (getUserAuthProvider(userId) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "User uses Google auth provider"
+      );
+    }
+
     const { currentPassword, newPassword } = request.body;
 
     const hashedPassword = await getPasswordHash(userId);
