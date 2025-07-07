@@ -24,11 +24,15 @@ export async function userLogin(
   usernameOrEmail: string,
   password: string
 ): Promise<ApiResponse<{ username: string }>> {
-  return apiFetch<{ username: string }>("/api/auth/login", {
-    method: "POST",
-    credentials: "same-origin",
-    body: JSON.stringify({ usernameOrEmail, password })
-  });
+  return apiFetch<{ username: string }>(
+    "/api/auth/login",
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ usernameOrEmail, password })
+    },
+    false
+  );
 }
 
 export async function userLogout(): Promise<ApiResponse<{ username: string }>> {
