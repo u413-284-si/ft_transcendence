@@ -37,12 +37,6 @@ router
   .addRouteChangeListener(updateUI);
 
 document.addEventListener("DOMContentLoaded", async () => {
-  auth.onChange(async (isAuth) => {
-    console.info("Layout listener initialized.");
-    if (isAuth) layout.update("auth");
-    else layout.update("guest");
-  });
-  
   const res = await fetch("/locales/fr.json");
   if (!res.ok) {
     console.error("Failed to load translation file");
@@ -55,6 +49,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     resources: {
       fr: { translation: fr }
     }
+  });
+
+  layout.initialize();
+
+  auth.onChange(async (isAuth) => {
+    console.info("Layout listener initialized.");
+    if (isAuth) layout.update("auth");
+    else layout.update("guest");
   });
 
   auth.initialize().then(() => {

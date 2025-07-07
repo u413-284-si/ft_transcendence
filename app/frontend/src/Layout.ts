@@ -13,7 +13,6 @@ export class Layout {
   constructor() {
     this.rootEl = document.getElementById("app")!;
     this.styleRootElement();
-    this.renderShell();
   }
 
   public static getInstance(): Layout {
@@ -21,6 +20,10 @@ export class Layout {
       Layout.instance = new Layout();
     }
     return Layout.instance;
+  }
+
+  public initialize(): void {
+    this.renderShell();
   }
 
   public update(newMode: LayoutMode): void {
