@@ -58,7 +58,7 @@ export async function registerUser(
   email: string,
   username: string,
   password: string
-) {
+): Promise<ApiResponse<User>> {
   const url = "api/users/";
 
   return apiFetch<User>(url, {
@@ -104,7 +104,7 @@ export async function getUserPlayedMatchesByUsername(
 export async function updateUserPassword(
   currentPassword: string,
   newPassword: string
-) {
+): Promise<ApiResponse<User>> {
   const url = "/api/users/me/password";
 
   return apiFetch<User>(url, {
