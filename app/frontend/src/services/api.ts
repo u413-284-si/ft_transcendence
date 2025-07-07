@@ -22,14 +22,12 @@ export class ApiError extends Error {
   }
 }
 
-function success<T>(message: string, data: T): ApiSuccess<T> {
-  console.log({ message, data });
-  return { success: true, message, data };
-}
-
-function error(message: string, status: number, cause?: string): ApiFail {
-  console.error({ message, status, cause });
-  return { success: false, message, status, cause };
+export function unwrap<T>(response: ApiResponse<T>): T {
+  if (response.success) {
+    return response.data;
+  } else {
+    throw new ApiError(response);
+  }
 }
 
 export async function apiFetch<T>(
@@ -69,14 +67,6 @@ export async function apiFetch<T>(
   }
 }
 
-export function unwrap<T>(response: ApiResponse<T>): T {
-  if (response.success) {
-    return response.data;
-  } else {
-    throw new ApiError(response);
-  }
-}
-
 function handleRefreshFailure(response: ApiFail) {
   if (response.status === 401) {
     auth.clearTokenOnError();
@@ -99,4 +89,14 @@ async function refreshAndRetry<T>(
   }
 
   return apiFetch<T>(url, options, false);
+}
+
+function success<T>(message: string, data: T): ApiSuccess<T> {
+  console.log({ message, data });
+  return { success: true, message, data };
+}
+
+function error(message: string, status: number, cause?: string): ApiFail {
+  console.error({ message, status, cause });
+  return { success: false, message, status, cause };
 }
