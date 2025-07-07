@@ -3,7 +3,9 @@ import { UserStats } from "../types/IUserStats.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 
 export async function getUserStats(): Promise<ApiResponse<UserStats>> {
-  return apiFetch<UserStats>(`/api/users/me/user-stats`, {
+  const url = `/api/users/me/user-stats`;
+
+  return apiFetch<UserStats>(url, {
     method: "GET",
     credentials: "same-origin"
   });

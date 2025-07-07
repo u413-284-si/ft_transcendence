@@ -6,7 +6,9 @@ import { ApiResponse } from "../types/IApiResponse.js";
 export async function createTournament(
   tournament: Tournament
 ): Promise<ApiResponse<TournamentDTO>> {
-  return apiFetch<TournamentDTO>("/api/tournaments", {
+  const url = "/api/tournaments";
+
+  return apiFetch<TournamentDTO>(url, {
     method: "POST",
     body: JSON.stringify(tournament) // uses toJSON()
   });
@@ -15,7 +17,9 @@ export async function createTournament(
 export async function setTournamentFinished(
   tournamentId: number
 ): Promise<ApiResponse<TournamentDTO>> {
-  return apiFetch<TournamentDTO>(`/api/tournaments/${tournamentId}`, {
+  const url = `/api/tournaments/${tournamentId}`;
+
+  return apiFetch<TournamentDTO>(url, {
     method: "PATCH",
     body: JSON.stringify({ status: "FINISHED" })
   });
@@ -25,8 +29,9 @@ export async function updateTournamentBracket(
   tournament: Tournament
 ): Promise<ApiResponse<TournamentDTO>> {
   const tournamentId = tournament.getId();
+  const url = `/api/tournaments/${tournamentId}`;
 
-  return apiFetch<TournamentDTO>(`/api/tournaments/${tournamentId}`, {
+  return apiFetch<TournamentDTO>(url, {
     method: "PATCH",
     body: JSON.stringify({ bracket: JSON.stringify(tournament.getBracket()) })
   });
@@ -35,7 +40,9 @@ export async function updateTournamentBracket(
 export async function getUserTournaments(): Promise<
   ApiResponse<TournamentDTO[]>
 > {
-  return apiFetch<TournamentDTO[]>("/api/users/me/tournaments", {
+  const url = "/api/users/me/tournaments";
+
+  return apiFetch<TournamentDTO[]>(url, {
     method: "GET",
     credentials: "same-origin"
   });
@@ -44,7 +51,9 @@ export async function getUserTournaments(): Promise<
 export async function getActiveTournament(): Promise<
   ApiResponse<TournamentDTO | null>
 > {
-  return apiFetch<TournamentDTO | null>(`/api/users/me/tournaments/active`, {
+  const url = `/api/users/me/tournaments/active`;
+
+  return apiFetch<TournamentDTO | null>(url, {
     method: "GET"
   });
 }
@@ -52,7 +61,9 @@ export async function getActiveTournament(): Promise<
 export async function deleteTournament(
   id: number
 ): Promise<ApiResponse<TournamentDTO>> {
-  return apiFetch<TournamentDTO>(`/api/tournaments/${id}`, {
+  const url = `/api/tournaments/${id}`;
+
+  return apiFetch<TournamentDTO>(url, {
     method: "DELETE"
   });
 }
