@@ -13,7 +13,7 @@ export class ApiError extends Error {
   }
 }
 
-function success<T>(data: T, message: string): ApiSuccess<T> {
+function success<T>(message: string, data: T): ApiSuccess<T> {
   return { success: true, message, data };
 }
 
