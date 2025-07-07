@@ -411,7 +411,6 @@ export async function updateUserPasswordHandler(request, reply) {
   const action = "Update user password";
   try {
     const userId = parseInt(request.user.id, 10);
-    console.log(getUserAuthProvider(userId));
 
     if ((await getUserAuthProvider(userId)) !== "LOCAL") {
       return httpError(
