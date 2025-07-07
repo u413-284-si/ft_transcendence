@@ -3,13 +3,10 @@ import { UserStats } from "../types/IUserStats.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 
 export async function getUserStats(): Promise<ApiResponse<UserStats>> {
-  const apiResponse = await apiFetch<UserStats>(`/api/users/me/user-stats`, {
+  return apiFetch<UserStats>(`/api/users/me/user-stats`, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log(apiResponse);
-  return apiResponse;
 }
 
 export async function getUserStatsByUsername(
@@ -18,11 +15,8 @@ export async function getUserStatsByUsername(
   const encoded = encodeURIComponent(username);
   const url = `/api/user-stats/?username=${encoded}`;
 
-  const apiResponse = await apiFetch<UserStats[]>(url, {
+  return apiFetch<UserStats[]>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log(apiResponse);
-  return apiResponse;
 }

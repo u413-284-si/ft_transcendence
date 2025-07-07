@@ -22,10 +22,12 @@ export class ApiError extends Error {
 }
 
 function success<T>(message: string, data: T): ApiSuccess<T> {
+  console.log({message, data});
   return { success: true, message, data };
 }
 
 function error(message: string, status: number, cause?: string): ApiFail {
+  console.error({message, status, cause});
   return { success: false, message, status, cause };
 }
 

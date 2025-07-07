@@ -5,20 +5,16 @@ import { ApiResponse } from "../types/IApiResponse.js";
 export async function createFriendRequest(
   receiverId: number
 ): Promise<ApiResponse<FriendRequest>> {
-  const apiResponse = await apiFetch<FriendRequest>(
-    "/api/users/me/friend-requests",
-    {
-      method: "POST",
-      body: JSON.stringify({ id: receiverId }),
-      credentials: "same-origin"
-    }
-  );
-
-  console.log(apiResponse);
-  return apiResponse;
+  return apiFetch<FriendRequest>("/api/users/me/friend-requests", {
+    method: "POST",
+    body: JSON.stringify({ id: receiverId }),
+    credentials: "same-origin"
+  });
 }
 
-export async function getUserFriendRequests(): Promise<ApiResponse<FriendRequest[]>> {
+export async function getUserFriendRequests(): Promise<
+  ApiResponse<FriendRequest[]>
+> {
   const apiResponse = await apiFetch<FriendRequest[]>(
     "/api/users/me/friend-requests",
     {
