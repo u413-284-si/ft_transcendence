@@ -117,7 +117,11 @@ export class AuthManager {
   }
 
   public clearTokenOnError(): void {
-    this.updateAuthState(null);
+    if (this.authenticated) {
+      console.error("Could not verify user");
+      toaster.error("Could not verify user:<br>Sending to Login page");
+      this.updateAuthState(null);
+    }
   }
 
   public isAuthenticated(): boolean {

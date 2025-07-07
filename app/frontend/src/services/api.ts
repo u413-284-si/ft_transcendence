@@ -1,3 +1,4 @@
+import { auth } from "../AuthManager.js";
 import { ApiResponse, ApiSuccess, ApiFail } from "../types/IApiResponse.js";
 import { refreshAccessToken } from "./authServices.js";
 
@@ -22,12 +23,12 @@ export class ApiError extends Error {
 }
 
 function success<T>(message: string, data: T): ApiSuccess<T> {
-  console.log({message, data});
+  console.log({ message, data });
   return { success: true, message, data };
 }
 
 function error(message: string, status: number, cause?: string): ApiFail {
-  console.error({message, status, cause});
+  console.error({ message, status, cause });
   return { success: false, message, status, cause };
 }
 
@@ -50,8 +51,11 @@ export async function apiFetch<T>(
 
     if (!response.ok) {
       if (response.status === 401 && retryWithRefresh) {
-        unwrap(await refreshAccessToken());
-        return apiFetch<T>(url, options, false);
+        const retryResponse = await refreshAndRetry<T>(url, options);
+        if (!retryResponse.success) {
+          handleRefreshFailure(retryResponse);
+        }
+        return retryResponse;
       }
       return error(json.message, response.status, json.cause);
     }
@@ -71,4 +75,28 @@ export function unwrap<T>(response: ApiResponse<T>): T {
   } else {
     throw new ApiError(response);
   }
+}
+
+function handleRefreshFailure(response: ApiFail) {
+  if (response.status === 401) {
+    auth.clearTokenOnError();
+  }
+}
+
+async function refreshAndRetry<T>(
+  url: string,
+  options?: RequestInit
+): Promise<ApiResponse<T>> {
+  const refreshResponse = await refreshAccessToken();
+
+  if (!refreshResponse.success) {
+    return {
+      success: false,
+      message: refreshResponse.message,
+      status: refreshResponse.status,
+      cause: refreshResponse.cause
+    };
+  }
+
+  return apiFetch<T>(url, options, false);
 }
