@@ -116,6 +116,16 @@ export async function patchUserHandler(request, reply) {
   const action = "Patch user";
   try {
     const id = parseInt(request.user.id, 10);
+
+    if (request.body.email && getUserAuthProvider(id) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "Email can not be changed. User uses Google auth provider"
+      );
+    }
+
     const data = await updateUser(id, request.body);
     return reply
       .code(200)
