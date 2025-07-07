@@ -7,10 +7,8 @@ const userSchema = {
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
     avatar: { type: "string" },
     dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" },
-    authentication: {
-      authProvider: {
-        $ref: "commonDefinitionsSchema#/definitions/authProvider"
-      }
+    authProvider: {
+      $ref: "commonDefinitionsSchema#/definitions/authProvider"
     }
   },
   required: ["id", "username"],

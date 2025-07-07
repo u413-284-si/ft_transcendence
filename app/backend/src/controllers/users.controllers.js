@@ -9,7 +9,8 @@ import {
   deleteUserAvatar,
   getUserByUsername,
   getUserByEmail,
-  getUserAuthProvider
+  getUserAuthProvider,
+  flattenUser
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import {
@@ -63,7 +64,8 @@ export async function getUserHandler(request, reply) {
   const action = "Get user";
   try {
     const id = parseInt(request.user.id, 10);
-    const data = await getUser(id);
+    const user = await getUser(id);
+    const data = flattenUser(user);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });

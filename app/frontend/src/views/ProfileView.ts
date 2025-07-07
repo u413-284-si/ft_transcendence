@@ -150,7 +150,7 @@ export default class ProfileView extends AbstractView {
                   placeholder: `${escapeHTML(user.username)}`,
                   errorId: "username-error"
                 }),
-                auth.getUser().authentication.authProvider === "LOCAL"
+                auth.getUser().authProvider === "LOCAL"
                   ? this.getEmailInput(user)
                   : "",
                 Button({
@@ -162,7 +162,7 @@ export default class ProfileView extends AbstractView {
                 })
               ]
             })}
-            ${auth.getUser().authentication.authProvider === "LOCAL"
+            ${auth.getUser().authProvider === "LOCAL"
               ? this.getPasswordFormHTML()
               : TextBox({
                   text: "Signed in with Google:\n\nYou cannot change your password or email address.\n\nPlease update your Google account settings instead.",
@@ -186,7 +186,7 @@ export default class ProfileView extends AbstractView {
       this.uploadAvatar(event)
     );
 
-    if (auth.getUser().authentication.authProvider === "LOCAL") {
+    if (auth.getUser().authProvider === "LOCAL") {
       this.passwordFormEl.addEventListener("submit", (event) =>
         this.handlePasswordChange(event)
       );
@@ -223,7 +223,7 @@ export default class ProfileView extends AbstractView {
 
     let emailEl: HTMLInputElement | null = null;
     let email = "";
-    if (auth.getUser().authentication.authProvider === "LOCAL") {
+    if (auth.getUser().authProvider === "LOCAL") {
       emailEl = getInputEl("email-input");
       const emailErrorEl = getEl("email-error");
       email = emailEl.value;

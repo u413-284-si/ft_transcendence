@@ -175,3 +175,11 @@ export async function getUserAuthProvider(id) {
   });
   return user.authProvider;
 }
+
+export function flattenUser(user) {
+  const { authentication, ...rest } = user;
+  return {
+    ...rest,
+    authProvider: authentication.authProvider
+  };
+}
