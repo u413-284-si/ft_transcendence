@@ -13,8 +13,10 @@
     "watch-frontend": "nodemon --watch ./app/frontend/src --ext ts --exec \"npm run style && npm run build && npm run start\"",
     "watch-backend": "nodemon --watch ./app/backend/src --ext js --exec \"npm run start\"",
     "watch": "nodemon --watch ./app/frontend/src --watch ./app/backend/src  --ext ts,js --exec \"npm run style && npm run build && npm run start\"",
-    "db-init": "npx prisma migrate dev",
-    "dev": "npm run db-init && npm run watch",
+    "db:init": "npx prisma migrate dev",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset",
+    "dev": "npm run db:init && npm run watch",
     "prepare": "husky",
     "copy:vendor": "node scripts/copy-ext-files.js"
   },
@@ -74,7 +76,8 @@
     "typescript-eslint": "^8.29.0"
   },
   "prisma": {
-    "schema": "./app/backend/prisma/schema.prisma"
+    "schema": "./app/backend/prisma/schema.prisma",
+    "seed": "ts-node ./app/backend/prisma/seed.ts"
   },
   "prettier": {
     "singleQuote": false,
