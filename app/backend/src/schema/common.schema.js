@@ -40,7 +40,7 @@ const commonDefinitionsSchema = {
     authProvider: {
       type: "string",
       enum: ["LOCAL", "GOOGLE"],
-      description: "Authentication provide which can be either LOCAL or GOOGLE"
+      description: "Authentication provider which can be either LOCAL or GOOGLE"
     },
     score: {
       type: "integer",
