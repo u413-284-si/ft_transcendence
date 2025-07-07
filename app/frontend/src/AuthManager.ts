@@ -108,7 +108,10 @@ export class AuthManager {
   }
 
   public async logout(): Promise<void> {
-    await userLogout();
+    const apiResponse = await userLogout();
+    if (!apiResponse.success) {
+      console.error("Error while logout()", apiResponse.message);
+    }
 
     const sidebar = document.getElementById("drawer-sidebar");
     if (sidebar) sidebar.remove();
