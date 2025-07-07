@@ -117,7 +117,7 @@ export async function patchUserHandler(request, reply) {
   try {
     const id = parseInt(request.user.id, 10);
 
-    if (request.body.email && getUserAuthProvider(id) !== "LOCAL") {
+    if (request.body.email && (await getUserAuthProvider(id)) !== "LOCAL") {
       return httpError(
         reply,
         403,
@@ -413,7 +413,7 @@ export async function updateUserPasswordHandler(request, reply) {
     const userId = parseInt(request.user.id, 10);
     console.log(getUserAuthProvider(userId));
 
-    if (getUserAuthProvider(userId) !== "LOCAL") {
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
       return httpError(
         reply,
         403,
