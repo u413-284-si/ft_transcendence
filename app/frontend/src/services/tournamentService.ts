@@ -1,22 +1,23 @@
 import { Tournament } from "../Tournament.js";
 import { TournamentDTO } from "../types/ITournament.js";
 import { apiFetch } from "./api.js";
+import { ApiResponse } from "../types/IApiResponse.js";
 
 export async function createTournament(
   tournament: Tournament
-): Promise<TournamentDTO> {
+): Promise<ApiResponse<TournamentDTO>> {
   const apiResponse = await apiFetch<TournamentDTO>("/api/tournaments", {
     method: "POST",
     body: JSON.stringify(tournament) // uses toJSON()
   });
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
 export async function setTournamentFinished(
   tournamentId: number
-): Promise<TournamentDTO> {
+): Promise<ApiResponse<TournamentDTO>> {
   const apiResponse = await apiFetch<TournamentDTO>(
     `/api/tournaments/${tournamentId}`,
     {
@@ -26,12 +27,12 @@ export async function setTournamentFinished(
   );
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
 export async function updateTournamentBracket(
   tournament: Tournament
-): Promise<TournamentDTO> {
+): Promise<ApiResponse<TournamentDTO>> {
   const tournamentId = tournament.getId();
   const apiResponse = await apiFetch<TournamentDTO>(
     `/api/tournaments/${tournamentId}`,
@@ -42,10 +43,10 @@ export async function updateTournamentBracket(
   );
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
-export async function getUserTournaments(): Promise<TournamentDTO[]> {
+export async function getUserTournaments(): Promise<ApiResponse<TournamentDTO[]>> {
   const apiResponse = await apiFetch<TournamentDTO[]>(
     "/api/users/me/tournaments",
     {
@@ -55,10 +56,10 @@ export async function getUserTournaments(): Promise<TournamentDTO[]> {
   );
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
-export async function getActiveTournament(): Promise<TournamentDTO | null> {
+export async function getActiveTournament(): Promise<ApiResponse<TournamentDTO | null>> {
   const apiResponse = await apiFetch<TournamentDTO | null>(
     `/api/users/me/tournaments/active`,
     {
@@ -67,14 +68,14 @@ export async function getActiveTournament(): Promise<TournamentDTO | null> {
   );
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
-export async function deleteTournament(id: number): Promise<TournamentDTO> {
+export async function deleteTournament(id: number): Promise<ApiResponse<TournamentDTO>> {
   const apiResponse = await apiFetch<TournamentDTO>(`/api/tournaments/${id}`, {
     method: "DELETE"
   });
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }

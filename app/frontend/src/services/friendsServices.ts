@@ -1,9 +1,10 @@
 import { apiFetch } from "./api.js";
 import { FriendRequest } from "../types/FriendRequest.js";
+import { ApiResponse } from "../types/IApiResponse.js";
 
 export async function createFriendRequest(
   receiverId: number
-): Promise<FriendRequest> {
+): Promise<ApiResponse<FriendRequest>> {
   const apiResponse = await apiFetch<FriendRequest>(
     "/api/users/me/friend-requests",
     {
@@ -14,10 +15,10 @@ export async function createFriendRequest(
   );
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
-export async function getUserFriendRequests(): Promise<FriendRequest[]> {
+export async function getUserFriendRequests(): Promise<ApiResponse<FriendRequest[]>> {
   const apiResponse = await apiFetch<FriendRequest[]>(
     "/api/users/me/friend-requests",
     {
@@ -27,12 +28,12 @@ export async function getUserFriendRequests(): Promise<FriendRequest[]> {
   );
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
 export async function acceptFriendRequest(
   requestId: number
-): Promise<FriendRequest> {
+): Promise<ApiResponse<FriendRequest>> {
   const apiResponse = await apiFetch<FriendRequest>(
     `/api/users/me/friend-requests/${requestId}`,
     {
@@ -43,12 +44,12 @@ export async function acceptFriendRequest(
   );
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
 export async function deleteFriendRequest(
   requestId: number
-): Promise<FriendRequest> {
+): Promise<ApiResponse<FriendRequest>> {
   const apiResponse = await apiFetch<FriendRequest>(
     `/api/users/me/friend-requests/${requestId}`,
     {
@@ -58,12 +59,12 @@ export async function deleteFriendRequest(
   );
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
 export async function getUserFriendRequestByUsername(
   username: string
-): Promise<FriendRequest | null> {
+): Promise<ApiResponse<FriendRequest[]>> {
   const encoded = encodeURIComponent(username);
   const url = `/api/users/me/friend-requests?username=${encoded}`;
 
@@ -72,9 +73,6 @@ export async function getUserFriendRequestByUsername(
     credentials: "same-origin"
   });
 
-  if (!apiResponse.data.length) {
-    return null;
-  }
-
-  return apiResponse.data[0];
+  console.log(apiResponse);
+  return apiResponse;
 }

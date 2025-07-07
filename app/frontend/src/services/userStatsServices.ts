@@ -1,19 +1,20 @@
 import { apiFetch } from "./api.js";
 import { UserStats } from "../types/IUserStats.js";
+import { ApiResponse } from "../types/IApiResponse.js";
 
-export async function getUserStats(): Promise<UserStats> {
+export async function getUserStats(): Promise<ApiResponse<UserStats>> {
   const apiResponse = await apiFetch<UserStats>(`/api/users/me/user-stats`, {
     method: "GET",
     credentials: "same-origin"
   });
 
   console.log(apiResponse);
-  return apiResponse.data;
+  return apiResponse;
 }
 
 export async function getUserStatsByUsername(
   username: string
-): Promise<UserStats | null> {
+): Promise<ApiResponse<UserStats[]>> {
   const encoded = encodeURIComponent(username);
   const url = `/api/user-stats/?username=${encoded}`;
 
@@ -22,9 +23,6 @@ export async function getUserStatsByUsername(
     credentials: "same-origin"
   });
 
-  if (!apiResponse.data.length) {
-    return null;
-  }
-
-  return apiResponse.data[0];
+  console.log(apiResponse);
+  return apiResponse;
 }
