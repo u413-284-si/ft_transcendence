@@ -21,8 +21,7 @@ import { getInputEl, getEl } from "../utility.js";
 import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
-import { ApiError } from "../services/api.js";
-import { layout } from "../Layout.js";
+import { ApiError, unwrap } from "../services/api.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
@@ -224,15 +223,17 @@ export default class ProfileView extends AbstractView {
     };
 
     try {
-      await patchUser(updatedUser);
+      const apiResponse = await patchUser(updatedUser);
+      if (!apiResponse.success) {
+        if (apiResponse.status === 409) {
+          toaster.error("Email or username already exists");
+          return;
+        } else throw new ApiError(apiResponse);
+      }
       toaster.success("Profile updated successfully!");
       auth.updateUser(updatedUser);
       router.reload();
     } catch (err) {
-      if (err instanceof ApiError && err.status === 409) {
-        toaster.error("Email or username already exists");
-        return;
-      }
       toaster.error("Failed to update profile. Please try again.");
       router.handleError("Error in patchUser()", err);
     }
@@ -249,10 +250,10 @@ export default class ProfileView extends AbstractView {
     const file = fileInputEl!.files![0];
     formData.append("avatar", file);
     try {
-      const { avatar } = await uploadAvatar(formData);
+      const { avatar } = unwrap(await uploadAvatar(formData));
       toaster.success("Avatar uploaded successfully!");
       const updatedUser: Partial<User> = {
-        ...(avatar ? { avatar } : {}),
+        ...(avatar ? { avatar } : {})
       };
       auth.updateUser(updatedUser);
       router.reload();
@@ -292,7 +293,9 @@ export default class ProfileView extends AbstractView {
     // }
 
     try {
-      await updateUserPassword(currentPasswordEl.value, newPasswordEl.value);
+      unwrap(
+        await updateUserPassword(currentPasswordEl.value, newPasswordEl.value)
+      );
       toaster.success("Password updated successfully!");
       currentPasswordEl.value = "";
       newPasswordEl.value = "";

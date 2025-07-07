@@ -17,6 +17,7 @@ import { Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { RadioGroup } from "../components/RadioGroup.js";
 import { Form } from "../components/Form.js";
+import { unwrap } from "../services/api.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -75,7 +76,7 @@ export default class NewTournamentView extends AbstractView {
   }
 
   async render() {
-    const activeTournament = await getActiveTournament();
+    const activeTournament = unwrap(await getActiveTournament());
     if (!activeTournament) {
       console.log("No active tournament found");
       this.updateHTML();
