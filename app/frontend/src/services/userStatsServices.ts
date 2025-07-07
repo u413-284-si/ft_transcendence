@@ -3,6 +3,7 @@ import { UserStats } from "../types/IUserStats.js";
 import {
   HeatmapSeries,
   ScoreDiffSeries,
+  ScoresLastTenDaysSeries,
   TournamentProgressSeries,
   WinrateSeries,
   WinStreakStats
@@ -88,6 +89,18 @@ export async function getUserWinStreak(): Promise<WinStreakStats> {
   const url = "/api/user-stats/me/win-streak";
 
   const apiResponse = await apiFetch<WinStreakStats>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+
+  console.log(apiResponse);
+  return apiResponse.data;
+}
+
+export async function getUserScoresLastTen(): Promise<ScoresLastTenDaysSeries> {
+  const url = "/api/user-stats/me/scores-last-ten";
+
+  const apiResponse = await apiFetch<ScoresLastTenDaysSeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });

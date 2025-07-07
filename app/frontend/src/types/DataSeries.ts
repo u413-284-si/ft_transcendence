@@ -55,3 +55,10 @@ export type WinStreakStats = {
   currentStreak: number;
   data: WinStreakSeries;
 };
+
+type ScoresLastTenDays = {
+  x: string; // ISO 8601 date string
+  y: number;
+};
+
+export type ScoresLastTenDaysSeries = ScoresLastTenDays[];

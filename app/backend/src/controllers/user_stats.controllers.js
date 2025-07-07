@@ -1,6 +1,7 @@
 import {
   getActivityMatrix,
   getUserScoreDiff,
+  getUserScoresLastTen,
   getUserWinrateProgression,
   getUserWinStreak
 } from "../services/matches.services.js";
@@ -137,6 +138,24 @@ export async function getWinStreakHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getScoreDiffHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getScoresLastTenHandler(request, reply) {
+  const action = "Get scores last ten";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const data = await getUserScoresLastTen(userId);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getScoresLastTenHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

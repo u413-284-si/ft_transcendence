@@ -1,6 +1,7 @@
 import {
   getUserActivityMatrix,
   getUserScoreDiff,
+  getUserScoresLastTen,
   getUserStats,
   getUserTournamentProgress,
   getUserWinrateProgression,
@@ -9,6 +10,7 @@ import {
 import {
   HeatmapSeries,
   ScoreDiffSeries,
+  ScoresLastTenDaysSeries,
   TournamentProgressSeries,
   WinrateSeries,
   WinStreakStats
@@ -23,6 +25,7 @@ export default class ChartsView extends AbstractView {
   private activityMatrix: HeatmapSeries | null = null;
   private tournamentProgressSeries: TournamentProgressSeries | null = null;
   private winStreak: WinStreakStats | null = null;
+  private scoresLastTen: ScoresLastTenDaysSeries | null = null;
 
   constructor() {
     super();
@@ -92,6 +95,12 @@ export default class ChartsView extends AbstractView {
         <h2 class="text-xl font-semibold mb-4">Win Streak Radial</h2>
         <div id="streak-chart" class="w-full min-w-[500px] h-[300px]"></div>
       </div>
+
+      <!-- Row 5: Scores Last Ten Days -->
+      <div class="bg-gray-900 rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Scores Last Ten Days</h2>
+        <div id="scores-last-ten" class="w-full min-w-[500px] h-[300px]"></div>
+      </div>
     </div>`;
   }
 
@@ -102,6 +111,7 @@ export default class ChartsView extends AbstractView {
     this.tournamentProgressSeries = await getUserTournamentProgress();
     this.scoreDiffSeries = await getUserScoreDiff();
     this.winStreak = await getUserWinStreak();
+    this.scoresLastTen = await getUserScoresLastTen();
     this.updateHTML();
     this.rederWinLossChart(this.userStats);
     this.renderWinrateChart();
@@ -110,6 +120,7 @@ export default class ChartsView extends AbstractView {
     this.renderTournamentProgress();
     this.renderWinStreakChart();
     this.renderWinStreakRadialChart();
+    this.renderScoresLastTenDaysChart();
   }
 
   getName(): string {
@@ -479,6 +490,63 @@ export default class ChartsView extends AbstractView {
 
     const chartEl = document.querySelector("#streak-chart");
     if (!chartEl) throw new Error("Chart element streak-chart not found");
+
+    const chart = new ApexCharts(chartEl, options);
+    chart.render();
+  }
+
+  renderScoresLastTenDaysChart() {
+    if (!this.scoresLastTen) throw new Error("scoresLastTen is null");
+
+    const options = {
+      chart: {
+        type: "bar",
+        height: 350,
+        toolbar: {
+          show: false // hide download menu etc
+        }
+      },
+      series: [
+        {
+          name: "Scores Last Ten Days",
+          data: this.scoresLastTen
+        }
+      ],
+      xaxis: {
+        type: "category",
+        categories: [], // will be auto-filled by your series' x values
+        title: {
+          text: "Date"
+        },
+        labels: {
+          rotate: -45 // rotate date labels for better readability
+        }
+      },
+      yaxis: {
+        title: {
+          text: "Score"
+        },
+        min: 0
+      },
+      dataLabels: {
+        enabled: true // show values on top of bars
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          columnWidth: "50%", // width of each bar
+          distributed: false // all bars same color
+        }
+      },
+      tooltip: {
+        y: {
+          formatter: (value: number) => `${value} points`
+        }
+      }
+    };
+
+    const chartEl = document.querySelector("#scores-last-ten");
+    if (!chartEl) throw new Error("Chart element scores-last-ten not found");
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();

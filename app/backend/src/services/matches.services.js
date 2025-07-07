@@ -245,3 +245,59 @@ export async function getUserWinStreak(userId) {
     data
   };
 }
+
+export async function getUserScoresLastTen(userId) {
+  const tenDaysAgo = new Date();
+  tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
+  const matches = await prisma.match.findMany({
+    where: { userId, playedAs: { not: "NONE" }, date: { gte: tenDaysAgo } },
+    orderBy: {
+      date: "desc"
+    }
+  });
+  const scores = aggregatePlayerScores(matches);
+  const data = fillMissingDays(scores, 10);
+
+  return data;
+}
+
+function aggregatePlayerScores(matches) {
+  const dailyTotals = {};
+
+  for (const match of matches) {
+    const day = formatDate(match.date);
+    const score = getPlayerScore(match);
+
+    dailyTotals[day] = (dailyTotals[day] || 0) + score;
+  }
+
+  return dailyTotals;
+}
+
+function getPlayerScore(match) {
+  if (match.playedAs === "NONE") return 0;
+  if (match.playedAs === "PLAYERONE") {
+    return match.player1Score;
+  } else if (match.playedAs === "PLAYERTWO") {
+    return match.player2Score;
+  }
+}
+
+function formatDate(date) {
+  return date.toISOString().split("T")[0];
+}
+
+function fillMissingDays(data, days) {
+  const result = [];
+
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+
+    const dayStr = formatDate(date);
+    result.push({ x: dayStr, y: data[dayStr] || 0 });
+  }
+
+  return result;
+}
