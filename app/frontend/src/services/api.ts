@@ -59,6 +59,6 @@ export function extractData<T>(response: ApiResponse<T>): T {
   if (response.success) {
     return response.data;
   } else {
-    throw new ApiError(response.status, response.message, response.error.code);
+    throw new ApiError(response.status, response.message, response.cause);
   }
 }
