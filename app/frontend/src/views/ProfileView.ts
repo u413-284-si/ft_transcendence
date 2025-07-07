@@ -223,15 +223,17 @@ export default class ProfileView extends AbstractView {
     };
 
     try {
-      await patchUser(updatedUser);
+      const apiResponse = await patchUser(updatedUser);
+      if (!apiResponse.success) {
+        if (apiResponse.status === 409) {
+          toaster.error("Email or username already exists");
+          return;
+        } else throw new ApiError(apiResponse);
+      }
       toaster.success("Profile updated successfully!");
       auth.updateUser(updatedUser);
       router.reload();
     } catch (err) {
-      if (err instanceof ApiError && err.status === 409) {
-        toaster.error("Email or username already exists");
-        return;
-      }
       toaster.error("Failed to update profile. Please try again.");
       router.handleError("Error in patchUser()", err);
     }
@@ -251,7 +253,7 @@ export default class ProfileView extends AbstractView {
       const { avatar } = unwrap(await uploadAvatar(formData));
       toaster.success("Avatar uploaded successfully!");
       const updatedUser: Partial<User> = {
-        ...(avatar ? { avatar } : {}),
+        ...(avatar ? { avatar } : {})
       };
       auth.updateUser(updatedUser);
       router.reload();
