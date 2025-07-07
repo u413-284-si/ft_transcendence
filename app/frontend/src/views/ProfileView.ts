@@ -293,7 +293,9 @@ export default class ProfileView extends AbstractView {
     // }
 
     try {
-      await updateUserPassword(currentPasswordEl.value, newPasswordEl.value);
+      unwrap(
+        await updateUserPassword(currentPasswordEl.value, newPasswordEl.value)
+      );
       toaster.success("Password updated successfully!");
       currentPasswordEl.value = "";
       newPasswordEl.value = "";

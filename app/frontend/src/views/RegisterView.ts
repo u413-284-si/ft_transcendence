@@ -126,7 +126,7 @@ export default class Register extends AbstractView {
     }
 
     try {
-      const apiResponse = (await registerUser(emailEL.value, userEl.value, passwordEl.value));
+      const apiResponse = await registerUser(emailEL.value, userEl.value, passwordEl.value);
       if (!apiResponse.success) {
         if (apiResponse.status === 409) {
           toaster.error("Email or username already exists");
