@@ -165,10 +165,10 @@ export default class ProfileView extends AbstractView {
             ${auth.getUser().authProvider === "LOCAL"
               ? this.getPasswordFormHTML()
               : TextBox({
-                  text: "Signed in with Google:\n\nYou cannot change your password or email address.\n\nPlease update your Google account settings instead.",
+                  text: "Signed in with Google:\n\nYou cannot change your password or email address.",
                   variant: "warning",
                   size: "lg",
-                  id: "random-text",
+                  id: "google-warning",
                   className: "text-center"
                 })}
           </div>
