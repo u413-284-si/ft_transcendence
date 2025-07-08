@@ -23,6 +23,7 @@ import { winrateOptions } from "../charts/winrateOptions.js";
 import { scoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { tournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 import { scoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
+import { Chart } from "../components/Chart.js";
 
 export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
@@ -43,42 +44,25 @@ export default class ChartsView extends AbstractView {
       <!-- Row 1: Summary -->
       <div class="flex flex-cols-2 gap-8">
         <!-- Wins vs Losses (small donut) -->
-        <div
-          class="bg-emerald-dark/80 border border-neon-cyan rounded-lg p-6 transition-shadow duration-300 hover:shadow-neon-cyan hover:scale-[1.02]"
-        >
-          <h2 class="text-xl font-semibold mb-4">Wins vs Losses</h2>
-          <div id="win-loss-chart" class="mt-8"></div>
-        </div>
+        ${Chart({ title: "Wins vs Losses", chartId: "win-loss-chart" })}
 
         <!-- Winrate Progression -->
-        <div
-          class="bg-emerald-dark/80 border border-neon-cyan rounded-lg p-6 transition-shadow duration-300 hover:shadow-neon-cyan hover:scale-[1.02]"
-        >
-          <h2 class="text-xl font-semibold mb-4">
-            Winrate Progression (Last 10 Matches)
-          </h2>
-          <div id="winrate-chart"></div>
-        </div>
+        ${Chart({
+          title: "Winrate Progression (Last 10 Matches)",
+          chartId: "winrate-chart"
+        })}
       </div>
 
       <!-- Row 2: Performance -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-gray-900 rounded-lg p-6">
-          <h2 class="text-xl font-semibold mb-4">
-            Score Differential (Last 10 Matches)
-          </h2>
-          <div
-            id="score-diff-chart"
-            class="w-full min-w-[500px] h-[300px]"
-          ></div>
-        </div>
-        <div class="bg-gray-900 rounded-lg p-6">
-          <h2 class="text-xl font-semibold mb-4">Tournament Summary</h2>
-          <div
-            id="tournament-progress-chart"
-            class="w-full min-w-[500px] h-[300px]"
-          ></div>
-        </div>
+      <div class="grid grid-cols-2 gap-8">
+        ${Chart({
+          title: "Score Differential (Last 10 Matches)",
+          chartId: "score-diff-chart"
+        })}
+        ${Chart({
+          title: "Tournament Summary",
+          chartId: "tournament-progress-chart"
+        })}
       </div>
 
       <!-- Row 3: Heatmap -->
