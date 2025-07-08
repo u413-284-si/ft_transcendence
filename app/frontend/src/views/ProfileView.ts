@@ -22,7 +22,6 @@ import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
 import { ApiError } from "../services/api.js";
-import { layout } from "../Layout.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
@@ -31,7 +30,7 @@ export default class ProfileView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle("Your Profile");
+    this.setTitle(i18next.t("yourProfile"));
   }
 
   createHTML(): string {
@@ -59,17 +58,17 @@ export default class ProfileView extends AbstractView {
                 id: "avatar-upload-form",
                 className: "flex flex-col gap-4",
                 children: [
-                  Paragraph({ text: "Change your avatar below." }),
+                  Paragraph({ text: i18next.t("changeAvatarText") }),
                   Input({
                     id: "avatar-input",
-                    label: "Upload Avatar:",
+                    label: i18next.t("uploadAvatar"),
                     name: "avatar",
                     type: "file",
                     accept: "image/*",
                     errorId: "avatar-upload-error-message"
                   }),
                   Button({
-                    text: "Upload Avatar",
+                    text: i18next.t("uploadAvatar"),
                     variant: "default",
                     size: "md",
                     type: "submit",
@@ -86,10 +85,10 @@ export default class ProfileView extends AbstractView {
               id: "profile-form",
               className: "flex flex-col gap-4",
               children: [
-                Paragraph({ text: "Update your profile information below." }),
+                Paragraph({ text: i18next.t("updateProfileText") }),
                 Input({
                   id: "username-input",
-                  label: "Username",
+                  label: i18next.t("usernameLabel"),
                   name: "username",
                   type: "text",
                   placeholder: `${escapeHTML(user.username)}`,
@@ -97,14 +96,14 @@ export default class ProfileView extends AbstractView {
                 }),
                 Input({
                   id: "email-input",
-                  label: "Email",
+                  label: i18next.t("emailLabel"),
                   name: "email",
                   type: "email",
                   placeholder: `${escapeHTML(user.email)}`,
                   errorId: "email-error"
                 }),
                 Button({
-                  text: "Save Changes",
+                  text: i18next.t("saveChangesButton"),
                   variant: "default",
                   size: "md",
                   type: "submit",
@@ -116,36 +115,36 @@ export default class ProfileView extends AbstractView {
               id: "password-form",
               className: "flex flex-col gap-4",
               children: [
-                Paragraph({ text: "Change your password below." }),
+                Paragraph({ text: i18next.t("changePasswordText") }),
                 Input({
                   id: "current-password-input",
-                  label: "Current Password",
+                  label: i18next.t("currentPasswordLabel"),
                   name: "currentPassword",
-                  placeholder: "Current Password",
+                  placeholder: i18next.t("currentPasswordLabel"),
                   type: "password",
                   errorId: "current-password-error",
                   hasToggle: true
                 }),
                 Input({
                   id: "new-password-input",
-                  label: "New Password",
+                  label: i18next.t("newPasswordLabel"),
                   name: "newPassword",
-                  placeholder: "New Password",
+                  placeholder: i18next.t("newPasswordLabel"),
                   type: "password",
                   errorId: "new-password-error",
                   hasToggle: true
                 }),
                 Input({
                   id: "confirm-new-password-input",
-                  label: "Confirm New Password",
+                  label: i18next.t("confirmNewPasswordLabel"),
                   name: "confirmNewPassword",
-                  placeholder: "Confirm New Password",
+                  placeholder: i18next.t("confirmNewPasswordLabel"),
                   type: "password",
                   errorId: "confirm-error",
                   hasToggle: true
                 }),
                 Button({
-                  text: "Change Password",
+                  text: i18next.t("changePasswordButton"),
                   variant: "default",
                   size: "md",
                   type: "submit",
@@ -209,11 +208,11 @@ export default class ProfileView extends AbstractView {
     }
     if (!hasUsername && !hasEmail) {
       markInvalid(
-        "Please fill in at least one field.",
+        i18next.t("fillAtLeastOneField"),
         usernameEl,
         usernameErrorEl
       );
-      markInvalid("Please fill in at least one field.", emailEL, emailErrorEl);
+      markInvalid(i18next.t("fillAtLeastOneField"), emailEL, emailErrorEl);
       valid = false;
     }
     if (!valid) return;
@@ -225,15 +224,15 @@ export default class ProfileView extends AbstractView {
 
     try {
       await patchUser(updatedUser);
-      toaster.success("Profile updated successfully!");
+      toaster.success(i18next.t("profileUpdatedSuccess"));
       auth.updateUser(updatedUser);
       router.reload();
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
-        toaster.error("Email or username already exists");
+        toaster.error(i18next.t("emailOrUsernameExists"));
         return;
       }
-      toaster.error("Failed to update profile. Please try again.");
+      toaster.error(i18next.t("profileUpdateFailed"));
       router.handleError("Error in patchUser()", err);
     }
   }
@@ -250,14 +249,14 @@ export default class ProfileView extends AbstractView {
     formData.append("avatar", file);
     try {
       const { avatar } = await uploadAvatar(formData);
-      toaster.success("Avatar uploaded successfully!");
+      toaster.success(i18next.t("avatarUploadedSuccess"));
       const updatedUser: Partial<User> = {
-        ...(avatar ? { avatar } : {}),
+        ...(avatar ? { avatar } : {})
       };
       auth.updateUser(updatedUser);
       router.reload();
     } catch (error) {
-      toaster.error("Failed to upload avatar. Please try again.");
+      toaster.error(i18next.t("avatarUploadFailed"));
       router.handleError("Error in uploadAvatar()", error);
     }
   }
@@ -293,12 +292,12 @@ export default class ProfileView extends AbstractView {
 
     try {
       await updateUserPassword(currentPasswordEl.value, newPasswordEl.value);
-      toaster.success("Password updated successfully!");
+      toaster.success(i18next.t("passwordUpdatedSuccess"));
       currentPasswordEl.value = "";
       newPasswordEl.value = "";
       confirmPasswordEl.value = "";
     } catch (err) {
-      toaster.error("Failed to update password. Please try again.");
+      toaster.error("passwordUpdateFailed");
       router.handleError("Error in updateUserPassword()", err);
     }
   }
