@@ -11,7 +11,7 @@ import { Button } from "../components/Button.js";
 export default class ResultsView extends AbstractView {
   constructor(private tournament: Tournament) {
     super();
-    this.setTitle("Results");
+    this.setTitle(i18next.t("resultsTitle"));
   }
 
   createHTML() {
@@ -20,12 +20,12 @@ export default class ResultsView extends AbstractView {
         <!-- Header Section -->
         <div class="p-6 text-center space-y-4">
           ${Header1({
-            text: "Tournament Results",
+            text: i18next.t("tournamentResultsHeader"),
             id: "tournament-results-header",
             variant: "default"
           })}
           ${Paragraph({
-            text: `Tournament Name: ${escapeHTML(this.tournament.getTournamentName())}`,
+            text: `${i18next.t("tournamentNameLabel")} ${escapeHTML(this.tournament.getTournamentName())}`,
             id: "tournament-name"
           })}
         </div>
@@ -33,7 +33,7 @@ export default class ResultsView extends AbstractView {
         <!-- Winner Section -->
         <div class="p-6 text-center space-y-4">
           ${Header2({
-            text: "Champion",
+            text: i18next.t("championHeader"),
             id: "tournament-champion-header",
             variant: "default"
           })}
@@ -42,7 +42,7 @@ export default class ResultsView extends AbstractView {
             id: "tournament-champion"
           })}
           ${Paragraph({
-            text: "Congratulations on the victory!",
+            text: i18next.t("congratulationsText"),
             id: "congratulations-text"
           })}
         </div>
@@ -50,7 +50,7 @@ export default class ResultsView extends AbstractView {
         <!-- Bracket Section -->
         <div class="rounded-2xl shadow p-6 text-center space-y-2">
           ${Header2({
-            text: "Tournament Bracket",
+            text: i18next.t("bracketHeader"),
             id: "tournament-bracket-header",
             variant: "default"
           })}
@@ -61,7 +61,7 @@ export default class ResultsView extends AbstractView {
         <div class="mt-1 flex justify-center space-x-4">
           ${Button({
             id: "finish-btn",
-            text: "Set as finished",
+            text: i18next.t("finishButton"),
             variant: "default",
             type: "button"
           })}
