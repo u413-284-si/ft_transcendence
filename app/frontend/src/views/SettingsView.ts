@@ -5,18 +5,18 @@ import { Paragraph } from "../components/Paragraph.js";
 export default class SettingsView extends AbstractView {
   constructor() {
     super();
-    this.setTitle("Settings");
+    this.setTitle(i18next.t("settingsTitle"));
   }
 
   createHTML() {
     return /* HTML */ `
       <div class="text-center space-y-4">
         ${Header1({
-          text: "Settings",
+          text: i18next.t("settingsHeader"),
           variant: "default"
         })}
         ${Paragraph({
-          text: "Configure your preferences and settings here.",
+          text: i18next.t("settingsIntro"),
           id: "settings-intro"
         })}
       </div>
