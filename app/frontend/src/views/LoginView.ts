@@ -11,7 +11,7 @@ import { Form } from "../components/Form.js";
 export default class LoginView extends AbstractView {
   constructor() {
     super();
-    this.setTitle(i18next.t("login"));
+    this.setTitle(i18next.t("loginView.loginTitle"));
   }
 
   createHTML() {
@@ -20,23 +20,23 @@ export default class LoginView extends AbstractView {
         children: [
           Input({
             id: "usernameOrEmail",
-            label: i18next.t("usernameOrEmail"),
+            label: i18next.t("loginView.usernameOrEmailLabel"),
             name: "usernameOrEmail",
-            placeholder: i18next.t("usernameOrEmail"),
+            placeholder: i18next.t("loginView.usernameOrEmailText"),
             type: "text",
             errorId: "usernameOrEmail-error"
           }),
           Input({
             id: "password",
-            label: i18next.t("password"),
+            label: i18next.t("global.passwordLabel"),
             name: "password",
-            placeholder: i18next.t("password"),
+            placeholder: i18next.t("global.passwordText"),
             type: "password",
             errorId: "password-error",
             hasToggle: true
           }),
           Button({
-            text: i18next.t("login"),
+            text: i18next.t("loginView.loginTitle"),
             variant: "default",
             size: "md",
             type: "submit"

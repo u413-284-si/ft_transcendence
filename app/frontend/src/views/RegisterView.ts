@@ -18,52 +18,52 @@ import { toaster } from "../Toaster.js";
 export default class Register extends AbstractView {
   constructor() {
     super();
-    this.setTitle(i18next.t("register"));
+    this.setTitle(i18next.t("registerView.registerTitle"));
   }
 
   createHTML(): string {
     return /* HTML */ ` ${Form({
       children: [
         Header1({
-          text: i18next.t("registerHeader"),
+          text: i18next.t("registerView.registerText"),
           variant: "default"
         }),
         Input({
           id: "email",
-          label: i18next.t("emailLabel"),
+          label: i18next.t("global.emailLabel"),
           name: "email",
-          placeholder: i18next.t("emailPlaceholder"),
+          placeholder: i18next.t("global.emailText"),
           type: "email",
           errorId: "email-error"
         }),
         Input({
           id: "username",
-          label: i18next.t("usernameLabel"),
+          label: i18next.t("global.usernameLabel"),
           name: "username",
-          placeholder: i18next.t("usernamePlaceholder"),
+          placeholder: i18next.t("global.usernameText"),
           type: "text",
           errorId: "username-error"
         }),
         Input({
           id: "password",
-          label: i18next.t("passwordLabel"),
+          label: i18next.t("global.passwordLabel"),
           name: "password",
-          placeholder: i18next.t("passwordPlaceholder"),
+          placeholder: i18next.t("global.passwordText"),
           type: "password",
           errorId: "password-error",
           hasToggle: true
         }),
         Input({
           id: "confirm",
-          label: i18next.t("confirmPasswordLabel"),
+          label: i18next.t("global.confirmNewPasswordLabel"),
           name: "confirm",
-          placeholder: i18next.t("confirmPasswordPlaceholder"),
+          placeholder: i18next.t("global.confirmNewPasswordText"),
           type: "password",
           errorId: "confirm-error",
           hasToggle: true
         }),
         Button({
-          text: i18next.t("registerButton"),
+          text: i18next.t("registerView.registerText"),
           variant: "default",
           size: "md",
           type: "submit"
@@ -127,11 +127,11 @@ export default class Register extends AbstractView {
 
     try {
       await registerUser(emailEL.value, userEl.value, passwordEl.value);
-      toaster.info(i18next.t("registrationSuccess"));
+      toaster.info(i18next.t("registerView.registrationSuccessText"));
       router.navigate("/login", false);
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
-        toaster.error(i18next.t("emailOrUsernameExists"));
+        toaster.error(i18next.t("registerView.emailOrUsernameExistsText"));
         return;
       }
     }

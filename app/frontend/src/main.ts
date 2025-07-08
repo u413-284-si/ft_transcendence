@@ -45,10 +45,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const fr = await res.json();
 
   await i18next.init({
-    lng: "fr", // default language
+    lng: "fr",
     resources: {
       fr: { translation: fr }
-    }
+    },
+    interpolation: { escapeValue: false },
+    keySeparator: ".",
+    nsSeparator: false
   });
 
   layout.initialize();
