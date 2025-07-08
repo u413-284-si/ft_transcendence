@@ -1,3 +1,4 @@
+import type { ApexOptions } from "apexcharts";
 import {
   getUserActivityMatrix,
   getUserScoreDiff,
@@ -17,10 +18,13 @@ import {
 } from "../types/DataSeries.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
+import { makeChartOptions, renderChart } from "../charts/utils.js";
+import { winrateOptions } from "../charts/winrateOptions.js";
+import { scoreDiffOptions } from "../charts/scoreDiffOptions.js";
 
 export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
-  private winrateSeries: WinrateSeries | null = null;
+  private winrateSeries: WinrateSeries = [];
   private scoreDiffSeries: ScoreDiffSeries | null = null;
   private activityMatrix: HeatmapSeries | null = null;
   private tournamentProgressSeries: TournamentProgressSeries | null = null;
@@ -109,13 +113,26 @@ export default class ChartsView extends AbstractView {
     this.winrateSeries = await getUserWinrateProgression();
     this.activityMatrix = await getUserActivityMatrix();
     this.tournamentProgressSeries = await getUserTournamentProgress();
-    this.scoreDiffSeries = await getUserScoreDiff();
+    this.scoreDiffSeries = (await getUserScoreDiff()).map((point) => ({
+      x: new Date(point.x).toLocaleDateString(),
+      y: point.y
+    }));
     this.winStreak = await getUserWinStreak();
     this.scoresLastTen = await getUserScoresLastTen();
     this.updateHTML();
     this.rederWinLossChart(this.userStats);
-    this.renderWinrateChart();
-    this.renderScoreDiffChart();
+    const winrateChart = renderChart(
+      "winrate-chart",
+      makeChartOptions(winrateOptions, "Winrate", this.winrateSeries)
+    );
+    const scoreDiffChart = renderChart(
+      "score-diff-chart",
+      makeChartOptions(
+        scoreDiffOptions,
+        "Score Differential",
+        this.scoreDiffSeries
+      )
+    );
     this.renderActivityHeatMap();
     this.renderTournamentProgress();
     this.renderWinStreakChart();
@@ -179,123 +196,6 @@ export default class ChartsView extends AbstractView {
 
     const chartEl = document.querySelector("#win-loss-chart");
     if (!chartEl) throw new Error("win-loss-chart element not found");
-
-    const chart = new ApexCharts(chartEl, options);
-    chart.render();
-  }
-
-  renderWinrateChart() {
-    if (!this.winrateSeries) throw new Error("winrateProgression is null");
-
-    const options = {
-      chart: {
-        type: "line",
-        fontFamily: "inherit",
-        background: "transparent",
-        width: 750,
-        height: 300,
-        zoom: {
-          enabled: false
-        }
-      },
-      series: [
-        {
-          name: "Winrate",
-          data: this.winrateSeries
-        }
-      ],
-      colors: ["var(--color-neon-cyan)"],
-      xaxis: {
-        type: "category",
-        labels: {
-          formatter: (val: string) => `#${val}`
-        }
-      },
-      yaxis: {
-        title: { text: "Winrate" },
-        labels: { formatter: (val: number) => `${val}%` }
-      },
-      stroke: { curve: "smooth", width: 3 },
-      markers: { size: 5 },
-      tooltip: {
-        theme: "dark",
-        y: { formatter: (val: number) => `${val.toFixed(2)}%` }
-      }
-    };
-
-    const chartEl = document.querySelector("#winrate-chart");
-    if (!chartEl) throw new Error("Chart element not found");
-
-    const chart = new ApexCharts(chartEl, options);
-    chart.render();
-  }
-
-  renderScoreDiffChart() {
-    if (!this.scoreDiffSeries) throw new Error("scoreDiffSeries is null");
-
-    const localizedData = this.scoreDiffSeries.map((point) => ({
-      x: new Date(point.x).toLocaleDateString(),
-      y: point.y
-    }));
-
-    const options = {
-      chart: {
-        type: "bar",
-        fontFamily: "inherit",
-        background: "transparent"
-      },
-      series: [
-        {
-          name: "Score Difference",
-          data: localizedData
-        }
-      ],
-      xaxis: {
-        type: "category",
-        title: {
-          text: "Matches"
-        }
-      },
-      plotOptions: {
-        bar: {
-          distributed: true,
-          colors: {
-            ranges: [
-              {
-                from: -100,
-                to: -1,
-                color: "var(--color-neon-red)"
-              },
-              {
-                from: 0,
-                to: 100,
-                color: "var(--color-neon-cyan)"
-              }
-            ]
-          }
-        }
-      },
-      yaxis: {
-        title: {
-          text: "Score Differential"
-        },
-        labels: {
-          formatter: (val: number) => `${val}`
-        }
-      },
-      tooltip: {
-        theme: "dark",
-        y: {
-          formatter: (val: number) => `${val > 0 ? "+" : ""}${val}`
-        }
-      },
-      legend: {
-        show: false
-      }
-    };
-
-    const chartEl = document.querySelector("#score-diff-chart");
-    if (!chartEl) throw new Error("Chart element score-diff-chart not found");
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();
