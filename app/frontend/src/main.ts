@@ -49,9 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     resources: {
       fr: { translation: fr }
     },
-    interpolation: { escapeValue: false },
     keySeparator: ".",
-    nsSeparator: false
   });
 
   layout.initialize();
