@@ -21,6 +21,7 @@ import AbstractView from "./AbstractView.js";
 import { makeChartOptions, renderChart } from "../charts/utils.js";
 import { winrateOptions } from "../charts/winrateOptions.js";
 import { scoreDiffOptions } from "../charts/scoreDiffOptions.js";
+import { tournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 
 export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
@@ -134,7 +135,10 @@ export default class ChartsView extends AbstractView {
       )
     );
     this.renderActivityHeatMap();
-    this.renderTournamentProgress();
+    const tournamentProgressChart = renderChart(
+      "tournament-progress-chart",
+      makeChartOptions(tournamentProgressOptions, this.tournamentProgressSeries)
+    );
     this.renderWinStreakChart();
     this.renderWinStreakRadialChart();
     this.renderScoresLastTenDaysChart();
@@ -231,69 +235,6 @@ export default class ChartsView extends AbstractView {
     const chartEl = document.querySelector("#activity-heatmap-chart");
     if (!chartEl)
       throw new Error("Chart element activity-heatmap-chart not found");
-
-    const chart = new ApexCharts(chartEl, options);
-    chart.render();
-  }
-
-  renderTournamentProgress() {
-    if (!this.tournamentProgressSeries)
-      throw new Error("tournamentProgressSeries is null");
-
-    const options = {
-      chart: {
-        type: "bar",
-        stacked: true,
-        fontFamily: "inherit",
-        background: "transparent",
-        toolbar: {
-          show: false
-        }
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          borderRadius: 4
-        }
-      },
-      colors: ["var(--color-neon-green)", "var(--color-neon-red)"],
-      series: this.tournamentProgressSeries,
-      xaxis: {
-        type: "category",
-        title: {
-          text: "Tournament Size"
-        },
-        labels: {
-          formatter: (val: number) => `${val}-Player`
-        }
-      },
-      yaxis: {
-        title: {
-          text: "Number of Tournaments"
-        },
-        min: 0,
-        forceNiceScale: true,
-        labels: {
-          formatter: (val: number) => `${val}`
-        }
-      },
-      tooltip: {
-        theme: "dark",
-        y: {
-          formatter: (val: number) => `${val}`
-        }
-      },
-      legend: {
-        position: "top",
-        horizontalAlign: "right",
-        labels: {
-          colors: "var(--color-grey)"
-        }
-      }
-    };
-    const chartEl = document.querySelector("#tournament-progress-chart");
-    if (!chartEl)
-      throw new Error("Chart element tournament-progress-chart not found");
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();
