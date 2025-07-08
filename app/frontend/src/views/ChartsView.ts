@@ -22,6 +22,7 @@ import { makeChartOptions, renderChart } from "../charts/utils.js";
 import { winrateOptions } from "../charts/winrateOptions.js";
 import { scoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { tournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
+import { scoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
 
 export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
@@ -141,7 +142,14 @@ export default class ChartsView extends AbstractView {
     );
     this.renderWinStreakChart();
     this.renderWinStreakRadialChart();
-    this.renderScoresLastTenDaysChart();
+    const scoresLastTenDaysChart = renderChart(
+      "scores-last-ten",
+      makeChartOptions(
+        scoresLastTenDaysOptions,
+        "Scores Last Ten Days",
+        this.scoresLastTen
+      )
+    );
   }
 
   getName(): string {
@@ -331,63 +339,6 @@ export default class ChartsView extends AbstractView {
 
     const chartEl = document.querySelector("#streak-chart");
     if (!chartEl) throw new Error("Chart element streak-chart not found");
-
-    const chart = new ApexCharts(chartEl, options);
-    chart.render();
-  }
-
-  renderScoresLastTenDaysChart() {
-    if (!this.scoresLastTen) throw new Error("scoresLastTen is null");
-
-    const options = {
-      chart: {
-        type: "bar",
-        height: 350,
-        toolbar: {
-          show: false // hide download menu etc
-        }
-      },
-      series: [
-        {
-          name: "Scores Last Ten Days",
-          data: this.scoresLastTen
-        }
-      ],
-      xaxis: {
-        type: "category",
-        categories: [], // will be auto-filled by your series' x values
-        title: {
-          text: "Date"
-        },
-        labels: {
-          rotate: -45 // rotate date labels for better readability
-        }
-      },
-      yaxis: {
-        title: {
-          text: "Score"
-        },
-        min: 0
-      },
-      dataLabels: {
-        enabled: true // show values on top of bars
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 4,
-          columnWidth: "50%", // width of each bar
-          distributed: false // all bars same color
-        }
-      },
-      tooltip: {
-        y: {
-          formatter: (value: number) => `${value} points`
-        }
-      }
-    };
-
-    const chartEl = document.querySelector("#scores-last-ten");
-    if (!chartEl) throw new Error("Chart element scores-last-ten not found");
 
     const chart = new ApexCharts(chartEl, options);
     chart.render();
