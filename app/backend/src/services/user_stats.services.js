@@ -66,14 +66,11 @@ export async function getUserWinrateProgression(userId) {
   const userStats = await getUserStats(userId);
 
   const filter = {
+    playedAs: ["PLAYERONE", "PLAYERTWO"],
     limit: 10,
     sort: "desc"
   };
-  const lastTenMatches = await getUserMatches(
-    userId,
-    ["PLAYERONE", "PLAYERTWO"],
-    filter
-  );
+  const lastTenMatches = await getUserMatches(userId, filter);
 
   const lastTenMatchesWithResults = lastTenMatches
     .map((match) => ({
@@ -121,14 +118,11 @@ function didUserWin(match) {
 
 export async function getUserScoreDiff(userId) {
   const filter = {
+    playedAs: ["PLAYERONE", "PLAYERTWO"],
     limit: 10,
     sort: "desc"
   };
-  const lastTenMatches = await getUserMatches(
-    userId,
-    ["PLAYERONE", "PLAYERTWO"],
-    filter
-  );
+  const lastTenMatches = await getUserMatches(userId, filter);
 
   const data = lastTenMatches
     .map((match) => ({
@@ -156,15 +150,12 @@ export async function getUserScoresLastTen(userId) {
   tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
 
   const filter = {
+    playedAs: ["PLAYERONE", "PLAYERTWO"],
     date: { gte: tenDaysAgo },
     sort: "desc"
   };
 
-  const matches = await getUserMatches(
-    userId,
-    ["PLAYERONE", "PLAYERTWO"],
-    filter
-  );
+  const matches = await getUserMatches(userId, filter);
 
   const scores = aggregatePlayerScores(matches);
   const data = fillMissingDays(scores, 10);

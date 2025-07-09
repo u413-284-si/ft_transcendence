@@ -158,12 +158,12 @@ export async function getUserMatchesHandler(request, reply) {
   try {
     const id = parseInt(request.user.id, 10);
     const filter = {
+      playedAs: request.query.playedAs,
       limit: request.query.limit,
       offset: request.query.offset,
       sort: request.query.sort
     };
-    const { playedAs } = request.query;
-    const data = await getUserMatches(id, playedAs, filter);
+    const data = await getUserMatches(id, filter);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
@@ -183,7 +183,7 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
   const action = "Get user matches by username";
   try {
     const id = parseInt(request.user.id, 10);
-    const { playedAs } = request.query;
+    const filter = { playedAs: request.query.playedAs };
     const { username } = request.params;
     if (username !== request.user.username) {
       const friend = await getAllUserFriendRequests(id, username);
@@ -191,7 +191,7 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
         return httpError(reply, 401, "You need to be friends");
       }
     }
-    const data = await getUserMatchesByUsername(username, playedAs);
+    const data = await getUserMatchesByUsername(username, filter);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
