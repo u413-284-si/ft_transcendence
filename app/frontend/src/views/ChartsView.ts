@@ -65,37 +65,16 @@ export default class ChartsView extends AbstractView {
           chartId: "score-diff-chart"
         })}
         ${Chart({
-          title: "Tournament Summary",
-          chartId: "tournament-progress-chart"
+          title: "Scores Last Ten Days",
+          chartId: "scores-last-ten"
         })}
       </div>
 
-      <!-- Row 3: Heatmap -->
-      <div class="bg-gray-900 rounded-lg p-6">
-        <h2 class="text-xl font-semibold mb-4">Activity Heatmap</h2>
-        <div
-          id="activity-heatmap-chart"
-          class="w-full min-w-[500px] h-[300px]"
-        ></div>
-      </div>
-
-      <!-- Row 4: Win Streak -->
-      <div class="bg-gray-900 rounded-lg p-6">
-        <h2 class="text-xl font-semibold mb-4">Win Streak</h2>
-        <div id="win-streak-chart" class="w-full min-w-[500px] h-[300px]"></div>
-      </div>
-
-      <!-- Row 5: Another Win Streak -->
-      <div class="bg-gray-900 rounded-lg p-6">
-        <h2 class="text-xl font-semibold mb-4">Win Streak Radial</h2>
-        <div id="streak-chart" class="w-full min-w-[500px] h-[300px]"></div>
-      </div>
-
-      <!-- Row 5: Scores Last Ten Days -->
-      <div class="bg-gray-900 rounded-lg p-6">
-        <h2 class="text-xl font-semibold mb-4">Scores Last Ten Days</h2>
-        <div id="scores-last-ten" class="w-full min-w-[500px] h-[300px]"></div>
-      </div>
+      ${Chart({
+        title: "Tournament Summary",
+        chartId: "tournament-progress-chart"
+      })}
+      ${Chart({ title: "Win Streak Radial", chartId: "streak-chart" })}
     </div>`;
   }
 
@@ -133,12 +112,10 @@ export default class ChartsView extends AbstractView {
         toAxisSeries("Score Differential", this.scoreDiffSeries)
       )
     );
-    this.renderActivityHeatMap();
     const tournamentProgressChart = renderChart(
       "tournament-progress-chart",
       makeChartOptions(tournamentProgressOptions, this.tournamentProgressSeries)
     );
-    this.renderWinStreakChart();
     this.renderWinStreakRadialChart();
     const scoresLastTenDaysChart = renderChart(
       "scores-last-ten",
@@ -151,94 +128,6 @@ export default class ChartsView extends AbstractView {
 
   getName(): string {
     return "charts";
-  }
-
-  renderActivityHeatMap() {
-    const options = {
-      chart: {
-        type: "heatmap",
-        height: 350,
-        fontFamily: "inherit",
-        background: "transparent"
-      },
-      series: this.activityMatrix,
-      dataLabels: {
-        enabled: false
-      },
-      colors: ["#0094a1"],
-      xaxis: {
-        title: { text: "Hour of Day" }
-      },
-      yaxis: {
-        title: { text: "Day of Week" }
-      },
-      tooltip: {
-        theme: "dark",
-        y: {
-          formatter: (val: number) => `${val} match${val !== 1 ? "es" : ""}`
-        }
-      }
-    };
-
-    const chartEl = document.querySelector("#activity-heatmap-chart");
-    if (!chartEl)
-      throw new Error("Chart element activity-heatmap-chart not found");
-
-    const chart = new ApexCharts(chartEl, options);
-    chart.render();
-  }
-
-  renderWinStreakChart() {
-    if (!this.winStreak) throw new Error("winStreak is null");
-
-    const options = {
-      chart: {
-        type: "line",
-        height: 300
-      },
-      series: [
-        {
-          name: "Win Streak",
-          data: this.winStreak.data
-        }
-      ],
-      xaxis: {
-        title: { text: "Date" },
-        type: "datetime",
-        labels: {
-          datetimeFormatter: {
-            year: "yyyy",
-            month: "MMM 'yy",
-            day: "dd MMM",
-            hour: "HH:mm"
-          }
-        }
-      },
-      yaxis: {
-        title: { text: "Win Streak" },
-        min: 0,
-        stepSize: 1
-      },
-      stroke: {
-        curve: "stepline"
-      },
-      tooltip: {
-        theme: "dark",
-        x: {
-          format: "dd MMM yyyy HH:mm"
-        },
-        y: {
-          formatter: (val: number) =>
-            `${val} win${val === 1 ? "" : "s"} in a row`
-        }
-      }
-    };
-
-    const chartEl = document.querySelector("#win-streak-chart");
-    if (!chartEl) throw new Error("Chart element win-streak-chart not found");
-
-    const chart = new ApexCharts(chartEl, options);
-    chart.render();
   }
 
   renderWinStreakRadialChart() {
