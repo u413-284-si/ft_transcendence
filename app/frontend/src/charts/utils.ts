@@ -12,32 +12,24 @@ export function renderChart(id: string, options: ApexOptions): ApexCharts {
 }
 
 export function makeChartOptions(
-  baseOptions: Omit<ApexOptions, "series">,
-  seriesName: string,
-  seriesData: ApexAxisChartSeries[0]["data"]
+  base: Omit<ApexOptions, "series">,
+  series: ApexAxisChartSeries,
 ): ApexOptions;
 
-export function makeChartOptions(
-  baseOptions: Omit<ApexOptions, "series">,
-  series: ApexAxisChartSeries
-): ApexOptions;
 
 export function makeChartOptions(
-  baseOptions: Omit<ApexOptions, "series">,
-  nameOrSeries: string | ApexAxisChartSeries,
-  data?: ApexAxisChartSeries[0]["data"]
+  base: Omit<ApexOptions, "series">,
+  series: ApexAxisChartSeries,
 ): ApexOptions {
-  const series: ApexAxisChartSeries = Array.isArray(nameOrSeries)
-    ? nameOrSeries
-    : [
-        {
-          name: nameOrSeries,
-          data: data ?? []
-        }
-      ];
-
   return {
-    ...baseOptions,
-    series
+    ...base,
+    series,
   };
+}
+
+export function toAxisSeries(
+  name: string,
+  data: ApexAxisChartSeries[0]["data"]
+): ApexAxisChartSeries {
+  return [{ name, data }];
 }

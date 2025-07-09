@@ -18,12 +18,17 @@ import {
 } from "../types/DataSeries.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
-import { makeChartOptions, renderChart } from "../charts/utils.js";
+import {
+  makeChartOptions,
+  renderChart,
+  toAxisSeries
+} from "../charts/utils.js";
 import { winrateOptions } from "../charts/winrateOptions.js";
 import { scoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { tournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 import { scoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
 import { Chart } from "../components/Chart.js";
+import { makeWinLossOptions } from "../charts/winLossOptions.js";
 
 export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
@@ -106,17 +111,26 @@ export default class ChartsView extends AbstractView {
     this.winStreak = await getUserWinStreak();
     this.scoresLastTen = await getUserScoresLastTen();
     this.updateHTML();
-    this.rederWinLossChart(this.userStats);
+    const winLossChart = renderChart(
+      "win-loss-chart",
+      makeWinLossOptions(
+        this.userStats.matchesWon,
+        this.userStats.matchesLost,
+        this.userStats.winRate
+      )
+    );
     const winrateChart = renderChart(
       "winrate-chart",
-      makeChartOptions(winrateOptions, "Winrate", this.winrateSeries)
+      makeChartOptions(
+        winrateOptions,
+        toAxisSeries("Winrate", this.winrateSeries)
+      )
     );
     const scoreDiffChart = renderChart(
       "score-diff-chart",
       makeChartOptions(
         scoreDiffOptions,
-        "Score Differential",
-        this.scoreDiffSeries
+        toAxisSeries("Score Differential", this.scoreDiffSeries)
       )
     );
     this.renderActivityHeatMap();
@@ -130,71 +144,13 @@ export default class ChartsView extends AbstractView {
       "scores-last-ten",
       makeChartOptions(
         scoresLastTenDaysOptions,
-        "Scores Last Ten Days",
-        this.scoresLastTen
+        toAxisSeries("Scores Last Ten Days", this.scoresLastTen)
       )
     );
   }
 
   getName(): string {
     return "charts";
-  }
-
-  rederWinLossChart(stats: UserStats) {
-    const options = {
-      chart: {
-        type: "donut",
-        fontFamily: "inherit",
-        background: "transparent",
-        width: 450,
-        height: 300
-      },
-      labels: ["Wins", "Losses"],
-      series: [stats.matchesWon, stats.matchesLost],
-      colors: ["var(--color-neon-cyan)", "var(--color-neon-red)"],
-      legend: {
-        position: "bottom",
-        labels: {
-          colors: ["var(--color-grey)", "var(--color-grey)"]
-        }
-      },
-      stroke: {
-        show: true,
-        width: 1,
-        colors: ["var(--color-grey)"]
-      },
-      plotOptions: {
-        pie: {
-          donut: {
-            size: "50%",
-            labels: {
-              show: true,
-              name: {
-                show: true,
-                offsetY: -10,
-                color: "var(--color-grey)",
-                fontSize: "10px"
-              },
-              total: {
-                show: true,
-                label: "Win Rate",
-                color: "var(--color-grey)",
-                fontSize: "10px",
-                formatter: function () {
-                  return `${stats.winRate.toFixed(1)}%`;
-                }
-              }
-            }
-          }
-        }
-      }
-    };
-
-    const chartEl = document.querySelector("#win-loss-chart");
-    if (!chartEl) throw new Error("win-loss-chart element not found");
-
-    const chart = new ApexCharts(chartEl, options);
-    chart.render();
   }
 
   renderActivityHeatMap() {
