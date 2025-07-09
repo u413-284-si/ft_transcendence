@@ -1,14 +1,14 @@
 import {
   getActivityMatrix,
-  getUserScoreDiff,
-  getUserScoresLastTen,
-  getUserWinrateProgression,
-  getUserWinStreak
 } from "../services/matches.services.js";
 import { getUserTournamentProgress } from "../services/tournaments.services.js";
 import {
   getAllUserStats,
-  deleteAllUserStats
+  deleteAllUserStats,
+  getUserWinrateProgression,
+  getUserScoreDiff,
+  getUserScoresLastTen,
+  getUserWinStreak
 } from "../services/user_stats.services.js";
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
