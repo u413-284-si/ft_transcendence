@@ -8,7 +8,6 @@ import {
   RouteGuard
 } from "../types/Route.js";
 import ErrorView from "../views/ErrorView.js";
-import { Layout } from "../Layout.js";
 import { closeSSEConnection } from "../services/serverSentEventsServices.js";
 import { ApiError } from "../services/api.js";
 import { auth } from "../AuthManager.js";
@@ -22,7 +21,6 @@ export class Router {
   private currentParams: Record<string, string> = {};
   private previousPath: string = "";
   private routeChangeListeners: RouteChangeListener[] = [];
-  private layout = new Layout("guest");
 
   private constructor() {}
 
@@ -109,8 +107,6 @@ export class Router {
       }
       this.previousPath = this.currentPath;
       this.currentPath = path;
-
-      this.layout.update(route.config.layout);
 
       const view = new route.config.view();
       await this.setView(view);

@@ -92,7 +92,7 @@ export async function seedSingleTournament(userId: number) {
     tournamentClass.updateBracketWithResult(nextMatch.matchId, winner);
     await transactionMatch(
       userId,
-      playedAs === "NONE" ? null : playedAs,
+      playedAs,
       nextMatch.player1,
       nextMatch.player2,
       player1Score,
