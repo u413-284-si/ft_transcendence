@@ -1,6 +1,4 @@
-import type { ApexOptions } from "apexcharts";
 import {
-  getUserActivityMatrix,
   getUserScoreDiff,
   getUserScoresLastTen,
   getUserStats,
@@ -9,7 +7,6 @@ import {
   getUserWinStreak
 } from "../services/userStatsServices.js";
 import {
-  HeatmapSeries,
   ScoreDiffSeries,
   ScoresLastTenDaysSeries,
   TournamentProgressSeries,
@@ -34,7 +31,6 @@ export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
   private winrateSeries: WinrateSeries = [];
   private scoreDiffSeries: ScoreDiffSeries | null = null;
-  private activityMatrix: HeatmapSeries | null = null;
   private tournamentProgressSeries: TournamentProgressSeries | null = null;
   private winStreak: WinStreakStats | null = null;
   private scoresLastTen: ScoresLastTenDaysSeries | null = null;
@@ -81,7 +77,6 @@ export default class ChartsView extends AbstractView {
   async render() {
     this.userStats = await getUserStats();
     this.winrateSeries = await getUserWinrateProgression();
-    this.activityMatrix = await getUserActivityMatrix();
     this.tournamentProgressSeries = await getUserTournamentProgress();
     this.scoreDiffSeries = (await getUserScoreDiff()).map((point) => ({
       x: new Date(point.x).toLocaleDateString(),

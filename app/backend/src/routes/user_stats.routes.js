@@ -1,7 +1,6 @@
 import {
   getAllUserStatsHandler,
   deleteAllUserStatsHandler,
-  getActivityMatrixHandler,
   getTournamentProgressHandler,
   getWinrateProgressionHandler,
   getScoreDiffHandler,
@@ -15,12 +14,6 @@ export default async function userstatsRoutes(fastify) {
   fastify.get("/", optionsGetAllUserStats, getAllUserStatsHandler);
 
   fastify.delete("/", optionsDeleteAllUserStats, deleteAllUserStatsHandler);
-
-  fastify.get(
-    "/me/activity-matrix",
-    optionsGetActivityMatrix,
-    getActivityMatrixHandler
-  );
 
   fastify.get(
     "/me/tournament-progress",
@@ -65,15 +58,6 @@ const optionsGetAllUserStats = {
 };
 
 const optionsDeleteAllUserStats = {
-  schema: {
-    response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetActivityMatrix = {
-  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       ...errorResponses
