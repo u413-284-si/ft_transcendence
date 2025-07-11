@@ -167,7 +167,7 @@ function aggregatePlayerScores(matches) {
   const dailyTotals = {};
 
   for (const match of matches) {
-    const day = formatDate(match.date);
+    const day = match.date;
     const score = getPlayerScore(match);
 
     dailyTotals[day] = (dailyTotals[day] || 0) + score;
@@ -185,10 +185,6 @@ function getPlayerScore(match) {
   }
 }
 
-function formatDate(date) {
-  return date.toISOString().split("T")[0];
-}
-
 function fillMissingDays(data, days) {
   const result = [];
 
@@ -196,8 +192,7 @@ function fillMissingDays(data, days) {
     const date = new Date();
     date.setDate(date.getDate() - i);
 
-    const dayStr = formatDate(date);
-    result.push({ x: dayStr, y: data[dayStr] || 0 });
+    result.push({ x: date, y: data[date] || 0 });
   }
 
   return result;
