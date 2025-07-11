@@ -1,31 +1,53 @@
 import type { ApexOptions } from "apexcharts";
+import { formatDateTime, toAxisSeries } from "./utils.js";
 
-export const winrateOptions: Omit<ApexOptions, "series"> = {
-  chart: {
-    type: "line",
-    fontFamily: "inherit",
-    background: "transparent",
-    width: 750,
-    height: 300,
-    zoom: {
-      enabled: false
+export function makeWinrateOptions(
+  name: string,
+  data: { x: string; y: number }[],
+  totalMatches: number
+): ApexOptions {
+  const startingPoint = Math.max(totalMatches - data.length + 1, 0);
+  const transformedData = data.map((match, i) => ({
+    x: `# ${startingPoint + i}`,
+    y: match.y
+  }));
+
+  const datetimeLabels = data.map((match) => formatDateTime(match.x));
+
+  const series = toAxisSeries(name, transformedData);
+
+  const options: ApexOptions = {
+    chart: {
+      type: "line",
+      fontFamily: "inherit",
+      background: "transparent",
+      toolbar: {
+        show: false
+      },
+      width: 750,
+      height: 300,
+      zoom: {
+        enabled: false
+      }
+    },
+    colors: ["var(--color-neon-cyan)"],
+    markers: { size: 5 },
+    series: series,
+    stroke: { curve: "smooth", width: 3 },
+    tooltip: {
+      theme: "dark",
+      x: {
+        formatter: (_val, opts) => datetimeLabels[opts.dataPointIndex]
+      },
+      y: { formatter: (val: number) => `${val.toFixed(2)}%` }
+    },
+    xaxis: {
+      type: "category"
+    },
+    yaxis: {
+      title: { text: "Winrate" },
+      labels: { formatter: (val: number) => `${val}%` }
     }
-  },
-  colors: ["var(--color-neon-cyan)"],
-  xaxis: {
-    type: "category",
-    labels: {
-      formatter: (val: string) => `#${val}`
-    }
-  },
-  yaxis: {
-    title: { text: "Winrate" },
-    labels: { formatter: (val: number) => `${val}%` }
-  },
-  stroke: { curve: "smooth", width: 3 },
-  markers: { size: 5 },
-  tooltip: {
-    theme: "dark",
-    y: { formatter: (val: number) => `${val.toFixed(2)}%` }
-  }
-};
+  };
+  return options;
+}
