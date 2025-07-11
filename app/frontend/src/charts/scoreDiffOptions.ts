@@ -1,5 +1,5 @@
 import type { ApexOptions } from "apexcharts";
-import { toAxisSeries } from "./utils.js";
+import { formatDateTime, toAxisSeries } from "./utils.js";
 
 export function makeScoreDiffOptions(
   name: string,
@@ -12,13 +12,7 @@ export function makeScoreDiffOptions(
     y: match.y
   }));
 
-  const datetimeLabels = data.map((match) => {
-    const date = new Date(match.x);
-    return date.toLocaleString("en-GB", {
-      dateStyle: "medium",
-      timeStyle: "short"
-    });
-  });
+  const datetimeLabels = data.map((match) => formatDateTime(match.x));
 
   const series = toAxisSeries(name, transformedData);
 

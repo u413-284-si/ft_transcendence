@@ -27,3 +27,11 @@ export function toAxisSeries(
 ): ApexAxisChartSeries {
   return [{ name, data }];
 }
+
+export function formatDateTime(input: string): string {
+  const date = new Date(input);
+  return date.toLocaleString("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "medium",
+  });
+}
