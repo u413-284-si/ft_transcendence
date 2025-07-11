@@ -13,23 +13,17 @@ export function renderChart(id: string, options: ApexOptions): ApexCharts {
 
 export function makeChartOptions(
   base: Omit<ApexOptions, "series">,
-  series: ApexAxisChartSeries,
-): ApexOptions;
-
-
-export function makeChartOptions(
-  base: Omit<ApexOptions, "series">,
-  series: ApexAxisChartSeries,
+  series: ApexAxisChartSeries
 ): ApexOptions {
   return {
     ...base,
-    series,
+    series
   };
 }
 
 export function toAxisSeries(
   name: string,
-  data: ApexAxisChartSeries[0]["data"]
+  data: { x: string | Date; y: number }[]
 ): ApexAxisChartSeries {
   return [{ name, data }];
 }
