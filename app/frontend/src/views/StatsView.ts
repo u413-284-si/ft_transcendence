@@ -63,6 +63,14 @@ export default class StatsView extends AbstractView {
             {
               value: `${this.userStats?.winRate.toFixed(2)} %`,
               text: "Win Rate"
+            },
+            {
+              value: `${this.userStats?.winstreakCur}`,
+              text: "Winstreak"
+            },
+            {
+              value: `${this.userStats?.winstreakMax}`,
+              text: "Max Winstreak"
             }
           ])}
         </div>
