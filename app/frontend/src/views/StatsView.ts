@@ -21,6 +21,7 @@ import { User } from "../types/User.js";
 import { UserStats } from "../types/IUserStats.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { StatFieldGroup } from "../components/StatField.js";
+import { TabButton } from "../components/TabButton.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -75,29 +76,50 @@ export default class StatsView extends AbstractView {
           ])}
         </div>
       </div>
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
-        ${Header1({
-          text: "Match History",
-          id: "match-history-header",
-          variant: "default"
-        })}
-        ${this.getMatchesHTML()}
-      </div> `;
+
+      ${this.getTabsHTML()} `;
   }
 
   async render() {
     await this.setViewType();
     await this.fetchData();
     this.updateHTML();
+    this.addListeners();
   }
 
-  getMatchesHTML(): string {
+  getTabsHTML(): string {
     if (this.viewType === "public") {
       return /* HTML */ ` ${Paragraph({
-        text: "You need to be friends to view Match History"
+        text: "You need to be friends to view detailed stats"
       })}`;
     }
+    return /* HTML */ `
+      <div class="flex space-x-4 border-b border-gray-300 mb-4">
+        ${TabButton({ text: "Matches", tabId: "matches", isActive: true })}
+        ${TabButton({ text: "Tournament", tabId: "tournament" })}
+        ${TabButton({ text: "Friends", tabId: "friends" })}
+      </div>
+      ${this.getMatchesTabHTML()}
+    `;
+  }
+  getMatchesTabHTML(): string {
+    return /* HTML */ ` <div id="tab-matches" class="tab-content">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+        ${Header1({
+          text: "Dashboard",
+          id: "match-dashboard-header",
+          variant: "default"
+        })}
+        ${this.getMatchesTableHTML()}
+      </div>
+    </div>`;
+  }
 
+getMatchesDashboard():string {
+  
+}
+
+  getMatchesTableHTML(): string {
     if (!this.matches) throw new Error("Matches is null");
 
     const matchesRows =
@@ -155,5 +177,29 @@ export default class StatsView extends AbstractView {
     if (this.viewType === "friend") {
       this.matches = await getUserPlayedMatchesByUsername(this.username);
     }
+  }
+
+  protected addListeners(): void {
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-button");
+    const contents = document.querySelectorAll<HTMLDivElement>(".tab-content");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetTab = button.dataset.tab;
+
+        contents.forEach((content) => {
+          content.classList.add("hidden");
+        });
+
+        buttons.forEach((btn) => {
+          btn.classList.remove("active-link");
+        });
+
+        const targetContent = document.getElementById(`tab-${targetTab}`);
+        if (targetContent) targetContent.classList.remove("hidden");
+
+        button.classList.add("active-link");
+      });
+    });
   }
 }
