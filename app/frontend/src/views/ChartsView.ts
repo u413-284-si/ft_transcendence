@@ -21,7 +21,7 @@ import {
   toAxisSeries
 } from "../charts/utils.js";
 import { winrateOptions } from "../charts/winrateOptions.js";
-import { scoreDiffOptions } from "../charts/scoreDiffOptions.js";
+import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { tournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 import { scoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
 import { Chart } from "../components/Chart.js";
@@ -30,7 +30,7 @@ import { makeWinLossOptions } from "../charts/winLossOptions.js";
 export default class ChartsView extends AbstractView {
   private userStats: UserStats | null = null;
   private winrateSeries: WinrateSeries = [];
-  private scoreDiffSeries: ScoreDiffSeries | null = null;
+  private scoreDiffSeries: ScoreDiffSeries = [];
   private tournamentProgressSeries: TournamentProgressSeries | null = null;
   private winStreak: WinStreakStats | null = null;
   private scoresLastTen: ScoresLastTenDaysSeries | null = null;
@@ -78,10 +78,7 @@ export default class ChartsView extends AbstractView {
     this.userStats = await getUserStats();
     this.winrateSeries = await getUserWinrateProgression();
     this.tournamentProgressSeries = await getUserTournamentProgress();
-    this.scoreDiffSeries = (await getUserScoreDiff()).map((point) => ({
-      x: new Date(point.x).toLocaleDateString(),
-      y: point.y
-    }));
+    this.scoreDiffSeries = await getUserScoreDiff();
     this.winStreak = await getUserWinStreak();
     this.scoresLastTen = await getUserScoresLastTen();
     this.updateHTML();
@@ -102,10 +99,7 @@ export default class ChartsView extends AbstractView {
     );
     const scoreDiffChart = renderChart(
       "score-diff-chart",
-      makeChartOptions(
-        scoreDiffOptions,
-        toAxisSeries("Score Difference", this.scoreDiffSeries)
-      )
+      makeScoreDiffOptions("Score Difference", this.scoreDiffSeries, this.userStats.matchesPlayed)
     );
     const tournamentProgressChart = renderChart(
       "tournament-progress-chart",
