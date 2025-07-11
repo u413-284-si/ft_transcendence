@@ -26,32 +26,3 @@ export function getCookieValueByName(cookieName: string): string {
   );
   return match ? match[2] : "";
 }
-
-export function deepMerge<T extends object>(target: Partial<T>, source: Partial<T>): Partial<T> {
-  const result = { ...target } as Partial<T>;
-
-  for (const key in source) {
-    if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
-
-    const sourceValue = source[key];
-    const targetValue = result[key];
-
-    // Use a local helper to safely merge two values of type U
-    if (isPlainObject(sourceValue) && isPlainObject(targetValue)) {
-      result[key] = deepMerge(targetValue, sourceValue) as T[typeof key];
-    } else {
-      result[key] = sourceValue as T[typeof key];;
-    }
-  }
-
-  return result;
-}
-
-// Strongly type guard to exclude null/array
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    !Array.isArray(value)
-  );
-}
