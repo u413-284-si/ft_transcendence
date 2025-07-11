@@ -4,14 +4,12 @@ import {
   getUserStats,
   getUserTournamentProgress,
   getUserWinrateProgression,
-  getUserWinStreak
 } from "../services/userStatsServices.js";
 import {
   ScoreDiffSeries,
   ScoresLastTenDaysSeries,
   TournamentProgressSeries,
   WinrateSeries,
-  WinStreakStats
 } from "../types/DataSeries.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
@@ -28,7 +26,6 @@ export default class ChartsView extends AbstractView {
   private winrateSeries: WinrateSeries = [];
   private scoreDiffSeries: ScoreDiffSeries = [];
   private tournamentProgressSeries: TournamentProgressSeries | null = null;
-  private winStreak: WinStreakStats | null = null;
   private scoresLastTen: ScoresLastTenDaysSeries | null = null;
 
   constructor() {
@@ -75,7 +72,6 @@ export default class ChartsView extends AbstractView {
     this.winrateSeries = await getUserWinrateProgression();
     this.tournamentProgressSeries = await getUserTournamentProgress();
     this.scoreDiffSeries = await getUserScoreDiff();
-    this.winStreak = await getUserWinStreak();
     this.scoresLastTen = await getUserScoresLastTen();
     this.updateHTML();
     const winLossChart = renderChart(
@@ -106,7 +102,6 @@ export default class ChartsView extends AbstractView {
       "tournament-progress-chart",
       makeChartOptions(tournamentProgressOptions, this.tournamentProgressSeries)
     );
-    this.renderWinStreakRadialChart();
     const scoresLastTenDaysChart = renderChart(
       "scores-last-ten",
       makeScoresLastTenDaysOptions("Scores Last Ten Days", this.scoresLastTen)
@@ -117,46 +112,4 @@ export default class ChartsView extends AbstractView {
     return "charts";
   }
 
-  renderWinStreakRadialChart() {
-    if (!this.winStreak) throw new Error("winStreak is null");
-
-    const current = this.winStreak.currentStreak;
-    const max = this.winStreak.maxStreak;
-    const percent = max > 0 ? (current / max) * 100 : 0;
-    const options = {
-      chart: {
-        type: "radialBar",
-        height: 350
-      },
-      series: [percent], // e.g., 57.14 (if current = 4, max = 7)
-      plotOptions: {
-        radialBar: {
-          hollow: {
-            size: "60%"
-          },
-          dataLabels: {
-            name: {
-              show: true,
-              fontSize: "18px",
-              offsetY: -10,
-              color: "#666",
-              text: "Current Streak"
-            },
-            value: {
-              formatter: () => `${current}/${max}`,
-              fontSize: "22px",
-              show: true
-            }
-          }
-        }
-      },
-      labels: ["Win Streak"]
-    };
-
-    const chartEl = document.querySelector("#streak-chart");
-    if (!chartEl) throw new Error("Chart element streak-chart not found");
-
-    const chart = new ApexCharts(chartEl, options);
-    chart.render();
-  }
 }

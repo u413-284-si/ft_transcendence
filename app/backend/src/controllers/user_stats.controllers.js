@@ -4,8 +4,7 @@ import {
   deleteAllUserStats,
   getUserWinrateProgression,
   getUserScoreDiff,
-  getUserScoresLastTen,
-  getUserWinStreak
+  getUserScoresLastTen
 } from "../services/user_stats.services.js";
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -91,24 +90,6 @@ export async function getScoreDiffHandler(request, reply) {
   try {
     const userId = parseInt(request.user.id, 10);
     const data = await getUserScoreDiff(userId);
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      data: data
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getScoreDiffHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function getWinStreakHandler(request, reply) {
-  const action = "Get win streak";
-  try {
-    const userId = parseInt(request.user.id, 10);
-    const data = await getUserWinStreak(userId);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: data

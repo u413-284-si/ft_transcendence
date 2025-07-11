@@ -4,7 +4,6 @@ import {
   getTournamentProgressHandler,
   getWinrateProgressionHandler,
   getScoreDiffHandler,
-  getWinStreakHandler,
   getScoresLastTenHandler
 } from "../controllers/user_stats.controllers.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
@@ -28,8 +27,6 @@ export default async function userstatsRoutes(fastify) {
   );
 
   fastify.get("/me/score-diff", optionsGetScoreDiff, getScoreDiffHandler);
-
-  fastify.get("/me/win-streak", optionsGetWinStreak, getWinStreakHandler);
 
   fastify.get(
     "/me/scores-last-ten",
@@ -84,15 +81,6 @@ const optionsGetWinrateProgression = {
 };
 
 const optionsGetScoreDiff = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetWinStreak = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {

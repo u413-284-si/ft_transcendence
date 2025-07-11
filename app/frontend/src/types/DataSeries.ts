@@ -22,19 +22,6 @@ export type TournamentProgressSeries = {
   data: TournamentProgressPoint[];
 }[];
 
-type WinStreakPoint = {
-  x: string; // ISO 8601 date string
-  y: number;
-};
-
-type WinStreakSeries = WinStreakPoint[];
-
-export type WinStreakStats = {
-  maxStreak: number;
-  currentStreak: number;
-  data: WinStreakSeries;
-};
-
 type ScoresLastTenDays = {
   x: string; // ISO 8601 date string
   y: number;

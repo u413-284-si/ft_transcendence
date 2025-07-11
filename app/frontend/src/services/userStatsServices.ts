@@ -5,7 +5,6 @@ import {
   ScoresLastTenDaysSeries,
   TournamentProgressSeries,
   WinrateSeries,
-  WinStreakStats
 } from "../types/DataSeries.js";
 
 export async function getUserStats(): Promise<UserStats> {
@@ -64,18 +63,6 @@ export async function getUserScoreDiff(): Promise<ScoreDiffSeries> {
   const url = "/api/user-stats/me/score-diff";
 
   const apiResponse = await apiFetch<ScoreDiffSeries>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-
-  console.log(apiResponse);
-  return apiResponse.data;
-}
-
-export async function getUserWinStreak(): Promise<WinStreakStats> {
-  const url = "/api/user-stats/me/win-streak";
-
-  const apiResponse = await apiFetch<WinStreakStats>(url, {
     method: "GET",
     credentials: "same-origin"
   });
