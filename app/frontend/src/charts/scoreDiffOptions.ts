@@ -4,13 +4,14 @@ export const scoreDiffOptions: Omit<ApexOptions, "series"> = {
   chart: {
     type: "bar",
     fontFamily: "inherit",
-    background: "transparent"
+    background: "transparent",
+    toolbar: {
+      show: false
+    },
+    height: 300
   },
-  xaxis: {
-    type: "category",
-    title: {
-      text: "Matches"
-    }
+  legend: {
+    show: false
   },
   plotOptions: {
     bar: {
@@ -31,21 +32,18 @@ export const scoreDiffOptions: Omit<ApexOptions, "series"> = {
       }
     }
   },
-  yaxis: {
-    title: {
-      text: "Score Differential"
-    },
-    labels: {
-      formatter: (val: number) => `${val}`
-    }
-  },
   tooltip: {
     theme: "dark",
     y: {
       formatter: (val: number) => `${val > 0 ? "+" : ""}${val}`
     }
   },
-  legend: {
-    show: false
-  }
+  xaxis: {
+    type: "category"
+  },
+  yaxis: {
+    title: {
+      text: "Score Difference"
+    },
+  },
 };

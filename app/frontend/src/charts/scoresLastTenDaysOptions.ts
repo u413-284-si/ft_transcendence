@@ -3,40 +3,44 @@ import type { ApexOptions } from "apexcharts";
 export const scoresLastTenDaysOptions: Omit<ApexOptions, "series"> = {
   chart: {
     type: "bar",
-    height: 350,
+    fontFamily: "inherit",
+    background: "transparent",
     toolbar: {
-      show: false // hide download menu etc
+      show: false
+    },
+    height: 300
+  },
+  colors: ["var(--color-neon-cyan)"],
+  dataLabels: {
+    enabled: true
+  },
+  plotOptions: {
+    bar: {
+      distributed: false,
+      colors: {
+        ranges: [
+          {
+            from: 0,
+            color: "var(--color-neon-cyan)"
+          }
+        ]
+      }
+    }
+  },
+  tooltip: {
+    theme: "dark",
+    y: {
+      formatter: (value: number) => `${value} points`
     }
   },
   xaxis: {
-    type: "category",
-    categories: [], // will be auto-filled by your series' x values
-    title: {
-      text: "Date"
-    },
-    labels: {
-      rotate: -45 // rotate date labels for better readability
-    }
+    type: "category"
   },
   yaxis: {
     title: {
       text: "Score"
     },
-    min: 0
-  },
-  dataLabels: {
-    enabled: true // show values on top of bars
-  },
-  plotOptions: {
-    bar: {
-      borderRadius: 4,
-      columnWidth: "50%", // width of each bar
-      distributed: false // all bars same color
-    }
-  },
-  tooltip: {
-    y: {
-      formatter: (value: number) => `${value} points`
-    }
+    min: 0,
+    stepSize: 1
   }
 };

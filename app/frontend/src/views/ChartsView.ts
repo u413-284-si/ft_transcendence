@@ -104,7 +104,7 @@ export default class ChartsView extends AbstractView {
       "score-diff-chart",
       makeChartOptions(
         scoreDiffOptions,
-        toAxisSeries("Score Differential", this.scoreDiffSeries)
+        toAxisSeries("Score Difference", this.scoreDiffSeries)
       )
     );
     const tournamentProgressChart = renderChart(
