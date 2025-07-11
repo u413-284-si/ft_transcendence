@@ -1,7 +1,10 @@
 import AbstractView from "./AbstractView.js";
 import {
+  getUserScoreDiff,
+  getUserScoresLastTen,
   getUserStats,
-  getUserStatsByUsername
+  getUserStatsByUsername,
+  getUserWinrateProgression
 } from "../services/userStatsServices.js";
 import {
   getUserByUsername,
@@ -22,12 +25,29 @@ import { UserStats } from "../types/IUserStats.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { StatFieldGroup } from "../components/StatField.js";
 import { TabButton } from "../components/TabButton.js";
+import { Chart } from "../components/Chart.js";
+import {
+  ScoreDiffSeries,
+  ScoresLastTenDaysSeries,
+  WinrateSeries
+} from "../types/DataSeries.js";
+import { makeWinLossOptions } from "../charts/winLossOptions.js";
+import { makeWinrateOptions } from "../charts/winrateOptions.js";
+import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
+import { makeScoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
+import { renderChart } from "../charts/utils.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
   private username = escapeHTML(router.getParams().username);
   private user: User | null = null;
   private friendRequest: FriendRequest | null = null;
+  private winrateSeries: WinrateSeries = [];
+  private scoreDiffSeries: ScoreDiffSeries = [];
+  private scoresLastTen: ScoresLastTenDaysSeries = [];
+  private charts: Record<string, Record<string, ApexCharts>> = {};
+  private chartOptions: Record<string, Record<string, ApexCharts.ApexOptions>> =
+    {};
 
   constructor() {
     super();
@@ -84,7 +104,10 @@ export default class StatsView extends AbstractView {
     await this.setViewType();
     await this.fetchData();
     this.updateHTML();
+    if (this.viewType === "public") return;
     this.addListeners();
+    this.populateChartOptions();
+    this.initChartsForTab("matches");
   }
 
   getTabsHTML(): string {
@@ -110,14 +133,41 @@ export default class StatsView extends AbstractView {
           id: "match-dashboard-header",
           variant: "default"
         })}
+        ${this.getMatchesDashboard()}
+      </div>
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+        ${Header1({
+          text: "Details",
+          id: "match-details-header",
+          variant: "default"
+        })}
         ${this.getMatchesTableHTML()}
       </div>
     </div>`;
   }
 
-getMatchesDashboard():string {
-  
-}
+  getMatchesDashboard(): string {
+    return /* HTML */ `<div class="p-6 mx-auto space-y-8 min-h-screen">
+      <div class="flex flex-cols-2 gap-8">
+        ${Chart({ title: "Wins vs Losses", chartId: "win-loss-chart" })}
+        ${Chart({
+          title: "Winrate Progression (Last 10 Matches)",
+          chartId: "winrate-chart"
+        })}
+      </div>
+
+      <div class="grid grid-cols-2 gap-8">
+        ${Chart({
+          title: "Score Difference (Last 10 Matches)",
+          chartId: "score-diff-chart"
+        })}
+        ${Chart({
+          title: "Scores Last Ten Days",
+          chartId: "scores-last-ten"
+        })}
+      </div>
+    </div>`;
+  }
 
   getMatchesTableHTML(): string {
     if (!this.matches) throw new Error("Matches is null");
@@ -169,6 +219,9 @@ getMatchesDashboard():string {
   async fetchData() {
     if (this.viewType === "self") {
       this.userStats = await getUserStats();
+      this.winrateSeries = await getUserWinrateProgression();
+      this.scoreDiffSeries = await getUserScoreDiff();
+      this.scoresLastTen = await getUserScoresLastTen();
       this.matches = await getUserPlayedMatches();
       return;
     }
@@ -184,8 +237,8 @@ getMatchesDashboard():string {
     const contents = document.querySelectorAll<HTMLDivElement>(".tab-content");
 
     buttons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const targetTab = button.dataset.tab;
+      button.addEventListener("click", async () => {
+        const tabId = button.dataset.tab!;
 
         contents.forEach((content) => {
           content.classList.add("hidden");
@@ -195,11 +248,56 @@ getMatchesDashboard():string {
           btn.classList.remove("active-link");
         });
 
-        const targetContent = document.getElementById(`tab-${targetTab}`);
+        const targetContent = document.getElementById(`tab-${tabId}`);
         if (targetContent) targetContent.classList.remove("hidden");
 
         button.classList.add("active-link");
+
+        requestAnimationFrame(() => {
+          this.initChartsForTab(tabId);
+        });
       });
     });
+  }
+
+  populateChartOptions(): void {
+    this.chartOptions["matches"] = {
+      "win-loss-chart": makeWinLossOptions(
+        this.userStats!.matchesWon,
+        this.userStats!.matchesLost,
+        this.userStats!.winRate
+      ),
+      "winrate-chart": makeWinrateOptions(
+        "Winrate",
+        this.winrateSeries,
+        this.userStats!.matchesPlayed
+      ),
+      "score-diff-chart": makeScoreDiffOptions(
+        "Score Difference",
+        this.scoreDiffSeries,
+        this.userStats!.matchesPlayed
+      ),
+      "scores-last-ten": makeScoresLastTenDaysOptions(
+        "Scores Last Ten Days",
+        this.scoresLastTen
+      )
+    };
+  }
+
+  initChartsForTab(tabId: string) {
+    if (!this.charts[tabId]) this.charts[tabId] = {};
+
+    const optionsForTab = this.chartOptions[tabId];
+    if (!optionsForTab) return;
+
+    for (const chartId in optionsForTab) {
+      if (this.charts[tabId][chartId]) {
+        this.charts[tabId][chartId].destroy();
+      }
+      this.charts[tabId][chartId] = renderChart(
+        chartId,
+        optionsForTab[chartId]
+      );
+    }
   }
 }
