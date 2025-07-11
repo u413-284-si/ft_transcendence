@@ -32,6 +32,14 @@ export function formatDateTime(input: string): string {
   const date = new Date(input);
   return date.toLocaleString("en-GB", {
     dateStyle: "medium",
-    timeStyle: "medium",
+    timeStyle: "medium"
+  });
+}
+
+export function formatDayMonth(input: string): string {
+  const date = new Date(input);
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit"
   });
 }

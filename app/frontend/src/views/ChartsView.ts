@@ -15,15 +15,11 @@ import {
 } from "../types/DataSeries.js";
 import { UserStats } from "../types/IUserStats.js";
 import AbstractView from "./AbstractView.js";
-import {
-  makeChartOptions,
-  renderChart,
-  toAxisSeries
-} from "../charts/utils.js";
+import { makeChartOptions, renderChart } from "../charts/utils.js";
 import { makeWinrateOptions } from "../charts/winrateOptions.js";
 import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { tournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
-import { scoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
+import { makeScoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
 import { Chart } from "../components/Chart.js";
 import { makeWinLossOptions } from "../charts/winLossOptions.js";
 
@@ -113,10 +109,7 @@ export default class ChartsView extends AbstractView {
     this.renderWinStreakRadialChart();
     const scoresLastTenDaysChart = renderChart(
       "scores-last-ten",
-      makeChartOptions(
-        scoresLastTenDaysOptions,
-        toAxisSeries("Scores Last Ten Days", this.scoresLastTen)
-      )
+      makeScoresLastTenDaysOptions("Scores Last Ten Days", this.scoresLastTen)
     );
   }
 
