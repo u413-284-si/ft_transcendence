@@ -96,9 +96,8 @@ export async function getUserWinrateProgression(userId) {
   lastTenMatchesWithResults.forEach((match) => {
     if (match.result) cumulativeWins++;
     cumulativeMatches++;
-    const matchNo = cumulativeMatches;
     const winrate = (cumulativeWins / cumulativeMatches) * 100;
-    data.push({ x: matchNo.toString(), y: winrate });
+    data.push({ x: match.date, y: winrate });
   });
 
   return data;

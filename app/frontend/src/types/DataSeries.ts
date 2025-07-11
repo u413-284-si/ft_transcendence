@@ -1,5 +1,5 @@
 type WinratePoint = {
-  x: string; // match number
+  x: string; // ISO 8601 date string
   y: number;
 };
 
