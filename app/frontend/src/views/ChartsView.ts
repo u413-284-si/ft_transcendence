@@ -20,7 +20,7 @@ import {
   renderChart,
   toAxisSeries
 } from "../charts/utils.js";
-import { winrateOptions } from "../charts/winrateOptions.js";
+import { makeWinrateOptions } from "../charts/winrateOptions.js";
 import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { tournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 import { scoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
@@ -92,14 +92,19 @@ export default class ChartsView extends AbstractView {
     );
     const winrateChart = renderChart(
       "winrate-chart",
-      makeChartOptions(
-        winrateOptions,
-        toAxisSeries("Winrate", this.winrateSeries)
+      makeWinrateOptions(
+        "Winrate",
+        this.winrateSeries,
+        this.userStats.matchesPlayed
       )
     );
     const scoreDiffChart = renderChart(
       "score-diff-chart",
-      makeScoreDiffOptions("Score Difference", this.scoreDiffSeries, this.userStats.matchesPlayed)
+      makeScoreDiffOptions(
+        "Score Difference",
+        this.scoreDiffSeries,
+        this.userStats.matchesPlayed
+      )
     );
     const tournamentProgressChart = renderChart(
       "tournament-progress-chart",
