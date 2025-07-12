@@ -8,7 +8,9 @@ import {
   createUserAvatar,
   deleteUserAvatar,
   getUserByUsername,
-  getUserByEmail
+  getUserByEmail,
+  getUserAuthProvider,
+  flattenUser
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
 import {
@@ -62,7 +64,8 @@ export async function getUserHandler(request, reply) {
   const action = "Get user";
   try {
     const id = parseInt(request.user.id, 10);
-    const data = await getUser(id);
+    const user = await getUser(id);
+    const data = flattenUser(user);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -115,6 +118,16 @@ export async function patchUserHandler(request, reply) {
   const action = "Patch user";
   try {
     const id = parseInt(request.user.id, 10);
+
+    if (request.body.email && (await getUserAuthProvider(id)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "Email can not be changed. User uses Google auth provider"
+      );
+    }
+
     const data = await updateUser(id, request.body);
     return reply
       .code(200)
@@ -400,6 +413,16 @@ export async function updateUserPasswordHandler(request, reply) {
   const action = "Update user password";
   try {
     const userId = parseInt(request.user.id, 10);
+
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "Password can not be changed. User uses Google auth provider"
+      );
+    }
+
     const { currentPassword, newPassword } = request.body;
 
     const hashedPassword = await getPasswordHash(userId);

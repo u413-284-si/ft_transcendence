@@ -84,9 +84,7 @@ export async function getUserByUsername(
   return apiResponse.data;
 }
 
-export async function getUserByEmail(
-  email: string
-): Promise<User | null> {
+export async function getUserByEmail(email: string): Promise<User | null> {
   const apiResponse = await apiFetch<User | null>(
     `/api/users/search?email=${encodeURIComponent(email)}`,
     {
@@ -114,7 +112,10 @@ export async function getUserPlayedMatchesByUsername(
   return apiResponse.data;
 }
 
-export async function updateUserPassword(currentPassword: string, newPassword: string): Promise<void> {
+export async function updateUserPassword(
+  currentPassword: string,
+  newPassword: string
+): Promise<void> {
   const apiResponse = await apiFetch<User>("/api/users/me/password", {
     method: "PATCH",
     body: JSON.stringify({ currentPassword, newPassword }),
