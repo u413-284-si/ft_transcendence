@@ -20,6 +20,7 @@ import { httpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
 import * as otpAuth from "otpauth";
+import QRCode from "qrcode";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -215,12 +216,12 @@ export async function authTwoFaQRCodeHandler(request, reply) {
     secret: secret
   });
 
-  const token = totp.generate();
+  const uri = totp.toString();
+  const data = await QRCode.toDataURL(uri);
 
-  console.log("token: ", token);
-  return reply.code(200).send({
-    message: createResponseMessage(action, true)
-  });
+  return reply
+    .code(200)
+    .send({ message: createResponseMessage(action, true), data });
 }
 
 export async function logoutUserHandler(request, reply) {
