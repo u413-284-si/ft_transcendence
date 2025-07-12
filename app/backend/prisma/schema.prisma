@@ -36,8 +36,8 @@ model Authentication {
     password String?
 	refreshToken String?
 	authProvider AuthProviderType @default(LOCAL)
+    totpSecret    String?
     // has2FA        Boolean @default(false)
-    // totpSecret    String?
     // oauthProvider String?
     // emailVerificationToken String?
     // emailVerified          Boolean @default(false)
