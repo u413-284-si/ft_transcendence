@@ -164,7 +164,11 @@ export default class ProfileView extends AbstractView {
             ${this.hasLocalAuth
               ? this.getPasswordFormHTML()
               : TextBox({
-                  text: "Signed in with Google:\n\nYou cannot change your password or email address.",
+                  text: [
+                    "Signed in with Google:",
+                    "",
+                    "You cannot change your password or email address."
+                  ],
                   variant: "warning",
                   size: "lg",
                   id: "google-warning",

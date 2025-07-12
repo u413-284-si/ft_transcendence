@@ -1,6 +1,6 @@
 export type TextBoxOptions = {
   id?: string;
-  text: string;
+  text: string[];
   variant?: "info" | "warning" | "error";
   size?: "sm" | "md" | "lg";
   className?: string;
@@ -26,11 +26,19 @@ export function TextBox({
   className = ""
 }: TextBoxOptions): string {
   const classes = [
-    "flex items-center justify-center rounded-md font-bold uppercase whitespace-pre-line leading-relaxed",
+    "flex flex-col items-center justify-center rounded-md font-bold uppercase whitespace-pre-line leading-relaxed",
     textBoxVariants[variant],
     textBoxSizes[size],
     className
   ].join(" ");
+  const content = text
+    .map((line) => {
+      if (line.trim() === "") {
+        return `<div class="h-4"></div>`;
+      }
+      return `<p>${line}</p>`;
+    })
+    .join("");
   const idAttr = id ? ` id="${id}"` : "";
-  return `<div${idAttr} class="${classes}">${text}</div>`;
+  return `<div${idAttr} class="${classes}">${content}</div>`;
 }
