@@ -167,9 +167,9 @@ export default class ProfileView extends AbstractView {
               ? this.getPasswordFormHTML()
               : TextBox({
                   text: [
-                    "Signed in with Google:",
+                    i18next.t("profileView.signedInWithGoogleText"),
                     "",
-                    "You cannot change your password or email address."
+                    i18next.t("profileView.cannotChangeEmailOrPWText")
                   ],
                   variant: "warning",
                   size: "lg",
@@ -256,7 +256,7 @@ export default class ProfileView extends AbstractView {
     }
 
     if (!hasUsername && !emailEl) {
-      markInvalid("Please fill in a username.", usernameEl, usernameErrorEl);
+      markInvalid(i18next.t("fillInUsernameText"), usernameEl, usernameErrorEl);
       valid = false;
     }
 
