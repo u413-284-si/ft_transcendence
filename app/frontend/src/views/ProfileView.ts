@@ -185,7 +185,7 @@ export default class ProfileView extends AbstractView {
       this.uploadAvatar(event)
     );
 
-    if (auth.getUser().authProvider === "LOCAL") {
+    if (this.hasLocalAuth) {
       this.passwordFormEl.addEventListener("submit", (event) =>
         this.handlePasswordChange(event)
       );
@@ -222,7 +222,7 @@ export default class ProfileView extends AbstractView {
 
     let emailEl: HTMLInputElement | null = null;
     let email = "";
-    if (auth.getUser().authProvider === "LOCAL") {
+    if (this.hasLocalAuth) {
       emailEl = getInputEl("email-input");
       const emailErrorEl = getEl("email-error");
       email = emailEl.value;
