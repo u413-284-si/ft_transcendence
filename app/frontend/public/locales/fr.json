@@ -46,6 +46,7 @@
     "emailLabel": "Addresse mail: ",
     "emailText": "Addresse mail",
     "logoutText": "Déconnexion",
+    "lostText": "Perdu",
     "offlineText": "Hors ligne",
     "onlineText": "En ligne",
     "passwordLabel": "Mot de passe:",
@@ -57,7 +58,8 @@
     "usernameLabel": "Nom d'utilisateur:",
     "usernameText": "Nom d'utilisateur",
     "userNotFoundError": "Utilisateur non trouvé.",
-    "welcomeText": "Bienvenue"
+    "welcomeText": "Bienvenue",
+    "wonText": "Gagné"
   },
 
   "homeView": {
@@ -154,13 +156,11 @@
   "statsView": {
     "friendOnlyText": "Vous devez être amis pour voir l'historique des matchs",
     "joinedText": "Inscrit le",
-    "lostText": "Perdu",
     "matchHistoryText": "Historique des matchs",
     "nullMatchesError": "Il n'y a pas de matchs.",
     "playedText": "Joué",
     "statsTitle": "Statistiques",
     "userStatsNotFoundError": "Statistiques de l'utilisateur non trouvées.",
-    "winRateText": "Taux de victoire",
-    "wonText": "Gagné"
+    "winRateText": "Taux de victoire"
   }
 }

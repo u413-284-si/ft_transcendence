@@ -32,7 +32,7 @@ export default class PlayerNicknamesView extends AbstractView {
             variant: "default"
           }),
           Paragraph({
-            text: i18next.t("playerNicknamesView.tournamentText", {
+            text: i18next.t("global.tournamentText", {
               tournamentName: escapeHTML(this.tournamentName)
             })
           }),
