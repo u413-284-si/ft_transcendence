@@ -55,10 +55,10 @@ export async function apiFetch<T>(
         }
         return retryResponse;
       }
-      return error(json.message, response.status, json.cause);
+      return setError(json.message, response.status, json.cause);
     }
 
-    return success(json.message, json.data);
+    return setSuccess(json.message, json.data);
   } catch (error) {
     console.error("Unknown error:", error);
     throw new ApiError("Internal server error", 500);
@@ -89,12 +89,12 @@ async function refreshAndRetry<T>(
   return apiFetch<T>(url, options, false);
 }
 
-function success<T>(message: string, data: T): ApiSuccess<T> {
+function setSuccess<T>(message: string, data: T): ApiSuccess<T> {
   console.log({ message, data });
   return { success: true, message, data };
 }
 
-function error(message: string, status: number, cause?: string): ApiFail {
+function setError(message: string, status: number, cause?: string): ApiFail {
   console.error({ message, status, cause });
   return { success: false, message, status, cause };
 }
