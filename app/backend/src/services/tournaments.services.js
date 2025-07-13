@@ -192,3 +192,94 @@ export async function getUserTournamentSummary(userId) {
     { name: "lost", data: lostSeriesData }
   ];
 }
+
+export async function getUserTournamentProgress(userId) {
+  const tournaments = await prisma.tournament.findMany({
+    where: {
+      userId,
+      status: "FINISHED"
+    },
+    select: {
+      maxPlayers: true,
+      userNickname: true,
+      matches: {
+        select: {
+          player1Nickname: true,
+          player2Nickname: true,
+          player1Score: true,
+          player2Score: true
+        }
+      }
+    }
+  });
+
+  const progressBySize = {};
+
+  for (const tournament of tournaments) {
+    const size = tournament.maxPlayers;
+    const totalRounds = Math.log2(size);
+    const user = tournament.userNickname;
+
+    // Filter matches where the user played
+    const userMatches = tournament.matches.filter(
+      (m) => m.player1Nickname === user || m.player2Nickname === user
+    );
+
+    const matchesPlayed = userMatches.length;
+
+    if (matchesPlayed === 0) continue;
+
+    // Determine if user won last match
+    const lastMatch = userMatches[userMatches.length - 1];
+    const playedAs =
+      lastMatch.player1Nickname === user ? "PLAYERONE" : "PLAYERTWO";
+    const wonLastMatch =
+      (playedAs === "PLAYERONE" &&
+        lastMatch.player1Score > lastMatch.player2Score) ||
+      (playedAs === "PLAYERTWO" &&
+        lastMatch.player2Score > lastMatch.player1Score);
+
+    let roundsReached = matchesPlayed;
+    if (wonLastMatch && matchesPlayed === totalRounds) {
+      roundsReached++; // they won the final → full progress
+    }
+
+    if (!progressBySize[size]) {
+      progressBySize[size] = {};
+      for (let i = 1; i <= totalRounds + 1; i++) {
+        progressBySize[size][i] = 0;
+      }
+    }
+
+    // Count all rounds up to what they reached
+    for (let i = 1; i <= roundsReached; i++) {
+      progressBySize[size][i]++;
+    }
+  }
+
+  const data = convertProgressToFunnelSeries(progressBySize);
+
+  return data;
+}
+
+function convertProgressToFunnelSeries(progressBySize) {
+  const chartData = {};
+
+  for (const size in progressBySize) {
+    const roundCounts = progressBySize[size];
+    const totalRounds = Object.keys(roundCounts).length;
+
+    const data = Object.entries(roundCounts).map(([round, count]) => {
+      const roundNumber = Number(round);
+      const label = roundNumber === totalRounds ? "Won" : `Round ${round}`;
+      return {
+        x: label,
+        y: count
+      };
+    });
+
+    chartData[size] = data;
+  }
+
+  return chartData;
+}

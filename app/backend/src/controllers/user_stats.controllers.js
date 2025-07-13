@@ -1,4 +1,7 @@
-import { getUserTournamentSummary } from "../services/tournaments.services.js";
+import {
+  getUserTournamentProgress,
+  getUserTournamentSummary
+} from "../services/tournaments.services.js";
 import {
   getAllUserStats,
   deleteAllUserStats,
@@ -116,6 +119,24 @@ export async function getScoresLastTenHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getScoresLastTenHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getUserTournamentProgressHandler(request, reply) {
+  const action = "Get tournament progress";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const data = await getUserTournamentProgress(userId);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserTournamentProgress: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

@@ -4,7 +4,8 @@ import {
   getTournamentSummaryHandler,
   getWinrateProgressionHandler,
   getScoreDiffHandler,
-  getScoresLastTenHandler
+  getScoresLastTenHandler,
+  getUserTournamentProgressHandler
 } from "../controllers/user_stats.controllers.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
 import { errorResponses } from "../utils/error.js";
@@ -32,6 +33,12 @@ export default async function userstatsRoutes(fastify) {
     "/me/scores-last-ten",
     optionsGetScoresLastTen,
     getScoresLastTenHandler
+  );
+
+  fastify.get(
+    "/me/tournament-progress",
+    optionsGetUserTournamentProgress,
+    getUserTournamentProgressHandler
   );
 }
 
@@ -90,6 +97,15 @@ const optionsGetScoreDiff = {
 };
 
 const optionsGetScoresLastTen = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserTournamentProgress = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
