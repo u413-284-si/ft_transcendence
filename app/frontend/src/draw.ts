@@ -54,7 +54,7 @@ function drawScores(
 
   // Player 1 name and score
   const player1Text =
-    shortenName(gameState.player1 || "Player 1") +
+    shortenName(gameState.player1 || i18next.t("global.playerText") + "1") +
     ":" +
     " " +
     gameState.player1Score.toString();
@@ -62,7 +62,7 @@ function drawScores(
 
   // Player 2 name and score
   const player2Text =
-    shortenName(gameState.player2 || "Player 2") +
+    shortenName(gameState.player2 || i18next.t("global.playerText") + "2") +
     ":" +
     " " +
     gameState.player2Score.toString();
@@ -82,12 +82,12 @@ function drawWinningScreen(
   ctx.font = "40px Arial";
   const winnerText =
     gameState.player1Score >= gameState.winningScore
-      ? `${gameState.player1} wins!`
-      : `${gameState.player2} wins!`;
+      ? i18next.t("global.playerWinsText", { player: gameState.player1 })
+      : i18next.t("global.playerWinsText", { player: gameState.player2 });
   ctx.fillText(winnerText, canvas.width / 2 - 100, canvas.height / 2);
   ctx.font = "20px Arial";
   ctx.fillText(
-    "Press ENTER to continue",
+    i18next.t("global.continueText"),
     canvas.width / 2 - 100,
     canvas.height / 2 + 40
   );
