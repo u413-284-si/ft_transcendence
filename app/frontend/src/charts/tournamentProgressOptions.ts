@@ -39,7 +39,7 @@ export function makeTournamentProgressOptions(
     ],
     tooltip: {
       theme: "dark",
-      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+      custom: function ({ seriesIndex, dataPointIndex, w }) {
         const point = w.config.series[seriesIndex].data[dataPointIndex];
         const label = point.x;
         const value = point.y;
