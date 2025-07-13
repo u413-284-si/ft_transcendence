@@ -10,8 +10,6 @@ import {
 import ErrorView from "../views/ErrorView.js";
 import { closeSSEConnection } from "../services/serverSentEventsServices.js";
 import { ApiError } from "../services/api.js";
-import { auth } from "../AuthManager.js";
-import { toaster } from "../Toaster.js";
 
 export class Router {
   private static instance: Router;
