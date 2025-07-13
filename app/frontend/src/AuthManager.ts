@@ -108,15 +108,22 @@ export class AuthManager {
   }
 
   public async logout(): Promise<void> {
-    const apiResponse = await userLogout();
-    if (!apiResponse.success) {
-      console.error("Error while logout()", apiResponse.message);
+    try {
+      const apiResponse = await userLogout();
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          console.warn("No auth cookies set");
+        } else throw new ApiError(apiResponse);
+      }
+
+      const sidebar = document.getElementById("drawer-sidebar");
+      if (sidebar) sidebar.remove();
+
+      this.updateAuthState(null);
+    } catch (error) {
+      console.error("Error while logout()", error);
+      toaster.error("Error while logging out. Try again later.");
     }
-
-    const sidebar = document.getElementById("drawer-sidebar");
-    if (sidebar) sidebar.remove();
-
-    this.updateAuthState(null);
   }
 
   public clearTokenOnError(): void {
