@@ -12,7 +12,6 @@ import { authGuard, guestOnlyGuard } from "./routing/routeGuard.js";
 import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 import { layout } from "./Layout.js";
-import Charts from "./views/ChartsView.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard })
@@ -34,7 +33,6 @@ router
     regex: "[a-zA-Z0-9-!?_$.]{3,20}"
   })
   .addRoute("/friends", { view: Friends, guard: authGuard })
-  .addRoute("/charts", { view: Charts, guard: authGuard })
   .addRouteChangeListener(logRouteChange)
   .addRouteChangeListener(updateUI);
 
