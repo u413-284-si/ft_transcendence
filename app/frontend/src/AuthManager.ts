@@ -77,7 +77,7 @@ export class AuthManager {
       this.user = unwrap(await getUserProfile());
       this.updateAuthState(token);
     } catch (error) {
-      router.handleError("Error while initialize:", error);
+      router.handleError("Error in AuthManager.initialize():", error);
     }
   }
 
