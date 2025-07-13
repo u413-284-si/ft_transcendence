@@ -7,6 +7,13 @@
     "unexpectedErrorText": "Une erreur inattendue s'est produite."
   },
 
+  "friendListItem": {
+    "acceptText": "Confirmer",
+    "declineText": "Refuser",
+    "deleteText": "Effacer",
+    "removeText": "Enlever"
+  },
+
   "friendsView": {
     "addFriendText": "Ajouter un ami",
     "confirmDeclineRequestText": "Êtes-vous sûr de vouloir refuser cette demande ?",
@@ -20,8 +27,6 @@
     "noFriendsText": "Vous n'avez pas encore d'amis",
     "noIncomingText": "Aucune demande d'ami entrante",
     "noOutgoingText": "Aucune demande d'ami sortante",
-    "offlineText": "Hors ligne",
-    "onlineText": "En ligne",
     "outgoingRequestsText": "Demandes d'amis sortantes",
     "sendFriendRequestText": "Envoyer une demande d'ami",
     "sendSuccessText": "Demande d'ami envoyée avec succès",
@@ -41,6 +46,8 @@
     "emailLabel": "Addresse mail: ",
     "emailText": "Addresse mail",
     "logoutText": "Déconnexion",
+    "offlineText": "Hors ligne",
+    "onlineText": "En ligne",
     "passwordLabel": "Mot de passe:",
     "passwordText": "Mot de passe",
     "pongGameText": "Jeu de pong",
