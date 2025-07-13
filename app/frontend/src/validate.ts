@@ -116,7 +116,7 @@ export async function isTournamentNameAvailable(
     }
   } catch (error) {
     console.error("Error fetching tournaments:", error);
-    toaster.error("An error occurred while validating the tournament name.");
+    toaster.error(i18next.t("global.validateTournamentNameError"));
     return false;
   }
   return true;
