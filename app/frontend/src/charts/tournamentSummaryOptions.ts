@@ -1,6 +1,6 @@
 import type { ApexOptions } from "apexcharts";
 
-export const tournamentProgressOptions: Omit<ApexOptions, "series"> = {
+export const tournamentSummaryOptions: Omit<ApexOptions, "series"> = {
   chart: {
     type: "bar",
     stacked: true,
@@ -8,7 +8,9 @@ export const tournamentProgressOptions: Omit<ApexOptions, "series"> = {
     background: "transparent",
     toolbar: {
       show: false
-    }
+    },
+    height: 300,
+    width: 800
   },
   plotOptions: {
     bar: {

@@ -1,7 +1,7 @@
 import {
   getAllUserStatsHandler,
   deleteAllUserStatsHandler,
-  getTournamentProgressHandler,
+  getTournamentSummaryHandler,
   getWinrateProgressionHandler,
   getScoreDiffHandler,
   getScoresLastTenHandler
@@ -15,9 +15,9 @@ export default async function userstatsRoutes(fastify) {
   fastify.delete("/", optionsDeleteAllUserStats, deleteAllUserStatsHandler);
 
   fastify.get(
-    "/me/tournament-progress",
-    optionsGetTournamentProgress,
-    getTournamentProgressHandler
+    "/me/tournament-summary",
+    optionsGetTournamentSummary,
+    getTournamentSummaryHandler
   );
 
   fastify.get(
@@ -62,7 +62,7 @@ const optionsDeleteAllUserStats = {
   }
 };
 
-const optionsGetTournamentProgress = {
+const optionsGetTournamentSummary = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {

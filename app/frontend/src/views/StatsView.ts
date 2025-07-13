@@ -4,7 +4,7 @@ import {
   getUserScoresLastTen,
   getUserStats,
   getUserStatsByUsername,
-  getUserTournamentProgress,
+  getUserTournamentSummary,
   getUserWinrateProgression
 } from "../services/userStatsServices.js";
 import {
@@ -38,7 +38,7 @@ import { makeWinrateOptions } from "../charts/winrateOptions.js";
 import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { makeScoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
 import { makeChartOptions, renderChart } from "../charts/utils.js";
-import { tournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
+import { tournamentSummaryOptions } from "../charts/tournamentSummaryOptions.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -224,8 +224,8 @@ export default class StatsView extends AbstractView {
     return /* HTML */ `<div class="p-6 mx-auto space-y-8 min-h-screen">
       <div class="flex gap-8">
         ${Chart({
-          title: "Tournament Progression",
-          chartId: "tournament-progression"
+          title: "Tournament Summary",
+          chartId: "tournament-summary"
         })}
       </div>
     </div>`;
@@ -264,7 +264,7 @@ export default class StatsView extends AbstractView {
       this.scoreDiffSeries = await getUserScoreDiff();
       this.scoresLastTen = await getUserScoresLastTen();
       this.matches = await getUserPlayedMatches();
-      this.tournamentProgressSeries = await getUserTournamentProgress();
+      this.tournamentProgressSeries = await getUserTournamentSummary();
       return;
     }
     this.userStats = await getUserStatsByUsername(this.username);
@@ -325,8 +325,8 @@ export default class StatsView extends AbstractView {
       )
     };
     this.chartOptions["tournaments"] = {
-      "tournament-progression": makeChartOptions(
-        tournamentProgressOptions,
+      "tournament-summary": makeChartOptions(
+        tournamentSummaryOptions,
         this.tournamentProgressSeries
       )
     };

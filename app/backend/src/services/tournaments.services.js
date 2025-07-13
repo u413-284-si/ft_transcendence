@@ -121,7 +121,7 @@ export async function getUserActiveTournament(userId) {
   return tournament;
 }
 
-export async function getUserTournamentProgress(userId) {
+export async function getUserTournamentSummary(userId) {
   const tournaments = await prisma.tournament.findMany({
     where: {
       userId,
