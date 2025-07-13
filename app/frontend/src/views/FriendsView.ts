@@ -63,7 +63,9 @@ export default class FriendsView extends AbstractView {
         containerId = "request-list-out";
         break;
       default:
-        throw new Error(i18next.t("friendsView.unknownRequestListTypeError", { type }));
+        throw new Error(
+          i18next.t("friendsView.unknownRequestListTypeError", { type })
+        );
     }
 
     getEl(containerId).innerHTML = cleanHTML;
@@ -167,7 +169,9 @@ export default class FriendsView extends AbstractView {
         emptyMessage = i18next.t("friendsView.noOutgoingText");
         break;
       default:
-        throw new Error(i18next.t("friendsView.unknownRequestListTypeError", { type }));
+        throw new Error(
+          i18next.t("friendsView.unknownRequestListTypeError", { type })
+        );
     }
 
     if (filtered.length === 0) {
@@ -314,8 +318,8 @@ export default class FriendsView extends AbstractView {
     const statusSpan = container.querySelector(".online-status")!;
 
     statusSpan.textContent = isOnline
-      ? i18next.t("friendsView.onlineText")
-      : i18next.t("friendsView.offlineText");
+      ? i18next.t("global.onlineText")
+      : i18next.t("global.offlineText");
     statusSpan.classList.toggle("text-neon-green", isOnline);
     statusSpan.classList.toggle("text-grey", !isOnline);
   };

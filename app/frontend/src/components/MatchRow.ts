@@ -6,11 +6,11 @@ export function MatchRow(match: Match, user: string): string {
 
   const result = isPlayerOne
     ? match.player1Score > match.player2Score
-      ? "Won"
-      : "Lost"
+      ? i18next.t("global.wonText")
+      : i18next.t("global.lostText")
     : match.player2Score > match.player1Score
-      ? "Won"
-      : "Lost";
+      ? i18next.t("global.wonText")
+      : i18next.t("global.lostText");
 
   const player1Display = isPlayerOne
     ? `${match.player1Nickname} (${user})`
@@ -21,7 +21,9 @@ export function MatchRow(match: Match, user: string): string {
     : `${match.player2Nickname} (${user})`;
 
   const tournamentDisplay = match.tournament?.name
-    ? `Name: ${match.tournament.name}`
+    ? i18next.t("global.tournamentText", {
+        tournamentName: escapeHTML(match.tournament.name)
+      })
     : "N/A";
 
   return /* HTML */ `

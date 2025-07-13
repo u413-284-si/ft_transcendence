@@ -7,6 +7,13 @@
     "unexpectedErrorText": "Une erreur inattendue s'est produite."
   },
 
+  "friendListItem": {
+    "acceptText": "Confirmer",
+    "declineText": "Refuser",
+    "deleteText": "Effacer",
+    "removeText": "Enlever"
+  },
+
   "friendsView": {
     "addFriendText": "Ajouter un ami",
     "confirmDeclineRequestText": "Êtes-vous sûr de vouloir refuser cette demande ?",
@@ -20,8 +27,6 @@
     "noFriendsText": "Vous n'avez pas encore d'amis",
     "noIncomingText": "Aucune demande d'ami entrante",
     "noOutgoingText": "Aucune demande d'ami sortante",
-    "offlineText": "Hors ligne",
-    "onlineText": "En ligne",
     "outgoingRequestsText": "Demandes d'amis sortantes",
     "sendFriendRequestText": "Envoyer une demande d'ami",
     "sendSuccessText": "Demande d'ami envoyée avec succès",
@@ -41,6 +46,9 @@
     "emailLabel": "Addresse mail: ",
     "emailText": "Addresse mail",
     "logoutText": "Déconnexion",
+    "lostText": "Perdu",
+    "offlineText": "Hors ligne",
+    "onlineText": "En ligne",
     "passwordLabel": "Mot de passe:",
     "passwordText": "Mot de passe",
     "pongGameText": "Jeu de pong",
@@ -50,7 +58,8 @@
     "usernameLabel": "Nom d'utilisateur:",
     "usernameText": "Nom d'utilisateur",
     "userNotFoundError": "Utilisateur non trouvé.",
-    "welcomeText": "Bienvenue"
+    "welcomeText": "Bienvenue",
+    "wonText": "Gagné"
   },
 
   "homeView": {
@@ -91,6 +100,12 @@
     "tournamentStatusText": "Statut du Tournoi"
   },
 
+  "nicknameInput": {
+    "enterYourNicknameText": "Entrez votre pseudonyme",
+    "playerChoiceLabel": "Je joue en tant que joueur {{i}}",
+    "playerNicknameLabel": "Pseudonyme de joueur {{i}}"
+  },
+
   "playerNicknamesView": {
     "enterPlayerNicknamesText": "Entrez les pseudonymes des joueurs",
     "playerNicknamesTitle": "Pseudonymes des joueurs",
@@ -101,12 +116,14 @@
   "profileView": {
     "avatarUploadFailedText": "Échec du téléchargement de l'avatar. Veuillez réessayer.",
     "avatarUploadedSuccessText": "Avatar téléchargé avec succès !",
+    "cannotChangeEmailOrPWText": "Vous ne pouvez pas changer votre adresse e-mail ou votre mot de passe.",
     "changeAvatarText": "Modifiez votre avatar ci-dessous.",
     "changePasswordButton": "Modifier le mot de passe",
     "changePasswordText": "Modifiez votre mot de passe ci-dessous.",
     "currentPasswordLabel": "Mot de passe actuel:",
     "currentPasswordText": "Mot de passe actuel",
     "fillAtLeastOneFieldText": "Veuillez remplir au moins un champ.",
+    "fillInUsernameText": "Veuillez donner un nom d'utilisateur.",
     "newPasswordLabel": "Nouveau mot de passe:",
     "newPasswordText": "Nouveau mot de passe",
     "passwordUpdateFailedText": "Échec de la mise à jour du mot de passe. Veuillez réessayer.",
@@ -114,6 +131,7 @@
     "profileUpdateFailedText": "Échec de la mise à jour du profil. Veuillez réessayer.",
     "profileUpdatedSuccessText": "Profil mis à jour avec succès !",
     "saveChangesText": "Enregistrer les modifications",
+    "signedInWithGoogleText": "Connecté avec Google",
     "updateProfileText": "Mettez à jour les informations de votre profil ci-dessous.",
     "uploadAvatarText": "Télécharger l'avatar",
     "uploadYourAvatarLabel": "Téléchargez votre avatar:",
@@ -144,13 +162,11 @@
   "statsView": {
     "friendOnlyText": "Vous devez être amis pour voir l'historique des matchs",
     "joinedText": "Inscrit le",
-    "lostText": "Perdu",
     "matchHistoryText": "Historique des matchs",
     "nullMatchesError": "Il n'y a pas de matchs.",
     "playedText": "Joué",
     "statsTitle": "Statistiques",
     "userStatsNotFoundError": "Statistiques de l'utilisateur non trouvées.",
-    "winRateText": "Taux de victoire",
-    "wonText": "Gagné"
+    "winRateText": "Taux de victoire"
   }
 }

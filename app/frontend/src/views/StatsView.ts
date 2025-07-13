@@ -57,9 +57,18 @@ export default class StatsView extends AbstractView {
           </div>
 
           ${StatFieldGroup([
-            { value: `${this.userStats?.matchesPlayed}`, text: i18next.t("statsView.playedText") },
-            { value: `${this.userStats?.matchesWon}`, text: i18next.t("statsView.wonText") },
-            { value: `${this.userStats?.matchesLost}`, text: i18next.t("statsView.lostText") },
+            {
+              value: `${this.userStats?.matchesPlayed}`,
+              text: i18next.t("statsView.playedText")
+            },
+            {
+              value: `${this.userStats?.matchesWon}`,
+              text: i18next.t("global.wonText")
+            },
+            {
+              value: `${this.userStats?.matchesLost}`,
+              text: i18next.t("global.lostText")
+            },
             {
               value: `${this.userStats?.winRate.toFixed(2)} %`,
               text: i18next.t("statsView.winRateText")
@@ -143,7 +152,8 @@ export default class StatsView extends AbstractView {
       return;
     }
     this.userStats = await getUserStatsByUsername(this.username);
-    if (!this.userStats) throw new Error(i18next.t("statsView.userStatsNotFoundError"));
+    if (!this.userStats)
+      throw new Error(i18next.t("statsView.userStatsNotFoundError"));
     if (this.viewType === "friend") {
       this.matches = await getUserPlayedMatchesByUsername(this.username);
     }

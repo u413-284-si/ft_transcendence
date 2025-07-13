@@ -22,15 +22,72 @@ import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
 import { ApiError } from "../services/api.js";
+import { TextBox } from "../components/TextBox.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
   private profileFormEl!: HTMLFormElement;
   private passwordFormEl!: HTMLFormElement;
+  private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
   constructor() {
     super();
     this.setTitle(i18next.t("profileView.yourProfileTitle"));
+  }
+
+  private getPasswordFormHTML(): string {
+    return /* HTML */ ` ${Form({
+      id: "password-form",
+      className: "flex flex-col gap-4",
+      children: [
+        Paragraph({ text: i18next.t("profileView.changePasswordText") }),
+        Input({
+          id: "current-password-input",
+          label: i18next.t("profileView.currentPasswordLabel"),
+          name: "currentPassword",
+          placeholder: i18next.t("profileView.currentPasswordText"),
+          type: "password",
+          errorId: "current-password-error",
+          hasToggle: true
+        }),
+        Input({
+          id: "new-password-input",
+          label: i18next.t("profileView.newPasswordLabel"),
+          name: "newPassword",
+          placeholder: i18next.t("profileView.newPasswordText"),
+          type: "password",
+          errorId: "new-password-error",
+          hasToggle: true
+        }),
+        Input({
+          id: "confirm-new-password-input",
+          label: i18next.t("global.confirmNewPasswordLabel"),
+          name: "confirmNewPassword",
+          placeholder: i18next.t("global.confirmNewPasswordText"),
+          type: "password",
+          errorId: "confirm-error",
+          hasToggle: true
+        }),
+        Button({
+          text: i18next.t("profileView.changePasswordButton"),
+          variant: "default",
+          size: "md",
+          type: "submit",
+          className: "mt-4 self-start"
+        })
+      ]
+    })}`;
+  }
+
+  private getEmailInput(user: User): string {
+    return Input({
+      id: "email-input",
+      label: i18next.t("global.emailLabel"),
+      name: "email",
+      type: "email",
+      placeholder: `${escapeHTML(user.email)}`,
+      errorId: "email-error"
+    });
   }
 
   createHTML(): string {
@@ -58,7 +115,9 @@ export default class ProfileView extends AbstractView {
                 id: "avatar-upload-form",
                 className: "flex flex-col gap-4",
                 children: [
-                  Paragraph({ text: i18next.t("profileView.changeAvatarText") }),
+                  Paragraph({
+                    text: i18next.t("profileView.changeAvatarText")
+                  }),
                   Input({
                     id: "avatar-input",
                     label: i18next.t("profileView.uploadYourAvatarLabel"),
@@ -94,14 +153,7 @@ export default class ProfileView extends AbstractView {
                   placeholder: `${escapeHTML(user.username)}`,
                   errorId: "username-error"
                 }),
-                Input({
-                  id: "email-input",
-                  label: i18next.t("global.emailLabel"),
-                  name: "email",
-                  type: "email",
-                  placeholder: `${escapeHTML(user.email)}`,
-                  errorId: "email-error"
-                }),
+                this.hasLocalAuth ? this.getEmailInput(user) : "",
                 Button({
                   text: i18next.t("profileView.saveChangesText"),
                   variant: "default",
@@ -111,47 +163,19 @@ export default class ProfileView extends AbstractView {
                 })
               ]
             })}
-            ${Form({
-              id: "password-form",
-              className: "flex flex-col gap-4",
-              children: [
-                Paragraph({ text: i18next.t("profileView.changePasswordText") }),
-                Input({
-                  id: "current-password-input",
-                  label: i18next.t("profileView.currentPasswordLabel"),
-                  name: "currentPassword",
-                  placeholder: i18next.t("profileView.currentPasswordText"),
-                  type: "password",
-                  errorId: "current-password-error",
-                  hasToggle: true
-                }),
-                Input({
-                  id: "new-password-input",
-                  label: i18next.t("profileView.newPasswordLabel"),
-                  name: "newPassword",
-                  placeholder: i18next.t("profileView.newPasswordText"),
-                  type: "password",
-                  errorId: "new-password-error",
-                  hasToggle: true
-                }),
-                Input({
-                  id: "confirm-new-password-input",
-                  label: i18next.t("global.confirmNewPasswordLabel"),
-                  name: "confirmNewPassword",
-                  placeholder: i18next.t("global.confirmNewPasswordText"),
-                  type: "password",
-                  errorId: "confirm-error",
-                  hasToggle: true
-                }),
-                Button({
-                  text: i18next.t("profileView.changePasswordButton"),
-                  variant: "default",
-                  size: "md",
-                  type: "submit",
-                  className: "mt-4 self-start"
-                })
-              ]
-            })}
+            ${this.hasLocalAuth
+              ? this.getPasswordFormHTML()
+              : TextBox({
+                  text: [
+                    i18next.t("profileView.signedInWithGoogleText"),
+                    "",
+                    i18next.t("profileView.cannotChangeEmailOrPWText")
+                  ],
+                  variant: "warning",
+                  size: "lg",
+                  id: "google-warning",
+                  className: "text-center"
+                })}
           </div>
         </div>
       </div>
@@ -167,13 +191,15 @@ export default class ProfileView extends AbstractView {
       this.uploadAvatar(event)
     );
 
-    this.passwordFormEl.addEventListener("submit", (event) =>
-      this.handlePasswordChange(event)
-    );
+    if (this.hasLocalAuth) {
+      this.passwordFormEl.addEventListener("submit", (event) =>
+        this.handlePasswordChange(event)
+      );
 
-    addTogglePasswordListener("current-password-input");
-    addTogglePasswordListener("new-password-input");
-    addTogglePasswordListener("confirm-new-password-input");
+      addTogglePasswordListener("current-password-input");
+      addTogglePasswordListener("new-password-input");
+      addTogglePasswordListener("confirm-new-password-input");
+    }
   }
 
   async render(): Promise<void> {
@@ -187,34 +213,53 @@ export default class ProfileView extends AbstractView {
   async validateUserDataAndUpdate(event: Event) {
     event.preventDefault();
 
+    let valid = true;
+
     const usernameEl = getInputEl("username-input");
     const usernameErrorEl = getEl("username-error");
-    const emailEL = getInputEl("email-input");
-    const emailErrorEl = getEl("email-error");
-    let valid = true;
     const username = usernameEl.value;
-    const email = emailEL.value;
     const hasUsername = !isEmptyString(username);
-    const hasEmail = !isEmptyString(email);
 
     clearInvalid(usernameEl, usernameErrorEl);
-    clearInvalid(emailEL, emailErrorEl);
 
     if (hasUsername && !validateUsername(usernameEl, usernameErrorEl)) {
       valid = false;
     }
-    if (hasEmail && !validateEmail(emailEL, emailErrorEl)) {
+
+    let emailEl: HTMLInputElement | null = null;
+    let email = "";
+    if (this.hasLocalAuth) {
+      emailEl = getInputEl("email-input");
+      const emailErrorEl = getEl("email-error");
+      email = emailEl.value;
+      const hasEmail = !isEmptyString(email);
+
+      clearInvalid(emailEl, emailErrorEl);
+
+      if (hasEmail && !validateEmail(emailEl, emailErrorEl)) {
+        valid = false;
+      }
+
+      if (!hasUsername && !hasEmail) {
+        markInvalid(
+          i18next.t("profileView.fillAtLeastOneFieldText"),
+          usernameEl,
+          usernameErrorEl
+        );
+        markInvalid(
+          i18next.t("profileView.fillAtLeastOneFieldText"),
+          emailEl,
+          emailErrorEl
+        );
+        valid = false;
+      }
+    }
+
+    if (!hasUsername && !emailEl) {
+      markInvalid(i18next.t("fillInUsernameText"), usernameEl, usernameErrorEl);
       valid = false;
     }
-    if (!hasUsername && !hasEmail) {
-      markInvalid(
-        i18next.t("profileView.fillAtLeastOneFieldText"),
-        usernameEl,
-        usernameErrorEl
-      );
-      markInvalid(i18next.t("profileView.fillAtLeastOneFieldText"), emailEL, emailErrorEl);
-      valid = false;
-    }
+
     if (!valid) return;
 
     const updatedUser: Partial<User> = {
