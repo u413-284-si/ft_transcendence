@@ -4,6 +4,7 @@ import {
   getUserScoresLastTen,
   getUserStats,
   getUserStatsByUsername,
+  getUserTournamentProgress,
   getUserWinrateProgression
 } from "../services/userStatsServices.js";
 import {
@@ -29,13 +30,15 @@ import { Chart } from "../components/Chart.js";
 import {
   ScoreDiffSeries,
   ScoresLastTenDaysSeries,
+  TournamentProgressSeries,
   WinrateSeries
 } from "../types/DataSeries.js";
 import { makeWinLossOptions } from "../charts/winLossOptions.js";
 import { makeWinrateOptions } from "../charts/winrateOptions.js";
 import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { makeScoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
-import { renderChart } from "../charts/utils.js";
+import { makeChartOptions, renderChart } from "../charts/utils.js";
+import { tournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -45,6 +48,7 @@ export default class StatsView extends AbstractView {
   private winrateSeries: WinrateSeries = [];
   private scoreDiffSeries: ScoreDiffSeries = [];
   private scoresLastTen: ScoresLastTenDaysSeries = [];
+  private tournamentProgressSeries: TournamentProgressSeries = [];
   private charts: Record<string, Record<string, ApexCharts>> = {};
   private chartOptions: Record<string, Record<string, ApexCharts.ApexOptions>> =
     {};
@@ -76,11 +80,12 @@ export default class StatsView extends AbstractView {
               text: `Joined: ${this.user?.dateJoined.slice(0, 10)}`
             })}
           </div>
-
           ${StatFieldGroup([
             { value: `${this.userStats?.matchesPlayed}`, text: "Played" },
             { value: `${this.userStats?.matchesWon}`, text: "Won" },
-            { value: `${this.userStats?.matchesLost}`, text: "Lost" },
+            { value: `${this.userStats?.matchesLost}`, text: "Lost" }
+          ])}
+          ${StatFieldGroup([
             {
               value: `${this.userStats?.winRate.toFixed(2)} %`,
               text: "Win Rate"
@@ -91,7 +96,7 @@ export default class StatsView extends AbstractView {
             },
             {
               value: `${this.userStats?.winstreakMax}`,
-              text: "Max Winstreak"
+              text: "Max Streak"
             }
           ])}
         </div>
@@ -119,10 +124,10 @@ export default class StatsView extends AbstractView {
     return /* HTML */ `
       <div class="flex space-x-4 border-b border-gray-300 mb-4">
         ${TabButton({ text: "Matches", tabId: "matches", isActive: true })}
-        ${TabButton({ text: "Tournament", tabId: "tournament" })}
+        ${TabButton({ text: "Tournament", tabId: "tournaments" })}
         ${TabButton({ text: "Friends", tabId: "friends" })}
       </div>
-      ${this.getMatchesTabHTML()}
+      ${this.getMatchesTabHTML()} ${this.getTournamentsTabHTML()}
     `;
   }
   getMatchesTabHTML(): string {
@@ -194,6 +199,42 @@ export default class StatsView extends AbstractView {
     })}`;
   }
 
+  getTournamentsTabHTML(): string {
+    return /* HTML */ ` <div id="tab-tournaments" class="tab-content hidden">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+        ${Header1({
+          text: "Dashboard",
+          id: "tournament-dashboard-header",
+          variant: "default"
+        })}
+        ${this.getTournamentsDashboard()}
+      </div>
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+        ${Header1({
+          text: "Details",
+          id: "tournament-details-header",
+          variant: "default"
+        })}
+        ${this.getTournamentsTableHTML()}
+      </div>
+    </div>`;
+  }
+
+  getTournamentsDashboard(): string {
+    return /* HTML */ `<div class="p-6 mx-auto space-y-8 min-h-screen">
+      <div class="flex gap-8">
+        ${Chart({
+          title: "Tournament Progression",
+          chartId: "tournament-progression"
+        })}
+      </div>
+    </div>`;
+  }
+
+  getTournamentsTableHTML(): string {
+    return /* HTML */ ``;
+  }
+
   getName(): string {
     return "stats";
   }
@@ -223,6 +264,7 @@ export default class StatsView extends AbstractView {
       this.scoreDiffSeries = await getUserScoreDiff();
       this.scoresLastTen = await getUserScoresLastTen();
       this.matches = await getUserPlayedMatches();
+      this.tournamentProgressSeries = await getUserTournamentProgress();
       return;
     }
     this.userStats = await getUserStatsByUsername(this.username);
@@ -280,6 +322,12 @@ export default class StatsView extends AbstractView {
       "scores-last-ten": makeScoresLastTenDaysOptions(
         "Scores Last Ten Days",
         this.scoresLastTen
+      )
+    };
+    this.chartOptions["tournaments"] = {
+      "tournament-progression": makeChartOptions(
+        tournamentProgressOptions,
+        this.tournamentProgressSeries
       )
     };
   }
