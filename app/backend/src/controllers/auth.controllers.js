@@ -200,28 +200,36 @@ export async function authRefreshHandler(request, reply) {
 
 export async function authTwoFaQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
-  //   const { username } = request.user;
-  const username = "test";
+  try {
+    //   const { username } = request.user;
+    const username = "test";
 
-  const issuer = "ft_transcendence";
-  const secret = new otpAuth.Secret({
-    size: 20
-  });
-  const totp = new otpAuth.TOTP({
-    issuer: issuer,
-    label: username,
-    algorithm: "SHA1",
-    digits: 6,
-    period: 30,
-    secret: secret
-  });
+    const issuer = "ft_transcendence";
+    const secret = new otpAuth.Secret({
+      size: 20
+    });
+    const totp = new otpAuth.TOTP({
+      issuer: issuer,
+      label: username,
+      algorithm: "SHA1",
+      digits: 6,
+      period: 30,
+      secret: secret
+    });
 
-  const uri = totp.toString();
-  const data = await QRCode.toDataURL(uri);
+    const uri = totp.toString();
+    const data = await QRCode.toDataURL(uri);
 
-  return reply
-    .code(200)
-    .send({ message: createResponseMessage(action, true), data });
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
 }
 
 export async function logoutUserHandler(request, reply) {
