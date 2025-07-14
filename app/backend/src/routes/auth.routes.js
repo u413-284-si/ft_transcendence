@@ -17,7 +17,7 @@ export default async function authRoutes(fastify) {
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 
-  fastify.get("/2fa", authTwoFaQRCodeHandler);
+  fastify.get("/2fa-qrcode", authTwoFaQRCodeHandler);
 
   fastify.patch("/logout", optionsLogoutUser, logoutUserHandler);
 
