@@ -54,7 +54,7 @@ export async function userLogout(): Promise<{ username: string }> {
 
 export async function generateTwoFaQrcode(): Promise<string> {
   console.log("generateTwoFaQrcode");
-  const apiResponse = await apiFetch<string>("/api/auth/2fa-qrcode", {
+  const apiResponse = await apiFetch<string>("/api/auth/2fa/qrcode", {
     method: "GET",
     credentials: "same-origin"
   });
