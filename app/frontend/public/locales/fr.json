@@ -203,12 +203,19 @@
   },
 
   "statsView": {
+    "dateText": "Date",
     "friendOnlyText": "Vous devez être amis pour voir l'historique des matchs",
     "joinedText": "Inscrit le",
     "matchHistoryText": "Historique des matchs",
     "nullMatchesError": "Il n'y a pas de matchs.",
     "playedText": "Joué",
+    "player1Text": "Joueur 1",
+    "player2Text": "Joueur 2",
+    "player1ScoreText": "Score du joueur 1",
+    "player2ScoreText": "Score du joueur 2",
+    "resultText": "Résultat",
     "statsTitle": "Statistiques",
+    "tournamentText": "Tournoi",
     "userStatsNotFoundError": "Statistiques de l'utilisateur non trouvées.",
     "winRateText": "Taux de victoire"
   }

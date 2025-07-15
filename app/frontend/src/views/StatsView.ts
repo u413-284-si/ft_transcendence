@@ -111,13 +111,13 @@ export default class StatsView extends AbstractView {
     return /* HTML */ `${Table({
       id: "match-history-table",
       headers: [
-        "Player1",
-        "Player1 Score",
-        "Player2",
-        "Player2 Score",
-        "Result",
-        "Date",
-        "Tournament"
+        i18next.t("statsView.player1Text"),
+        i18next.t("statsView.player1ScoreText"),
+        i18next.t("statsView.player2Text"),
+        i18next.t("statsView.player2ScoreText"),
+        i18next.t("statsView.resultText"),
+        i18next.t("statsView.dateText"),
+        i18next.t("statsView.tournamentText")
       ],
       rows: matchesRows
     })}`;
