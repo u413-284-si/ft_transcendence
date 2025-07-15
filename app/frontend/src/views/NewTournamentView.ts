@@ -41,6 +41,7 @@ export default class NewTournamentView extends AbstractView {
             id: "tournament-name-input",
             label: i18next.t("newTournamentView.tournamentNameLabel"),
             name: "tournament-name",
+            placeholder: i18next.t("newTournamentView.enterTournamentNameText"),
             type: "text",
             errorId: "tournament-name-error"
           }),

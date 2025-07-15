@@ -133,6 +133,7 @@
 
   "newTournamentView": {
     "confirmAbortTournamentText": "Voulez-vous vraiment annuler le tournoi ?",
+    "enterTournamentNameText": "Entrez le nom du tournoi",
     "newTournamentDescriptionText": "Entrez le nom du tournoi et sélectionnez le nombre de joueurs",
     "newTournamentTitle": "Nouveau Tournoi",
     "numberOfPlayersLabel": "Nombre de joueurs:",
