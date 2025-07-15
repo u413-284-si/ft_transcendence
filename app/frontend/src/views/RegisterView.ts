@@ -3,7 +3,7 @@ import {
   validateEmail,
   validateUsername,
   validatePassword,
-  validateConfirmPassword,
+  validateConfirmPassword
 } from "../validate.js";
 import { registerUser } from "../services/userServices.js";
 import { router } from "../routing/Router.js";
@@ -14,8 +14,13 @@ import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { toaster } from "../Toaster.js";
+import { Modal } from "../components/Modal.js";
+import { TextBox } from "../components/TextBox.js";
+import { Image } from "../components/Image.js";
+import { generateTwoFaQrcode } from "../services/authServices.js";
 
 export default class Register extends AbstractView {
+  private qrCode: string = "";
   constructor() {
     super();
     this.setTitle("Register");
@@ -70,6 +75,46 @@ export default class Register extends AbstractView {
         })
       ],
       id: "register-form"
+    })}
+    ${Modal({
+      id: "two-fa-modal",
+      children: [
+        Form({
+          children: [
+            TextBox({
+              id: "two-fa-qr-code-info",
+              text: [
+                "You have to active 2FA for your account.",
+                "",
+                "Please use an authenticator app",
+                "to scan the QR code below."
+              ],
+              variant: "warning",
+              size: "sm"
+            }),
+            Image({
+              id: "two-fa-qr-code",
+              src: this.qrCode,
+              alt: "QR Code"
+            }),
+            Input({
+              id: "two-fa-qr-code-input",
+              label: "Enter code",
+              name: "two-fa-qr-code-input",
+              type: "text",
+              errorId: "two-fa-qr-code-input-error"
+            }),
+            Button({
+              id: "two-fa-submit",
+              text: "Submit",
+              variant: "default",
+              size: "md",
+              type: "submit"
+            })
+          ],
+          id: "two-fa-form"
+        })
+      ]
     })}`;
   }
 
@@ -125,15 +170,24 @@ export default class Register extends AbstractView {
       return;
     }
 
+    await this.fetchData(userEl.value);
+    console.log(this.qrCode);
+    const twoFaModal = getEl("two-fa-modal");
+    twoFaModal.classList.remove("hidden");
+
     try {
-      await registerUser(emailEL.value, userEl.value, passwordEl.value);
+      //   await registerUser(emailEL.value, userEl.value, passwordEl.value);
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
         toaster.error("Email or username already exists");
         return;
       }
     }
-    toaster.info("Registration was successful!");
-    router.navigate("/login", false);
+  }
+
+  private async fetchData(username: string): Promise<void> {
+    this.qrCode = await generateTwoFaQrcode(username);
+    const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
+    twoFaQrcodeEl.src = this.qrCode;
   }
 }

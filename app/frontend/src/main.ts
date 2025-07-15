@@ -1,6 +1,5 @@
 import Login from "./views/LoginView.js";
 import Register from "./views/RegisterView.js";
-import TwoFaQrcode from "./views/TwoFaQrcodeView.js";
 import Home from "./views/HomeView.js";
 import NewGame from "./views/NewGameView.js";
 import NewTournament from "./views/NewTournamentView.js";
@@ -20,7 +19,6 @@ router
     view: Register,
     guard: guestOnlyGuard
   })
-  .addRoute("/2fa-qrcode", { view: TwoFaQrcode, guard: guestOnlyGuard })
   .addRoute("/home", { view: Home, guard: authGuard })
   .addRoute("/newGame", { view: NewGame, guard: authGuard })
   .addRoute("/newTournament", {
