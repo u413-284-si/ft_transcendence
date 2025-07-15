@@ -201,8 +201,7 @@ export async function authRefreshHandler(request, reply) {
 export async function authTwoFaQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
   try {
-    //   const { username } = request.user;
-    const username = "test";
+    const { username } = request.body;
 
     const issuer = "ft_transcendence";
     const secret = new otpAuth.Secret({
