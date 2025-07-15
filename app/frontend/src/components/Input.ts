@@ -27,7 +27,7 @@ export function Input({
   const errorSpan = errorId ? Span({ id: errorId, variant: "error" }) : "";
 
   return /* HTML */ `
-    <div class="w-[300px] flex flex-col gap-1">
+    <div class="w-full max-w-md">
       <label for="${id}" class="block mb-2 text-sm font-medium text-white"
         >${label}</label
       >
