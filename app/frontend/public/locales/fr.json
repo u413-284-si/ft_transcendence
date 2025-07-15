@@ -73,6 +73,9 @@
     "joinTournamentText": "Rejoindre le tournoi",
     "logoutText": "Déconnexion",
     "lostText": "Perdu",
+    "matchText": "Match {{matchId}}",
+    "matchNotFoundError": "Match non trouvé.",
+    "nextMatchNotFoundError": "Prochain match non trouvé.",
     "offlineText": "Hors ligne",
     "onlineText": "En ligne",
     "passwordLabel": "Mot de passe:",
@@ -80,7 +83,10 @@
     "pongGameText": "Jeu de pong",
     "playerText": "Joueur",
     "playerWinsText": "{{player}} a gagné",
+    "roundText": "Manche {{round}}",
     "somethingWentWrongError": "Une erreur s'est produite.",
+    "toBeDefinedText": "À définir",
+    "tournamentIDNotFoundError": "ID de tournoi non trouvé.",
     "tournamentText": "Tournoi : <strong>{{tournamentName}}</strong>",
     "undefinedMatchError": "Le match est indéfini",
     "usernameLabel": "Nom d'utilisateur:",
@@ -95,6 +101,7 @@
     "validateTournamentNameError": "Une erreur s'est produite lors de la validation du nom du tournoi.",
     "validateUserError": "Une erreur s'est produite lors de la validation de l'utilisateur:<br>Redirection vers la page login.",
     "welcomeText": "Bienvenue",
+    "winnerMatchText": "Match gagnant {{matchId}}",
     "wonText": "Gagné"
   },
 
@@ -110,10 +117,12 @@
   },
 
   "matchAnnouncementView": {
+    "abortTournamentText": "Annuler le Tournoi",
     "nextMatchText": "Prochain match à jouer:",
     "nextMatchTitle": "Prochain Match!",
     "roundMatchText": "Manche {{round}} - Match {{match}}",
-    "startMatchText": "Démarrer le Match"
+    "startMatchText": "Démarrer le Match",
+    "tournamentStatusText": "Statut du Tournoi"
   },
 
   "newGameView": {
@@ -123,7 +132,6 @@
   },
 
   "newTournamentView": {
-    "abortTournamentText": "Annuler le Tournoi",
     "confirmAbortTournamentText": "Voulez-vous vraiment annuler le tournoi ?",
     "newTournamentDescriptionText": "Entrez le nom du tournoi et sélectionnez le nombre de joueurs",
     "newTournamentTitle": "Nouveau Tournoi",
@@ -132,8 +140,7 @@
     "players8Label": "8 joueurs",
     "players16Label": "16 joueurs",
     "startTournamentText": "Démarrer le tournoi",
-    "tournamentNameLabel": "Nom du tournoi:",
-    "tournamentStatusText": "Statut du Tournoi"
+    "tournamentNameLabel": "Nom du tournoi:"
   },
 
   "nicknameInput": {

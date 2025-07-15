@@ -71,7 +71,7 @@ export default class MatchAnnouncementView extends AbstractView {
       <section>
         <div class="pt-18 p-6 text-center space-y-6">
           ${Header1({
-            text: i18next.t("tournamentView.tournamentStatusText"),
+            text: i18next.t("matchAnnouncementView.tournamentStatusText"),
             variant: "default"
           })}
 
@@ -79,7 +79,7 @@ export default class MatchAnnouncementView extends AbstractView {
 
           ${Button({
             id: "abort-tournament",
-            text: i18next.t("tournamentView.abortTournamentText"),
+            text: i18next.t("matchAnnouncementView.abortTournamentText"),
             variant: "danger",
             type: "button"
           })}

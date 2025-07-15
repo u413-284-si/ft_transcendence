@@ -25,7 +25,7 @@ export default class ResultsView extends AbstractView {
             variant: "default"
           })}
           ${Paragraph({
-            text: `${i18next.t("global.tournamentText")} ${escapeHTML(this.tournament.getTournamentName())}`,
+            text: `${i18next.t("global.tournamentText", {tournamentName: escapeHTML(this.tournament.getTournamentName())})}`,
             id: "tournament-name"
           })}
         </div>
