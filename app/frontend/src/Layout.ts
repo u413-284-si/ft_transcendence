@@ -168,17 +168,37 @@ export class Layout {
   }
 
   private attachLanguageSwitcherHandler(): void {
-    const select =
-      this.rootEl.querySelector<HTMLSelectElement>("#lang-switcher");
-    if (!select) return;
+    const button = this.rootEl.querySelector<HTMLElement>(
+      "#lang-switcher-button"
+    );
+    const options = this.rootEl.querySelector<HTMLElement>(
+      "#lang-switcher-options"
+    );
 
-    select.addEventListener("change", (event) => {
-      const lang = (event.target as HTMLSelectElement).value as
-        | "en"
-        | "fr"
-        | "de"
-        | "pi";
-      this.switchLanguage(lang);
+    if (!button || !options) return;
+
+    button.addEventListener("click", () => {
+      options.classList.toggle("hidden");
+    });
+
+    options.querySelectorAll("button[data-lang]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const lang = (e.currentTarget as HTMLElement).dataset.lang as
+          | "en"
+          | "fr"
+          | "de"
+          | "pi";
+        this.switchLanguage(lang);
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        !button.contains(event.target as Node) &&
+        !options.contains(event.target as Node)
+      ) {
+        options.classList.add("hidden");
+      }
     });
   }
 }
