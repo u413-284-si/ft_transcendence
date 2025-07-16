@@ -75,7 +75,7 @@ export class Layout {
           })}
         </div>
         <div
-          class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
+          class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-8"
         >
           ${LanguageSwitcher({
             id: "lang-switcher",
@@ -97,10 +97,12 @@ export class Layout {
           text: i18next.t("registerView.registerTitle"),
           href: "/register"
         })}
-        ${LanguageSwitcher({
-          id: "lang-switcher",
-          selectedLang: i18next.language as "en" | "fr"
-        })}
+        <div class="absolute top-4 right-4">
+          ${LanguageSwitcher({
+            id: "lang-switcher",
+            selectedLang: i18next.language as "en" | "fr"
+          })}
+        </div>
       </div>
     </nav>`;
   }
