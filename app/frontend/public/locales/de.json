@@ -1,0 +1,224 @@
+{
+  "errorView": {
+    "detailsText": "Details: {{cause}}",
+    "errorStatusText": "⚠️ Fehler {{status}}",
+    "errorTitle": "Fehler",
+    "reloadText": "Neu laden",
+    "unexpectedErrorText": "Ein unerwarteter Fehler ist aufgetreten."
+  },
+
+  "friendListItem": {
+    "acceptText": "Annehmen",
+    "declineText": "Ablehnen",
+    "deleteText": "Löschen",
+    "removeText": "Entfernen"
+  },
+
+  "friendsView": {
+    "addFriendText": "Freund hinzufügen",
+    "confirmDeclineRequestText": "Möchtest du diese Anfrage wirklich ablehnen?",
+    "confirmDeleteRequestText": "Möchtest du diese Anfrage wirklich löschen?",
+    "confirmRemoveFriendText": "Möchtest du diesen Freund wirklich entfernen?",
+    "exactUsernameText": "Exakter Benutzername",
+    "friendAddedText": "Freund hinzugefügt!",
+    "friendRequestsText": "Freundschaftsanfragen",
+    "friendsTitle": "Freunde",
+    "incomingRequestsText": "Eingehende Anfragen",
+    "noFriendsText": "Du hast noch keine Freunde",
+    "noIncomingText": "Keine eingehenden Anfragen",
+    "noOutgoingText": "Keine ausgehenden Anfragen",
+    "outgoingRequestsText": "Ausgehende Anfragen",
+    "sendFriendRequestText": "Freundschaftsanfrage senden",
+    "sendSuccessText": "Anfrage erfolgreich gesendet",
+    "unknownRequestListTypeError": "Unbekannter Anfrage-Typ: {{type}}",
+    "yourFriendsText": "Deine Freunde"
+  },
+
+  "gameView": {
+    "nowPlayingTitle": "Jetzt spielen"
+  },
+
+  "global": {
+    "avatarText": "Avatar",
+    "confirmNewPasswordLabel": "Neues Passwort bestätigen:",
+    "confirmNewPasswordText": "Neues Passwort bestätigen",
+    "connectionLostText": "Verbindung verloren - erneuter Versuch in {{delay}} Sekunden... (Versuch {{attempt}} von {{maxAttempts}})",
+    "connectionReestablishedText": "Verbindung wiederhergestellt",
+    "connectionUnavailableText": "Verbindung nicht wiederherstellbar. Versuche gestoppt bis zur Aktualisierung.",
+    "continueText": "ENTER drücken, um fortzufahren",
+    "editProfileText": "Profil bearbeiten",
+    "emailLabel": "E-Mail-Adresse:",
+    "emailText": "E-Mail-Adresse",
+    "emailExistsText": "Diese E-Mail-Adresse ist bereits registriert",
+    "invalidEmailEmptyError": "Die E-Mail-Adresse darf nicht leer sein.",
+    "invalidEmailFormatError": "Die E-Mail-Adresse muss gültig sein.",
+    "invalidEmailOrUsernameEmptyError": "Bitte gib einen Benutzernamen oder eine E-Mail-Adresse ein.",
+    "invalidEmailOrUsernameFormatError": "Der Benutzername oder die E-Mail-Adresse muss gültig sein.",
+    "invalidImageFileEmptyError": "Bitte wähle eine Datei zum Hochladen aus.",
+    "invalidImageFileFormatError": "Bitte lade eine gültige Bilddatei hoch.",
+    "invalidNicknameEmptyError": "Spitzname darf nicht leer sein.",
+    "invalidNicknameFormatError": "Spitzname muss 3 bis 20 Zeichen haben und darf Buchstaben, Zahlen oder folgende Sonderzeichen enthalten: [-!?_$.]",
+    "invalidNicknameUniquenessError": "Spitzname muss eindeutig sein.",
+    "invalidPasswordEmptyError": "Passwort darf nicht leer sein.",
+    "invalidPasswordFormatError": "Passwort muss 10 bis 64 Zeichen enthalten und mindestens eine Zahl, einen Groß- und Kleinbuchstaben sowie ein Sonderzeichen [@$!%*?&].",
+    "invalidPasswordConfirmationEmptyError": "Bitte wiederhole dein Passwort",
+    "invalidPasswordConfirmationError": "Passwörter stimmen nicht überein.",
+    "invalidPlayerSelectionError": "Bitte Anzahl der Spieler auswählen.",
+    "invalidTournamentNameEmptyError": "Turniername darf nicht leer sein.",
+    "invalidTournamentNameFormatError": "Turniername muss 3 bis 20 Zeichen enthalten und darf Buchstaben, Zahlen oder [-!?_$.] enthalten.",
+    "invalidTournamentNameUniquenessError": "Turniername muss eindeutig sein.",
+    "invalidUsernameEmptyError": "Benutzername darf nicht leer sein.",
+    "invalidUsernameFormatError": "Benutzername muss 3 bis 20 Zeichen enthalten und darf Buchstaben, Zahlen oder [-!?_$.] enthalten.",
+    "invalidUsernameUniquenessError": "Benutzername muss eindeutig sein.",
+    "joinTournamentText": "Turnier beitreten",
+    "logoutText": "Abmelden",
+    "lostText": "Verloren",
+    "matchText": "Spiel {{matchId}}",
+    "matchNotFoundError": "Spiel nicht gefunden.",
+    "nextMatchNotFoundError": "Nächstes Spiel nicht gefunden.",
+    "offlineText": "Offline",
+    "onlineText": "Online",
+    "passwordLabel": "Passwort:",
+    "passwordText": "Passwort",
+    "pongGameText": "Pong-Spiel",
+    "playerText": "Spieler",
+    "playerWinsText": "{{player}} gewinnt",
+    "roundText": "Runde {{round}}",
+    "somethingWentWrongError": "Etwas ist schiefgelaufen.",
+    "toBeDefinedText": "Noch nicht definiert",
+    "tournamentIDNotFoundError": "Turnier-ID nicht gefunden.",
+    "tournamentText": "Turnier: <strong>{{tournamentName}}</strong>",
+    "undefinedMatchError": "Spiel ist nicht definiert",
+    "usernameLabel": "Benutzername:",
+    "usernameText": "Benutzername",
+    "userStatusText": "{{username}} ist {{status}}",
+    "userAcceptedFriendRequestText": "Anfrage von <strong>{{username}}</strong> angenommen",
+    "userDeclinedFriendRequestText": "Anfrage von <strong>{{username}}</strong> abgelehnt",
+    "userRescindedFriendRequestText": "Anfrage von <strong>{{username}}</strong> zurückgezogen",
+    "userRemovedFriendText": "<strong>{{username}}</strong> wurde aus deiner Freundesliste entfernt",
+    "userSentFriendRequestText": "Anfrage von <strong>{{username}}</strong>",
+    "userNotFoundError": "Benutzer nicht gefunden.",
+    "validateTournamentNameError": "Fehler bei der Validierung des Turniernamens.",
+    "validateUserError": "Fehler bei der Benutzerverifizierung:<br>Weiterleitung zur Anmeldung.",
+    "welcomeText": "Willkommen",
+    "winnerMatchText": "Sieg im Spiel {{matchId}}",
+    "wonText": "Gewonnen"
+  },
+
+  "homeView": {
+    "helloUser": "Hallo {{username}}!<br />Das ist die Startseite",
+    "homeTitle": "Startseite"
+  },
+
+  "loginView": {
+    "loginTitle": "Anmelden",
+    "usernameOrEmailLabel": "Benutzername oder E-Mail-Adresse:",
+    "usernameOrEmailText": "Benutzername oder E-Mail-Adresse"
+  },
+
+  "matchAnnouncementView": {
+    "abortTournamentText": "Turnier abbrechen",
+    "nextMatchText": "Nächstes Spiel:",
+    "nextMatchTitle": "Nächstes Spiel!",
+    "roundMatchText": "Runde {{round}} – Spiel {{match}}",
+    "startMatchText": "Spiel starten",
+    "tournamentStatusText": "Turnierstatus"
+  },
+
+  "newGameView": {
+    "newGameTitle": "Neues Spiel",
+    "selectPlayerText": "Wähle aus, welcher Spieler von {{username}} gesteuert wird",
+    "startGameText": "Spiel starten"
+  },
+
+  "newTournamentView": {
+    "confirmAbortTournamentText": "Möchtest du das Turnier wirklich abbrechen?",
+    "enterTournamentNameText": "Gib den Turniernamen ein",
+    "newTournamentDescriptionText": "Gib den Turniernamen ein und wähle die Anzahl der Spieler",
+    "newTournamentTitle": "Neues Turnier",
+    "numberOfPlayersLabel": "Anzahl der Spieler:",
+    "players4Label": "4 Spieler",
+    "players8Label": "8 Spieler",
+    "players16Label": "16 Spieler",
+    "startTournamentText": "Turnier starten",
+    "tournamentNameLabel": "Turniername:"
+  },
+
+  "nicknameInput": {
+    "enterYourNicknameText": "Gib deinen Spitznamen ein",
+    "playerChoiceLabel": "Ich spiele als Spieler {{i}}",
+    "playerNicknameLabel": "Spitzname von Spieler {{i}}"
+  },
+
+  "playerNicknamesView": {
+    "enterPlayerNicknamesText": "Gib die Spitznamen der Spieler ein",
+    "playerNicknamesTitle": "Spieler-Spitznamen",
+    "selectControlledPlayerText": "Wähle aus, welcher Spieler von {{username}} gesteuert wird",
+    "submitNicknamesText": "Spitznamen bestätigen"
+  },
+
+  "profileView": {
+    "avatarUploadFailedText": "Avatar konnte nicht hochgeladen werden. Bitte versuche es erneut.",
+    "avatarUploadedSuccessText": "Avatar erfolgreich hochgeladen!",
+    "cannotChangeEmailOrPWText": "Du kannst deine E-Mail-Adresse oder dein Passwort nicht ändern.",
+    "changeAvatarText": "Ändere deinen Avatar unten.",
+    "changePasswordButton": "Passwort ändern",
+    "changePasswordText": "Ändere dein Passwort unten.",
+    "chooseFileText": "Wähle eine Bilddatei für deinen Avatar",
+    "currentPasswordLabel": "Aktuelles Passwort:",
+    "currentPasswordText": "Aktuelles Passwort",
+    "fillAtLeastOneFieldText": "Bitte fülle mindestens ein Feld aus.",
+    "fillInUsernameText": "Bitte gib einen Benutzernamen ein.",
+    "newPasswordLabel": "Neues Passwort:",
+    "newPasswordText": "Neues Passwort",
+    "noFileSelected": "Keine Datei ausgewählt",
+    "passwordUpdateFailedText": "Passwort konnte nicht aktualisiert werden. Bitte versuche es erneut.",
+    "passwordUpdatedSuccessText": "Passwort erfolgreich aktualisiert!",
+    "profileUpdateFailedText": "Profil konnte nicht aktualisiert werden. Bitte versuche es erneut.",
+    "profileUpdatedSuccessText": "Profil erfolgreich aktualisiert!",
+    "saveChangesText": "Änderungen speichern",
+    "signedInWithGoogleText": "Mit Google angemeldet",
+    "updateProfileText": "Aktualisiere unten deine Profilinformationen.",
+    "uploadYourAvatarText": "Lade deinen Avatar hoch",
+    "yourProfileTitle": "Dein Profil"
+  },
+
+  "registerView": {
+    "emailOrUsernameExistsText": "E-Mail oder Benutzername existiert bereits",
+    "registerText": "Hier registrieren",
+    "registerTitle": "Registrieren",
+    "registrationSuccessText": "Registrierung erfolgreich!"
+  },
+
+  "resultsView": {
+    "bracketText": "Turnierbaum",
+    "championText": "Champion",
+    "congratulationsText": "Herzlichen Glückwunsch zum Sieg!",
+    "finishText": "Als abgeschlossen markieren",
+    "resultsTitle": "Ergebnisse",
+    "tournamentResultsText": "Turnierergebnisse"
+  },
+
+  "settingsView": {
+    "settingsText": "Lege hier deine Einstellungen und Präferenzen fest.",
+    "settingsTitle": "Einstellungen"
+  },
+
+  "statsView": {
+    "dateText": "Datum",
+    "friendOnlyText": "Du musst befreundet sein, um die Match-Historie zu sehen",
+    "joinedText": "Beigetreten am",
+    "matchHistoryText": "Match-Historie",
+    "nullMatchesError": "Es gibt keine Spiele.",
+    "playedText": "Gespielt",
+    "player1Text": "Spieler 1",
+    "player2Text": "Spieler 2",
+    "player1ScoreText": "Spieler 1 Punkte",
+    "player2ScoreText": "Spieler 2 Punkte",
+    "resultText": "Ergebnis",
+    "statsTitle": "Statistiken",
+    "tournamentText": "Turnier",
+    "userStatsNotFoundError": "Spielerstatistiken nicht gefunden.",
+    "winRateText": "Siegquote"
+  }
+}
