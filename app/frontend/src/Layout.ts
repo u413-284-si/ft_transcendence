@@ -2,6 +2,7 @@ import { sanitizeHTML } from "./sanitize.js";
 import { auth } from "./AuthManager.js";
 import { Link } from "./components/Link.js";
 import { Drawer } from "./Drawer.js";
+import { LanguageSwitcher } from "./components/LanguageSwitcher.js";
 import { router } from "./routing/Router.js";
 
 export type LayoutMode = "auth" | "guest";
@@ -58,13 +59,6 @@ export class Layout {
   }
 
   private getHeaderHTML(): string {
-    const langSwitcher = `
-    <select id="lang-switcher" class="bg-black text-teal border border-teal rounded px-2 py-1 text-sm focus:outline-none">
-      <option value="en" ${i18next.language === "en" ? "selected" : ""}>EN</option>
-      <option value="fr" ${i18next.language === "fr" ? "selected" : ""}>FR</option>
-    </select>
-  `;
-
     if (this.mode === "auth") {
       const userAvatarUrl: string =
         auth.getUser().avatar || "/images/default-avatar.png";
@@ -83,7 +77,10 @@ export class Layout {
         <div
           class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
         >
-          ${langSwitcher}
+          ${LanguageSwitcher({
+            id: "lang-switcher",
+            selectedLang: i18next.language as "en" | "fr"
+          })}
           <img
             src="${userAvatarUrl}"
             alt="${i18next.t("global.avatarText")}"
@@ -100,7 +97,10 @@ export class Layout {
           text: i18next.t("registerView.registerTitle"),
           href: "/register"
         })}
-        ${langSwitcher}
+        ${LanguageSwitcher({
+          id: "lang-switcher",
+          selectedLang: i18next.language as "en" | "fr"
+        })}
       </div>
     </nav>`;
   }
