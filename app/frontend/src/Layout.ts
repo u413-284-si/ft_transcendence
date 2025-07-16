@@ -82,6 +82,7 @@ export class Layout {
             selectedLang: i18next.language as "en" | "fr" | "de" | "pi"
           })}
           <img
+            id="user-avatar"
             src="${userAvatarUrl}"
             alt="${i18next.t("global.avatarText")}"
             tabindex="0"
@@ -116,7 +117,7 @@ export class Layout {
   }
 
   private attachAvatarDrawerHandler(): void {
-    const avatar = this.rootEl.querySelector<HTMLElement>("img[alt='Avatar']");
+    const avatar = this.rootEl.querySelector<HTMLElement>("#user-avatar");
     if (!avatar) return;
 
     const drawer = new Drawer([
@@ -171,7 +172,11 @@ export class Layout {
     if (!select) return;
 
     select.addEventListener("change", (event) => {
-      const lang = (event.target as HTMLSelectElement).value as "en" | "fr" | "de" | "pi";
+      const lang = (event.target as HTMLSelectElement).value as
+        | "en"
+        | "fr"
+        | "de"
+        | "pi";
       this.switchLanguage(lang);
     });
   }
