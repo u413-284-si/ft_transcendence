@@ -326,6 +326,7 @@ export default class ProfileView extends AbstractView {
       return;
     }
     this.fileLabelEl!.textContent = files[0].name;
+    this.fileLabelEl!.setAttribute("title", files[0].name);
   }
 
   private async handlePasswordChange(event: Event) {

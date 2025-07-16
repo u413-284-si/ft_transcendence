@@ -29,7 +29,7 @@ export function InputFile({
       <label
         id="${id}-file-label"
         for="${id}"
-        class="text-sm inline-block cursor-pointer bg-emerald text-white px-4 py-2 rounded hover:bg-emerald-dark transition"
+        class="text-sm inline-block cursor-pointer bg-emerald-dark text-white px-4 py-3 rounded hover:bg-emerald transition max-w-full truncate overflow-hidden whitespace-nowrap"
       >
         ${noFileText}
       </label>

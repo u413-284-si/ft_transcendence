@@ -27,7 +27,7 @@ export function Input({
   const toggleButton = hasToggle ? getToggleButtonHTML(id) : "";
   const acceptAttr = accept ? ` accept="${accept}"` : "";
   const errorSpan = errorId ? Span({ id: errorId, variant: "error" }) : "";
-  const baseStyles = "w-full bg-emerald-dark text-white border border-emerald rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-cyan";
+  const baseStyles = "w-full bg-emerald-dark text-white border border-emerald rounded-md hover:bg-emerald transition px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-cyan";
 
   const classes = `${baseStyles} ${className}`.trim();
 
