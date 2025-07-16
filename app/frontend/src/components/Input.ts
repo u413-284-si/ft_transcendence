@@ -3,34 +3,39 @@ import { Span } from "./Span.js";
 
 export type InputOptions = {
   id: string;
-  label: string;
+  label?: string;
   name?: string;
   placeholder?: string;
   type?: "text" | "email" | "file" | "password";
   accept?: string;
   errorId?: string;
   hasToggle?: boolean;
+  className?: string;
 };
 
 export function Input({
   id,
-  label,
+  label = "",
   name = "",
   placeholder = "",
   type = "text",
   accept = "",
   errorId = "",
-  hasToggle = false
+  hasToggle = false,
+  className = ""
 }: InputOptions): string {
   const toggleButton = hasToggle ? getToggleButtonHTML(id) : "";
   const acceptAttr = accept ? ` accept="${accept}"` : "";
   const errorSpan = errorId ? Span({ id: errorId, variant: "error" }) : "";
+  const baseStyles = "w-full bg-emerald-dark text-white border border-emerald rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-cyan";
+
+  const classes = `${baseStyles} ${className}`.trim();
 
   return /* HTML */ `
     <div class="w-full max-w-md">
-      <label for="${id}" class="block mb-2 text-sm font-medium text-white"
-        >${label}</label
-      >
+      <label for="${id}" class="block mb-2 text-sm font-medium text-white">
+        ${label}
+      </label>
       <div class="relative flex items-center">
         <input
           id="${id}"
@@ -38,7 +43,7 @@ export function Input({
           ${acceptAttr}
           name="${name}"
           placeholder="${placeholder}"
-          class="w-full bg-emerald-dark text-white border border-emerald rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-cyan"
+          class="${classes}"
         />
         ${toggleButton}
       </div>

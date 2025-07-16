@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { Form } from "../components/Form.js";
 import { Input, addTogglePasswordListener } from "../components/Input.js";
+import { InputFile } from "../components/InputFile.js";
 import { Button } from "../components/Button.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { escapeHTML } from "../utility.js";
@@ -28,6 +29,8 @@ export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
   private profileFormEl!: HTMLFormElement;
   private passwordFormEl!: HTMLFormElement;
+  private avatarInputEl!: HTMLInputElement;
+  private fileLabelEl!: HTMLInputElement;
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
   constructor() {
@@ -118,16 +121,16 @@ export default class ProfileView extends AbstractView {
                   Paragraph({
                     text: i18next.t("profileView.changeAvatarText")
                   }),
-                  Input({
+                  InputFile({
                     id: "avatar-input",
-                    label: i18next.t("profileView.uploadYourAvatarLabel"),
+                    label: i18next.t("profileView.chooseFileText"),
                     name: "avatar",
-                    type: "file",
                     accept: "image/*",
-                    errorId: "avatar-upload-error-message"
+                    errorId: "avatar-upload-error-message",
+                    noFileText: i18next.t("profileView.noFileSelected")
                   }),
                   Button({
-                    text: i18next.t("profileView.uploadAvatarText"),
+                    text: i18next.t("profileView.uploadYourAvatarText"),
                     variant: "default",
                     size: "md",
                     type: "submit",
@@ -191,6 +194,10 @@ export default class ProfileView extends AbstractView {
       this.uploadAvatar(event)
     );
 
+    this.avatarInputEl.addEventListener("change", (event) =>
+      this.changeFileLabel(event)
+    );
+
     if (this.hasLocalAuth) {
       this.passwordFormEl.addEventListener("submit", (event) =>
         this.handlePasswordChange(event)
@@ -207,10 +214,14 @@ export default class ProfileView extends AbstractView {
     this.avatarFormEl = document.querySelector("#avatar-upload-form")!;
     this.profileFormEl = document.querySelector("#profile-form")!;
     this.passwordFormEl = document.querySelector("#password-form")!;
+    this.avatarInputEl = getInputEl("avatar-input") as HTMLInputElement;
+    this.fileLabelEl = getInputEl(
+      "avatar-input-file-label"
+    ) as HTMLInputElement;
     this.addListeners();
   }
 
-  async validateUserDataAndUpdate(event: Event) {
+  private async validateUserDataAndUpdate(event: Event) {
     event.preventDefault();
 
     let valid = true;
@@ -282,7 +293,7 @@ export default class ProfileView extends AbstractView {
     }
   }
 
-  async uploadAvatar(event: Event) {
+  private async uploadAvatar(event: Event) {
     event.preventDefault();
     const fileInputEl = getInputEl("avatar-input");
     const errorEl = getEl("avatar-upload-error-message");
@@ -306,7 +317,18 @@ export default class ProfileView extends AbstractView {
     }
   }
 
-  async handlePasswordChange(event: Event) {
+  private changeFileLabel(event: Event): void {
+    event.preventDefault();
+
+    const files = this.avatarInputEl?.files;
+    if (!files || files.length === 0) {
+      this.fileLabelEl!.textContent = i18next.t("profileView.noFileSelected");
+      return;
+    }
+    this.fileLabelEl!.textContent = files[0].name;
+  }
+
+  private async handlePasswordChange(event: Event) {
     event.preventDefault();
 
     const currentPasswordEl = getInputEl("current-password-input");
