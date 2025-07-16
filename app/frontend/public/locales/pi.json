@@ -1,0 +1,224 @@
+{
+  "errorView": {
+    "detailsText": "Details, ye scurvy dog: {{cause}}",
+    "errorStatusText": "⚠️ Blimey! Error {{status}}",
+    "errorTitle": "Whoopsie!",
+    "reloadText": "Try Again, Matey",
+    "unexpectedErrorText": "A mysterious curse befall'd th’ ship!"
+  },
+
+  "friendListItem": {
+    "acceptText": "Aye!",
+    "declineText": "Nay!",
+    "deleteText": "Scuttle it!",
+    "removeText": "Throw Overboard"
+  },
+
+  "friendsView": {
+    "addFriendText": "Add a shipmate",
+    "confirmDeclineRequestText": "Ye sure ye want to toss this request to the briny deep?",
+    "confirmDeleteRequestText": "Be ye certain this request should walk the plank?",
+    "confirmRemoveFriendText": "Ye really want to maroon this mate?",
+    "exactUsernameText": "True sailor's name",
+    "friendAddedText": "New crewmate aboard!",
+    "friendRequestsText": "Parley Requests",
+    "friendsTitle": "Me Hearties",
+    "incomingRequestsText": "Incoming messages in bottles",
+    "noFriendsText": "Ye be all alone on this vessel",
+    "noIncomingText": "No messages in bottles",
+    "noOutgoingText": "No parrots flyin’ out",
+    "outgoingRequestsText": "Sent yer parrots",
+    "sendFriendRequestText": "Send a parley request",
+    "sendSuccessText": "Parley sent to the high seas!",
+    "unknownRequestListTypeError": "Unknown sea chart: {{type}}",
+    "yourFriendsText": "Yer loyal crew"
+  },
+
+  "gameView": {
+    "nowPlayingTitle": "Now Battlin’"
+  },
+
+  "global": {
+    "avatarText": "Jolly Roger",
+    "confirmNewPasswordLabel": "Confirm yer new secret code:",
+    "confirmNewPasswordText": "Confirm code",
+    "connectionLostText": "Connection to the crow's nest lost – tryin’ again in {{delay}} seconds... (Try {{attempt}} o’ {{maxAttempts}})",
+    "connectionReestablishedText": "Riggings reattached!",
+    "connectionUnavailableText": "No more wind in the sails – retries stopped ‘til refresh!",
+    "continueText": "Hit ENTER to sail onward",
+    "editProfileText": "Polish yer pirate profile",
+    "emailLabel": "Message-in-a-bottle address:",
+    "emailText": "Message address",
+    "emailExistsText": "That bottle's already adrift",
+    "invalidEmailEmptyError": "Can’t send nothin’ with an empty bottle!",
+    "invalidEmailFormatError": "Yer bottle label be wrong!",
+    "invalidEmailOrUsernameEmptyError": "Give us a name or bottle, ya scallywag!",
+    "invalidEmailOrUsernameFormatError": "That ain't a proper sailor name or address!",
+    "invalidImageFileEmptyError": "Pick a painting, mate!",
+    "invalidImageFileFormatError": "That ain’t a proper lookin’ portrait!",
+    "invalidNicknameEmptyError": "Ye need a pirate name!",
+    "invalidNicknameFormatError": "Make it 3–20 letters, and use swashbucklin’ marks like [-!?_$.]",
+    "invalidNicknameUniquenessError": "That pirate name be taken!",
+    "invalidPasswordEmptyError": "Don’t leave yer treasure chest wide open!",
+    "invalidPasswordFormatError": "Yer code needs numbers, big letters, little letters, and pirate symbols [@$!%*?&]!",
+    "invalidPasswordConfirmationEmptyError": "Confirm yer code, or walk the plank!",
+    "invalidPasswordConfirmationError": "Codes don't match! Ye fool!",
+    "invalidPlayerSelectionError": "Pick yer fighters, landlubber!",
+    "invalidTournamentNameEmptyError": "No name, no fame!",
+    "invalidTournamentNameFormatError": "Needs 3–20 marks like [-!?_$.]",
+    "invalidTournamentNameUniquenessError": "That name’s already carved into the deck!",
+    "invalidUsernameEmptyError": "Ye forgot yer name!",
+    "invalidUsernameFormatError": "Name be 3–20 letters and seaworthy marks [-!?_$.]",
+    "invalidUsernameUniquenessError": "That name be claimed by another seadog!",
+    "joinTournamentText": "Join the rumble",
+    "logoutText": "Abandon Ship",
+    "lostText": "Overboard!",
+    "matchText": "Battle {{matchId}}",
+    "matchNotFoundError": "Battle not in the logs.",
+    "nextMatchNotFoundError": "No next duel in sight!",
+    "offlineText": "Adrift",
+    "onlineText": "Ahoy!",
+    "passwordLabel": "Secret Code:",
+    "passwordText": "Code",
+    "pongGameText": "High-Seas Paddle Fight",
+    "playerText": "Pirate",
+    "playerWinsText": "{{player}} plunders the win!",
+    "roundText": "Round {{round}}",
+    "somethingWentWrongError": "A kraken messed with the code.",
+    "toBeDefinedText": "Still on the map",
+    "tournamentIDNotFoundError": "No flag found for that tourney!",
+    "tournamentText": "Tourney o’ Legends: <strong>{{tournamentName}}</strong>",
+    "undefinedMatchError": "Battle be undefined!",
+    "usernameLabel": "Pirate Name:",
+    "usernameText": "Pirate Name",
+    "userStatusText": "{{username}} be {{status}}",
+    "userAcceptedFriendRequestText": "Parley with <strong>{{username}}</strong> accepted",
+    "userDeclinedFriendRequestText": "Parley from <strong>{{username}}</strong> declined",
+    "userRescindedFriendRequestText": "Parley from <strong>{{username}}</strong> withdrawn",
+    "userRemovedFriendText": "<strong>{{username}}</strong> be tossed from yer crew",
+    "userSentFriendRequestText": "Parley from <strong>{{username}}</strong>",
+    "userNotFoundError": "No such matey found.",
+    "validateTournamentNameError": "Tourney name not approved by the Pirate Council.",
+    "validateUserError": "Problem with yer pirate pass:<br>Back to port (login)!",
+    "welcomeText": "Ahoy there!",
+    "winnerMatchText": "Victor o’ match {{matchId}}",
+    "wonText": "Victory!"
+  },
+
+  "homeView": {
+    "helloUser": "Ahoy {{username}}!<br />Ye've landed on the home deck",
+    "homeTitle": "Captain's Quarters"
+  },
+
+  "loginView": {
+    "loginTitle": "Board the Ship",
+    "usernameOrEmailLabel": "Pirate name or message bottle address:",
+    "usernameOrEmailText": "Name or bottle code"
+  },
+
+  "matchAnnouncementView": {
+    "abortTournamentText": "Scuttle the Tournament!",
+    "nextMatchText": "Next skirmish to set sail:",
+    "nextMatchTitle": "Upcoming Duel!",
+    "roundMatchText": "Round {{round}} – Clash {{match}}",
+    "startMatchText": "Hoist the Colors!",
+    "tournamentStatusText": "State o’ the Tourney"
+  },
+
+  "newGameView": {
+    "newGameTitle": "Raise the Jolly Roger!",
+    "selectPlayerText": "Choose which salty dog {{username}} will command",
+    "startGameText": "Set Sail!"
+  },
+
+  "newTournamentView": {
+    "confirmAbortTournamentText": "Be ye sure ye want to abandon the tourney?",
+    "enterTournamentNameText": "Name this noble contest",
+    "newTournamentDescriptionText": "Name yer tournament and choose how many will duel",
+    "newTournamentTitle": "Forge a New Tournament",
+    "numberOfPlayersLabel": "Number o' Buccaneers:",
+    "players4Label": "4 Scallywags",
+    "players8Label": "8 Swashbucklers",
+    "players16Label": "16 Sea Wolves",
+    "startTournamentText": "Let the Games Begin!",
+    "tournamentNameLabel": "Tourney Name:"
+  },
+
+  "nicknameInput": {
+    "enterYourNicknameText": "Give us yer pirate alias",
+    "playerChoiceLabel": "I be playin’ as buccaneer {{i}}",
+    "playerNicknameLabel": "Name fer pirate {{i}}"
+  },
+
+  "playerNicknamesView": {
+    "enterPlayerNicknamesText": "Give each swabbie their name",
+    "playerNicknamesTitle": "Name Yer Crew",
+    "selectControlledPlayerText": "Choose which deckhand {{username}} will command",
+    "submitNicknamesText": "Let 'em be known!"
+  },
+
+  "profileView": {
+    "avatarUploadFailedText": "Couldn’t hoist yer flag – try again!",
+    "avatarUploadedSuccessText": "Yer colors be flyin’ high now!",
+    "cannotChangeEmailOrPWText": "Yer bottle code and secret phrase be fixed!",
+    "changeAvatarText": "Change yer Jolly Roger below",
+    "changePasswordButton": "Change Secret Phrase",
+    "changePasswordText": "Swap yer secret below",
+    "chooseFileText": "Pick an image fer yer pirate flag",
+    "currentPasswordLabel": "Old Secret Phrase:",
+    "currentPasswordText": "Old Code",
+    "fillAtLeastOneFieldText": "Fill at least one chest, matey!",
+    "fillInUsernameText": "Enter yer name, ye bilge rat!",
+    "newPasswordLabel": "New Secret Phrase:",
+    "newPasswordText": "New Code",
+    "noFileSelected": "No treasure map selected",
+    "passwordUpdateFailedText": "Couldn’t set yer new passphrase. Try again or be cursed!",
+    "passwordUpdatedSuccessText": "Secret code changed! Keep it close!",
+    "profileUpdateFailedText": "Profile be cursed – try again later!",
+    "profileUpdatedSuccessText": "Profile polished like a cutlass!",
+    "saveChangesText": "Stash Yer Changes",
+    "signedInWithGoogleText": "Boarded via Google raft",
+    "updateProfileText": "Update yer scroll of records below",
+    "uploadYourAvatarText": "Raise yer avatar to the crow’s nest!",
+    "yourProfileTitle": "Yer Scroll of Legend"
+  },
+
+  "registerView": {
+    "emailOrUsernameExistsText": "That name or bottle already has a captain",
+    "registerText": "Join the Crew",
+    "registerTitle": "Sign the Ship’s Ledger",
+    "registrationSuccessText": "You be aboard, sailor!"
+  },
+
+  "resultsView": {
+    "bracketText": "Map o’ the Battles",
+    "championText": "The Sea King",
+    "congratulationsText": "Ye won the ocean’s glory!",
+    "finishText": "Mark as Conquered",
+    "resultsTitle": "Spoils o’ War",
+    "tournamentResultsText": "Tourney Loot Report"
+  },
+
+  "settingsView": {
+    "settingsText": "Change yer sails and adjust the wind here.",
+    "settingsTitle": "Captain’s Preferences"
+  },
+
+  "statsView": {
+    "dateText": "Chart Date",
+    "friendOnlyText": "Only mates get to see yer ship logs",
+    "joinedText": "Swore the Oath on",
+    "matchHistoryText": "Past Duels",
+    "nullMatchesError": "No battles fought – too peaceful!",
+    "playedText": "Engaged",
+    "player1Text": "Buccaneer 1",
+    "player2Text": "Buccaneer 2",
+    "player1ScoreText": "Buccaneer 1’s Plunder",
+    "player2ScoreText": "Buccaneer 2’s Booty",
+    "resultText": "Outcome",
+    "statsTitle": "Ship Logs",
+    "tournamentText": "Skull & Crossbones Cup",
+    "userStatsNotFoundError": "Couldn’t find this mate’s logs.",
+    "winRateText": "Victory Percentage"
+  }
+}

@@ -79,7 +79,7 @@ export class Layout {
         >
           ${LanguageSwitcher({
             id: "lang-switcher",
-            selectedLang: i18next.language as "en" | "fr" | "de"
+            selectedLang: i18next.language as "en" | "fr" | "de" | "pi"
           })}
           <img
             src="${userAvatarUrl}"
@@ -100,7 +100,7 @@ export class Layout {
         <div class="absolute top-4 right-4">
           ${LanguageSwitcher({
             id: "lang-switcher",
-            selectedLang: i18next.language as "en" | "fr" | "de"
+            selectedLang: i18next.language as "en" | "fr" | "de" | "pi"
           })}
         </div>
       </div>
@@ -157,7 +157,7 @@ export class Layout {
     });
   }
 
-  private switchLanguage(lang: "en" | "fr" | "de"): void {
+  private switchLanguage(lang: "en" | "fr" | "de" | "pi"): void {
     i18next.changeLanguage(lang).then(() => {
       this.renderShell();
       router.reload();
@@ -171,7 +171,7 @@ export class Layout {
     if (!select) return;
 
     select.addEventListener("change", (event) => {
-      const lang = (event.target as HTMLSelectElement).value as "en" | "fr" | "de";
+      const lang = (event.target as HTMLSelectElement).value as "en" | "fr" | "de" | "pi";
       this.switchLanguage(lang);
     });
   }

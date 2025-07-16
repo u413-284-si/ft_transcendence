@@ -37,18 +37,19 @@ router
   .addRouteChangeListener(updateUI);
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const [frRes, enRes, deRes] = await Promise.all([
+  const [frRes, enRes, deRes, piRes] = await Promise.all([
     fetch("/locales/fr.json"),
     fetch("/locales/en.json"),
     fetch("/locales/de.json"),
+    fetch("/locales/pi.json"),
   ]);
 
-  if (!frRes.ok || !enRes.ok || !deRes.ok) {
+  if (!frRes.ok || !enRes.ok || !deRes.ok || !piRes.ok) {
     console.error("Failed to load one or more translation files");
     return;
   }
 
-  const [fr, en, de] = await Promise.all([frRes.json(), enRes.json(), deRes.json()]);
+  const [fr, en, de, pi] = await Promise.all([frRes.json(), enRes.json(), deRes.json(), piRes.json()]);
 
   await i18next.init({
     lng: "en", // default language
@@ -56,7 +57,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     resources: {
       fr: { translation: fr },
       en: { translation: en },
-      de: { translation: de }
+      de: { translation: de },
+      pi: { translation: pi }
     },
     interpolation: { escapeValue: false },
     keySeparator: ".",

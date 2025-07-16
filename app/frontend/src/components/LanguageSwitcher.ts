@@ -1,7 +1,7 @@
 export type LanguageSwitcherOptions = {
   id: string;
   className?: string;
-  selectedLang: "en" | "fr" | "de";
+  selectedLang: "en" | "fr" | "de" | "pi";
 };
 
 export function LanguageSwitcher({
@@ -17,6 +17,7 @@ export function LanguageSwitcher({
       <option value="en" ${selectedLang === "en" ? "selected" : ""}>EN</option>
       <option value="fr" ${selectedLang === "fr" ? "selected" : ""}>FR</option>
       <option value="de" ${selectedLang === "de" ? "selected" : ""}>DE</option>
+      <option value="pi" ${selectedLang === "pi" ? "selected" : ""}>PI</option>
     </select>
   `;
 }
