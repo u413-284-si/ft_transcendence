@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     fetch("/locales/fr.json"),
     fetch("/locales/en.json"),
     fetch("/locales/de.json"),
-    fetch("/locales/pi.json"),
+    fetch("/locales/pi.json")
   ]);
 
   if (!frRes.ok || !enRes.ok || !deRes.ok || !piRes.ok) {
@@ -49,10 +49,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const [fr, en, de, pi] = await Promise.all([frRes.json(), enRes.json(), deRes.json(), piRes.json()]);
+  const [fr, en, de, pi] = await Promise.all([
+    frRes.json(),
+    enRes.json(),
+    deRes.json(),
+    piRes.json()
+  ]);
+
+  const preferredLang = localStorage.getItem("preferredLanguage") as
+    | "en"
+    | "fr"
+    | "de"
+    | "pi"
+    | null;
 
   await i18next.init({
-    lng: "en", // default language
+    lng: preferredLang || "en",
     fallbackLng: "fr",
     resources: {
       fr: { translation: fr },
@@ -61,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       pi: { translation: pi }
     },
     interpolation: { escapeValue: false },
-    keySeparator: ".",
+    keySeparator: "."
   });
 
   layout.initialize();

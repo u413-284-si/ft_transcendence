@@ -160,6 +160,7 @@ export class Layout {
 
   private switchLanguage(lang: "en" | "fr" | "de" | "pi"): void {
     i18next.changeLanguage(lang).then(() => {
+      localStorage.setItem("preferredLanguage", lang);
       this.renderShell();
       router.reload();
       console.info(`Language switched to ${lang}`);
