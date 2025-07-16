@@ -2,6 +2,7 @@ import { sanitizeHTML } from "./sanitize.js";
 import { auth } from "./AuthManager.js";
 import { Link } from "./components/Link.js";
 import { Drawer } from "./Drawer.js";
+import { router } from "./routing/Router.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -157,6 +158,8 @@ export class Layout {
   private switchLanguage(lang: "en" | "fr"): void {
     i18next.changeLanguage(lang).then(() => {
       this.renderShell();
+      router.reload();
+      console.info(`Language switched to ${lang}`);
     });
   }
 
