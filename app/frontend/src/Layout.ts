@@ -41,6 +41,7 @@ export class Layout {
     const cleanHTML = sanitizeHTML(html);
     this.rootEl.innerHTML = cleanHTML;
     this.attachAvatarDrawerHandler();
+    this.attachLanguageSwitcherHandler();
   }
 
   private getShellHTML(): string {
@@ -56,6 +57,13 @@ export class Layout {
   }
 
   private getHeaderHTML(): string {
+    const langSwitcher = `
+    <select id="lang-switcher" class="bg-black text-teal border border-teal rounded px-2 py-1 text-sm focus:outline-none">
+      <option value="en" ${i18next.language === "en" ? "selected" : ""}>EN</option>
+      <option value="fr" ${i18next.language === "fr" ? "selected" : ""}>FR</option>
+    </select>
+  `;
+
     if (this.mode === "auth") {
       const userAvatarUrl: string =
         auth.getUser().avatar || "/images/default-avatar.png";
@@ -74,6 +82,7 @@ export class Layout {
         <div
           class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
         >
+          ${langSwitcher}
           <img
             src="${userAvatarUrl}"
             alt="${i18next.t("global.avatarText")}"
@@ -86,7 +95,11 @@ export class Layout {
     return /* HTML */ ` <nav>
       <div class="container mx-auto flex justify-center space-x-8">
         ${Link({ text: i18next.t("loginView.loginTitle"), href: "/login" })}
-        ${Link({ text: i18next.t("registerView.registerTitle"), href: "/register" })}
+        ${Link({
+          text: i18next.t("registerView.registerTitle"),
+          href: "/register"
+        })}
+        ${langSwitcher}
       </div>
     </nav>`;
   }
@@ -104,14 +117,26 @@ export class Layout {
     if (!avatar) return;
 
     const drawer = new Drawer([
-      { label: i18next.t("global.editProfileText"), icon: "user", href: "/profile" },
+      {
+        label: i18next.t("global.editProfileText"),
+        icon: "user",
+        href: "/profile"
+      },
       {
         label: i18next.t("statsView.statsTitle"),
         icon: "stats",
         href: `/stats/${auth.getUser().username}`
       },
-      { label: i18next.t("friendsView.friendsTitle"), icon: "friends", href: "/friends" },
-      { label: i18next.t("settingsView.settingsTitle"), icon: "settings", href: "/settings" },
+      {
+        label: i18next.t("friendsView.friendsTitle"),
+        icon: "friends",
+        href: "/friends"
+      },
+      {
+        label: i18next.t("settingsView.settingsTitle"),
+        icon: "settings",
+        href: "/settings"
+      },
       {
         label: i18next.t("global.logoutText"),
         icon: "logout",
@@ -126,6 +151,23 @@ export class Layout {
       if (e.key === "Enter" || e.key === " ") {
         drawer.open();
       }
+    });
+  }
+
+  private switchLanguage(lang: "en" | "fr"): void {
+    i18next.changeLanguage(lang).then(() => {
+      this.renderShell();
+    });
+  }
+
+  private attachLanguageSwitcherHandler(): void {
+    const select =
+      this.rootEl.querySelector<HTMLSelectElement>("#lang-switcher");
+    if (!select) return;
+
+    select.addEventListener("change", (event) => {
+      const lang = (event.target as HTMLSelectElement).value as "en" | "fr";
+      this.switchLanguage(lang);
     });
   }
 }
