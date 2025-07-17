@@ -22,15 +22,72 @@ import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
 import { ApiError, unwrap } from "../services/api.js";
+import { TextBox } from "../components/TextBox.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
   private profileFormEl!: HTMLFormElement;
   private passwordFormEl!: HTMLFormElement;
+  private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
   constructor() {
     super();
     this.setTitle("Your Profile");
+  }
+
+  private getPasswordFormHTML(): string {
+    return /* HTML */ ` ${Form({
+      id: "password-form",
+      className: "flex flex-col gap-4",
+      children: [
+        Paragraph({ text: "Change your password below." }),
+        Input({
+          id: "current-password-input",
+          label: "Current Password",
+          name: "currentPassword",
+          placeholder: "Current Password",
+          type: "password",
+          errorId: "current-password-error",
+          hasToggle: true
+        }),
+        Input({
+          id: "new-password-input",
+          label: "New Password",
+          name: "newPassword",
+          placeholder: "New Password",
+          type: "password",
+          errorId: "new-password-error",
+          hasToggle: true
+        }),
+        Input({
+          id: "confirm-new-password-input",
+          label: "Confirm New Password",
+          name: "confirmNewPassword",
+          placeholder: "Confirm New Password",
+          type: "password",
+          errorId: "confirm-error",
+          hasToggle: true
+        }),
+        Button({
+          text: "Change Password",
+          variant: "default",
+          size: "md",
+          type: "submit",
+          className: "mt-4 self-start"
+        })
+      ]
+    })}`;
+  }
+
+  private getEmailInput(user: User): string {
+    return Input({
+      id: "email-input",
+      label: "Email",
+      name: "email",
+      type: "email",
+      placeholder: `${escapeHTML(user.email)}`,
+      errorId: "email-error"
+    });
   }
 
   createHTML(): string {
@@ -94,14 +151,7 @@ export default class ProfileView extends AbstractView {
                   placeholder: `${escapeHTML(user.username)}`,
                   errorId: "username-error"
                 }),
-                Input({
-                  id: "email-input",
-                  label: "Email",
-                  name: "email",
-                  type: "email",
-                  placeholder: `${escapeHTML(user.email)}`,
-                  errorId: "email-error"
-                }),
+                this.hasLocalAuth ? this.getEmailInput(user) : "",
                 Button({
                   text: "Save Changes",
                   variant: "default",
@@ -111,47 +161,19 @@ export default class ProfileView extends AbstractView {
                 })
               ]
             })}
-            ${Form({
-              id: "password-form",
-              className: "flex flex-col gap-4",
-              children: [
-                Paragraph({ text: "Change your password below." }),
-                Input({
-                  id: "current-password-input",
-                  label: "Current Password",
-                  name: "currentPassword",
-                  placeholder: "Current Password",
-                  type: "password",
-                  errorId: "current-password-error",
-                  hasToggle: true
-                }),
-                Input({
-                  id: "new-password-input",
-                  label: "New Password",
-                  name: "newPassword",
-                  placeholder: "New Password",
-                  type: "password",
-                  errorId: "new-password-error",
-                  hasToggle: true
-                }),
-                Input({
-                  id: "confirm-new-password-input",
-                  label: "Confirm New Password",
-                  name: "confirmNewPassword",
-                  placeholder: "Confirm New Password",
-                  type: "password",
-                  errorId: "confirm-error",
-                  hasToggle: true
-                }),
-                Button({
-                  text: "Change Password",
-                  variant: "default",
-                  size: "md",
-                  type: "submit",
-                  className: "mt-4 self-start"
-                })
-              ]
-            })}
+            ${this.hasLocalAuth
+              ? this.getPasswordFormHTML()
+              : TextBox({
+                  text: [
+                    "Signed in with Google:",
+                    "",
+                    "You cannot change your password or email address."
+                  ],
+                  variant: "warning",
+                  size: "lg",
+                  id: "google-warning",
+                  className: "text-center"
+                })}
           </div>
         </div>
       </div>
@@ -167,13 +189,15 @@ export default class ProfileView extends AbstractView {
       this.uploadAvatar(event)
     );
 
-    this.passwordFormEl.addEventListener("submit", (event) =>
-      this.handlePasswordChange(event)
-    );
+    if (this.hasLocalAuth) {
+      this.passwordFormEl.addEventListener("submit", (event) =>
+        this.handlePasswordChange(event)
+      );
 
-    addTogglePasswordListener("current-password-input");
-    addTogglePasswordListener("new-password-input");
-    addTogglePasswordListener("confirm-new-password-input");
+      addTogglePasswordListener("current-password-input");
+      addTogglePasswordListener("new-password-input");
+      addTogglePasswordListener("confirm-new-password-input");
+    }
   }
 
   async render(): Promise<void> {
@@ -187,34 +211,53 @@ export default class ProfileView extends AbstractView {
   async validateUserDataAndUpdate(event: Event) {
     event.preventDefault();
 
+    let valid = true;
+
     const usernameEl = getInputEl("username-input");
     const usernameErrorEl = getEl("username-error");
-    const emailEL = getInputEl("email-input");
-    const emailErrorEl = getEl("email-error");
-    let valid = true;
     const username = usernameEl.value;
-    const email = emailEL.value;
     const hasUsername = !isEmptyString(username);
-    const hasEmail = !isEmptyString(email);
 
     clearInvalid(usernameEl, usernameErrorEl);
-    clearInvalid(emailEL, emailErrorEl);
 
     if (hasUsername && !validateUsername(usernameEl, usernameErrorEl)) {
       valid = false;
     }
-    if (hasEmail && !validateEmail(emailEL, emailErrorEl)) {
+
+    let emailEl: HTMLInputElement | null = null;
+    let email = "";
+    if (this.hasLocalAuth) {
+      emailEl = getInputEl("email-input");
+      const emailErrorEl = getEl("email-error");
+      email = emailEl.value;
+      const hasEmail = !isEmptyString(email);
+
+      clearInvalid(emailEl, emailErrorEl);
+
+      if (hasEmail && !validateEmail(emailEl, emailErrorEl)) {
+        valid = false;
+      }
+
+      if (!hasUsername && !hasEmail) {
+        markInvalid(
+          "Please fill in at least one field.",
+          usernameEl,
+          usernameErrorEl
+        );
+        markInvalid(
+          "Please fill in at least one field.",
+          emailEl,
+          emailErrorEl
+        );
+        valid = false;
+      }
+    }
+
+    if (!hasUsername && !emailEl) {
+      markInvalid("Please fill in a username.", usernameEl, usernameErrorEl);
       valid = false;
     }
-    if (!hasUsername && !hasEmail) {
-      markInvalid(
-        "Please fill in at least one field.",
-        usernameEl,
-        usernameErrorEl
-      );
-      markInvalid("Please fill in at least one field.", emailEL, emailErrorEl);
-      valid = false;
-    }
+
     if (!valid) return;
 
     const updatedUser: Partial<User> = {
