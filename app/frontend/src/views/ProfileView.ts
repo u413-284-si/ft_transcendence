@@ -271,7 +271,9 @@ export default class ProfileView extends AbstractView {
         if (apiResponse.status === 409) {
           toaster.error("Email or username already exists");
           return;
-        } else throw new ApiError(apiResponse);
+        } else {
+          throw new ApiError(apiResponse);
+        }
       }
       toaster.success("Profile updated successfully!");
       auth.updateUser(updatedUser);

@@ -113,7 +113,9 @@ export class AuthManager {
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
           console.warn("No auth cookies set");
-        } else throw new ApiError(apiResponse);
+        } else {
+          throw new ApiError(apiResponse);
+        }
       }
 
       const sidebar = document.getElementById("drawer-sidebar");

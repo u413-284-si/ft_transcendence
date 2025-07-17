@@ -3,7 +3,7 @@ import {
   validateEmail,
   validateUsername,
   validatePassword,
-  validateConfirmPassword,
+  validateConfirmPassword
 } from "../validate.js";
 import { registerUser } from "../services/userServices.js";
 import { router } from "../routing/Router.js";
@@ -126,12 +126,18 @@ export default class Register extends AbstractView {
     }
 
     try {
-      const apiResponse = await registerUser(emailEL.value, userEl.value, passwordEl.value);
+      const apiResponse = await registerUser(
+        emailEL.value,
+        userEl.value,
+        passwordEl.value
+      );
       if (!apiResponse.success) {
         if (apiResponse.status === 409) {
           toaster.error("Email or username already exists");
           return;
-        } else throw new ApiError(apiResponse);
+        } else {
+          throw new ApiError(apiResponse);
+        }
       }
       const username = escapeHTML(apiResponse.data.username);
       toaster.success(`Successfully registered ${username}`);
