@@ -200,6 +200,8 @@
   },
 
   "settingsView": {
+    "preferredLanguageText": "Select your preferred language.",
+    "saveLanguageText": "Save Language",
     "settingsText": "Set your preferences and settings here.",
     "settingsTitle": "Settings"
   },

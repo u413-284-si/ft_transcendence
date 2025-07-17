@@ -200,6 +200,8 @@
   },
 
   "settingsView": {
+    "preferredLanguageText": "Choose yer tongue, matey.",
+    "saveLanguageText": "Stash yer tongue",
     "settingsText": "Change yer sails and adjust the wind here.",
     "settingsTitle": "Captain’s Preferences"
   },
