@@ -15,7 +15,12 @@ const userSelect = {
   username: true,
   email: true,
   avatar: true,
-  dateJoined: true
+  dateJoined: true,
+  authentication: {
+    select: {
+      authProvider: true
+    }
+  }
 };
 
 export async function createUser(
@@ -158,7 +163,7 @@ export async function getUserByUsername(username) {
 export async function getUserByEmail(email) {
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { id: true, username: true }
+    select: { id: true, username: true, email: true, dateJoined: true }
   });
   return user;
 }
@@ -169,4 +174,12 @@ export async function getUserAuthProvider(id) {
     select: { authProvider: true }
   });
   return user.authProvider;
+}
+
+export function flattenUser(user) {
+  const { authentication, ...rest } = user;
+  return {
+    ...rest,
+    authProvider: authentication.authProvider
+  };
 }

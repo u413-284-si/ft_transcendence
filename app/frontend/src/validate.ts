@@ -1,6 +1,8 @@
+import { getDataOrThrow } from "./services/api.js";
 import { getUserTournaments } from "./services/tournamentService.js";
+import { toaster } from "./Toaster.js";
 
-function isEmptyString(str: string): boolean {
+export function isEmptyString(str: string): boolean {
   return str === "";
 }
 
@@ -69,20 +71,21 @@ export function validateNicknames(
   return isValid;
 }
 
-export async function validateTournamentName(
+export function validateTournamentName(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
-): Promise<boolean> {
+): boolean {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
+  const tournamentName: string = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
 
-  if (isEmptyString(inputEl.value)) {
+  if (isEmptyString(tournamentName)) {
     markInvalid("Tournament name is required.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, tournamentNameRegex)) {
+  if (!validateAgainstRegex(tournamentName, tournamentNameRegex)) {
     markInvalid(
       "Tournament name must be 3–20 characters long and can only contain letters, numbers, or [-!?_$.].",
       inputEl,
@@ -90,9 +93,15 @@ export async function validateTournamentName(
     );
     return false;
   }
+  return true;
+}
 
+export async function isTournamentNameAvailable(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): Promise<boolean> {
   try {
-    const tournaments = await getUserTournaments();
+    const tournaments = getDataOrThrow(await getUserTournaments());
     if (tournaments.length === 0) {
       return true;
     }
@@ -108,7 +117,7 @@ export async function validateTournamentName(
     }
   } catch (error) {
     console.error("Error fetching tournaments:", error);
-    alert("An error occurred while validating the tournament name.");
+    toaster.error("An error occurred while validating the tournament name.");
     return false;
   }
   return true;
@@ -134,15 +143,16 @@ export function validatePassword(
 ): boolean {
   const passwordRegex: RegExp =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$/;
+  const password: string = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
 
-  if (isEmptyString(inputEl.value)) {
+  if (isEmptyString(password)) {
     markInvalid("Please enter a password.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, passwordRegex)) {
+  if (!validateAgainstRegex(password, passwordRegex)) {
     markInvalid(
       "Password must be 10-64 characters long and must contain at least one " +
         "number, one uppercase and one lowercase letter and one of the " +
@@ -179,13 +189,16 @@ export function validateUsername(
   errorEl: HTMLElement
 ): boolean {
   const usernameRegex: RegExp = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
+  const username: string = inputEl.value;
 
-  if (isEmptyString(inputEl.value)) {
+  clearInvalid(inputEl, errorEl);
+
+  if (isEmptyString(username)) {
     markInvalid("Please enter a username.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, usernameRegex)) {
+  if (!validateAgainstRegex(username, usernameRegex)) {
     markInvalid(
       "Username must be 3-20 characters long " +
         "and can only include letters, numbers, or one of the " +
@@ -195,7 +208,6 @@ export function validateUsername(
     );
     return false;
   }
-  clearInvalid(inputEl, errorEl);
   return true;
 }
 
@@ -204,18 +216,19 @@ export function validateEmail(
   errorEl: HTMLElement
 ): boolean {
   const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const email: string = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
-  if (isEmptyString(inputEl.value)) {
+
+  if (isEmptyString(email)) {
     markInvalid("Please enter an email.", inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(inputEl.value, emailRegex)) {
+  if (!validateAgainstRegex(email, emailRegex)) {
     markInvalid("Email must be a valid email address.", inputEl, errorEl);
     return false;
   }
-  clearInvalid(inputEl, errorEl);
   return true;
 }
 

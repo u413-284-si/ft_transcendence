@@ -1,80 +1,61 @@
 import { apiFetch } from "./api.js";
 import { FriendRequest } from "../types/FriendRequest.js";
+import { ApiResponse } from "../types/IApiResponse.js";
 
 export async function createFriendRequest(
   receiverId: number
-): Promise<FriendRequest> {
-  const apiResponse = await apiFetch<FriendRequest>(
-    "/api/users/me/friend-requests",
-    {
-      method: "POST",
-      body: JSON.stringify({ id: receiverId }),
-      credentials: "same-origin"
-    }
-  );
+): Promise<ApiResponse<FriendRequest>> {
+  const url = "/api/users/me/friend-requests";
 
-  console.log(apiResponse);
-  return apiResponse.data;
+  return apiFetch<FriendRequest>(url, {
+    method: "POST",
+    body: JSON.stringify({ id: receiverId }),
+    credentials: "same-origin"
+  });
 }
 
-export async function getUserFriendRequests(): Promise<FriendRequest[]> {
-  const apiResponse = await apiFetch<FriendRequest[]>(
-    "/api/users/me/friend-requests",
-    {
-      method: "GET",
-      credentials: "same-origin"
-    }
-  );
+export async function getUserFriendRequests(): Promise<
+  ApiResponse<FriendRequest[]>
+> {
+  const url = "/api/users/me/friend-requests";
 
-  console.log(apiResponse);
-  return apiResponse.data;
+  return apiFetch<FriendRequest[]>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
 }
 
 export async function acceptFriendRequest(
   requestId: number
-): Promise<FriendRequest> {
-  const apiResponse = await apiFetch<FriendRequest>(
-    `/api/users/me/friend-requests/${requestId}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify({ status: "ACCEPTED" }),
-      credentials: "same-origin"
-    }
-  );
+): Promise<ApiResponse<FriendRequest>> {
+  const url = `/api/users/me/friend-requests/${requestId}`;
 
-  console.log(apiResponse);
-  return apiResponse.data;
+  return apiFetch<FriendRequest>(url, {
+    method: "PATCH",
+    body: JSON.stringify({ status: "ACCEPTED" }),
+    credentials: "same-origin"
+  });
 }
 
 export async function deleteFriendRequest(
   requestId: number
-): Promise<FriendRequest> {
-  const apiResponse = await apiFetch<FriendRequest>(
-    `/api/users/me/friend-requests/${requestId}`,
-    {
-      method: "DELETE",
-      credentials: "same-origin"
-    }
-  );
+): Promise<ApiResponse<FriendRequest>> {
+  const url = `/api/users/me/friend-requests/${requestId}`;
 
-  console.log(apiResponse);
-  return apiResponse.data;
+  return apiFetch<FriendRequest>(url, {
+    method: "DELETE",
+    credentials: "same-origin"
+  });
 }
 
 export async function getUserFriendRequestByUsername(
   username: string
-): Promise<FriendRequest | null> {
+): Promise<ApiResponse<FriendRequest[]>> {
   const encoded = encodeURIComponent(username);
   const url = `/api/users/me/friend-requests?username=${encoded}`;
 
-  const apiResponse = await apiFetch<FriendRequest[]>(url, {
+  return apiFetch<FriendRequest[]>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  if (!apiResponse.data.length) {
-    return null;
-  }
-
-  return apiResponse.data[0];
 }

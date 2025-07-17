@@ -6,7 +6,10 @@ const userSchema = {
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
     avatar: { type: "string" },
-    dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" }
+    dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" },
+    authProvider: {
+      $ref: "commonDefinitionsSchema#/definitions/authProvider"
+    }
   },
   required: ["id", "username"],
   additionalProperties: false
@@ -108,6 +111,17 @@ const getAvatarSchema = {
   additionalProperties: false
 };
 
+const updateUserPasswordSchema = {
+  $id: "updateUserPasswordSchema",
+  type: "object",
+  properties: {
+    currentPassword: { $ref: "commonDefinitionsSchema#/definitions/password" },
+    newPassword: { $ref: "commonDefinitionsSchema#/definitions/password" }
+  },
+  required: ["currentPassword", "newPassword"],
+  additionalProperties: false
+};
+
 export const userSchemas = [
   userSchema,
   userResponseSchema,
@@ -115,5 +129,6 @@ export const userSchemas = [
   createUserSchema,
   updateUserSchema,
   patchUserSchema,
-  getAvatarSchema
+  getAvatarSchema,
+  updateUserPasswordSchema
 ];

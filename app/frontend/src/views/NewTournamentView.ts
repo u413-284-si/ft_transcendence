@@ -7,7 +7,8 @@ import MatchAnnouncement from "./MatchAnnouncementView.js";
 import PlayerNicknames from "./PlayerNicknamesView.js";
 import {
   validateTournamentName,
-  validatePlayersSelection
+  validatePlayersSelection,
+  isTournamentNameAvailable
 } from "../validate.js";
 import ResultsView from "./ResultsView.js";
 import { Header1 } from "../components/Header1.js";
@@ -16,6 +17,7 @@ import { Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { RadioGroup } from "../components/RadioGroup.js";
 import { Form } from "../components/Form.js";
+import { getDataOrThrow } from "../services/api.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -74,7 +76,7 @@ export default class NewTournamentView extends AbstractView {
   }
 
   async render() {
-    const activeTournament = await getActiveTournament();
+    const activeTournament = getDataOrThrow(await getActiveTournament());
     if (!activeTournament) {
       console.log("No active tournament found");
       this.updateHTML();
@@ -118,7 +120,10 @@ export default class NewTournamentView extends AbstractView {
     ) as HTMLElement;
     let isValid = true;
 
-    if (!(await validateTournamentName(tournamentNameEl, tournamentErrorEl))) {
+    if (
+      !validateTournamentName(tournamentNameEl, tournamentErrorEl) ||
+      !(await isTournamentNameAvailable(tournamentNameEl, tournamentErrorEl))
+    ) {
       isValid = false;
     }
     if (
