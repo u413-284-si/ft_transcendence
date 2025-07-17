@@ -16,11 +16,12 @@ export default class SettingsView extends AbstractView {
   private preferredLanguageFormEl!: HTMLFormElement;
   private preferredLanguageButtonEl!: HTMLElement;
   private preferredLanguageOptionsEl!: HTMLElement;
-  private selectedLanguage: "en" | "fr" | "de" | "pi" = i18next.language as
+  private selectedLanguage: "en" | "fr" | "de" | "pi" | "tr" = i18next.language as
     | "en"
     | "fr"
     | "de"
-    | "pi";
+    | "pi"
+    | "tr";
 
   constructor() {
     super();
@@ -49,7 +50,7 @@ export default class SettingsView extends AbstractView {
               `<div class="flex flex-wrap items-end gap-4 mt-2">
                 ${LanguageSwitcher({
                   id: "preferred-language",
-                  selectedLang: i18next.language as "en" | "fr" | "de" | "pi",
+                  selectedLang: i18next.language as "en" | "fr" | "de" | "pi" | "tr",
                   className: "w-64",
                   size: "lg"
                 })}
@@ -99,7 +100,8 @@ export default class SettingsView extends AbstractView {
             | "en"
             | "fr"
             | "de"
-            | "pi";
+            | "pi"
+            | "tr";
           this.switchLanguage(lang);
         });
       });
@@ -136,7 +138,7 @@ export default class SettingsView extends AbstractView {
     }
   }
 
-  private switchLanguage(lang: "en" | "fr" | "de" | "pi"): void {
+  private switchLanguage(lang: "en" | "fr" | "de" | "pi" | "tr"): void {
     this.selectedLanguage = lang;
     i18next.changeLanguage(lang).then(() => {
       localStorage.setItem("preferredLanguage", lang);

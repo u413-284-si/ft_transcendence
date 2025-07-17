@@ -3,7 +3,7 @@ export type User = {
   username: string;
   email?: string;
   avatar?: string;
-  language: "en" | "fr" | "de" | "pi";
+  language: "en" | "fr" | "de" | "pi" | "tr";
   dateJoined: string;
   authProvider?: string;
 };

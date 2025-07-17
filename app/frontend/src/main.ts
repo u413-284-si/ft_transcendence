@@ -37,23 +37,25 @@ router
   .addRouteChangeListener(updateUI);
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const [frRes, enRes, deRes, piRes] = await Promise.all([
+  const [frRes, enRes, deRes, piRes, trRes] = await Promise.all([
     fetch("/locales/fr.json"),
     fetch("/locales/en.json"),
     fetch("/locales/de.json"),
-    fetch("/locales/pi.json")
+    fetch("/locales/pi.json"),
+    fetch("/locales/tr.json")
   ]);
 
-  if (!frRes.ok || !enRes.ok || !deRes.ok || !piRes.ok) {
+  if (!frRes.ok || !enRes.ok || !deRes.ok || !piRes.ok || !trRes.ok) {
     console.error("Failed to load one or more translation files");
     return;
   }
 
-  const [fr, en, de, pi] = await Promise.all([
+  const [fr, en, de, pi, tr] = await Promise.all([
     frRes.json(),
     enRes.json(),
     deRes.json(),
-    piRes.json()
+    piRes.json(),
+    trRes.json()
   ]);
 
   const preferredLang = localStorage.getItem("preferredLanguage") as
@@ -61,6 +63,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     | "fr"
     | "de"
     | "pi"
+    | "tr"
     | null;
 
   await i18next.init({
@@ -70,7 +73,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       fr: { translation: fr },
       en: { translation: en },
       de: { translation: de },
-      pi: { translation: pi }
+      pi: { translation: pi },
+      tr: { translation: tr }
     },
     interpolation: { escapeValue: false },
     keySeparator: "."

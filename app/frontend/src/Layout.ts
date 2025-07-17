@@ -79,7 +79,7 @@ export class Layout {
         >
           ${LanguageSwitcher({
             id: "lang-switcher",
-            selectedLang: i18next.language as "en" | "fr" | "de" | "pi"
+            selectedLang: i18next.language as "en" | "fr" | "de" | "pi" | "tr"
           })}
           <img
             id="user-avatar"
@@ -101,7 +101,7 @@ export class Layout {
         <div class="absolute top-4 right-4">
           ${LanguageSwitcher({
             id: "lang-switcher",
-            selectedLang: i18next.language as "en" | "fr" | "de" | "pi"
+            selectedLang: i18next.language as "en" | "fr" | "de" | "pi" | "tr"
           })}
         </div>
       </div>
@@ -158,7 +158,7 @@ export class Layout {
     });
   }
 
-  private switchLanguage(lang: "en" | "fr" | "de" | "pi"): void {
+  private switchLanguage(lang: "en" | "fr" | "de" | "pi" | "tr"): void {
     i18next.changeLanguage(lang).then(() => {
       localStorage.setItem("preferredLanguage", lang);
       this.renderShell();
@@ -187,7 +187,8 @@ export class Layout {
           | "en"
           | "fr"
           | "de"
-          | "pi";
+          | "pi"
+          | "tr";
         this.switchLanguage(lang);
       });
     });

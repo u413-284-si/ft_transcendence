@@ -1,7 +1,7 @@
 export type LanguageSwitcherOptions = {
   id: string;
   className?: string;
-  selectedLang: "en" | "fr" | "de" | "pi";
+  selectedLang: "en" | "fr" | "de" | "pi" | "tr";
   size?: "sm" | "md" | "lg";
 };
 
@@ -16,6 +16,7 @@ export function LanguageSwitcher({
     { code: "fr", label: "FR", flag: "🇫🇷" },
     { code: "de", label: "DE", flag: "🇩🇪" },
     { code: "pi", label: "PI", flag: "🏴‍☠️" },
+    { code: "tr", label: "TR", flag: "🌐" },
   ];
 
   const buttonId = `${id}-button`;

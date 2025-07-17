@@ -1,0 +1,226 @@
+{
+  "errorView": {
+    "detailsText": "⚡ Data Stream: {{cause}}",
+    "errorStatusText": "🚨 ERROR CODE {{status}}",
+    "errorTitle": "SYSTEM ERROR",
+    "reloadText": "REBOOT",
+    "unexpectedErrorText": "⚠️ Unexpected system anomaly detected."
+  },
+
+  "friendListItem": {
+    "acceptText": "Authorize",
+    "declineText": "Reject",
+    "deleteText": "Erase",
+    "removeText": "Disconnect"
+  },
+
+  "friendsView": {
+    "addFriendText": "Initiate link",
+    "confirmDeclineRequestText": "Confirm disconnection of incoming signal?",
+    "confirmDeleteRequestText": "Confirm deletion of this data packet?",
+    "confirmRemoveFriendText": "Confirm removal of network node?",
+    "exactUsernameText": "Exact user ID",
+    "friendAddedText": "Link established!",
+    "friendRequestsText": "Incoming link requests",
+    "friendsTitle": "Network Nodes",
+    "incomingRequestsText": "Incoming link signals",
+    "noFriendsText": "Network isolated: no connections found",
+    "noIncomingText": "No incoming link signals detected",
+    "noOutgoingText": "No outgoing link signals detected",
+    "outgoingRequestsText": "Outgoing link requests",
+    "sendFriendRequestText": "Transmit link request",
+    "sendSuccessText": "Link request successfully transmitted",
+    "unknownRequestListTypeError": "Unrecognized signal type: {{type}}",
+    "yourFriendsText": "Active connections"
+  },
+
+  "gameView": {
+    "nowPlayingTitle": "ACTIVE SESSION"
+  },
+
+  "global": {
+    "avatarText": "USER AVATAR",
+    "confirmNewPasswordLabel": "Confirm new access code:",
+    "confirmNewPasswordText": "Confirm new access code",
+    "connectionLostText": "Signal lost — attempting reconnection in {{delay}} cycles... (Attempt {{attempt}} of {{maxAttempts}})",
+    "connectionReestablishedText": "Signal reestablished",
+    "connectionUnavailableText": "Reconnection failed. System halted until manual reboot.",
+    "continueText": "Press [ENTER] to proceed",
+    "editProfileText": "Modify your data matrix",
+    "emailLabel": "Data address:",
+    "emailText": "Data address",
+    "emailExistsText": "Data address already exists in network",
+    "invalidEmailEmptyError": "Data address field cannot be empty.",
+    "invalidEmailFormatError": "Data address format corrupted.",
+    "invalidEmailOrUsernameEmptyError": "Enter valid user ID or data address.",
+    "invalidEmailOrUsernameFormatError": "User ID or data address format invalid.",
+    "invalidImageFileEmptyError": "Select an image file for upload.",
+    "invalidImageFileFormatError": "Upload a valid image data file.",
+    "invalidNicknameEmptyError": "Node alias cannot be empty.",
+    "invalidNicknameFormatError": "Node alias must be 3-20 characters, letters, digits, or [-!?_$.]",
+    "invalidNicknameUniquenessError": "Node alias must be unique.",
+    "invalidPasswordEmptyError": "Access code cannot be empty.",
+    "invalidPasswordFormatError": "Access code must be 10-64 chars, include digit, uppercase, lowercase, and special char [@$!%*?&].",
+    "invalidPasswordConfirmationEmptyError": "Re-enter your access code",
+    "invalidPasswordConfirmationError": "Access code confirmation mismatch.",
+    "invalidPlayerSelectionError": "Select number of operatives.",
+    "invalidTournamentNameEmptyError": "Tournament ID cannot be empty.",
+    "invalidTournamentNameFormatError": "Tournament ID must be 3-20 chars, letters, digits, or [-!?_$.]",
+    "invalidTournamentNameUniquenessError": "Tournament ID must be unique.",
+    "invalidUsernameEmptyError": "User ID cannot be empty.",
+    "invalidUsernameFormatError": "User ID must be 3-20 chars, letters, digits, or [-!?_$.]",
+    "invalidUsernameUniquenessError": "User ID must be unique.",
+    "joinTournamentText": "Access tournament",
+    "logoutText": "Log off",
+    "lostText": "Disconnected",
+    "matchText": "Session {{matchId}}",
+    "matchNotFoundError": "Session data not found.",
+    "nextMatchNotFoundError": "Next session data missing.",
+    "offlineText": "Offline",
+    "onlineText": "Online",
+    "passwordLabel": "Access code:",
+    "passwordText": "Access code",
+    "pongGameText": "PONG GRID",
+    "playerText": "Operative",
+    "playerWinsText": "Operative {{player}} victorious",
+    "roundText": "Cycle {{round}}",
+    "somethingWentWrongError": "System malfunction.",
+    "toBeDefinedText": "To be configured",
+    "tournamentIDNotFoundError": "Tournament ID missing.",
+    "tournamentText": "TOURNAMENT: <strong>{{tournamentName}}</strong>",
+    "undefinedMatchError": "Session undefined",
+    "usernameLabel": "User ID:",
+    "usernameText": "User ID",
+    "userStatusText": "{{username}} status: {{status}}",
+    "userAcceptedFriendRequestText": "Link request from <strong>{{username}}</strong> accepted",
+    "userDeclinedFriendRequestText": "Link request from <strong>{{username}}</strong> rejected",
+    "userRescindedFriendRequestText": "Link request from <strong>{{username}}</strong> withdrawn",
+    "userRemovedFriendText": "<strong>{{username}}</strong> disconnected from network",
+    "userSentFriendRequestText": "Link request from <strong>{{username}}</strong>",
+    "userNotFoundError": "User node not found.",
+    "validateTournamentNameError": "Error verifying tournament ID.",
+    "validateUserError": "Error verifying user:<br>Redirecting to logon node.",
+    "welcomeText": "WELCOME",
+    "winnerMatchText": "Winning session {{matchId}}",
+    "wonText": "VICTORY"
+  },
+
+  "homeView": {
+    "helloUser": "⚡ Greetings, User {{username}}!<br />Entering the Mainframe Hub",
+    "homeTitle": "MAINFRAME"
+  },
+
+  "loginView": {
+    "loginTitle": "ACCESS NODE",
+    "usernameOrEmailLabel": "User ID or Data Address:",
+    "usernameOrEmailText": "User ID or Data Address"
+  },
+
+  "matchAnnouncementView": {
+    "abortTournamentText": "TERMINATE TOURNAMENT",
+    "nextMatchText": "Next session queued:",
+    "nextMatchTitle": "UPCOMING SESSION",
+    "roundMatchText": "Cycle {{round}} - Session {{match}}",
+    "startMatchText": "INITIATE SESSION",
+    "tournamentStatusText": "TOURNAMENT STATUS"
+  },
+
+  "newGameView": {
+    "newGameTitle": "NEW SESSION",
+    "selectPlayerText": "Assign control to operative {{username}}",
+    "startGameText": "BEGIN SESSION"
+  },
+
+  "newTournamentView": {
+    "confirmAbortTournamentText": "Confirm cancellation of tournament sequence?",
+    "enterTournamentNameText": "Input tournament designation",
+    "newTournamentDescriptionText": "Set tournament designation and assign operative count",
+    "newTournamentTitle": "NEW TOURNAMENT SEQUENCE",
+    "numberOfPlayersLabel": "Operatives count:",
+    "players4Label": "4 operatives",
+    "players8Label": "8 operatives",
+    "players16Label": "16 operatives",
+    "startTournamentText": "LAUNCH TOURNAMENT",
+    "tournamentNameLabel": "Tournament designation:"
+  },
+
+  "nicknameInput": {
+    "enterYourNicknameText": "Enter your operative alias",
+    "playerChoiceLabel": "Operating as agent {{i}}",
+    "playerNicknameLabel": "Agent {{i}} alias"
+  },
+
+  "playerNicknamesView": {
+    "enterPlayerNicknamesText": "Input operative aliases",
+    "playerNicknamesTitle": "OPERATIVE ALIASES",
+    "selectControlledPlayerText": "Select operative controlled by {{username}}",
+    "submitNicknamesText": "TRANSMIT ALIASES"
+  },
+
+  "profileView": {
+    "avatarUploadFailedText": "Avatar upload interrupted. Reattempt required.",
+    "avatarUploadedSuccessText": "Avatar successfully embedded!",
+    "cannotChangeEmailOrPWText": "Data address and access code alterations are locked.",
+    "changeAvatarText": "Override avatar below.",
+    "changePasswordButton": "MODIFY ACCESS CODE",
+    "changePasswordText": "Update your access code below.",
+    "chooseFileText": "Select image file for avatar override",
+    "currentPasswordLabel": "Current Access Code:",
+    "currentPasswordText": "Current Access Code",
+    "fillAtLeastOneFieldText": "Fill at least one data field.",
+    "fillInUsernameText": "User ID required.",
+    "newPasswordLabel": "New Access Code:",
+    "newPasswordText": "New Access Code",
+    "noFileSelected": "No file detected",
+    "passwordUpdateFailedText": "Access code update failed. Retry advised.",
+    "passwordUpdatedSuccessText": "Access code updated successfully!",
+    "profileUpdateFailedText": "Profile update failed. Retry advised.",
+    "profileUpdatedSuccessText": "Profile updated successfully!",
+    "saveChangesText": "COMMIT CHANGES",
+    "signedInWithGoogleText": "Connected via Google Network",
+    "updateProfileText": "Update your profile matrix below.",
+    "uploadYourAvatarText": "Upload your avatar data",
+    "yourProfileTitle": "USER PROFILE"
+  },
+
+  "registerView": {
+    "emailOrUsernameExistsText": "Data address or User ID already exists",
+    "registerText": "Register access node",
+    "registerTitle": "NODE REGISTRATION",
+    "registrationSuccessText": "Access node registration successful!"
+  },
+
+  "resultsView": {
+    "bracketText": "Tournament Grid",
+    "championText": "Gridmaster",
+    "congratulationsText": "System congrats: Victory achieved!",
+    "finishText": "Seal Session",
+    "resultsTitle": "RESULTS LOG",
+    "tournamentResultsText": "Tournament Outcome Grid"
+  },
+
+  "settingsView": {
+    "preferredLanguageText": "Select interface language protocol.",
+    "saveLanguageText": "SAVE LANGUAGE",
+    "settingsText": "Configure your system parameters.",
+    "settingsTitle": "SYSTEM SETTINGS"
+  },
+
+  "statsView": {
+    "dateText": "Cycle Date",
+    "friendOnlyText": "Link established required to access session logs",
+    "joinedText": "Node integrated on",
+    "matchHistoryText": "Session Log",
+    "nullMatchesError": "No session logs detected.",
+    "playedText": "Engaged",
+    "player1Text": "Agent 1",
+    "player2Text": "Agent 2",
+    "player1ScoreText": "Agent 1 Score",
+    "player2ScoreText": "Agent 2 Score",
+    "resultText": "Session Outcome",
+    "statsTitle": "PERFORMANCE STATS",
+    "tournamentText": "Tournament Grid",
+    "userStatsNotFoundError": "Node performance data unavailable.",
+    "winRateText": "Victory Ratio"
+  }
+}
