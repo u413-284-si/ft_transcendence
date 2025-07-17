@@ -1,52 +1,59 @@
-import type { ApexOptions } from "apexcharts";
+import { ApexOptions } from "apexcharts";
 
-export const tournamentProgressOptions: Omit<ApexOptions, "series"> = {
-  chart: {
-    type: "bar",
-    stacked: true,
-    fontFamily: "inherit",
-    background: "transparent",
-    toolbar: {
+export function makeTournamentProgressOptions(
+  name: string,
+  data: { x: string; y: number }[]
+): ApexOptions {
+  const colors = ["#3dfdfb"];
+  const options: ApexOptions = {
+    chart: {
+      type: "bar",
+      height: 350,
+      width: 400
+    },
+    colors: colors,
+    dataLabels: {
+      enabled: true,
+      formatter: function (val, opt) {
+        return opt.w.globals.labels[opt.dataPointIndex];
+      },
+      dropShadow: {
+        enabled: true
+      }
+    },
+    legend: {
       show: false
-    }
-  },
-  plotOptions: {
-    bar: {
-      horizontal: false,
-      borderRadius: 4
-    }
-  },
-  colors: ["var(--color-neon-green)", "var(--color-neon-red)"],
-  xaxis: {
-    type: "category",
-    title: {
-      text: "Tournament Size"
     },
-    labels: {
-      formatter: (val: string) => `${val}-Player`
-    }
-  },
-  yaxis: {
-    title: {
-      text: "Number of Tournaments"
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        isFunnel: true,
+        distributed: true
+      }
     },
-    min: 0,
-    forceNiceScale: true,
-    labels: {
-      formatter: (val: number) => `${val}`
+    series: [
+      {
+        name: name,
+        data: data
+      }
+    ],
+    tooltip: {
+      theme: "dark",
+      custom: function ({ seriesIndex, dataPointIndex, w }) {
+        const point = w.config.series[seriesIndex].data[dataPointIndex];
+        const label = point.x;
+        const value = point.y;
+
+        let labelText = `${value} tournament${value === 1 ? "" : "s"}`;
+        if (label === "Won") {
+          labelText = `${value} tournament${value === 1 ? " was" : "s were"} won 🎉`;
+        } else if (/^Round \d+$/.test(label)) {
+          labelText = `${value} tournament${value === 1 ? "" : "s"} reached ${label}`;
+        }
+
+        return `<div class="apex-tooltip-custom">${labelText}</div>`;
+      }
     }
-  },
-  tooltip: {
-    theme: "dark",
-    y: {
-      formatter: (val: number) => `${val}`
-    }
-  },
-  legend: {
-    position: "top",
-    horizontalAlign: "right",
-    labels: {
-      colors: "var(--color-grey)"
-    }
-  }
-};
+  };
+  return options;
+}

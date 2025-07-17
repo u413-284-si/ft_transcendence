@@ -12,14 +12,14 @@ type ScoreDiffPoint = {
 
 export type ScoreDiffSeries = ScoreDiffPoint[];
 
-type TournamentProgressPoint = {
+type TournamentSummaryPoint = {
   x: string; // tournament size
   y: number; // number of games won/lost
 };
 
-export type TournamentProgressSeries = {
+export type TournamentSummarySeries = {
   name: "won" | "lost";
-  data: TournamentProgressPoint[];
+  data: TournamentSummaryPoint[];
 }[];
 
 type ScoresLastTenDays = {
@@ -28,3 +28,12 @@ type ScoresLastTenDays = {
 };
 
 export type ScoresLastTenDaysSeries = ScoresLastTenDays[];
+
+type TournamentProgressPoint = {
+  x: string;
+  y: number;
+};
+
+export type TournamentProgressSeries = {
+  [size: string]: TournamentProgressPoint[];
+};
