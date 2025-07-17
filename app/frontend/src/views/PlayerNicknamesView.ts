@@ -11,6 +11,7 @@ import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
+import { getDataOrThrow } from "../services/api.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -89,7 +90,9 @@ export default class PlayerNicknamesView extends AbstractView {
         userId
       );
 
-      const createdTournament = await createTournament(tournament);
+      const createdTournament = getDataOrThrow(
+        await createTournament(tournament)
+      );
       const { id } = createdTournament;
       if (id) {
         tournament.setId(id);

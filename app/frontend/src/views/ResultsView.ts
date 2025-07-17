@@ -7,6 +7,7 @@ import { Header1 } from "../components/Header1.js";
 import { Header2 } from "../components/Header2.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
+import { getDataOrThrow } from "../services/api.js";
 
 export default class ResultsView extends AbstractView {
   constructor(private tournament: Tournament) {
@@ -83,7 +84,7 @@ export default class ResultsView extends AbstractView {
 
   private async setFinished() {
     try {
-      await setTournamentFinished(this.tournament.getId());
+      getDataOrThrow(await setTournamentFinished(this.tournament.getId()));
       router.reload();
     } catch (error) {
       router.handleError("Error setting tournament as finished", error);
