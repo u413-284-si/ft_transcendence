@@ -18,6 +18,7 @@ model User {
     username   String   @unique
     email      String?  @unique
     avatar     String?
+    language   String   @default("en")
     dateJoined DateTime @default(now())
 
     authentication    Authentication?
