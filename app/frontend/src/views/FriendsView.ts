@@ -242,7 +242,8 @@ export default class FriendsView extends AbstractView {
 
             toaster.success(`${toastMessage} ${username}`, toastIcon);
           } catch (error) {
-            router.handleError("Error handling friend request buttons", error);
+            console.error(error);
+            toaster.error("Error handling friend request buttons");
           }
         },
         {
