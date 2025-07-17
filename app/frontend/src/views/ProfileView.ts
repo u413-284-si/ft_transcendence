@@ -21,7 +21,7 @@ import { getInputEl, getEl } from "../utility.js";
 import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
-import { ApiError, unwrap } from "../services/api.js";
+import { ApiError, getDataOrThrow } from "../services/api.js";
 import { TextBox } from "../components/TextBox.js";
 
 export default class ProfileView extends AbstractView {
@@ -295,7 +295,7 @@ export default class ProfileView extends AbstractView {
     const file = fileInputEl!.files![0];
     formData.append("avatar", file);
     try {
-      const { avatar } = unwrap(await uploadAvatar(formData));
+      const { avatar } = getDataOrThrow(await uploadAvatar(formData));
       toaster.success("Avatar uploaded successfully!");
       const updatedUser: Partial<User> = {
         ...(avatar ? { avatar } : {})
@@ -338,7 +338,7 @@ export default class ProfileView extends AbstractView {
     // }
 
     try {
-      unwrap(
+      getDataOrThrow(
         await updateUserPassword(currentPasswordEl.value, newPasswordEl.value)
       );
       toaster.success("Password updated successfully!");

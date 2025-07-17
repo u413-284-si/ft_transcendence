@@ -1,5 +1,5 @@
 import { router } from "./routing/Router.js";
-import { ApiError, unwrap } from "./services/api.js";
+import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
   refreshAccessToken,
@@ -74,7 +74,7 @@ export class AuthManager {
         }
       }
       const token = apiResponse.data;
-      this.user = unwrap(await getUserProfile());
+      this.user = getDataOrThrow(await getUserProfile());
       this.updateAuthState(token);
     } catch (error) {
       router.handleError("Error in AuthManager.initialize():", error);
@@ -92,8 +92,8 @@ export class AuthManager {
           throw new ApiError(apiResponse);
         }
       }
-      const token = unwrap(await authAndDecodeAccessToken());
-      this.user = unwrap(await getUserProfile());
+      const token = getDataOrThrow(await authAndDecodeAccessToken());
+      this.user = getDataOrThrow(await getUserProfile());
       console.log("User logged in");
       this.updateAuthState(token);
       return true;
@@ -232,7 +232,7 @@ export class AuthManager {
           throw new ApiError(apiResponse);
         }
       }
-      const newToken = unwrap(await authAndDecodeAccessToken());
+      const newToken = getDataOrThrow(await authAndDecodeAccessToken());
       this.updateAuthState(newToken);
     } catch (error) {
       console.warn("Token refresh failed", error);

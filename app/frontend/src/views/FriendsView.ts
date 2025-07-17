@@ -1,6 +1,6 @@
 import { router } from "../routing/Router.js";
 import { sanitizeHTML } from "../sanitize.js";
-import { unwrap } from "../services/api.js";
+import { getDataOrThrow } from "../services/api.js";
 import {
   deleteFriendRequest,
   getUserFriendRequests,
@@ -41,7 +41,7 @@ export default class FriendsView extends AbstractView {
   }
 
   async render(): Promise<void> {
-    this.friendRequests = unwrap(await getUserFriendRequests());
+    this.friendRequests = getDataOrThrow(await getUserFriendRequests());
     this.updateHTML();
     this.addListeners();
   }
@@ -290,7 +290,7 @@ export default class FriendsView extends AbstractView {
     try {
       const btn = event.currentTarget as HTMLButtonElement;
       const requestId = this.getRequestIdFromButton(btn);
-      const request = unwrap(await deleteFriendRequest(requestId));
+      const request = getDataOrThrow(await deleteFriendRequest(requestId));
       this.removeFriendRequest(request.id);
     } catch (error) {
       router.handleError("Error in handleDeleteButton()", error);
@@ -301,7 +301,7 @@ export default class FriendsView extends AbstractView {
     try {
       const btn = event.currentTarget as HTMLButtonElement;
       const requestid = this.getRequestIdFromButton(btn);
-      const request = unwrap(await acceptFriendRequest(requestid));
+      const request = getDataOrThrow(await acceptFriendRequest(requestid));
       this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
     } catch (error) {
@@ -338,7 +338,7 @@ export default class FriendsView extends AbstractView {
     const username = inputEl.value.trim();
 
     try {
-      const user = unwrap(await getUserByUsername(username));
+      const user = getDataOrThrow(await getUserByUsername(username));
 
       if (user === null) {
         markInvalid("User not found.", inputEl, errorEl);
@@ -346,7 +346,7 @@ export default class FriendsView extends AbstractView {
       }
       clearInvalid(inputEl, errorEl);
 
-      const request = unwrap(await createFriendRequest(user.id));
+      const request = getDataOrThrow(await createFriendRequest(user.id));
       this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
       inputEl.value = "";
@@ -407,7 +407,7 @@ export default class FriendsView extends AbstractView {
       const { requestId, username, status } = customEvent.detail;
       switch (status) {
         case "PENDING": {
-          const requests = unwrap(
+          const requests = getDataOrThrow(
             await getUserFriendRequestByUsername(username)
           );
           if (requests[0]) {
@@ -417,7 +417,7 @@ export default class FriendsView extends AbstractView {
           break;
         }
         case "ACCEPTED": {
-          const request = unwrap(
+          const request = getDataOrThrow(
             await getUserFriendRequestByUsername(username)
           );
           if (request[0]) {

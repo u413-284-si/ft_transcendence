@@ -22,7 +22,7 @@ export class ApiError extends Error {
   }
 }
 
-export function unwrap<T>(response: ApiResponse<T>): T {
+export function getDataOrThrow<T>(response: ApiResponse<T>): T {
   if (response.success) {
     return response.data;
   } else {
@@ -55,15 +55,15 @@ export async function apiFetch<T>(
         }
         return retryResponse;
       }
-      return setError(json.message, response.status, json.cause);
+      return createApiFail(json.message, response.status, json.cause);
     }
 
-    return setSuccess(json.message, json.data);
+    return createApiSuccess(json.message, json.data);
   } catch (error) {
     if (error instanceof Error) {
-      return setError("Internal server error", 500, error.message ?? undefined);
+      return createApiFail("Internal server error", 500, error.message ?? undefined);
     } else {
-      return setError("Internal server error", 500);
+      return createApiFail("Internal server error", 500);
     }
   }
 }
@@ -92,12 +92,12 @@ async function refreshAndRetry<T>(
   return apiFetch<T>(url, options, false);
 }
 
-function setSuccess<T>(message: string, data: T): ApiSuccess<T> {
+function createApiSuccess<T>(message: string, data: T): ApiSuccess<T> {
   console.log({ message, data });
   return { success: true, message, data };
 }
 
-function setError(message: string, status: number, cause?: string): ApiFail {
+function createApiFail(message: string, status: number, cause?: string): ApiFail {
   console.error({ message, status, cause });
   return { success: false, message, status, cause };
 }
