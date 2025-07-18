@@ -117,14 +117,8 @@ const patchTournamentSchema = {
   anyOf: [
     {
       properties: {
-        name: {
-          $ref: "tournamentDefinitionsSchema#/definitions/tournamentName"
-        },
         isFinished: {
           $ref: "tournamentDefinitionsSchema#/definitions/tournamentIsFinished"
-        },
-        bracket: {
-          $ref: "tournamentDefinitionsSchema#/definitions/tournamentBracket"
         }
       },
       required: ["isFinished"],
@@ -139,7 +133,7 @@ const patchTournamentSchema = {
           $ref: "tournamentDefinitionsSchema#/definitions/tournamentRoundReached"
         }
       },
-      required: ["bracket"],
+      required: ["bracket", "roundReached"],
       additionalProperties: false
     }
   ]
