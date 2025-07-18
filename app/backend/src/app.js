@@ -23,6 +23,7 @@ import { tournamentSchemas } from "./schema/tournaments.schema.js";
 import { authSchemas } from "./schema/auth.schema.js";
 import { userStatsSchemas } from "./schema/user_stats.schema.js";
 import { friendRequestSchemas } from "./schema/friend_request.schema.js";
+import { dashboardSchemas } from "./schema/dashboard.schema.js";
 
 const fastify = Fastify({
   exposeHeadRoutes: false,
@@ -130,7 +131,8 @@ for (const schema of [
   ...tournamentSchemas,
   ...authSchemas,
   ...userStatsSchemas,
-  ...friendRequestSchemas
+  ...friendRequestSchemas,
+  ...dashboardSchemas
 ]) {
   fastify.addSchema(schema);
 }

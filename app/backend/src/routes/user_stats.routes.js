@@ -80,6 +80,7 @@ const optionsGetDashboardMatches = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
+      200: { $ref: "dashboardMatchesResponseSchema" },
       ...errorResponses
     }
   }
