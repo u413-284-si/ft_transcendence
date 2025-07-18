@@ -49,30 +49,8 @@ export async function getTournament(id) {
   return tournament;
 }
 
-export async function getTournamentTx(tx, id) {
-  const tournament = await tx.tournament.findUniqueOrThrow({
-    where: {
-      id
-    },
-    select: tournamentSelect
-  });
-  return tournament;
-}
-
 export async function updateTournament(id, userId, updateData) {
   const updatedTournament = await prisma.tournament.update({
-    where: {
-      id,
-      userId
-    },
-    data: updateData,
-    select: tournamentSelect
-  });
-  return updatedTournament;
-}
-
-export async function updateTournamentTx(tx, id, userId, updateData) {
-  const updatedTournament = await tx.tournament.update({
     where: {
       id,
       userId
