@@ -47,10 +47,15 @@ const commonDefinitionsSchema = {
       minimum: 0,
       description: "A score with a minimum value of 0."
     },
-    date: {
+    datetime: {
       type: "string",
       format: "date-time",
-      description: "A date in ISO 8601 format."
+      description: "A date-time string in format YYYY-MM-DDThh:mm:ss.sTZD (ISO 8601)."
+    },
+    date: {
+      type: "string",
+      format: "date",
+      description: "A date string in format YYYY-MM-DD (ISO 8601)."
     }
   }
 };

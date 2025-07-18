@@ -3,7 +3,7 @@ const dashboardWinrateSchema = {
   type: "object",
   properties: {
     x: {
-      $ref: "commonDefinitionsSchema#/definitions/date",
+      $ref: "commonDefinitionsSchema#/definitions/datetime",
       description: "Date-time of the played match"
     },
     y: { type: "number", description: "Current winrate" }
@@ -17,7 +17,7 @@ const dashboardScoreDiffSchema = {
   type: "object",
   properties: {
     x: {
-      $ref: "commonDefinitionsSchema#/definitions/date",
+      $ref: "commonDefinitionsSchema#/definitions/datetime",
       description: "Date-time of the played match"
     },
     y: { type: "number", description: "Score difference of match" }
@@ -32,7 +32,7 @@ const dashboardScoresSchema = {
   properties: {
     x: {
       $ref: "commonDefinitionsSchema#/definitions/date",
-      description: "Date"
+      description: "Date for the match count"
     },
     y: { type: "number", description: "Number of matches played" }
   },
