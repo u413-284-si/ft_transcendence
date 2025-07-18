@@ -1,16 +1,41 @@
+import { UserStats } from "./IUserStats";
+
 type WinratePoint = {
-  x: string; // ISO 8601 date string
+  x: string; // ISO 8601 date-time string
   y: number;
 };
 
 export type WinrateSeries = WinratePoint[];
 
 type ScoreDiffPoint = {
-  x: string; // ISO 8601 date string
+  x: string; // ISO 8601 date-time string
   y: number;
 };
 
 export type ScoreDiffSeries = ScoreDiffPoint[];
+
+type ScoresLastNDays = {
+  x: string; // ISO 8601 date string
+  y: number;
+};
+
+export type ScoresLastNDaysSeries = ScoresLastNDays[];
+
+export type DashboardMatches = {
+  userStats: UserStats;
+  winrate: WinrateSeries;
+  scoreDiff: ScoreDiffSeries;
+  scores: ScoresLastNDaysSeries;
+};
+
+type TournamentProgressPoint = {
+  x: string;
+  y: number;
+};
+
+export type TournamentProgressSeries = {
+  [size: string]: TournamentProgressPoint[];
+};
 
 type TournamentSummaryPoint = {
   x: string; // tournament size
@@ -21,19 +46,3 @@ export type TournamentSummarySeries = {
   name: "won" | "lost";
   data: TournamentSummaryPoint[];
 }[];
-
-type ScoresLastTenDays = {
-  x: string; // ISO 8601 date string
-  y: number;
-};
-
-export type ScoresLastTenDaysSeries = ScoresLastTenDays[];
-
-type TournamentProgressPoint = {
-  x: string;
-  y: number;
-};
-
-export type TournamentProgressSeries = {
-  [size: string]: TournamentProgressPoint[];
-};

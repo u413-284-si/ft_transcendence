@@ -3,8 +3,9 @@ import { UserStats } from "../types/IUserStats.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 
 import {
+  DashboardMatches,
   ScoreDiffSeries,
-  ScoresLastTenDaysSeries,
+  ScoresLastNDaysSeries,
   TournamentProgressSeries,
   TournamentSummarySeries,
   WinrateSeries
@@ -31,7 +32,9 @@ export async function getUserStatsByUsername(
   });
 }
 
-export async function getUserTournamentSummary(): Promise<ApiResponse<TournamentSummarySeries>> {
+export async function getUserTournamentSummary(): Promise<
+  ApiResponse<TournamentSummarySeries>
+> {
   const url = "/api/user-stats/me/tournament-summary";
 
   return apiFetch<TournamentSummarySeries>(url, {
@@ -40,7 +43,9 @@ export async function getUserTournamentSummary(): Promise<ApiResponse<Tournament
   });
 }
 
-export async function getUserWinrateProgression(): Promise<ApiResponse<WinrateSeries>> {
+export async function getUserWinrateProgression(): Promise<
+  ApiResponse<WinrateSeries>
+> {
   const url = "/api/user-stats/me/winrate-progression";
 
   return apiFetch<WinrateSeries>(url, {
@@ -49,7 +54,9 @@ export async function getUserWinrateProgression(): Promise<ApiResponse<WinrateSe
   });
 }
 
-export async function getUserScoreDiff(): Promise<ApiResponse<ScoreDiffSeries>> {
+export async function getUserScoreDiff(): Promise<
+  ApiResponse<ScoreDiffSeries>
+> {
   const url = "/api/user-stats/me/score-diff";
 
   return apiFetch<ScoreDiffSeries>(url, {
@@ -58,19 +65,34 @@ export async function getUserScoreDiff(): Promise<ApiResponse<ScoreDiffSeries>> 
   });
 }
 
-export async function getUserScoresLastTen(): Promise<ApiResponse<ScoresLastTenDaysSeries>> {
+export async function getUserScoresLastTen(): Promise<
+  ApiResponse<ScoresLastNDaysSeries>
+> {
   const url = "/api/user-stats/me/scores-last-ten";
 
-  return apiFetch<ScoresLastTenDaysSeries>(url, {
+  return apiFetch<ScoresLastNDaysSeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });
 }
 
-export async function getUserTournamentProgress(): Promise<ApiResponse<TournamentProgressSeries>> {
+export async function getUserTournamentProgress(): Promise<
+  ApiResponse<TournamentProgressSeries>
+> {
   const url = "/api/user-stats/me/tournament-progress";
 
   return apiFetch<TournamentProgressSeries>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+}
+
+export async function getUserDashboardMatches(): Promise<
+  ApiResponse<DashboardMatches>
+> {
+  const url = "/api/user-stats/me/dashboard-matches";
+
+  return apiFetch<DashboardMatches>(url, {
     method: "GET",
     credentials: "same-origin"
   });

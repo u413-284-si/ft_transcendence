@@ -31,7 +31,7 @@ import { TabButton } from "../components/TabButton.js";
 import { Chart } from "../components/Chart.js";
 import {
   ScoreDiffSeries,
-  ScoresLastTenDaysSeries,
+  ScoresLastNDaysSeries,
   TournamentProgressSeries,
   TournamentSummarySeries,
   WinrateSeries
@@ -51,7 +51,7 @@ export default class StatsView extends AbstractView {
   private friendRequest: FriendRequest | null = null;
   private winrateSeries: WinrateSeries = [];
   private scoreDiffSeries: ScoreDiffSeries = [];
-  private scoresLastTen: ScoresLastTenDaysSeries = [];
+  private scoresLastTen: ScoresLastNDaysSeries = [];
   private tournamentSummarySeries: TournamentSummarySeries = [];
   private tournamentProgressSeries: TournamentProgressSeries = {};
   private charts: Record<string, Record<string, ApexCharts>> = {};
