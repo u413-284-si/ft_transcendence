@@ -1,5 +1,3 @@
-import { getUserTournaments } from "./tournaments.services.js";
-
 export async function winrateLastNMatches(userStats, lastNMatches) {
   const lastNMatchesWithResults = lastNMatches
     .map((match) => ({
