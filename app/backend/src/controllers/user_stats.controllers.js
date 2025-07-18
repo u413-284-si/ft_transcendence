@@ -1,4 +1,9 @@
-import { getUserScoreDiff, getUserScoresLastTen, getUserWinrateProgression } from "../services/dashboard.services.js";
+import {
+  getUserScoreDiff,
+  getUserScoresLastTen,
+  getUserWinrateProgression
+} from "../services/dashboard.services.js";
+import { getUserMatches } from "../services/matches.services.js";
 import {
   getUserTournamentProgress,
   getUserTournamentSummary
@@ -6,6 +11,7 @@ import {
 import {
   getAllUserStats,
   deleteAllUserStats,
+  getUserStats
 } from "../services/user_stats.services.js";
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -55,14 +61,41 @@ export async function getDashboardMatchesHandler(request, reply) {
   try {
     const userId = parseInt(request.user.id, 10);
 
-    const winrateProgression = await getUserWinrateProgression(userId);
-    const scoreDiff = await getUserScoreDiff(userId);
-    const scoresLastTen = await getUserScoresLastTen(userId);
+    const userStats = await getUserStats(userId);
+
+    const lastNumMatchesFilter = {
+      playedAs: ["PLAYERONE", "PLAYERTWO"],
+      limit: 10,
+      sort: "desc"
+    };
+    const lastTenMatches = await getUserMatches(userId, lastNumMatchesFilter);
+
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
+    const matchesLastNumDaysFilter = {
+      playedAs: ["PLAYERONE", "PLAYERTWO"],
+      date: { gte: tenDaysAgo },
+      sort: "desc"
+    };
+
+    const matchesLastNumDays = await getUserMatches(
+      userId,
+      matchesLastNumDaysFilter
+    );
+
+    const winrateProgression = await getUserWinrateProgression(
+      userStats,
+      lastTenMatches
+    );
+    const scoreDiff = await getUserScoreDiff(lastTenMatches);
+    const scoresLastTen = await getUserScoresLastTen(matchesLastNumDays);
     const data = {
+      userStats,
       winrateProgression,
       scoreDiff,
       scoresLastTen
-    }
+    };
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: data

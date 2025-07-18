@@ -1,16 +1,4 @@
-import { getUserMatches } from "./matches.services.js";
-import { getUserStats } from "./user_stats.services.js";
-
-export async function getUserWinrateProgression(userId) {
-  const userStats = await getUserStats(userId);
-
-  const filter = {
-    playedAs: ["PLAYERONE", "PLAYERTWO"],
-    limit: 10,
-    sort: "desc"
-  };
-  const lastTenMatches = await getUserMatches(userId, filter);
-
+export async function getUserWinrateProgression(userStats, lastTenMatches) {
   const lastTenMatchesWithResults = lastTenMatches
     .map((match) => ({
       ...match,
@@ -54,14 +42,7 @@ function didUserWin(match) {
   return false;
 }
 
-export async function getUserScoreDiff(userId) {
-  const filter = {
-    playedAs: ["PLAYERONE", "PLAYERTWO"],
-    limit: 10,
-    sort: "desc"
-  };
-  const lastTenMatches = await getUserMatches(userId, filter);
-
+export async function getUserScoreDiff(lastTenMatches) {
   const data = lastTenMatches
     .map((match) => ({
       x: match.date,
@@ -83,19 +64,8 @@ function calcScoreDiff(match) {
   return userScore - opponentScore;
 }
 
-export async function getUserScoresLastTen(userId) {
-  const tenDaysAgo = new Date();
-  tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-
-  const filter = {
-    playedAs: ["PLAYERONE", "PLAYERTWO"],
-    date: { gte: tenDaysAgo },
-    sort: "desc"
-  };
-
-  const matches = await getUserMatches(userId, filter);
-
-  const scores = aggregatePlayerScores(matches);
+export async function getUserScoresLastTen(matchesLastNumDays) {
+  const scores = aggregatePlayerScores(matchesLastNumDays);
   const data = fillMissingDays(scores, 10);
 
   return data;
