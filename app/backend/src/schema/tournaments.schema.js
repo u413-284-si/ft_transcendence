@@ -11,13 +11,18 @@ const tournamentDefinitionsSchema = {
     },
     tournamentMaxPlayers: {
       type: "integer",
-      minimum: 4,
-      maximum: 16,
+      enum: [4, 8, 16],
       description: "The number of players in the tournament"
     },
-    tournamentStatus: {
-      type: "string",
-      enum: ["CREATED", "IN_PROGRESS", "FINISHED"]
+    tournamentIsFinished: {
+      type: "boolean",
+      description: "Indicates if the tournament was set to finished."
+    },
+    tournamentRoundReached: {
+      type: "integer",
+      minimum: 1,
+      description:
+        "The round reached by player. Tournament was won if roundReached === log2(maxPlayers) + 1."
     },
     tournamentBracket: {
       type: "string",
@@ -35,16 +40,29 @@ export const tournamentSchema = {
     maxPlayers: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentMaxPlayers"
     },
+    isFinished: {
+      $ref: "tournamentDefinitionsSchema#/definitions/tournamentIsFinished"
+    },
+    userId: { $ref: "commonDefinitionsSchema#/definitions/id" },
+    userNickname: { $ref: "commonDefinitionsSchema#/definitions/username" },
     bracket: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentBracket"
     },
-    status: {
-      $ref: "tournamentDefinitionsSchema#/definitions/tournamentStatus"
+    roundReached: {
+      $ref: "tournamentDefinitionsSchema#/definitions/tournamentRoundReached"
     },
-    userId: { $ref: "commonDefinitionsSchema#/definitions/id" },
-    userNickname: { $ref: "commonDefinitionsSchema#/definitions/username" }
+    updatedAt: { type: "string", format: "date-time" }
   },
-  required: ["id", "name", "maxPlayers", "bracket", "status", "userId"],
+  required: [
+    "id",
+    "name",
+    "maxPlayers",
+    "isFinished",
+    "userId",
+    "userNickname",
+    "bracket",
+    "roundReached"
+  ],
   additionalProperties: false
 };
 
@@ -102,26 +120,23 @@ const patchTournamentSchema = {
         name: {
           $ref: "tournamentDefinitionsSchema#/definitions/tournamentName"
         },
-        status: {
-          $ref: "tournamentDefinitionsSchema#/definitions/tournamentStatus"
+        isFinished: {
+          $ref: "tournamentDefinitionsSchema#/definitions/tournamentIsFinished"
         },
         bracket: {
           $ref: "tournamentDefinitionsSchema#/definitions/tournamentBracket"
         }
       },
-      required: ["status"],
+      required: ["isFinished"],
       additionalProperties: false
     },
     {
       properties: {
-        name: {
-          $ref: "tournamentDefinitionsSchema#/definitions/tournamentName"
-        },
-        status: {
-          $ref: "tournamentDefinitionsSchema#/definitions/tournamentStatus"
-        },
         bracket: {
           $ref: "tournamentDefinitionsSchema#/definitions/tournamentBracket"
+        },
+        roundReached: {
+          $ref: "tournamentDefinitionsSchema#/definitions/tournamentRoundReached"
         }
       },
       required: ["bracket"],
