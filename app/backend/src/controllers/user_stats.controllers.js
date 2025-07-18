@@ -1,3 +1,4 @@
+import { getUserScoreDiff, getUserScoresLastTen, getUserWinrateProgression } from "../services/dashboard.services.js";
 import {
   getUserTournamentProgress,
   getUserTournamentSummary
@@ -5,9 +6,6 @@ import {
 import {
   getAllUserStats,
   deleteAllUserStats,
-  getUserWinrateProgression,
-  getUserScoreDiff,
-  getUserScoresLastTen
 } from "../services/user_stats.services.js";
 import { handlePrismaError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
