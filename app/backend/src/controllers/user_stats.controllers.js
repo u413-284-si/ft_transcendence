@@ -70,7 +70,7 @@ export async function getDashboardMatchesHandler(request, reply) {
     };
     const lastNMatches = await getUserMatches(userId, lastNMatchesFilter);
 
-    const N = 30;
+    const N = 10;
     const NDaysAgo = new Date();
     NDaysAgo.setDate(NDaysAgo.getDate() - N);
 
