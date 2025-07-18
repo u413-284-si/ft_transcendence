@@ -11,6 +11,7 @@ export class Tournament {
   private numberOfPlayers: number;
   private userId: number;
   private userNickname: string;
+  private roundReached: number;
   private bracket: BracketMatch[];
   private tournamentId?: number;
 
@@ -19,6 +20,7 @@ export class Tournament {
     numberOfPlayers: number,
     userId: number,
     userNickname: string,
+    roundReached: number,
     bracket: BracketMatch[],
     tournamentId?: number
   ) {
@@ -26,6 +28,7 @@ export class Tournament {
     this.numberOfPlayers = numberOfPlayers;
     this.userId = userId;
     this.userNickname = userNickname;
+    this.roundReached = roundReached;
     this.bracket = bracket;
     this.tournamentId = tournamentId;
     this.buildMatchSlotMap();
@@ -36,7 +39,8 @@ export class Tournament {
     tournamentName: string,
     numberOfPlayers: number,
     userNickname: string,
-    userId: number
+    userId: number,
+    roundReached: number = 1
   ): Tournament {
     const bracket = Tournament.generateBracket(
       playerNicknames,
@@ -47,6 +51,7 @@ export class Tournament {
       numberOfPlayers,
       userId,
       userNickname,
+      roundReached,
       bracket
     );
   }
@@ -126,6 +131,11 @@ export class Tournament {
     }
 
     this.bracket = updated;
+
+    const hasUserWon = winner === this.userNickname;
+    if (hasUserWon) {
+      this.roundReached++;
+    }
   }
 
   public getNextMatchToPlay(): BracketMatch | null {
@@ -164,12 +174,17 @@ export class Tournament {
     return this.userNickname;
   }
 
+  public getRoundReached(): number {
+    return this.roundReached;
+  }
+
   public toJSON(): TournamentDTO {
     return {
       name: this.tournamentName,
       maxPlayers: this.numberOfPlayers,
       userId: this.userId,
       userNickname: this.userNickname,
+      roundReached: this.roundReached,
       bracket: JSON.stringify(this.bracket)
     };
   }
