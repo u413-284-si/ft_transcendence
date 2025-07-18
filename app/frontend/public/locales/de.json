@@ -20,7 +20,7 @@
     "confirmDeleteRequestText": "Möchtest du diese Anfrage wirklich löschen?",
     "confirmRemoveFriendText": "Möchtest du diesen Freund wirklich entfernen?",
     "exactUsernameText": "Exakter Benutzername",
-    "friendAddedText": "Freund hinzugefügt!",
+    "friendAddedText": "Freund {{username}} hinzugefügt!",
     "friendRequestsText": "Freundschaftsanfragen",
     "friendsTitle": "Freunde",
     "incomingRequestsText": "Eingehende Anfragen",
@@ -29,7 +29,7 @@
     "noOutgoingText": "Keine ausgehenden Anfragen",
     "outgoingRequestsText": "Ausgehende Anfragen",
     "sendFriendRequestText": "Freundschaftsanfrage senden",
-    "sendSuccessText": "Anfrage erfolgreich gesendet",
+    "sendSuccessText": "Anfrage erfolgreich an {{username}} gesendet",
     "unknownRequestListTypeError": "Unbekannter Anfrage-Typ: {{type}}",
     "yourFriendsText": "Deine Freunde"
   },
@@ -187,7 +187,7 @@
     "emailOrUsernameExistsText": "E-Mail oder Benutzername existiert bereits",
     "registerText": "Hier registrieren",
     "registerTitle": "Registrieren",
-    "registrationSuccessText": "Registrierung erfolgreich!"
+    "registrationSuccessText": "Registrierung von {{username}} erfolgreich!"
   },
 
   "resultsView": {

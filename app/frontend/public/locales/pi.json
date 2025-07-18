@@ -20,7 +20,7 @@
     "confirmDeleteRequestText": "Be ye certain this request should walk the plank?",
     "confirmRemoveFriendText": "Ye really want to maroon this mate?",
     "exactUsernameText": "True sailor's name",
-    "friendAddedText": "New crewmate aboard!",
+    "friendAddedText": "New crewmate {{username}} aboard!",
     "friendRequestsText": "Parley Requests",
     "friendsTitle": "Me Hearties",
     "incomingRequestsText": "Incoming messages in bottles",
@@ -28,7 +28,7 @@
     "noIncomingText": "No messages in bottles",
     "noOutgoingText": "No parrots flyin’ out",
     "outgoingRequestsText": "Sent yer parrots",
-    "sendFriendRequestText": "Send a parley request",
+    "sendFriendRequestText": "Send a parley request to {{username}}",
     "sendSuccessText": "Parley sent to the high seas!",
     "unknownRequestListTypeError": "Unknown sea chart: {{type}}",
     "yourFriendsText": "Yer loyal crew"
@@ -187,7 +187,7 @@
     "emailOrUsernameExistsText": "That name or bottle already has a captain",
     "registerText": "Join the Crew",
     "registerTitle": "Sign the Ship’s Ledger",
-    "registrationSuccessText": "You be aboard, sailor!"
+    "registrationSuccessText": "You be aboard, sailor {{username}}!"
   },
 
   "resultsView": {

@@ -140,8 +140,7 @@ export default class Register extends AbstractView {
         }
       }
       const username = escapeHTML(apiResponse.data.username);
-      toaster.success(`Successfully registered ${username}`); //toaster.info(i18next.t("registerView.registrationSuccessText"));
-      router.navigate("/login", false);
+      toaster.success(i18next.t("registerView.registrationSuccessText", {username: username}));
     } catch (error) {
       router.handleError("validateAndRegisterUser()", error);
     }

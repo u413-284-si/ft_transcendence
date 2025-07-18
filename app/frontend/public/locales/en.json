@@ -20,7 +20,7 @@
     "confirmDeleteRequestText": "Are you sure you want to delete this request?",
     "confirmRemoveFriendText": "Are you sure you want to remove this friend?",
     "exactUsernameText": "Exact username",
-    "friendAddedText": "Friend added!",
+    "friendAddedText": "Friend request accepted by {{username}} !",
     "friendRequestsText": "Friend requests",
     "friendsTitle": "Friends",
     "incomingRequestsText": "Incoming friend requests",
@@ -29,7 +29,7 @@
     "noOutgoingText": "No outgoing friend requests",
     "outgoingRequestsText": "Outgoing friend requests",
     "sendFriendRequestText": "Send friend request",
-    "sendSuccessText": "Friend request sent successfully",
+    "sendSuccessText": "Friend request sent to {{username}}",
     "unknownRequestListTypeError": "Unknown request list type: {{type}}",
     "yourFriendsText": "Your friends"
   },
@@ -187,7 +187,7 @@
     "emailOrUsernameExistsText": "The email or username already exists",
     "registerText": "Register here",
     "registerTitle": "Register",
-    "registrationSuccessText": "Registration successful!"
+    "registrationSuccessText": "Successfully registered {{username}}!"
   },
 
   "resultsView": {

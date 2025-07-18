@@ -20,7 +20,7 @@
     "confirmDeleteRequestText": "Confirm deletion of this data packet?",
     "confirmRemoveFriendText": "Confirm removal of network node?",
     "exactUsernameText": "Exact user ID",
-    "friendAddedText": "Link established!",
+    "friendAddedText": "Link established with {{username}}!",
     "friendRequestsText": "Incoming link requests",
     "friendsTitle": "Network Nodes",
     "incomingRequestsText": "Incoming link signals",
@@ -29,7 +29,7 @@
     "noOutgoingText": "No outgoing link signals detected",
     "outgoingRequestsText": "Outgoing link requests",
     "sendFriendRequestText": "Transmit link request",
-    "sendSuccessText": "Link request successfully transmitted",
+    "sendSuccessText": "Link request successfully transmitted to {{username}}",
     "unknownRequestListTypeError": "Unrecognized signal type: {{type}}",
     "yourFriendsText": "Active connections"
   },
@@ -187,7 +187,7 @@
     "emailOrUsernameExistsText": "Data address or User ID already exists",
     "registerText": "Register access node",
     "registerTitle": "NODE REGISTRATION",
-    "registrationSuccessText": "Access node registration successful!"
+    "registrationSuccessText": "Access node registration successful for {{username}}!"
   },
 
   "resultsView": {

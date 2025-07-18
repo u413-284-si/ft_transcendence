@@ -20,7 +20,7 @@
     "confirmDeleteRequestText": "Êtes-vous sûr de vouloir supprimer cette demande ?",
     "confirmRemoveFriendText": "Êtes-vous sûr de vouloir supprimer cet ami ?",
     "exactUsernameText": "Nom d'utilisateur exact",
-    "friendAddedText": "Ami ajouté !",
+    "friendAddedText": "Ami {{username}} ajouté !",
     "friendRequestsText": "Demandes d'amis",
     "friendsTitle": "Amis",
     "incomingRequestsText": "Demandes d'amis entrantes",
@@ -28,7 +28,7 @@
     "noIncomingText": "Aucune demande d'ami entrante",
     "noOutgoingText": "Aucune demande d'ami sortante",
     "outgoingRequestsText": "Demandes d'amis sortantes",
-    "sendFriendRequestText": "Envoyer une demande d'ami",
+    "sendFriendRequestText": "Envoyer une demande d'ami à {{username}}",
     "sendSuccessText": "Demande d'ami envoyée avec succès",
     "unknownRequestListTypeError": "Type de liste de demandes inconnu : {{type}}",
     "yourFriendsText": "Vos amis"
@@ -187,7 +187,7 @@
     "emailOrUsernameExistsText": "L'email ou le nom d'utilisateur existe déjà",
     "registerText": "Inscrivez-vous ici",
     "registerTitle": "S'inscrire",
-    "registrationSuccessText": "Inscription réussie !"
+    "registrationSuccessText": "Inscription de {{username}} réussie !"
   },
 
   "resultsView": {

@@ -64,7 +64,7 @@ export default class FriendsView extends AbstractView {
         break;
       default:
         throw new Error(
-          i18next.t("friendsView.unknownRequestListTypeError", { type })
+          i18next.t("friendsView.unknownRequestListTypeError", { type: type })
         );
     }
 
@@ -358,9 +358,9 @@ export default class FriendsView extends AbstractView {
       inputEl.value = "";
       this.refreshRequestList("outgoing");
       if (request.status === "PENDING") {
-        toaster.success(`Sent friend request to ${username}`); //i18next.t("friendsView.sendSuccessText"));
+        toaster.success(i18next.t("friendsView.sendSuccessText", {username: username}));
       } else if (request.status === "ACCEPTED") {
-        toaster.success(`Accepted friend request of ${username}`, "❤️"); //i18next.t("friendsView.friendAddedText")
+        toaster.success(i18next.t("friendsView.friendAddedText", {username: username}), "❤️");
         this.refreshRequestList("incoming");
         this.refreshRequestList("friend");
       }
