@@ -1,7 +1,7 @@
 import {
-  getUserScoreDiff,
-  getUserScoresLastTen,
-  getUserWinrateProgression
+  scoreDiffLastNMatches,
+  scoresLastNDays,
+  winrateLastNMatches
 } from "../services/dashboard.services.js";
 import { getUserMatches } from "../services/matches.services.js";
 import {
@@ -63,38 +63,39 @@ export async function getDashboardMatchesHandler(request, reply) {
 
     const userStats = await getUserStats(userId);
 
-    const lastNumMatchesFilter = {
+    const lastNMatchesFilter = {
       playedAs: ["PLAYERONE", "PLAYERTWO"],
       limit: 10,
       sort: "desc"
     };
-    const lastTenMatches = await getUserMatches(userId, lastNumMatchesFilter);
+    const lastNMatches = await getUserMatches(userId, lastNMatchesFilter);
 
-    const tenDaysAgo = new Date();
-    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    const N = 30;
+    const NDaysAgo = new Date();
+    NDaysAgo.setDate(NDaysAgo.getDate() - N);
 
-    const matchesLastNumDaysFilter = {
+    const matchesLastNDaysFilter = {
       playedAs: ["PLAYERONE", "PLAYERTWO"],
-      date: { gte: tenDaysAgo },
+      date: { gte: NDaysAgo },
       sort: "desc"
     };
 
-    const matchesLastNumDays = await getUserMatches(
+    const matchesLastNDays = await getUserMatches(
       userId,
-      matchesLastNumDaysFilter
+      matchesLastNDaysFilter
     );
 
-    const winrateProgression = await getUserWinrateProgression(
+    const winrate = await winrateLastNMatches(
       userStats,
-      lastTenMatches
+      lastNMatches
     );
-    const scoreDiff = await getUserScoreDiff(lastTenMatches);
-    const scoresLastTen = await getUserScoresLastTen(matchesLastNumDays);
+    const scoreDiff = await scoreDiffLastNMatches(lastNMatches);
+    const scores = await scoresLastNDays(matchesLastNDays, N);
     const data = {
       userStats,
-      winrateProgression,
+      winrate,
       scoreDiff,
-      scoresLastTen
+      scores
     };
     return reply.code(200).send({
       message: createResponseMessage(action, true),
@@ -113,7 +114,7 @@ export async function getWinrateProgressionHandler(request, reply) {
   const action = "Get winrate progression";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getUserWinrateProgression(userId);
+    const data = await winrateLastNMatches(userId);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: data
@@ -131,7 +132,7 @@ export async function getScoreDiffHandler(request, reply) {
   const action = "Get score diff";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getUserScoreDiff(userId);
+    const data = await scoreDiffLastNMatches(userId);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: data
@@ -149,7 +150,7 @@ export async function getScoresLastTenHandler(request, reply) {
   const action = "Get scores last ten";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getUserScoresLastTen(userId);
+    const data = await scoresLastNDays(userId);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: data

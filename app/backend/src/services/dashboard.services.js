@@ -1,26 +1,26 @@
-export async function getUserWinrateProgression(userStats, lastTenMatches) {
-  const lastTenMatchesWithResults = lastTenMatches
+export async function winrateLastNMatches(userStats, lastNMatches) {
+  const lastNMatchesWithResults = lastNMatches
     .map((match) => ({
       ...match,
       result: didUserWin(match)
     }))
     .reverse();
 
-  const winsInLastTen = lastTenMatchesWithResults.reduce(
-    (acc, m) => acc + (m.result ? 1 : 0),
+  const winsInLastN = lastNMatchesWithResults.reduce(
+    (acc, match) => acc + (match.result ? 1 : 0),
     0
   );
 
-  const matchesBeforeLastTen = Math.max(
+  const matchesBeforeLastN = Math.max(
     0,
-    userStats.matchesPlayed - lastTenMatchesWithResults.length
+    userStats.matchesPlayed - lastNMatchesWithResults.length
   );
 
-  let cumulativeWins = Math.max(0, userStats.matchesWon - winsInLastTen);
-  let cumulativeMatches = matchesBeforeLastTen;
+  let cumulativeWins = Math.max(0, userStats.matchesWon - winsInLastN);
+  let cumulativeMatches = matchesBeforeLastN;
 
   let data = [];
-  lastTenMatchesWithResults.forEach((match) => {
+  lastNMatchesWithResults.forEach((match) => {
     if (match.result) cumulativeWins++;
     cumulativeMatches++;
     const winrate = (cumulativeWins / cumulativeMatches) * 100;
@@ -42,8 +42,8 @@ function didUserWin(match) {
   return false;
 }
 
-export async function getUserScoreDiff(lastTenMatches) {
-  const data = lastTenMatches
+export async function scoreDiffLastNMatches(lastNMatches) {
+  const data = lastNMatches
     .map((match) => ({
       x: match.date,
       y: calcScoreDiff(match)
@@ -64,9 +64,9 @@ function calcScoreDiff(match) {
   return userScore - opponentScore;
 }
 
-export async function getUserScoresLastTen(matchesLastNumDays) {
-  const scores = aggregatePlayerScores(matchesLastNumDays);
-  const data = fillMissingDays(scores, 10);
+export async function scoresLastNDays(matchesLastNDays, N) {
+  const scores = aggregatePlayerScores(matchesLastNDays);
+  const data = fillMissingDays(scores, N);
 
   return data;
 }
