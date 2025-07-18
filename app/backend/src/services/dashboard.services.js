@@ -112,32 +112,21 @@ function fillMissingDays(data, days) {
 }
 
 export async function getUserTournamentSummary(tournaments) {
+  const supportedSizes = [4, 8, 16];
   const summary = {};
+
+  for (let i = 0; i < supportedSizes.length; i++) {
+    const size = supportedSizes[i];
+    summary[size] = { played: 0, won: 0 };
+  }
 
   for (const tournament of tournaments) {
     const size = tournament.maxPlayers;
-    const user = tournament.userNickname;
     const totalRounds = Math.log2(size);
-    let wins = 0;
 
-    for (const match of tournament.matches) {
-      let playedAs = null;
+    const wonTournament = tournament.roundReached === totalRounds + 1;
 
-      if (match.player1Nickname === user) playedAs = "PLAYERONE";
-      else if (match.player2Nickname === user) playedAs = "PLAYERTWO";
-
-      const won =
-        (playedAs === "PLAYERONE" && match.player1Score > match.player2Score) ||
-        (playedAs === "PLAYERTWO" && match.player2Score > match.player1Score);
-
-      if (won) wins++;
-    }
-
-    const wonTournament = wins === totalRounds;
-
-    if (!summary[size]) {
-      summary[size] = { played: 0, won: 0 };
-    }
+    if (!summary[size]) continue;
 
     summary[size].played++;
     if (wonTournament) summary[size].won++;
@@ -165,53 +154,30 @@ export async function getUserTournamentSummary(tournaments) {
 }
 
 export async function getUserTournamentProgress(tournaments) {
+  const supportedSizes = [4, 8, 16];
   const progressBySize = {};
+
+  for (const size of supportedSizes) {
+    const totalRounds = Math.log2(size);
+    progressBySize[size] = {};
+
+    for (let i = 1; i <= totalRounds + 1; i++) {
+      progressBySize[size][i] = 0;
+    }
+  }
 
   for (const tournament of tournaments) {
     const size = tournament.maxPlayers;
-    const totalRounds = Math.log2(size);
-    const user = tournament.userNickname;
+    const roundsReached = tournament.roundReached;
 
-    // Filter matches where the user played
-    const userMatches = tournament.matches.filter(
-      (m) => m.player1Nickname === user || m.player2Nickname === user
-    );
+    if (!progressBySize[size]) continue;
 
-    const matchesPlayed = userMatches.length;
-
-    if (matchesPlayed === 0) continue;
-
-    // Determine if user won last match
-    const lastMatch = userMatches[userMatches.length - 1];
-    const playedAs =
-      lastMatch.player1Nickname === user ? "PLAYERONE" : "PLAYERTWO";
-    const wonLastMatch =
-      (playedAs === "PLAYERONE" &&
-        lastMatch.player1Score > lastMatch.player2Score) ||
-      (playedAs === "PLAYERTWO" &&
-        lastMatch.player2Score > lastMatch.player1Score);
-
-    let roundsReached = matchesPlayed;
-    if (wonLastMatch && matchesPlayed === totalRounds) {
-      roundsReached++; // they won the final → full progress
-    }
-
-    if (!progressBySize[size]) {
-      progressBySize[size] = {};
-      for (let i = 1; i <= totalRounds + 1; i++) {
-        progressBySize[size][i] = 0;
-      }
-    }
-
-    // Count all rounds up to what they reached
     for (let i = 1; i <= roundsReached; i++) {
       progressBySize[size][i]++;
     }
   }
 
-  const data = convertProgressToFunnelSeries(progressBySize);
-
-  return data;
+  return convertProgressToFunnelSeries(progressBySize);
 }
 
 function convertProgressToFunnelSeries(progressBySize) {

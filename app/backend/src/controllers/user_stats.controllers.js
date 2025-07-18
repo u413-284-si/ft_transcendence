@@ -112,15 +112,7 @@ export async function getDashboardTournamentsHandler(request, reply) {
 
     const select = {
       maxPlayers: true,
-      userNickname: true,
-      matches: {
-        select: {
-          player1Nickname: true,
-          player2Nickname: true,
-          player1Score: true,
-          player2Score: true
-        }
-      }
+      roundReached: true
     };
 
     const filter = {
