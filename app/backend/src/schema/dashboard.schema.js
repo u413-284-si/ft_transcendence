@@ -44,7 +44,6 @@ const dashboardMatchesSchema = {
   $id: "dashboardMatchesSchema",
   type: "object",
   properties: {
-    userStats: { $ref: "userStatsSchema" },
     winrate: {
       type: "array",
       items: { $ref: "dashboardWinrateSchema" }
@@ -58,7 +57,7 @@ const dashboardMatchesSchema = {
       items: { $ref: "dashboardScoresSchema" }
     }
   },
-  required: ["userStats", "winrate", "scoreDiff", "scores"],
+  required: ["winrate", "scoreDiff", "scores"],
   additionalProperties: false
 };
 

@@ -92,7 +92,6 @@ export async function getDashboardMatchesHandler(request, reply) {
     const scoreDiff = await scoreDiffLastNMatches(lastNMatches);
     const scores = await scoresLastNDays(matchesLastNDays, N);
     const data = {
-      userStats,
       winrate,
       scoreDiff,
       scores

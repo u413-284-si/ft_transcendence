@@ -1,5 +1,3 @@
-import { UserStats } from "./IUserStats";
-
 type WinratePoint = {
   x: string; // ISO 8601 date-time string
   y: number;
@@ -22,7 +20,6 @@ type ScoresLastNDays = {
 export type ScoresLastNDaysSeries = ScoresLastNDays[];
 
 export type DashboardMatches = {
-  userStats: UserStats;
   winrate: WinrateSeries;
   scoreDiff: ScoreDiffSeries;
   scores: ScoresLastNDaysSeries;

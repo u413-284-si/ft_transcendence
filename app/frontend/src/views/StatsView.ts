@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import {
   getUserDashboardMatches,
+  getUserStats,
   getUserStatsByUsername,
   getUserTournamentProgress,
   getUserTournamentSummary,
@@ -43,6 +44,8 @@ export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
   private username = escapeHTML(router.getParams().username);
   private user: User | null = null;
+  private userStats: UserStats | null = null;
+  private matches: Match[] | null = null;
   private friendRequest: FriendRequest | null = null;
   private dashboardMatches: DashboardMatches | null = null;
   private tournamentSummarySeries: TournamentSummarySeries = [];
@@ -56,10 +59,10 @@ export default class StatsView extends AbstractView {
     this.setTitle("Stats");
   }
 
-  private userStats: UserStats | null = null;
-  private matches: Match[] | null = null;
 
   createHTML() {
+    if (!this.userStats) throw new Error("User stats is null");
+
     return /* HTML */ `<div
         class="flex flex-row items-center gap-y-6 gap-x-8 mb-12 pl-6"
       >
@@ -79,21 +82,21 @@ export default class StatsView extends AbstractView {
             })}
           </div>
           ${StatFieldGroup([
-            { value: `${this.userStats?.matchesPlayed}`, text: "Played" },
-            { value: `${this.userStats?.matchesWon}`, text: "Won" },
-            { value: `${this.userStats?.matchesLost}`, text: "Lost" }
+            { value: `${this.userStats.matchesPlayed}`, text: "Played" },
+            { value: `${this.userStats.matchesWon}`, text: "Won" },
+            { value: `${this.userStats.matchesLost}`, text: "Lost" }
           ])}
           ${StatFieldGroup([
             {
-              value: `${this.userStats?.winRate.toFixed(2)} %`,
+              value: `${this.userStats.winRate.toFixed(2)} %`,
               text: "Win Rate"
             },
             {
-              value: `${this.userStats?.winstreakCur}`,
+              value: `${this.userStats.winstreakCur}`,
               text: "Winstreak"
             },
             {
-              value: `${this.userStats?.winstreakMax}`,
+              value: `${this.userStats.winstreakMax}`,
               text: "Max Streak"
             }
           ])}
@@ -276,7 +279,7 @@ export default class StatsView extends AbstractView {
   async fetchData() {
     if (this.viewType === "self") {
       this.dashboardMatches = getDataOrThrow(await getUserDashboardMatches());
-      this.userStats = this.dashboardMatches.userStats;
+      this.userStats = getDataOrThrow(await getUserStats());
       this.matches = getDataOrThrow(await getUserPlayedMatches());
       this.tournamentSummarySeries = getDataOrThrow(await getUserTournamentSummary());
       this.tournamentProgressSeries = getDataOrThrow(await getUserTournamentProgress());
@@ -322,22 +325,23 @@ export default class StatsView extends AbstractView {
 
   populateChartOptions(): void {
     if (!this.dashboardMatches) throw new Error("Dashboard matches is null");
+    if (!this.userStats) throw new Error("User stats is null");
 
     this.chartOptions["matches"] = {
       "win-loss-chart": makeWinLossOptions(
-        this.dashboardMatches.userStats.matchesWon,
-        this.dashboardMatches.userStats.matchesLost,
-        this.dashboardMatches.userStats.winRate
+        this.userStats.matchesWon,
+        this.userStats.matchesLost,
+        this.userStats.winRate
       ),
       "winrate-chart": makeWinrateOptions(
         "Winrate",
         this.dashboardMatches.winrate,
-        this.dashboardMatches.userStats.matchesPlayed
+        this.userStats.matchesPlayed
       ),
       "score-diff-chart": makeScoreDiffOptions(
         "Score Difference",
         this.dashboardMatches.scoreDiff,
-        this.dashboardMatches.userStats.matchesPlayed
+        this.userStats.matchesPlayed
       ),
       "scores-last-ten": makeScoresLastTenDaysOptions(
         "Scores Last Ten Days",
