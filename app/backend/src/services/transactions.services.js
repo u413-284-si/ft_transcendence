@@ -1,6 +1,5 @@
 import prisma from "../prisma/prismaClient.js";
 import { createMatchTx } from "./matches.services.js";
-import { getTournamentTx, updateTournamentTx } from "./tournaments.services.js";
 import { updateUserStatsTx } from "./user_stats.services.js";
 
 export async function transactionMatch(
@@ -25,14 +24,6 @@ export async function transactionMatch(
       tournament,
       date
     );
-    if (tournament?.id) {
-      const tournamentRecord = await getTournamentTx(tx, tournament.id);
-      if (tournamentRecord && tournamentRecord.status === "CREATED") {
-        await updateTournamentTx(tx, tournament.id, userId, {
-          status: "IN_PROGRESS"
-        });
-      }
-    }
 
     let stats = null;
     if (playedAs !== "NONE") {

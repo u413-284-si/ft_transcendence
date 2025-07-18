@@ -21,7 +21,7 @@ export async function setTournamentFinished(
 
   return apiFetch<TournamentDTO>(url, {
     method: "PATCH",
-    body: JSON.stringify({ status: "FINISHED" })
+    body: JSON.stringify({ isFinished: true })
   });
 }
 
@@ -33,7 +33,10 @@ export async function updateTournamentBracket(
 
   return apiFetch<TournamentDTO>(url, {
     method: "PATCH",
-    body: JSON.stringify({ bracket: JSON.stringify(tournament.getBracket()) })
+    body: JSON.stringify({
+      bracket: JSON.stringify(tournament.getBracket()),
+      roundReached: tournament.getRoundReached()
+    })
   });
 }
 
