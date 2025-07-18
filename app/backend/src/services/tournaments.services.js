@@ -4,10 +4,12 @@ const tournamentSelect = {
   id: true,
   name: true,
   maxPlayers: true,
-  status: true,
+  isFinished: true,
   userId: true,
   userNickname: true,
-  bracket: true
+  bracket: true,
+  roundReached: true,
+  updatedAt: true
 };
 
 export async function createTournament(
@@ -21,7 +23,6 @@ export async function createTournament(
     data: {
       name,
       maxPlayers,
-      status: "CREATED",
       userId,
       userNickname,
       bracket
@@ -112,9 +113,7 @@ export async function getUserActiveTournament(userId) {
   const tournament = await prisma.tournament.findFirst({
     where: {
       userId,
-      status: {
-        in: ["CREATED", "IN_PROGRESS"]
-      }
+      isFinished: false
     },
     select: tournamentSelect
   });
