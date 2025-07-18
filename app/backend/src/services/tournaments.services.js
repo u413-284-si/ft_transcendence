@@ -98,12 +98,17 @@ export async function deleteTournament(id, userId) {
   return tournament;
 }
 
-export async function getUserTournaments(userId) {
+export async function getUserTournaments(
+  userId,
+  select = tournamentSelect,
+  filter = {}
+) {
   const tournaments = await prisma.tournament.findMany({
     where: {
-      userId
+      userId: userId,
+      ...(filter.status ? { status: { in: filter.status } } : {})
     },
-    select: tournamentSelect
+    select: select
   });
   return tournaments;
 }
