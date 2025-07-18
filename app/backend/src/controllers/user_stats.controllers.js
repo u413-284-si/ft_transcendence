@@ -124,7 +124,7 @@ export async function getDashboardTournamentsHandler(request, reply) {
     };
 
     const filter = {
-      status: ["FINISHED"]
+      isFinished: true
     };
 
     const tournaments = await getUserTournaments(userId, select, filter);
