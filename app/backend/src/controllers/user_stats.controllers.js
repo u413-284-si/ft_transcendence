@@ -52,11 +52,19 @@ export async function deleteAllUserStatsHandler(request, reply) {
   }
 }
 
-export async function getTournamentSummaryHandler(request, reply) {
-  const action = "Get tournament summary";
+export async function getDashboardMatchesHandler(request, reply) {
+  const action = "Get dashboard matches";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getUserTournamentSummary(userId);
+
+    const winrateProgression = await getUserWinrateProgression(userId);
+    const scoreDiff = await getUserScoreDiff(userId);
+    const scoresLastTen = await getUserScoresLastTen(userId);
+    const data = {
+      winrateProgression,
+      scoreDiff,
+      scoresLastTen
+    }
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: data
@@ -64,7 +72,7 @@ export async function getTournamentSummaryHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `getTournamentSummaryHandler: ${createResponseMessage(action, false)}`
+      `getDashboardMatchesHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
@@ -119,6 +127,24 @@ export async function getScoresLastTenHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getScoresLastTenHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getTournamentSummaryHandler(request, reply) {
+  const action = "Get tournament summary";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const data = await getUserTournamentSummary(userId);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getTournamentSummaryHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

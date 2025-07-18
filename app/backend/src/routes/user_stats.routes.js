@@ -5,7 +5,8 @@ import {
   getWinrateProgressionHandler,
   getScoreDiffHandler,
   getScoresLastTenHandler,
-  getUserTournamentProgressHandler
+  getUserTournamentProgressHandler,
+  getDashboardMatchesHandler
 } from "../controllers/user_stats.controllers.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
 import { errorResponses } from "../utils/error.js";
@@ -14,6 +15,12 @@ export default async function userstatsRoutes(fastify) {
   fastify.get("/", optionsGetAllUserStats, getAllUserStatsHandler);
 
   fastify.delete("/", optionsDeleteAllUserStats, deleteAllUserStatsHandler);
+
+  fastify.get(
+    "/me/dashboard-matches",
+    optionsGetDashboardMatches,
+    getDashboardMatchesHandler
+  );
 
   fastify.get(
     "/me/tournament-summary",
@@ -62,6 +69,15 @@ const optionsGetAllUserStats = {
 };
 
 const optionsDeleteAllUserStats = {
+  schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetDashboardMatches = {
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       ...errorResponses
