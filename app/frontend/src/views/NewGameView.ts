@@ -15,7 +15,7 @@ export default class NewGameView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle("New Game");
+    this.setTitle(i18next.t("newGameView.newGameTitle"));
   }
 
   createHTML() {
@@ -23,11 +23,13 @@ export default class NewGameView extends AbstractView {
       ${Form({
         children: [
           Paragraph({
-            text: `Select which player will be controlled by ${escapeHTML(auth.getToken().username)}.`
+            text: i18next.t("newGameView.selectPlayerText", {
+              username: escapeHTML(auth.getUser().username)
+            })
           }),
           NicknameInput(2),
           Button({
-            text: "Start Game",
+            text: i18next.t("newGameView.startGameText"),
             variant: "default",
             size: "md",
             type: "submit"

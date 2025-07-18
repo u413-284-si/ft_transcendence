@@ -15,6 +15,7 @@ const userSelect = {
   username: true,
   email: true,
   avatar: true,
+  language: true,
   dateJoined: true,
   authentication: {
     select: {

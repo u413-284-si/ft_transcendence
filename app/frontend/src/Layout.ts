@@ -2,6 +2,8 @@ import { sanitizeHTML } from "./sanitize.js";
 import { auth } from "./AuthManager.js";
 import { Link } from "./components/Link.js";
 import { Drawer } from "./Drawer.js";
+import { LanguageSwitcher } from "./components/LanguageSwitcher.js";
+import { router } from "./routing/Router.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -13,7 +15,6 @@ export class Layout {
   constructor() {
     this.rootEl = document.getElementById("app")!;
     this.styleRootElement();
-    this.renderShell();
   }
 
   public static getInstance(): Layout {
@@ -21,6 +22,10 @@ export class Layout {
       Layout.instance = new Layout();
     }
     return Layout.instance;
+  }
+
+  public initialize(): void {
+    this.renderShell();
   }
 
   public update(newMode: LayoutMode): void {
@@ -38,6 +43,7 @@ export class Layout {
     const cleanHTML = sanitizeHTML(html);
     this.rootEl.innerHTML = cleanHTML;
     this.attachAvatarDrawerHandler();
+    this.attachLanguageSwitcherHandler();
   }
 
   private getShellHTML(): string {
@@ -58,16 +64,27 @@ export class Layout {
         auth.getUser().avatar || "/images/default-avatar.png";
       return /* HTML */ ` <nav class="relative">
         <div class="container mx-auto flex justify-center space-x-8 ">
-          ${Link({ text: "Home", href: "/home" })}
-          ${Link({ text: "New Game", href: "/newGame" })}
-          ${Link({ text: "New Tournament", href: "/newTournament" })}
+          ${Link({ text: i18next.t("homeView.homeTitle"), href: "/home" })}
+          ${Link({
+            text: i18next.t("newGameView.newGameTitle"),
+            href: "/newGame"
+          })}
+          ${Link({
+            text: i18next.t("newTournamentView.newTournamentTitle"),
+            href: "/newTournament"
+          })}
         </div>
         <div
-          class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-2"
+          class="absolute top-1/2 right-4 transform -translate-y-1/2 flex items-center space-x-8"
         >
+          ${LanguageSwitcher({
+            id: "lang-switcher",
+            selectedLang: i18next.language as "en" | "fr" | "de" | "pi" | "tr"
+          })}
           <img
+            id="user-avatar"
             src="${userAvatarUrl}"
-            alt="Avatar"
+            alt="${i18next.t("global.avatarText")}"
             tabindex="0"
             class="w-14 h-14 rounded-full border-3 border-neon-cyan shadow-neon-cyan hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
           />
@@ -76,8 +93,17 @@ export class Layout {
     }
     return /* HTML */ ` <nav>
       <div class="container mx-auto flex justify-center space-x-8">
-        ${Link({ text: "Login", href: "/login" })}
-        ${Link({ text: "Register", href: "/register" })}
+        ${Link({ text: i18next.t("loginView.loginTitle"), href: "/login" })}
+        ${Link({
+          text: i18next.t("registerView.registerTitle"),
+          href: "/register"
+        })}
+        <div class="absolute top-4 right-4">
+          ${LanguageSwitcher({
+            id: "lang-switcher",
+            selectedLang: i18next.language as "en" | "fr" | "de" | "pi" | "tr"
+          })}
+        </div>
       </div>
     </nav>`;
   }
@@ -86,25 +112,37 @@ export class Layout {
     return /* HTML */ ` <div
       class="container mx-auto flex justify-center space-x-8"
     >
-      <p class="text-sm">Pong Game &copy; 2025</p>
+      <p class="text-sm">${i18next.t("global.pongGameText")} &copy; 2025</p>
     </div>`;
   }
 
   private attachAvatarDrawerHandler(): void {
-    const avatar = this.rootEl.querySelector<HTMLElement>("img[alt='Avatar']");
+    const avatar = this.rootEl.querySelector<HTMLElement>("#user-avatar");
     if (!avatar) return;
 
     const drawer = new Drawer([
-      { label: "Edit Profile", icon: "user", href: "/profile" },
       {
-        label: "User Stats",
+        label: i18next.t("global.editProfileText"),
+        icon: "user",
+        href: "/profile"
+      },
+      {
+        label: i18next.t("statsView.statsTitle"),
         icon: "stats",
         href: `/stats/${auth.getUser().username}`
       },
-      { label: "Friends", icon: "friends", href: "/friends" },
-      { label: "Settings", icon: "settings", href: "/settings" },
       {
-        label: "Logout",
+        label: i18next.t("friendsView.friendsTitle"),
+        icon: "friends",
+        href: "/friends"
+      },
+      {
+        label: i18next.t("settingsView.settingsTitle"),
+        icon: "settings",
+        href: "/settings"
+      },
+      {
+        label: i18next.t("global.logoutText"),
         icon: "logout",
         onClick: async () => {
           await auth.logout();
@@ -116,6 +154,51 @@ export class Layout {
     avatar.addEventListener("keydown", (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === " ") {
         drawer.open();
+      }
+    });
+  }
+
+  private switchLanguage(lang: "en" | "fr" | "de" | "pi" | "tr"): void {
+    i18next.changeLanguage(lang).then(() => {
+      localStorage.setItem("preferredLanguage", lang);
+      this.renderShell();
+      router.reload();
+      console.info(`Language switched to ${lang}`);
+    });
+  }
+
+  private attachLanguageSwitcherHandler(): void {
+    const button = this.rootEl.querySelector<HTMLElement>(
+      "#lang-switcher-button"
+    );
+    const options = this.rootEl.querySelector<HTMLElement>(
+      "#lang-switcher-options"
+    );
+
+    if (!button || !options) return;
+
+    button.addEventListener("click", () => {
+      options.classList.toggle("hidden");
+    });
+
+    options.querySelectorAll("button[data-lang]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const lang = (e.currentTarget as HTMLElement).dataset.lang as
+          | "en"
+          | "fr"
+          | "de"
+          | "pi"
+          | "tr";
+        this.switchLanguage(lang);
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        !button.contains(event.target as Node) &&
+        !options.contains(event.target as Node)
+      ) {
+        options.classList.add("hidden");
       }
     });
   }

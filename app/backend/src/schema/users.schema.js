@@ -6,6 +6,7 @@ const userSchema = {
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
     avatar: { type: "string" },
+    language: { type: "string" },
     dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" },
     authProvider: {
       $ref: "commonDefinitionsSchema#/definitions/authProvider"
@@ -74,7 +75,8 @@ export const patchUserSchema = {
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
         email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-        avatar: { type: "string" }
+        avatar: { type: "string" },
+        language: { type: "string" }
       },
       required: ["username"],
       additionalProperties: false
@@ -83,7 +85,8 @@ export const patchUserSchema = {
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
         email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-        avatar: { type: "string" }
+        avatar: { type: "string" },
+        language: { type: "string" }
       },
       required: ["email"],
       additionalProperties: false
@@ -92,9 +95,20 @@ export const patchUserSchema = {
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
         email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-        avatar: { type: "string" }
+        avatar: { type: "string" },
+        language: { type: "string" }
       },
       required: ["avatar"],
+      additionalProperties: false
+    },
+    {
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
+        avatar: { type: "string" },
+        language: { type: "string" }
+      },
+      required: ["language"],
       additionalProperties: false
     }
   ]

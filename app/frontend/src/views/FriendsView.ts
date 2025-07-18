@@ -33,7 +33,7 @@ export default class FriendsView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle("Friends");
+    this.setTitle(i18next.t("friendsView.friendsTitle"));
   }
 
   getName(): string {
@@ -63,7 +63,9 @@ export default class FriendsView extends AbstractView {
         containerId = "request-list-out";
         break;
       default:
-        throw new Error(`Unknown list type: ${type}`);
+        throw new Error(
+          i18next.t("friendsView.unknownRequestListTypeError", { type: type })
+        );
     }
 
     getEl(containerId).innerHTML = cleanHTML;
@@ -75,7 +77,7 @@ export default class FriendsView extends AbstractView {
       <section>
         <div class="flex flex-col justify-center items-center gap-4 mb-12">
           ${Header1({
-            text: "Your Friends",
+            text: i18next.t("friendsView.yourFriendsText"),
             id: "friends-header",
             variant: "default"
           })}
@@ -87,20 +89,20 @@ export default class FriendsView extends AbstractView {
         ${Form({
           children: [
             Header1({
-              text: "Add a Friend",
+              text: i18next.t("friendsView.addFriendText"),
               id: "send-request-header",
               variant: "default"
             }),
             Input({
               id: "username-input",
               type: "text",
-              placeholder: "Exact username",
-              label: "Username",
+              placeholder: i18next.t("friendsView.exactUsernameText"),
+              label: i18next.t("global.usernameLabel"),
               errorId: "username-error"
             }),
             Button({
               id: "send-request-btn",
-              text: "Send Friend Request",
+              text: i18next.t("friendsView.sendFriendRequestText"),
               variant: "default",
               size: "md",
               type: "submit"
@@ -113,13 +115,13 @@ export default class FriendsView extends AbstractView {
       <section>
         <div class="flex flex-col justify-center items-center gap-4">
           ${Header1({
-            text: "Friend Requests",
+            text: i18next.t("friendsView.friendRequestsText"),
             id: "friends-request-header",
             variant: "default"
           })}
           <div class="mb-4">
             ${Header2({
-              text: "Incoming Friend Requests",
+              text: i18next.t("friendsView.incomingRequestsText"),
               variant: "default"
             })}
             <div id="request-list-in">
@@ -128,7 +130,7 @@ export default class FriendsView extends AbstractView {
           </div>
           <div>
             ${Header2({
-              text: "Outgoing Friend Requests",
+              text: i18next.t("friendsView.outgoingRequestsText"),
               variant: "default"
             })}
             <div id="request-list-out">
@@ -147,22 +149,24 @@ export default class FriendsView extends AbstractView {
     switch (type) {
       case "friend":
         filtered = this.friendRequests.filter((r) => r.status === "ACCEPTED");
-        emptyMessage = "You have no friends yet";
+        emptyMessage = i18next.t("friendsView.noFriendsText");
         break;
       case "incoming":
         filtered = this.friendRequests.filter(
           (r) => r.status === "PENDING" && !r.sender
         );
-        emptyMessage = "No incoming friend requests";
+        emptyMessage = i18next.t("friendsView.noIncomingText");
         break;
       case "outgoing":
         filtered = this.friendRequests.filter(
           (r) => r.status === "PENDING" && r.sender
         );
-        emptyMessage = "No outgoing friend requests";
+        emptyMessage = i18next.t("friendsView.noOutgoingText");
         break;
       default:
-        throw new Error(`Unknown request list type: ${type}`);
+        throw new Error(
+          i18next.t("friendsView.unknownRequestListTypeError", { type })
+        );
     }
 
     if (filtered.length === 0) {
@@ -180,14 +184,6 @@ export default class FriendsView extends AbstractView {
     window.addEventListener(
       "app:FriendStatusChangeEvent",
       this.handleFriendStatusChange,
-      {
-        signal: this.controller.signal
-      }
-    );
-
-    window.addEventListener(
-      "app:FriendRequestEvent",
-      this.handleFriendRequestEvent,
       {
         signal: this.controller.signal
       }
@@ -258,7 +254,7 @@ export default class FriendsView extends AbstractView {
       case "friend":
         this.addButtonListeners(
           ".remove-friend-btn",
-          "Are you sure you want to remove this friend?",
+          i18next.t("friendsView.confirmRemoveFriendText"),
           ["friend"],
           this.handleDeleteButton,
           "Terminated frienship with",
@@ -277,7 +273,7 @@ export default class FriendsView extends AbstractView {
         );
         this.addButtonListeners(
           ".decline-btn",
-          "Are you sure you want to decline this request?",
+          i18next.t("friendsView.confirmDeclineRequestText"),
           ["incoming"],
           this.handleDeleteButton,
           "Declined friend request of",
@@ -288,7 +284,7 @@ export default class FriendsView extends AbstractView {
       case "outgoing":
         this.addButtonListeners(
           ".delete-request-btn",
-          "Are you sure you want to delete this request?",
+          i18next.t("friendsView.confirmDeleteRequestText"),
           ["outgoing"],
           this.handleDeleteButton,
           "Deleted friend request to",
@@ -329,7 +325,9 @@ export default class FriendsView extends AbstractView {
     }
     const statusSpan = container.querySelector(".online-status")!;
 
-    statusSpan.textContent = isOnline ? "Online" : "Offline";
+    statusSpan.textContent = isOnline
+      ? i18next.t("global.onlineText")
+      : i18next.t("global.offlineText");
     statusSpan.classList.toggle("text-neon-green", isOnline);
     statusSpan.classList.toggle("text-grey", !isOnline);
   };
@@ -349,7 +347,7 @@ export default class FriendsView extends AbstractView {
       const user = getDataOrThrow(await getUserByUsername(username));
 
       if (user === null) {
-        markInvalid("User not found.", inputEl, errorEl);
+        markInvalid(i18next.t("global.userNotFoundError"), inputEl, errorEl);
         return;
       }
       clearInvalid(inputEl, errorEl);
@@ -360,9 +358,9 @@ export default class FriendsView extends AbstractView {
       inputEl.value = "";
       this.refreshRequestList("outgoing");
       if (request.status === "PENDING") {
-        toaster.success(`Sent friend request to ${username}`);
+        toaster.success(i18next.t("friendsView.sendSuccessText", {username: username}));
       } else if (request.status === "ACCEPTED") {
-        toaster.success(`Accepted friend request of ${username}`, "❤️");
+        toaster.success(i18next.t("friendsView.friendAddedText", {username: username}), "❤️");
         this.refreshRequestList("incoming");
         this.refreshRequestList("friend");
       }
@@ -387,6 +385,7 @@ export default class FriendsView extends AbstractView {
     if (!request) throw new Error(`Did not find request with id ${requestId}`);
     return request;
   }
+
   private addFriendRequest(request: FriendRequest): void {
     this.friendRequests.push(request);
   }

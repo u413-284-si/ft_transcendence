@@ -36,12 +36,58 @@ router
   .addRouteChangeListener(logRouteChange)
   .addRouteChangeListener(updateUI);
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const [frRes, enRes, deRes, piRes, trRes] = await Promise.all([
+    fetch("/locales/fr.json"),
+    fetch("/locales/en.json"),
+    fetch("/locales/de.json"),
+    fetch("/locales/pi.json"),
+    fetch("/locales/tr.json")
+  ]);
+
+  if (!frRes.ok || !enRes.ok || !deRes.ok || !piRes.ok || !trRes.ok) {
+    console.error("Failed to load one or more translation files");
+    return;
+  }
+
+  const [fr, en, de, pi, tr] = await Promise.all([
+    frRes.json(),
+    enRes.json(),
+    deRes.json(),
+    piRes.json(),
+    trRes.json()
+  ]);
+
+  const preferredLang = localStorage.getItem("preferredLanguage") as
+    | "en"
+    | "fr"
+    | "de"
+    | "pi"
+    | "tr"
+    | null;
+
+  await i18next.init({
+    lng: preferredLang || "en",
+    fallbackLng: "fr",
+    resources: {
+      fr: { translation: fr },
+      en: { translation: en },
+      de: { translation: de },
+      pi: { translation: pi },
+      tr: { translation: tr }
+    },
+    interpolation: { escapeValue: false },
+    keySeparator: "."
+  });
+
+  layout.initialize();
+
   auth.onChange(async (isAuth) => {
     console.info("Layout listener initialized.");
     if (isAuth) layout.update("auth");
     else layout.update("guest");
   });
+
   auth.initialize().then(() => {
     router.start();
     auth.onChange(async (isAuth) => {

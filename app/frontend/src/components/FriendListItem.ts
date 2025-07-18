@@ -8,14 +8,16 @@ export function FriendListItem(
 ): string {
   const isOnline = request.isOnline ?? false;
   const onlineStatusClass = isOnline ? "text-neon-green" : "text-grey";
-  const onlineStatusText = isOnline ? "Online" : "Offline";
+  const onlineStatusText = isOnline
+    ? i18next.t("global.onlineText")
+    : i18next.t("global.offlineText");
 
   const username = escapeHTML(request.friendUsername);
 
   const avatar = `
     <img
       src="${request.friendAvatar || "/images/default-avatar.png"}"
-      alt="${username}'s avatar"
+      alt="${username}'s i18next.t("global.avatarText")"
       class="w-12 h-12 rounded-full border-2 border-neon-cyan object-cover hover:shadow-neon-cyan"
     />
   `;
@@ -24,7 +26,7 @@ export function FriendListItem(
   if (type === "friend") {
     actionHTML = `
       ${Button({
-        text: "Remove",
+        text: i18next.t("friendListItem.removeText"),
         variant: "danger",
         className: "remove-friend-btn"
       })}
@@ -32,12 +34,12 @@ export function FriendListItem(
   } else if (type === "incoming") {
     actionHTML = `
       ${Button({
-        text: "Accept",
+        text: i18next.t("friendListItem.acceptText"),
         variant: "default",
         className: "accept-btn"
       })}
       ${Button({
-        text: "Decline",
+        text: i18next.t("friendListItem.declineText"),
         variant: "danger",
         className: "decline-btn"
       })}
@@ -46,7 +48,7 @@ export function FriendListItem(
     actionHTML = `
       <span class="text-grey0 italic">Pending...</span>
       ${Button({
-        text: "Delete",
+        text: i18next.t("friendListItem.deleteText"),
         variant: "danger",
         className: "delete-request-btn"
       })}

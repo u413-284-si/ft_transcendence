@@ -25,7 +25,7 @@ export function openSSEConnection() {
     if (isFirstConnection) {
       isFirstConnection = false;
     } else {
-      toaster.success("Connection reestablished");
+      toaster.success(i18next.t("global.connectionReestablishedText"));
     }
   };
 
@@ -44,7 +44,7 @@ export function openSSEConnection() {
           username,
           isOnline: status === "online"
         };
-        toaster.info(`${username} is ${status}`);
+        toaster.info(i18next.t("global.userStatusText", {username}, {status}));
         window.dispatchEvent(
           new CustomEvent("app:FriendStatusChangeEvent", { detail })
         );
@@ -65,19 +65,19 @@ export function openSSEConnection() {
       };
       switch (status) {
         case "PENDING":
-          toaster.info(`${username} sent you a friend request`);
+          toaster.info(i18next.t("global.userSentFriendRequestText", {username}));
           break;
         case "ACCEPTED":
-          toaster.info(`${username} accepted your friend request`, "❤️");
+          toaster.info(i18next.t("global.userAcceptedFriendRequestText", {username}), "❤️");
           break;
         case "DECLINED":
-          toaster.info(`${username} declined friend request`, "💔");
+          toaster.info(i18next.t("global.userDeclinedFriendRequestText", {username}), "💔");
           break;
         case "RESCINDED":
-          toaster.info(`${username} rescinded friend request`, "💔");
+          toaster.info(i18next.t("global.userRescindedFriendRequestText", {username}), "💔");
           break;
         case "DELETED":
-          toaster.info(`${username} terminated friendship`, "💀");
+          toaster.info(i18next.t("global.userRemovedFriendText", {username}), "💀");
           break;
       }
       window.dispatchEvent(
@@ -91,22 +91,21 @@ export function openSSEConnection() {
   eventSource.onerror = (error) => {
     console.error("SSE error:", error);
     closeSSEConnection();
+    const reconnectDelayInS = reconnectDelayInMS / 1000;
 
     if (reconnectAttempts < maxReconnectAttempts) {
       reconnectAttempts++;
       console.log(
-        `Reconnecting in ${reconnectDelayInMS / 1000} seconds... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`
+        `Reconnecting in ${reconnectDelayInS} seconds... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`
       );
-      toaster.warn(
-        `Lost connection — retrying in ${reconnectDelayInMS / 1000} seconds... (Attempt ${reconnectAttempts} of ${maxReconnectAttempts})`
-      );
+      toaster.warn(i18next.t("global.connectionLostText", {reconnectDelayInS}, {reconnectAttempts}, {maxReconnectAttempts}));
       reconnectTimeoutID = setTimeout(() => {
         reconnectTimeoutID = null;
         openSSEConnection();
       }, reconnectDelayInMS);
     } else {
       console.error("Max reconnect attempts reached. Not trying again.");
-      toaster.error("Unable to reconnect. Stop until refresh.");
+      toaster.error(i18next.t("global.connectionUnavailableText"));
     }
   };
 }

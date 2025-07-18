@@ -1,4 +1,3 @@
-import { router } from "./routing/Router.js";
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
@@ -15,6 +14,8 @@ import { toaster } from "./Toaster.js";
 import { Token } from "./types/Token.js";
 import { User } from "./types/User.js";
 import { getCookieValueByName } from "./utility.js";
+import { router } from "./routing/Router.js";
+import { layout } from "./Layout.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
 
@@ -59,7 +60,7 @@ export class AuthManager {
     console.log("Checking for existing auth token");
     try {
       if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
-        toaster.error("Email address already in use.");
+        toaster.error(i18next.t("global.emailExistsText"));
         document.cookie =
           "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
         return;
@@ -96,6 +97,12 @@ export class AuthManager {
       this.user = getDataOrThrow(await getUserProfile());
       console.log("User logged in");
       this.updateAuthState(token);
+      i18next.changeLanguage(this.user.language).then(() => {
+        localStorage.setItem("preferredLanguage", this.user!.language);
+        layout.update("auth");
+        router.reload();
+        console.info(`Language switched to ${this.user!.language}`);
+      });
       return true;
     } catch (error) {
       router.handleError("Login error", error);
