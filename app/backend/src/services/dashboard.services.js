@@ -113,26 +113,7 @@ function fillMissingDays(data, days) {
   return result;
 }
 
-export async function getUserTournamentSummary(userId) {
-  const select = {
-    maxPlayers: true,
-    userNickname: true,
-    matches: {
-      select: {
-        player1Nickname: true,
-        player2Nickname: true,
-        player1Score: true,
-        player2Score: true
-      }
-    }
-  };
-
-  const filter = {
-    status: ["FINISHED"]
-  };
-
-  const tournaments = await getUserTournaments(userId, select, filter);
-
+export async function getUserTournamentSummary(tournaments) {
   const summary = {};
 
   for (const tournament of tournaments) {
@@ -185,26 +166,7 @@ export async function getUserTournamentSummary(userId) {
   ];
 }
 
-export async function getUserTournamentProgress(userId) {
-  const select = {
-    maxPlayers: true,
-    userNickname: true,
-    matches: {
-      select: {
-        player1Nickname: true,
-        player2Nickname: true,
-        player1Score: true,
-        player2Score: true
-      }
-    }
-  };
-
-  const filter = {
-    status: ["FINISHED"]
-  };
-
-  const tournaments = await getUserTournaments(userId, select, filter);
-
+export async function getUserTournamentProgress(tournaments) {
   const progressBySize = {};
 
   for (const tournament of tournaments) {

@@ -1,13 +1,12 @@
 import {
+  getUserTournamentProgress,
+  getUserTournamentSummary,
   scoreDiffLastNMatches,
   scoresLastNDays,
   winrateLastNMatches
 } from "../services/dashboard.services.js";
 import { getUserMatches } from "../services/matches.services.js";
-import {
-  getUserTournamentProgress,
-  getUserTournamentSummary
-} from "../services/tournaments.services.js";
+import { getUserTournaments } from "../services/tournaments.services.js";
 import {
   getAllUserStats,
   deleteAllUserStats,
@@ -85,10 +84,7 @@ export async function getDashboardMatchesHandler(request, reply) {
       matchesLastNDaysFilter
     );
 
-    const winrate = await winrateLastNMatches(
-      userStats,
-      lastNMatches
-    );
+    const winrate = await winrateLastNMatches(userStats, lastNMatches);
     const scoreDiff = await scoreDiffLastNMatches(lastNMatches);
     const scores = await scoresLastNDays(matchesLastNDays, N);
     const data = {
@@ -109,37 +105,44 @@ export async function getDashboardMatchesHandler(request, reply) {
   }
 }
 
-export async function getTournamentSummaryHandler(request, reply) {
-  const action = "Get tournament summary";
+export async function getDashboardTournamentsHandler(request, reply) {
+  const action = "Get dashboard tournaments";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getUserTournamentSummary(userId);
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      data: data
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getTournamentSummaryHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
 
-export async function getUserTournamentProgressHandler(request, reply) {
-  const action = "Get tournament progress";
-  try {
-    const userId = parseInt(request.user.id, 10);
-    const data = await getUserTournamentProgress(userId);
+    const select = {
+      maxPlayers: true,
+      userNickname: true,
+      matches: {
+        select: {
+          player1Nickname: true,
+          player2Nickname: true,
+          player1Score: true,
+          player2Score: true
+        }
+      }
+    };
+
+    const filter = {
+      status: ["FINISHED"]
+    };
+
+    const tournaments = await getUserTournaments(userId, select, filter);
+
+    const summary = await getUserTournamentSummary(tournaments);
+    const progress = await getUserTournamentProgress(tournaments);
+
     return reply.code(200).send({
       message: createResponseMessage(action, true),
-      data: data
+      data: {
+        summary,
+        progress
+      }
     });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `getUserTournamentProgress: ${createResponseMessage(action, false)}`
+      `getDashboardTournamentsHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

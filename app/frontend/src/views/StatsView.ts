@@ -1,10 +1,9 @@
 import AbstractView from "./AbstractView.js";
 import {
   getUserDashboardMatches,
+  getUserDashboardTournaments,
   getUserStats,
   getUserStatsByUsername,
-  getUserTournamentProgress,
-  getUserTournamentSummary,
 } from "../services/userStatsServices.js";
 import {
   getUserByUsername,
@@ -29,8 +28,7 @@ import { TabButton } from "../components/TabButton.js";
 import { Chart } from "../components/Chart.js";
 import {
   DashboardMatches,
-  TournamentProgressSeries,
-  TournamentSummarySeries,
+  DashboardTournaments,
 } from "../types/DataSeries.js";
 import { makeWinLossOptions } from "../charts/winLossOptions.js";
 import { makeWinrateOptions } from "../charts/winrateOptions.js";
@@ -48,8 +46,7 @@ export default class StatsView extends AbstractView {
   private matches: Match[] | null = null;
   private friendRequest: FriendRequest | null = null;
   private dashboardMatches: DashboardMatches | null = null;
-  private tournamentSummarySeries: TournamentSummarySeries = [];
-  private tournamentProgressSeries: TournamentProgressSeries = {};
+  private dashboardTournaments: DashboardTournaments | null = null;
   private charts: Record<string, Record<string, ApexCharts>> = {};
   private chartOptions: Record<string, Record<string, ApexCharts.ApexOptions>> =
     {};
@@ -279,10 +276,9 @@ export default class StatsView extends AbstractView {
   async fetchData() {
     if (this.viewType === "self") {
       this.dashboardMatches = getDataOrThrow(await getUserDashboardMatches());
+      this.dashboardTournaments = getDataOrThrow(await getUserDashboardTournaments());
       this.userStats = getDataOrThrow(await getUserStats());
       this.matches = getDataOrThrow(await getUserPlayedMatches());
-      this.tournamentSummarySeries = getDataOrThrow(await getUserTournamentSummary());
-      this.tournamentProgressSeries = getDataOrThrow(await getUserTournamentProgress());
       return;
     }
     const userStatsArray = getDataOrThrow(
@@ -325,6 +321,7 @@ export default class StatsView extends AbstractView {
 
   populateChartOptions(): void {
     if (!this.dashboardMatches) throw new Error("Dashboard matches is null");
+    if (!this.dashboardTournaments) throw new Error("Tournament matches is null");
     if (!this.userStats) throw new Error("User stats is null");
 
     this.chartOptions["matches"] = {
@@ -351,19 +348,19 @@ export default class StatsView extends AbstractView {
     this.chartOptions["tournaments"] = {
       "tournament-summary": makeChartOptions(
         tournamentSummaryOptions,
-        this.tournamentSummarySeries
+        this.dashboardTournaments.summary
       ),
       "tournament-progress-4": makeTournamentProgressOptions(
         "How often reached",
-        this.tournamentProgressSeries["4"].reverse()
+        this.dashboardTournaments.progress["4"].reverse()
       ),
       "tournament-progress-8": makeTournamentProgressOptions(
         "Tournament Progress 8",
-        this.tournamentProgressSeries["8"].reverse()
+        this.dashboardTournaments.progress["8"].reverse()
       ),
       "tournament-progress-16": makeTournamentProgressOptions(
         "Tournament Progress 16",
-        this.tournamentProgressSeries["16"].reverse()
+        this.dashboardTournaments.progress["16"].reverse()
       )
     };
   }

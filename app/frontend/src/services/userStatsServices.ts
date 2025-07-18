@@ -4,8 +4,7 @@ import { ApiResponse } from "../types/IApiResponse.js";
 
 import {
   DashboardMatches,
-  TournamentProgressSeries,
-  TournamentSummarySeries,
+  DashboardTournaments,
 } from "../types/DataSeries.js";
 
 export async function getUserStats(): Promise<ApiResponse<UserStats>> {
@@ -29,34 +28,23 @@ export async function getUserStatsByUsername(
   });
 }
 
-export async function getUserTournamentSummary(): Promise<
-  ApiResponse<TournamentSummarySeries>
-> {
-  const url = "/api/user-stats/me/tournament-summary";
-
-  return apiFetch<TournamentSummarySeries>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
-export async function getUserTournamentProgress(): Promise<
-  ApiResponse<TournamentProgressSeries>
-> {
-  const url = "/api/user-stats/me/tournament-progress";
-
-  return apiFetch<TournamentProgressSeries>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
 export async function getUserDashboardMatches(): Promise<
   ApiResponse<DashboardMatches>
 > {
   const url = "/api/user-stats/me/dashboard-matches";
 
   return apiFetch<DashboardMatches>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+}
+
+export async function getUserDashboardTournaments(): Promise<
+  ApiResponse<DashboardTournaments>
+> {
+  const url = "/api/user-stats/me/dashboard-tournaments";
+
+  return apiFetch<DashboardTournaments>(url, {
     method: "GET",
     credentials: "same-origin"
   });
