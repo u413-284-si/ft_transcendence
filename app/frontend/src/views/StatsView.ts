@@ -26,6 +26,7 @@ import { User } from "../types/User.js";
 import { UserStats } from "../types/IUserStats.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { StatFieldGroup } from "../components/StatField.js";
+import { getDataOrThrow } from "../services/api.js";
 import { TabButton } from "../components/TabButton.js";
 import { Chart } from "../components/Chart.js";
 import {
@@ -263,12 +264,16 @@ export default class StatsView extends AbstractView {
       this.user = auth.getUser();
       return;
     }
-    this.user = await getUserByUsername(this.username);
+    this.user = getDataOrThrow(await getUserByUsername(this.username));
     if (!this.user) {
       throw Error("User not found");
     }
-    this.friendRequest = await getUserFriendRequestByUsername(this.username);
-    if (this.friendRequest?.status === "ACCEPTED") {
+    const requests = getDataOrThrow(
+      await getUserFriendRequestByUsername(this.username)
+    );
+    if (!requests[0]) return;
+    this.friendRequest = requests[0];
+    if (this.friendRequest.status === "ACCEPTED") {
       this.viewType = "friend";
     } else {
       this.viewType = "public";
@@ -277,19 +282,22 @@ export default class StatsView extends AbstractView {
 
   async fetchData() {
     if (this.viewType === "self") {
-      this.userStats = await getUserStats();
-      this.winrateSeries = await getUserWinrateProgression();
-      this.scoreDiffSeries = await getUserScoreDiff();
-      this.scoresLastTen = await getUserScoresLastTen();
-      this.matches = await getUserPlayedMatches();
-      this.tournamentSummarySeries = await getUserTournamentSummary();
-      this.tournamentProgressSeries = await getUserTournamentProgress();
+      this.userStats = getDataOrThrow(await getUserStats());
+      this.winrateSeries = getDataOrThrow(await getUserWinrateProgression());
+      this.scoreDiffSeries = getDataOrThrow(await getUserScoreDiff());
+      this.scoresLastTen = getDataOrThrow(await getUserScoresLastTen());
+      this.matches = getDataOrThrow(await getUserPlayedMatches());
+      this.tournamentSummarySeries = getDataOrThrow(await getUserTournamentSummary());
+      this.tournamentProgressSeries = getDataOrThrow(await getUserTournamentProgress());
       return;
     }
-    this.userStats = await getUserStatsByUsername(this.username);
-    if (!this.userStats) throw new Error("Could not fetch user-stats");
+    const userStatsArray = getDataOrThrow(
+      await getUserStatsByUsername(this.username)
+    );
+    if (!userStatsArray[0]) throw new Error("Could not fetch user-stats");
+    this.userStats = userStatsArray[0];
     if (this.viewType === "friend") {
-      this.matches = await getUserPlayedMatchesByUsername(this.username);
+      this.matches = getDataOrThrow(await getUserPlayedMatchesByUsername(this.username));
     }
   }
 

@@ -7,6 +7,7 @@ import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
 import { GameType } from "./views/GameView.js";
 import { playedAs } from "./types/IMatch.js";
+import { getDataOrThrow } from "./services/api.js";
 
 let isAborted: boolean = false;
 
@@ -147,19 +148,21 @@ async function endGame(
         ? gameState.player1
         : gameState.player2;
     tournament.updateBracketWithResult(matchId, winner);
-    await updateTournamentBracket(tournament);
+    getDataOrThrow(await updateTournamentBracket(tournament));
   }
 
-  await createMatch({
-    playedAs: userRole,
-    player1Nickname: gameState.player1,
-    player2Nickname: gameState.player2,
-    player1Score: gameState.player1Score,
-    player2Score: gameState.player2Score,
-    tournament: tournament
-      ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
-      : null
-  });
+  getDataOrThrow(
+    await createMatch({
+      playedAs: userRole,
+      player1Nickname: gameState.player1,
+      player2Nickname: gameState.player2,
+      player1Score: gameState.player1Score,
+      player2Score: gameState.player2Score,
+      tournament: tournament
+        ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
+        : null
+    })
+  );
 
   await waitForEnterKey();
 }

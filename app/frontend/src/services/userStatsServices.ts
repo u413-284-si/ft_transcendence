@@ -1,5 +1,7 @@
 import { apiFetch } from "./api.js";
 import { UserStats } from "../types/IUserStats.js";
+import { ApiResponse } from "../types/IApiResponse.js";
+
 import {
   ScoreDiffSeries,
   ScoresLastTenDaysSeries,
@@ -8,90 +10,68 @@ import {
   WinrateSeries
 } from "../types/DataSeries.js";
 
-export async function getUserStats(): Promise<UserStats> {
-  const apiResponse = await apiFetch<UserStats>(`/api/users/me/user-stats`, {
+export async function getUserStats(): Promise<ApiResponse<UserStats>> {
+  const url = `/api/users/me/user-stats`;
+
+  return apiFetch<UserStats>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log(apiResponse);
-  return apiResponse.data;
 }
 
 export async function getUserStatsByUsername(
   username: string
-): Promise<UserStats | null> {
+): Promise<ApiResponse<UserStats[]>> {
   const encoded = encodeURIComponent(username);
   const url = `/api/user-stats/?username=${encoded}`;
 
-  const apiResponse = await apiFetch<UserStats[]>(url, {
+  return apiFetch<UserStats[]>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  if (!apiResponse.data.length) {
-    return null;
-  }
-
-  return apiResponse.data[0];
 }
 
-export async function getUserTournamentSummary(): Promise<TournamentSummarySeries> {
+export async function getUserTournamentSummary(): Promise<ApiResponse<TournamentSummarySeries>> {
   const url = "/api/user-stats/me/tournament-summary";
 
-  const apiResponse = await apiFetch<TournamentSummarySeries>(url, {
+  return apiFetch<TournamentSummarySeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log(apiResponse);
-  return apiResponse.data;
 }
 
-export async function getUserWinrateProgression(): Promise<WinrateSeries> {
+export async function getUserWinrateProgression(): Promise<ApiResponse<WinrateSeries>> {
   const url = "/api/user-stats/me/winrate-progression";
 
-  const apiResponse = await apiFetch<WinrateSeries>(url, {
+  return apiFetch<WinrateSeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log(apiResponse);
-  return apiResponse.data;
 }
 
-export async function getUserScoreDiff(): Promise<ScoreDiffSeries> {
+export async function getUserScoreDiff(): Promise<ApiResponse<ScoreDiffSeries>> {
   const url = "/api/user-stats/me/score-diff";
 
-  const apiResponse = await apiFetch<ScoreDiffSeries>(url, {
+  return apiFetch<ScoreDiffSeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log(apiResponse);
-  return apiResponse.data;
 }
 
-export async function getUserScoresLastTen(): Promise<ScoresLastTenDaysSeries> {
+export async function getUserScoresLastTen(): Promise<ApiResponse<ScoresLastTenDaysSeries>> {
   const url = "/api/user-stats/me/scores-last-ten";
 
-  const apiResponse = await apiFetch<ScoresLastTenDaysSeries>(url, {
+  return apiFetch<ScoresLastTenDaysSeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log(apiResponse);
-  return apiResponse.data;
 }
 
-export async function getUserTournamentProgress(): Promise<TournamentProgressSeries> {
+export async function getUserTournamentProgress(): Promise<ApiResponse<TournamentProgressSeries>> {
   const url = "/api/user-stats/me/tournament-progress";
 
-  const apiResponse = await apiFetch<TournamentProgressSeries>(url, {
+  return apiFetch<TournamentProgressSeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log(apiResponse);
-  return apiResponse.data;
 }
