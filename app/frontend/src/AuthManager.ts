@@ -1,4 +1,5 @@
-import { ApiError } from "./services/api.js";
+import { router } from "./routing/Router.js";
+import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
   refreshAccessToken,
@@ -65,23 +66,36 @@ export class AuthManager {
           "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
         return;
       }
-      const token = await authAndDecodeAccessToken();
-      this.user = await getUserProfile();
+      const apiResponse = await authAndDecodeAccessToken();
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          console.log("JWT validation failed or no token found.");
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const token = apiResponse.data;
+      this.user = getDataOrThrow(await getUserProfile());
       this.updateAuthState(token);
     } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        console.log("JWT validation failed or no token found.");
-      } else {
-        console.error("Unexpected error:", error);
-      }
+      router.handleError("Error in AuthManager.initialize():", error);
     }
   }
 
   public async login(username: string, password: string): Promise<boolean> {
     try {
-      await userLogin(username, password);
-      const token = await authAndDecodeAccessToken();
-      this.user = await getUserProfile();
+      const apiResponse = await userLogin(username, password);
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          toaster.error("Invalid username or password");
+          return false;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const token = getDataOrThrow(await authAndDecodeAccessToken());
+      this.user = getDataOrThrow(await getUserProfile());
       console.log("User logged in");
       this.updateAuthState(token);
       i18next.changeLanguage(this.user.language).then(() => {
@@ -92,12 +106,7 @@ export class AuthManager {
       });
       return true;
     } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        alert("Invalid username or password");
-      } else {
-        console.error("Unexpected login error:", error);
-        alert("An unexpected error occurred.");
-      }
+      router.handleError("Login error", error);
       return false;
     }
   }
@@ -107,16 +116,32 @@ export class AuthManager {
   }
 
   public async logout(): Promise<void> {
-    await userLogout();
+    try {
+      const apiResponse = await userLogout();
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          console.warn("No auth cookies set");
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
 
-    const sidebar = document.getElementById("drawer-sidebar");
-    if (sidebar) sidebar.remove();
+      const sidebar = document.getElementById("drawer-sidebar");
+      if (sidebar) sidebar.remove();
 
-    this.updateAuthState(null);
+      this.updateAuthState(null);
+    } catch (error) {
+      console.error("Error while logout()", error);
+      toaster.error("Error while logging out. Try again later.");
+    }
   }
 
   public clearTokenOnError(): void {
-    this.updateAuthState(null);
+    if (this.authenticated) {
+      console.error("Could not verify user");
+      toaster.error("Could not verify user:<br>Sending to Login page");
+      this.updateAuthState(null);
+    }
   }
 
   public isAuthenticated(): boolean {
@@ -205,11 +230,20 @@ export class AuthManager {
   private async refreshToken(): Promise<void> {
     console.log("Refresh token");
     try {
-      await refreshAccessToken();
-      const newToken = await authAndDecodeAccessToken();
+      const apiResponse = await refreshAccessToken();
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          toaster.error("Token refresh failed. Logging out");
+          this.clearTokenOnError();
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const newToken = getDataOrThrow(await authAndDecodeAccessToken());
       this.updateAuthState(newToken);
-    } catch {
-      console.warn("Token refresh failed or expired. Logging out.");
+    } catch (error) {
+      console.warn("Token refresh failed", error);
       this.clearTokenOnError();
     }
   }

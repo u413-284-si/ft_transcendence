@@ -9,6 +9,7 @@ import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { playedAs } from "../types/IMatch.js";
+import { getDataOrThrow } from "../services/api.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -121,7 +122,7 @@ export default class MatchAnnouncementView extends AbstractView {
   private async abortTournament() {
     try {
       if (!confirm(i18next.t("tournamentView.confirmAbortTournamentText"))) return;
-      await deleteTournament(this.tournament.getId());
+      getDataOrThrow(await deleteTournament(this.tournament.getId()));
       router.reload();
     } catch (error) {
       router.handleError("Error while deleting tournament", error);
