@@ -2,9 +2,6 @@ import {
   getAllUserStatsHandler,
   deleteAllUserStatsHandler,
   getTournamentSummaryHandler,
-  getWinrateProgressionHandler,
-  getScoreDiffHandler,
-  getScoresLastTenHandler,
   getUserTournamentProgressHandler,
   getDashboardMatchesHandler
 } from "../controllers/user_stats.controllers.js";
@@ -26,20 +23,6 @@ export default async function userstatsRoutes(fastify) {
     "/me/tournament-summary",
     optionsGetTournamentSummary,
     getTournamentSummaryHandler
-  );
-
-  fastify.get(
-    "/me/winrate-progression",
-    optionsGetWinrateProgression,
-    getWinrateProgressionHandler
-  );
-
-  fastify.get("/me/score-diff", optionsGetScoreDiff, getScoreDiffHandler);
-
-  fastify.get(
-    "/me/scores-last-ten",
-    optionsGetScoresLastTen,
-    getScoresLastTenHandler
   );
 
   fastify.get(
@@ -87,33 +70,6 @@ const optionsGetDashboardMatches = {
 };
 
 const optionsGetTournamentSummary = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetWinrateProgression = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetScoreDiff = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetScoresLastTen = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {

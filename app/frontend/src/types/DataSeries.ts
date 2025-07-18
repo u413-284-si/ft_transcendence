@@ -3,21 +3,21 @@ type WinratePoint = {
   y: number;
 };
 
-export type WinrateSeries = WinratePoint[];
+type WinrateSeries = WinratePoint[];
 
 type ScoreDiffPoint = {
   x: string; // ISO 8601 date-time string
   y: number;
 };
 
-export type ScoreDiffSeries = ScoreDiffPoint[];
+type ScoreDiffSeries = ScoreDiffPoint[];
 
 type ScoresLastNDays = {
   x: string; // ISO 8601 date string
   y: number;
 };
 
-export type ScoresLastNDaysSeries = ScoresLastNDays[];
+type ScoresLastNDaysSeries = ScoresLastNDays[];
 
 export type DashboardMatches = {
   winrate: WinrateSeries;

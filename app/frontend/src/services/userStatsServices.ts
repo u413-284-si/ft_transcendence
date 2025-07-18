@@ -4,11 +4,8 @@ import { ApiResponse } from "../types/IApiResponse.js";
 
 import {
   DashboardMatches,
-  ScoreDiffSeries,
-  ScoresLastNDaysSeries,
   TournamentProgressSeries,
   TournamentSummarySeries,
-  WinrateSeries
 } from "../types/DataSeries.js";
 
 export async function getUserStats(): Promise<ApiResponse<UserStats>> {
@@ -38,39 +35,6 @@ export async function getUserTournamentSummary(): Promise<
   const url = "/api/user-stats/me/tournament-summary";
 
   return apiFetch<TournamentSummarySeries>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
-export async function getUserWinrateProgression(): Promise<
-  ApiResponse<WinrateSeries>
-> {
-  const url = "/api/user-stats/me/winrate-progression";
-
-  return apiFetch<WinrateSeries>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
-export async function getUserScoreDiff(): Promise<
-  ApiResponse<ScoreDiffSeries>
-> {
-  const url = "/api/user-stats/me/score-diff";
-
-  return apiFetch<ScoreDiffSeries>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
-export async function getUserScoresLastTen(): Promise<
-  ApiResponse<ScoresLastNDaysSeries>
-> {
-  const url = "/api/user-stats/me/scores-last-ten";
-
-  return apiFetch<ScoresLastNDaysSeries>(url, {
     method: "GET",
     credentials: "same-origin"
   });
