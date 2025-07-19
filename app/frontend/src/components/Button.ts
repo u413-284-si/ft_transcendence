@@ -42,7 +42,7 @@ export function Button({
     className
   ].join(" ");
   const idAttr = id ? ` id="${id}"` : "";
-  return `<button${idAttr} type="${type}" class="${classes}">${text}</button>`;
+  return /* HTML */ `<button${idAttr} type="${type}" class="${classes}">${text}</button>`;
 }
 
 function googleSVG(): string {
