@@ -117,3 +117,25 @@ export async function updatePassword(userId, hashedNewPassword) {
     }
   });
 }
+
+export async function updateTotpSecret(userId, secret) {
+  await prisma.authentication.update({
+    where: {
+      userId: userId
+    },
+    data: {
+      totpSecret: secret
+    }
+  });
+}
+
+export async function update2FaStatus(userId, status) {
+  await prisma.authentication.update({
+	where: {
+	  userId: userId
+	},
+	data: {
+	  has2FA: status
+	}
+  });
+}
