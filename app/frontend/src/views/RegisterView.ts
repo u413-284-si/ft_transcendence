@@ -14,10 +14,6 @@ import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { toaster } from "../Toaster.js";
-import { Modal } from "../components/Modal.js";
-import { TextBox } from "../components/TextBox.js";
-import { Image } from "../components/Image.js";
-import { generateTwoFaQrcode } from "../services/authServices.js";
 
 export default class Register extends AbstractView {
   constructor() {

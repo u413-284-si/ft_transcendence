@@ -63,7 +63,7 @@ export default class SettingsView extends AbstractView {
                     label: "Enter code",
                     name: "two-fa-qr-code-input",
                     type: "text",
-					placeholder: "Code",
+                    placeholder: "Code",
                     errorId: "two-fa-qr-code-input-error"
                   }),
                   Button({
@@ -94,7 +94,7 @@ export default class SettingsView extends AbstractView {
 
   async render() {
     this.updateHTML();
-    await this.fetchData(this.username);
+    await this.fetchData();
     this.addListeners();
   }
 
@@ -112,8 +112,8 @@ export default class SettingsView extends AbstractView {
     twoFaModal.classList.add("hidden");
   }
 
-  private async fetchData(username: string): Promise<void> {
-    this.qrCode = await generateTwoFaQrcode(username);
+  private async fetchData(): Promise<void> {
+    this.qrCode = await generateTwoFaQrcode();
     console.log(this.qrCode);
     const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
     twoFaQrcodeEl.src = this.qrCode;

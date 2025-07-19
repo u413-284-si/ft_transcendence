@@ -52,11 +52,10 @@ export async function userLogout(): Promise<{ username: string }> {
   return apiResponse.data;
 }
 
-export async function generateTwoFaQrcode(username: string): Promise<string> {
+export async function generateTwoFaQrcode(): Promise<string> {
   const apiResponse = await apiFetch<string>("/api/auth/2fa/qrcode", {
-    method: "POST",
+    method: "GET",
     credentials: "same-origin",
-    body: JSON.stringify({ username })
   });
   console.log(apiResponse);
   return apiResponse.data;
