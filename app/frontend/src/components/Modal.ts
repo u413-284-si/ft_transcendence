@@ -1,21 +1,40 @@
+import { Button } from "./Button.js";
+
 export type ModalOptions = {
   children: string[];
   className?: string;
   id?: string;
+  size?: "sm" | "md" | "lg";
+};
+
+const modalSizes: Record<string, string> = {
+  sm: "px-3 py-3 text-sm",
+  md: "px-4 py-4 text-base",
+  lg: "px-6 py-6 text-lg"
 };
 
 export function Modal({
   children,
   className = "",
-  id = ""
+  id = "",
+  size = "md"
 }: ModalOptions): string {
-  const classes =
-    className ||
-    "hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50";
-
-  return `
-    <div ${id ? `id="${id}"` : ""} class="${classes}">
-      ${children.join("\n")}
-    </div>
+  const classes = [
+    "flex flex-col items-center justify-center fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 border border-neon-cyan rounded-md bg-emerald-dark",
+    modalSizes[size],
+    className
+  ].join(" ");
+  const content = [
+    `<div class="flex justify-end mb-4 w-full">
+    ${Button({
+      text: "X",
+      variant: "default",
+      className: ""
+    })}
+  </div>`,
+    ...children
+  ].join("\n");
+  return /* HTML */ `
+    <div ${id ? `id="${id}"` : ""} class="${classes}">${content}</div>
   `;
 }
