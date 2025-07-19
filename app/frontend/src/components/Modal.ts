@@ -20,16 +20,15 @@ export function Modal({
   size = "md"
 }: ModalOptions): string {
   const classes = [
-    "flex flex-col items-center justify-center fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 border border-neon-cyan rounded-md bg-emerald-dark",
+    "flex flex-col items-center justify-center fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 border border-neon-cyan rounded-md bg-emerald-dark hidden",
     modalSizes[size],
     className
   ].join(" ");
   const content = [
     `<div class="flex justify-end mb-4 w-full">
     ${Button({
-      text: "X",
-      variant: "default",
-      className: ""
+      id: "close-modal-button",
+      text: "X"
     })}
   </div>`,
     ...children
