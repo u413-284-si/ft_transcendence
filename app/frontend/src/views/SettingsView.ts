@@ -8,9 +8,12 @@ import { TextBox } from "../components/TextBox.js";
 import { Input } from "../components/Input.js";
 import { Image } from "../components/Image.js";
 import { getEl } from "../utility.js";
+import { generateTwoFaQrcode } from "../services/authServices.js";
+import { auth } from "../AuthManager.js";
 
 export default class SettingsView extends AbstractView {
   private qrCode: string = "";
+  private username: string = auth.getUser().username;
 
   constructor() {
     super();
@@ -60,6 +63,7 @@ export default class SettingsView extends AbstractView {
                     label: "Enter code",
                     name: "two-fa-qr-code-input",
                     type: "text",
+					placeholder: "Code",
                     errorId: "two-fa-qr-code-input-error"
                   }),
                   Button({
@@ -83,11 +87,14 @@ export default class SettingsView extends AbstractView {
     document
       .getElementById("setup-two-fa-button")
       ?.addEventListener("click", () => this.displayTwoFaSetupModal());
-	document.getElementById("close-modal-button")?.addEventListener("click", () => this.hideTwoFaSetupModal());
+    document
+      .getElementById("close-modal-button")
+      ?.addEventListener("click", () => this.hideTwoFaSetupModal());
   }
 
   async render() {
     this.updateHTML();
+    await this.fetchData(this.username);
     this.addListeners();
   }
 
@@ -103,5 +110,12 @@ export default class SettingsView extends AbstractView {
   private hideTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
     twoFaModal.classList.add("hidden");
+  }
+
+  private async fetchData(username: string): Promise<void> {
+    this.qrCode = await generateTwoFaQrcode(username);
+    console.log(this.qrCode);
+    const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
+    twoFaQrcodeEl.src = this.qrCode;
   }
 }
