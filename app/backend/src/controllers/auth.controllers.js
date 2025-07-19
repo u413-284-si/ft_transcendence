@@ -5,7 +5,8 @@ import {
   createAuthTokens,
   getTokenHash,
   deleteUserRefreshToken,
-  setCookies
+  setCookies,
+  updateTotpSecret
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -201,8 +202,7 @@ export async function authRefreshHandler(request, reply) {
 export async function authTwoFaQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
   try {
-    const { username } = request.body;
-
+    const { username } = request.user.username;
     const issuer = "ft_transcendence";
     const secret = new otpAuth.Secret({
       size: 20
@@ -218,6 +218,8 @@ export async function authTwoFaQRCodeHandler(request, reply) {
 
     const uri = totp.toString();
     const data = await QRCode.toDataURL(uri);
+
+    await updateTotpSecret(request.user.id, secret.toString());
 
     return reply
       .code(200)

@@ -17,7 +17,7 @@ export default async function authRoutes(fastify) {
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 
-  fastify.post("/2fa/qrcode", authTwoFaQRCodeHandler);
+  fastify.get("/2fa/qrcode", optionsTwoFaQrCode, authTwoFaQRCodeHandler);
 
   //   fastify.get("/2fa/verify", authTwoFaVerifyHandler);
 
@@ -68,6 +68,15 @@ const optionsLogoutUser = {
 };
 
 const optionsGoogleOauth2Login = {
+  schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsTwoFaQrCode = {
+  onRequest: [authorizeUserAccess],
   schema: {
     response: {
       ...errorResponses
