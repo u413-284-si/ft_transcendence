@@ -106,7 +106,9 @@ export async function seedSingleTournament(userId: number) {
   }
   const tournament = await updateTournament(tournamentClass.getId(), userId, {
     bracket: tournamentClass.getBracket(),
-    status: "FINISHED"
+    isFinished: true,
+    roundReached: tournamentClass.getRoundReached(),
+    updatedAt: dateFactory(),
   });
   console.log(
     `Seeded tournament ${tournamentName} with ${numberOfPlayers} players`

@@ -1,8 +1,14 @@
-export interface ApiResponse<T> {
+export type ApiResponse<T> = ApiSuccess<T> | ApiFail;
+
+export type ApiSuccess<T> = {
+  success: true;
   message: string;
   data: T;
-}
+};
 
-export interface ExtendedApiResponse<T> extends ApiResponse<T> {
-  count: number;
-}
+export type ApiFail = {
+  success: false;
+  message: string;
+  status: number;
+  cause?: string;
+};

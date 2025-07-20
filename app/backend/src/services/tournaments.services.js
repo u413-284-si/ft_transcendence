@@ -4,10 +4,12 @@ const tournamentSelect = {
   id: true,
   name: true,
   maxPlayers: true,
-  status: true,
+  isFinished: true,
   userId: true,
   userNickname: true,
-  bracket: true
+  bracket: true,
+  roundReached: true,
+  updatedAt: true
 };
 
 export async function createTournament(
@@ -21,7 +23,6 @@ export async function createTournament(
     data: {
       name,
       maxPlayers,
-      status: "CREATED",
       userId,
       userNickname,
       bracket
@@ -48,30 +49,8 @@ export async function getTournament(id) {
   return tournament;
 }
 
-export async function getTournamentTx(tx, id) {
-  const tournament = await tx.tournament.findUniqueOrThrow({
-    where: {
-      id
-    },
-    select: tournamentSelect
-  });
-  return tournament;
-}
-
 export async function updateTournament(id, userId, updateData) {
   const updatedTournament = await prisma.tournament.update({
-    where: {
-      id,
-      userId
-    },
-    data: updateData,
-    select: tournamentSelect
-  });
-  return updatedTournament;
-}
-
-export async function updateTournamentTx(tx, id, userId, updateData) {
-  const updatedTournament = await tx.tournament.update({
     where: {
       id,
       userId
@@ -112,9 +91,7 @@ export async function getUserActiveTournament(userId) {
   const tournament = await prisma.tournament.findFirst({
     where: {
       userId,
-      status: {
-        in: ["CREATED", "IN_PROGRESS"]
-      }
+      isFinished: false
     },
     select: tournamentSelect
   });

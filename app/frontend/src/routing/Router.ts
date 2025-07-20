@@ -10,8 +10,6 @@ import {
 import ErrorView from "../views/ErrorView.js";
 import { closeSSEConnection } from "../services/serverSentEventsServices.js";
 import { ApiError } from "../services/api.js";
-import { auth } from "../AuthManager.js";
-import { toaster } from "../Toaster.js";
 
 export class Router {
   private static instance: Router;
@@ -134,13 +132,10 @@ export class Router {
   }
 
   async handleError(message: string, error: unknown) {
-    console.error(message, error);
     if (error instanceof ApiError && error.status === 401) {
-      console.error("Could not verify user");
-      toaster.error("Could not verify user:<br>Sending to Login page");
-      auth.clearTokenOnError();
       return;
     }
+    console.error(message, error);
     const view = new ErrorView(error);
     await this.setView(view);
   }

@@ -8,7 +8,7 @@ import {
 import { registerUser } from "../services/userServices.js";
 import { router } from "../routing/Router.js";
 import { ApiError } from "../services/api.js";
-import { getEl, getInputEl } from "../utility.js";
+import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
@@ -128,14 +128,24 @@ export default class Register extends AbstractView {
     }
 
     try {
-      await registerUser(emailEL.value, userEl.value, passwordEl.value);
-      toaster.success(`Successfully registered ${userEl.value}!`);
+      const apiResponse = await registerUser(
+        emailEL.value,
+        userEl.value,
+        passwordEl.value
+      );
+      if (!apiResponse.success) {
+        if (apiResponse.status === 409) {
+          toaster.error("Email or username already exists");
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const username = escapeHTML(apiResponse.data.username);
+      toaster.success(`Successfully registered ${username}`);
       router.navigate("/login", false);
     } catch (error) {
-      if (error instanceof ApiError && error.status === 409) {
-        toaster.error("Email or username already exists");
-        return;
-      }
+      router.handleError("validateAndRegisterUser()", error);
     }
   }
 }

@@ -1,55 +1,57 @@
 import { apiFetch } from "./api.js";
 import { Token } from "../types/Token.js";
+import { ApiResponse } from "../types/IApiResponse.js";
 
-export async function authAndDecodeAccessToken(): Promise<Token> {
-  const apiResponse = await apiFetch<Token>("/api/auth/token", {
+export async function authAndDecodeAccessToken(): Promise<ApiResponse<Token>> {
+  const url = "/api/auth/token";
+
+  return apiFetch<Token>(url, {
     method: "GET",
     credentials: "same-origin"
   });
-
-  console.log(apiResponse);
-  return apiResponse.data;
 }
 
-export async function refreshAccessToken() {
-  const apiResponse = await apiFetch(
-    "/api/auth/refresh",
+export async function refreshAccessToken(): Promise<ApiResponse<null>> {
+  const url = "/api/auth/refresh";
+
+  return apiFetch<null>(
+    url,
     {
       method: "GET",
       credentials: "same-origin"
     },
     false
   );
-
-  console.log(apiResponse);
 }
 
 export async function userLogin(
   usernameOrEmail: string,
   password: string
-): Promise<{ username: string }> {
-  const apiResponse = await apiFetch<{ username: string }>("/api/auth/login", {
-    method: "POST",
-    credentials: "same-origin",
-    body: JSON.stringify({ usernameOrEmail, password })
-  });
+): Promise<ApiResponse<{ username: string }>> {
+  const url = "/api/auth/login";
 
-  console.log(apiResponse);
-  return apiResponse.data;
+  return apiFetch<{ username: string }>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ usernameOrEmail, password })
+    },
+    false
+  );
 }
 
-export async function userLogout(): Promise<{ username: string }> {
-  const apiResponse = await apiFetch<{ username: string }>(
-    "/api/auth/logout",
+export async function userLogout(): Promise<ApiResponse<{ username: string }>> {
+  const url = "/api/auth/logout";
+
+  return apiFetch<{ username: string }>(
+    url,
     {
       method: "PATCH",
       credentials: "same-origin"
     },
     false
   );
-
-  console.log(apiResponse);
-  return apiResponse.data;
 }
 
 export async function generateTwoFaQrcode(): Promise<string> {

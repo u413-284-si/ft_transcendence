@@ -1,3 +1,4 @@
+import { getDataOrThrow } from "./services/api.js";
 import { getUserTournaments } from "./services/tournamentService.js";
 import { toaster } from "./Toaster.js";
 
@@ -100,7 +101,7 @@ export async function isTournamentNameAvailable(
   errorEl: HTMLElement
 ): Promise<boolean> {
   try {
-    const tournaments = await getUserTournaments();
+    const tournaments = getDataOrThrow(await getUserTournaments());
     if (tournaments.length === 0) {
       return true;
     }
