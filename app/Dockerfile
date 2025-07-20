@@ -1,20 +1,42 @@
+# Stage 1: Build the application
+FROM node:slim AS builder
+
+ENV NODE_ENV production
+
+# System dependencies if needed
+RUN apt update && apt upgrade -y && apt install -y \
+    curl \
+    python3 \
+    make \
+    g++ \
+    openssl \
+    && apt clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build
+
+COPY package*.json ./
+RUN npm ci --ignore-scripts
+
+COPY ./scripts ./scripts
+COPY ./app ./app
+
+RUN npx prisma generate && npm run style && npm run build
+
+# Stage 2: Serve the application
 FROM node:slim
 
-WORKDIR /app
-ENV NODE_ENV development
+ENV NODE_ENV production
 
-# Can be removed after development
-RUN apt update && apt upgrade -y && apt install -y \
-	curl
+RUN apt update && apt install -y \
+    openssl \
+    && apt clean && rm -rf /var/lib/apt/lists/*
 
-# Copy package.json and package-lock.json
-COPY package*.json /app
+WORKDIR /
 
-# Install only dependencies needed to run the app in a production environment
-RUN npm install 
+COPY --from=builder /build/app ./app
+COPY --from=builder /build/node_modules ./node_modules
+COPY --from=builder /build/package*.json ./
 
-# Copy the rest of the application code
-COPY ./backend /app/backend
-COPY ./frontend /app/frontend
+EXPOSE 4001
 
-CMD [ "node", "backend/src/app.js" ]
+CMD [ "npm", "run", "start" ]

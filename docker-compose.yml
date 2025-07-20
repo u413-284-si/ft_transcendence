@@ -1,31 +1,21 @@
 services:
   app:
-    build: ./app
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
     container_name: app
-    command: ["npm", "run", "dev"]
-    develop:
-      watch:
-        - action: sync
-          path: ./app/frontend
-          target: ./app/frontend
-        - action: sync
-          path: ./app/backend
-          target: ./app/backend
-        - action: rebuild
-          path: ./app/package.json
     init: true
     security_opt:
       - no-new-privileges:true
     ports:
-      - "4000:4000"
+      - "4001:4001"
+    environment:
+      NODE_ENV: production
+      PORT: 4001
     deploy:
       restart_policy:
         condition: always
         window: 120s
-    volumes:
-      - type: volume
-        source: db
-        target: /app/db
     networks:
       - pong-network
   # frontend:
