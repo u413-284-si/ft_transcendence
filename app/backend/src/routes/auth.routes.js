@@ -4,7 +4,8 @@ import {
   loginUserHandler,
   logoutUserHandler,
   googleOauth2LoginHandler,
-  twoFaQRCodeHandler
+  twoFaQRCodeHandler,
+  twoFaVerifyHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
@@ -19,7 +20,7 @@ export default async function authRoutes(fastify) {
 
   fastify.get("/2fa/qrcode", optionsTwoFaQrCode, twoFaQRCodeHandler);
 
-  //   fastify.get("/2fa/verify", authTwoFaVerifyHandler);
+  fastify.post("/2fa/verify", optionsTwoFaVerify, twoFaVerifyHandler);
 
   fastify.patch("/logout", optionsLogoutUser, logoutUserHandler);
 
@@ -78,6 +79,15 @@ const optionsGoogleOauth2Login = {
 const optionsTwoFaQrCode = {
   onRequest: [authorizeUserAccess],
   schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsTwoFaVerify = {
+  schema: {
+    body: { $ref: "twoFaCodeSchema" },
     response: {
       ...errorResponses
     }

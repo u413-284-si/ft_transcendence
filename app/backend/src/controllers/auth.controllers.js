@@ -224,6 +224,31 @@ export async function twoFaQRCodeHandler(request, reply) {
   }
 }
 
+export async function twoFaVerifyHandler(request, reply) {
+  const action = "Verify 2FA Code";
+  try {
+    const { code } = request.body;
+    const secret = await getTotpSecret(request.user.id);
+    if (!verify2FaCode(secret, code)) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid 2FA code"
+      );
+    }
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true) });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
 export async function logoutUserHandler(request, reply) {
   const action = "Logout user";
   try {
