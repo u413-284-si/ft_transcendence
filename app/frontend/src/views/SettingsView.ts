@@ -11,6 +11,7 @@ import { getEl } from "../utility.js";
 import { generateTwoFaQrcode } from "../services/authServices.js";
 import { auth } from "../AuthManager.js";
 import { validateTwoFaCode } from "../validate.js";
+import { getDataOrThrow } from "../services/api.js";
 
 export default class SettingsView extends AbstractView {
   private qrCode: string = "";
@@ -146,7 +147,7 @@ export default class SettingsView extends AbstractView {
   }
 
   private async fetchData(): Promise<void> {
-    this.qrCode = await generateTwoFaQrcode();
+    this.qrCode = getDataOrThrow(await generateTwoFaQrcode());
     console.log(this.qrCode);
     const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
     twoFaQrcodeEl.src = this.qrCode;
