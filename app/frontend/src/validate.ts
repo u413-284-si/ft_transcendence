@@ -270,3 +270,15 @@ export function validateImageFile(
   }
   return true;
 }
+
+export function validateTwoFaCode(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): boolean {
+  clearInvalid(inputEl, errorEl);
+  if (isEmptyString(inputEl.value)) {
+    markInvalid("Please enter a 6-digit code.", inputEl, errorEl);
+    return false;
+  }
+  return true;
+}
