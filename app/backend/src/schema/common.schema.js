@@ -35,7 +35,7 @@ const commonDefinitionsSchema = {
       type: "string",
       minLength: 6,
       maxLength: 6,
-      pattern: "\d{6}",
+      pattern: "^\d{6}$",
       description:
         "The 2FA code must be 6 characters long and contain only digits."
     },
