@@ -199,7 +199,7 @@ export async function authRefreshHandler(request, reply) {
   }
 }
 
-export async function authTwoFaQRCodeHandler(request, reply) {
+export async function twoFaQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
   try {
     const { username } = request.user.username;
