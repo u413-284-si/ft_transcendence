@@ -28,4 +28,18 @@ const loginUserResponseSchema = {
   additionalProperties: false
 };
 
-export const authSchemas = [loginUserSchema, loginUserResponseSchema];
+const twoFaCodeSchema = {
+  $id: "twoFaCodeSchema",
+  type: "object",
+  properties: {
+    code: { $ref: "commonDefinitionsSchema#/definitions/twoFaCode" }
+  },
+  required: ["code"],
+  additionalProperties: false
+};
+
+export const authSchemas = [
+  loginUserSchema,
+  loginUserResponseSchema,
+  twoFaCodeSchema
+];
