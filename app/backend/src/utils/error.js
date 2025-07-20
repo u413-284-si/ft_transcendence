@@ -1,7 +1,8 @@
 import { httpErrorSchema } from "../schema/common.schema.js";
-import { Prisma } from "@prisma/client";
 import { convertPrismaError } from "../prisma/prismaError.js";
 import { createResponseMessage } from "../utils/response.js";
+import pkg from "@prisma/client";
+const { Prisma } = pkg;
 
 export function httpError(reply, code, message, cause) {
   reply.code(code).send({ message, cause });
