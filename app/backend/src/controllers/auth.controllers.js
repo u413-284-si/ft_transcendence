@@ -6,7 +6,11 @@ import {
   getTokenHash,
   deleteUserRefreshToken,
   setCookies,
-  updateTotpSecret
+  updateTotpSecret,
+  generateTotp,
+  generate2FaQrCode,
+  generate2FaSecret,
+  verify2FaCode
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -20,8 +24,6 @@ import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
-import * as otpAuth from "otpauth";
-import QRCode from "qrcode";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -203,21 +205,10 @@ export async function twoFaQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
   try {
     const { username } = request.user.username;
-    const issuer = "ft_transcendence";
-    const secret = new otpAuth.Secret({
-      size: 20
-    });
-    const totp = new otpAuth.TOTP({
-      issuer: issuer,
-      label: username,
-      algorithm: "SHA1",
-      digits: 6,
-      period: 30,
-      secret: secret
-    });
+    const secret = generate2FaSecret();
 
-    const uri = totp.toString();
-    const data = await QRCode.toDataURL(uri);
+    const totp = generateTotp(username, secret);
+    const data = await generate2FaQrCode(totp);
 
     await updateTotpSecret(request.user.id, secret.toString());
 

@@ -1,6 +1,8 @@
 import pkg from "argon2";
 import prisma from "../prisma/prismaClient.js";
 import env from "../config/env.js";
+import * as otpAuth from "otpauth";
+import QRCode from "qrcode";
 
 export async function verifyAccessToken(request) {
   return await request.accessTokenVerify();
@@ -8,6 +10,10 @@ export async function verifyAccessToken(request) {
 
 export async function verifyRefreshToken(request) {
   return await request.refreshTokenVerify();
+}
+
+export function verify2FaCode(totp, code) {
+  return totp.validate({ code, window: 1 });
 }
 
 export async function createHash(value) {
@@ -72,6 +78,18 @@ export async function getTokenHash(userId) {
   return authentication.refreshToken;
 }
 
+export async function getTotpSecret(userId) {
+  const authentication = await prisma.authentication.findUniqueOrThrow({
+    where: {
+      userId: userId
+    },
+    select: {
+      totpSecret: true
+    }
+  });
+  return authentication.totpSecret;
+}
+
 export async function createAuthTokens(reply, payload) {
   const accessToken = await createAccessToken(reply, payload);
   const refreshToken = await createRefreshToken(reply, { id: payload.id });
@@ -107,6 +125,29 @@ export function setCookies(reply, accessToken, refreshToken) {
     });
 }
 
+export function generateTotp(username, secret) {
+  const totp = new otpAuth.TOTP({
+    issuer: "ft_transcendence",
+    label: username,
+    algorithm: "SHA1",
+    digits: 6,
+    period: 30,
+    secret: secret
+  });
+  return totp;
+}
+
+export async function generate2FaQrCode(totp) {
+  const uri = totp.toString();
+  return await QRCode.toDataURL(uri);
+}
+
+export function generate2FaSecret() {
+  return new otpAuth.Secret({
+    size: 20
+  });
+}
+
 export async function updatePassword(userId, hashedNewPassword) {
   await prisma.authentication.update({
     where: {
@@ -131,11 +172,11 @@ export async function updateTotpSecret(userId, secret) {
 
 export async function update2FaStatus(userId, status) {
   await prisma.authentication.update({
-	where: {
-	  userId: userId
-	},
-	data: {
-	  has2FA: status
-	}
+    where: {
+      userId: userId
+    },
+    data: {
+      has2FA: status
+    }
   });
 }
