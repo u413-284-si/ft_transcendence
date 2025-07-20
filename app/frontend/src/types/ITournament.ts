@@ -4,5 +4,6 @@ export interface TournamentDTO {
   maxPlayers: number;
   userId: number;
   userNickname: string;
+  roundReached: number;
   bracket: string;
 }
