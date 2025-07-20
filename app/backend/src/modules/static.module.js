@@ -1,6 +1,8 @@
 import fastifyRateLimit from "@fastify/rate-limit";
 import fastifyStatic from "@fastify/static";
 import env from "../config/env.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 export default async function staticModule(fastify) {
   await fastify.register(fastifyRateLimit, {
@@ -13,8 +15,11 @@ export default async function staticModule(fastify) {
     }
   });
 
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
   await fastify.register(fastifyStatic, {
-    root: "/workspaces/ft_transcendence/app/frontend/public"
+    root: path.join(__dirname, "..", "..", "..", "frontend", "public")
   });
 
   fastify.setNotFoundHandler(function (request, reply) {
