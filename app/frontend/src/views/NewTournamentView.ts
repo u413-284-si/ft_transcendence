@@ -90,6 +90,7 @@ export default class NewTournamentView extends AbstractView {
       activeTournament.maxPlayers,
       activeTournament.userId,
       activeTournament.userNickname,
+      activeTournament.roundReached,
       bracket,
       activeTournament.id
     );
