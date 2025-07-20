@@ -10,6 +10,7 @@ import { Image } from "../components/Image.js";
 import { getEl } from "../utility.js";
 import { generateTwoFaQrcode } from "../services/authServices.js";
 import { auth } from "../AuthManager.js";
+import { validateTwoFaCode } from "../validate.js";
 
 export default class SettingsView extends AbstractView {
   private qrCode: string = "";
@@ -68,7 +69,7 @@ export default class SettingsView extends AbstractView {
                   }),
                   Button({
                     id: "two-fa-submit",
-                    text: "Submit",
+                    text: "Activate",
                     variant: "default",
                     size: "md",
                     type: "submit"
@@ -90,6 +91,11 @@ export default class SettingsView extends AbstractView {
     document
       .getElementById("close-modal-button")
       ?.addEventListener("click", () => this.hideTwoFaSetupModal());
+    document
+      .getElementById("two-fa-form")
+      ?.addEventListener("submit", (event) =>
+        this.validateAndSetupTwoFa(event)
+      );
   }
 
   async render() {
@@ -105,11 +111,38 @@ export default class SettingsView extends AbstractView {
   private displayTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
     twoFaModal.classList.remove("hidden");
+    this.displayOverlay();
   }
 
   private hideTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
     twoFaModal.classList.add("hidden");
+    this.hideOverlay();
+  }
+
+  private async validateAndSetupTwoFa(event: Event): Promise<void> {
+    event.preventDefault();
+    const twoFaQrCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
+    const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
+
+    const isTwoFaCodeValid = validateTwoFaCode(
+      twoFaQrCodeInput,
+      twoFaQrCodeErrorEl
+    );
+    if (!isTwoFaCodeValid) {
+      return;
+    }
+    this.hideOverlay();
+  }
+
+  private displayOverlay(): void {
+    const overlay = document.getElementById("overlay-root");
+    overlay?.classList.remove("hidden");
+  }
+
+  private hideOverlay(): void {
+    const overlay = document.getElementById("overlay-root");
+    overlay?.classList.add("hidden");
   }
 
   private async fetchData(): Promise<void> {
