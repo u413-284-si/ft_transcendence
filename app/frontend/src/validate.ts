@@ -275,9 +275,17 @@ export function validateTwoFaCode(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): boolean {
+  const twoFaCodeRegex: RegExp = /\d{6}/;
+  const twoFaCode = inputEl.value;
+
   clearInvalid(inputEl, errorEl);
-  if (isEmptyString(inputEl.value)) {
+  if (isEmptyString(twoFaCode)) {
     markInvalid("Please enter a 6-digit code.", inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(twoFaCode, twoFaCodeRegex)) {
+    markInvalid("Code must be a 6-digit number.", inputEl, errorEl);
     return false;
   }
   return true;
