@@ -126,7 +126,7 @@ export function setCookies(reply, accessToken, refreshToken) {
 }
 
 export function generateTotp(username, secret) {
-  const totp = new otpAuth.TOTP({
+  return new otpAuth.TOTP({
     issuer: "ft_transcendence",
     label: username,
     algorithm: "SHA1",
@@ -134,7 +134,6 @@ export function generateTotp(username, secret) {
     period: 30,
     secret: secret
   });
-  return totp;
 }
 
 export async function generate2FaQrCode(totp) {
