@@ -63,15 +63,17 @@ export async function loginUserHandler(request, reply) {
       const twoFaTempTokenTimeToExpire = new Date(
         Date.now() + parseInt(env.twoFaTempTokenTimeToExpireInMS)
       );
-      const twoFaTempToken = await createTwoFaTempToken(reply, {
-        tokenType: "twoFaTemp"
-      });
+      const twoFaTempTokenPayload = { ...payload, tokenTyp: "twoFaTemp" };
+      const twoFaTempToken = await createTwoFaTempToken(
+        reply,
+        twoFaTempTokenPayload
+      );
       return reply
         .setCookie("twoFaTempToken", twoFaTempToken, {
           httpOnly: true,
           secure: true,
           sameSite: "strict",
-          path: "/api/auth/2fa/temp/verify",
+          path: "/api/auth/2fa/temp/",
           expires: twoFaTempTokenTimeToExpire
         })
         .code(200)
