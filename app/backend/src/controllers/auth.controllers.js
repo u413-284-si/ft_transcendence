@@ -21,7 +21,8 @@ import {
   getUserByEmail,
   getUserByUsername,
   createRandomUsername,
-  isUserNameValid
+  isUserNameValid,
+  getUser
 } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
