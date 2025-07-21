@@ -145,7 +145,7 @@ export async function generate2FaQrCode(totp) {
 export function generate2FaSecret() {
   return new otpAuth.Secret({
     size: 20
-  });
+  }).base32;
 }
 
 export async function updatePassword(userId, hashedNewPassword) {
