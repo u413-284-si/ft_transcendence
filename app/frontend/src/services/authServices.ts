@@ -97,3 +97,20 @@ export async function getTwoFaStatus(): Promise<
     false
   );
 }
+
+export async function removeTwoFa(
+  password: string
+): Promise<ApiResponse<null>> {
+  const url = "/api/auth/2fa/remove";
+  console.log("password: ", password);
+
+  return apiFetch<null>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ password })
+    },
+    false
+  );
+}
