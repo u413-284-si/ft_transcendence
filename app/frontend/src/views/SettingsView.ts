@@ -68,12 +68,8 @@ export default class SettingsView extends AbstractView {
                       })
                     : TextBox({
                         id: "two-fa-qr-code-info",
-                        text: [
-                          "Deactivate 2FA:",
-                          "",
-                          "By deactivating 2FA, you will remove your current 2FA setup."
-                        ],
-                        variant: "warning",
+                        text: ["2FA activated"],
+                        variant: "info",
                         size: "sm"
                       }),
                   Image({
