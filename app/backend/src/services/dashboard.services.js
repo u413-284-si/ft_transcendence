@@ -1,4 +1,4 @@
-export async function winrateLastNMatches(userStats, lastNMatches) {
+export function computeWinrateLastNMatches(userStats, lastNMatches) {
   const lastNMatchesWithResults = lastNMatches
     .map((match) => ({
       ...match,
@@ -42,7 +42,7 @@ function didUserWin(match) {
   return false;
 }
 
-export async function scoreDiffLastNMatches(lastNMatches) {
+export function computeScoreDiffLastNMatches(lastNMatches) {
   const data = lastNMatches
     .map((match) => ({
       x: match.date,
@@ -64,7 +64,7 @@ function calcScoreDiff(match) {
   return userScore - opponentScore;
 }
 
-export async function scoresLastNDays(matchesLastNDays, N) {
+export function computeScoresLastNDays(matchesLastNDays, N) {
   const dailyTotals = initializeDailyTotals(N);
   aggregatePlayerScores(matchesLastNDays, dailyTotals);
   return Object.entries(dailyTotals).map(([x, y]) => ({ x, y }));

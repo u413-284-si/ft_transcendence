@@ -2,9 +2,9 @@ import {
   computeTournamentsLastNDays,
   getUserTournamentProgress,
   getUserTournamentSummary,
-  scoreDiffLastNMatches,
-  scoresLastNDays,
-  winrateLastNMatches
+  computeScoreDiffLastNMatches,
+  computeScoresLastNDays,
+  computeWinrateLastNMatches
 } from "../services/dashboard.services.js";
 import { getUserMatches } from "../services/matches.services.js";
 import { getUserTournaments } from "../services/tournaments.services.js";
@@ -85,17 +85,13 @@ export async function getDashboardMatchesHandler(request, reply) {
       matchesLastNDaysFilter
     );
 
-    const winrate = await winrateLastNMatches(userStats, lastNMatches);
-    const scoreDiff = await scoreDiffLastNMatches(lastNMatches);
-    const scores = await scoresLastNDays(matchesLastNDays, N);
-    const data = {
-      winrate,
-      scoreDiff,
-      scores
-    };
+    const winrate = computeWinrateLastNMatches(userStats, lastNMatches);
+    const scoreDiff = computeScoreDiffLastNMatches(lastNMatches);
+    const scores = computeScoresLastNDays(matchesLastNDays, N);
+
     return reply.code(200).send({
       message: createResponseMessage(action, true),
-      data: data
+      data: { winrate, scoreDiff, scores }
     });
   } catch (err) {
     request.log.error(
