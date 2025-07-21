@@ -1,6 +1,6 @@
 import {
   verifyAccessToken,
-  verifTwoFaLoginToken
+  verifyTwoFaLoginToken
 } from "../services/auth.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
@@ -41,7 +41,7 @@ export async function authorizeUseTwoFaLoginAccess(request, reply) {
     );
   }
   try {
-    await verifTwoFaLoginToken(request);
+    await verifyTwoFaLoginToken(request);
   } catch (err) {
     request.log.error(
       { err, body: request.body },
