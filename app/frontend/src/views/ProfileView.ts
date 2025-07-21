@@ -290,7 +290,6 @@ export default class ProfileView extends AbstractView {
       }
       toaster.success(i18next.t("profileView.profileUpdatedSuccessText"));
       auth.updateUser(updatedUser);
-      router.reload();
     } catch (err) {
       toaster.error(i18next.t("profileView.profileUpdateFailedText"));
       router.handleError("Error in patchUser()", err);
@@ -314,7 +313,6 @@ export default class ProfileView extends AbstractView {
         ...(avatar ? { avatar } : {})
       };
       auth.updateUser(updatedUser);
-      router.reload();
     } catch (error) {
       toaster.error(i18next.t("profileView.avatarUploadFailedText"));
       router.handleError("Error in uploadAvatar()", error);

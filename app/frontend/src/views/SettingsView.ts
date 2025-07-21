@@ -10,18 +10,13 @@ import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
 import { User } from "../types/User.js";
 import { ApiError } from "../services/api.js";
-import { layout } from "../Layout.js";
 
 export default class SettingsView extends AbstractView {
   private preferredLanguageFormEl!: HTMLFormElement;
   private preferredLanguageButtonEl!: HTMLElement;
   private preferredLanguageOptionsEl!: HTMLElement;
-  private selectedLanguage: "en" | "fr" | "de" | "pi" | "tr" = i18next.language as
-    | "en"
-    | "fr"
-    | "de"
-    | "pi"
-    | "tr";
+  private selectedLanguage: "en" | "fr" | "de" | "pi" | "tr" =
+    i18next.language as "en" | "fr" | "de" | "pi" | "tr";
 
   constructor() {
     super();
@@ -50,7 +45,12 @@ export default class SettingsView extends AbstractView {
               `<div class="flex flex-wrap items-end gap-4 mt-2">
                 ${LanguageSwitcher({
                   id: "preferred-language",
-                  selectedLang: i18next.language as "en" | "fr" | "de" | "pi" | "tr",
+                  selectedLang: i18next.language as
+                    | "en"
+                    | "fr"
+                    | "de"
+                    | "pi"
+                    | "tr",
                   className: "w-64",
                   size: "lg"
                 })}
@@ -102,7 +102,7 @@ export default class SettingsView extends AbstractView {
             | "de"
             | "pi"
             | "tr";
-          this.switchLanguage(lang);
+          auth.updateLanguage(lang);
         });
       });
 
@@ -127,7 +127,6 @@ export default class SettingsView extends AbstractView {
       await patchUser(updatedUser);
       toaster.success(i18next.t("profileView.profileUpdatedSuccessText"));
       auth.updateUser(updatedUser);
-      router.reload();
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         toaster.error(i18next.t("registerView.emailOrUsernameExistsText"));
@@ -136,16 +135,6 @@ export default class SettingsView extends AbstractView {
       toaster.error(i18next.t("profileView.profileUpdateFailedText"));
       router.handleError("Error in patchUser()", err);
     }
-  }
-
-  private switchLanguage(lang: "en" | "fr" | "de" | "pi" | "tr"): void {
-    this.selectedLanguage = lang;
-    i18next.changeLanguage(lang).then(() => {
-      localStorage.setItem("preferredLanguage", lang);
-      layout.update("auth");
-      router.reload();
-      console.info(`Language switched to ${lang}`);
-    });
   }
 
   getName(): string {

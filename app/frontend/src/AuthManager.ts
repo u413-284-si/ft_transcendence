@@ -62,12 +62,14 @@ export class AuthManager {
         toaster.error(i18next.t("global.emailExistsText"));
         document.cookie =
           "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
+        this.notify();
         return;
       }
       const apiResponse = await authAndDecodeAccessToken();
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
           console.log("JWT validation failed or no token found.");
+          this.notify();
           return;
         } else {
           throw new ApiError(apiResponse);
@@ -77,6 +79,7 @@ export class AuthManager {
       this.user = getDataOrThrow(await getUserProfile());
       this.updateAuthState(token);
     } catch (error) {
+      this.notify();
       router.handleError("Error in AuthManager.initialize():", error);
     }
   }
@@ -171,6 +174,15 @@ export class AuthManager {
       ...this.user!,
       ...update
     };
+    this.notify();
+  }
+
+  public async updateLanguage(
+    lang: "en" | "fr" | "de" | "pi" | "tr"
+  ): Promise<void> {
+    await i18next.changeLanguage(lang);
+    console.info(`Language switched to ${lang}`);
+    localStorage.setItem("preferredLanguage", lang);
     this.notify();
   }
 

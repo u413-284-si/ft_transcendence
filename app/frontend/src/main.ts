@@ -80,16 +80,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     keySeparator: "."
   });
 
-  layout.initialize();
-
   auth.onChange(async (isAuth) => {
     console.info("Layout listener initialized.");
     if (isAuth) layout.update("auth");
     else layout.update("guest");
+    router.reload();
   });
 
+  router.start();
   auth.initialize().then(() => {
-    router.start();
     auth.onChange(async (isAuth) => {
       const path = window.location.pathname;
       if (!isAuth && path !== "/login") {

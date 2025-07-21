@@ -3,7 +3,6 @@ import { auth } from "./AuthManager.js";
 import { Link } from "./components/Link.js";
 import { Drawer } from "./Drawer.js";
 import { LanguageSwitcher } from "./components/LanguageSwitcher.js";
-import { router } from "./routing/Router.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -22,10 +21,6 @@ export class Layout {
       Layout.instance = new Layout();
     }
     return Layout.instance;
-  }
-
-  public initialize(): void {
-    this.renderShell();
   }
 
   public update(newMode: LayoutMode): void {
@@ -158,15 +153,6 @@ export class Layout {
     });
   }
 
-  private switchLanguage(lang: "en" | "fr" | "de" | "pi" | "tr"): void {
-    i18next.changeLanguage(lang).then(() => {
-      localStorage.setItem("preferredLanguage", lang);
-      this.renderShell();
-      router.reload();
-      console.info(`Language switched to ${lang}`);
-    });
-  }
-
   private attachLanguageSwitcherHandler(): void {
     const button = this.rootEl.querySelector<HTMLElement>(
       "#lang-switcher-button"
@@ -189,7 +175,7 @@ export class Layout {
           | "de"
           | "pi"
           | "tr";
-        this.switchLanguage(lang);
+        auth.updateLanguage(lang);
       });
     });
 

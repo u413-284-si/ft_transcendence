@@ -65,7 +65,6 @@ export class Router {
     window.addEventListener("popstate", this.handlePopState);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.body.addEventListener("click", this.handleLinkClick);
-    await this.navigate(window.location.pathname, false);
   }
 
   async navigate(path: string, push: boolean = true): Promise<void> {
@@ -128,7 +127,7 @@ export class Router {
   }
 
   async reload() {
-    await this.navigate(this.currentPath, false);
+    await this.navigate(window.location.pathname, false);
   }
 
   async handleError(message: string, error: unknown) {
