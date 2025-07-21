@@ -16,7 +16,6 @@ import { toaster } from "../Toaster.js";
 
 export default class SettingsView extends AbstractView {
   private qrCode: string = "";
-  private username: string = auth.getUser().username;
 
   constructor() {
     super();
