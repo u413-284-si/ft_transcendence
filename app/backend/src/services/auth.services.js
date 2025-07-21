@@ -133,7 +133,7 @@ export async function createTwoFaToken(reply, payload) {
   return twoFaLoginToken;
 }
 
-export function setCookies(reply, accessToken, refreshToken) {
+export function setAuthCookies(reply, accessToken, refreshToken) {
   const accessTokenTimeToExpire = new Date(
     Date.now() + parseInt(env.accessTokenTimeToExpireInMs)
   );
