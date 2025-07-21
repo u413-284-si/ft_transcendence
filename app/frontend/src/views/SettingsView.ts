@@ -7,14 +7,19 @@ import { Form } from "../components/Form.js";
 import { TextBox } from "../components/TextBox.js";
 import { Input } from "../components/Input.js";
 import { Image } from "../components/Image.js";
-import { getEl } from "../utility.js";
+import { getEl, getInputEl } from "../utility.js";
 import {
   generateTwoFaQrcode,
-  getTwoFaStatus
+  getTwoFaStatus,
+  removeTwoFa
 } from "../services/authServices.js";
 import { auth } from "../AuthManager.js";
-import { validateTwoFaCode } from "../validate.js";
-import { getDataOrThrow } from "../services/api.js";
+import {
+  markInvalid,
+  validatePassword,
+  validateTwoFaCode
+} from "../validate.js";
+import { ApiError, getDataOrThrow } from "../services/api.js";
 import { toaster } from "../Toaster.js";
 
 export default class SettingsView extends AbstractView {
@@ -45,6 +50,7 @@ export default class SettingsView extends AbstractView {
         })}
           ${Modal({
             id: "two-fa-modal",
+            idCloseButton: "close-two-fa-modal-button",
             children: [
               Form({
                 children: [
@@ -105,6 +111,33 @@ export default class SettingsView extends AbstractView {
               })
             ]
           })}
+		  ${Modal({
+        id: "two-fa-password-modal",
+        idCloseButton: "close-two-fa-password-modal-button",
+        children: [
+          Form({
+            id: "two-fa-password-form",
+            children: [
+              Input({
+                id: "two-fa-password-input",
+                label: "Password",
+                name: "two-fa-password-input",
+                placeholder: "Password",
+                type: "password",
+                errorId: "two-fa-password-input-error",
+                hasToggle: true
+              }),
+              Button({
+                id: "two-fa-submit-password",
+                text: "Confirm",
+                variant: "default",
+                size: "md",
+                type: "submit"
+              })
+            ]
+          })
+        ]
+      })}
         </div>
       </div>
     `;
@@ -115,13 +148,19 @@ export default class SettingsView extends AbstractView {
       .getElementById("setup-two-fa-button")
       ?.addEventListener("click", () => this.displayTwoFaSetupModal());
     document
-      .getElementById("close-modal-button")
+      .getElementById("close-two-fa-modal-button")
       ?.addEventListener("click", () => this.hideTwoFaSetupModal());
+    if (this.hasTwoFa) {
+      document
+        .getElementById("close-two-fa-password-modal-button")
+        ?.addEventListener("click", () => this.hideTwoFaPasswordModal());
+      document
+        .getElementById("two-fa-password-form")
+        ?.addEventListener("submit", (event) => this.removeTwoFa(event));
+    }
     document
       .getElementById("two-fa-form")
-      ?.addEventListener("submit", (event) =>
-        this.validateAndSetupTwoFa(event)
-      );
+      ?.addEventListener("submit", (event) => this.twoFaAction(event));
   }
 
   async render() {
@@ -135,7 +174,7 @@ export default class SettingsView extends AbstractView {
     return "settings";
   }
 
-  private displayTwoFaSetupModal() {
+  private async displayTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
     twoFaModal.classList.remove("hidden");
     this.displayOverlay();
@@ -147,21 +186,69 @@ export default class SettingsView extends AbstractView {
     this.hideOverlay();
   }
 
-  private async validateAndSetupTwoFa(event: Event): Promise<void> {
-    event.preventDefault();
-    const twoFaQrCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
-    const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
+  private displayTwoFaPasswordModal() {
+    const twoFaModal = getEl("two-fa-password-modal");
+    twoFaModal.classList.remove("hidden");
+    this.displayOverlay();
+  }
 
-    const isTwoFaCodeValid = await validateTwoFaCode(
-      twoFaQrCodeInput,
-      twoFaQrCodeErrorEl
-    );
-    if (!isTwoFaCodeValid) {
-      return;
-    }
+  private hideTwoFaPasswordModal() {
+    const twoFaModal = getEl("two-fa-password-modal");
+    twoFaModal.classList.add("hidden");
     this.hideOverlay();
-    this.hideTwoFaSetupModal();
-    toaster.success("2FA setup successful");
+  }
+
+  private async twoFaAction(event: Event): Promise<void> {
+    event.preventDefault();
+    if (!this.hasTwoFa) {
+      const twoFaQrCodeInput = getEl(
+        "two-fa-qr-code-input"
+      ) as HTMLInputElement;
+      const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
+
+      const isTwoFaCodeValid = await validateTwoFaCode(
+        twoFaQrCodeInput,
+        twoFaQrCodeErrorEl
+      );
+      if (!isTwoFaCodeValid) {
+        return;
+      }
+      this.hideOverlay();
+      this.hideTwoFaSetupModal();
+      this.render();
+      toaster.success("2FA setup successful");
+    } else {
+      this.hideTwoFaSetupModal();
+      this.displayTwoFaPasswordModal();
+    }
+  }
+
+  private async removeTwoFa(event: Event): Promise<void> {
+    event.preventDefault();
+
+    const twoFaPasswordInputEl = getInputEl("two-fa-password-input");
+    const twoFaPasswordInputErrorEl = getEl("two-fa-password-input-error");
+    // FIXME: activate when password policy is applied
+    // if (!validatePassword(twoFaPasswordInputEl, twoFaPasswordInputErrorEl))
+    //   return;
+    const apiResponse = await removeTwoFa(twoFaPasswordInputEl.value);
+    console.log(apiResponse);
+    if (!apiResponse.success) {
+      if (apiResponse.status === 401) {
+        markInvalid(
+          "Invalid password.",
+          twoFaPasswordInputEl,
+          twoFaPasswordInputErrorEl
+        );
+        return;
+      } else {
+        throw new ApiError(apiResponse);
+      }
+    }
+    this.hideTwoFaPasswordModal();
+    this.hideOverlay();
+    this.render();
+    toaster.success("2FA removed successfully");
   }
 
   private displayOverlay(): void {
