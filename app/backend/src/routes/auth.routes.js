@@ -86,6 +86,7 @@ const optionsTwoFaQrCode = {
 };
 
 const optionsTwoFaVerify = {
+  onRequest: [authorizeUserAccess],
   schema: {
     body: { $ref: "twoFaCodeSchema" },
     response: {
