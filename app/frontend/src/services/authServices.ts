@@ -82,3 +82,18 @@ export async function verifyTwoFaCode(
     false
   );
 }
+
+export async function getTwoFaStatus(): Promise<
+  ApiResponse<{ hasTwoFa: boolean }>
+> {
+  const url = "/api/auth/2fa/status";
+
+  return apiFetch<{ hasTwoFa: boolean }>(
+    url,
+    {
+      method: "GET",
+      credentials: "same-origin"
+    },
+    false
+  );
+}

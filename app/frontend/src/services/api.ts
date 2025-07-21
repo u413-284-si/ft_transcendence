@@ -61,7 +61,11 @@ export async function apiFetch<T>(
     return createApiSuccess(json.message, json.data);
   } catch (error) {
     if (error instanceof Error) {
-      return createApiFail("Internal server error", 500, error.message ?? undefined);
+      return createApiFail(
+        "Internal server error",
+        500,
+        error.message ?? undefined
+      );
     } else {
       return createApiFail("Internal server error", 500);
     }
@@ -97,7 +101,11 @@ function createApiSuccess<T>(message: string, data: T): ApiSuccess<T> {
   return { success: true, message, data };
 }
 
-function createApiFail(message: string, status: number, cause?: string): ApiFail {
+function createApiFail(
+  message: string,
+  status: number,
+  cause?: string
+): ApiFail {
   console.error({ message, status, cause });
   return { success: false, message, status, cause };
 }
