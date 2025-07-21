@@ -66,3 +66,19 @@ export async function generateTwoFaQrcode(): Promise<ApiResponse<string>> {
     false
   );
 }
+
+export async function verifyTwoFaCode(
+  code: string
+): Promise<ApiResponse<null>> {
+  const url = "/api/auth/2fa/verify";
+
+  return apiFetch<null>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ code })
+    },
+    false
+  );
+}
