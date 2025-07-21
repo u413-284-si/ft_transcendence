@@ -93,6 +93,17 @@ await fastify.register(jwt, {
     signed: false
   }
 });
+await fastify.register(jwt, {
+  namespace: "twoFaTempToken",
+  secret: env.jwtTwoFaTempTokenSecret,
+  jwtVerify: "twoFaTempTokenVerify",
+  jwtSign: "twoFaTempTokenSign",
+  sign: { expiresIn: env.twoFaTempTokenTimeToExpireInMS },
+  cookie: {
+    cookieName: "twoFaTempToken",
+    signed: false
+  }
+});
 await fastify.register(fastifyMultipart, {
   limits: {
     fileSize: env.maxFileSizeInBytes

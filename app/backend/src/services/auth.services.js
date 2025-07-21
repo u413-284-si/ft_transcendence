@@ -12,6 +12,10 @@ export async function verifyRefreshToken(request) {
   return await request.refreshTokenVerify();
 }
 
+export async function verifyTwoFaTempToken(request) {
+  return await request.verifyTwoFaTempTokenVerify();
+}
+
 export function verify2FaToken(totp, token) {
   const delta = totp.validate({ token, window: 1 });
   return delta !== null;
@@ -35,6 +39,10 @@ export async function createAccessToken(reply, user) {
 
 export async function createRefreshToken(reply, user) {
   return await reply.refreshTokenSign(user);
+}
+
+export async function createTwoFaTempToken(reply, user) {
+  return await reply.twoFaTempTokenSign(user);
 }
 
 export async function updateUserRefreshToken(userId, hashedRefreshToken) {

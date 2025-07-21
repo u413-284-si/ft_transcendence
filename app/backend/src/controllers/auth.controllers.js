@@ -13,7 +13,8 @@ import {
   verify2FaToken,
   getTotpSecret,
   update2FaStatus,
-  get2FaStatus
+  get2FaStatus,
+  createTwoFaTempToken
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -26,6 +27,7 @@ import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
+import env from "../config/env.js";
 import fastify from "../app.js";
 
 export async function loginUserHandler(request, reply) {
@@ -55,6 +57,28 @@ export async function loginUserHandler(request, reply) {
         createResponseMessage(action, false),
         "Wrong credentials"
       );
+    }
+
+    if ((await get2FaStatus(payload.id)) === true) {
+      const twoFaTempTokenTimeToExpire = new Date(
+        Date.now() + parseInt(env.twoFaTempTokenTimeToExpireInMS)
+      );
+      const twoFaTempToken = await createTwoFaTempToken(reply, {
+        tokenType: "twoFaTemp"
+      });
+      return reply
+        .setCookie("twoFaTempToken", twoFaTempToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+          path: "/api/auth/2fa/temp/verify",
+          expires: twoFaTempTokenTimeToExpire
+        })
+        .code(200)
+        .send({
+          message: createResponseMessage(action, true),
+          data: { username: payload.username }
+        });
     }
 
     const { accessToken, refreshToken } = await createAuthTokens(
