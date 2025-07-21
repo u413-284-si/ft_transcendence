@@ -1,6 +1,6 @@
 import {
   verifyAccessToken,
-  verifytwoFaLoginToken
+  verifTwoFaLoginToken
 } from "../services/auth.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
@@ -28,7 +28,7 @@ export async function authorizeUserAccess(request, reply) {
   }
 }
 
-export async function authorizeUsertwoFaLoginAccess(request, reply) {
+export async function authorizeUseTwoFaLoginAccess(request, reply) {
   const action = "Authorize user's two factor temp token";
 
   const token = request.cookies.twoFaLoginToken;
@@ -41,7 +41,7 @@ export async function authorizeUsertwoFaLoginAccess(request, reply) {
     );
   }
   try {
-    await verifytwoFaLoginToken(request);
+    await verifTwoFaLoginToken(request);
   } catch (err) {
     request.log.error(
       { err, body: request.body },

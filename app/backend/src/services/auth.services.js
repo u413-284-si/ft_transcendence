@@ -12,7 +12,7 @@ export async function verifyRefreshToken(request) {
   return await request.refreshTokenVerify();
 }
 
-export async function verifytwoFaLoginToken(request) {
+export async function verifTwoFaLoginToken(request) {
   return await request.twoFaLoginTokenVerify();
 }
 
@@ -41,7 +41,7 @@ export async function createRefreshToken(reply, user) {
   return await reply.refreshTokenSign(user);
 }
 
-export async function createtwoFaLoginToken(reply, user) {
+export async function creatTwoFaLoginToken(reply, user) {
   return await reply.twoFaLoginTokenSign(user);
 }
 

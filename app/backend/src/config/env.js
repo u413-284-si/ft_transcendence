@@ -141,7 +141,7 @@ const envConfig = {
   dbFile: config.DB_FILE,
   jwtAccessTokenSecret: config.JWT_ACCESS_TOKEN_SECRET,
   jwtRefreshTokenSecret: config.JWT_REFRESH_TOKEN_SECRET,
-  jwttwoFaLoginTokenSecret: config.JWT_TWO_FA_TEMP_TOKEN_SECRET,
+  jwTwoFaLoginTokenSecret: config.JWT_TWO_FA_TEMP_TOKEN_SECRET,
   accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
   refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
   twoFaLoginTokenTimeToExpireInMS:

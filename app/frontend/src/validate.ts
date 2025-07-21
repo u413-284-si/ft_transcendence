@@ -1,8 +1,8 @@
 import { auth } from "./AuthManager.js";
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
-  verifyLoginTwoFaCode,
-  verifyTwoFaCode
+  verifyLogiTwoFaCode,
+  verifTwoFaCode
 } from "./services/authServices.js";
 import { getUserTournaments } from "./services/tournamentService.js";
 import { toaster } from "./Toaster.js";
@@ -278,7 +278,7 @@ export function validateImageFile(
   return true;
 }
 
-export async function validateTwoFaCode(
+export async function validatTwoFaCode(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): Promise<boolean> {
@@ -297,10 +297,10 @@ export async function validateTwoFaCode(
   }
 
   let apiResponse: ApiResponse<null>;
-  if (auth.isTwoFaPending()) {
-    apiResponse = await verifyLoginTwoFaCode(twoFaCode);
+  if (auth.iTwoFaPending()) {
+    apiResponse = await verifyLogiTwoFaCode(twoFaCode);
   } else {
-    apiResponse = await verifyTwoFaCode(twoFaCode);
+    apiResponse = await verifTwoFaCode(twoFaCode);
   }
   console.log("API Response: ", apiResponse);
   if (!apiResponse.success) {

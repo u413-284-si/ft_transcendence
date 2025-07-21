@@ -1,7 +1,7 @@
 import AbstractView from "./AbstractView.js";
 // FIXME: activate when password policy is applied
 //import { validatePassword, validateUsernameOrEmail } from "../validate.js";
-import { validateTwoFaCode, validateUsernameOrEmail } from "../validate.js";
+import { validatTwoFaCode, validateUsernameOrEmail } from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
 import { addTogglePasswordListener, Input } from "../components/Input.js";
@@ -42,7 +42,7 @@ export default class TwoFaVerifyView extends AbstractView {
   protected addListeners() {
     document
       .getElementById("two-fa-verify-form")
-      ?.addEventListener("submit", (event) => this.verifyTwoFa(event));
+      ?.addEventListener("submit", (event) => this.verifTwoFa(event));
   }
 
   async render() {
@@ -54,19 +54,19 @@ export default class TwoFaVerifyView extends AbstractView {
     return "login";
   }
 
-  private async verifyTwoFa(event: Event) {
+  private async verifTwoFa(event: Event) {
     event.preventDefault();
     const twoFaQrCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
     const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
 
-    const isTwoFaCodeValid = await validateTwoFaCode(
+    const iTwoFaCodeValid = await validatTwoFaCode(
       twoFaQrCodeInput,
       twoFaQrCodeErrorEl
     );
-    if (!isTwoFaCodeValid) {
+    if (!iTwoFaCodeValid) {
       return;
     }
-    const isAllowed = await auth.loginAfterTwoFa();
+    const isAllowed = await auth.loginAfteTwoFa();
     if (!isAllowed) return;
     router.navigate("/home", false);
   }

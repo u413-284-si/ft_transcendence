@@ -14,7 +14,7 @@ import {
   getTotpSecret,
   update2FaStatus,
   get2FaStatus,
-  createtwoFaLoginToken
+  creatTwoFaLoginToken
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -65,7 +65,7 @@ export async function loginUserHandler(request, reply) {
         Date.now() + parseInt(env.twoFaLoginTokenTimeToExpireInMS)
       );
       const twoFaLoginTokenPayload = { ...payload, tokenTyp: "twoFaLogin" };
-      const twoFaLoginToken = await createtwoFaLoginToken(
+      const twoFaLoginToken = await creatTwoFaLoginToken(
         reply,
         twoFaLoginTokenPayload
       );
@@ -187,7 +187,7 @@ export async function authAndDecodeAccessHandler(request, reply) {
   }
 }
 
-export async function authAndDecodetwoFaLoginHandler(request, reply) {
+export async function authAndDecodTwoFaLoginHandler(request, reply) {
   const action = "Auth and decode 2FA login token";
   try {
     const data = request.user;
@@ -342,8 +342,8 @@ export async function twoFaLoginVerifyHandler(request, reply) {
 export async function twoFaStatusHandler(request, reply) {
   const action = "Get 2FA status";
   try {
-    const hasTwoFa = await get2FaStatus(request.user.id);
-    const data = { hasTwoFa: hasTwoFa };
+    const haTwoFa = await get2FaStatus(request.user.id);
+    const data = { haTwoFa: haTwoFa };
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data });

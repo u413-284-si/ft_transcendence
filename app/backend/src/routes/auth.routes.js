@@ -8,13 +8,13 @@ import {
   twoFaVerifyHandler,
   twoFaStatusHandler,
   twoFaRemoveHandler,
-  authAndDecodetwoFaLoginHandler,
+  authAndDecodTwoFaLoginHandler,
   twoFaLoginVerifyHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import {
   authorizeUserAccess,
-  authorizeUsertwoFaLoginAccess
+  authorizeUseTwoFaLoginAccess
 } from "../middleware/auth.js";
 import env from "../config/env.js";
 
@@ -25,27 +25,27 @@ export default async function authRoutes(fastify) {
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 
-  fastify.get("/2fa/qrcode", optionsTwoFaQrCode, twoFaQRCodeHandler);
+  fastify.get("/2fa/qrcode", optionTwoFaQrCode, twoFaQRCodeHandler);
 
-  fastify.post("/2fa/verify", optionsTwoFaVerify, twoFaVerifyHandler);
+  fastify.post("/2fa/verify", optionTwoFaVerify, twoFaVerifyHandler);
 
   fastify.post(
     "/2fa/login/verify",
-    optionstwoFaLoginVerify,
+    optionTwoFaLoginVerify,
     twoFaLoginVerifyHandler
   );
 
   fastify.get(
     "/2fa/login/token",
-    optionsAuthUsertwoFaLogin,
-    authAndDecodetwoFaLoginHandler
+    optionsAuthUseTwoFaLogin,
+    authAndDecodTwoFaLoginHandler
   );
 
-  fastify.get("/2fa/login/status", optionstwoFaLoginStatus, twoFaStatusHandler);
+  fastify.get("/2fa/login/status", optionTwoFaLoginStatus, twoFaStatusHandler);
 
-  fastify.get("/2fa/status", optionsTwoFaStatus, twoFaStatusHandler);
+  fastify.get("/2fa/status", optionTwoFaStatus, twoFaStatusHandler);
 
-  fastify.post("/2fa/remove", optionsTwoFaRemove, twoFaRemoveHandler);
+  fastify.post("/2fa/remove", optionTwoFaRemove, twoFaRemoveHandler);
 
   fastify.patch("/logout", optionsLogoutUser, logoutUserHandler);
 
@@ -101,7 +101,7 @@ const optionsGoogleOauth2Login = {
   }
 };
 
-const optionsTwoFaQrCode = {
+const optionTwoFaQrCode = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
@@ -110,8 +110,8 @@ const optionsTwoFaQrCode = {
   }
 };
 
-const optionsAuthUsertwoFaLogin = {
-  onRequest: [authorizeUsertwoFaLoginAccess],
+const optionsAuthUseTwoFaLogin = {
+  onRequest: [authorizeUseTwoFaLoginAccess],
   schema: {
     response: {
       ...errorResponses
@@ -119,7 +119,7 @@ const optionsAuthUsertwoFaLogin = {
   }
 };
 
-const optionsTwoFaVerify = {
+const optionTwoFaVerify = {
   onRequest: [authorizeUserAccess],
   schema: {
     body: { $ref: "twoFaCodeSchema" },
@@ -129,8 +129,8 @@ const optionsTwoFaVerify = {
   }
 };
 
-const optionstwoFaLoginVerify = {
-  onRequest: [authorizeUsertwoFaLoginAccess],
+const optionTwoFaLoginVerify = {
+  onRequest: [authorizeUseTwoFaLoginAccess],
   schema: {
     body: { $ref: "twoFaCodeSchema" },
     response: {
@@ -139,7 +139,7 @@ const optionstwoFaLoginVerify = {
   }
 };
 
-const optionsTwoFaStatus = {
+const optionTwoFaStatus = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
@@ -148,8 +148,8 @@ const optionsTwoFaStatus = {
   }
 };
 
-const optionstwoFaLoginStatus = {
-  onRequest: [authorizeUsertwoFaLoginAccess],
+const optionTwoFaLoginStatus = {
+  onRequest: [authorizeUseTwoFaLoginAccess],
   schema: {
     response: {
       ...errorResponses
@@ -157,7 +157,7 @@ const optionstwoFaLoginStatus = {
   }
 };
 
-const optionsTwoFaRemove = {
+const optionTwoFaRemove = {
   onRequest: [authorizeUserAccess],
   schema: {
     body: { $ref: "twoFaRemoveSchema" },
