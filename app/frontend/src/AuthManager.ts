@@ -2,9 +2,7 @@ import { router } from "./routing/Router.js";
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
-  authAndDecodeTwoFaloginToken,
-  getTempTwoFaStatus,
-  getTwoFaStatus,
+  authAndDecodetwoFaLoginToken,
   refreshAccessToken,
   userLogin,
   userLogout
@@ -96,8 +94,12 @@ export class AuthManager {
           throw new ApiError(apiResponseUserLogin);
         }
       }
-      const hasTwoFa = getDataOrThrow(await getTempTwoFaStatus()).hasTwoFa;
-      if (hasTwoFa) {
+      const apiResponseTwoFaLogin = await authAndDecodetwoFaLoginToken();
+      if (!apiResponseTwoFaLogin.success) {
+        if (apiResponseTwoFaLogin.status === 401) {
+          console.log("2FA login token not found");
+        }
+      } else {
         this.twoFaPending = true;
         router.navigate("/2fa-verify", false);
       }
