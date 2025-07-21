@@ -1,10 +1,10 @@
 import {
   computeTournamentsLastNDays,
-  getUserTournamentProgress,
-  getUserTournamentSummary,
+  computeTournamentProgress,
   computeScoreDiffLastNMatches,
   computeScoresLastNDays,
-  computeWinrateLastNMatches
+  computeWinrateLastNMatches,
+  computeTournamentSummary
 } from "../services/dashboard.services.js";
 import { getUserMatches } from "../services/matches.services.js";
 import { getUserTournaments } from "../services/tournaments.services.js";
@@ -142,8 +142,8 @@ export async function getDashboardTournamentsHandler(request, reply) {
       finishedLastNDaysFilter
     );
 
-    const summary = await getUserTournamentSummary(allTournaments);
-    const progress = await getUserTournamentProgress(allTournaments);
+    const summary = computeTournamentSummary(allTournaments);
+    const progress = computeTournamentProgress(allTournaments);
     const lastNDays = computeTournamentsLastNDays(tournamentsLastNDays, N);
 
     return reply.code(200).send({

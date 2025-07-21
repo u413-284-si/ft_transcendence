@@ -1,3 +1,5 @@
+const supportedSizes = [4, 8, 16];
+
 export function computeWinrateLastNMatches(userStats, lastNMatches) {
   const lastNMatchesWithResults = lastNMatches
     .map((match) => ({
@@ -65,26 +67,31 @@ function calcScoreDiff(match) {
 }
 
 export function computeScoresLastNDays(matchesLastNDays, N) {
-  const dailyTotals = initializeDailyTotals(N);
-  aggregatePlayerScores(matchesLastNDays, dailyTotals);
-  return Object.entries(dailyTotals).map(([x, y]) => ({ x, y }));
+  const { totals } = initializeDailyTotals(N);
+  aggregatePlayerScores(matchesLastNDays, totals);
+  return Object.entries(totals).map(([x, y]) => ({ x, y }));
 }
 
-function initializeDailyTotals(days) {
+function initializeDailyTotals(days, valueFactory = () => 0) {
   const totals = {};
+  const sortedDates = [];
+
   for (let i = days - 1; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    totals[formatDate(date)] = 0;
+    const dayStr = formatDate(date);
+
+    totals[dayStr] = valueFactory();
+    sortedDates.push(dayStr);
   }
-  return totals;
+  return { totals, sortedDates };
 }
 
-function aggregatePlayerScores(matches, dailyTotals) {
+function aggregatePlayerScores(matches, totals) {
   for (const match of matches) {
     const day = formatDate(match.date);
-    if (day in dailyTotals) {
-      dailyTotals[day] += getPlayerScore(match);
+    if (day in totals) {
+      totals[day] += getPlayerScore(match);
     }
   }
 }
@@ -102,8 +109,7 @@ function formatDate(date) {
   return date.toISOString().split("T")[0];
 }
 
-export async function getUserTournamentSummary(tournaments) {
-  const supportedSizes = [4, 8, 16];
+export function computeTournamentSummary(tournaments) {
   const summary = {};
 
   for (let i = 0; i < supportedSizes.length; i++) {
@@ -144,8 +150,7 @@ export async function getUserTournamentSummary(tournaments) {
   ];
 }
 
-export async function getUserTournamentProgress(tournaments) {
-  const supportedSizes = [4, 8, 16];
+export function computeTournamentProgress(tournaments) {
   const progressBySize = {};
 
   for (const size of supportedSizes) {
@@ -194,56 +199,46 @@ function convertProgressToFunnelSeries(progressBySize) {
 }
 
 export function computeTournamentsLastNDays(tournaments, days) {
-  const sizes = [4, 8, 16];
-  const dayBuckets = {};
-  const sortedDates = [];
-
-  for (let i = days - 1; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const dayStr = formatDate(date);
+  const { totals, sortedDates } = initializeDailyTotals(days, () => {
     const bucket = {};
-    for (const size of sizes) {
+    for (const size of supportedSizes) {
       bucket[`won${size}`] = 0;
       bucket[`loss${size}`] = 0;
     }
-    dayBuckets[dayStr] = bucket;
-    sortedDates.push(dayStr);
-  }
+    return bucket;
+  });
 
   for (const tournament of tournaments) {
-    const date = formatDate(tournament.updatedAt);
-    if (!dayBuckets[date]) continue;
+    const dayStr = formatDate(tournament.updatedAt);
+    if (!totals[dayStr]) continue;
 
     const size = tournament.maxPlayers;
     const totalRounds = Math.log2(size);
     const won = tournament.roundReached === totalRounds + 1;
 
     const key = (won ? "won" : "loss") + size;
-    if (dayBuckets[date][key] !== undefined) {
-      dayBuckets[date][key]++;
+    if (totals[dayStr][key] !== undefined) {
+      totals[dayStr][key]++;
     }
   }
 
   const series = [];
-  for (const size of sizes) {
+  for (const size of supportedSizes) {
+    series.push(buildSeries(`won${size}`, `Win ${size}`, sortedDates, totals));
     series.push(
-      buildSeries(`won${size}`, `Win ${size}`, sortedDates, dayBuckets)
-    );
-    series.push(
-      buildSeries(`loss${size}`, `Loss ${size}`, sortedDates, dayBuckets)
+      buildSeries(`loss${size}`, `Loss ${size}`, sortedDates, totals)
     );
   }
 
   return series;
 }
 
-function buildSeries(key, name, sortedDates, dayBuckets) {
+function buildSeries(key, name, sortedDates, totals) {
   return {
     name,
     data: sortedDates.map((date) => ({
       x: date,
-      y: dayBuckets[date][key]
+      y: totals[date][key]
     }))
   };
 }
