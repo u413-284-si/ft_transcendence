@@ -12,6 +12,7 @@ import { generateTwoFaQrcode } from "../services/authServices.js";
 import { auth } from "../AuthManager.js";
 import { validateTwoFaCode } from "../validate.js";
 import { getDataOrThrow } from "../services/api.js";
+import { toaster } from "../Toaster.js";
 
 export default class SettingsView extends AbstractView {
   private qrCode: string = "";
@@ -126,7 +127,7 @@ export default class SettingsView extends AbstractView {
     const twoFaQrCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
     const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
 
-    const isTwoFaCodeValid = validateTwoFaCode(
+    const isTwoFaCodeValid = await validateTwoFaCode(
       twoFaQrCodeInput,
       twoFaQrCodeErrorEl
     );
@@ -134,6 +135,8 @@ export default class SettingsView extends AbstractView {
       return;
     }
     this.hideOverlay();
+    this.hideTwoFaSetupModal();
+    toaster.success("2FA setup successful");
   }
 
   private displayOverlay(): void {
@@ -148,7 +151,6 @@ export default class SettingsView extends AbstractView {
 
   private async fetchData(): Promise<void> {
     this.qrCode = getDataOrThrow(await generateTwoFaQrcode());
-    console.log(this.qrCode);
     const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
     twoFaQrcodeEl.src = this.qrCode;
   }
