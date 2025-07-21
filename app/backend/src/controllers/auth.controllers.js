@@ -271,6 +271,34 @@ export async function twoFaStatusHandler(request, reply) {
   }
 }
 
+export async function twoFaRemoveHandler(request, reply) {
+  const action = "Remove 2FA";
+  try {
+    const { password } = request.body;
+    const hashedPassword = await getPasswordHash(request.user.id);
+
+    if (!(await verifyHash(hashedPassword, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
+
+    await update2FaStatus(request.user.id, false);
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true) });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
 export async function logoutUserHandler(request, reply) {
   const action = "Logout user";
   try {

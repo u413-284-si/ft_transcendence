@@ -38,8 +38,19 @@ const twoFaCodeSchema = {
   additionalProperties: false
 };
 
+const twoFaRemoveSchema = {
+  $id: "twoFaRemoveSchema",
+  type: "object",
+  properties: {
+    password: { $ref: "commonDefinitionsSchema#/definitions/password" }
+  },
+  required: ["password"],
+  additionalProperties: false
+};
+
 export const authSchemas = [
   loginUserSchema,
   loginUserResponseSchema,
-  twoFaCodeSchema
+  twoFaCodeSchema,
+  twoFaRemoveSchema
 ];
