@@ -10,7 +10,8 @@ import {
   generateTotp,
   generate2FaQrCode,
   generate2FaSecret,
-  verify2FaCode
+  verify2FaToken,
+  getTotpSecret
 } from "../services/auth.services.js";
 import {
   getTokenData,
