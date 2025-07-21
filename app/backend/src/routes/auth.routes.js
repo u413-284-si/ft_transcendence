@@ -41,8 +41,6 @@ export default async function authRoutes(fastify) {
     authAndDecodTwoFaLoginHandler
   );
 
-  fastify.get("/2fa/login/status", optionTwoFaLoginStatus, twoFaStatusHandler);
-
   fastify.get("/2fa/status", optionTwoFaStatus, twoFaStatusHandler);
 
   fastify.post("/2fa/remove", optionTwoFaRemove, twoFaRemoveHandler);
@@ -141,15 +139,6 @@ const optionTwoFaLoginVerify = {
 
 const optionTwoFaStatus = {
   onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionTwoFaLoginStatus = {
-  onRequest: [authorizeUseTwoFaLoginAccess],
   schema: {
     response: {
       ...errorResponses

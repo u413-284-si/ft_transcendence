@@ -123,21 +123,6 @@ export async function geTwoFaStatus(): Promise<
   );
 }
 
-export async function getLogiTwoFaStatus(): Promise<
-  ApiResponse<{ haTwoFa: boolean }>
-> {
-  const url = "/api/auth/2fa/login/status";
-
-  return apiFetch<{ haTwoFa: boolean }>(
-    url,
-    {
-      method: "GET",
-      credentials: "same-origin"
-    },
-    false
-  );
-}
-
 export async function removeTwoFa(
   password: string
 ): Promise<ApiResponse<null>> {
