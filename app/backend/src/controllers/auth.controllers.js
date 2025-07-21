@@ -211,7 +211,7 @@ export async function twoFaQRCodeHandler(request, reply) {
     const totp = generateTotp(username, secret);
     const data = await generate2FaQrCode(totp);
 
-    await updateTotpSecret(request.user.id, secret.toString());
+    await updateTotpSecret(request.user.id, secret);
 
     return reply
       .code(200)
