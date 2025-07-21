@@ -186,6 +186,22 @@ export async function authAndDecodeAccessHandler(request, reply) {
   }
 }
 
+export async function authAndDecodeTwoFaTempHandler(request, reply) {
+  const action = "Auth and decode 2FA temp token";
+  try {
+    const data = request.user;
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `authAndDecodeAccessHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
 export async function authRefreshHandler(request, reply) {
   const action = "Auth refresh token";
   try {
