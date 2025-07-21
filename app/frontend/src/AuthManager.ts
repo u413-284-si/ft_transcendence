@@ -2,6 +2,9 @@ import { router } from "./routing/Router.js";
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
+  authAndDecodeTwoFaTempToken,
+  getTempTwoFaStatus,
+  getTwoFaStatus,
   refreshAccessToken,
   userLogin,
   userLogout
@@ -24,6 +27,7 @@ export class AuthManager {
   private token: Token | null = null;
   private listeners: AuthChangeCallback[] = [];
   private user: User | null = null;
+  private twoFaPending: boolean = false;
 
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
@@ -83,19 +87,39 @@ export class AuthManager {
 
   public async login(username: string, password: string): Promise<boolean> {
     try {
-      const apiResponse = await userLogin(username, password);
-      if (!apiResponse.success) {
-        if (apiResponse.status === 401) {
+      const apiResponseUserLogin = await userLogin(username, password);
+      if (!apiResponseUserLogin.success) {
+        if (apiResponseUserLogin.status === 401) {
           toaster.error("Invalid username or password");
           return false;
         } else {
-          throw new ApiError(apiResponse);
+          throw new ApiError(apiResponseUserLogin);
         }
+      }
+      const hasTwoFa = getDataOrThrow(await getTempTwoFaStatus()).hasTwoFa;
+      if (hasTwoFa) {
+        this.twoFaPending = true;
+        router.navigate("/2fa-verify", false);
       }
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
       console.log("User logged in");
       this.updateAuthState(token);
+      return true;
+    } catch (error) {
+      router.handleError("Login error", error);
+      return false;
+    }
+  }
+
+  public async loginAfterTwoFa() {
+    try {
+      const token = getDataOrThrow(await authAndDecodeAccessToken());
+      this.user = getDataOrThrow(await getUserProfile());
+      console.log("User logged in");
+      console.log("token", token);
+      this.updateAuthState(token);
+      this.twoFaPending = false;
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -138,6 +162,10 @@ export class AuthManager {
 
   public isAuthenticated(): boolean {
     return this.authenticated;
+  }
+
+  public isTwoFaPending(): boolean {
+    return this.twoFaPending;
   }
 
   public getToken(): Token {
