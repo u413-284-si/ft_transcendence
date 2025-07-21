@@ -1,4 +1,5 @@
-import { getDataOrThrow } from "./services/api.js";
+import { ApiError, getDataOrThrow } from "./services/api.js";
+import { verifyTwoFaCode } from "./services/authServices.js";
 import { getUserTournaments } from "./services/tournamentService.js";
 import { toaster } from "./Toaster.js";
 
@@ -272,11 +273,11 @@ export function validateImageFile(
   return true;
 }
 
-export function validateTwoFaCode(
+export async function validateTwoFaCode(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
-): boolean {
-  const twoFaCodeRegex: RegExp = /\d{6}/;
+): Promise<boolean> {
+  const twoFaCodeRegex: RegExp = /^\d{6}$/;
   const twoFaCode = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
@@ -289,5 +290,17 @@ export function validateTwoFaCode(
     markInvalid("Code must be a 6-digit number.", inputEl, errorEl);
     return false;
   }
+
+  const apiResponse = await verifyTwoFaCode(twoFaCode);
+  console.log("API Response: ", apiResponse);
+  if (!apiResponse.success) {
+    if (apiResponse.status === 401) {
+      markInvalid("Invalid code.", inputEl, errorEl);
+      return false;
+    } else {
+      throw new ApiError(apiResponse);
+    }
+  }
+
   return true;
 }
