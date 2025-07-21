@@ -2,7 +2,7 @@ import { router } from "./routing/Router.js";
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
-  authAndDecodeTwoFaTempToken,
+  authAndDecodeTwoFaloginToken,
   getTempTwoFaStatus,
   getTwoFaStatus,
   refreshAccessToken,

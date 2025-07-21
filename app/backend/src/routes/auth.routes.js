@@ -30,18 +30,18 @@ export default async function authRoutes(fastify) {
   fastify.post("/2fa/verify", optionsTwoFaVerify, twoFaVerifyHandler);
 
   fastify.post(
-    "/2fa/temp/verify",
+    "/2fa/login/verify",
     optionsTwoFaTempVerify,
     twoFaTempVerifyHandler
   );
 
   fastify.get(
-    "/2fa/temp/token",
+    "/2fa/login/token",
     optionsAuthUserTwoFaTemp,
     authAndDecodeTwoFaTempHandler
   );
 
-  fastify.get("/2fa/temp/status", optionsTwoFaTempStatus, twoFaStatusHandler);
+  fastify.get("/2fa/login/status", optionsTwoFaTempStatus, twoFaStatusHandler);
 
   fastify.get("/2fa/status", optionsTwoFaStatus, twoFaStatusHandler);
 

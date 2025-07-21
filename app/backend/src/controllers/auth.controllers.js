@@ -14,7 +14,7 @@ import {
   getTotpSecret,
   update2FaStatus,
   get2FaStatus,
-  createTwoFaTempToken
+  createTwoFaloginToken
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -61,21 +61,21 @@ export async function loginUserHandler(request, reply) {
     }
 
     if ((await get2FaStatus(payload.id)) === true) {
-      const twoFaTempTokenTimeToExpire = new Date(
-        Date.now() + parseInt(env.twoFaTempTokenTimeToExpireInMS)
+      const twoFaloginTokenTimeToExpire = new Date(
+        Date.now() + parseInt(env.twoFaloginTokenTimeToExpireInMS)
       );
-      const twoFaTempTokenPayload = { ...payload, tokenTyp: "twoFaTemp" };
-      const twoFaTempToken = await createTwoFaTempToken(
+      const twoFaloginTokenPayload = { ...payload, tokenTyp: "twoFaTemp" };
+      const twoFaloginToken = await createTwoFaloginToken(
         reply,
-        twoFaTempTokenPayload
+        twoFaloginTokenPayload
       );
       return reply
-        .setCookie("twoFaTempToken", twoFaTempToken, {
+        .setCookie("twoFaloginToken", twoFaloginToken, {
           httpOnly: true,
           secure: true,
           sameSite: "strict",
-          path: "/api/auth/2fa/temp/",
-          expires: twoFaTempTokenTimeToExpire
+          path: "/api/auth/2fa/login/",
+          expires: twoFaloginTokenTimeToExpire
         })
         .code(200)
         .send({
