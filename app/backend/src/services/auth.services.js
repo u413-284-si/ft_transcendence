@@ -13,7 +13,7 @@ export async function verifyRefreshToken(request) {
 }
 
 export async function verifyTwoFaTempToken(request) {
-  return await request.verifyTwoFaTempTokenVerify();
+  return await request.twoFaTempTokenVerify();
 }
 
 export function verify2FaToken(totp, token) {
