@@ -202,47 +202,57 @@ function convertProgressToFunnelSeries(progressBySize) {
   return chartData;
 }
 
-export function computeTournamentsLastNDays(tournaments) {
-  const result = {};
+export function computeTournamentsLastNDays(tournaments, days) {
+  const sizes = [4, 8, 16];
+  const dayBuckets = {};
+  const sortedDates = [];
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = days - 1; i >= 0; i--) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    const key = formatDate(date);
-    result[key] = {
-      played4: 0,
-      won4: 0,
-      played8: 0,
-      won8: 0,
-      played16: 0,
-      won16: 0
-    };
+    const dayStr = formatDate(date);
+    const bucket = {};
+    for (const size of sizes) {
+      bucket[`won${size}`] = 0;
+      bucket[`loss${size}`] = 0;
+    }
+    dayBuckets[dayStr] = bucket;
+    sortedDates.push(dayStr);
   }
 
-  tournaments.forEach((t) => {
-    const day = formatDate(t.updatedAt);
-    const size = t.maxPlayers;
-    const won = t.roundReached === Math.log2(t.maxPlayers) + 1;
+  for (const tournament of tournaments) {
+    const date = formatDate(tournament.updatedAt);
+    if (!dayBuckets[date]) continue;
 
-    const dayStats = result[day];
-    if (!dayStats) return;
+    const size = tournament.maxPlayers;
+    const totalRounds = Math.log2(size);
+    const won = tournament.roundReached === totalRounds + 1;
 
-    if (size === 4) {
-      dayStats.played4++;
-      if (won) dayStats.won4++;
-    } else if (size === 8) {
-      dayStats.played8++;
-      if (won) dayStats.won8++;
-    } else if (size === 16) {
-      dayStats.played16++;
-      if (won) dayStats.won16++;
+    const key = (won ? "won" : "loss") + size;
+    if (dayBuckets[date][key] !== undefined) {
+      dayBuckets[date][key]++;
     }
-  });
+  }
 
-  // Return sorted array for frontend ease
-  const sortedData = Object.entries(result)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, counts]) => ({ date, ...counts }));
+  const series = [];
+  for (const size of sizes) {
+    series.push(
+      buildSeries(`won${size}`, `Win ${size}`, sortedDates, dayBuckets)
+    );
+    series.push(
+      buildSeries(`loss${size}`, `Loss ${size}`, sortedDates, dayBuckets)
+    );
+  }
 
-  return sortedData;
+  return series;
+}
+
+function buildSeries(key, name, sortedDates, dayBuckets) {
+  return {
+    name,
+    data: sortedDates.map((date) => ({
+      x: date,
+      y: dayBuckets[date][key]
+    }))
+  };
 }

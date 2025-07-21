@@ -148,7 +148,7 @@ export async function getDashboardTournamentsHandler(request, reply) {
 
     const summary = await getUserTournamentSummary(allTournaments);
     const progress = await getUserTournamentProgress(allTournaments);
-    const lastNDays = computeTournamentsLastNDays(tournamentsLastNDays);
+    const lastNDays = computeTournamentsLastNDays(tournamentsLastNDays, N);
 
     return reply.code(200).send({
       message: createResponseMessage(action, true),
