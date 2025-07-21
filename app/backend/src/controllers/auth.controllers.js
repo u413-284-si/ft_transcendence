@@ -230,7 +230,8 @@ export async function twoFaVerifyHandler(request, reply) {
   try {
     const { code } = request.body;
     const secret = await getTotpSecret(request.user.id);
-    if (!verify2FaCode(secret, code)) {
+    const totp = generateTotp(request.user.username, secret);
+    if (!verify2FaToken(totp, code)) {
       return httpError(
         reply,
         401,
