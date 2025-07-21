@@ -3,7 +3,7 @@ import {
   getUserDashboardMatches,
   getUserDashboardTournaments,
   getUserStats,
-  getUserStatsByUsername,
+  getUserStatsByUsername
 } from "../services/userStatsServices.js";
 import {
   getUserByUsername,
@@ -26,10 +26,7 @@ import { StatFieldGroup } from "../components/StatField.js";
 import { getDataOrThrow } from "../services/api.js";
 import { TabButton } from "../components/TabButton.js";
 import { Chart } from "../components/Chart.js";
-import {
-  DashboardMatches,
-  DashboardTournaments,
-} from "../types/DataSeries.js";
+import { DashboardMatches, DashboardTournaments } from "../types/DataSeries.js";
 import { makeWinLossOptions } from "../charts/winLossOptions.js";
 import { makeWinrateOptions } from "../charts/winrateOptions.js";
 import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
@@ -37,6 +34,7 @@ import { makeScoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions
 import { makeChartOptions, renderChart } from "../charts/utils.js";
 import { tournamentSummaryOptions } from "../charts/tournamentSummaryOptions.js";
 import { makeTournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
+import { maketournamentLastNDaysOptions } from "../charts/tournamentsLastNDaysOptions.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -55,7 +53,6 @@ export default class StatsView extends AbstractView {
     super();
     this.setTitle("Stats");
   }
-
 
   createHTML() {
     if (!this.userStats) throw new Error("User stats is null");
@@ -219,7 +216,7 @@ export default class StatsView extends AbstractView {
   }
 
   getTournamentsDashboard(): string {
-    return /* HTML */ `<div class="p-6 mx-auto space-y-8 min-h-screen">
+    return /* HTML */ `<div class="p-6 mx-auto space-y-8">
       <div class="flex gap-8">
         ${Chart({
           title: "Tournament Summary",
@@ -239,6 +236,14 @@ export default class StatsView extends AbstractView {
           title: "Tournament Progress 16",
           chartId: "tournament-progress-16"
         })}
+      </div>
+      <div class="grid grid-cols-3 gap-6">
+        <div class="col-span-2">
+          ${Chart({
+            title: "Tournaments Last 10 Days",
+            chartId: "tournament-last-10-days"
+          })}
+        </div>
       </div>
     </div>`;
   }
@@ -276,7 +281,9 @@ export default class StatsView extends AbstractView {
   async fetchData() {
     if (this.viewType === "self") {
       this.dashboardMatches = getDataOrThrow(await getUserDashboardMatches());
-      this.dashboardTournaments = getDataOrThrow(await getUserDashboardTournaments());
+      this.dashboardTournaments = getDataOrThrow(
+        await getUserDashboardTournaments()
+      );
       this.userStats = getDataOrThrow(await getUserStats());
       this.matches = getDataOrThrow(await getUserPlayedMatches());
       return;
@@ -287,7 +294,9 @@ export default class StatsView extends AbstractView {
     if (!userStatsArray[0]) throw new Error("Could not fetch user-stats");
     this.userStats = userStatsArray[0];
     if (this.viewType === "friend") {
-      this.matches = getDataOrThrow(await getUserPlayedMatchesByUsername(this.username));
+      this.matches = getDataOrThrow(
+        await getUserPlayedMatchesByUsername(this.username)
+      );
     }
   }
 
@@ -321,7 +330,8 @@ export default class StatsView extends AbstractView {
 
   populateChartOptions(): void {
     if (!this.dashboardMatches) throw new Error("Dashboard matches is null");
-    if (!this.dashboardTournaments) throw new Error("Tournament matches is null");
+    if (!this.dashboardTournaments)
+      throw new Error("Tournament matches is null");
     if (!this.userStats) throw new Error("User stats is null");
 
     this.chartOptions["matches"] = {
@@ -361,6 +371,9 @@ export default class StatsView extends AbstractView {
       "tournament-progress-16": makeTournamentProgressOptions(
         "Tournament Progress 16",
         this.dashboardTournaments.progress["16"].reverse()
+      ),
+      "tournament-last-10-days": maketournamentLastNDaysOptions(
+        this.dashboardTournaments.lastNDays
       )
     };
   }

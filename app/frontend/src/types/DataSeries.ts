@@ -44,7 +44,20 @@ type TournamentProgressSeries = {
   [size: string]: TournamentProgressPoint[];
 };
 
+export type TournamentDayPoint = {
+  date: string; // Format: 'YYYY-MM-DD'
+  played4: number;
+  won4: number;
+  played8: number;
+  won8: number;
+  played16: number;
+  won16: number;
+};
+
+export type TournamentDaySeries = TournamentDayPoint[];
+
 export type DashboardTournaments = {
   summary: TournamentSummarySeries;
   progress: TournamentProgressSeries;
+  lastNDays: TournamentDaySeries;
 };
