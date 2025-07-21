@@ -7,7 +7,9 @@ import {
   twoFaQRCodeHandler,
   twoFaVerifyHandler,
   twoFaStatusHandler,
-  twoFaRemoveHandler
+  twoFaRemoveHandler,
+  authAndDecodeTwoFaTempHandler,
+  twoFaTempVerifyHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import {
@@ -27,7 +29,19 @@ export default async function authRoutes(fastify) {
 
   fastify.post("/2fa/verify", optionsTwoFaVerify, twoFaVerifyHandler);
 
-  fastify.post("/2fa/temp/verify", optionsTwoFaTempVerify, twoFaVerifyHandler);
+  fastify.post(
+    "/2fa/temp/verify",
+    optionsTwoFaTempVerify,
+    twoFaTempVerifyHandler
+  );
+
+  fastify.get(
+    "/2fa/temp/token",
+    optionsAuthUserTwoFaTemp,
+    authAndDecodeTwoFaTempHandler
+  );
+
+  fastify.get("/2fa/temp/status", optionsTwoFaTempStatus, twoFaStatusHandler);
 
   fastify.get("/2fa/status", optionsTwoFaStatus, twoFaStatusHandler);
 
@@ -96,6 +110,15 @@ const optionsTwoFaQrCode = {
   }
 };
 
+const optionsAuthUserTwoFaTemp = {
+  onRequest: [authorizeUserTwoFaTempAccess],
+  schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
 const optionsTwoFaVerify = {
   onRequest: [authorizeUserAccess],
   schema: {
@@ -118,6 +141,15 @@ const optionsTwoFaTempVerify = {
 
 const optionsTwoFaStatus = {
   onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionsTwoFaTempStatus = {
+  onRequest: [authorizeUserTwoFaTempAccess],
   schema: {
     response: {
       ...errorResponses
