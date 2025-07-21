@@ -250,7 +250,12 @@ export async function twoFaQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
   try {
     const username = request.user.username;
-    const secret = generate2FaSecret();
+    let secret = "";
+    if (await get2FaStatus(request.user.id)) {
+      secret = await getTotpSecret(request.user.id);
+    } else {
+      secret = generate2FaSecret();
+    }
 
     const totp = generateTotp(username, secret);
     const data = await generate2FaQrCode(totp);
