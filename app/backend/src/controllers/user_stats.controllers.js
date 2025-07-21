@@ -1,4 +1,5 @@
 import {
+  computeTournamentsLastNDays,
   getUserTournamentProgress,
   getUserTournamentSummary,
   scoreDiffLastNMatches,
@@ -110,25 +111,51 @@ export async function getDashboardTournamentsHandler(request, reply) {
   try {
     const userId = parseInt(request.user.id, 10);
 
-    const select = {
+    const allSelect = {
       maxPlayers: true,
       roundReached: true
     };
 
-    const filter = {
+    const allFinishedFilter = {
       isFinished: true
     };
 
-    const tournaments = await getUserTournaments(userId, select, filter);
+    const allTournaments = await getUserTournaments(
+      userId,
+      allSelect,
+      allFinishedFilter
+    );
 
-    const summary = await getUserTournamentSummary(tournaments);
-    const progress = await getUserTournamentProgress(tournaments);
+    const lastNDaysSelect = {
+      maxPlayers: true,
+      roundReached: true,
+      updatedAt: true
+    };
+    const N = 10;
+    const NDaysAgo = new Date();
+    NDaysAgo.setDate(NDaysAgo.getDate() - N);
+
+    const finishedLastNDaysFilter = {
+      isFinished: true,
+      updatedAt: { gte: NDaysAgo }
+    };
+
+    const tournamentsLastNDays = await getUserTournaments(
+      userId,
+      lastNDaysSelect,
+      finishedLastNDaysFilter
+    );
+
+    const summary = await getUserTournamentSummary(allTournaments);
+    const progress = await getUserTournamentProgress(allTournaments);
+    const lastNDays = computeTournamentsLastNDays(tournamentsLastNDays);
 
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: {
         summary,
-        progress
+        progress,
+        lastNDays
       }
     });
   } catch (err) {

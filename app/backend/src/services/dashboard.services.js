@@ -201,3 +201,48 @@ function convertProgressToFunnelSeries(progressBySize) {
 
   return chartData;
 }
+
+export function computeTournamentsLastNDays(tournaments) {
+  const result = {};
+
+  for (let i = 0; i < 10; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    const key = formatDate(date);
+    result[key] = {
+      played4: 0,
+      won4: 0,
+      played8: 0,
+      won8: 0,
+      played16: 0,
+      won16: 0
+    };
+  }
+
+  tournaments.forEach((t) => {
+    const day = formatDate(t.updatedAt);
+    const size = t.maxPlayers;
+    const won = t.roundReached === Math.log2(t.maxPlayers) + 1;
+
+    const dayStats = result[day];
+    if (!dayStats) return;
+
+    if (size === 4) {
+      dayStats.played4++;
+      if (won) dayStats.won4++;
+    } else if (size === 8) {
+      dayStats.played8++;
+      if (won) dayStats.won8++;
+    } else if (size === 16) {
+      dayStats.played16++;
+      if (won) dayStats.won16++;
+    }
+  });
+
+  // Return sorted array for frontend ease
+  const sortedData = Object.entries(result)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, counts]) => ({ date, ...counts }));
+
+  return sortedData;
+}
