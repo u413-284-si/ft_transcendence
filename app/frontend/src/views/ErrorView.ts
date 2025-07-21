@@ -6,13 +6,13 @@ import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 
 export default class ErrorView extends AbstractView {
-  private message: string = i18next.t("errorView.unexpectedErrorText");
+  private message: string = i18next.t("error.unexpected");
   private status: string = "500";
   private cause: string | undefined;
 
   constructor(error: unknown) {
     super();
-    this.setTitle(i18next.t("errorView.errorTitle"));
+    this.setTitle(i18next.t("errorView.title"));
     this.parseError(error);
   }
 
@@ -32,17 +32,17 @@ export default class ErrorView extends AbstractView {
     return /* HTML */ `
       <div class="flex flex-col justify-center items-center gap-4">
         ${Header1({
-          text: i18next.t("errorView.errorStatusText", { status: this.status }),
+          text: i18next.t("errorView.errorStatus", { status: this.status }),
           id: "error-header",
           variant: "error"
         })}
         ${Paragraph({ text: `${this.message}`, id: "error-message" })}
         ${this.cause
-          ? `${Paragraph({ text: i18next.t("errorView.detailsText", { cause: this.cause }), id: "error-cause" })}`
+          ? `${Paragraph({ text: i18next.t("errorView.details", { cause: this.cause }), id: "error-cause" })}`
           : ""}
         ${Button({
           id: "reload-btn",
-          text: i18next.t("errorView.reloadText"),
+          text: i18next.t("errorView.reload"),
           variant: "default",
           size: "md",
           type: "button"

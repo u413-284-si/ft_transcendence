@@ -20,10 +20,10 @@ export default class MatchAnnouncementView extends AbstractView {
 
   constructor(private tournament: Tournament) {
     super();
-    this.setTitle(i18next.t("matchAnnouncementView.nextMatchTitle"));
+    this.setTitle(i18next.t("matchAnnouncementView.title"));
     const match = this.tournament.getNextMatchToPlay();
     if (!match) {
-      throw new Error(i18next.t("global.undefinedMatchError"));
+      throw new Error(i18next.t("error.undefinedMatch"));
     }
     this.player1 = match.player1!;
     this.player2 = match.player2!;
@@ -45,11 +45,11 @@ export default class MatchAnnouncementView extends AbstractView {
         ${Form({
           children: [
             Header1({
-              text: i18next.t("matchAnnouncementView.nextMatchText"),
+              text: i18next.t("matchAnnouncementView.nextMatch"),
               variant: "default"
             }),
             Paragraph({
-              text: i18next.t("matchAnnouncementView.roundMatchText", {
+              text: i18next.t("matchAnnouncementView.roundMatch", {
                 round: this.roundNumber,
                 match: this.matchNumber
               })
@@ -59,7 +59,7 @@ export default class MatchAnnouncementView extends AbstractView {
               vs <b>${escapeHTML(this.player2)}</b>`
             }),
             Button({
-              text: i18next.t("matchAnnouncementView.startMatchText"),
+              text: i18next.t("matchAnnouncementView.startMatch"),
               variant: "default",
               type: "submit"
             })
@@ -72,7 +72,7 @@ export default class MatchAnnouncementView extends AbstractView {
       <section>
         <div class="pt-18 p-6 text-center space-y-6">
           ${Header1({
-            text: i18next.t("matchAnnouncementView.tournamentStatusText"),
+            text: i18next.t("matchAnnouncementView.tournamentStatus"),
             variant: "default"
           })}
 
@@ -80,7 +80,7 @@ export default class MatchAnnouncementView extends AbstractView {
 
           ${Button({
             id: "abort-tournament",
-            text: i18next.t("matchAnnouncementView.abortTournamentText"),
+            text: i18next.t("matchAnnouncementView.abortTournament"),
             variant: "danger",
             type: "button"
           })}
@@ -121,7 +121,7 @@ export default class MatchAnnouncementView extends AbstractView {
 
   private async abortTournament() {
     try {
-      if (!confirm(i18next.t("tournamentView.confirmAbortTournamentText"))) return;
+      if (!confirm(i18next.t("tournamentView.confirmAbortTournament"))) return;
       getDataOrThrow(await deleteTournament(this.tournament.getId()));
       router.reload();
     } catch (error) {

@@ -31,7 +31,7 @@ export default class StatsView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("statsView.statsTitle"));
+    this.setTitle(i18next.t("statsView.title"));
   }
 
   private userStats: UserStats | null = null;
@@ -53,33 +53,33 @@ export default class StatsView extends AbstractView {
               variant: "username"
             })}
             ${Paragraph({
-              text: `${i18next.t("statsView.joinedText")}: ${this.user?.dateJoined.slice(0, 10)}`
+              text: `${i18next.t("statsView.joined")}: ${this.user?.dateJoined.slice(0, 10)}`
             })}
           </div>
 
           ${StatFieldGroup([
             {
               value: `${this.userStats?.matchesPlayed}`,
-              text: i18next.t("statsView.playedText")
+              text: i18next.t("statsView.played")
             },
             {
               value: `${this.userStats?.matchesWon}`,
-              text: i18next.t("global.wonText")
+              text: i18next.t("global.won")
             },
             {
               value: `${this.userStats?.matchesLost}`,
-              text: i18next.t("global.lostText")
+              text: i18next.t("global.lost")
             },
             {
               value: `${this.userStats?.winRate.toFixed(2)} %`,
-              text: i18next.t("statsView.winRateText")
+              text: i18next.t("statsView.winRate")
             }
           ])}
         </div>
       </div>
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
         ${Header1({
-          text: i18next.t("statsView.matchHistoryText"),
+          text: i18next.t("statsView.matchHistory"),
           id: "match-history-header",
           variant: "default"
         })}
@@ -96,11 +96,11 @@ export default class StatsView extends AbstractView {
   getMatchesHTML(): string {
     if (this.viewType === "public") {
       return /* HTML */ ` ${Paragraph({
-        text: i18next.t("statsView.friendOnlyText")
+        text: i18next.t("statsView.friendOnly")
       })}`;
     }
 
-    if (!this.matches) throw new Error(i18next.t("statsView.nullMatchesError"));
+    if (!this.matches) throw new Error(i18next.t("error.nullMatches"));
 
     const matchesRows =
       this.matches.length === 0
@@ -112,13 +112,13 @@ export default class StatsView extends AbstractView {
     return /* HTML */ `${Table({
       id: "match-history-table",
       headers: [
-        i18next.t("statsView.player1Text"),
-        i18next.t("statsView.player1ScoreText"),
-        i18next.t("statsView.player2Text"),
-        i18next.t("statsView.player2ScoreText"),
-        i18next.t("statsView.resultText"),
-        i18next.t("statsView.dateText"),
-        i18next.t("statsView.tournamentText")
+        i18next.t("statsView.player1"),
+        i18next.t("statsView.player1Score"),
+        i18next.t("statsView.player2"),
+        i18next.t("statsView.player2Score"),
+        i18next.t("statsView.result"),
+        i18next.t("statsView.date"),
+        i18next.t("statsView.tournament")
       ],
       rows: matchesRows
     })}`;
@@ -136,7 +136,7 @@ export default class StatsView extends AbstractView {
     }
     this.user = getDataOrThrow(await getUserByUsername(this.username));
     if (!this.user) {
-      throw Error(i18next.t("global.userNotFoundError"));
+      throw Error(i18next.t("global.userNotFound"));
     }
     const requests = getDataOrThrow(
       await getUserFriendRequestByUsername(this.username)
@@ -159,7 +159,8 @@ export default class StatsView extends AbstractView {
     const userStatsArray = getDataOrThrow(
       await getUserStatsByUsername(this.username)
     );
-    if (!userStatsArray[0]) throw new Error(i18next.t("statsView.userStatsNotFoundError"));
+    if (!userStatsArray[0])
+      throw new Error(i18next.t("error.userStatsNotFound"));
     this.userStats = userStatsArray[0];
     if (this.viewType === "friend") {
       this.matches = getDataOrThrow(

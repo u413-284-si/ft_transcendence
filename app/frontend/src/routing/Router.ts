@@ -38,7 +38,9 @@ export class Router {
       // Only allow one dynamic param at the end.
       const match = path.match(/^(.*)\/:([a-zA-Z0-9_]+)$/);
       if (!match) {
-        throw new Error(`Invalid dynamic route pattern: ${path}`);
+        throw new Error(
+          i18next.t("error.invalidDynamicRoutePattern", { pattern: path })
+        );
       }
 
       const staticPart = match[1];

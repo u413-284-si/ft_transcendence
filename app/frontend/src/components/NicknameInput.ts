@@ -12,9 +12,9 @@ export function NicknameInput(players: number): string {
       >
         ${Input({
           id: `nickname${i}`,
-          label: i18next.t("nicknameInput.playerNicknameLabel", { i: i }),
+          label: i18next.t("nicknameInput.playerNickname", { i: i }),
           name: `player-${i}`,
-          placeholder: i18next.t("nicknameInput.enterYourNicknameText"),
+          placeholder: i18next.t("nicknameInput.enterYourNickname"),
           type: "text",
           errorId: `player-error-${i}`
         })}
@@ -22,7 +22,7 @@ export function NicknameInput(players: number): string {
           id: `choice-${i}`,
           name: "userChoice",
           value: `${i}`,
-          label: i18next.t("nicknameInput.playerChoiceLabel", { i: i }),
+          label: i18next.t("nicknameInput.playerChoice", { i: i }),
           checked: isChecked
         })}
       </div>

@@ -60,13 +60,13 @@ export class Layout {
         auth.getUser().avatar || "/images/default-avatar.png";
       return /* HTML */ ` <nav class="relative">
         <div class="container mx-auto flex justify-center space-x-8 ">
-          ${Link({ text: i18next.t("homeView.homeTitle"), href: "/home" })}
+          ${Link({ text: i18next.t("homeView.title"), href: "/home" })}
           ${Link({
-            text: i18next.t("newGameView.newGameTitle"),
+            text: i18next.t("newGameView.title"),
             href: "/newGame"
           })}
           ${Link({
-            text: i18next.t("newTournamentView.newTournamentTitle"),
+            text: i18next.t("newTournamentView.title"),
             href: "/newTournament"
           })}
         </div>
@@ -80,7 +80,7 @@ export class Layout {
           <img
             id="user-avatar"
             src="${userAvatarUrl}"
-            alt="${i18next.t("global.avatarText")}"
+            alt="${i18next.t("global.avatar")}"
             tabindex="0"
             class="w-14 h-14 rounded-full border-3 border-neon-cyan shadow-neon-cyan hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
           />
@@ -89,9 +89,9 @@ export class Layout {
     }
     return /* HTML */ ` <nav>
       <div class="container mx-auto flex justify-center space-x-8">
-        ${Link({ text: i18next.t("loginView.loginTitle"), href: "/login" })}
+        ${Link({ text: i18next.t("loginView.title"), href: "/login" })}
         ${Link({
-          text: i18next.t("registerView.registerTitle"),
+          text: i18next.t("registerView.title"),
           href: "/register"
         })}
         <div class="absolute top-4 right-4">
@@ -108,7 +108,7 @@ export class Layout {
     return /* HTML */ ` <div
       class="container mx-auto flex justify-center space-x-8"
     >
-      <p class="text-sm">${i18next.t("global.pongGameText")} &copy; 2025</p>
+      <p class="text-sm">${i18next.t("global.pongGame")} &copy; 2025</p>
     </div>`;
   }
 
@@ -118,27 +118,27 @@ export class Layout {
 
     const drawer = new Drawer([
       {
-        label: i18next.t("global.editProfileText"),
+        label: i18next.t("global.editProfile"),
         icon: "user",
         href: "/profile"
       },
       {
-        label: i18next.t("statsView.statsTitle"),
+        label: i18next.t("statsView.title"),
         icon: "stats",
         href: `/stats/${auth.getUser().username}`
       },
       {
-        label: i18next.t("friendsView.friendsTitle"),
+        label: i18next.t("friendsView.title"),
         icon: "friends",
         href: "/friends"
       },
       {
-        label: i18next.t("settingsView.settingsTitle"),
+        label: i18next.t("settingsView.title"),
         icon: "settings",
         href: "/settings"
       },
       {
-        label: i18next.t("global.logoutText"),
+        label: i18next.t("global.logout"),
         icon: "logout",
         onClick: async () => {
           await auth.logout();

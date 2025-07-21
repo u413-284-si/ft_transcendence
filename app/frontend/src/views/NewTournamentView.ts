@@ -24,7 +24,7 @@ export default class NewTournamentView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("newTournamentView.newTournamentTitle"));
+    this.setTitle(i18next.t("newTournamentView.title"));
   }
 
   createHTML() {
@@ -32,38 +32,38 @@ export default class NewTournamentView extends AbstractView {
       ${Form({
         children: [
           Header1({
-            text: i18next.t("newTournamentView.newTournamentTitle"),
+            text: i18next.t("newTournamentView.title"),
             variant: "default"
           }),
           Paragraph({
-            text: i18next.t("newTournamentView.newTournamentDescriptionText")
+            text: i18next.t("newTournamentView.newTournamentDescription")
           }),
           Input({
             id: "tournament-name-input",
-            label: i18next.t("newTournamentView.tournamentNameLabel"),
+            label: i18next.t("newTournamentView.tournamentName"),
             name: "tournament-name",
-            placeholder: i18next.t("newTournamentView.enterTournamentNameText"),
+            placeholder: i18next.t("newTournamentView.enterTournamentName"),
             type: "text",
             errorId: "tournament-name-error"
           }),
           RadioGroup({
             name: "players",
-            label: i18next.t("newTournamentView.numberOfPlayersLabel"),
+            label: i18next.t("newTournamentView.numberOfPlayers"),
             options: [
               {
                 id: "players-4",
                 value: "4",
-                label: i18next.t("newTournamentView.players4Label")
+                label: i18next.t("newTournamentView.players4")
               },
               {
                 id: "players-8",
                 value: "8",
-                label: i18next.t("newTournamentView.players8Label")
+                label: i18next.t("newTournamentView.players8")
               },
               {
                 id: "players-16",
                 value: "16",
-                label: i18next.t("newTournamentView.players16Label")
+                label: i18next.t("newTournamentView.players16")
               }
             ],
             selectedValue: "4",
@@ -71,7 +71,7 @@ export default class NewTournamentView extends AbstractView {
             layout: "vertical"
           }),
           Button({
-            text: i18next.t("newTournamentView.startTournamentText"),
+            text: i18next.t("newTournamentView.startTournament"),
             variant: "default",
             size: "md",
             type: "submit"

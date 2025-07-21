@@ -12,7 +12,7 @@ import { getDataOrThrow } from "../services/api.js";
 export default class ResultsView extends AbstractView {
   constructor(private tournament: Tournament) {
     super();
-    this.setTitle(i18next.t("resultsView.resultsTitle"));
+    this.setTitle(i18next.t("resultsView.title"));
   }
 
   createHTML() {
@@ -21,12 +21,12 @@ export default class ResultsView extends AbstractView {
         <!-- Header Section -->
         <div class="p-6 text-center space-y-4">
           ${Header1({
-            text: i18next.t("resultsView.tournamentResultsText"),
+            text: i18next.t("resultsView.tournamentResults"),
             id: "tournament-results-header",
             variant: "default"
           })}
           ${Paragraph({
-            text: `${i18next.t("global.tournamentText", {tournamentName: escapeHTML(this.tournament.getTournamentName())})}`,
+            text: `${i18next.t("global.tournament", { tournamentName: escapeHTML(this.tournament.getTournamentName()) })}`,
             id: "tournament-name"
           })}
         </div>
@@ -34,7 +34,7 @@ export default class ResultsView extends AbstractView {
         <!-- Winner Section -->
         <div class="p-6 text-center space-y-4">
           ${Header2({
-            text: i18next.t("resultsView.championText"),
+            text: i18next.t("resultsView.champion"),
             id: "tournament-champion-header",
             variant: "default"
           })}
@@ -43,7 +43,7 @@ export default class ResultsView extends AbstractView {
             id: "tournament-champion"
           })}
           ${Paragraph({
-            text: i18next.t("resultsView.congratulationsText"),
+            text: i18next.t("resultsView.congratulations"),
             id: "congratulations-text"
           })}
         </div>
@@ -51,7 +51,7 @@ export default class ResultsView extends AbstractView {
         <!-- Bracket Section -->
         <div class="rounded-2xl shadow p-6 text-center space-y-2">
           ${Header2({
-            text: i18next.t("resultsView.bracketText"),
+            text: i18next.t("resultsView.bracket"),
             id: "tournament-bracket-header",
             variant: "default"
           })}
@@ -62,7 +62,7 @@ export default class ResultsView extends AbstractView {
         <div class="mt-1 flex justify-center space-x-4">
           ${Button({
             id: "finish-btn",
-            text: i18next.t("resultsView.finishText"),
+            text: i18next.t("resultsView.finish"),
             variant: "default",
             type: "button"
           })}

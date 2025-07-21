@@ -21,7 +21,7 @@ export default class PlayerNicknamesView extends AbstractView {
     private tournamentName: string
   ) {
     super();
-    this.setTitle(i18next.t("playerNicknamesView.playerNicknamesTitle"));
+    this.setTitle(i18next.t("playerNicknamesView.title"));
   }
 
   createHTML() {
@@ -29,22 +29,22 @@ export default class PlayerNicknamesView extends AbstractView {
       ${Form({
         children: [
           Header1({
-            text: i18next.t("playerNicknamesView.enterPlayerNicknamesText"),
+            text: i18next.t("playerNicknamesView.enterPlayerNicknames"),
             variant: "default"
           }),
           Paragraph({
-            text: i18next.t("global.tournamentText", {
+            text: i18next.t("global.tournament", {
               tournamentName: escapeHTML(this.tournamentName)
             })
           }),
           Paragraph({
-            text: i18next.t("playerNicknamesView.selectControlledPlayerText", {
+            text: i18next.t("playerNicknamesView.selectControlledPlayer", {
               username: escapeHTML(auth.getUser().username)
             })
           }),
           NicknameInput(this.numberOfPlayers),
           Button({
-            text: i18next.t("playerNicknamesView.submitNicknamesText"),
+            text: i18next.t("playerNicknamesView.submitNicknames"),
             variant: "default",
             size: "md",
             type: "submit"

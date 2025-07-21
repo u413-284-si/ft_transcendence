@@ -19,18 +19,18 @@ export default class SettingsView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("settingsView.settingsTitle"));
+    this.setTitle(i18next.t("settingsView.title"));
   }
 
   createHTML() {
     return /* HTML */ `
       <div class="text-center space-y-4">
         ${Header1({
-          text: i18next.t("settingsView.settingsTitle"),
+          text: i18next.t("settingsView.title"),
           variant: "default"
         })}
         ${Paragraph({
-          text: i18next.t("settingsView.settingsText"),
+          text: i18next.t("settingsView.settings"),
           id: "settings-intro"
         })}
         <div class="mt-24 text-center inline-block">
@@ -39,7 +39,7 @@ export default class SettingsView extends AbstractView {
             className: "flex flex-col gap-4",
             children: [
               Paragraph({
-                text: i18next.t("settingsView.preferredLanguageText")
+                text: i18next.t("settingsView.preferredLanguage")
               }),
               `<div class="flex flex-wrap items-end gap-4 mt-2">
                 ${LanguageSwitcher({
@@ -49,7 +49,7 @@ export default class SettingsView extends AbstractView {
                   size: "lg"
                 })}
                 ${Button({
-                  text: i18next.t("settingsView.saveLanguageText"),
+                  text: i18next.t("settingsView.saveLanguage"),
                   variant: "default",
                   size: "md",
                   type: "submit",
@@ -115,14 +115,14 @@ export default class SettingsView extends AbstractView {
 
     try {
       await patchUser(updatedUser);
-      toaster.success(i18next.t("profileView.profileUpdatedSuccessText"));
+      toaster.success(i18next.t("toast.profileUpdatedSuccess"));
       auth.updateUser(updatedUser);
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
-        toaster.error(i18next.t("registerView.emailOrUsernameExistsText"));
+        toaster.error(i18next.t("toast.emailOrUsernameExists"));
         return;
       }
-      toaster.error(i18next.t("profileView.profileUpdateFailedText"));
+      toaster.error(i18next.t("toast.profileUpdateFailed"));
       router.handleError("Error in patchUser()", err);
     }
   }

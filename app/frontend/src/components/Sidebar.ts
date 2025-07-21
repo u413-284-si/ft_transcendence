@@ -43,7 +43,7 @@ export function Sidebar(
         </div>
         <img
           src="${avatar}"
-          alt="${i18next.t("global.avatarText")}"
+          alt="${i18next.t("global.avatar")}"
           class="w-20 h-20 rounded-full border-3 border-white mx-auto shadow"
         />
         ${Header3({
