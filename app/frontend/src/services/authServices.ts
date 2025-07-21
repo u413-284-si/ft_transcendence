@@ -24,6 +24,17 @@ export async function refreshAccessToken(): Promise<ApiResponse<null>> {
   );
 }
 
+export async function authAndDecodeTwoFaTempToken(): Promise<
+  ApiResponse<Token>
+> {
+  const url = "/api/auth/2fa/temp/token";
+
+  return apiFetch<Token>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+}
+
 export async function userLogin(
   usernameOrEmail: string,
   password: string
@@ -83,10 +94,41 @@ export async function verifyTwoFaCode(
   );
 }
 
+export async function verifyTempTwoFaCode(
+  code: string
+): Promise<ApiResponse<null>> {
+  const url = "/api/auth/2fa/temp/verify";
+
+  return apiFetch<null>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ code })
+    },
+    false
+  );
+}
+
 export async function getTwoFaStatus(): Promise<
   ApiResponse<{ hasTwoFa: boolean }>
 > {
   const url = "/api/auth/2fa/status";
+
+  return apiFetch<{ hasTwoFa: boolean }>(
+    url,
+    {
+      method: "GET",
+      credentials: "same-origin"
+    },
+    false
+  );
+}
+
+export async function getTempTwoFaStatus(): Promise<
+  ApiResponse<{ hasTwoFa: boolean }>
+> {
+  const url = "/api/auth/2fa/temp/status";
 
   return apiFetch<{ hasTwoFa: boolean }>(
     url,
