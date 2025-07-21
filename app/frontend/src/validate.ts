@@ -1,7 +1,12 @@
+import { auth } from "./AuthManager.js";
 import { ApiError, getDataOrThrow } from "./services/api.js";
-import { verifyTwoFaCode } from "./services/authServices.js";
+import {
+  verifyTempTwoFaCode,
+  verifyTwoFaCode
+} from "./services/authServices.js";
 import { getUserTournaments } from "./services/tournamentService.js";
 import { toaster } from "./Toaster.js";
+import { ApiResponse } from "./types/IApiResponse.js";
 
 export function isEmptyString(str: string): boolean {
   return str === "";
@@ -291,7 +296,12 @@ export async function validateTwoFaCode(
     return false;
   }
 
-  const apiResponse = await verifyTwoFaCode(twoFaCode);
+  let apiResponse: ApiResponse<null>;
+  if (auth.isTwoFaPending()) {
+    apiResponse = await verifyTempTwoFaCode(twoFaCode);
+  } else {
+    apiResponse = await verifyTwoFaCode(twoFaCode);
+  }
   console.log("API Response: ", apiResponse);
   if (!apiResponse.success) {
     if (apiResponse.status === 401) {
