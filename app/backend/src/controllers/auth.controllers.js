@@ -5,7 +5,7 @@ import {
   createAuthTokens,
   getTokenHash,
   deleteUserRefreshToken,
-  setCookies,
+  setAuthCookies,
   updateTotpSecret,
   generateTotp,
   generate2FaQrCode,
@@ -14,7 +14,6 @@ import {
   getTotpSecret,
   update2FaStatus,
   get2FaStatus,
-  creatTwoFaLoginToken,
   createTwoFaToken,
   setTwoFaCookie
 } from "../services/auth.services.js";
@@ -76,7 +75,7 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
-    return setCookies(reply, accessToken, refreshToken)
+    return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
@@ -147,7 +146,7 @@ export async function googleOauth2LoginHandler(request, reply) {
       payload
     );
 
-    reply = setCookies(reply, accessToken, refreshToken);
+    reply = setAuthCookies(reply, accessToken, refreshToken);
 
     return reply.redirect("http://localhost:4000/home");
   } catch (err) {
@@ -223,7 +222,7 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    return setCookies(reply, accessToken, refreshToken)
+    return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {
@@ -317,7 +316,7 @@ export async function twoFaLoginVerifyHandler(request, reply) {
       sameSite: "strict",
       path: "/api/auth/2fa/login/"
     });
-    return setCookies(reply, accessToken, refreshToken)
+    return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
