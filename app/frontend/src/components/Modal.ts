@@ -4,6 +4,7 @@ export type ModalOptions = {
   children: string[];
   className?: string;
   id?: string;
+  idCloseButton?: string;
   size?: "sm" | "md" | "lg";
 };
 
@@ -17,6 +18,7 @@ export function Modal({
   children,
   className = "",
   id = "",
+  idCloseButton = "",
   size = "md"
 }: ModalOptions): string {
   const classes = [
@@ -27,7 +29,7 @@ export function Modal({
   const content = [
     `<div class="flex justify-end mb-4 w-full">
     ${Button({
-      id: "close-modal-button",
+      id: idCloseButton,
       text: "X"
     })}
   </div>`,
