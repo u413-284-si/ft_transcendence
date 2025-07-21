@@ -22,7 +22,7 @@ export default class TwoFaVerifyView extends AbstractView {
         children: [
           Input({
             id: "two-fa-qr-code-input",
-            label: "Code:",
+            label: "Enter your 2FA code:",
             name: "two-fa-qr-code-input",
             placeholder: "Code",
             type: "text",
