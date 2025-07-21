@@ -124,6 +124,15 @@ export async function createAuthTokens(reply, payload) {
   return { accessToken, refreshToken };
 }
 
+export async function createTwoFaToken(reply, payload) {
+  const twoFaLoginTokenPayload = { ...payload, tokenTyp: "twoFaLogin" };
+  const twoFaLoginToken = await creatTwoFaLoginToken(
+    reply,
+    twoFaLoginTokenPayload
+  );
+  return twoFaLoginToken;
+}
+
 export function setCookies(reply, accessToken, refreshToken) {
   const accessTokenTimeToExpire = new Date(
     Date.now() + parseInt(env.accessTokenTimeToExpireInMs)
@@ -146,6 +155,20 @@ export function setCookies(reply, accessToken, refreshToken) {
       path: "/api/auth/refresh",
       expires: refreshTokenTimeToExpire
     });
+}
+
+export function setTwoFaCookie(reply, twoFaLoginToken) {
+  const twoFaLoginTokenTimeToExpire = new Date(
+    Date.now() + parseInt(env.twoFaLoginTokenTimeToExpireInMS)
+  );
+
+  return reply.setCookie("twoFaLoginToken", twoFaLoginToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    path: "/api/auth/2fa/login/",
+    expires: twoFaLoginTokenTimeToExpire
+  });
 }
 
 export function generateTotp(username, secret) {
