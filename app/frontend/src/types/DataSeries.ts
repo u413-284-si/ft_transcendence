@@ -25,15 +25,11 @@ export type DashboardMatches = {
   scores: ScoresLastNDaysSeries;
 };
 
-type TournamentSummaryPoint = {
-  x: string; // tournament size
-  y: number; // number of games won/lost
+export type TournamentSummaryData = {
+  series: number[];
+  labels: string[];
+  details: { played: number; won: number }[];
 };
-
-type TournamentSummarySeries = {
-  name: "won" | "lost";
-  data: TournamentSummaryPoint[];
-}[];
 
 type TournamentProgressPoint = {
   x: string;
@@ -57,7 +53,7 @@ export type TournamentDaySeries = {
 export type TournamentDayData = TournamentDaySeries[];
 
 export type DashboardTournaments = {
-  summary: TournamentSummarySeries;
+  summary: TournamentSummaryData;
   progress: TournamentProgressSeries;
   lastNDays: TournamentDayData;
 };

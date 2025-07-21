@@ -112,15 +112,14 @@ function formatDate(date) {
 export function computeTournamentSummary(tournaments) {
   const summary = {};
 
-  for (let i = 0; i < supportedSizes.length; i++) {
-    const size = supportedSizes[i];
+  for (const size of supportedSizes) {
     summary[size] = { played: 0, won: 0 };
   }
 
+  // Populate the data
   for (const tournament of tournaments) {
     const size = tournament.maxPlayers;
     const totalRounds = Math.log2(size);
-
     const wonTournament = tournament.roundReached === totalRounds + 1;
 
     if (!summary[size]) continue;
@@ -129,25 +128,21 @@ export function computeTournamentSummary(tournaments) {
     if (wonTournament) summary[size].won++;
   }
 
-  const wonSeriesData = [];
-  const lostSeriesData = [];
+  // Build final return structure
+  const labels = [];
+  const series = [];
+  const details = [];
 
-  for (const size in summary) {
-    const label = `${size}`;
+  for (const size of supportedSizes) {
     const { played, won } = summary[size];
-    const lost = played - won;
+    const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
 
-    wonSeriesData.push({ x: label, y: won });
-    lostSeriesData.push({ x: label, y: lost });
+    labels.push(`${size}-Player`);
+    series.push(winRate);
+    details.push({ played, won });
   }
 
-  wonSeriesData.sort((a, b) => a.x - b.x);
-  lostSeriesData.sort((a, b) => a.x - b.x);
-
-  return [
-    { name: "won", data: wonSeriesData },
-    { name: "lost", data: lostSeriesData }
-  ];
+  return { labels, series, details };
 }
 
 export function computeTournamentProgress(tournaments) {

@@ -31,8 +31,8 @@ import { makeWinLossOptions } from "../charts/winLossOptions.js";
 import { makeWinrateOptions } from "../charts/winrateOptions.js";
 import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { makeScoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
-import { makeChartOptions, renderChart } from "../charts/utils.js";
-import { tournamentSummaryOptions } from "../charts/tournamentSummaryOptions.js";
+import { renderChart } from "../charts/utils.js";
+import { maketournamentSummaryOptions } from "../charts/tournamentSummaryOptions.js";
 import { makeTournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 import { maketournamentLastNDaysOptions } from "../charts/tournamentsLastNDaysOptions.js";
 
@@ -356,8 +356,7 @@ export default class StatsView extends AbstractView {
       )
     };
     this.chartOptions["tournaments"] = {
-      "tournament-summary": makeChartOptions(
-        tournamentSummaryOptions,
+      "tournament-summary": maketournamentSummaryOptions(
         this.dashboardTournaments.summary
       ),
       "tournament-progress-4": makeTournamentProgressOptions(

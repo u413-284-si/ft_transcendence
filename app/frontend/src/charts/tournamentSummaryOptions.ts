@@ -1,54 +1,64 @@
 import type { ApexOptions } from "apexcharts";
+import { TournamentSummaryData } from "../types/DataSeries";
 
-export const tournamentSummaryOptions: Omit<ApexOptions, "series"> = {
-  chart: {
-    type: "bar",
-    stacked: true,
-    fontFamily: "inherit",
-    background: "transparent",
-    toolbar: {
-      show: false
+export function maketournamentSummaryOptions(
+  data: TournamentSummaryData
+): ApexOptions {
+  const options: ApexOptions = {
+    series: data.series,
+    chart: {
+      height: 300,
+      type: "radialBar"
     },
-    height: 300,
-    width: 800
-  },
-  plotOptions: {
-    bar: {
-      horizontal: false,
-      borderRadius: 4
-    }
-  },
-  colors: ["var(--color-neon-green)", "var(--color-neon-red)"],
-  xaxis: {
-    type: "category",
-    title: {
-      text: "Tournament Size"
+    plotOptions: {
+      radialBar: {
+        offsetY: 0,
+        startAngle: 0,
+        endAngle: 270,
+        hollow: {
+          margin: 5,
+          size: "30%",
+          background: "transparent"
+        },
+        dataLabels: {
+          name: {
+            show: false
+          },
+          value: {
+            show: false
+          }
+        },
+        barLabels: {
+          enabled: true,
+          useSeriesColors: true,
+          offsetX: -8,
+          fontSize: "14px",
+          formatter: function (seriesName, opts) {
+            const detail = data.details[opts.seriesIndex];
+            return `${seriesName}: ${detail.won} (${detail.played})`;
+          }
+        }
+      }
     },
-    labels: {
-      formatter: (val: string) => `${val}-Player`
+    colors: ["#1ab7ea", "#0084ff", "#39539E", "#0077B5"],
+    labels: data.labels,
+    tooltip: {
+      enabled: true,
+      theme: "dark",
+      custom: ({ series, seriesIndex, w }) => {
+        const label = w.globals.labels[seriesIndex];
+        const detail = data.details[seriesIndex];
+        const winRate = series[seriesIndex];
+        return /* HTML */ `
+          <div style="padding:8px; color:white; font-size:14px;">
+            <strong>${label}</strong><br />
+            Wins: ${detail.won}<br />
+            Played: ${detail.played}<br />
+            Win Rate: ${winRate}%
+          </div>
+        `;
+      }
     }
-  },
-  yaxis: {
-    title: {
-      text: "Number of Tournaments"
-    },
-    min: 0,
-    forceNiceScale: true,
-    labels: {
-      formatter: (val: number) => `${val}`
-    }
-  },
-  tooltip: {
-    theme: "dark",
-    y: {
-      formatter: (val: number) => `${val}`
-    }
-  },
-  legend: {
-    position: "top",
-    horizontalAlign: "right",
-    labels: {
-      colors: "var(--color-grey)"
-    }
-  }
-};
+  };
+  return options;
+}
