@@ -188,7 +188,7 @@ export async function authAndDecodeAccessHandler(request, reply) {
 }
 
 export async function authAndDecodetwoFaLoginHandler(request, reply) {
-  const action = "Auth and decode 2FA temp token";
+  const action = "Auth and decode 2FA login token";
   try {
     const data = request.user;
     return reply
