@@ -12,8 +12,9 @@ export async function verifyRefreshToken(request) {
   return await request.refreshTokenVerify();
 }
 
-export function verify2FaCode(totp, code) {
-  return totp.validate({ code, window: 1 });
+export function verify2FaToken(totp, token) {
+  const delta = totp.validate({ token, window: 1 });
+  return delta !== null;
 }
 
 export async function createHash(value) {
