@@ -65,23 +65,28 @@ function calcScoreDiff(match) {
 }
 
 export async function scoresLastNDays(matchesLastNDays, N) {
-  const scores = aggregatePlayerScores(matchesLastNDays);
-  const data = fillMissingDays(scores, N);
-
-  return data;
+  const dailyTotals = initializeDailyTotals(N);
+  aggregatePlayerScores(matchesLastNDays, dailyTotals);
+  return Object.entries(dailyTotals).map(([x, y]) => ({ x, y }));
 }
 
-function aggregatePlayerScores(matches) {
-  const dailyTotals = {};
+function initializeDailyTotals(days) {
+  const totals = {};
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    totals[formatDate(date)] = 0;
+  }
+  return totals;
+}
 
+function aggregatePlayerScores(matches, dailyTotals) {
   for (const match of matches) {
     const day = formatDate(match.date);
-    const score = getPlayerScore(match);
-
-    dailyTotals[day] = (dailyTotals[day] || 0) + score;
+    if (day in dailyTotals) {
+      dailyTotals[day] += getPlayerScore(match);
+    }
   }
-
-  return dailyTotals;
 }
 
 function getPlayerScore(match) {
@@ -95,20 +100,6 @@ function getPlayerScore(match) {
 
 function formatDate(date) {
   return date.toISOString().split("T")[0];
-}
-
-function fillMissingDays(data, days) {
-  const result = [];
-
-  for (let i = days - 1; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-
-    const dayStr = formatDate(date);
-    result.push({ x: dayStr, y: data[dayStr] || 0 });
-  }
-
-  return result;
 }
 
 export async function getUserTournamentSummary(tournaments) {
