@@ -11,7 +11,9 @@ import {
   generate2FaQrCode,
   generate2FaSecret,
   verify2FaToken,
-  getTotpSecret
+  getTotpSecret,
+  update2FaStatus,
+  get2FaStatus
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -239,9 +241,27 @@ export async function twoFaVerifyHandler(request, reply) {
         "Invalid 2FA code"
       );
     }
+    await update2FaStatus(request.user.id, true);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true) });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaStatusHandler(request, reply) {
+  const action = "Get 2FA status";
+  try {
+    const hasTwoFa = await get2FaStatus(request.user.id);
+    const data = { hasTwoFa: hasTwoFa };
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
