@@ -24,7 +24,7 @@ export async function refreshAccessToken(): Promise<ApiResponse<null>> {
   );
 }
 
-export async function authAndDecodeTwoFaloginToken(): Promise<
+export async function authAndDecodetwoFaLoginToken(): Promise<
   ApiResponse<Token>
 > {
   const url = "/api/auth/2fa/login/token";
@@ -94,7 +94,7 @@ export async function verifyTwoFaCode(
   );
 }
 
-export async function verifyTempTwoFaCode(
+export async function verifyLoginTwoFaCode(
   code: string
 ): Promise<ApiResponse<null>> {
   const url = "/api/auth/2fa/login/verify";
@@ -125,7 +125,7 @@ export async function getTwoFaStatus(): Promise<
   );
 }
 
-export async function getTempTwoFaStatus(): Promise<
+export async function getLoginTwoFaStatus(): Promise<
   ApiResponse<{ hasTwoFa: boolean }>
 > {
   const url = "/api/auth/2fa/login/status";

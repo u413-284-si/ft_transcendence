@@ -94,13 +94,13 @@ await fastify.register(jwt, {
   }
 });
 await fastify.register(jwt, {
-  namespace: "twoFaloginToken",
-  secret: env.jwtTwoFaloginTokenSecret,
-  jwtVerify: "twoFaloginTokenVerify",
-  jwtSign: "twoFaloginTokenSign",
-  sign: { expiresIn: env.twoFaloginTokenTimeToExpireInMS },
+  namespace: "twoFaLoginToken",
+  secret: env.jwttwoFaLoginTokenSecret,
+  jwtVerify: "twoFaLoginTokenVerify",
+  jwtSign: "twoFaLoginTokenSign",
+  sign: { expiresIn: env.twoFaLoginTokenTimeToExpireInMS },
   cookie: {
-    cookieName: "twoFaloginToken",
+    cookieName: "twoFaLoginToken",
     signed: false
   }
 });

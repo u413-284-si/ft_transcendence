@@ -12,8 +12,8 @@ export async function verifyRefreshToken(request) {
   return await request.refreshTokenVerify();
 }
 
-export async function verifyTwoFaloginToken(request) {
-  return await request.twoFaloginTokenVerify();
+export async function verifytwoFaLoginToken(request) {
+  return await request.twoFaLoginTokenVerify();
 }
 
 export function verify2FaToken(totp, token) {
@@ -41,8 +41,8 @@ export async function createRefreshToken(reply, user) {
   return await reply.refreshTokenSign(user);
 }
 
-export async function createTwoFaloginToken(reply, user) {
-  return await reply.twoFaloginTokenSign(user);
+export async function createtwoFaLoginToken(reply, user) {
+  return await reply.twoFaLoginTokenSign(user);
 }
 
 export async function updateUserRefreshToken(userId, hashedRefreshToken) {

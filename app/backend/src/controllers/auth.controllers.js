@@ -14,7 +14,7 @@ import {
   getTotpSecret,
   update2FaStatus,
   get2FaStatus,
-  createTwoFaloginToken
+  createtwoFaLoginToken
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -61,21 +61,21 @@ export async function loginUserHandler(request, reply) {
     }
 
     if ((await get2FaStatus(payload.id)) === true) {
-      const twoFaloginTokenTimeToExpire = new Date(
-        Date.now() + parseInt(env.twoFaloginTokenTimeToExpireInMS)
+      const twoFaLoginTokenTimeToExpire = new Date(
+        Date.now() + parseInt(env.twoFaLoginTokenTimeToExpireInMS)
       );
-      const twoFaloginTokenPayload = { ...payload, tokenTyp: "twoFaTemp" };
-      const twoFaloginToken = await createTwoFaloginToken(
+      const twoFaLoginTokenPayload = { ...payload, tokenTyp: "twoFaLogin" };
+      const twoFaLoginToken = await createtwoFaLoginToken(
         reply,
-        twoFaloginTokenPayload
+        twoFaLoginTokenPayload
       );
       return reply
-        .setCookie("twoFaloginToken", twoFaloginToken, {
+        .setCookie("twoFaLoginToken", twoFaLoginToken, {
           httpOnly: true,
           secure: true,
           sameSite: "strict",
           path: "/api/auth/2fa/login/",
-          expires: twoFaloginTokenTimeToExpire
+          expires: twoFaLoginTokenTimeToExpire
         })
         .code(200)
         .send({
@@ -187,7 +187,7 @@ export async function authAndDecodeAccessHandler(request, reply) {
   }
 }
 
-export async function authAndDecodeTwoFaTempHandler(request, reply) {
+export async function authAndDecodetwoFaLoginHandler(request, reply) {
   const action = "Auth and decode 2FA temp token";
   try {
     const data = request.user;
@@ -302,7 +302,7 @@ export async function twoFaVerifyHandler(request, reply) {
   }
 }
 
-export async function twoFaTempVerifyHandler(request, reply) {
+export async function twoFaLoginVerifyHandler(request, reply) {
   const action = "Verify 2FA Code during login";
   try {
     const { code } = request.body;
