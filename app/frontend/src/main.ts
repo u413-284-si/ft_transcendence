@@ -1,4 +1,5 @@
 import Login from "./views/LoginView.js";
+import TwoFaVerify from "./views/TwoFaVerifyView.js";
 import Register from "./views/RegisterView.js";
 import Home from "./views/HomeView.js";
 import NewGame from "./views/NewGameView.js";
@@ -8,7 +9,11 @@ import Settings from "./views/SettingsView.js";
 import Stats from "./views/StatsView.js";
 import Friends from "./views/FriendsView.js";
 import { router } from "./routing/Router.js";
-import { authGuard, guestOnlyGuard } from "./routing/routeGuard.js";
+import {
+  authGuard,
+  guestOnlyGuard,
+  twoFaVerifyGuard
+} from "./routing/routeGuard.js";
 import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 import { layout } from "./Layout.js";
@@ -19,6 +24,7 @@ router
     view: Register,
     guard: guestOnlyGuard
   })
+  .addRoute("/2fa-verify", { view: TwoFaVerify, guard: twoFaVerifyGuard })
   .addRoute("/home", { view: Home, guard: authGuard })
   .addRoute("/newGame", { view: NewGame, guard: authGuard })
   .addRoute("/newTournament", {
