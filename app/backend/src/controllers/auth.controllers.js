@@ -323,7 +323,12 @@ export async function twoFaLoginVerifyHandler(request, reply) {
       reply,
       payload
     );
-    console.log("SET COOKIES");
+    reply.clearCookie("twoFaLoginToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth/2fa/login/"
+    });
     return setCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
