@@ -1,7 +1,9 @@
+import { Language } from "../types/User.js";
+
 export type LanguageSwitcherOptions = {
   id: string;
   className?: string;
-  selectedLang: "en" | "fr" | "de" | "pi" | "tr";
+  selectedLang: Language;
   size?: "sm" | "md" | "lg";
 };
 
@@ -9,14 +11,14 @@ export function LanguageSwitcher({
   id,
   className = "",
   selectedLang,
-  size = "sm",
+  size = "sm"
 }: LanguageSwitcherOptions): string {
   const langs = [
     { code: "en", label: "EN", flag: "🇬🇧" },
     { code: "fr", label: "FR", flag: "🇫🇷" },
     { code: "de", label: "DE", flag: "🇩🇪" },
     { code: "pi", label: "PI", flag: "🏴‍☠️" },
-    { code: "tr", label: "TR", flag: "🌐" },
+    { code: "tr", label: "TR", flag: "🌐" }
   ];
 
   const buttonId = `${id}-button`;
@@ -25,7 +27,7 @@ export function LanguageSwitcher({
   const sizeClasses = {
     sm: "text-sm px-2 py-1",
     md: "text-base px-3 py-1.5",
-    lg: "text-lg px-4 py-2",
+    lg: "text-lg px-4 py-2"
   }[size];
 
   return /* html */ `

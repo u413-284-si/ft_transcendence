@@ -12,6 +12,7 @@ import { authGuard, guestOnlyGuard } from "./routing/routeGuard.js";
 import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 import { layout } from "./Layout.js";
+import { Language } from "./types/User.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard })
@@ -58,13 +59,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     trRes.json()
   ]);
 
-  const preferredLang = localStorage.getItem("preferredLanguage") as
-    | "en"
-    | "fr"
-    | "de"
-    | "pi"
-    | "tr"
-    | null;
+  const preferredLang = localStorage.getItem(
+    "preferredLanguage"
+  ) as Language | null;
 
   await i18next.init({
     lng: preferredLang || "en",

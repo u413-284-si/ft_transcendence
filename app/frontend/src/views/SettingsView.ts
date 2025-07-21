@@ -8,15 +8,14 @@ import { patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
-import { User } from "../types/User.js";
+import { User, Language } from "../types/User.js";
 import { ApiError } from "../services/api.js";
 
 export default class SettingsView extends AbstractView {
   private preferredLanguageFormEl!: HTMLFormElement;
   private preferredLanguageButtonEl!: HTMLElement;
   private preferredLanguageOptionsEl!: HTMLElement;
-  private selectedLanguage: "en" | "fr" | "de" | "pi" | "tr" =
-    i18next.language as "en" | "fr" | "de" | "pi" | "tr";
+  private selectedLanguage: Language = i18next.language as Language;
 
   constructor() {
     super();
@@ -45,12 +44,7 @@ export default class SettingsView extends AbstractView {
               `<div class="flex flex-wrap items-end gap-4 mt-2">
                 ${LanguageSwitcher({
                   id: "preferred-language",
-                  selectedLang: i18next.language as
-                    | "en"
-                    | "fr"
-                    | "de"
-                    | "pi"
-                    | "tr",
+                  selectedLang: i18next.language as Language,
                   className: "w-64",
                   size: "lg"
                 })}
@@ -96,12 +90,8 @@ export default class SettingsView extends AbstractView {
       .querySelectorAll("button[data-lang]")
       .forEach((btn) => {
         btn.addEventListener("click", (e) => {
-          const lang = (e.currentTarget as HTMLElement).dataset.lang as
-            | "en"
-            | "fr"
-            | "de"
-            | "pi"
-            | "tr";
+          const lang = (e.currentTarget as HTMLElement).dataset
+            .lang as Language;
           auth.updateLanguage(lang);
         });
       });

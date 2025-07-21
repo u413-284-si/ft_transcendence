@@ -1,3 +1,14 @@
+const userDefinitionsSchema = {
+  $id: "userDefinitionsSchema",
+  definitions: {
+    language: {
+      type: "string",
+      enum: ["en", "fr", "de", "pi", "tr"],
+      description: "The preferred language of the user"
+    }
+  }
+};
+
 const userSchema = {
   $id: "userSchema",
   type: "object",
@@ -6,7 +17,7 @@ const userSchema = {
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
     avatar: { type: "string" },
-    language: { type: "string" },
+    language: { $ref: "userDefinitionsSchema#/definitions/language" },
     dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" },
     authProvider: {
       $ref: "commonDefinitionsSchema#/definitions/authProvider"
@@ -137,6 +148,7 @@ const updateUserPasswordSchema = {
 };
 
 export const userSchemas = [
+  userDefinitionsSchema,
   userSchema,
   userResponseSchema,
   userArrayResponseSchema,

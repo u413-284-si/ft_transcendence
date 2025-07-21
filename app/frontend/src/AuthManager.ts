@@ -12,7 +12,7 @@ import {
 import { getUserProfile } from "./services/userServices.js";
 import { toaster } from "./Toaster.js";
 import { Token } from "./types/Token.js";
-import { User } from "./types/User.js";
+import { User, Language } from "./types/User.js";
 import { getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
 
@@ -177,9 +177,7 @@ export class AuthManager {
     this.notify();
   }
 
-  public async updateLanguage(
-    lang: "en" | "fr" | "de" | "pi" | "tr"
-  ): Promise<void> {
+  public async updateLanguage(lang: Language): Promise<void> {
     await i18next.changeLanguage(lang);
     console.info(`Language switched to ${lang}`);
     localStorage.setItem("preferredLanguage", lang);

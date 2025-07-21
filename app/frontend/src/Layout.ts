@@ -3,6 +3,7 @@ import { auth } from "./AuthManager.js";
 import { Link } from "./components/Link.js";
 import { Drawer } from "./Drawer.js";
 import { LanguageSwitcher } from "./components/LanguageSwitcher.js";
+import { Language } from "./types/User.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -74,7 +75,7 @@ export class Layout {
         >
           ${LanguageSwitcher({
             id: "lang-switcher",
-            selectedLang: i18next.language as "en" | "fr" | "de" | "pi" | "tr"
+            selectedLang: i18next.language as Language
           })}
           <img
             id="user-avatar"
@@ -96,7 +97,7 @@ export class Layout {
         <div class="absolute top-4 right-4">
           ${LanguageSwitcher({
             id: "lang-switcher",
-            selectedLang: i18next.language as "en" | "fr" | "de" | "pi" | "tr"
+            selectedLang: i18next.language as Language
           })}
         </div>
       </div>
@@ -169,12 +170,7 @@ export class Layout {
 
     options.querySelectorAll("button[data-lang]").forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        const lang = (e.currentTarget as HTMLElement).dataset.lang as
-          | "en"
-          | "fr"
-          | "de"
-          | "pi"
-          | "tr";
+        const lang = (e.currentTarget as HTMLElement).dataset.lang as Language;
         auth.updateLanguage(lang);
       });
     });

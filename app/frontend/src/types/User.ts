@@ -3,7 +3,15 @@ export type User = {
   username: string;
   email?: string;
   avatar?: string;
-  language: "en" | "fr" | "de" | "pi" | "tr";
+  language: Language;
   dateJoined: string;
   authProvider?: string;
 };
+
+export enum Language {
+  en = "en",
+  fr = "fr",
+  de = "de",
+  pi = "pi",
+  tr = "tr"
+}
