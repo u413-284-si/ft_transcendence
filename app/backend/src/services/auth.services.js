@@ -104,8 +104,10 @@ export async function get2FaStatus(userId) {
 }
 
 export async function createAuthTokens(reply, payload) {
-  const accessToken = await createAccessToken(reply, payload);
-  const refreshToken = await createRefreshToken(reply, { id: payload.id });
+  const accessTokenPayload = { ...payload, tokenTyp: "access" };
+  const refreshTokenPayload = { id: payload.id, tokenTyp: "refresh" };
+  const accessToken = await createAccessToken(reply, accessTokenPayload);
+  const refreshToken = await createRefreshToken(reply, refreshTokenPayload);
 
   const newHashedRefreshToken = await createHash(refreshToken);
 
