@@ -301,6 +301,43 @@ export async function twoFaVerifyHandler(request, reply) {
   }
 }
 
+export async function twoFaTempVerifyHandler(request, reply) {
+  const action = "Verify 2FA Code during login";
+  try {
+    const { code } = request.body;
+    const secret = await getTotpSecret(request.user.id);
+    const totp = generateTotp(request.user.username, secret);
+    if (!verify2FaToken(totp, code)) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid 2FA code"
+      );
+    }
+
+    const { username } = await getUser(request.user.id);
+    const payload = await getTokenData(username, "username");
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+    console.log("SET COOKIES");
+    return setCookies(reply, accessToken, refreshToken)
+      .code(200)
+      .send({
+        message: createResponseMessage(action, true),
+        data: { username: payload.username }
+      });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
 export async function twoFaStatusHandler(request, reply) {
   const action = "Get 2FA status";
   try {
