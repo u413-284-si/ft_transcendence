@@ -91,6 +91,18 @@ export async function getTotpSecret(userId) {
   return authentication.totpSecret;
 }
 
+export async function get2FaStatus(userId) {
+  const authentication = await prisma.authentication.findUniqueOrThrow({
+    where: {
+      userId: userId
+    },
+    select: {
+      has2FA: true
+    }
+  });
+  return authentication.has2FA;
+}
+
 export async function createAuthTokens(reply, payload) {
   const accessToken = await createAccessToken(reply, payload);
   const refreshToken = await createRefreshToken(reply, { id: payload.id });
