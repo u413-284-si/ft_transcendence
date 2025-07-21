@@ -138,7 +138,9 @@ export async function getLogiTwoFaStatus(): Promise<
   );
 }
 
-export async function removTwoFa(password: string): Promise<ApiResponse<null>> {
+export async function removeTwoFa(
+  password: string
+): Promise<ApiResponse<null>> {
   const url = "/api/auth/2fa/remove";
   console.log("password: ", password);
 

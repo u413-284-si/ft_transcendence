@@ -11,7 +11,7 @@ import { getEl, getInputEl } from "../utility.js";
 import {
   generatTwoFaQrcode,
   geTwoFaStatus,
-  removTwoFa
+  removeTwoFa
 } from "../services/authServices.js";
 import { auth } from "../AuthManager.js";
 import {
@@ -227,7 +227,7 @@ export default class SettingsView extends AbstractView {
     // FIXME: activate when password policy is applied
     // if (!validatePassword(twoFaPasswordInputEl, twoFaPasswordInputErrorEl))
     //   return;
-    const apiResponse = await removTwoFa(twoFaPasswordInputEl.value);
+    const apiResponse = await removeTwoFa(twoFaPasswordInputEl.value);
     console.log(apiResponse);
     if (!apiResponse.success) {
       if (apiResponse.status === 401) {
