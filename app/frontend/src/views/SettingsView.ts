@@ -25,89 +25,81 @@ import { toaster } from "../Toaster.js";
 export default class SettingsView extends AbstractView {
   private qrCode: string = "";
   private haTwoFa: boolean = false;
+  private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
   constructor() {
     super();
     this.setTitle("Settings");
   }
 
-  createHTML() {
+  private get2FaSetupHTML(): string {
     return /* HTML */ `
-      <div class="text-center space-y-4">
-        ${Header1({
-          text: "Settings",
-          variant: "default"
-        })}
-        ${Paragraph({
-          text: "Configure your preferences and settings here.",
-          id: "settings-intro"
-        })}
-        ${Button({
-          id: "setup-two-fa-button",
-          text: "Setup 2FA",
-          variant: "default",
-          type: "button"
-        })}
-          ${Modal({
-            id: "two-fa-modal",
-            idCloseButton: "close-two-fa-modal-button",
+      ${Button({
+        id: "setup-two-fa-button",
+        text: "Setup 2FA",
+        variant: "default",
+        type: "button"
+      })}
+      ${Modal({
+        id: "two-fa-modal",
+        idCloseButton: "close-two-fa-modal-button",
+        children: [
+          Form({
             children: [
-              Form({
-                children: [
-                  !this.haTwoFa
-                    ? TextBox({
-                        id: "two-fa-qr-code-info",
-                        text: [
-                          "Activate 2FA:",
-                          "",
-                          "please use an authenticator app",
-                          "to scan the QR code below."
-                        ],
-                        variant: "info",
-                        size: "sm"
-                      })
-                    : TextBox({
-                        id: "two-fa-qr-code-info",
-                        text: ["2FA activated"],
-                        variant: "info",
-                        size: "sm"
-                      }),
-                  Image({
-                    id: "two-fa-qr-code",
-                    src: this.qrCode,
-                    alt: "QR Code"
+              !this.haTwoFa
+                ? TextBox({
+                    id: "two-fa-qr-code-info",
+                    text: [
+                      "Activate 2FA:",
+                      "",
+                      "please use an authenticator app",
+                      "to scan the QR code below."
+                    ],
+                    variant: "info",
+                    size: "sm"
+                  })
+                : TextBox({
+                    id: "two-fa-qr-code-info",
+                    text: ["2FA activated"],
+                    variant: "info",
+                    size: "sm"
                   }),
-                  !this.haTwoFa
-                    ? Input({
-                        id: "two-fa-qr-code-input",
-                        label: "Enter code",
-                        name: "two-fa-qr-code-input",
-                        type: "text",
-                        placeholder: "Code",
-                        errorId: "two-fa-qr-code-input-error"
-                      })
-                    : "",
-                  !this.haTwoFa
-                    ? Button({
-                        id: "two-fa-submit",
-                        text: "Activate",
-                        variant: "default",
-                        size: "md",
-                        type: "submit"
-                      })
-                    : Button({
-                        id: "two-fa-remove",
-                        text: "Deactivate",
-                        variant: "danger",
-                        size: "md",
-                        type: "submit"
-                      })
-                ],
-                id: "two-fa-form"
-              })
-            ]
-          })}
-		  ${Modal({
+              Image({
+                id: "two-fa-qr-code",
+                src: this.qrCode,
+                alt: "QR Code"
+              }),
+              !this.haTwoFa
+                ? Input({
+                    id: "two-fa-qr-code-input",
+                    label: "Enter code",
+                    name: "two-fa-qr-code-input",
+                    type: "text",
+                    placeholder: "Code",
+                    errorId: "two-fa-qr-code-input-error"
+                  })
+                : "",
+              !this.haTwoFa
+                ? Button({
+                    id: "two-fa-submit",
+                    text: "Activate",
+                    variant: "default",
+                    size: "md",
+                    type: "submit"
+                  })
+                : Button({
+                    id: "two-fa-remove",
+                    text: "Deactivate",
+                    variant: "danger",
+                    size: "md",
+                    type: "submit"
+                  })
+            ],
+            id: "two-fa-form"
+          })
+        ]
+      })}
+      ${Modal({
         id: "two-fa-password-modal",
         idCloseButton: "close-two-fa-password-modal-button",
         children: [
@@ -134,6 +126,21 @@ export default class SettingsView extends AbstractView {
           })
         ]
       })}
+    `;
+  }
+
+  createHTML() {
+    return /* HTML */ `
+      <div class="text-center space-y-4">
+        ${Header1({
+          text: "Settings",
+          variant: "default"
+        })}
+        ${Paragraph({
+          text: "Configure your preferences and settings here.",
+          id: "settings-intro"
+        })}
+		${this.hasLocalAuth ? this.get2FaSetupHTML() : ""}
         </div>
       </div>
     `;
@@ -258,12 +265,14 @@ export default class SettingsView extends AbstractView {
   }
 
   private async fetchData(): Promise<void> {
-    this.qrCode = getDataOrThrow(await generatTwoFaQrcode());
     this.haTwoFa = getDataOrThrow(await geTwoFaStatus()).haTwoFa;
+    if (this.haTwoFa) this.qrCode = getDataOrThrow(await generatTwoFaQrcode());
   }
 
   private setData() {
-    const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
-    twoFaQrcodeEl.src = this.qrCode;
+    if (this.haTwoFa) {
+      const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
+      twoFaQrcodeEl.src = this.qrCode;
+    }
   }
 }
