@@ -15,7 +15,6 @@ import { Token } from "./types/Token.js";
 import { User } from "./types/User.js";
 import { getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
-import { layout } from "./Layout.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
 
@@ -95,14 +94,11 @@ export class AuthManager {
       }
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
+      await i18next.changeLanguage(this.user.language);
+      localStorage.setItem("preferredLanguage", this.user!.language);
+      console.info(`Language switched to ${this.user!.language}`);
       console.log("User logged in");
       this.updateAuthState(token);
-      i18next.changeLanguage(this.user.language).then(() => {
-        localStorage.setItem("preferredLanguage", this.user!.language);
-        layout.update("auth");
-        router.reload();
-        console.info(`Language switched to ${this.user!.language}`);
-      });
       return true;
     } catch (error) {
       router.handleError("Login error", error);
