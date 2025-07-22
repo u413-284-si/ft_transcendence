@@ -13,6 +13,12 @@ import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 import { layout } from "./Layout.js";
 import { Language } from "./types/User.js";
+import type { Translation } from "./types/translation";
+import de from "./locales/de.js";
+import en from "./locales/en.js";
+import fr from "./locales/fr.js";
+import pi from "./locales/pi.js";
+import tr from "./locales/tr.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard })
@@ -38,43 +44,21 @@ router
   .addRouteChangeListener(updateUI);
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const [frRes, enRes, deRes, piRes, trRes] = await Promise.all([
-    fetch("/locales/fr.json"),
-    fetch("/locales/en.json"),
-    fetch("/locales/de.json"),
-    fetch("/locales/pi.json"),
-    fetch("/locales/tr.json")
-  ]);
-
-  if (!frRes.ok || !enRes.ok || !deRes.ok || !piRes.ok || !trRes.ok) {
-    console.error("Failed to load one or more translation files");
-    return;
-  }
-
-  const [fr, en, de, pi, tr] = await Promise.all([
-    frRes.json(),
-    enRes.json(),
-    deRes.json(),
-    piRes.json(),
-    trRes.json()
-  ]);
-
   const preferredLang = localStorage.getItem(
     "preferredLanguage"
   ) as Language | null;
 
-  await i18next.init({
-    lng: preferredLang || "en",
-    fallbackLng: "fr",
+  await i18next.init<Translation>({
+    lng: preferredLang || "tr",
+    fallbackLng: "en",
     resources: {
-      fr: { translation: fr },
-      en: { translation: en },
-      de: { translation: de },
-      pi: { translation: pi },
-      tr: { translation: tr }
+      en,
+      fr,
+      de,
+      tr,
+      pi
     },
-    interpolation: { escapeValue: false },
-    keySeparator: "."
+    interpolation: { escapeValue: false }
   });
 
   auth.onChange(async (isAuth) => {
