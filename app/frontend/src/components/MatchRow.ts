@@ -22,7 +22,7 @@ export function MatchRow(match: Match, user: string): string {
 
   const tournamentDisplay = match.tournament?.name
     ? i18next.t("global.tournament", {
-        tournamentName: escapeHTML(match.tournament.name)
+        tournamentName: match.tournament.name
       })
     : "N/A";
 
