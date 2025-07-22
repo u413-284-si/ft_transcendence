@@ -7,10 +7,9 @@ import { LanguageSwitcher } from "../components/LanguageSwitcher.js";
 import { patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
-import { router } from "../routing/Router.js";
 import { User, Language } from "../types/User.js";
-import { ApiError } from "../services/api.js";
 import { getButtonEl, getEl } from "../utility.js";
+import { getDataOrThrow } from "../services/api.js";
 
 export default class SettingsView extends AbstractView {
   private preferredLanguageFormEl!: HTMLFormElement;
@@ -117,16 +116,12 @@ export default class SettingsView extends AbstractView {
     };
 
     try {
-      await patchUser(updatedUser);
+      getDataOrThrow(await patchUser(updatedUser));
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
       auth.updateUser(updatedUser);
     } catch (err) {
-      if (err instanceof ApiError && err.status === 409) {
-        toaster.error(i18next.t("toast.emailOrUsernameExists"));
-        return;
-      }
+      console.error("Failed to update preferred language:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
-      router.handleError("Error in patchUser()", err);
     }
   }
 

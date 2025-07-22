@@ -297,8 +297,8 @@ export default class ProfileView extends AbstractView {
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
       auth.updateUser(updatedUser);
     } catch (err) {
+      console.error("Failed to update profile:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
-      router.handleError("Error in patchUser()", err);
     }
   }
 
@@ -319,9 +319,9 @@ export default class ProfileView extends AbstractView {
         ...(avatar ? { avatar } : {})
       };
       auth.updateUser(updatedUser);
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to upload avatar:", err);
       toaster.error(i18next.t("toast.avatarUploadFailed"));
-      router.handleError("Error in uploadAvatar()", error);
     }
   }
 
@@ -373,8 +373,8 @@ export default class ProfileView extends AbstractView {
       newPasswordEl.value = "";
       confirmPasswordEl.value = "";
     } catch (err) {
+      console.error("Failed to update password:", err);
       toaster.error(i18next.t("toast.passwordUpdateFailed"));
-      router.handleError("Error in updateUserPassword()", err);
     }
   }
 
