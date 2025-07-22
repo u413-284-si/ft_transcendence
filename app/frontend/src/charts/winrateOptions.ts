@@ -42,11 +42,15 @@ export function makeWinrateOptions(
       y: { formatter: (val: number) => `${val.toFixed(2)}%` }
     },
     xaxis: {
-      type: "category"
+      type: "category",
+      labels: { style: { colors: "white" } }
     },
     yaxis: {
-      title: { text: "Winrate" },
-      labels: { formatter: (val: number) => `${val}%` }
+      title: { text: "Winrate", style: { color: "white" } },
+      labels: {
+        style: { colors: "white" },
+        formatter: (val: number) => `${val}%`
+      }
     }
   };
   return options;

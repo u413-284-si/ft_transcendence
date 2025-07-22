@@ -19,13 +19,13 @@ export function makeWinLossOptions(
     legend: {
       position: "bottom",
       labels: {
-        colors: ["var(--color-grey)", "var(--color-grey)"]
+        colors: ["var(--color-white)", "var(--color-white)"]
       }
     },
     stroke: {
       show: true,
       width: 1,
-      colors: ["var(--color-grey)"]
+      colors: ["var(--color-white)"]
     },
     plotOptions: {
       pie: {
@@ -36,13 +36,16 @@ export function makeWinLossOptions(
             name: {
               show: true,
               offsetY: -10,
-              color: "var(--color-grey)",
+              color: "var(--color-white)",
               fontSize: "10px"
+            },
+            value: {
+              color: "white"
             },
             total: {
               show: true,
               label: "Win Rate",
-              color: "var(--color-grey)",
+              color: "white",
               fontSize: "10px",
               formatter: () => `${winRate.toFixed(1)}%`
             }
