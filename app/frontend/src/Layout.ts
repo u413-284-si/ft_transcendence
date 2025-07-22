@@ -12,6 +12,8 @@ export class Layout {
   private static instance: Layout;
   private mode: LayoutMode = "guest";
   private rootEl: HTMLElement;
+  private languageSwitcherButtonEl!: HTMLElement;
+  private languageSwitcherOptionsEl!: HTMLElement;
 
   constructor() {
     this.rootEl = document.getElementById("app")!;
@@ -36,10 +38,15 @@ export class Layout {
   }
 
   private renderShell(): void {
+    document.removeEventListener("click", this.onDocumentClick);
+
     const html = this.getShellHTML();
     const cleanHTML = sanitizeHTML(html);
     this.rootEl.innerHTML = cleanHTML;
+
     this.attachAvatarDrawerHandler();
+    this.languageSwitcherButtonEl = getButtonEl("lang-switcher-button")!;
+    this.languageSwitcherOptionsEl = getEl("lang-switcher-options")!;
     this.attachLanguageSwitcherHandler();
   }
 
@@ -155,31 +162,34 @@ export class Layout {
     });
   }
 
+  private onDocumentClick = (event: MouseEvent) => {
+    if (
+      !this.languageSwitcherButtonEl.contains(event.target as Node) &&
+      !this.languageSwitcherOptionsEl.contains(event.target as Node)
+    ) {
+      this.languageSwitcherOptionsEl.classList.add("hidden");
+    }
+  };
+
   private attachLanguageSwitcherHandler(): void {
-    const button = getButtonEl("lang-switcher-button");
-    const options = getEl("lang-switcher-options");
+    if (!this.languageSwitcherButtonEl || !this.languageSwitcherOptionsEl)
+      return;
 
-    if (!button || !options) return;
-
-    button.addEventListener("click", () => {
-      options.classList.toggle("hidden");
+    this.languageSwitcherButtonEl.addEventListener("click", () => {
+      this.languageSwitcherOptionsEl.classList.toggle("hidden");
     });
 
-    options.querySelectorAll("button[data-lang]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const lang = (e.currentTarget as HTMLElement).dataset.lang as Language;
-        auth.updateLanguage(lang);
+    this.languageSwitcherOptionsEl
+      .querySelectorAll("button[data-lang]")
+      .forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const lang = (e.currentTarget as HTMLElement).dataset
+            .lang as Language;
+          auth.updateLanguage(lang);
+        });
       });
-    });
 
-    document.addEventListener("click", (event) => {
-      if (
-        !button.contains(event.target as Node) &&
-        !options.contains(event.target as Node)
-      ) {
-        options.classList.add("hidden");
-      }
-    });
+    document.addEventListener("click", this.onDocumentClick);
   }
 }
 
