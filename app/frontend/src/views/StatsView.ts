@@ -136,7 +136,7 @@ export default class StatsView extends AbstractView {
     }
     this.user = getDataOrThrow(await getUserByUsername(this.username));
     if (!this.user) {
-      throw Error(i18next.t("global.userNotFound"));
+      throw new Error(i18next.t("global.userNotFound"));
     }
     const requests = getDataOrThrow(
       await getUserFriendRequestByUsername(this.username)
