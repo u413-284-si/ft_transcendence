@@ -10,6 +10,7 @@ import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
 import { User, Language } from "../types/User.js";
 import { ApiError } from "../services/api.js";
+import { getButtonEl, getEl } from "../utility.js";
 
 export default class SettingsView extends AbstractView {
   private preferredLanguageFormEl!: HTMLFormElement;
@@ -68,12 +69,8 @@ export default class SettingsView extends AbstractView {
     this.preferredLanguageFormEl = document.querySelector<HTMLFormElement>(
       "#preferred-language-form"
     )!;
-    this.preferredLanguageButtonEl = document.querySelector<HTMLElement>(
-      "#preferred-language-button"
-    )!;
-    this.preferredLanguageOptionsEl = document.querySelector<HTMLElement>(
-      "#preferred-language-options"
-    )!;
+    this.preferredLanguageButtonEl = getButtonEl("preferred-language-button")!;
+    this.preferredLanguageOptionsEl = getEl("preferred-language-options")!;
     this.addListeners();
   }
 
