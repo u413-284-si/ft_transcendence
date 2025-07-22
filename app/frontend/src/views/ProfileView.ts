@@ -220,10 +220,8 @@ export default class ProfileView extends AbstractView {
     this.avatarFormEl = document.querySelector("#avatar-upload-form")!;
     this.profileFormEl = document.querySelector("#profile-form")!;
     this.passwordFormEl = document.querySelector("#password-form")!;
-    this.avatarInputEl = getInputEl("avatar-input") as HTMLInputElement;
-    this.fileLabelEl = getInputEl(
-      "avatar-input-file-label"
-    ) as HTMLInputElement;
+    this.avatarInputEl = getInputEl("avatar-input");
+    this.fileLabelEl = getInputEl("avatar-input-file-label");
     this.addListeners();
   }
 
