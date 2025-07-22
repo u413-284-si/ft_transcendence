@@ -4,6 +4,7 @@ import { Link } from "./components/Link.js";
 import { Drawer } from "./Drawer.js";
 import { LanguageSwitcher } from "./components/LanguageSwitcher.js";
 import { Language } from "./types/User.js";
+import { getButtonEl, getEl } from "./utility.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -155,12 +156,8 @@ export class Layout {
   }
 
   private attachLanguageSwitcherHandler(): void {
-    const button = this.rootEl.querySelector<HTMLElement>(
-      "#lang-switcher-button"
-    );
-    const options = this.rootEl.querySelector<HTMLElement>(
-      "#lang-switcher-options"
-    );
+    const button = getButtonEl("lang-switcher-button");
+    const options = getEl("lang-switcher-options");
 
     if (!button || !options) return;
 
