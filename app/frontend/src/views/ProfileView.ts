@@ -200,9 +200,7 @@ export default class ProfileView extends AbstractView {
       this.uploadAvatar(event)
     );
 
-    this.avatarInputEl.addEventListener("change", (event) =>
-      this.changeFileLabel(event)
-    );
+    this.avatarInputEl.addEventListener("change", () => this.changeFileLabel());
 
     if (this.hasLocalAuth) {
       this.passwordFormEl.addEventListener("submit", (event) =>
@@ -327,9 +325,7 @@ export default class ProfileView extends AbstractView {
     }
   }
 
-  private changeFileLabel(event: Event): void {
-    event.preventDefault();
-
+  private changeFileLabel(): void {
     const files = this.avatarInputEl?.files;
     if (!files || files.length === 0) {
       this.fileLabelEl!.textContent = i18next.t("profileView.noFileSelected");
