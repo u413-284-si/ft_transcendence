@@ -74,6 +74,15 @@ export default class SettingsView extends AbstractView {
     this.addListeners();
   }
 
+  private onDocumentClick = (event: MouseEvent) => {
+    if (
+      !this.preferredLanguageButtonEl.contains(event.target as Node) &&
+      !this.preferredLanguageOptionsEl.contains(event.target as Node)
+    ) {
+      this.preferredLanguageOptionsEl.classList.add("hidden");
+    }
+  };
+
   protected addListeners() {
     this.preferredLanguageFormEl.addEventListener("submit", (event) =>
       this.updatePreferredLanguage(event)
@@ -93,14 +102,11 @@ export default class SettingsView extends AbstractView {
         });
       });
 
-    document.addEventListener("click", (event) => {
-      if (
-        !this.preferredLanguageButtonEl.contains(event.target as Node) &&
-        !this.preferredLanguageOptionsEl.contains(event.target as Node)
-      ) {
-        this.preferredLanguageOptionsEl.classList.add("hidden");
-      }
-    });
+    document.addEventListener("click", this.onDocumentClick);
+  }
+
+  unmount(): void {
+    document.removeEventListener("click", this.onDocumentClick);
   }
 
   private async updatePreferredLanguage(event: Event): Promise<void> {
