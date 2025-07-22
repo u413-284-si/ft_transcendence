@@ -1,7 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { Form } from "../components/Form.js";
 import { Input, addTogglePasswordListener } from "../components/Input.js";
-import { InputFile } from "../components/InputFile.js";
 import { Button } from "../components/Button.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { escapeHTML } from "../utility.js";
@@ -127,10 +126,11 @@ export default class ProfileView extends AbstractView {
                   Paragraph({
                     text: i18next.t("profileView.changeAvatar")
                   }),
-                  InputFile({
+                  Input({
                     id: "avatar-input",
                     label: i18next.t("profileView.chooseFile"),
                     name: "avatar",
+                    type: "file",
                     accept: "image/*",
                     errorId: "avatar-upload-error-message",
                     noFileText: i18next.t("profileView.noFileSelected")
