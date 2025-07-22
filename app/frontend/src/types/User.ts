@@ -8,10 +8,4 @@ export type User = {
   authProvider?: string;
 };
 
-export enum Language {
-  en = "en",
-  fr = "fr",
-  de = "de",
-  pi = "pi",
-  tr = "tr"
-}
+export type Language = "en" | "fr" | "de" | "pi" | "tr";
