@@ -28,6 +28,7 @@
     "accept": "Authorize",
     "decline": "Reject",
     "delete": "Erase",
+    "pending": "Awaiting",
     "remove": "Disconnect"
   },
 

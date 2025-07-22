@@ -46,7 +46,7 @@ export function FriendListItem(
     `;
   } else if (type === "outgoing") {
     actionHTML = `
-      <span class="text-grey0 italic">Pending...</span>
+      <span class="text-grey0 italic">${i18next.t("friendListItem.pending")}...</span>
       ${Button({
         text: i18next.t("friendListItem.delete"),
         variant: "danger",
