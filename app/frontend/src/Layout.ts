@@ -94,7 +94,7 @@ export class Layout {
           text: i18next.t("registerView.title"),
           href: "/register"
         })}
-        <div class="absolute top-4 right-4">
+        <div class="absolute top-0 py-8 right-4 flex items-center space-x-8">
           ${LanguageSwitcher({
             id: "lang-switcher",
             selectedLang: i18next.language as Language
