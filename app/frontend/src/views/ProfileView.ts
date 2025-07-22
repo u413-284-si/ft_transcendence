@@ -16,7 +16,6 @@ import {
   clearInvalid,
   isEmptyString
 } from "../validate.js";
-import { router } from "../routing/Router.js";
 import { getInputEl, getEl } from "../utility.js";
 import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
