@@ -1,17 +1,23 @@
 import { ApexOptions } from "apexcharts";
+import { tournamentColors } from "./utils.js";
 
 export function makeTournamentProgressOptions(
   name: string,
-  data: { x: string; y: number }[]
+  data: { x: string; y: number }[],
+  size: 4 | 8 | 16
 ): ApexOptions {
-  const colors = ["#3dfdfb"];
   const options: ApexOptions = {
     chart: {
       type: "bar",
+      fontFamily: "inherit",
+      background: "transparent",
+      toolbar: {
+        show: false
+      },
       height: 350,
       width: 400
     },
-    colors: colors,
+    colors: [tournamentColors[size][0]],
     dataLabels: {
       enabled: true,
       formatter: function (val, opt) {
@@ -55,5 +61,6 @@ export function makeTournamentProgressOptions(
       }
     }
   };
+  console.log(options);
   return options;
 }

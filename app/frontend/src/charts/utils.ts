@@ -59,7 +59,7 @@ export const CSSColors = {
 };
 
 export const tournamentColors = {
-  4: [CSSColors.cyan],
-  8: [CSSColors.yellow],
-  16: [CSSColors.purple]
+  4: [CSSColors.cyan, CSSColors.red],
+  8: [CSSColors.green, CSSColors.yellow],
+  16: [CSSColors.purple, CSSColors.white]
 };

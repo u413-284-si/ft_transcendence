@@ -1,45 +1,79 @@
 import { ApexOptions } from "apexcharts";
 import { TournamentDayData } from "../types/DataSeries.js";
+import { CSSColors, formatDayMonth, tournamentColors } from "./utils.js";
 
 export function maketournamentLastNDaysOptions(
   data: TournamentDayData
 ): ApexOptions {
+  const transformedData = data.map((series) => ({
+    ...series,
+    data: series.data.map((point) => ({
+      x: formatDayMonth(point.x),
+      y: point.y
+    }))
+  }));
   const options: ApexOptions = {
     chart: {
       type: "bar",
+      fontFamily: "inherit",
+      background: "transparent",
       stacked: true,
-      height: 300
+      toolbar: {
+        show: false
+      },
+      height: 300,
+      width: 800
     },
-    series: data,
+    series: transformedData,
     plotOptions: {
       bar: {
         horizontal: false,
         dataLabels: {
           total: {
             enabled: true,
-            offsetX: 0
+            offsetX: 0,
+            style: { color: CSSColors.white }
           }
         },
         barHeight: "70%"
       }
     },
     yaxis: {
-      title: { text: "Number of Tournaments" },
-      forceNiceScale: true
+      title: {
+        text: "Number of Tournaments",
+        style: { color: CSSColors.white }
+      },
+      forceNiceScale: true,
+      labels: { style: { colors: CSSColors.white } }
     },
     xaxis: {
       labels: {
         rotate: -45,
-        rotateAlways: true
+        rotateAlways: true,
+        style: { colors: CSSColors.white }
       }
     },
     legend: {
-      position: "top"
+      position: "top",
+      labels: {
+        colors: [
+          CSSColors.white,
+          CSSColors.white,
+          CSSColors.white,
+          CSSColors.white,
+          CSSColors.white,
+          CSSColors.white
+        ]
+      }
     },
     tooltip: {
       theme: "dark"
     },
-    colors: ["#22c55e", "#bbf7d0", "#3b82f6", "#bfdbfe", "#a855f7", "#ddd6fe"]
+    colors: [
+      ...tournamentColors[4],
+      ...tournamentColors[8],
+      ...tournamentColors[16]
+    ]
   };
 
   return options;

@@ -223,6 +223,10 @@ export default class StatsView extends AbstractView {
           title: "Tournament Summary",
           chartId: "tournament-summary"
         })}
+        ${Chart({
+          title: "Tournaments Last 10 Days",
+          chartId: "tournament-last-10-days"
+        })}
       </div>
       <div class="flex gap-8">
         ${Chart({
@@ -237,14 +241,6 @@ export default class StatsView extends AbstractView {
           title: "Tournament Progress 16",
           chartId: "tournament-progress-16"
         })}
-      </div>
-      <div class="grid grid-cols-3 gap-6">
-        <div class="col-span-2">
-          ${Chart({
-            title: "Tournaments Last 10 Days",
-            chartId: "tournament-last-10-days"
-          })}
-        </div>
       </div>
     </div>`;
   }
