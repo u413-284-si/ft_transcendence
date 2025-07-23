@@ -35,6 +35,7 @@ import { renderChart } from "../charts/utils.js";
 import { maketournamentSummaryOptions } from "../charts/tournamentSummaryOptions.js";
 import { makeTournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 import { maketournamentLastNDaysOptions } from "../charts/tournamentsLastNDaysOptions.js";
+import { toaster } from "../Toaster.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -361,15 +362,18 @@ export default class StatsView extends AbstractView {
       ),
       "tournament-progress-4": makeTournamentProgressOptions(
         "How often reached",
-        this.dashboardTournaments.progress["4"].reverse()
+        this.dashboardTournaments.progress["4"].reverse(),
+        4
       ),
       "tournament-progress-8": makeTournamentProgressOptions(
         "Tournament Progress 8",
-        this.dashboardTournaments.progress["8"].reverse()
+        this.dashboardTournaments.progress["8"].reverse(),
+        8
       ),
       "tournament-progress-16": makeTournamentProgressOptions(
         "Tournament Progress 16",
-        this.dashboardTournaments.progress["16"].reverse()
+        this.dashboardTournaments.progress["16"].reverse(),
+        16
       ),
       "tournament-last-10-days": maketournamentLastNDaysOptions(
         this.dashboardTournaments.lastNDays
@@ -377,8 +381,10 @@ export default class StatsView extends AbstractView {
     };
   }
 
-  initChartsForTab(tabId: string) {
-    if (!this.charts[tabId]) this.charts[tabId] = {};
+  async initChartsForTab(tabId: string) {
+    if (!this.charts[tabId]) {
+      this.charts[tabId] = {};
+    }
 
     const optionsForTab = this.chartOptions[tabId];
     if (!optionsForTab) return;
@@ -387,10 +393,15 @@ export default class StatsView extends AbstractView {
       if (this.charts[tabId][chartId]) {
         this.charts[tabId][chartId].destroy();
       }
-      this.charts[tabId][chartId] = renderChart(
-        chartId,
-        optionsForTab[chartId]
-      );
+      try {
+        this.charts[tabId][chartId] = await renderChart(
+          chartId,
+          optionsForTab[chartId]
+        );
+      } catch (error) {
+        console.error(`Chart ${chartId} failed to initialize`, error);
+        toaster.error("A chart failed to initialize");
+      }
     }
   }
 }

@@ -1,13 +1,14 @@
 import type { ApexOptions } from "apexcharts";
+import { getEl } from "../utility.js";
 
-export function renderChart(id: string, options: ApexOptions): ApexCharts {
-  const chartEl = document.getElementById(id);
-  if (!chartEl) {
-    throw new Error(`Element not found for id: ${id}`);
-  }
+export async function renderChart(
+  id: string,
+  options: ApexOptions
+): Promise<ApexCharts> {
+  const chartEl = getEl(id);
 
   const chart = new ApexCharts(chartEl, options);
-  chart.render();
+  await chart.render();
   return chart;
 }
 
