@@ -21,4 +21,7 @@
   "files.autoSaveDelay": 1000,
   "postman.settings.dotenv-detection-notification-visibility": false,
   "remote.autoForwardPortsFallback": 0,
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
 }
