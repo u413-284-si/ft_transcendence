@@ -43,3 +43,22 @@ export function formatDayMonth(input: string): string {
     month: "2-digit"
   });
 }
+
+function getColorFromCSSProperty(property: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(property);
+}
+
+export const CSSColors = {
+  white: getColorFromCSSProperty("--color-white-hex"),
+  cyan: getColorFromCSSProperty("--color-neon-cyan-hex"),
+  red: getColorFromCSSProperty("--color-neon-red-hex"),
+  green: getColorFromCSSProperty("--color-neon-green-hex"),
+  yellow: getColorFromCSSProperty("--color-neon-yellow-hex"),
+  purple: getColorFromCSSProperty("--color-neon-purple-hex")
+};
+
+export const tournamentColors = {
+  4: [CSSColors.cyan],
+  8: [CSSColors.yellow],
+  16: [CSSColors.purple]
+};
