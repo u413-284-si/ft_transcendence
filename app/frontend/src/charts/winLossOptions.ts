@@ -1,4 +1,5 @@
 import type { ApexOptions } from "apexcharts";
+import { CSSColors } from "./utils.js";
 
 export function makeWinLossOptions(
   wins: number,
@@ -15,17 +16,17 @@ export function makeWinLossOptions(
     },
     series: [wins, losses],
     labels: ["Wins", "Losses"],
-    colors: ["var(--color-neon-cyan)", "var(--color-neon-red)"],
+    colors: [CSSColors.cyan, CSSColors.red],
     legend: {
       position: "bottom",
       labels: {
-        colors: ["var(--color-white)", "var(--color-white)"]
+        colors: [CSSColors.white, CSSColors.white]
       }
     },
     stroke: {
       show: true,
       width: 1,
-      colors: ["var(--color-white)"]
+      colors: [CSSColors.white]
     },
     plotOptions: {
       pie: {
@@ -36,16 +37,16 @@ export function makeWinLossOptions(
             name: {
               show: true,
               offsetY: -10,
-              color: "var(--color-white)",
+              color: CSSColors.white,
               fontSize: "10px"
             },
             value: {
-              color: "white"
+              color: CSSColors.white
             },
             total: {
               show: true,
               label: "Win Rate",
-              color: "white",
+              color: CSSColors.white,
               fontSize: "10px",
               formatter: () => `${winRate.toFixed(1)}%`
             }

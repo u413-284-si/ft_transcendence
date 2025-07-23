@@ -1,5 +1,5 @@
 import type { ApexOptions } from "apexcharts";
-import { formatDateTime, toAxisSeries } from "./utils.js";
+import { CSSColors, formatDateTime, toAxisSeries } from "./utils.js";
 
 export function makeScoreDiffOptions(
   name: string,
@@ -37,12 +37,12 @@ export function makeScoreDiffOptions(
             {
               from: -100,
               to: -1,
-              color: "var(--color-neon-red)"
+              color: CSSColors.red
             },
             {
               from: 0,
               to: 100,
-              color: "var(--color-neon-cyan)"
+              color: CSSColors.cyan
             }
           ]
         }
@@ -59,14 +59,16 @@ export function makeScoreDiffOptions(
       }
     },
     xaxis: {
-      type: "category"
+      type: "category",
+      labels: { style: { colors: CSSColors.white } }
     },
     yaxis: {
       title: {
-        text: "Score Difference"
-      }
+        text: "Score Difference",
+        style: { color: CSSColors.white }
+      },
+      labels: { style: { colors: CSSColors.white } }
     }
   };
-
   return options;
 }
