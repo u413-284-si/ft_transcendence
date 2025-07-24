@@ -238,7 +238,6 @@ export async function twoFaQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
   try {
     const userId = request.user.id;
-
     if ((await getUserAuthProvider(userId)) !== "LOCAL") {
       return httpError(
         reply,
@@ -247,6 +246,7 @@ export async function twoFaQRCodeHandler(request, reply) {
         "2FA Qrcode can not be generated. User uses Google auth provider"
       );
     }
+
     const username = request.user.username;
     let secret = "";
     if (await get2FaStatus(userId)) {
@@ -276,8 +276,18 @@ export async function twoFaQRCodeHandler(request, reply) {
 export async function twoFaVerifyHandler(request, reply) {
   const action = "Verify 2FA Code";
   try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
     const { code } = request.body;
-    const secret = await getTotpSecret(request.user.id);
+    const secret = await getTotpSecret(userId);
     const totp = generateTotp(request.user.username, secret);
     if (!verify2FaToken(totp, code)) {
       return httpError(
@@ -287,7 +297,7 @@ export async function twoFaVerifyHandler(request, reply) {
         "Invalid 2FA code"
       );
     }
-    await update2FaStatus(request.user.id, true);
+    await update2FaStatus(userId, true);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true) });
@@ -303,8 +313,18 @@ export async function twoFaVerifyHandler(request, reply) {
 export async function twoFaLoginVerifyHandler(request, reply) {
   const action = "Verify 2FA Code during login";
   try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
     const { code } = request.body;
-    const secret = await getTotpSecret(request.user.id);
+    const secret = await getTotpSecret(userId);
     const totp = generateTotp(request.user.username, secret);
     if (!verify2FaToken(totp, code)) {
       return httpError(
@@ -315,7 +335,7 @@ export async function twoFaLoginVerifyHandler(request, reply) {
       );
     }
 
-    const { username } = await getUser(request.user.id);
+    const { username } = await getUser(userId);
     const payload = await getTokenData(username, "username");
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
@@ -331,7 +351,7 @@ export async function twoFaLoginVerifyHandler(request, reply) {
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: payload.username }
+        data: { username: username }
       });
   } catch (err) {
     request.log.error(
