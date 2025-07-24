@@ -1,3 +1,14 @@
+const userDefinitionsSchema = {
+  $id: "userDefinitionsSchema",
+  definitions: {
+    language: {
+      type: "string",
+      enum: ["en", "fr", "de", "pi", "tr"],
+      description: "The preferred language of the user"
+    }
+  }
+};
+
 const userSchema = {
   $id: "userSchema",
   type: "object",
@@ -6,6 +17,7 @@ const userSchema = {
     username: { $ref: "commonDefinitionsSchema#/definitions/username" },
     email: { $ref: "commonDefinitionsSchema#/definitions/email" },
     avatar: { type: "string" },
+    language: { $ref: "userDefinitionsSchema#/definitions/language" },
     dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" },
     authProvider: {
       $ref: "commonDefinitionsSchema#/definitions/authProvider"
@@ -73,8 +85,7 @@ export const patchUserSchema = {
     {
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-        avatar: { type: "string" }
+        email: { $ref: "commonDefinitionsSchema#/definitions/email" }
       },
       required: ["username"],
       additionalProperties: false
@@ -82,19 +93,16 @@ export const patchUserSchema = {
     {
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-        avatar: { type: "string" }
+        email: { $ref: "commonDefinitionsSchema#/definitions/email" }
       },
       required: ["email"],
       additionalProperties: false
     },
     {
       properties: {
-        username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-        email: { $ref: "commonDefinitionsSchema#/definitions/email" },
-        avatar: { type: "string" }
+        language: { type: "string" }
       },
-      required: ["avatar"],
+      required: ["language"],
       additionalProperties: false
     }
   ]
@@ -123,6 +131,7 @@ const updateUserPasswordSchema = {
 };
 
 export const userSchemas = [
+  userDefinitionsSchema,
   userSchema,
   userResponseSchema,
   userArrayResponseSchema,

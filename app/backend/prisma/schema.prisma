@@ -18,13 +18,14 @@ model User {
     username   String   @unique
     email      String?  @unique
     avatar     String?
+    language   Language @default(en)
     dateJoined DateTime @default(now())
 
     authentication    Authentication?
     stats             UserStats?
     accountStatus     AccountStatus?
-    sentRequests    FriendRequest[]  @relation("SentRequests")
-    receivedRequests FriendRequest[] @relation("ReceivedRequests")
+    sentRequests      FriendRequest[] @relation("SentRequests")
+    receivedRequests  FriendRequest[] @relation("ReceivedRequests")
     matchesPlayed     Match[]         @relation("UserPlayed")
     tournament        Tournament[]
 
@@ -34,8 +35,8 @@ model User {
 model Authentication {
     userId   Int     @id
     password String?
-	refreshToken String?
-	authProvider AuthProviderType @default(LOCAL)
+    refreshToken String?
+    authProvider AuthProviderType @default(LOCAL)
     // has2FA        Boolean @default(false)
     // totpSecret    String?
     // oauthProvider String?
@@ -131,4 +132,12 @@ enum FriendRequestStatus {
 enum AuthProviderType {
 	LOCAL
 	GOOGLE
+}
+
+enum Language {
+  en
+  fr
+  de
+  pi
+  tr
 }

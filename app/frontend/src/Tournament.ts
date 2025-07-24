@@ -115,13 +115,13 @@ export class Tournament {
     const updated = this.bracket.map((m) => ({ ...m })); // clone
 
     const match = updated.find((m) => m.matchId === matchId);
-    if (!match) throw new Error("Match not found");
+    if (!match) throw new Error(i18next.t("error.matchNotFound"));
 
     match.winner = winner;
 
     if (match.nextMatchId && match.winnerSlot) {
       const nextMatch = updated.find((m) => m.matchId === match.nextMatchId);
-      if (!nextMatch) throw new Error("Next match not found");
+      if (!nextMatch) throw new Error(i18next.t("error.nextMatchNotFound"));
 
       if (match.winnerSlot === 1) {
         nextMatch.player1 = winner;
@@ -165,7 +165,7 @@ export class Tournament {
 
   public getId(): number {
     if (!this.tournamentId) {
-      throw new Error("TournamentId is not set");
+      throw new Error(i18next.t("error.tournamentIDNotFound"));
     }
     return this.tournamentId;
   }
@@ -238,14 +238,18 @@ export class Tournament {
         const player1Text =
           match.player1 ??
           (matchSlots?.slot1
-            ? `Winner Match ${matchSlots.slot1.matchId}`
-            : "TBD");
+            ? i18next.t("global.winnerMatch", {
+                matchId: matchSlots.slot1.matchId
+              })
+            : i18next.t("global.toBeDefined"));
 
         const player2Text =
           match.player2 ??
           (matchSlots?.slot2
-            ? `Winner Match ${matchSlots.slot2.matchId}`
-            : "TBD");
+            ? i18next.t("global.winnerMatch", {
+                matchId: matchSlots.slot2.matchId
+              })
+            : i18next.t("global.toBeDefined"));
 
         return {
           matchId: match.matchId,
@@ -275,7 +279,7 @@ export class Tournament {
       html += `
       <div class="flex-1 flex flex-col">
         <h3 class="text-center font-extrabold tracking-widest text-neon-cyan border-b-2 border-neon-cyan pb-2 mb-6 uppercase text-base md:text-lg">
-          Round ${round}
+          ${i18next.t("global.round", { round: round })}
         </h3>
         <div class="flex flex-col h-full justify-between space-y-4 ${roundSpacing}">
     `;
@@ -293,7 +297,7 @@ export class Tournament {
 
         html += `
         <div class="${cardBg} ${textColor} p-4 rounded-lg ${borderGlow} text-xs md:text-sm transition-all duration-300 ease-in-out">
-          <h4 class="font-bold text-center text-sm md:text-base mb-3 uppercase tracking-wide">Match ${match.matchId}</h4>
+          <h4 class="font-bold text-center text-sm md:text-base mb-3 uppercase tracking-wide">${i18next.t("global.match", { matchId: match.matchId })}</h4>
           <div class="flex justify-center items-center gap-3 md:gap-4 text-sm md:text-base font-semibold">
 
             <!-- Player 1 -->
