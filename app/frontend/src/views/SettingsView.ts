@@ -9,7 +9,7 @@ import { Input } from "../components/Input.js";
 import { Image } from "../components/Image.js";
 import { getEl, getInputEl } from "../utility.js";
 import {
-  generatTwoFaQrcode as generateTwoFaQrcode,
+  generateTwoFaQrcode as generateTwoFaQrcode,
   geTwoFaStatus,
   removeTwoFa
 } from "../services/authServices.js";
