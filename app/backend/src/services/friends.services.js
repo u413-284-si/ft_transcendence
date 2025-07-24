@@ -130,10 +130,19 @@ export async function getFriendRequest(id, userId) {
   return formatted;
 }
 
-export async function getFriendId(id, username) {
-  const friend = await getAllUserFriendRequests(id, username);
-  if (!friend.length || !friend[0].status === "ACCEPTED") {
+export async function getFriendId(userId, friendUsername) {
+  const request = await prisma.friendRequest.findFirst({
+    where: {
+      OR: [
+        { senderId: userId, receiver: { username: friendUsername } },
+        { sender: { username: friendUsername }, receiverId: userId }
+      ]
+    },
+    include: friendRequestInclude
+  });
+  if (!request || !request.status === "ACCEPTED") {
     return null;
   }
-  return friend.id;
+  const formatted = formatFriendRequest(request, userId);
+  return formatted.friendId;
 }
