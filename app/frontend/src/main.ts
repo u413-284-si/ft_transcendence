@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   ) as Language | null;
 
   await i18next.init({
-    lng: preferredLang || "tr",
-    fallbackLng: "en",
+    lng: preferredLang || "en",
+    fallbackLng: "fr",
     resources: {
       en,
       fr,
