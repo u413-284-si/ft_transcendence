@@ -1,7 +1,7 @@
 import { auth } from "./AuthManager.js";
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
-  verifyLogiTwoFaCode as verifyLoginTwoFaCode,
+  verifyLoginTwoFaCode as verifyLoginTwoFaCode,
   verifTwoFaCode
 } from "./services/authServices.js";
 import { getUserTournaments } from "./services/tournamentService.js";
