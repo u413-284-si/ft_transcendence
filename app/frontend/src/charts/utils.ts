@@ -49,7 +49,7 @@ function getColorFromCSSProperty(property: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(property);
 }
 
-export const CSSColors = {
+export const chartColors = {
   white: getColorFromCSSProperty("--color-white-hex"),
   cyan: getColorFromCSSProperty("--color-neon-cyan-hex"),
   red: getColorFromCSSProperty("--color-neon-red-hex"),
@@ -59,7 +59,7 @@ export const CSSColors = {
 };
 
 export const tournamentColors = {
-  4: [CSSColors.cyan, CSSColors.red],
-  8: [CSSColors.green, CSSColors.yellow],
-  16: [CSSColors.purple, CSSColors.white]
+  4: [chartColors.cyan, chartColors.red],
+  8: [chartColors.green, chartColors.yellow],
+  16: [chartColors.purple, chartColors.white]
 };

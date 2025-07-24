@@ -1,6 +1,6 @@
 import { ApexOptions } from "apexcharts";
 import { TournamentDayData } from "../types/DataSeries.js";
-import { CSSColors, formatDayMonth, tournamentColors } from "./utils.js";
+import { chartColors, formatDayMonth, tournamentColors } from "./utils.js";
 
 export function maketournamentLastNDaysOptions(
   data: TournamentDayData
@@ -32,7 +32,7 @@ export function maketournamentLastNDaysOptions(
           total: {
             enabled: true,
             offsetX: 0,
-            style: { color: CSSColors.white }
+            style: { color: chartColors.white }
           }
         },
         barHeight: "70%"
@@ -41,28 +41,28 @@ export function maketournamentLastNDaysOptions(
     yaxis: {
       title: {
         text: "Number of Tournaments",
-        style: { color: CSSColors.white }
+        style: { color: chartColors.white }
       },
       forceNiceScale: true,
-      labels: { style: { colors: CSSColors.white } }
+      labels: { style: { colors: chartColors.white } }
     },
     xaxis: {
       labels: {
         rotate: -45,
         rotateAlways: true,
-        style: { colors: CSSColors.white }
+        style: { colors: chartColors.white }
       }
     },
     legend: {
       position: "top",
       labels: {
         colors: [
-          CSSColors.white,
-          CSSColors.white,
-          CSSColors.white,
-          CSSColors.white,
-          CSSColors.white,
-          CSSColors.white
+          chartColors.white,
+          chartColors.white,
+          chartColors.white,
+          chartColors.white,
+          chartColors.white,
+          chartColors.white
         ]
       }
     },

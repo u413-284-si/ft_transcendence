@@ -1,5 +1,5 @@
 import type { ApexOptions } from "apexcharts";
-import { CSSColors, formatDayMonth, toAxisSeries } from "./utils.js";
+import { chartColors, formatDayMonth, toAxisSeries } from "./utils.js";
 
 export function makeScoresLastTenDaysOptions(
   name: string,
@@ -22,7 +22,7 @@ export function makeScoresLastTenDaysOptions(
       },
       height: 300
     },
-    colors: [CSSColors.cyan],
+    colors: [chartColors.cyan],
     dataLabels: {
       enabled: true
     },
@@ -33,7 +33,7 @@ export function makeScoresLastTenDaysOptions(
           ranges: [
             {
               from: 0,
-              color: CSSColors.cyan
+              color: chartColors.cyan
             }
           ]
         }
@@ -51,17 +51,17 @@ export function makeScoresLastTenDaysOptions(
       labels: {
         rotate: -45,
         rotateAlways: true,
-        style: { colors: CSSColors.white }
+        style: { colors: chartColors.white }
       }
     },
     yaxis: {
       title: {
         text: "Score",
-        style: { color: CSSColors.white }
+        style: { color: chartColors.white }
       },
       min: 0,
       stepSize: 1,
-      labels: { style: { colors: CSSColors.white } }
+      labels: { style: { colors: chartColors.white } }
     }
   };
   return options;

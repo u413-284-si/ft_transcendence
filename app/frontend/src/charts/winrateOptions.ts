@@ -1,5 +1,5 @@
 import type { ApexOptions } from "apexcharts";
-import { CSSColors, formatDateTime, toAxisSeries } from "./utils.js";
+import { chartColors, formatDateTime, toAxisSeries } from "./utils.js";
 
 export function makeWinrateOptions(
   name: string,
@@ -30,7 +30,7 @@ export function makeWinrateOptions(
         enabled: false
       }
     },
-    colors: [CSSColors.cyan],
+    colors: [chartColors.cyan],
     markers: { size: 5 },
     series: series,
     stroke: { curve: "smooth", width: 3 },
@@ -43,12 +43,12 @@ export function makeWinrateOptions(
     },
     xaxis: {
       type: "category",
-      labels: { style: { colors: CSSColors.white } }
+      labels: { style: { colors: chartColors.white } }
     },
     yaxis: {
-      title: { text: "Winrate", style: { color: CSSColors.white } },
+      title: { text: "Winrate", style: { color: chartColors.white } },
       labels: {
-        style: { colors: CSSColors.white },
+        style: { colors: chartColors.white },
         formatter: (val: number) => `${val}%`
       }
     }
