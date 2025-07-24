@@ -18,7 +18,7 @@ export default async function userstatsRoutes(fastify) {
     getDashboardMatchesHandler
   );
 
-    fastify.get(
+  fastify.get(
     "/me/dashboard-tournaments",
     optionsGetDashboardTournaments,
     getDashboardTournamentsHandler
@@ -66,6 +66,7 @@ const optionsGetDashboardTournaments = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
+      200: { $ref: "dashboardTournamentsResponseSchema" },
       ...errorResponses
     }
   }

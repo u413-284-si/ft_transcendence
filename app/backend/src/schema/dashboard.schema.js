@@ -61,7 +61,7 @@ const dashboardMatchesSchema = {
   additionalProperties: false
 };
 
-export const dashboardMatchesResponseSchema = {
+const dashboardMatchesResponseSchema = {
   $id: "dashboardMatchesResponseSchema",
   type: "object",
   properties: {
@@ -72,10 +72,145 @@ export const dashboardMatchesResponseSchema = {
   additionalProperties: false
 };
 
+const dashboardTournamentSummarySchema = {
+  $id: "dashboardTournamentSummarySchema",
+  type: "object",
+  description: "Summary of winrate, played and won tournaments",
+  properties: {
+    data: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          x: {
+            type: "string",
+            description: "Tournament size description"
+          },
+          y: {
+            type: "number",
+            description: "Winrate for tournament size"
+          }
+        },
+        required: ["x", "y"],
+        additionalProperties: false
+      }
+    },
+    details: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          played: {
+            type: "number",
+            description: "How many tournaments of size played"
+          },
+          won: {
+            type: "number",
+            description: "How many tournaments of size won"
+          }
+        },
+        required: ["played", "won"],
+        additionalProperties: false
+      }
+    }
+  },
+  required: ["data", "details"],
+  additionalProperties: false
+};
+
+const dashboardTournamentProgressSchema = {
+  $id: "dashboardTournamentProgressSchema",
+  type: "object",
+  description: "Progress per tournament size; key is the number of players",
+  patternProperties: {
+    "^[0-9]+$": {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          x: {
+            type: "string",
+            description: "Round name or 'Won'"
+          },
+          y: {
+            type: "number",
+            description: "Number of tournaments that reached this round"
+          }
+        },
+        required: ["x", "y"],
+        additionalProperties: false
+      }
+    }
+  },
+  additionalProperties: false
+};
+
+const dashboardTournamentLastNDaysSchema = {
+  $id: "dashboardTournamentLastNDaysSchema",
+  type: "array",
+  description:
+    "Win/Loss data over the last N days, grouped by tournament size and outcome",
+  items: {
+    type: "object",
+    properties: {
+      name: {
+        type: "string",
+        description: "Series label, e.g. 'Win 4' or 'Loss 8'"
+      },
+      data: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            x: { $ref: "commonDefinitionsSchema#/definitions/datetime" },
+            y: {
+              type: "number",
+              description:
+                "Number of tournaments that were set to finished with this outcome on this date"
+            }
+          },
+          required: ["x", "y"],
+          additionalProperties: false
+        }
+      }
+    },
+    required: ["name", "data"],
+    additionalProperties: false
+  }
+};
+
+const dashboardTournamentsSchema = {
+  $id: "dashboardTournamentsSchema",
+  type: "object",
+  properties: {
+    summary: { $ref: "dashboardTournamentSummarySchema" },
+    progress: { $ref: "dashboardTournamentProgressSchema" },
+    lastNDays: { $ref: "dashboardTournamentLastNDaysSchema" }
+  },
+  required: ["summary", "progress", "lastNDays"],
+  additionalProperties: false
+};
+
+const dashboardTournamentsResponseSchema = {
+  $id: "dashboardTournamentsResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: { $ref: "dashboardTournamentsSchema" }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
 export const dashboardSchemas = [
   dashboardWinrateSchema,
   dashboardScoreDiffSchema,
   dashboardScoresSchema,
   dashboardMatchesSchema,
-  dashboardMatchesResponseSchema
+  dashboardMatchesResponseSchema,
+  dashboardTournamentSummarySchema,
+  dashboardTournamentProgressSchema,
+  dashboardTournamentLastNDaysSchema,
+  dashboardTournamentsSchema,
+  dashboardTournamentsResponseSchema
 ];
