@@ -29,7 +29,10 @@ import {
   updatePassword,
   verifyHash
 } from "../services/auth.services.js";
-import { getAllUserFriendRequests } from "../services/friends.services.js";
+import {
+  getAllUserFriendRequests,
+  getFriendId
+} from "../services/friends.services.js";
 import { fileTypeFromBuffer } from "file-type";
 
 export async function createUserHandler(request, reply) {
@@ -199,8 +202,8 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
     const filter = { playedAs: request.query.playedAs };
     const { username } = request.params;
     if (username !== request.user.username) {
-      const friend = await getAllUserFriendRequests(id, username);
-      if (!friend.length || !friend.some((req) => req.status === "ACCEPTED")) {
+      const friendId = await getFriendId(id, username);
+      if (!friendId) {
         return httpError(reply, 401, "You need to be friends");
       }
     }
