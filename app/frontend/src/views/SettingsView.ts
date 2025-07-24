@@ -152,7 +152,7 @@ export default class SettingsView extends AbstractView {
       ?.addEventListener("click", () => this.displaTwoFaSetupModal());
     document
       .getElementById("close-two-fa-modal-button")
-      ?.addEventListener("click", () => this.hidTwoFaSetupModal());
+      ?.addEventListener("click", () => this.hideTwoFaSetupModal());
     if (this.haTwoFa) {
       document
         .getElementById("close-two-fa-password-modal-button")
@@ -183,7 +183,7 @@ export default class SettingsView extends AbstractView {
     this.displayOverlay();
   }
 
-  private hidTwoFaSetupModal() {
+  private hideTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
     twoFaModal.classList.add("hidden");
     this.hideOverlay();
@@ -217,11 +217,11 @@ export default class SettingsView extends AbstractView {
         return;
       }
       this.hideOverlay();
-      this.hidTwoFaSetupModal();
+      this.hideTwoFaSetupModal();
       this.render();
       toaster.success("2FA setup successful");
     } else {
-      this.hidTwoFaSetupModal();
+      this.hideTwoFaSetupModal();
       this.displaTwoFaPasswordModal();
     }
   }
