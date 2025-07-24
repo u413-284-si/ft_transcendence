@@ -259,7 +259,12 @@ const en = {
         "An error occurred while validating the tournament name."
     }
   }
+} as const;
+
+type ToStringLeaves<T> = {
+  [K in keyof T]: T[K] extends object ? ToStringLeaves<T[K]> : string;
 };
 
 export default en;
 export type Translation = typeof en;
+export type TranslationShape = ToStringLeaves<typeof en>;

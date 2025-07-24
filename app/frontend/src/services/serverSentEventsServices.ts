@@ -112,9 +112,9 @@ export function openSSEConnection() {
       );
       toaster.warn(
         i18next.t("toast.connectionLost", {
-          reconnectDelayInS,
-          reconnectAttempts,
-          maxReconnectAttempts
+          delay: reconnectDelayInS,
+          attempt: reconnectAttempts,
+          maxAttempts: maxReconnectAttempts
         })
       );
       reconnectTimeoutID = setTimeout(() => {
