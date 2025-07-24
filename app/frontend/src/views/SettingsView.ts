@@ -159,7 +159,7 @@ export default class SettingsView extends AbstractView {
         ?.addEventListener("click", () => this.hidTwoFaPasswordModal());
       document
         .getElementById("two-fa-password-form")
-        ?.addEventListener("submit", (event) => this.removTwoFa(event));
+        ?.addEventListener("submit", (event) => this.removeTwoFa(event));
     }
     document
       .getElementById("two-fa-form")
@@ -226,7 +226,7 @@ export default class SettingsView extends AbstractView {
     }
   }
 
-  private async removTwoFa(event: Event): Promise<void> {
+  private async removeTwoFa(event: Event): Promise<void> {
     event.preventDefault();
 
     const twoFaPasswordInputEl = getInputEl("two-fa-password-input");
