@@ -1,7 +1,7 @@
 import { auth } from "./AuthManager.js";
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
-  verifyLogiTwoFaCode,
+  verifyLogiTwoFaCode as verifyLoginTwoFaCode,
   verifTwoFaCode
 } from "./services/authServices.js";
 import { getUserTournaments } from "./services/tournamentService.js";
@@ -298,7 +298,7 @@ export async function validatTwoFaCode(
 
   let apiResponse: ApiResponse<null>;
   if (auth.isTwoFaPending()) {
-    apiResponse = await verifyLogiTwoFaCode(twoFaCode);
+    apiResponse = await verifyLoginTwoFaCode(twoFaCode);
   } else {
     apiResponse = await verifTwoFaCode(twoFaCode);
   }
