@@ -95,7 +95,7 @@ export async function getDashboardMatchesByUsernameHandler(request, reply) {
   try {
     const userId = parseInt(request.user.id, 10);
     const { username } = request.params;
-    if (username !== request.user.username) {
+    if (username === request.user.username) {
       return httpError(reply, 400, "You cannot check yourself on this route");
     }
     const friendId = await getFriendId(userId, username);
@@ -123,7 +123,7 @@ export async function getDashboardTournamentsByUsernameHandler(request, reply) {
   try {
     const userId = parseInt(request.user.id, 10);
     const { username } = request.params;
-    if (username !== request.user.username) {
+    if (username === request.user.username) {
       return httpError(reply, 400, "You cannot check yourself on this route");
     }
     const friendId = await getFriendId(userId, username);
