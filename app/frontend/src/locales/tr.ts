@@ -1,4 +1,6 @@
-const tr = {
+import { Translation } from "./en.js";
+
+const tr: Translation = {
   translation: {
     error: {
       invalidDynamicRoutePattern: "Invalid dynamic route pattern: {{pattern}}",
@@ -39,7 +41,6 @@ const tr = {
       confirmDeleteRequest: "Confirm deletion of this data packet?",
       confirmRemoveFriend: "Confirm removal of network node?",
       exactUsername: "Exact user ID",
-      friendAdded: "Link established with {{username}}!",
       friendRequests: "Incoming link requests",
       title: "Network Nodes",
       incomingRequests: "Incoming link signals",
@@ -229,6 +230,7 @@ const tr = {
       deletedFriendRequest: "Link request deleted by ",
       emailExists: "Data address already exists in network",
       emailOrUsernameExists: "Data address or User ID already exists",
+      friendAdded: "Link established with {{username}}!",
       friendRequestButtonError: "Error processing link request",
       invalidUsernameOrPW: "Invalid User ID or access code",
       logoutError: "Logout failed. Reattempt required.",

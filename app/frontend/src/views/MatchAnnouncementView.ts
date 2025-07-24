@@ -121,7 +121,8 @@ export default class MatchAnnouncementView extends AbstractView {
 
   private async abortTournament() {
     try {
-      if (!confirm(i18next.t("tournamentView.confirmAbortTournament"))) return;
+      if (!confirm(i18next.t("newTournamentView.confirmAbortTournament")))
+        return;
       getDataOrThrow(await deleteTournament(this.tournament.getId()));
       router.reload();
     } catch (error) {

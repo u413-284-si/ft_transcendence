@@ -1,4 +1,6 @@
-const pi = {
+import { Translation } from "./en.js";
+
+const pi: Translation = {
   translation: {
     error: {
       invalidDynamicRoutePattern:
@@ -41,7 +43,6 @@ const pi = {
       confirmDeleteRequest: "Be ye certain this request should walk the plank?",
       confirmRemoveFriend: "Ye really want to maroon this mate?",
       exactUsername: "True sailor's name",
-      friendAdded: "New crewmate {{username}} aboard!",
       friendRequests: "Parley Requests",
       title: "Me Hearties",
       incomingRequests: "Incoming messages in bottles",
@@ -226,6 +227,7 @@ const pi = {
         "No more wind in the sails – retries stopped ‘til refresh!",
       declinedFriendRequest: "Parley declined by ",
       deletedFriendRequest: "Parley request sunk by ",
+      friendAdded: "New crewmate {{username}} aboard!",
       friendRequestButtonError: "Error with yer parley request",
       emailExists: "That bottle's already adrift",
       emailOrUsernameExists: "That name or bottle already has a captain",

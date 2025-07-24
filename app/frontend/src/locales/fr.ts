@@ -1,4 +1,6 @@
-const fr = {
+import { Translation } from "./en.js";
+
+const fr: Translation = {
   translation: {
     error: {
       invalidDynamicRoutePattern:
@@ -59,8 +61,7 @@ const fr = {
 
     global: {
       avatar: "Avatar",
-      connectionUnavailable:
-        "Impossible de se reconnecter. Tentatives arrêter jusqu'à l'actualisation.",
+      confirmNewPassword: "Confirmez le nouveau mot de passe",
       continue: "Appuyez sur la touche ENTER pour continuer",
       editProfile: "Modifier votre profil",
       email: "Addresse mail",
@@ -230,7 +231,8 @@ const fr = {
       avatarUploadFailed:
         "Échec du téléchargement de l'avatar. Veuillez réessayer.",
       avatarUploadedSuccess: "Avatar téléchargé avec succès !",
-      confirmNewPassword: "Confirmez le nouveau mot de passe",
+      connectionUnavailable:
+        "Impossible de se reconnecter. Tentatives arrêter jusqu'à l'actualisation.",
       connectionLost:
         "Connexion perdue - nouvelle tentative dans {{delay}} secondes... (Tentative {{attempt}} de {{maxAttempts}})",
       connectionReestablished: "Connexion rétablie",

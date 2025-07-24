@@ -1,4 +1,6 @@
-const de = {
+import { Translation } from "./en.js";
+
+const de: Translation = {
   translation: {
     error: {
       invalidDynamicRoutePattern:

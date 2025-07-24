@@ -13,7 +13,6 @@ import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 import { layout } from "./Layout.js";
 import { Language } from "./types/User.js";
-import type { Translation } from "./types/translation";
 import de from "./locales/de.js";
 import en from "./locales/en.js";
 import fr from "./locales/fr.js";
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     "preferredLanguage"
   ) as Language | null;
 
-  await i18next.init<Translation>({
+  await i18next.init({
     lng: preferredLang || "tr",
     fallbackLng: "en",
     resources: {
