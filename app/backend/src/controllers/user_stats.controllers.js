@@ -1,19 +1,13 @@
 import {
-  computeTournamentsLastNDays,
-  computeTournamentProgress,
-  computeScoreDiffLastNMatches,
-  computeScoresLastNDays,
-  computeWinrateLastNMatches,
-  computeTournamentSummary
+  getDashboardMatchesData,
+  getDashboardTournamentsData
 } from "../services/dashboard.services.js";
-import { getUserMatches } from "../services/matches.services.js";
-import { getUserTournaments } from "../services/tournaments.services.js";
+import { getFriendId } from "../services/friends.services.js";
 import {
   getAllUserStats,
-  deleteAllUserStats,
-  getUserStats
+  deleteAllUserStats
 } from "../services/user_stats.services.js";
-import { handlePrismaError } from "../utils/error.js";
+import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
 export async function getAllUserStatsHandler(request, reply) {
@@ -91,6 +85,62 @@ export async function getDashboardTournamentsHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getDashboardTournamentsHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getDashboardMatchesByUsernameHandler(request, reply) {
+  const action = "Get dashboard matches by username";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const { username } = request.params;
+    if (username !== request.user.username) {
+      return httpError(reply, 400, "You cannot check yourself on this route");
+    }
+    const friendId = await getFriendId(userId, username);
+    if (!friendId) {
+      return httpError(reply, 401, "You need to be friends");
+    }
+
+    const data = await getDashboardMatchesData(friendId);
+
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getDashboardMatchesByUsernameHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getDashboardTournamentsByUsernameHandler(request, reply) {
+  const action = "Get dashboard tournaments by username";
+  try {
+    const userId = parseInt(request.user.id, 10);
+    const { username } = request.params;
+    if (username !== request.user.username) {
+      return httpError(reply, 400, "You cannot check yourself on this route");
+    }
+    const friendId = await getFriendId(userId, username);
+    if (!friendId) {
+      return httpError(reply, 401, "You need to be friends");
+    }
+
+    const data = await getDashboardTournamentsData(friendId);
+
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getDashboardTournamentsByUsernameHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
