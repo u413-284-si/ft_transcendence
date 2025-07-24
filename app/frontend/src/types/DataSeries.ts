@@ -25,9 +25,13 @@ export type DashboardMatches = {
   scores: ScoresLastNDaysSeries;
 };
 
+type TournamentSummaryPoint = {
+  x: string;
+  y: number;
+};
+
 export type TournamentSummaryData = {
-  series: number[];
-  labels: string[];
+  data: TournamentSummaryPoint[];
   details: { played: number; won: number }[];
 };
 

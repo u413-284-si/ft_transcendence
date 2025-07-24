@@ -354,6 +354,7 @@ export default class StatsView extends AbstractView {
     };
     this.chartOptions["tournaments"] = {
       "tournament-summary": maketournamentSummaryOptions(
+        "Summary",
         this.dashboardTournaments.summary
       ),
       "tournament-progress-4": makeTournamentProgressOptions(

@@ -1,17 +1,20 @@
 import type { ApexOptions } from "apexcharts";
 import { TournamentSummaryData } from "../types/DataSeries";
-import { tournamentColors } from "./utils.js";
+import { toAxisSeries, tournamentColors } from "./utils.js";
 
 export function maketournamentSummaryOptions(
+  name: string,
   data: TournamentSummaryData
 ): ApexOptions {
+  const series = toAxisSeries(name, data.data);
   const options: ApexOptions = {
-    series: data.series,
+    series: series,
     chart: {
       type: "radialBar",
       fontFamily: "inherit",
       background: "transparent",
-      height: 300
+      height: 300,
+      width: 400
     },
     plotOptions: {
       radialBar: {
@@ -48,7 +51,6 @@ export function maketournamentSummaryOptions(
       tournamentColors[8][0],
       tournamentColors[16][0]
     ],
-    labels: data.labels,
     tooltip: {
       enabled: true,
       theme: "dark",

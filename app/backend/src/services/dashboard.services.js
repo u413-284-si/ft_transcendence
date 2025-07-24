@@ -129,20 +129,18 @@ export function computeTournamentSummary(tournaments) {
   }
 
   // Build final return structure
-  const labels = [];
-  const series = [];
+  const data = [];
   const details = [];
 
   for (const size of supportedSizes) {
     const { played, won } = summary[size];
     const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
 
-    labels.push(`${size}-Player`);
-    series.push(winRate);
+    data.push({ x: `${size}-Player`, y: winRate });
     details.push({ played, won });
   }
 
-  return { labels, series, details };
+  return { data, details };
 }
 
 export function computeTournamentProgress(tournaments) {
