@@ -17,7 +17,7 @@ import { auth } from "../AuthManager.js";
 import {
   markInvalid,
   validatePassword,
-  validatTwoFaCode
+  validatTwoFaCode as validateTwoFaCode
 } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { toaster } from "../Toaster.js";
@@ -156,7 +156,7 @@ export default class SettingsView extends AbstractView {
     if (this.hasTwoFa) {
       document
         .getElementById("close-two-fa-password-modal-button")
-        ?.addEventListener("click", () => this.hidTwoFaPasswordModal());
+        ?.addEventListener("click", () => this.hideTwoFaPasswordModal());
       document
         .getElementById("two-fa-password-form")
         ?.addEventListener("submit", (event) => this.removeTwoFa(event));
@@ -195,7 +195,7 @@ export default class SettingsView extends AbstractView {
     this.displayOverlay();
   }
 
-  private hidTwoFaPasswordModal() {
+  private hideTwoFaPasswordModal() {
     const twoFaModal = getEl("two-fa-password-modal");
     twoFaModal.classList.add("hidden");
     this.hideOverlay();
@@ -209,11 +209,11 @@ export default class SettingsView extends AbstractView {
       ) as HTMLInputElement;
       const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
 
-      const iTwoFaCodeValid = await validatTwoFaCode(
+      const isTwoFaCodeValid = await validateTwoFaCode(
         twoFaQrCodeInput,
         twoFaQrCodeErrorEl
       );
-      if (!iTwoFaCodeValid) {
+      if (!isTwoFaCodeValid) {
         return;
       }
       this.hideOverlay();
@@ -248,7 +248,7 @@ export default class SettingsView extends AbstractView {
         throw new ApiError(apiResponse);
       }
     }
-    this.hidTwoFaPasswordModal();
+    this.hideTwoFaPasswordModal();
     this.hideOverlay();
     this.render();
     toaster.success("2FA removed successfully");
