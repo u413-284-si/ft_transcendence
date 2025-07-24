@@ -237,9 +237,19 @@ export async function authRefreshHandler(request, reply) {
 export async function twoFaQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
   try {
+    const userId = request.user.id;
+
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA Qrcode can not be generated. User uses Google auth provider"
+      );
+    }
     const username = request.user.username;
     let secret = "";
-    if (await get2FaStatus(request.user.id)) {
+    if (await get2FaStatus(userId)) {
       secret = await getTotpSecret(request.user.id);
     } else {
       secret = generate2FaSecret();
@@ -249,7 +259,7 @@ export async function twoFaQRCodeHandler(request, reply) {
     const qrcode = await generate2FaQrCode(totp);
     const data = { qrcode: qrcode };
 
-    await updateTotpSecret(request.user.id, secret);
+    await updateTotpSecret(userId, secret);
 
     return reply
       .code(200)

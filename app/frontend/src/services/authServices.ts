@@ -131,7 +131,6 @@ export async function removeTwoFa(
   password: string
 ): Promise<ApiResponse<null>> {
   const url = "/api/auth/2fa/remove";
-  console.log("password: ", password);
 
   return apiFetch<null>(
     url,
