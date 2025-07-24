@@ -365,7 +365,17 @@ export async function twoFaLoginVerifyHandler(request, reply) {
 export async function twoFaStatusHandler(request, reply) {
   const action = "Get 2FA status";
   try {
-    const hasTwoFa = await get2FaStatus(request.user.id);
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
+    const hasTwoFa = await get2FaStatus(userId);
     const data = { hasTwoFa: hasTwoFa };
     return reply
       .code(200)
