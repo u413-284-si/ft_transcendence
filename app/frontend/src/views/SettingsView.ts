@@ -9,7 +9,7 @@ import { Input } from "../components/Input.js";
 import { Image } from "../components/Image.js";
 import { getEl, getInputEl } from "../utility.js";
 import {
-  generatTwoFaQrcode,
+  generatTwoFaQrcode as generateTwoFaQrcode,
   geTwoFaStatus,
   removeTwoFa
 } from "../services/authServices.js";
@@ -24,7 +24,7 @@ import { toaster } from "../Toaster.js";
 
 export default class SettingsView extends AbstractView {
   private qrCode: string = "";
-  private haTwoFa: boolean = false;
+  private hasTwoFa: boolean = false;
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
   constructor() {
@@ -46,7 +46,7 @@ export default class SettingsView extends AbstractView {
         children: [
           Form({
             children: [
-              !this.haTwoFa
+              !this.hasTwoFa
                 ? TextBox({
                     id: "two-fa-qr-code-info",
                     text: [
@@ -69,7 +69,7 @@ export default class SettingsView extends AbstractView {
                 src: this.qrCode,
                 alt: "QR Code"
               }),
-              !this.haTwoFa
+              !this.hasTwoFa
                 ? Input({
                     id: "two-fa-qr-code-input",
                     label: "Enter code",
@@ -79,7 +79,7 @@ export default class SettingsView extends AbstractView {
                     errorId: "two-fa-qr-code-input-error"
                   })
                 : "",
-              !this.haTwoFa
+              !this.hasTwoFa
                 ? Button({
                     id: "two-fa-submit",
                     text: "Activate",
@@ -153,7 +153,7 @@ export default class SettingsView extends AbstractView {
     document
       .getElementById("close-two-fa-modal-button")
       ?.addEventListener("click", () => this.hideTwoFaSetupModal());
-    if (this.haTwoFa) {
+    if (this.hasTwoFa) {
       document
         .getElementById("close-two-fa-password-modal-button")
         ?.addEventListener("click", () => this.hidTwoFaPasswordModal());
@@ -203,7 +203,7 @@ export default class SettingsView extends AbstractView {
 
   private async twoFaAction(event: Event): Promise<void> {
     event.preventDefault();
-    if (!this.haTwoFa) {
+    if (!this.hasTwoFa) {
       const twoFaQrCodeInput = getEl(
         "two-fa-qr-code-input"
       ) as HTMLInputElement;
@@ -265,12 +265,12 @@ export default class SettingsView extends AbstractView {
   }
 
   private async fetchData(): Promise<void> {
-    this.haTwoFa = getDataOrThrow(await geTwoFaStatus()).haTwoFa;
-    if (this.haTwoFa) this.qrCode = getDataOrThrow(await generatTwoFaQrcode());
+    this.hasTwoFa = getDataOrThrow(await geTwoFaStatus()).haTwoFa;
+    if (this.hasTwoFa) this.qrCode = getDataOrThrow(await generateTwoFaQrcode());
   }
 
   private setData() {
-    if (this.haTwoFa) {
+    if (this.hasTwoFa) {
       const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
       twoFaQrcodeEl.src = this.qrCode;
     }
