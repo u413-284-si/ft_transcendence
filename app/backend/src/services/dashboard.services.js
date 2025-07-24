@@ -1,3 +1,7 @@
+import { getUserMatches } from "./matches.services.js";
+import { getUserTournaments } from "./tournaments.services.js";
+import { getUserStats } from "./user_stats.services.js";
+
 const supportedSizes = [4, 8, 16];
 
 export function computeWinrateLastNMatches(userStats, lastNMatches) {
@@ -234,4 +238,76 @@ function buildSeries(key, name, sortedDates, totals) {
       y: totals[date][key]
     }))
   };
+}
+
+export async function getDashboardMatchesData(userId) {
+  const userStats = await getUserStats(userId);
+
+  const lastNMatchesFilter = {
+    playedAs: ["PLAYERONE", "PLAYERTWO"],
+    limit: 10,
+    sort: "desc"
+  };
+  const lastNMatches = await getUserMatches(userId, lastNMatchesFilter);
+
+  const N = 10;
+  const NDaysAgo = new Date();
+  NDaysAgo.setDate(NDaysAgo.getDate() - N);
+
+  const matchesLastNDaysFilter = {
+    playedAs: ["PLAYERONE", "PLAYERTWO"],
+    date: { gte: NDaysAgo },
+    sort: "desc"
+  };
+
+  const matchesLastNDays = await getUserMatches(userId, matchesLastNDaysFilter);
+
+  const winrate = computeWinrateLastNMatches(userStats, lastNMatches);
+  const scoreDiff = computeScoreDiffLastNMatches(lastNMatches);
+  const scores = computeScoresLastNDays(matchesLastNDays, N);
+
+  return { winrate, scoreDiff, scores };
+}
+
+export async function getDashboardTournamentsData(userId) {
+  const allSelect = {
+    maxPlayers: true,
+    roundReached: true
+  };
+
+  const allFinishedFilter = {
+    isFinished: true
+  };
+
+  const allTournaments = await getUserTournaments(
+    userId,
+    allSelect,
+    allFinishedFilter
+  );
+
+  const lastNDaysSelect = {
+    maxPlayers: true,
+    roundReached: true,
+    updatedAt: true
+  };
+  const N = 10;
+  const NDaysAgo = new Date();
+  NDaysAgo.setDate(NDaysAgo.getDate() - N);
+
+  const finishedLastNDaysFilter = {
+    isFinished: true,
+    updatedAt: { gte: NDaysAgo }
+  };
+
+  const tournamentsLastNDays = await getUserTournaments(
+    userId,
+    lastNDaysSelect,
+    finishedLastNDaysFilter
+  );
+
+  const summary = computeTournamentSummary(allTournaments);
+  const progress = computeTournamentProgress(allTournaments);
+  const lastNDays = computeTournamentsLastNDays(tournamentsLastNDays, N);
+
+  return { summary, progress, lastNDays };
 }
