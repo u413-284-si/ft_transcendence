@@ -266,7 +266,7 @@ export default class SettingsView extends AbstractView {
 
   private async fetchData(): Promise<void> {
     this.hasTwoFa = getDataOrThrow(await geTwoFaStatus()).hasTwoFa;
-    this.qrCode = getDataOrThrow(await generateTwoFaQrcode());
+    this.qrCode = getDataOrThrow(await generateTwoFaQrcode()).qrcode;
   }
 
   private setData() {

@@ -246,7 +246,8 @@ export async function twoFaQRCodeHandler(request, reply) {
     }
 
     const totp = generateTotp(username, secret);
-    const data = await generate2FaQrCode(totp);
+    const qrcode = await generate2FaQrCode(totp);
+    const data = { qrcode: qrcode };
 
     await updateTotpSecret(request.user.id, secret);
 
