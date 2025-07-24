@@ -136,11 +136,12 @@ export async function getFriendId(userId, friendUsername) {
       OR: [
         { senderId: userId, receiver: { username: friendUsername } },
         { sender: { username: friendUsername }, receiverId: userId }
-      ]
+      ],
+      status: "ACCEPTED"
     },
     include: friendRequestInclude
   });
-  if (!request || !request.status === "ACCEPTED") {
+  if (!request) {
     return null;
   }
   const formatted = formatFriendRequest(request, userId);
