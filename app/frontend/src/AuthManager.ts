@@ -1,4 +1,3 @@
-import { router } from "./routing/Router.js";
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
@@ -13,8 +12,9 @@ import {
 import { getUserProfile } from "./services/userServices.js";
 import { toaster } from "./Toaster.js";
 import { Token } from "./types/Token.js";
-import { User } from "./types/User.js";
+import { User, Language } from "./types/User.js";
 import { getCookieValueByName } from "./utility.js";
+import { router } from "./routing/Router.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
 
@@ -59,15 +59,17 @@ export class AuthManager {
     console.log("Checking for existing auth token");
     try {
       if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
-        toaster.error("Email address already in use.");
+        toaster.error(i18next.t("toast.emailExists"));
         document.cookie =
           "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
+        this.notify();
         return;
       }
       const apiResponse = await authAndDecodeAccessToken();
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
           console.log("JWT validation failed or no token found.");
+          this.notify();
           return;
         } else {
           throw new ApiError(apiResponse);
@@ -77,6 +79,7 @@ export class AuthManager {
       this.user = getDataOrThrow(await getUserProfile());
       this.updateAuthState(token);
     } catch (error) {
+      this.notify();
       router.handleError("Error in AuthManager.initialize():", error);
     }
   }
@@ -86,7 +89,7 @@ export class AuthManager {
       const apiResponse = await userLogin(username, password);
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
-          toaster.error("Invalid username or password");
+          toaster.error(i18next.t("toast.invalidUsernameOrPW"));
           return false;
         } else {
           throw new ApiError(apiResponse);
@@ -94,6 +97,9 @@ export class AuthManager {
       }
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
+      await i18next.changeLanguage(this.user.language);
+      localStorage.setItem("preferredLanguage", this.user!.language);
+      console.info(`Language switched to ${this.user!.language}`);
       console.log("User logged in");
       this.updateAuthState(token);
       return true;
@@ -124,14 +130,14 @@ export class AuthManager {
       this.updateAuthState(null);
     } catch (error) {
       console.error("Error while logout()", error);
-      toaster.error("Error while logging out. Try again later.");
+      toaster.error(i18next.t("toast.logoutError"));
     }
   }
 
   public clearTokenOnError(): void {
     if (this.authenticated) {
       console.error("Could not verify user");
-      toaster.error("Could not verify user:<br>Sending to Login page");
+      toaster.error(i18next.t("toast.userVerificationError"));
       this.updateAuthState(null);
     }
   }
@@ -141,12 +147,12 @@ export class AuthManager {
   }
 
   public getToken(): Token {
-    if (!this.token) throw new Error("No active Token");
+    if (!this.token) throw new Error(i18next.t("error.noActiveToken"));
     return this.token;
   }
 
   public getUser(): User {
-    if (!this.user) throw new Error("User profile not loaded");
+    if (!this.user) throw new Error(i18next.t("error.userNotFound"));
     return this.user;
   }
 
@@ -168,6 +174,13 @@ export class AuthManager {
       ...this.user!,
       ...update
     };
+    this.notify();
+  }
+
+  public async updateLanguage(lang: Language): Promise<void> {
+    await i18next.changeLanguage(lang);
+    console.info(`Language switched to ${lang}`);
+    localStorage.setItem("preferredLanguage", lang);
     this.notify();
   }
 
@@ -225,7 +238,7 @@ export class AuthManager {
       const apiResponse = await refreshAccessToken();
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
-          toaster.error("Token refresh failed. Logging out");
+          toaster.error(i18next.t("toast.tokenRefreshFailed"));
           this.clearTokenOnError();
           return;
         } else {

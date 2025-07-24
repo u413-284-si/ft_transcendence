@@ -54,7 +54,7 @@ export default class StatsView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle("Stats");
+    this.setTitle(i18next.t("statsView.title"));
   }
 
   createHTML() {
@@ -75,7 +75,7 @@ export default class StatsView extends AbstractView {
               variant: "username"
             })}
             ${Paragraph({
-              text: `Joined: ${this.user?.dateJoined.slice(0, 10)}`
+              text: `${i18next.t("statsView.joined")}: ${this.user?.dateJoined.slice(0, 10)}`
             })}
           </div>
           ${StatFieldGroup([
@@ -185,13 +185,13 @@ export default class StatsView extends AbstractView {
     return /* HTML */ `${Table({
       id: "match-history-table",
       headers: [
-        "Player1",
-        "Player1 Score",
-        "Player2",
-        "Player2 Score",
-        "Result",
-        "Date",
-        "Tournament"
+        i18next.t("statsView.player1"),
+        i18next.t("statsView.player1Score"),
+        i18next.t("statsView.player2"),
+        i18next.t("statsView.player2Score"),
+        i18next.t("statsView.result"),
+        i18next.t("statsView.date"),
+        i18next.t("statsView.tournament")
       ],
       rows: matchesRows
     })}`;
@@ -263,7 +263,7 @@ export default class StatsView extends AbstractView {
     }
     this.user = getDataOrThrow(await getUserByUsername(this.username));
     if (!this.user) {
-      throw Error("User not found");
+      throw new Error(i18next.t("global.userNotFound"));
     }
     const requests = getDataOrThrow(
       await getUserFriendRequestByUsername(this.username)
@@ -290,7 +290,8 @@ export default class StatsView extends AbstractView {
     const userStatsArray = getDataOrThrow(
       await getUserStatsByUsername(this.username)
     );
-    if (!userStatsArray[0]) throw new Error("Could not fetch user-stats");
+    if (!userStatsArray[0])
+      throw new Error(i18next.t("error.userStatsNotFound"));
     this.userStats = userStatsArray[0];
     if (this.viewType === "friend") {
       this.matches = getDataOrThrow(

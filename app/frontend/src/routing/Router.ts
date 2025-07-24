@@ -38,7 +38,9 @@ export class Router {
       // Only allow one dynamic param at the end.
       const match = path.match(/^(.*)\/:([a-zA-Z0-9_]+)$/);
       if (!match) {
-        throw new Error(`Invalid dynamic route pattern: ${path}`);
+        throw new Error(
+          i18next.t("error.invalidDynamicRoutePattern", { pattern: path })
+        );
       }
 
       const staticPart = match[1];
@@ -65,7 +67,6 @@ export class Router {
     window.addEventListener("popstate", this.handlePopState);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.body.addEventListener("click", this.handleLinkClick);
-    await this.navigate(window.location.pathname, false);
   }
 
   async navigate(path: string, push: boolean = true): Promise<void> {
@@ -128,7 +129,7 @@ export class Router {
   }
 
   async reload() {
-    await this.navigate(this.currentPath, false);
+    await this.navigate(window.location.pathname, false);
   }
 
   async handleError(message: string, error: unknown) {

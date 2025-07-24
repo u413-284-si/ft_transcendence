@@ -54,17 +54,25 @@ export function validateNicknames(
     const nickname = nicknames[i];
 
     if (isEmptyString(nickname)) {
-      markInvalid("Nickname is required.", inputEl, errorElements[i]);
+      markInvalid(
+        i18next.t("invalid.nicknameEmpty"),
+        inputEl,
+        errorElements[i]
+      );
       isValid = false;
     } else if (!validateAgainstRegex(nickname, nicknameRegex)) {
       markInvalid(
-        "Nickname must be 3–20 characters and can include letters, numbers, or [-!?_$.]",
+        i18next.t("invalid.nicknameFormat"),
         inputEl,
         errorElements[i]
       );
       isValid = false;
     } else if (nicknames.filter((n) => n === nickname).length > 1) {
-      markInvalid("Nicknames must be unique.", inputEl, errorElements[i]);
+      markInvalid(
+        i18next.t("invalid.nicknameUniqueness"),
+        inputEl,
+        errorElements[i]
+      );
       isValid = false;
     }
   });
@@ -81,16 +89,12 @@ export function validateTournamentName(
   clearInvalid(inputEl, errorEl);
 
   if (isEmptyString(tournamentName)) {
-    markInvalid("Tournament name is required.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.tournamentNameEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(tournamentName, tournamentNameRegex)) {
-    markInvalid(
-      "Tournament name must be 3–20 characters long and can only contain letters, numbers, or [-!?_$.].",
-      inputEl,
-      errorEl
-    );
+    markInvalid(i18next.t("invalid.tournamentNameFormat"), inputEl, errorEl);
     return false;
   }
   return true;
@@ -109,7 +113,7 @@ export async function isTournamentNameAvailable(
     const tournamentNames = tournaments.map((tournament) => tournament.name);
     if (tournamentNames.includes(inputEl.value)) {
       markInvalid(
-        "Tournament name already exists. Please choose a different name.",
+        i18next.t("invalid.tournamentNameUniqueness"),
         inputEl,
         errorEl
       );
@@ -117,7 +121,7 @@ export async function isTournamentNameAvailable(
     }
   } catch (error) {
     console.error("Error fetching tournaments:", error);
-    toaster.error("An error occurred while validating the tournament name.");
+    toaster.error(i18next.t("toast.validateTournamentNameError"));
     return false;
   }
   return true;
@@ -131,7 +135,7 @@ export function validatePlayersSelection(
   clearInvalid(selectionEl, errorEl);
 
   if (!playersSelected) {
-    markInvalid("Please select number of players.", selectionEl, errorEl);
+    markInvalid(i18next.t("invalid.playerSelection"), selectionEl, errorEl);
     return false;
   }
   return true;
@@ -148,18 +152,12 @@ export function validatePassword(
   clearInvalid(inputEl, errorEl);
 
   if (isEmptyString(password)) {
-    markInvalid("Please enter a password.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.passwordEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(password, passwordRegex)) {
-    markInvalid(
-      "Password must be 10-64 characters long and must contain at least one " +
-        "number, one uppercase and one lowercase letter and one of the " +
-        "following special characters inside brackets: [@$!%*?&].",
-      inputEl,
-      errorEl
-    );
+    markInvalid(i18next.t("invalid.passwordFormat"), inputEl, errorEl);
     return false;
   }
   return true;
@@ -171,12 +169,16 @@ export function validateConfirmPassword(
   errorEl: HTMLElement
 ): boolean {
   if (isEmptyString(inputElTwo.value)) {
-    markInvalid("Please re-enter your password.", inputElTwo, errorEl);
+    markInvalid(
+      i18next.t("invalid.passwordConfirmationEmpty"),
+      inputElTwo,
+      errorEl
+    );
     return false;
   }
 
   if (inputElOne.value !== inputElTwo.value) {
-    markInvalid("Passwords do not match.", inputElTwo, errorEl);
+    markInvalid(i18next.t("invalid.passwordConfirmation"), inputElTwo, errorEl);
     return false;
   }
 
@@ -194,18 +196,12 @@ export function validateUsername(
   clearInvalid(inputEl, errorEl);
 
   if (isEmptyString(username)) {
-    markInvalid("Please enter a username.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.usernameEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(username, usernameRegex)) {
-    markInvalid(
-      "Username must be 3-20 characters long " +
-        "and can only include letters, numbers, or one of the " +
-        "following special characters inside brackets: [@$!%*?&].",
-      inputEl,
-      errorEl
-    );
+    markInvalid(i18next.t("invalid.usernameFormat"), inputEl, errorEl);
     return false;
   }
   return true;
@@ -221,12 +217,12 @@ export function validateEmail(
   clearInvalid(inputEl, errorEl);
 
   if (isEmptyString(email)) {
-    markInvalid("Please enter an email.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.emailEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(email, emailRegex)) {
-    markInvalid("Email must be a valid email address.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.emailFormat"), inputEl, errorEl);
     return false;
   }
   return true;
@@ -238,16 +234,12 @@ export function validateUsernameOrEmail(
 ): boolean {
   clearInvalid(inputEl, errorEl);
   if (isEmptyString(inputEl.value)) {
-    markInvalid("Please enter a username or email address.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.emailOrUsernameEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateUsername(inputEl, errorEl) && !validateEmail(inputEl, errorEl)) {
-    markInvalid(
-      "Please enter a valid username (3-20 characters long) or email address",
-      inputEl,
-      errorEl
-    );
+    markInvalid(i18next.t("invalid.emailOrUsernameFormat"), inputEl, errorEl);
     return false;
   }
   return true;
@@ -260,13 +252,13 @@ export function validateImageFile(
   clearInvalid(inputEl, errorEl);
 
   if (!inputEl || !inputEl.files || inputEl.files.length === 0) {
-    markInvalid("Please select a file to upload.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.imageFileEmpty"), inputEl, errorEl);
     return false;
   }
 
   const file = inputEl.files![0];
   if (!file.type.startsWith("image/")) {
-    markInvalid("Please upload a valid image file.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.imageFileFormat"), inputEl, errorEl);
     return false;
   }
   return true;
