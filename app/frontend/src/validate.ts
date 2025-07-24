@@ -297,7 +297,7 @@ export async function validatTwoFaCode(
   }
 
   let apiResponse: ApiResponse<null>;
-  if (auth.iTwoFaPending()) {
+  if (auth.isTwoFaPending()) {
     apiResponse = await verifyLogiTwoFaCode(twoFaCode);
   } else {
     apiResponse = await verifTwoFaCode(twoFaCode);

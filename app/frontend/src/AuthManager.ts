@@ -166,7 +166,7 @@ export class AuthManager {
     return this.authenticated;
   }
 
-  public iTwoFaPending(): boolean {
+  public isTwoFaPending(): boolean {
     return this.twoFaPending;
   }
 
