@@ -80,7 +80,9 @@ export async function generatTwoFaQrcode(): Promise<
   );
 }
 
-export async function verifTwoFaCode(code: string): Promise<ApiResponse<null>> {
+export async function verifyTwoFaCode(
+  code: string
+): Promise<ApiResponse<null>> {
   const url = "/api/auth/2fa/verify";
 
   return apiFetch<null>(
