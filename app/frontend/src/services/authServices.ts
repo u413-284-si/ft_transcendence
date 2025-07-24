@@ -109,11 +109,11 @@ export async function verifyLogiTwoFaCode(
 }
 
 export async function geTwoFaStatus(): Promise<
-  ApiResponse<{ haTwoFa: boolean }>
+  ApiResponse<{ hasTwoFa: boolean }>
 > {
   const url = "/api/auth/2fa/status";
 
-  return apiFetch<{ haTwoFa: boolean }>(
+  return apiFetch<{ hasTwoFa: boolean }>(
     url,
     {
       method: "GET",

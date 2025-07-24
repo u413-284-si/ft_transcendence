@@ -334,8 +334,8 @@ export async function twoFaLoginVerifyHandler(request, reply) {
 export async function twoFaStatusHandler(request, reply) {
   const action = "Get 2FA status";
   try {
-    const haTwoFa = await get2FaStatus(request.user.id);
-    const data = { haTwoFa: haTwoFa };
+    const hasTwoFa = await get2FaStatus(request.user.id);
+    const data = { hasTwoFa: hasTwoFa };
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data });
