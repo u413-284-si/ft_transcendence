@@ -196,9 +196,9 @@ const tr: TranslationShape = {
 
     settingsView: {
       preferredLanguage: "Select interface language protocol.",
-      saveLanguage: "SAVE LANGUAGE",
+      saveLanguage: "Save language preference",
       settings: "Configure your system parameters.",
-      title: "SYSTEM SETTINGS"
+      title: "System Settings"
     },
 
     statsView: {
@@ -212,7 +212,7 @@ const tr: TranslationShape = {
       player1Score: "Agent 1 Score",
       player2Score: "Agent 2 Score",
       result: "Session Outcome",
-      title: "PERFORMANCE STATS",
+      title: "Performance Stats",
       tournament: "Tournament Grid",
       winRate: "Victory Ratio"
     },
