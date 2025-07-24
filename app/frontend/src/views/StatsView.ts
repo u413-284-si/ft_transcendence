@@ -1,7 +1,9 @@
 import AbstractView from "./AbstractView.js";
 import {
   getUserDashboardMatches,
+  getUserDashboardMatchesByUsername,
   getUserDashboardTournaments,
+  getUserDashboardTournamentsByUsername,
   getUserStats,
   getUserStatsByUsername
 } from "../services/userStatsServices.js";
@@ -293,6 +295,12 @@ export default class StatsView extends AbstractView {
     if (this.viewType === "friend") {
       this.matches = getDataOrThrow(
         await getUserPlayedMatchesByUsername(this.username)
+      );
+      this.dashboardMatches = getDataOrThrow(
+        await getUserDashboardMatchesByUsername(this.username)
+      );
+      this.dashboardTournaments = getDataOrThrow(
+        await getUserDashboardTournamentsByUsername(this.username)
       );
     }
   }
