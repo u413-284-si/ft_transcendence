@@ -392,8 +392,18 @@ export async function twoFaStatusHandler(request, reply) {
 export async function twoFaRemoveHandler(request, reply) {
   const action = "Remove 2FA";
   try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
     const { password } = request.body;
-    const hashedPassword = await getPasswordHash(request.user.id);
+    const hashedPassword = await getPasswordHash(userId);
 
     if (!(await verifyHash(hashedPassword, password))) {
       return httpError(
@@ -404,7 +414,7 @@ export async function twoFaRemoveHandler(request, reply) {
       );
     }
 
-    await update2FaStatus(request.user.id, false);
+    await update2FaStatus(userId, false);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true) });
