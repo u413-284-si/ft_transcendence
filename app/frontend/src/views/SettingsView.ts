@@ -189,7 +189,7 @@ export default class SettingsView extends AbstractView {
     this.hideOverlay();
   }
 
-  private displaTwoFaPasswordModal() {
+  private displayTwoFaPasswordModal() {
     const twoFaModal = getEl("two-fa-password-modal");
     twoFaModal.classList.remove("hidden");
     this.displayOverlay();
@@ -222,7 +222,7 @@ export default class SettingsView extends AbstractView {
       toaster.success("2FA setup successful");
     } else {
       this.hideTwoFaSetupModal();
-      this.displaTwoFaPasswordModal();
+      this.displayTwoFaPasswordModal();
     }
   }
 
