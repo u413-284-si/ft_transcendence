@@ -1,14 +1,18 @@
 import type { ApexOptions } from "apexcharts";
 import { TournamentSummaryData } from "../types/DataSeries";
-import { toAxisSeries, tournamentColors } from "./utils.js";
+import { tournamentColors } from "./utils.js";
 
 export function maketournamentSummaryOptions(
   name: string,
   data: TournamentSummaryData
 ): ApexOptions {
-  const series = toAxisSeries(name, data.data);
+  const transformedData = data.data.map((point) => ({
+    label: `${point.size}-Players`,
+    winrate: point.winrate,
+    played: point.played,
+    won: point.won
+  }));
   const options: ApexOptions = {
-    series: series,
     chart: {
       type: "radialBar",
       fontFamily: "inherit",
@@ -16,6 +20,15 @@ export function maketournamentSummaryOptions(
       height: 300,
       width: 400
     },
+    series: [
+      {
+        data: transformedData,
+        parsing: {
+          x: "label",
+          y: "winrate"
+        }
+      }
+    ],
     plotOptions: {
       radialBar: {
         offsetY: 0,
@@ -40,7 +53,7 @@ export function maketournamentSummaryOptions(
           offsetX: -8,
           fontSize: "14px",
           formatter: function (seriesName, opts) {
-            const detail = data.details[opts.seriesIndex];
+            const detail = data.data[opts.seriesIndex];
             return `${seriesName}: ${detail.won} (${detail.played})`;
           }
         }
@@ -54,16 +67,14 @@ export function maketournamentSummaryOptions(
     tooltip: {
       enabled: true,
       theme: "dark",
-      custom: ({ series, seriesIndex, w }) => {
-        const label = w.globals.labels[seriesIndex];
-        const detail = data.details[seriesIndex];
-        const winRate = series[seriesIndex];
+      custom: ({ seriesIndex }) => {
+        const { label, won, played, winrate } = transformedData[seriesIndex];
         return /* HTML */ `
           <div style="padding:8px; color:white; font-size:14px;">
             <strong>${label}</strong><br />
-            Wins: ${detail.won}<br />
-            Played: ${detail.played}<br />
-            Win Rate: ${winRate}%
+            Wins: ${won}<br />
+            Played: ${played}<br />
+            Win Rate: ${winrate}%
           </div>
         `;
       }

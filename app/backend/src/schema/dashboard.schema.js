@@ -75,46 +75,36 @@ const dashboardMatchesResponseSchema = {
 const dashboardTournamentSummarySchema = {
   $id: "dashboardTournamentSummarySchema",
   type: "object",
-  description: "Summary of winrate, played and won tournaments",
+  description: "Summary of winrate and tournament participation by size",
   properties: {
     data: {
       type: "array",
       items: {
         type: "object",
         properties: {
-          x: {
-            type: "string",
-            description: "Tournament size description"
+          size: {
+            type: "number",
+            description: "Tournament size (e.g. 4, 8, 16)"
           },
-          y: {
+          winrate: {
             type: "number",
             description: "Winrate for tournament size"
-          }
-        },
-        required: ["x", "y"],
-        additionalProperties: false
-      }
-    },
-    details: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
+          },
           played: {
             type: "number",
-            description: "How many tournaments of size played"
+            description: "Number of tournaments played with this size"
           },
           won: {
             type: "number",
-            description: "How many tournaments of size won"
+            description: "Number of tournaments won with this size"
           }
         },
-        required: ["played", "won"],
+        required: ["size", "winrate", "played", "won"],
         additionalProperties: false
       }
     }
   },
-  required: ["data", "details"],
+  required: ["data"],
   additionalProperties: false
 };
 

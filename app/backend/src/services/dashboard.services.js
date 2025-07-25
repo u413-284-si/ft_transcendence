@@ -132,19 +132,16 @@ export function computeTournamentSummary(tournaments) {
     if (wonTournament) summary[size].won++;
   }
 
-  // Build final return structure
   const data = [];
-  const details = [];
 
   for (const size of supportedSizes) {
     const { played, won } = summary[size];
-    const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
+    const winrate = played > 0 ? Math.round((won / played) * 100) : 0;
 
-    data.push({ x: `${size}-Player`, y: winRate });
-    details.push({ played, won });
+    data.push({ size, winrate, played, won });
   }
 
-  return { data, details };
+  return { data };
 }
 
 export function computeTournamentProgress(tournaments) {

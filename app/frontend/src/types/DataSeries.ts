@@ -26,13 +26,14 @@ export type DashboardMatches = {
 };
 
 type TournamentSummaryPoint = {
-  x: string;
-  y: number;
+  size: number;
+  winrate: number;
+  played: number;
+  won: number;
 };
 
 export type TournamentSummaryData = {
   data: TournamentSummaryPoint[];
-  details: { played: number; won: number }[];
 };
 
 type TournamentProgressPoint = {
