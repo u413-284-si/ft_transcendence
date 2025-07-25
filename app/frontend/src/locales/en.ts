@@ -204,7 +204,7 @@ const en = {
     statsView: {
       date: "Date",
       friendOnly: "You must be friends to view match history",
-      joined: "Joined on",
+      joined: "Joined on {{date}}",
       matchHistory: "Match History",
       played: "Played",
       player1: "Player 1",

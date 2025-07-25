@@ -38,6 +38,7 @@ import { maketournamentSummaryOptions } from "../charts/tournamentSummaryOptions
 import { makeTournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 import { maketournamentLastNDaysOptions } from "../charts/tournamentsLastNDaysOptions.js";
 import { toaster } from "../Toaster.js";
+import { formatDate } from "../formatDate.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -58,30 +59,42 @@ export default class StatsView extends AbstractView {
   }
 
   createHTML() {
-    if (!this.userStats) throw new Error("User stats is null");
+    if (!this.user) throw new Error(i18next.t("error.userNotFound"));
+    if (!this.userStats) throw new Error(i18next.t("error.userStatsNotFound"));
 
     return /* HTML */ `<div
         class="flex flex-row items-center gap-y-6 gap-x-8 mb-12 pl-6"
       >
         <img
-          src=${this.user?.avatar || "/images/default-avatar.png"}
-          alt="Avatar"
+          src=${this.user.avatar || "/images/default-avatar.png"}
+          alt=${i18next.t("global.avatar")}
           class="w-20 h-20 rounded-full border-2 border-neon-cyan shadow-neon-cyan"
         />
         <div class="flex flex-col md:flex-row md:items-center md:gap-x-8">
           <div>
             ${Header1({
-              text: this.username,
+              text: escapeHTML(this.username),
               variant: "username"
             })}
             ${Paragraph({
-              text: `${i18next.t("statsView.joined")}: ${this.user?.dateJoined.slice(0, 10)}`
+              text: i18next.t("statsView.joined", {
+                date: formatDate(this.user.dateJoined)
+              })
             })}
           </div>
           ${StatFieldGroup([
-            { value: `${this.userStats.matchesPlayed}`, text: "Played" },
-            { value: `${this.userStats.matchesWon}`, text: "Won" },
-            { value: `${this.userStats.matchesLost}`, text: "Lost" }
+            {
+              value: `${this.userStats.matchesPlayed}`,
+              text: i18next.t("statsView.played")
+            },
+            {
+              value: `${this.userStats.matchesWon}`,
+              text: i18next.t("global.won")
+            },
+            {
+              value: `${this.userStats.matchesLost}`,
+              text: i18next.t("global.lost")
+            }
           ])}
           ${StatFieldGroup([
             {
