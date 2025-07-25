@@ -243,7 +243,8 @@ const fr: TranslationShape = {
       summary: "Résumé",
       progress: "Progression ({{num}}-Players)",
       rangeLastMatches: " ({{count}} derniers matchs)",
-      rangeLastDays: " ({{count}} derniers jouers)"
+      rangeLastDays: " ({{count}} derniers jouers)",
+      numPlayers: "{{num}} joueurs"
     },
 
     toast: {

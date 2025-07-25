@@ -7,7 +7,7 @@ export function maketournamentSummaryOptions(
   data: TournamentSummaryData
 ): ApexOptions {
   const transformedData = data.data.map((point) => ({
-    label: `${point.size}-Players`,
+    label: `${i18next.t("chart.numPlayers", { num: point.size })}`,
     winrate: point.winrate,
     played: point.played,
     won: point.won
@@ -69,12 +69,21 @@ export function maketournamentSummaryOptions(
       theme: "dark",
       custom: ({ seriesIndex }) => {
         const { label, won, played, winrate } = transformedData[seriesIndex];
+        const labelText = i18next.t("global.label", {
+          field: i18next.t("global.won")
+        });
+        const playedText = i18next.t("global.label", {
+          field: i18next.t("statsView.played")
+        });
+        const winrateText = i18next.t("global.label", {
+          field: i18next.t("statsView.winRate")
+        });
         return /* HTML */ `
           <div style="padding:8px; color:white; font-size:14px;">
             <strong>${label}</strong><br />
-            Wins: ${won}<br />
-            Played: ${played}<br />
-            Win Rate: ${winrate}%
+            ${labelText} ${won}<br />
+            ${playedText} ${played}<br />
+            ${winrateText} ${winrate}%
           </div>
         `;
       }

@@ -231,9 +231,10 @@ const tr: TranslationShape = {
       scoreDiff: "Δ_SCORE{{range}}",
       scores: "SCORE_LOG{{range}}",
       summary: "SYS_SUM",
-      progress: "PROG_{{num}}X",
+      progress: "PROG_P({{num}})",
       rangeLastMatches: " [{{count}}x]",
-      rangeLastDays: " [D{{count}}]"
+      rangeLastDays: " [D{{count}}]",
+      numPlayers: "P({{num}})"
     },
 
     toast: {

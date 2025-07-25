@@ -231,9 +231,10 @@ const pi: TranslationShape = {
       scoreDiff: "Score Gap{{range}}",
       scores: "Booty Count{{range}}",
       summary: "Battle Recap",
-      progress: "Climb - {{num}} Buccaneers",
+      progress: "Climb - {{num}} sea dogs",
       rangeLastMatches: " - last {{count}} Battles",
-      rangeLastDays: " - last {{count}} Days"
+      rangeLastDays: " - last {{count}} Days",
+      numPlayers: "{{num}} sea dogs"
     },
 
     toast: {

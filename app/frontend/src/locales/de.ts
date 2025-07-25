@@ -238,9 +238,10 @@ const de: TranslationShape = {
       scoreDiff: "Punktedifferenz{{range}}",
       scores: "Punkte{{range}}",
       summary: "Übersicht",
-      progress: "Fortschritt ({{num}}-Players)",
+      progress: "Fortschritt ({{num}} Spieler)",
       rangeLastMatches: " (Letzten {{count}} Spiele)",
-      rangeLastDays: " (Letzten {{count}} Tage)"
+      rangeLastDays: " (Letzten {{count}} Tage)",
+      numPlayers: "{{num}} Spieler"
     },
 
     toast: {
