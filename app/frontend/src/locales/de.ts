@@ -6,6 +6,7 @@ const de: TranslationShape = {
       invalidDynamicRoutePattern:
         "Ungültiges dynamisches Routenmuster: {{pattern}}",
       matchNotFound: "Spiel nicht gefunden.",
+      matchesNotFound: "Spiele nicht gefunden.",
       missingRequestID: "Anfrage-ID fehlt.",
       nextMatchNotFound: "Nächstes Spiel nicht gefunden.",
       noActiveToken: "Keinen aktiven Token gefunden.",
@@ -209,7 +210,8 @@ const de: TranslationShape = {
 
     statsView: {
       date: "Datum",
-      friendOnly: "Du musst befreundet sein, um die Match-Historie zu sehen",
+      friendOnly:
+        "Du musst befreundet sein, um detaillierte Statistiken zu sehen",
       joined: "Beigetreten am {{date}}",
       matchHistory: "Spielverlauf",
       played: "Gespielt",
@@ -220,7 +222,25 @@ const de: TranslationShape = {
       result: "Ergebnis",
       title: "Statistiken",
       tournament: "Turnier",
-      winRate: "Siegquote"
+      winRate: "Siegquote",
+      winstreak: "Siegesserie",
+      maxStreak: "Max-Serie",
+      matches: "Spiele",
+      tournaments: "Tuniere",
+      friends: "Freunde",
+      dashboard: "Übersicht",
+      details: "Details"
+    },
+
+    chart: {
+      winLoss: "Siege vs Niederlagen{{range}}",
+      progression: "Siegquote{{range}}",
+      scoreDiff: "Punktedifferenz{{range}}",
+      scores: "Punkte{{range}}",
+      summary: "Übersicht",
+      progress: "Fortschritt ({{num}}-Players)",
+      rangeLastMatches: " (Letzten {{count}} Spiele)",
+      rangeLastDays: " (Letzten {{count}} Tage)"
     },
 
     toast: {
@@ -228,6 +248,7 @@ const de: TranslationShape = {
       avatarUploadFailed:
         "Avatar konnte nicht hochgeladen werden. Bitte versuche es erneut.",
       avatarUploadedSuccess: "Avatar erfolgreich hochgeladen!",
+      chartError: "Ein Diagramm konnte nicht initialisiert werden",
       connectionLost:
         "Verbindung verloren - erneuter Versuch in {{delay}} Sekunden... (Versuch {{attempt}} von {{maxAttempts}})",
       connectionReestablished: "Verbindung wiederhergestellt",

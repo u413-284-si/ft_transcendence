@@ -6,6 +6,7 @@ const fr: TranslationShape = {
       invalidDynamicRoutePattern:
         "Modèle de route dynamique invalide: {{pattern}}",
       matchNotFound: "Match non trouvé.",
+      matchesNotFound: "Matchs non trouvés",
       missingRequestID: "L'ID de la demande est manquant.",
       nextMatchNotFound: "Prochain match non trouvé.",
       noActiveToken: "Aucun token actif trouvé.",
@@ -212,7 +213,8 @@ const fr: TranslationShape = {
 
     statsView: {
       date: "Date",
-      friendOnly: "Vous devez être amis pour voir l'historique des matchs",
+      friendOnly:
+        "Vous devez être amis avec ce joueur pour voir les statistiques détaillées.",
       joined: "Inscrit le {{date}}",
       matchHistory: "Historique des matchs",
       played: "Joué",
@@ -223,7 +225,25 @@ const fr: TranslationShape = {
       result: "Résultat",
       title: "Statistiques",
       tournament: "Tournoi",
-      winRate: "Taux de victoire"
+      winRate: "Taux de victoire",
+      winstreak: "Série de victoires",
+      maxStreak: "Max-Série",
+      matches: "Matchs",
+      tournaments: "Tournois",
+      friends: "Amis",
+      dashboard: "Tableau",
+      details: "Détails"
+    },
+
+    chart: {
+      winLoss: "Victoires vs Défaites{{range}}",
+      progression: "Taux de victoire{{range}}",
+      scoreDiff: "Différence de score{{range}}",
+      scores: "Scores{{range}}",
+      summary: "Résumé",
+      progress: "Progression ({{num}}-Players)",
+      rangeLastMatches: " ({{count}} derniers matchs)",
+      rangeLastDays: " ({{count}} derniers jouers)"
     },
 
     toast: {
@@ -231,6 +251,7 @@ const fr: TranslationShape = {
       avatarUploadFailed:
         "Échec du téléchargement de l'avatar. Veuillez réessayer.",
       avatarUploadedSuccess: "Avatar téléchargé avec succès !",
+      chartError: "Un graphique n'a pas pu être initialisé",
       connectionUnavailable:
         "Impossible de se reconnecter. Tentatives arrêter jusqu'à l'actualisation.",
       connectionLost:

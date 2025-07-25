@@ -39,6 +39,7 @@ import { makeTournamentProgressOptions } from "../charts/tournamentProgressOptio
 import { maketournamentLastNDaysOptions } from "../charts/tournamentsLastNDaysOptions.js";
 import { toaster } from "../Toaster.js";
 import { formatDate } from "../formatDate.js";
+import { TextBox } from "../components/TextBox.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -52,6 +53,8 @@ export default class StatsView extends AbstractView {
   private charts: Record<string, Record<string, ApexCharts>> = {};
   private chartOptions: Record<string, Record<string, ApexCharts.ApexOptions>> =
     {};
+  private rangeMatches = i18next.t("chart.rangeLastMatches", { count: 10 });
+  private rangeDays = i18next.t("chart.rangeLastDays", { count: 10 });
 
   constructor() {
     super();
@@ -99,15 +102,15 @@ export default class StatsView extends AbstractView {
           ${StatFieldGroup([
             {
               value: `${this.userStats.winRate.toFixed(2)} %`,
-              text: "Win Rate"
+              text: i18next.t("statsView.winRate")
             },
             {
               value: `${this.userStats.winstreakCur}`,
-              text: "Winstreak"
+              text: i18next.t("statsView.winstreak")
             },
             {
               value: `${this.userStats.winstreakMax}`,
-              text: "Max Streak"
+              text: i18next.t("statsView.maxStreak")
             }
           ])}
         </div>
@@ -128,15 +131,23 @@ export default class StatsView extends AbstractView {
 
   getTabsHTML(): string {
     if (this.viewType === "public") {
-      return /* HTML */ ` ${Paragraph({
-        text: "You need to be friends to view detailed stats"
+      return /* HTML */ ` ${TextBox({
+        text: [i18next.t("statsView.friendOnly")],
+        variant: "info"
       })}`;
     }
     return /* HTML */ `
-      <div class="flex space-x-4 border-b border-gray-300 mb-4">
-        ${TabButton({ text: "Matches", tabId: "matches", isActive: true })}
-        ${TabButton({ text: "Tournament", tabId: "tournaments" })}
-        ${TabButton({ text: "Friends", tabId: "friends" })}
+      <div class="flex space-x-4 border-b border-grey mb-4">
+        ${TabButton({
+          text: i18next.t("statsView.matches"),
+          tabId: "matches",
+          isActive: true
+        })}
+        ${TabButton({
+          text: i18next.t("statsView.tournaments"),
+          tabId: "tournaments"
+        })}
+        ${TabButton({ text: i18next.t("statsView.friends"), tabId: "friends" })}
       </div>
       ${this.getMatchesTabHTML()} ${this.getTournamentsTabHTML()}
     `;
@@ -145,7 +156,7 @@ export default class StatsView extends AbstractView {
     return /* HTML */ ` <div id="tab-matches" class="tab-content">
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
         ${Header1({
-          text: "Dashboard",
+          text: i18next.t("statsView.dashboard"),
           id: "match-dashboard-header",
           variant: "default"
         })}
@@ -153,7 +164,7 @@ export default class StatsView extends AbstractView {
       </div>
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
         ${Header1({
-          text: "Details",
+          text: i18next.t("statsView.details"),
           id: "match-details-header",
           variant: "default"
         })}
@@ -165,20 +176,23 @@ export default class StatsView extends AbstractView {
   getMatchesDashboard(): string {
     return /* HTML */ `<div class="p-6 mx-auto space-y-8 min-h-screen">
       <div class="flex flex-cols-2 gap-8">
-        ${Chart({ title: "Wins vs Losses", chartId: "win-loss-chart" })}
         ${Chart({
-          title: "Winrate Progression (Last 10 Matches)",
+          title: i18next.t("chart.winLoss", { range: "" }),
+          chartId: "win-loss-chart"
+        })}
+        ${Chart({
+          title: i18next.t("chart.progression", { range: this.rangeMatches }),
           chartId: "winrate-chart"
         })}
       </div>
 
       <div class="grid grid-cols-2 gap-8">
         ${Chart({
-          title: "Score Difference (Last 10 Matches)",
+          title: i18next.t("chart.scoreDiff", { range: this.rangeMatches }),
           chartId: "score-diff-chart"
         })}
         ${Chart({
-          title: "Scores Last Ten Days",
+          title: i18next.t("chart.scores", { range: this.rangeDays }),
           chartId: "scores-last-ten"
         })}
       </div>
@@ -186,7 +200,7 @@ export default class StatsView extends AbstractView {
   }
 
   getMatchesTableHTML(): string {
-    if (!this.matches) throw new Error("Matches is null");
+    if (!this.matches) throw new Error(i18next.t("error.matchesNotFound"));
 
     const matchesRows =
       this.matches.length === 0
@@ -214,7 +228,7 @@ export default class StatsView extends AbstractView {
     return /* HTML */ ` <div id="tab-tournaments" class="tab-content hidden">
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
         ${Header1({
-          text: "Dashboard",
+          text: i18next.t("statsView.dashboard"),
           id: "tournament-dashboard-header",
           variant: "default"
         })}
@@ -222,7 +236,7 @@ export default class StatsView extends AbstractView {
       </div>
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
         ${Header1({
-          text: "Details",
+          text: i18next.t("statsView.details"),
           id: "tournament-details-header",
           variant: "default"
         })}
@@ -235,25 +249,25 @@ export default class StatsView extends AbstractView {
     return /* HTML */ `<div class="p-6 mx-auto space-y-8">
       <div class="flex gap-8">
         ${Chart({
-          title: "Tournament Summary",
+          title: i18next.t("chart.summary"),
           chartId: "tournament-summary"
         })}
         ${Chart({
-          title: "Tournaments Last 10 Days",
+          title: i18next.t("chart.winLoss", { range: this.rangeDays }),
           chartId: "tournament-last-10-days"
         })}
       </div>
       <div class="flex gap-8">
         ${Chart({
-          title: "Tournament Progress 4",
+          title: i18next.t("chart.progress", { num: 4 }),
           chartId: "tournament-progress-4"
         })}
         ${Chart({
-          title: "Tournament Progress 8",
+          title: i18next.t("chart.progress", { num: 8 }),
           chartId: "tournament-progress-8"
         })}
         ${Chart({
-          title: "Tournament Progress 16",
+          title: i18next.t("chart.progress", { num: 16 }),
           chartId: "tournament-progress-16"
         })}
       </div>
@@ -357,40 +371,42 @@ export default class StatsView extends AbstractView {
       "win-loss-chart": makeWinLossOptions(
         this.userStats.matchesWon,
         this.userStats.matchesLost,
-        this.userStats.winRate
+        this.userStats.winRate,
+        [i18next.t("global.won"), i18next.t("global.lost")],
+        i18next.t("statsView.winRate")
       ),
       "winrate-chart": makeWinrateOptions(
-        "Winrate",
+        i18next.t("statsView.winRate"),
         this.dashboardMatches.winrate,
         this.userStats.matchesPlayed
       ),
       "score-diff-chart": makeScoreDiffOptions(
-        "Score Difference",
+        i18next.t("chart.scoreDiff", { range: "" }),
         this.dashboardMatches.scoreDiff,
         this.userStats.matchesPlayed
       ),
       "scores-last-ten": makeScoresLastTenDaysOptions(
-        "Scores Last Ten Days",
+        i18next.t("chart.scores", { range: "" }),
         this.dashboardMatches.scores
       )
     };
     this.chartOptions["tournaments"] = {
       "tournament-summary": maketournamentSummaryOptions(
-        "Summary",
+        i18next.t("chart.summary"),
         this.dashboardTournaments.summary
       ),
       "tournament-progress-4": makeTournamentProgressOptions(
-        "How often reached",
+        i18next.t("chart.progress", { num: 4 }),
         this.dashboardTournaments.progress["4"].reverse(),
         4
       ),
       "tournament-progress-8": makeTournamentProgressOptions(
-        "Tournament Progress 8",
+        i18next.t("chart.progress", { num: 8 }),
         this.dashboardTournaments.progress["8"].reverse(),
         8
       ),
       "tournament-progress-16": makeTournamentProgressOptions(
-        "Tournament Progress 16",
+        i18next.t("chart.progress", { num: 16 }),
         this.dashboardTournaments.progress["16"].reverse(),
         16
       ),
@@ -419,7 +435,7 @@ export default class StatsView extends AbstractView {
         );
       } catch (error) {
         console.error(`Chart ${chartId} failed to initialize`, error);
-        toaster.error("A chart failed to initialize");
+        toaster.error(i18next.t("toast.chartError"));
       }
     }
   }

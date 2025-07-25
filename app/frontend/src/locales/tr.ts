@@ -5,6 +5,7 @@ const tr: TranslationShape = {
     error: {
       invalidDynamicRoutePattern: "Invalid dynamic route pattern: {{pattern}}",
       matchNotFound: "Session data not found.",
+      matchesNotFound: "Session data not found.",
       missingRequestID: "Request ID is missing.",
       nextMatchNotFound: "Next session data missing.",
       noActiveToken: "No active token detected.",
@@ -203,7 +204,7 @@ const tr: TranslationShape = {
 
     statsView: {
       date: "Cycle Date",
-      friendOnly: "Link established required to access session logs",
+      friendOnly: "Link established required to access complete logs",
       joined: "Node integrated: {{date}}",
       matchHistory: "Session Log",
       played: "Engaged",
@@ -214,13 +215,32 @@ const tr: TranslationShape = {
       result: "Session Outcome",
       title: "Performance Stats",
       tournament: "Tournament Grid",
-      winRate: "Victory Ratio"
+      winRate: "Victory Ratio",
+      winstreak: "Sequence",
+      maxStreak: "Max Sequence",
+      matches: "Sessions",
+      tournaments: "Tournaments",
+      friends: "Connections",
+      dashboard: "Core",
+      details: "Data"
+    },
+
+    chart: {
+      winLoss: "W/L LOG{{range}}",
+      progression: "WINRATE_Δ{{range}}",
+      scoreDiff: "Δ_SCORE{{range}}",
+      scores: "SCORE_LOG{{range}}",
+      summary: "SYS_SUM",
+      progress: "PROG_{{num}}X",
+      rangeLastMatches: " [{{count}}x]",
+      rangeLastDays: " [D{{count}}]"
     },
 
     toast: {
       acceptedFriendRequest: "Link request accepted by ",
       avatarUploadFailed: "Avatar upload interrupted. Reattempt required.",
       avatarUploadedSuccess: "Avatar successfully embedded!",
+      chartError: "Chart failed to initialize",
       connectionLost:
         "Signal lost — attempting reconnection in {{delay}} cycles... (Attempt {{attempt}} of {{maxAttempts}})",
       connectionReestablished: "Signal reestablished",

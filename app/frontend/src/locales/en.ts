@@ -3,6 +3,7 @@ const en = {
     error: {
       invalidDynamicRoutePattern: "Invalid dynamic route pattern: {{pattern}}",
       matchNotFound: "Match not found.",
+      matchesNotFound: "Matches not found.",
       missingRequestID: "Request ID is missing.",
       nextMatchNotFound: "Next match not found.",
       noActiveToken: "No active token found.",
@@ -203,7 +204,7 @@ const en = {
 
     statsView: {
       date: "Date",
-      friendOnly: "You must be friends to view match history",
+      friendOnly: "You must be friends to view detailed stats.",
       joined: "Joined on {{date}}",
       matchHistory: "Match History",
       played: "Played",
@@ -214,13 +215,32 @@ const en = {
       result: "Result",
       title: "Statistics",
       tournament: "Tournament",
-      winRate: "Win Rate"
+      winRate: "Win Rate",
+      winstreak: "Winstreak",
+      maxStreak: "Max Streak",
+      matches: "Matches",
+      tournaments: "Tournaments",
+      friends: "Friends",
+      dashboard: "Dashboard",
+      details: "Details"
+    },
+
+    chart: {
+      winLoss: "Wins vs Losses{{range}}",
+      progression: "Winrate Progression{{range}}",
+      scoreDiff: "Score Difference{{range}}",
+      scores: "Scores{{range}}",
+      summary: "Summary",
+      progress: "Progress ({{num}}-Players)",
+      rangeLastMatches: " (Last {{count}} Matches)",
+      rangeLastDays: " (Last {{count}} Days)"
     },
 
     toast: {
       acceptedFriendRequest: "Friend request accepted by ",
       avatarUploadFailed: "Avatar upload failed. Please try again.",
       avatarUploadedSuccess: "Avatar uploaded successfully!",
+      chartError: "A chart failed to initialize",
       connectionLost:
         "Connection lost - retrying in {{delay}} seconds... (Attempt {{attempt}} of {{maxAttempts}})",
       connectionReestablished: "Connection reestablished",

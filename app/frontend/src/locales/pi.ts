@@ -6,6 +6,7 @@ const pi: TranslationShape = {
       invalidDynamicRoutePattern:
         "Treasure map full o' rum stains: {{pattern}}",
       matchNotFound: "Battle not in the logs.",
+      matchesNotFound: "Battles not in the logs.",
       missingRequestID: "Request ID lost to the sea.",
       nextMatchNotFound: "No next duel in sight!",
       noActiveToken: "No worthy token found.",
@@ -202,7 +203,8 @@ const pi: TranslationShape = {
 
     statsView: {
       date: "Chart Date",
-      friendOnly: "Only mates get to see yer ship logs",
+      friendOnly:
+        "Ye must be true mates to lay eyes on these secret scrolls o' stats!",
       joined: "Swore the Oath on {{date}}",
       matchHistory: "Past Duels",
       played: "Engaged",
@@ -213,13 +215,32 @@ const pi: TranslationShape = {
       result: "Outcome",
       title: "Ship Logs",
       tournament: "Skull & Crossbones Cup",
-      winRate: "Victory Percentage"
+      winRate: "Victory Percentage",
+      winstreak: "Plunder Trail",
+      maxStreak: "Mighty Streak",
+      matches: "Battles",
+      tournaments: "Tourneys",
+      friends: "Mates",
+      dashboard: "Cap`n`s Log",
+      details: "Secrets"
+    },
+
+    chart: {
+      winLoss: "Plunder vs Defeats{{range}}",
+      progression: "Victory Percentage{{range}}",
+      scoreDiff: "Score Gap{{range}}",
+      scores: "Booty Count{{range}}",
+      summary: "Battle Recap",
+      progress: "Climb - {{num}} Buccaneers",
+      rangeLastMatches: " - last {{count}} Battles",
+      rangeLastDays: " - last {{count}} Days"
     },
 
     toast: {
       acceptedFriendRequest: "Parley accepted by ",
       avatarUploadFailed: "Couldn’t hoist yer flag – try again!",
       avatarUploadedSuccess: "Yer colors be flyin’ high now!",
+      chartError: "Thar be a chart that refused t' hoist its sails",
       connectionLost:
         "Connection to the crow's nest lost – tryin’ again in {{delay}} seconds... (Try {{attempt}} o’ {{maxAttempts}})",
       connectionReestablished: "Riggings reattached!",
