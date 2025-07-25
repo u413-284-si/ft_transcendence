@@ -29,22 +29,6 @@ export function toAxisSeries(
   return [{ name, data }];
 }
 
-export function formatDateTime(input: string): string {
-  const date = new Date(input);
-  return date.toLocaleString("en-GB", {
-    dateStyle: "medium",
-    timeStyle: "medium"
-  });
-}
-
-export function formatDayMonth(input: string): string {
-  const date = new Date(input);
-  return date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit"
-  });
-}
-
 function getColorFromCSSProperty(property: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(property);
 }
