@@ -21,6 +21,7 @@ import {
 } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { toaster } from "../Toaster.js";
+import { router } from "../routing/Router.js";
 
 export default class SettingsView extends AbstractView {
   private hasTwoFa: boolean = false;
@@ -31,101 +32,105 @@ export default class SettingsView extends AbstractView {
     this.setTitle("Settings");
   }
 
-  private async get2FaSetupHTML(): Promise<string> {
-    return /* HTML */ `
-      ${Button({
-        id: "setup-two-fa-button",
-        text: "Setup 2FA",
-        variant: "default",
-        type: "button"
-      })}
-      ${Modal({
-        id: "two-fa-modal",
-        idCloseButton: "close-two-fa-modal-button",
-        children: [
-          Form({
-            children: [
-              !this.hasTwoFa
-                ? TextBox({
-                    id: "two-fa-qr-code-info",
-                    text: [
-                      "Activate 2FA:",
-                      "",
-                      "please use an authenticator app",
-                      "to scan the QR code below."
-                    ],
-                    variant: "info",
-                    size: "sm"
-                  })
-                : TextBox({
-                    id: "two-fa-qr-code-info",
-                    text: ["2FA activated"],
-                    variant: "info",
-                    size: "sm"
-                  }),
-              Image({
-                id: "two-fa-qr-code",
-                src: getDataOrThrow(await generateTwoFaQrcode()).qrcode,
-                alt: "QR Code"
-              }),
-              !this.hasTwoFa
-                ? Input({
-                    id: "two-fa-qr-code-input",
-                    label: "Enter code",
-                    name: "two-fa-qr-code-input",
-                    type: "text",
-                    placeholder: "Code",
-                    errorId: "two-fa-qr-code-input-error"
-                  })
-                : "",
-              !this.hasTwoFa
-                ? Button({
-                    id: "two-fa-submit",
-                    text: "Activate",
-                    variant: "default",
-                    size: "md",
-                    type: "submit"
-                  })
-                : Button({
-                    id: "two-fa-remove",
-                    text: "Deactivate",
-                    variant: "danger",
-                    size: "md",
-                    type: "submit"
-                  })
-            ],
-            id: "two-fa-form"
-          })
-        ]
-      })}
-      ${Modal({
-        id: "two-fa-password-modal",
-        idCloseButton: "close-two-fa-password-modal-button",
-        children: [
-          Form({
-            id: "two-fa-password-form",
-            children: [
-              Input({
-                id: "two-fa-password-input",
-                label: "Password",
-                name: "two-fa-password-input",
-                placeholder: "Password",
-                type: "password",
-                errorId: "two-fa-password-input-error",
-                hasToggle: true
-              }),
-              Button({
-                id: "two-fa-submit-password",
-                text: "Confirm",
-                variant: "default",
-                size: "md",
-                type: "submit"
-              })
-            ]
-          })
-        ]
-      })}
-    `;
+  private async get2FaSetupHTML(): Promise<string | undefined> {
+    try {
+      return /* HTML */ `
+        ${Button({
+          id: "setup-two-fa-button",
+          text: "Setup 2FA",
+          variant: "default",
+          type: "button"
+        })}
+        ${Modal({
+          id: "two-fa-modal",
+          idCloseButton: "close-two-fa-modal-button",
+          children: [
+            Form({
+              children: [
+                !this.hasTwoFa
+                  ? TextBox({
+                      id: "two-fa-qr-code-info",
+                      text: [
+                        "Activate 2FA:",
+                        "",
+                        "please use an authenticator app",
+                        "to scan the QR code below."
+                      ],
+                      variant: "info",
+                      size: "sm"
+                    })
+                  : TextBox({
+                      id: "two-fa-qr-code-info",
+                      text: ["2FA activated"],
+                      variant: "info",
+                      size: "sm"
+                    }),
+                Image({
+                  id: "two-fa-qr-code",
+                  src: getDataOrThrow(await generateTwoFaQrcode()).qrcode,
+                  alt: "QR Code"
+                }),
+                !this.hasTwoFa
+                  ? Input({
+                      id: "two-fa-qr-code-input",
+                      label: "Enter code",
+                      name: "two-fa-qr-code-input",
+                      type: "text",
+                      placeholder: "Code",
+                      errorId: "two-fa-qr-code-input-error"
+                    })
+                  : "",
+                !this.hasTwoFa
+                  ? Button({
+                      id: "two-fa-submit",
+                      text: "Activate",
+                      variant: "default",
+                      size: "md",
+                      type: "submit"
+                    })
+                  : Button({
+                      id: "two-fa-remove",
+                      text: "Deactivate",
+                      variant: "danger",
+                      size: "md",
+                      type: "submit"
+                    })
+              ],
+              id: "two-fa-form"
+            })
+          ]
+        })}
+        ${Modal({
+          id: "two-fa-password-modal",
+          idCloseButton: "close-two-fa-password-modal-button",
+          children: [
+            Form({
+              id: "two-fa-password-form",
+              children: [
+                Input({
+                  id: "two-fa-password-input",
+                  label: "Password",
+                  name: "two-fa-password-input",
+                  placeholder: "Password",
+                  type: "password",
+                  errorId: "two-fa-password-input-error",
+                  hasToggle: true
+                }),
+                Button({
+                  id: "two-fa-submit-password",
+                  text: "Confirm",
+                  variant: "default",
+                  size: "md",
+                  type: "submit"
+                })
+              ]
+            })
+          ]
+        })}
+      `;
+    } catch (error) {
+      router.handleError("Error getting 2FA setup", error);
+    }
   }
 
   createHTML() {
@@ -226,31 +231,35 @@ export default class SettingsView extends AbstractView {
   }
 
   private async removeTwoFa(event: Event): Promise<void> {
-    event.preventDefault();
+    try {
+      event.preventDefault();
 
-    const twoFaPasswordInputEl = getInputEl("two-fa-password-input");
-    const twoFaPasswordInputErrorEl = getEl("two-fa-password-input-error");
-    // FIXME: activate when password policy is applied
-    // if (!validatePassword(twoFaPasswordInputEl, twoFaPasswordInputErrorEl))
-    //   return;
-    const apiResponse = await removeTwoFa(twoFaPasswordInputEl.value);
-    console.log(apiResponse);
-    if (!apiResponse.success) {
-      if (apiResponse.status === 401) {
-        markInvalid(
-          "Invalid password.",
-          twoFaPasswordInputEl,
-          twoFaPasswordInputErrorEl
-        );
-        return;
-      } else {
-        throw new ApiError(apiResponse);
+      const twoFaPasswordInputEl = getInputEl("two-fa-password-input");
+      const twoFaPasswordInputErrorEl = getEl("two-fa-password-input-error");
+      // FIXME: activate when password policy is applied
+      // if (!validatePassword(twoFaPasswordInputEl, twoFaPasswordInputErrorEl))
+      //   return;
+      const apiResponse = await removeTwoFa(twoFaPasswordInputEl.value);
+      console.log(apiResponse);
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          markInvalid(
+            "Invalid password.",
+            twoFaPasswordInputEl,
+            twoFaPasswordInputErrorEl
+          );
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
       }
+      this.hideTwoFaPasswordModal();
+      this.hideOverlay();
+      this.render();
+      toaster.success("2FA removed successfully");
+    } catch (error) {
+      router.handleError("Error removing 2FA", error);
     }
-    this.hideTwoFaPasswordModal();
-    this.hideOverlay();
-    this.render();
-    toaster.success("2FA removed successfully");
   }
 
   private displayOverlay(): void {
@@ -264,14 +273,22 @@ export default class SettingsView extends AbstractView {
   }
 
   private async fetchData(): Promise<void> {
-    if (this.hasLocalAuth)
-      this.hasTwoFa = getDataOrThrow(await geTwoFaStatus()).hasTwoFa;
+    try {
+      if (this.hasLocalAuth)
+        this.hasTwoFa = getDataOrThrow(await geTwoFaStatus()).hasTwoFa;
+    } catch (error) {
+      router.handleError("Error fetching data", error);
+    }
   }
 
   private async setData() {
-    if (this.hasLocalAuth) {
-      const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
-      twoFaQrcodeEl.src = getDataOrThrow(await generateTwoFaQrcode()).qrcode;
+    try {
+      if (this.hasLocalAuth) {
+        const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
+        twoFaQrcodeEl.src = getDataOrThrow(await generateTwoFaQrcode()).qrcode;
+      }
+    } catch (error) {
+      router.handleError("Error setting data", error);
     }
   }
 }
