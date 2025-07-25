@@ -23,7 +23,6 @@ import { ApiError, getDataOrThrow } from "../services/api.js";
 import { toaster } from "../Toaster.js";
 
 export default class SettingsView extends AbstractView {
-  private qrCode: string = "";
   private hasTwoFa: boolean = false;
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
@@ -32,7 +31,7 @@ export default class SettingsView extends AbstractView {
     this.setTitle("Settings");
   }
 
-  private get2FaSetupHTML(): string {
+  private async get2FaSetupHTML(): Promise<string> {
     return /* HTML */ `
       ${Button({
         id: "setup-two-fa-button",
@@ -66,7 +65,7 @@ export default class SettingsView extends AbstractView {
                   }),
               Image({
                 id: "two-fa-qr-code",
-                src: this.qrCode,
+                src: getDataOrThrow(await generateTwoFaQrcode()).qrcode,
                 alt: "QR Code"
               }),
               !this.hasTwoFa
@@ -169,7 +168,7 @@ export default class SettingsView extends AbstractView {
   async render() {
     await this.fetchData();
     this.updateHTML();
-    this.setData();
+    await this.setData();
     this.addListeners();
   }
 
@@ -265,14 +264,14 @@ export default class SettingsView extends AbstractView {
   }
 
   private async fetchData(): Promise<void> {
-    this.hasTwoFa = getDataOrThrow(await geTwoFaStatus()).hasTwoFa;
-    this.qrCode = getDataOrThrow(await generateTwoFaQrcode()).qrcode;
+    if (this.hasLocalAuth)
+      this.hasTwoFa = getDataOrThrow(await geTwoFaStatus()).hasTwoFa;
   }
 
-  private setData() {
-    if (this.hasTwoFa) {
+  private async setData() {
+    if (this.hasLocalAuth) {
       const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
-      twoFaQrcodeEl.src = this.qrCode;
+      twoFaQrcodeEl.src = getDataOrThrow(await generateTwoFaQrcode()).qrcode;
     }
   }
 }
