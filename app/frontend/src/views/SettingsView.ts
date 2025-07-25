@@ -133,7 +133,14 @@ export default class SettingsView extends AbstractView {
     }
   }
 
+  private createTwoFaPlaceholder(): string {
+    return /* HTML */ ` <div id="two-fa-placeholder"></div> `;
+  }
+
   createHTML() {
+    const twoFaPlaceholder = this.hasLocalAuth
+      ? this.createTwoFaPlaceholder()
+      : "";
     return /* HTML */ `
       <div class="text-center space-y-4">
         ${Header1({
@@ -144,7 +151,7 @@ export default class SettingsView extends AbstractView {
           text: "Configure your preferences and settings here.",
           id: "settings-intro"
         })}
-		${this.hasLocalAuth ? this.get2FaSetupHTML() : ""}
+		${twoFaPlaceholder}
         </div>
       </div>
     `;
@@ -181,7 +188,7 @@ export default class SettingsView extends AbstractView {
     return "settings";
   }
 
-  private async displayTwoFaSetupModal() {
+  private displayTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
     twoFaModal.classList.remove("hidden");
     this.displayOverlay();
@@ -284,8 +291,10 @@ export default class SettingsView extends AbstractView {
   private async setData() {
     try {
       if (this.hasLocalAuth) {
-        const twoFaQrcodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
-        twoFaQrcodeEl.src = getDataOrThrow(await generateTwoFaQrcode()).qrcode;
+        const twoFaPlaceholderEL = getEl("two-fa-placeholder");
+        if (twoFaPlaceholderEL) {
+          twoFaPlaceholderEL.innerHTML = (await this.get2FaSetupHTML()) ?? "";
+        }
       }
     } catch (error) {
       router.handleError("Error setting data", error);
