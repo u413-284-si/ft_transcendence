@@ -1,5 +1,6 @@
 import type { ApexOptions } from "apexcharts";
-import { chartColors, formatDateTime, toAxisSeries } from "./utils.js";
+import { chartColors, toAxisSeries } from "./utils.js";
+import { formatDateTime } from "../formatDate.js";
 
 export function makeScoreDiffOptions(
   name: string,
@@ -64,7 +65,7 @@ export function makeScoreDiffOptions(
     },
     yaxis: {
       title: {
-        text: "Score Difference",
+        text: name,
         style: { color: chartColors.white }
       },
       labels: { style: { colors: chartColors.white } }

@@ -1,5 +1,6 @@
 import type { ApexOptions } from "apexcharts";
-import { chartColors, formatDayMonth, toAxisSeries } from "./utils.js";
+import { chartColors, toAxisSeries } from "./utils.js";
+import { formatDate, formatDayMonth } from "../formatDate.js";
 
 export function makeScoresLastTenDaysOptions(
   name: string,
@@ -44,6 +45,13 @@ export function makeScoresLastTenDaysOptions(
       theme: "dark",
       y: {
         formatter: (value: number) => `${value} points`
+      },
+      x: {
+        formatter: (val, opts) => {
+          const dataPointIndex = opts.dataPointIndex;
+          const originalDateStr = data[dataPointIndex].x;
+          return formatDate(new Date(originalDateStr));
+        }
       }
     },
     xaxis: {
@@ -56,7 +64,7 @@ export function makeScoresLastTenDaysOptions(
     },
     yaxis: {
       title: {
-        text: "Score",
+        text: name,
         style: { color: chartColors.white }
       },
       min: 0,

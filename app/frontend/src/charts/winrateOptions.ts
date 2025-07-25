@@ -1,5 +1,6 @@
 import type { ApexOptions } from "apexcharts";
-import { chartColors, formatDateTime, toAxisSeries } from "./utils.js";
+import { chartColors, toAxisSeries } from "./utils.js";
+import { formatDateTime } from "../formatDate.js";
 
 export function makeWinrateOptions(
   name: string,
@@ -46,7 +47,7 @@ export function makeWinrateOptions(
       labels: { style: { colors: chartColors.white } }
     },
     yaxis: {
-      title: { text: "Winrate", style: { color: chartColors.white } },
+      title: { text: name, style: { color: chartColors.white } },
       labels: {
         style: { colors: chartColors.white },
         formatter: (val: number) => `${val}%`

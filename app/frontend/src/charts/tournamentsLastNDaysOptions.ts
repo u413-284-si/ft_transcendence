@@ -1,6 +1,7 @@
 import { ApexOptions } from "apexcharts";
 import { TournamentDayData } from "../types/DataSeries.js";
-import { chartColors, formatDayMonth, tournamentColors } from "./utils.js";
+import { chartColors, tournamentColors } from "./utils.js";
+import { formatDayMonth } from "../formatDate.js";
 
 export function maketournamentLastNDaysOptions(
   data: TournamentDayData
