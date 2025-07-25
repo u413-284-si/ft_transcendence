@@ -148,7 +148,7 @@ export default class SettingsView extends AbstractView {
   protected addListeners(): void {
     document
       .getElementById("setup-two-fa-button")
-      ?.addEventListener("click", () => this.displaTwoFaSetupModal());
+      ?.addEventListener("click", () => this.displayTwoFaSetupModal());
     document
       .getElementById("close-two-fa-modal-button")
       ?.addEventListener("click", () => this.hideTwoFaSetupModal());
@@ -176,7 +176,7 @@ export default class SettingsView extends AbstractView {
     return "settings";
   }
 
-  private async displaTwoFaSetupModal() {
+  private async displayTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
     twoFaModal.classList.remove("hidden");
     this.displayOverlay();
