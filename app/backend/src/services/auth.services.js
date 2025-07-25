@@ -3,6 +3,7 @@ import prisma from "../prisma/prismaClient.js";
 import env from "../config/env.js";
 import * as otpAuth from "otpauth";
 import QRCode from "qrcode";
+import { randSequence } from "@ngneat/falso";
 
 export async function verifyAccessToken(request) {
   return await request.accessTokenVerify();
@@ -222,6 +223,35 @@ export async function update2FaStatus(userId, status) {
     },
     data: {
       has2FA: status
+    }
+  });
+}
+
+export function generateHashedBackupCode() {
+  return createHash(randSequence({ size: 8, charType: "numeric" }));
+}
+
+export async function generateHashedBackupCodes(userId) {
+  let hashedBackupCodes = [];
+  for (let i = 0; i < 10; i++) {
+    hashedBackupCodes.push({
+      userId: userId,
+      backupCode: await generateHashedBackupCode()
+    });
+  }
+  return hashedBackupCodes;
+}
+
+export async function createBackupCodes(backupCodes) {
+  await prisma.backupCode.createMany({
+    data: backupCodes
+  });
+}
+
+export async function getBackupCodes(userId) {
+  return await prisma.backupCode.findMany({
+    where: {
+      userId: userId
     }
   });
 }
