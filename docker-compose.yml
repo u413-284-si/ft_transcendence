@@ -7,8 +7,6 @@ services:
     init: true
     security_opt:
       - no-new-privileges:true
-    ports:
-      - "4001:4001"
     environment:
       NODE_ENV: production
       PORT: 4001
@@ -18,26 +16,36 @@ services:
         window: 120s
     networks:
       - pong-network
-  # frontend:
-  #   build: frontend/.
-  #   image: frontend
-  #   container_name: frontend
-  #   init: true
-  #   security_opt:
-  #     - no-new-privileges:true
-  #   ports:
-  #     - "80:80"
-  #   deploy:
-  #     restart_policy:
-  #       condition: always
-  #       window: 120s
-  #   volumes:
-  #     - ./frontend/src:/var/www/html/src
-  #     - ./frontend/dist:/var/www/html/dist
-  #   depends_on:
-  #     - backend
-  #   networks:
-  #     - pong-network
+  waf:
+    build:
+      context: .
+      dockerfile: ./waf/Dockerfile
+    container_name: waf
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    deploy:
+      restart_policy:
+        condition: always
+        window: 120s
+    environment:
+      BACKEND: http://app:4001
+      PORT: 8080
+      SSL_PORT: 8443
+      NGINX_ALWAYS_TLS_REDIRECT: on
+    # volumes:
+    #   - ./waf/nginx/template/includes/:/etc/nginx/templates/includes/
+    #   - ./waf/modsecurity/crs-setup.conf:/etc/modsecurity.d/crs-setup.conf
+    #   - ./waf/modsecurity/modsecurity.conf:/etc/modsecurity.d/modsecurity.conf
+    #   - ./waf/modsecurity/include.conf:/etc/modsecurity.d/include.conf
+    #   - ./waf/modsecurity/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/etc/modsecurity.d/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+    depends_on:
+      - app
+    networks:
+      - pong-network
 
 networks:
   pong-network:
