@@ -1,4 +1,4 @@
-import { rand, randNumber, randPastDate, randUserName } from "@ngneat/falso";
+import { rand, randNumber, randRecentDate, randUserName } from "@ngneat/falso";
 
 import { transactionMatch } from "../../src/services/transactions.services.js";
 import {
@@ -25,9 +25,9 @@ export async function seedMatchesPerUser(users: User[], min = 1, max = 10) {
 export async function seedMatches(userId: number, count = 10) {
   const matches: Match[] = [];
   const nextDate = randomIncrementalDateFactory({
-    from: randPastDate(),
-    minStepMinutes: 30,
-    maxStepMinutes: 3000
+    from: randRecentDate({ days: 10 }),
+    minStepMinutes: 1,
+    maxStepMinutes: 5
   });
 
   for (let i = 0; i < count; i++) {
