@@ -37,7 +37,7 @@ export type TournamentSummaryData = {
 };
 
 type TournamentProgressPoint = {
-  x: string;
+  x: number;
   y: number;
 };
 

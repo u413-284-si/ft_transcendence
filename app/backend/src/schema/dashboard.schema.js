@@ -107,30 +107,42 @@ const dashboardTournamentSummarySchema = {
   additionalProperties: false
 };
 
+const dashboardTournamentProgressItemSchema = {
+  $id: "dashboardTournamentProgressItemSchema",
+  type: "object",
+  description: "A single data point in tournament progress chart",
+  properties: {
+    x: {
+      $ref: "tournamentDefinitionsSchema#/definitions/tournamentRoundReached"
+    },
+    y: {
+      type: "number",
+      description: "Number of tournaments that reached this round"
+    }
+  },
+  required: ["x", "y"],
+  additionalProperties: false
+};
+
 const dashboardTournamentProgressSchema = {
   $id: "dashboardTournamentProgressSchema",
   type: "object",
-  description: "Progress per tournament size; key is the number of players",
-  patternProperties: {
-    "^[0-9]+$": {
+  description: "Progress per tournament size",
+  properties: {
+    4: {
       type: "array",
-      items: {
-        type: "object",
-        properties: {
-          x: {
-            type: "string",
-            description: "Round name or 'Won'"
-          },
-          y: {
-            type: "number",
-            description: "Number of tournaments that reached this round"
-          }
-        },
-        required: ["x", "y"],
-        additionalProperties: false
-      }
+      items: { $ref: "dashboardTournamentProgressItemSchema" }
+    },
+    8: {
+      type: "array",
+      items: { $ref: "dashboardTournamentProgressItemSchema" }
+    },
+    16: {
+      type: "array",
+      items: { $ref: "dashboardTournamentProgressItemSchema" }
     }
   },
+  required: ["4", "8", "16"],
   additionalProperties: false
 };
 
@@ -198,6 +210,7 @@ export const dashboardSchemas = [
   dashboardMatchesSchema,
   dashboardMatchesResponseSchema,
   dashboardTournamentSummarySchema,
+  dashboardTournamentProgressItemSchema,
   dashboardTournamentProgressSchema,
   dashboardTournamentLastNDaysSchema,
   dashboardTournamentsSchema,

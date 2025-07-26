@@ -167,21 +167,18 @@ export function computeTournamentProgress(tournaments) {
     }
   }
 
-  return convertProgressToFunnelSeries(progressBySize);
+  return convertToChartData(progressBySize);
 }
 
-function convertProgressToFunnelSeries(progressBySize) {
+function convertToChartData(progressBySize) {
   const chartData = {};
 
   for (const size in progressBySize) {
     const roundCounts = progressBySize[size];
-    const totalRounds = Object.keys(roundCounts).length;
 
     const data = Object.entries(roundCounts).map(([round, count]) => {
-      const roundNumber = Number(round);
-      const label = roundNumber === totalRounds ? "Won" : `Round ${round}`;
       return {
-        x: label,
+        x: round,
         y: count
       };
     });
