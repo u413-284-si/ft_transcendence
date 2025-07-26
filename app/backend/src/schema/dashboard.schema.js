@@ -83,8 +83,7 @@ const dashboardTournamentSummarySchema = {
         type: "object",
         properties: {
           size: {
-            type: "number",
-            description: "Tournament size (e.g. 4, 8, 16)"
+            $ref: "tournamentDefinitionsSchema#/definitions/tournamentMaxPlayers"
           },
           winrate: {
             type: "number",
