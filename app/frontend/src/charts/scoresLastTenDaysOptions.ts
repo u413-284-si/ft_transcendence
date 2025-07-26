@@ -68,7 +68,7 @@ export function makeScoresLastTenDaysOptions(
         style: { color: chartColors.white }
       },
       min: 0,
-      stepSize: 1,
+      forceNiceScale: true,
       labels: { style: { colors: chartColors.white } }
     }
   };
