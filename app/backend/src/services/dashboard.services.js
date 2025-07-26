@@ -193,8 +193,7 @@ export function computeTournamentsLastNDays(tournaments, days) {
   const { totals, sortedDates } = initializeDailyTotals(days, () => {
     const bucket = {};
     for (const size of supportedSizes) {
-      bucket[`won${size}`] = 0;
-      bucket[`loss${size}`] = 0;
+      bucket[size] = { win: 0, loss: 0 };
     }
     return bucket;
   });
@@ -207,31 +206,31 @@ export function computeTournamentsLastNDays(tournaments, days) {
     const totalRounds = Math.log2(size);
     const won = tournament.roundReached === totalRounds + 1;
 
-    const key = (won ? "won" : "loss") + size;
-    if (totals[dayStr][key] !== undefined) {
-      totals[dayStr][key]++;
+    if (totals[dayStr][size]) {
+      if (won) {
+        totals[dayStr][size].win++;
+      } else {
+        totals[dayStr][size].loss++;
+      }
     }
   }
 
-  const series = [];
+  const result = {};
+
   for (const size of supportedSizes) {
-    series.push(buildSeries(`won${size}`, `Win ${size}`, sortedDates, totals));
-    series.push(
-      buildSeries(`loss${size}`, `Loss ${size}`, sortedDates, totals)
-    );
+    result[size] = {
+      win: [],
+      loss: []
+    };
+
+    for (const date of sortedDates) {
+      const data = totals[date][size];
+      result[size].win.push({ x: date, y: data.win });
+      result[size].loss.push({ x: date, y: data.loss });
+    }
   }
 
-  return series;
-}
-
-function buildSeries(key, name, sortedDates, totals) {
-  return {
-    name,
-    data: sortedDates.map((date) => ({
-      x: date,
-      y: totals[date][key]
-    }))
-  };
+  return result;
 }
 
 export async function getDashboardMatchesData(userId) {
