@@ -17,6 +17,10 @@ const filesToCopy = [
     from: "node_modules/dompurify/dist/purify.min.js",
     to: "./app/frontend/public/ext/purify.js",
     stripSourceMap: true
+  },
+  {
+    from: "node_modules/i18next/dist/umd/i18next.min.js",
+    to: "./app/frontend/public/ext/i18next.js"
   }
 ];
 

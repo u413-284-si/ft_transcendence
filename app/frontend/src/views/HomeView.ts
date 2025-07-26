@@ -8,21 +8,21 @@ import { toaster } from "../Toaster.js";
 export default class HomeView extends AbstractView {
   constructor() {
     super();
-    this.setTitle("Home");
+    this.setTitle(i18next.t("homeView.title"));
   }
 
   createHTML() {
     return /* HTML */ `
       <div class="flex flex-col justify-center items-center gap-4 mb-12">
         ${Header1({
-          text: "Home",
+          text: `${i18next.t("homeView.title")}`,
           id: "home-header",
           variant: "default"
         })}
         ${Paragraph({
-          text: `Hello ${escapeHTML(auth.getUser().username)}!
-            <br />
-            This is the home page`
+          text: i18next.t("homeView.helloUser", {
+            username: escapeHTML(auth.getUser().username)
+          })
         })}
       </div>
 
