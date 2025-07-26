@@ -55,6 +55,10 @@ export function makeWinLossOptions(
           }
         }
       }
+    },
+    tooltip: {
+      theme: "dark",
+      fillSeriesColor: false
     }
   };
   return winLossOptions;
