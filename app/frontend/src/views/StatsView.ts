@@ -396,17 +396,14 @@ export default class StatsView extends AbstractView {
         this.dashboardTournaments.summary
       ),
       "tournament-progress-4": makeTournamentProgressOptions(
-        i18next.t("chart.progress", { num: 4 }),
         this.dashboardTournaments.progress["4"].reverse(),
         4
       ),
       "tournament-progress-8": makeTournamentProgressOptions(
-        i18next.t("chart.progress", { num: 8 }),
         this.dashboardTournaments.progress["8"].reverse(),
         8
       ),
       "tournament-progress-16": makeTournamentProgressOptions(
-        i18next.t("chart.progress", { num: 16 }),
         this.dashboardTournaments.progress["16"].reverse(),
         16
       ),

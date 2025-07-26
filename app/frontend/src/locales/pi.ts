@@ -234,7 +234,8 @@ const pi: TranslationShape = {
       progress: "Climb - {{num}} sea dogs",
       rangeLastMatches: " - last {{count}} Battles",
       rangeLastDays: " - last {{count}} Days",
-      numPlayers: "{{num}} sea dogs"
+      numPlayers: "{{num}} sea dogs",
+      reachedThisStage: "Landed 'ere"
     },
 
     toast: {

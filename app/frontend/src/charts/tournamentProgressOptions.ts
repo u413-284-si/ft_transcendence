@@ -2,10 +2,20 @@ import { ApexOptions } from "apexcharts";
 import { tournamentColors } from "./utils.js";
 
 export function makeTournamentProgressOptions(
-  name: string,
-  data: { x: string; y: number }[],
+  data: { x: number; y: number }[],
   size: 4 | 8 | 16
 ): ApexOptions {
+  const totalRounds = Math.log2(size) + 1;
+  const formatRoundLabel = (round: number): string => {
+    return round === totalRounds
+      ? i18next.t("global.won")
+      : i18next.t("global.round", { round });
+  };
+  const formattedData = data.map((round) => ({
+    x: formatRoundLabel(round.x),
+    y: round.y
+  }));
+
   const options: ApexOptions = {
     chart: {
       type: "bar",
@@ -39,26 +49,12 @@ export function makeTournamentProgressOptions(
     },
     series: [
       {
-        name: name,
-        data: data
+        name: i18next.t("chart.reachedThisStage"),
+        data: formattedData
       }
     ],
     tooltip: {
-      theme: "dark",
-      custom: function ({ seriesIndex, dataPointIndex, w }) {
-        const point = w.config.series[seriesIndex].data[dataPointIndex];
-        const label = point.x;
-        const value = point.y;
-
-        let labelText = `${value} tournament${value === 1 ? "" : "s"}`;
-        if (label === "Won") {
-          labelText = `${value} tournament${value === 1 ? " was" : "s were"} won 🎉`;
-        } else if (/^Round \d+$/.test(label)) {
-          labelText = `${value} tournament${value === 1 ? "" : "s"} reached ${label}`;
-        }
-
-        return `<div class="apex-tooltip-custom">${labelText}</div>`;
-      }
+      theme: "dark"
     }
   };
   console.log(options);

@@ -244,7 +244,8 @@ const fr: TranslationShape = {
       progress: "Progression ({{num}}-Players)",
       rangeLastMatches: " ({{count}} derniers matchs)",
       rangeLastDays: " ({{count}} derniers jouers)",
-      numPlayers: "{{num}} joueurs"
+      numPlayers: "{{num}} joueurs",
+      reachedThisStage: "Étape atteinte"
     },
 
     toast: {

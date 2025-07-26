@@ -234,7 +234,8 @@ const en = {
       progress: "Progress ({{num}}-Players)",
       rangeLastMatches: " (Last {{count}} Matches)",
       rangeLastDays: " (Last {{count}} Days)",
-      numPlayers: "{{num}}-Players"
+      numPlayers: "{{num}}-Players",
+      reachedThisStage: "Reached this stage"
     },
 
     toast: {

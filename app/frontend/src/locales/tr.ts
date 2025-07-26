@@ -234,7 +234,8 @@ const tr: TranslationShape = {
       progress: "PROG_P({{num}})",
       rangeLastMatches: " [{{count}}x]",
       rangeLastDays: " [D{{count}}]",
-      numPlayers: "P({{num}})"
+      numPlayers: "P({{num}})",
+      reachedThisStage: "Access Achieved"
     },
 
     toast: {
