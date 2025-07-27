@@ -2,9 +2,11 @@ import { ApexOptions } from "apexcharts";
 import { TournamentDaySeries } from "../types/DataSeries.js";
 import { chartColors, tournamentColors } from "./utils.js";
 import { formatDayMonth } from "../formatDate.js";
+import { TournamentSize } from "../types/ITournament.js";
 
 export function maketournamentLastNDaysOptions(
-  data: TournamentDaySeries[]
+  data: TournamentDaySeries[],
+  size: TournamentSize
 ): ApexOptions {
   const transformedData = data.map((series) => ({
     name: i18next.t(`chart.${series.name}`),
@@ -57,24 +59,13 @@ export function maketournamentLastNDaysOptions(
     legend: {
       position: "top",
       labels: {
-        colors: [
-          chartColors.white,
-          chartColors.white,
-          chartColors.white,
-          chartColors.white,
-          chartColors.white,
-          chartColors.white
-        ]
+        colors: [chartColors.white, chartColors.white]
       }
     },
     tooltip: {
       theme: "dark"
     },
-    colors: [
-      ...tournamentColors[4],
-      ...tournamentColors[8],
-      ...tournamentColors[16]
-    ]
+    colors: [tournamentColors[size][0], chartColors["red"]]
   };
 
   return options;

@@ -1,9 +1,10 @@
 import { ApexOptions } from "apexcharts";
 import { tournamentColors } from "./utils.js";
+import { TournamentSize } from "../types/ITournament.js";
 
 export function makeTournamentProgressOptions(
   data: { x: number; y: number }[],
-  size: 4 | 8 | 16
+  size: TournamentSize
 ): ApexOptions {
   const totalRounds = Math.log2(size) + 1;
   const formatRoundLabel = (round: number): string => {

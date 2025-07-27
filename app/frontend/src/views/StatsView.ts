@@ -408,21 +408,24 @@ export default class StatsView extends AbstractView {
         this.dashboardTournaments.summary
       ),
       "tournament-last-10-days-4": maketournamentLastNDaysOptions(
-        this.dashboardTournaments.lastNDays["4"]
+        this.dashboardTournaments.lastNDays["4"],
+        4
       ),
       "tournament-progress-4": makeTournamentProgressOptions(
         this.dashboardTournaments.progress["4"].reverse(),
         4
       ),
       "tournament-last-10-days-8": maketournamentLastNDaysOptions(
-        this.dashboardTournaments.lastNDays["8"]
+        this.dashboardTournaments.lastNDays["8"],
+        8
       ),
       "tournament-progress-8": makeTournamentProgressOptions(
         this.dashboardTournaments.progress["8"].reverse(),
         8
       ),
       "tournament-last-10-days-16": maketournamentLastNDaysOptions(
-        this.dashboardTournaments.lastNDays["16"]
+        this.dashboardTournaments.lastNDays["16"],
+        16
       ),
       "tournament-progress-16": makeTournamentProgressOptions(
         this.dashboardTournaments.progress["16"].reverse(),
