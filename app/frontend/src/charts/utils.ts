@@ -1,5 +1,6 @@
 import type { ApexOptions } from "apexcharts";
 import { getEl } from "../utility.js";
+import { TournamentSize } from "../types/ITournament.js";
 
 export async function renderChart(
   id: string,
@@ -42,7 +43,7 @@ export const chartColors = {
   purple: getColorFromCSSProperty("--color-neon-purple-hex")
 };
 
-export const tournamentColors = {
+export const tournamentColors: Record<TournamentSize, string> = {
   4: chartColors.cyan,
   8: chartColors.yellow,
   16: chartColors.purple
