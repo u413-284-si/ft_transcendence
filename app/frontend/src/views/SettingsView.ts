@@ -167,14 +167,6 @@ export default class SettingsView extends AbstractView {
       ?.addEventListener("submit", (event) => this.twoFaAction(event));
   }
 
-  private callPasswordFormAction(event: Event): void {
-    if (this.isTwoFaGoingToBeRemoved) {
-      this.removeTwoFa(event);
-    } else {
-      this.displayTwoFaSetup(event);
-    }
-  }
-
   async render() {
     await this.fetchData();
     this.updateHTML();
@@ -208,6 +200,14 @@ export default class SettingsView extends AbstractView {
       this.hideTwoFaSetupModal();
       this.displayTwoFaPasswordModal();
       this.isTwoFaGoingToBeRemoved = true;
+    }
+  }
+
+  private callPasswordFormAction(event: Event): void {
+    if (this.isTwoFaGoingToBeRemoved) {
+      this.removeTwoFa(event);
+    } else {
+      this.displayTwoFaSetup(event);
     }
   }
 
