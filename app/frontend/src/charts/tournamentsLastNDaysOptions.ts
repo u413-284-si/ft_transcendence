@@ -43,7 +43,7 @@ export function maketournamentLastNDaysOptions(
     },
     yaxis: {
       title: {
-        text: "Number of Tournaments",
+        text: i18next.t("statsView.tournaments"),
         style: { color: chartColors.white }
       },
       forceNiceScale: true,
