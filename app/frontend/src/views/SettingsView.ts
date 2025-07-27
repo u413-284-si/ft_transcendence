@@ -164,7 +164,7 @@ export default class SettingsView extends AbstractView {
       ?.addEventListener("click", () => this.hideTwoFaPasswordModal());
     document
       .getElementById("two-fa-form")
-      ?.addEventListener("submit", (event) => this.twoFaAction(event));
+      ?.addEventListener("submit", (event) => this.callTwoFaFormAction(event));
   }
 
   async render() {
@@ -177,7 +177,7 @@ export default class SettingsView extends AbstractView {
     return "settings";
   }
 
-  private async twoFaAction(event: Event): Promise<void> {
+  private async callTwoFaFormAction(event: Event): Promise<void> {
     event.preventDefault();
     if (!this.hasTwoFa) {
       const twoFaQrCodeInput = getEl(
