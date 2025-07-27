@@ -65,16 +65,17 @@ export async function userLogout(): Promise<ApiResponse<{ username: string }>> {
   );
 }
 
-export async function generateTwoFaQrcode(): Promise<
-  ApiResponse<{ qrcode: string }>
-> {
+export async function generateTwoFaQrcode(
+  password: string
+): Promise<ApiResponse<{ qrcode: string }>> {
   const url = "/api/auth/2fa/qrcode";
 
   return apiFetch<{ qrcode: string }>(
     url,
     {
-      method: "GET",
-      credentials: "same-origin"
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ password })
     },
     false
   );

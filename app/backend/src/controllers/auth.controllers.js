@@ -247,6 +247,18 @@ export async function twoFaQRCodeHandler(request, reply) {
       );
     }
 
+	const { password } = request.body;
+    const hashedPassword = await getPasswordHash(userId);
+
+    if (!(await verifyHash(hashedPassword, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
+
     const username = request.user.username;
     let secret = "";
     if (await get2FaStatus(userId)) {
