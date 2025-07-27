@@ -286,6 +286,8 @@ export default class SettingsView extends AbstractView {
 
   private hideTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
+    const twoFaQrCodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
+    twoFaQrCodeEl.src = "";
     twoFaModal.classList.add("hidden");
     this.hideOverlay();
   }
