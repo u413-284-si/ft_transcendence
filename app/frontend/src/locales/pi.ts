@@ -237,7 +237,8 @@ const pi: TranslationShape = {
       numPlayers: "{{num}} sea dogs",
       reachedThisStage: "Landed 'ere",
       win: "Victory",
-      loss: "Defeats"
+      loss: "Defeats",
+      played: "Battles fought{{range}}"
     },
 
     toast: {

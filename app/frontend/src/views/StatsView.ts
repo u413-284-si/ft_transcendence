@@ -40,6 +40,7 @@ import { maketournamentLastNDaysOptions } from "../charts/tournamentsLastNDaysOp
 import { toaster } from "../Toaster.js";
 import { formatDate } from "../formatDate.js";
 import { TextBox } from "../components/TextBox.js";
+import { makeTournamentPlayedOptions } from "../charts/tournamentPlayedOptions.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -252,6 +253,10 @@ export default class StatsView extends AbstractView {
           title: i18next.t("chart.summary"),
           chartId: "tournament-summary"
         })}
+        ${Chart({
+          title: i18next.t("chart.played", { range: this.rangeDays }),
+          chartId: "tournament-played"
+        })}
       </div>
       <div class="flex gap-8">
         ${Chart({
@@ -407,28 +412,31 @@ export default class StatsView extends AbstractView {
         i18next.t("chart.summary"),
         this.dashboardTournaments.summary
       ),
+      "tournament-played": makeTournamentPlayedOptions(
+        this.dashboardTournaments.lastNDays
+      ),
       "tournament-last-10-days-4": maketournamentLastNDaysOptions(
-        this.dashboardTournaments.lastNDays["4"],
+        this.dashboardTournaments.lastNDays[4],
         4
       ),
       "tournament-progress-4": makeTournamentProgressOptions(
-        this.dashboardTournaments.progress["4"].reverse(),
+        this.dashboardTournaments.progress[4].reverse(),
         4
       ),
       "tournament-last-10-days-8": maketournamentLastNDaysOptions(
-        this.dashboardTournaments.lastNDays["8"],
+        this.dashboardTournaments.lastNDays[8],
         8
       ),
       "tournament-progress-8": makeTournamentProgressOptions(
-        this.dashboardTournaments.progress["8"].reverse(),
+        this.dashboardTournaments.progress[8].reverse(),
         8
       ),
       "tournament-last-10-days-16": maketournamentLastNDaysOptions(
-        this.dashboardTournaments.lastNDays["16"],
+        this.dashboardTournaments.lastNDays[16],
         16
       ),
       "tournament-progress-16": makeTournamentProgressOptions(
-        this.dashboardTournaments.progress["16"].reverse(),
+        this.dashboardTournaments.progress[16].reverse(),
         16
       )
     };

@@ -1,3 +1,5 @@
+import { TournamentSize } from "./ITournament";
+
 type WinratePoint = {
   x: string; // ISO 8601 date-time string
   y: number;
@@ -44,7 +46,7 @@ type TournamentProgressPoint = {
 type TournamentProgressSeries = TournamentProgressPoint[];
 
 type TournamentProgressData = {
-  [size: string]: TournamentProgressSeries;
+  [K in TournamentSize]: TournamentProgressSeries;
 };
 
 type TournamentDayPoint = {
@@ -58,7 +60,11 @@ export type TournamentDaySeries = {
 };
 
 export type TournamentDayData = {
-  [size: string]: TournamentDaySeries[];
+  [K in TournamentSize]: TournamentDaySeries[];
+};
+
+export type TournamentPlayedSeries = {
+  [K in TournamentSize]: TournamentDayPoint[];
 };
 
 export type DashboardTournaments = {

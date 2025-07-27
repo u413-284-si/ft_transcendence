@@ -237,7 +237,8 @@ const en = {
       numPlayers: "{{num}}-Players",
       reachedThisStage: "Reached this stage",
       win: "Win",
-      loss: "Loss"
+      loss: "Loss",
+      played: "Tournaments played{{range}}"
     },
 
     toast: {

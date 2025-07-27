@@ -244,7 +244,8 @@ const de: TranslationShape = {
       numPlayers: "{{num}} Spieler",
       reachedThisStage: "Diese Stufe erreicht",
       win: "Sieg",
-      loss: "Niederlage"
+      loss: "Niederlage",
+      played: "Gespielte Turniere{{range}}"
     },
 
     toast: {
