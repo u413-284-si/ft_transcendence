@@ -49,7 +49,8 @@ model Authentication {
 }
 
 model BackupCode {
-	userId 		Int 	@id
+	id			Int @id @default(autoincrement())
+	userId 		Int
 	backupCode	String?
 
 	authentication Authentication @relation("BackupCodes", fields: [userId], references: [userId], onDelete: Cascade)
