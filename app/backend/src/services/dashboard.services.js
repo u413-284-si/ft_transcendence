@@ -1,3 +1,4 @@
+import { getUserFriends } from "./friends.services.js";
 import { getUserMatches } from "./matches.services.js";
 import { getUserTournaments } from "./tournaments.services.js";
 import { getUserStats } from "./user_stats.services.js";
@@ -306,4 +307,28 @@ export async function getDashboardTournamentsData(userId) {
   const lastNDays = computeTournamentsLastNDays(tournamentsLastNDays, N);
 
   return { summary, progress, lastNDays };
+}
+
+export async function getDashboardFriendsData(userId) {
+  const userStatsKeys = [
+    "matchesPlayed",
+    "matchesWon",
+    "matchesLost",
+    "winRate",
+    "winstreakCur",
+    "winstreakMax"
+  ];
+
+  const friends = await getUserFriends(userId);
+  const friendsWithStats = await Promise.all(
+    friends.map(async (friend) => {
+      const stats = await getUserStats(friend.friendId);
+      const data = userStatsKeys.map((key) => stats[key] ?? 0);
+      return {
+        name: friend.friendUsername,
+        data
+      };
+    })
+  );
+  return friendsWithStats;
 }

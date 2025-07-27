@@ -4,7 +4,8 @@ import {
   getDashboardMatchesHandler,
   getDashboardTournamentsHandler,
   getDashboardMatchesByUsernameHandler,
-  getDashboardTournamentsByUsernameHandler
+  getDashboardTournamentsByUsernameHandler,
+  getDashboardFriendsHandler
 } from "../controllers/user_stats.controllers.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
 import { errorResponses } from "../utils/error.js";
@@ -24,6 +25,12 @@ export default async function userstatsRoutes(fastify) {
     "/me/dashboard-tournaments",
     optionsGetDashboardTournaments,
     getDashboardTournamentsHandler
+  );
+
+  fastify.get(
+    "/me/dashboard-friends",
+    optionsGetDashboardFriends,
+    getDashboardFriendsHandler
   );
 
   fastify.get(
@@ -81,6 +88,15 @@ const optionsGetDashboardTournaments = {
   schema: {
     response: {
       200: { $ref: "dashboardTournamentsResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetDashboardFriends = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
       ...errorResponses
     }
   }
