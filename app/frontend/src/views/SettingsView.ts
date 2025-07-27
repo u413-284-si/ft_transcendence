@@ -236,6 +236,7 @@ export default class SettingsView extends AbstractView {
       this.hideTwoFaPasswordModal();
       this.hideOverlay();
       this.isTwoFaGoingToBeRemoved = false;
+      this.render();
       toaster.success("2FA removed successfully");
     } catch (error) {
       router.handleError("Error removing 2FA", error);
