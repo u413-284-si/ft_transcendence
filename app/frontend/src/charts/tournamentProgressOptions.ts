@@ -28,7 +28,7 @@ export function makeTournamentProgressOptions(
       height: 350,
       width: 400
     },
-    colors: [tournamentColors[size][0]],
+    colors: [tournamentColors[size]],
     dataLabels: {
       enabled: true,
       formatter: function (val, opt) {

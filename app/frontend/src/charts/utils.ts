@@ -43,7 +43,7 @@ export const chartColors = {
 };
 
 export const tournamentColors = {
-  4: [chartColors.cyan, chartColors.red],
-  8: [chartColors.green, chartColors.yellow],
-  16: [chartColors.purple, chartColors.white]
+  4: chartColors.cyan,
+  8: chartColors.yellow,
+  16: chartColors.purple
 };

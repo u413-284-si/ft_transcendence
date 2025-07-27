@@ -65,7 +65,7 @@ export function maketournamentLastNDaysOptions(
     tooltip: {
       theme: "dark"
     },
-    colors: [tournamentColors[size][0], chartColors["red"]]
+    colors: [tournamentColors[size], chartColors["red"]]
   };
 
   return options;

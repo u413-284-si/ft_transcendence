@@ -59,11 +59,7 @@ export function maketournamentSummaryOptions(
         }
       }
     },
-    colors: [
-      tournamentColors[4][0],
-      tournamentColors[8][0],
-      tournamentColors[16][0]
-    ],
+    colors: [tournamentColors[4], tournamentColors[8], tournamentColors[16]],
     tooltip: {
       enabled: true,
       theme: "dark",
