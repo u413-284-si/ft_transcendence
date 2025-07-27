@@ -11,12 +11,12 @@ import { getEl, getInputEl } from "../utility.js";
 import {
   generateTwoFaQrcode as generateTwoFaQrcode,
   geTwoFaStatus,
-  removeTwoFa
+  removeTwoFa,
+  verifyTwoFaCode
 } from "../services/authServices.js";
 import { auth } from "../AuthManager.js";
 import {
   markInvalid,
-  validatePassword,
   validatTwoFaCode as validateTwoFaCode
 } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
@@ -178,6 +178,7 @@ export default class SettingsView extends AbstractView {
   }
 
   private async callTwoFaFormAction(event: Event): Promise<void> {
+    try {
     event.preventDefault();
     if (!this.hasTwoFa) {
       const twoFaQrCodeInput = getEl(
@@ -192,6 +193,17 @@ export default class SettingsView extends AbstractView {
       if (!isTwoFaCodeValid) {
         return;
       }
+
+        const apiResponse = await verifyTwoFaCode(twoFaQrCodeInput.value);
+        if (!apiResponse.success) {
+          if (apiResponse.status === 401) {
+            markInvalid("Invalid code.", twoFaQrCodeInput, twoFaQrCodeErrorEl);
+            return;
+          } else {
+            throw new ApiError(apiResponse);
+          }
+        }
+
       this.hideOverlay();
       this.hideTwoFaSetupModal();
       this.render();
@@ -200,6 +212,9 @@ export default class SettingsView extends AbstractView {
       this.hideTwoFaSetupModal();
       this.displayTwoFaPasswordModal();
       this.isTwoFaGoingToBeRemoved = true;
+      }
+    } catch (error) {
+      router.handleError("Error in callTwoFaFormAction", error);
     }
   }
 

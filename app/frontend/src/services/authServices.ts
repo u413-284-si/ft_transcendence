@@ -83,10 +83,10 @@ export async function generateTwoFaQrcode(
 
 export async function verifyTwoFaCode(
   code: string
-): Promise<ApiResponse<null>> {
+): Promise<ApiResponse<{ backupCodes: string[] }>> {
   const url = "/api/auth/2fa/verify";
 
-  return apiFetch<null>(
+  return apiFetch<{ backupCodes: string[] }>(
     url,
     {
       method: "POST",

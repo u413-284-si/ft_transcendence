@@ -295,22 +295,5 @@ export async function validatTwoFaCode(
     markInvalid("Code must be a 6-digit number.", inputEl, errorEl);
     return false;
   }
-
-  let apiResponse: ApiResponse<null>;
-  if (auth.isTwoFaPending()) {
-    apiResponse = await verifyLoginTwoFaCode(twoFaCode);
-  } else {
-    apiResponse = await verifyTwoFaCode(twoFaCode);
-  }
-  console.log("API Response: ", apiResponse);
-  if (!apiResponse.success) {
-    if (apiResponse.status === 401) {
-      markInvalid("Invalid code.", inputEl, errorEl);
-      return false;
-    } else {
-      throw new ApiError(apiResponse);
-    }
-  }
-
   return true;
 }

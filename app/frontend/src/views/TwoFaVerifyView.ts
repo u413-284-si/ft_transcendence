@@ -1,13 +1,15 @@
 import AbstractView from "./AbstractView.js";
 // FIXME: activate when password policy is applied
 //import { validatePassword, validateUsernameOrEmail } from "../validate.js";
-import { validatTwoFaCode, validateUsernameOrEmail } from "../validate.js";
+import { markInvalid, validatTwoFaCode, validateUsernameOrEmail } from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
 import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getEl } from "../utility.js";
+import { verifyLoginTwoFaCode } from "../services/authServices.js";
+import { ApiError } from "../services/api.js";
 
 export default class TwoFaVerifyView extends AbstractView {
   constructor() {
@@ -66,6 +68,17 @@ export default class TwoFaVerifyView extends AbstractView {
     if (!iTwoFaCodeValid) {
       return;
     }
+
+    const apiResponse = await verifyLoginTwoFaCode(twoFaQrCodeInput.value);
+    if (!apiResponse.success) {
+      if (apiResponse.status === 401) {
+        markInvalid("Invalid code.", twoFaQrCodeInput, twoFaQrCodeErrorEl);
+        return;
+      } else {
+        throw new ApiError(apiResponse);
+      }
+    }
+
     const isAllowed = await auth.loginAfteTwoFa();
     if (!isAllowed) return;
     router.navigate("/home", false);
