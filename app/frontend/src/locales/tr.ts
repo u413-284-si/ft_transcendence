@@ -235,7 +235,9 @@ const tr: TranslationShape = {
       rangeLastMatches: " [{{count}}x]",
       rangeLastDays: " [D{{count}}]",
       numPlayers: "P({{num}})",
-      reachedThisStage: "Access Achieved"
+      reachedThisStage: "Access Achieved",
+      win: "W",
+      loss: "L"
     },
 
     toast: {

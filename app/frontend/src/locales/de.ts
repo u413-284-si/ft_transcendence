@@ -242,7 +242,9 @@ const de: TranslationShape = {
       rangeLastMatches: " (Letzten {{count}} Spiele)",
       rangeLastDays: " (Letzten {{count}} Tage)",
       numPlayers: "{{num}} Spieler",
-      reachedThisStage: "Diese Stufe erreicht"
+      reachedThisStage: "Diese Stufe erreicht",
+      win: "Sieg",
+      loss: "Niederlage"
     },
 
     toast: {

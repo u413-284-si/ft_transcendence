@@ -252,19 +252,31 @@ export default class StatsView extends AbstractView {
           title: i18next.t("chart.summary"),
           chartId: "tournament-summary"
         })}
-        ${Chart({
-          title: i18next.t("chart.winLoss", { range: this.rangeDays }),
-          chartId: "tournament-last-10-days"
-        })}
       </div>
       <div class="flex gap-8">
+        ${Chart({
+          title: i18next.t("chart.winLoss", { range: this.rangeDays }),
+          chartId: "tournament-last-10-days-4"
+        })}
         ${Chart({
           title: i18next.t("chart.progress", { num: 4 }),
           chartId: "tournament-progress-4"
         })}
+      </div>
+      <div class="flex gap-8">
+        ${Chart({
+          title: i18next.t("chart.winLoss", { range: this.rangeDays }),
+          chartId: "tournament-last-10-days-8"
+        })}
         ${Chart({
           title: i18next.t("chart.progress", { num: 8 }),
           chartId: "tournament-progress-8"
+        })}
+      </div>
+      <div class="flex gap-8">
+        ${Chart({
+          title: i18next.t("chart.winLoss", { range: this.rangeDays }),
+          chartId: "tournament-last-10-days-16"
         })}
         ${Chart({
           title: i18next.t("chart.progress", { num: 16 }),
@@ -395,20 +407,26 @@ export default class StatsView extends AbstractView {
         i18next.t("chart.summary"),
         this.dashboardTournaments.summary
       ),
+      "tournament-last-10-days-4": maketournamentLastNDaysOptions(
+        this.dashboardTournaments.lastNDays["4"]
+      ),
       "tournament-progress-4": makeTournamentProgressOptions(
         this.dashboardTournaments.progress["4"].reverse(),
         4
+      ),
+      "tournament-last-10-days-8": maketournamentLastNDaysOptions(
+        this.dashboardTournaments.lastNDays["8"]
       ),
       "tournament-progress-8": makeTournamentProgressOptions(
         this.dashboardTournaments.progress["8"].reverse(),
         8
       ),
+      "tournament-last-10-days-16": maketournamentLastNDaysOptions(
+        this.dashboardTournaments.lastNDays["16"]
+      ),
       "tournament-progress-16": makeTournamentProgressOptions(
         this.dashboardTournaments.progress["16"].reverse(),
         16
-      ),
-      "tournament-last-10-days": maketournamentLastNDaysOptions(
-        this.dashboardTournaments.lastNDays
       )
     };
   }

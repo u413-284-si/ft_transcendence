@@ -235,7 +235,9 @@ const en = {
       rangeLastMatches: " (Last {{count}} Matches)",
       rangeLastDays: " (Last {{count}} Days)",
       numPlayers: "{{num}}-Players",
-      reachedThisStage: "Reached this stage"
+      reachedThisStage: "Reached this stage",
+      win: "Win",
+      loss: "Loss"
     },
 
     toast: {

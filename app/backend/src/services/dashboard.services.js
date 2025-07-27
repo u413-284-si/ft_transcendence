@@ -218,16 +218,19 @@ export function computeTournamentsLastNDays(tournaments, days) {
   const result = {};
 
   for (const size of supportedSizes) {
-    result[size] = {
-      win: [],
-      loss: []
-    };
+    const winSeries = [];
+    const lossSeries = [];
 
     for (const date of sortedDates) {
-      const data = totals[date][size];
-      result[size].win.push({ x: date, y: data.win });
-      result[size].loss.push({ x: date, y: data.loss });
+      const dayData = totals[date][size];
+      winSeries.push({ x: date, y: dayData.win });
+      lossSeries.push({ x: date, y: dayData.loss });
     }
+
+    result[size] = [
+      { name: "win", data: winSeries },
+      { name: "loss", data: lossSeries }
+    ];
   }
 
   return result;

@@ -169,10 +169,14 @@ const dashboardTournamentLastNDaysOutcomeGroupSchema = {
   $id: "dashboardTournamentLastNDaysOutcomeGroupSchema",
   type: "object",
   properties: {
-    win: { $ref: "dashboardTournamentLastNDaysOutcomeItemSchema" },
-    loss: { $ref: "dashboardTournamentLastNDaysOutcomeItemSchema" }
+    name: {
+      type: "string",
+      enum: ["win", "loss"],
+      description: "Name of data package"
+    },
+    data: { $ref: "dashboardTournamentLastNDaysOutcomeItemSchema" }
   },
-  required: ["win", "loss"],
+  required: ["name", "data"],
   additionalProperties: false
 };
 
@@ -181,9 +185,18 @@ const dashboardTournamentLastNDaysSchema = {
   type: "object",
   description: "Win/Loss data over the last N days, grouped by tournament size",
   properties: {
-    4: { $ref: "dashboardTournamentLastNDaysOutcomeGroupSchema" },
-    8: { $ref: "dashboardTournamentLastNDaysOutcomeGroupSchema" },
-    16: { $ref: "dashboardTournamentLastNDaysOutcomeGroupSchema" }
+    4: {
+      type: "array",
+      items: { $ref: "dashboardTournamentLastNDaysOutcomeGroupSchema" }
+    },
+    8: {
+      type: "array",
+      items: { $ref: "dashboardTournamentLastNDaysOutcomeGroupSchema" }
+    },
+    16: {
+      type: "array",
+      items: { $ref: "dashboardTournamentLastNDaysOutcomeGroupSchema" }
+    }
   },
   required: ["4", "8", "16"],
   additionalProperties: false

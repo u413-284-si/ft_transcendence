@@ -41,24 +41,28 @@ type TournamentProgressPoint = {
   y: number;
 };
 
-type TournamentProgressSeries = {
-  [size: string]: TournamentProgressPoint[];
+type TournamentProgressSeries = TournamentProgressPoint[];
+
+type TournamentProgressData = {
+  [size: string]: TournamentProgressSeries;
 };
 
-export type TournamentDayPoint = {
+type TournamentDayPoint = {
   x: string;
   y: number;
 };
 
 export type TournamentDaySeries = {
-  name: string;
+  name: "win" | "loss";
   data: TournamentDayPoint[];
 };
 
-export type TournamentDayData = TournamentDaySeries[];
+export type TournamentDayData = {
+  [size: string]: TournamentDaySeries[];
+};
 
 export type DashboardTournaments = {
   summary: TournamentSummaryData;
-  progress: TournamentProgressSeries;
+  progress: TournamentProgressData;
   lastNDays: TournamentDayData;
 };

@@ -245,7 +245,9 @@ const fr: TranslationShape = {
       rangeLastMatches: " ({{count}} derniers matchs)",
       rangeLastDays: " ({{count}} derniers jouers)",
       numPlayers: "{{num}} joueurs",
-      reachedThisStage: "Étape atteinte"
+      reachedThisStage: "Étape atteinte",
+      win: "Victoires",
+      loss: "Défaites"
     },
 
     toast: {

@@ -235,7 +235,9 @@ const pi: TranslationShape = {
       rangeLastMatches: " - last {{count}} Battles",
       rangeLastDays: " - last {{count}} Days",
       numPlayers: "{{num}} sea dogs",
-      reachedThisStage: "Landed 'ere"
+      reachedThisStage: "Landed 'ere",
+      win: "Victory",
+      loss: "Defeats"
     },
 
     toast: {

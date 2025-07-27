@@ -1,13 +1,13 @@
 import { ApexOptions } from "apexcharts";
-import { TournamentDayData } from "../types/DataSeries.js";
+import { TournamentDaySeries } from "../types/DataSeries.js";
 import { chartColors, tournamentColors } from "./utils.js";
 import { formatDayMonth } from "../formatDate.js";
 
 export function maketournamentLastNDaysOptions(
-  data: TournamentDayData
+  data: TournamentDaySeries[]
 ): ApexOptions {
   const transformedData = data.map((series) => ({
-    ...series,
+    name: i18next.t(`chart.${series.name}`),
     data: series.data.map((point) => ({
       x: formatDayMonth(point.x),
       y: point.y
