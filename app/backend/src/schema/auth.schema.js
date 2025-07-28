@@ -52,5 +52,5 @@ export const authSchemas = [
   loginUserSchema,
   loginUserResponseSchema,
   twoFaCodeSchema,
-  twoFaRemoveSchema
+  twoFaPasswordSchema
 ];

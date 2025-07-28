@@ -317,19 +317,54 @@ export async function twoFaVerifyHandler(request, reply) {
 
     await update2FaStatus(userId, true);
 
-    const backupCodes = generateBackupCodes();
-    const hashedBackupCodes = await hashBackupCodes(userId, backupCodes);
-    await createBackupCodes(hashedBackupCodes);
-    await deleteBackupCodes(hashedBackupCodes, userId);
-    const data = { backupCodes: backupCodes };
-
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+      .send({ message: createResponseMessage(action, true) });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
       `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaBackupCodesHandler(request, reply) {
+  const action = "Generate backup codes";
+  try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
+    const { password } = request.body;
+    const hashedPassword = await getPasswordHash(userId);
+
+    if (!(await verifyHash(hashedPassword, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
+
+    if (getBackupCodes(userId).length > 0)
+      await deleteBackupCodes(hashedBackupCodes, userId);
+
+    const backupCodes = generateBackupCodes();
+    const hashedBackupCodes = await hashBackupCodes(userId, backupCodes);
+    await createBackupCodes(hashedBackupCodes);
+    const data = { backupCodes: backupCodes };
+  } catch (error) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false, data)}`
     );
     handlePrismaError(reply, action, err);
   }
