@@ -297,3 +297,23 @@ export async function validatTwoFaCode(
   }
   return true;
 }
+
+export async function validatTwoFaBackupCode(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): Promise<boolean> {
+  const twoFaBackupCodeRegex: RegExp = /^\d{8}$/;
+  const twoFaBackupCode = inputEl.value;
+
+  clearInvalid(inputEl, errorEl);
+  if (isEmptyString(twoFaBackupCode)) {
+    markInvalid("Please enter a 8-digit code.", inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(twoFaBackupCode, twoFaBackupCodeRegex)) {
+    markInvalid("Code must be a 8-digit number.", inputEl, errorEl);
+    return false;
+  }
+  return true;
+}
