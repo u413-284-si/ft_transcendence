@@ -37,7 +37,7 @@ export default async function authRoutes(fastify) {
 
   fastify.get(
     "/2fa/backupCodes/verify",
-    optionTwoFaBackupCodes,
+    optionTwoFaBackupCodesVerify,
     twoFaBackupCodeVerifyHandler
   );
 
@@ -181,7 +181,7 @@ const optionTwoFaBackupCodes = {
 };
 
 const optionTwoFaBackupCodesVerify = {
-  onRequest: [authorizeUserAccess],
+  onRequest: [authorizeUseTwoFaLoginAccess],
   schema: {
     body: { $ref: "twoFaBackupCodeSchema" },
     response: {
