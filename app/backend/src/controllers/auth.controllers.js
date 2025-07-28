@@ -15,7 +15,12 @@ import {
   update2FaStatus,
   get2FaStatus,
   createTwoFaToken,
-  setTwoFaCookie
+  setTwoFaCookie,
+  generateBackupCodes,
+  hashBackupCodes,
+  getBackupCodes,
+  createBackupCodes,
+  deleteBackupCodes
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -247,7 +252,7 @@ export async function twoFaQRCodeHandler(request, reply) {
       );
     }
 
-	const { password } = request.body;
+    const { password } = request.body;
     const hashedPassword = await getPasswordHash(userId);
 
     if (!(await verifyHash(hashedPassword, password))) {
@@ -309,10 +314,18 @@ export async function twoFaVerifyHandler(request, reply) {
         "Invalid 2FA code"
       );
     }
+
     await update2FaStatus(userId, true);
+
+    const backupCodes = generateBackupCodes();
+    const hashedBackupCodes = await hashBackupCodes(userId, backupCodes);
+    await createBackupCodes(hashedBackupCodes);
+    await deleteBackupCodes(hashedBackupCodes, userId);
+    const data = { backupCodes: backupCodes };
+
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true) });
+      .send({ message: createResponseMessage(action, true), data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },

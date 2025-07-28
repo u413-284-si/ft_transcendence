@@ -227,16 +227,24 @@ export async function update2FaStatus(userId, status) {
   });
 }
 
-export function generateHashedBackupCode() {
-  return createHash(randSequence({ size: 8, charType: "numeric" }));
+export function generateBackupCode() {
+  return randSequence({ size: 8, charType: "numeric" });
 }
 
-export async function generateHashedBackupCodes(userId) {
-  let hashedBackupCodes = [];
+export function generateBackupCodes() {
+  let backupCodes = [];
   for (let i = 0; i < 10; i++) {
+    backupCodes.push(generateBackupCode());
+  }
+  return backupCodes;
+}
+
+export async function hashBackupCodes(userId, backupCodes) {
+  let hashedBackupCodes = [];
+  for (const backupCode of backupCodes) {
     hashedBackupCodes.push({
       userId: userId,
-      backupCode: await generateHashedBackupCode()
+      backupCode: await createHash(backupCode)
     });
   }
   return hashedBackupCodes;
@@ -245,6 +253,14 @@ export async function generateHashedBackupCodes(userId) {
 export async function createBackupCodes(backupCodes) {
   await prisma.backupCode.createMany({
     data: backupCodes
+  });
+}
+
+export async function deleteBackupCodes(backupCodes, userId) {
+  await prisma.backupCode.deleteMany({
+    where: {
+      userId: userId
+    }
   });
 }
 
