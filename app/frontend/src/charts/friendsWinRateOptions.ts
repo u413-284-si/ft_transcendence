@@ -6,14 +6,11 @@ export function makeFriendsWinRateOptions(
   const options: ApexOptions = {
     chart: {
       type: "bar",
+      fontFamily: "inherit",
       background: "transparent",
       toolbar: { show: false },
       height: 300,
       width: 500
-    },
-    title: {
-      text: "Win Rate Comparison",
-      style: { color: "#fff" }
     },
     xaxis: {
       categories: ["Win Rate"],
@@ -22,16 +19,17 @@ export function makeFriendsWinRateOptions(
     yaxis: {
       min: 0,
       max: 100,
-      labels: { style: { colors: ["#fff"] } },
+      labels: {
+        style: { colors: ["#fff"] },
+        formatter: (val: number) => `${val}%`
+      },
       title: {
-        text: "%",
         style: { color: "#fff" }
       }
     },
     tooltip: { theme: "dark" },
     plotOptions: {
       bar: {
-        horizontal: false,
         columnWidth: "50%"
       }
     },
@@ -39,6 +37,5 @@ export function makeFriendsWinRateOptions(
     colors: ["#00E396", "#FEB019", "#FF4560", "#775DD0"],
     series
   };
-  console.log(options);
   return options;
 }
