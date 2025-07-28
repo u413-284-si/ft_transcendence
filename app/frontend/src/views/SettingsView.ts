@@ -22,6 +22,8 @@ import {
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { toaster } from "../Toaster.js";
 import { router } from "../routing/Router.js";
+import { Link } from "../components/Link.js";
+import { Table } from "../components/Table.js";
 
 export default class SettingsView extends AbstractView {
   private hasTwoFa: boolean = false;
@@ -127,6 +129,43 @@ export default class SettingsView extends AbstractView {
           })
         ]
       })}
+      ${Modal({
+        id: "backup-codes-modal",
+        idCloseButton: "close-backup-codes-modal-button",
+        children: [
+          TextBox({
+            id: "backup-codes-info",
+            text: [
+              "Those are your backup codes.",
+              "Copy or download them",
+              "",
+              "THEY WILL NOT BE SHOWN AGAIN."
+            ],
+            variant: "warning"
+          }),
+          Table({
+            id: "backup-codes-table",
+            headers: [],
+            rows: [],
+            className: "border border-neon-cyan rounded-lg divide-none mt-8"
+          }),
+          Link({
+            id: "download-backup-codes-link",
+            text: "Download",
+            variant: "empty",
+            href: "",
+            className:
+              "px-4 py-2 text-base inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan uppercase border border-neon-cyan text-white hover:shadow-neon-cyan hover:bg-neon-cyan transition-all duration-500 ease-in-out"
+          })
+        ]
+      })}
+      ${Button({
+        id: "show-backup-codes-button",
+        text: "Show backup codes",
+        variant: "default",
+        size: "md",
+        type: "button"
+      })}
     `;
   }
 
@@ -165,6 +204,16 @@ export default class SettingsView extends AbstractView {
     document
       .getElementById("two-fa-form")
       ?.addEventListener("submit", (event) => this.callTwoFaFormAction(event));
+
+    document
+      .getElementById("show-backup-codes-button")
+      ?.addEventListener("click", () => this.displayBackupCodesModal());
+    document
+      .getElementById("close-backup-codes-modal-button")
+      ?.addEventListener("click", () => this.hideBackupCodesModal());
+    document
+      .getElementById("donwload-backup-codes-link")
+      ?.addEventListener("click", () => this.downloadBackupCodes());
   }
 
   async render() {
@@ -204,8 +253,11 @@ export default class SettingsView extends AbstractView {
           }
         }
 
-      this.hideOverlay();
+        this.fillBackupCodesTable(apiResponse.data.backupCodes);
+        this.setupBackupCodesLink(apiResponse.data.backupCodes);
+
       this.hideTwoFaSetupModal();
+        this.displayBackupCodesModal();
       this.render();
       toaster.success("2FA setup successful");
     } else {
@@ -294,6 +346,41 @@ export default class SettingsView extends AbstractView {
     }
   }
 
+  private fillBackupCodesTable(backupCodes: string[]) {
+    const backupCodesTableEl = getEl("backup-codes-table") as HTMLTableElement;
+
+    const tbody = backupCodesTableEl.tBodies[0];
+    tbody.classList.add("divide-none");
+    tbody.innerHTML = backupCodes
+      .map((code, index, array) => {
+        if (index % 2 === 0) {
+          return `<tr class="divide-none">
+				  <td class="p-2">${code}</td>
+				  <td class="p-2">${array[index + 1]}
+			  </tr>`;
+        }
+        return "";
+      })
+      .join("");
+  }
+
+  private setupBackupCodesLink(backupCodes: string[]) {
+    const downloadBackupCodesLink = getEl(
+      "download-backup-codes-link"
+    ) as HTMLAnchorElement;
+    downloadBackupCodesLink.href =
+      "data:text/plain;charset=utf-8," +
+      encodeURIComponent(backupCodes.join("\n"));
+    downloadBackupCodesLink.setAttribute("download", "backup-codes.txt");
+  }
+
+  private downloadBackupCodes() {
+    const downloadBackupCodesLink = getEl(
+      "donwload-backup-codes-link"
+    ) as HTMLAnchorElement;
+    downloadBackupCodesLink.click();
+  }
+
   private displayTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
     twoFaModal.classList.remove("hidden");
@@ -317,6 +404,18 @@ export default class SettingsView extends AbstractView {
   private hideTwoFaPasswordModal() {
     const twoFaModal = getEl("two-fa-password-modal");
     twoFaModal.classList.add("hidden");
+    this.hideOverlay();
+  }
+
+  private displayBackupCodesModal() {
+    const backupCodesModal = getEl("backup-codes-modal");
+    backupCodesModal.classList.remove("hidden");
+    this.displayOverlay();
+  }
+
+  private hideBackupCodesModal() {
+    const backupCodesModal = getEl("backup-codes-modal");
+    backupCodesModal.classList.add("hidden");
     this.hideOverlay();
   }
 
