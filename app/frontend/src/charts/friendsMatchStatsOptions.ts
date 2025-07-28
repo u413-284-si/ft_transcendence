@@ -1,7 +1,8 @@
 import { ApexOptions } from "apexcharts";
 
 export function makeFriendsMatchStatsOptions(
-  series: ApexAxisChartSeries
+  series: ApexAxisChartSeries,
+  colors: string[]
 ): ApexOptions {
   return {
     chart: {
@@ -29,6 +30,7 @@ export function makeFriendsMatchStatsOptions(
     },
     legend: { labels: { colors: ["#fff"] } },
     tooltip: { theme: "dark" },
-    series
+    series,
+    colors
   };
 }

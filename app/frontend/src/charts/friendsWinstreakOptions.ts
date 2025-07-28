@@ -1,7 +1,8 @@
 import { ApexOptions } from "apexcharts";
 
 export function makeFriendsWinstreakOptions(
-  series: ApexAxisChartSeries
+  series: ApexAxisChartSeries,
+  colors: string[]
 ): ApexOptions {
   return {
     chart: {
@@ -23,6 +24,7 @@ export function makeFriendsWinstreakOptions(
     },
     legend: { labels: { colors: ["#fff"] } },
     tooltip: { theme: "dark" },
-    series
+    series,
+    colors: colors
   };
 }

@@ -39,7 +39,13 @@ import { makeWinLossOptions } from "../charts/winLossOptions.js";
 import { makeWinrateOptions } from "../charts/winrateOptions.js";
 import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { makeScoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
-import { renderChart } from "../charts/utils.js";
+import {
+  addFriend,
+  getColor,
+  getColors,
+  removeFriend,
+  renderChart
+} from "../charts/utils.js";
 import { maketournamentSummaryOptions } from "../charts/tournamentSummaryOptions.js";
 import { makeTournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 import { maketournamentLastNDaysOptions } from "../charts/tournamentsLastNDaysOptions.js";
@@ -349,9 +355,11 @@ export default class StatsView extends AbstractView {
       this.selectedFriends = this.selectedFriends.filter(
         (name) => name !== friendName
       );
+      removeFriend(friendName);
     } else {
       if (this.selectedFriends.length < 4) {
         this.selectedFriends.push(friendName);
+        addFriend(friendName);
       } else {
         toaster.warn("You can compare a maximum of 3 friends.");
       }
@@ -369,7 +377,7 @@ export default class StatsView extends AbstractView {
       const btn = document.createElement("button");
       btn.innerText = friend.name;
       btn.className = this.selectedFriends.includes(friend.name)
-        ? "bg-blue-500 text-white p-2 m-1"
+        ? `${getColor(friend.name)} text-white p-2 m-1`
         : "bg-gray-200 text-black p-2 m-1";
 
       btn.onclick = () => this.toggleFriendSelection(friend.name);
@@ -392,12 +400,22 @@ export default class StatsView extends AbstractView {
 
     const { winRateSeries, matchStatsSeries, winstreakSeries } =
       splitFriendStatsToCharts(filteredStats);
-
-    this.charts["friends"]["friends-winrate"].updateSeries(winRateSeries);
-    this.charts["friends"]["friends-match-stats"].updateSeries(
-      matchStatsSeries
+    const colors = getColors(this.selectedFriends);
+    const winrateOptions = makeFriendsWinRateOptions(winRateSeries, colors);
+    const matchStatsOptions = makeFriendsMatchStatsOptions(
+      matchStatsSeries,
+      colors
     );
-    this.charts["friends"]["friends-winstreak"].updateSeries(winstreakSeries);
+    const winstreakOptions = makeFriendsWinstreakOptions(
+      winstreakSeries,
+      colors
+    );
+
+    this.charts["friends"]["friends-winrate"].updateOptions(winrateOptions);
+    this.charts["friends"]["friends-match-stats"].updateOptions(
+      matchStatsOptions
+    );
+    this.charts["friends"]["friends-winstreak"].updateOptions(winstreakOptions);
   }
 
   getName(): string {
@@ -502,6 +520,9 @@ export default class StatsView extends AbstractView {
     const { winRateSeries, matchStatsSeries, winstreakSeries } =
       splitFriendStatsToCharts(filteredStats);
 
+    addFriend(this.username);
+    const colors = getColors(this.selectedFriends);
+
     this.chartOptions["matches"] = {
       "win-loss-chart": makeWinLossOptions(
         this.userStats.matchesWon,
@@ -559,9 +580,12 @@ export default class StatsView extends AbstractView {
       )
     };
     this.chartOptions["friends"] = {
-      "friends-winrate": makeFriendsWinRateOptions(winRateSeries),
-      "friends-match-stats": makeFriendsMatchStatsOptions(matchStatsSeries),
-      "friends-winstreak": makeFriendsWinstreakOptions(winstreakSeries)
+      "friends-winrate": makeFriendsWinRateOptions(winRateSeries, colors),
+      "friends-match-stats": makeFriendsMatchStatsOptions(
+        matchStatsSeries,
+        colors
+      ),
+      "friends-winstreak": makeFriendsWinstreakOptions(winstreakSeries, colors)
     };
   }
 

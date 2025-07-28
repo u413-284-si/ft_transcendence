@@ -1,7 +1,8 @@
 import { ApexOptions } from "apexcharts";
 
 export function makeFriendsWinRateOptions(
-  series: ApexAxisChartSeries
+  series: ApexAxisChartSeries,
+  colors: string[]
 ): ApexOptions {
   const options: ApexOptions = {
     chart: {
@@ -34,7 +35,7 @@ export function makeFriendsWinRateOptions(
       }
     },
     legend: { labels: { colors: ["#fff"] } },
-    colors: ["#00E396", "#FEB019", "#FF4560", "#775DD0"],
+    colors: colors,
     series
   };
   return options;
