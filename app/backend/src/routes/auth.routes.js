@@ -10,7 +10,8 @@ import {
   twoFaRemoveHandler,
   authAndDecodTwoFaLoginHandler,
   twoFaLoginVerifyHandler,
-  twoFaBackupCodesHandler
+  twoFaBackupCodesHandler,
+  twoFaBackupCodeVerifyHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import {
@@ -32,6 +33,12 @@ export default async function authRoutes(fastify) {
     "/2fa/backupCodes",
     optionTwoFaBackupCodes,
     twoFaBackupCodesHandler
+  );
+
+  fastify.get(
+    "/2fa/backupCodes/verify",
+    optionTwoFaBackupCodes,
+    twoFaBackupCodeVerifyHandler
   );
 
   fastify.post("/2fa/verify", optionTwoFaVerify, twoFaVerifyHandler);
@@ -167,6 +174,16 @@ const optionTwoFaBackupCodes = {
   onRequest: [authorizeUserAccess],
   schema: {
     body: { $ref: "twoFaPasswordSchema" },
+    response: {
+      ...errorResponses
+    }
+  }
+};
+
+const optionTwoFaBackupCodesVerify = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    body: { $ref: "twoFaBackupCodeSchema" },
     response: {
       ...errorResponses
     }
