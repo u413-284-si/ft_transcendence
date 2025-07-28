@@ -1,5 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import {
+  getUserDashboardFriends,
   getUserDashboardMatches,
   getUserDashboardMatchesByUsername,
   getUserDashboardTournaments,
@@ -28,7 +29,12 @@ import { StatFieldGroup } from "../components/StatField.js";
 import { getDataOrThrow } from "../services/api.js";
 import { TabButton } from "../components/TabButton.js";
 import { Chart } from "../components/Chart.js";
-import { DashboardMatches, DashboardTournaments } from "../types/DataSeries.js";
+import {
+  DashboardFriends,
+  DashboardMatches,
+  DashboardTournaments,
+  FriendStatsSeries
+} from "../types/DataSeries.js";
 import { makeWinLossOptions } from "../charts/winLossOptions.js";
 import { makeWinrateOptions } from "../charts/winrateOptions.js";
 import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
@@ -41,6 +47,10 @@ import { toaster } from "../Toaster.js";
 import { formatDate } from "../formatDate.js";
 import { TextBox } from "../components/TextBox.js";
 import { makeTournamentPlayedOptions } from "../charts/tournamentPlayedOptions.js";
+import { splitFriendStatsToCharts } from "../charts/friendsCompareOptions.js";
+import { makeFriendsWinRateOptions } from "../charts/friendsWinRateOptions.js";
+import { makeFriendsMatchStatsOptions } from "../charts/friendsMatchStatsOptions.js";
+import { makeFriendsWinstreakOptions } from "../charts/friendsWinstreakOptions.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -51,11 +61,13 @@ export default class StatsView extends AbstractView {
   private friendRequest: FriendRequest | null = null;
   private dashboardMatches: DashboardMatches | null = null;
   private dashboardTournaments: DashboardTournaments | null = null;
+  private dashboardFriends: DashboardFriends | null = null;
   private charts: Record<string, Record<string, ApexCharts>> = {};
   private chartOptions: Record<string, Record<string, ApexCharts.ApexOptions>> =
     {};
   private rangeMatches = i18next.t("chart.rangeLastMatches", { count: 10 });
   private rangeDays = i18next.t("chart.rangeLastDays", { count: 10 });
+  private selectedFriends: string[] = [`${this.username}`];
 
   constructor() {
     super();
@@ -128,6 +140,7 @@ export default class StatsView extends AbstractView {
     this.addListeners();
     this.populateChartOptions();
     this.initChartsForTab("matches");
+    this.renderFriendSelector(this.dashboardFriends!.friendsWithStats);
   }
 
   getTabsHTML(): string {
@@ -151,6 +164,7 @@ export default class StatsView extends AbstractView {
         ${TabButton({ text: i18next.t("statsView.friends"), tabId: "friends" })}
       </div>
       ${this.getMatchesTabHTML()} ${this.getTournamentsTabHTML()}
+      ${this.getFriendsTabHTML()}
     `;
   }
   getMatchesTabHTML(): string {
@@ -295,6 +309,97 @@ export default class StatsView extends AbstractView {
     return /* HTML */ ``;
   }
 
+  getFriendsTabHTML(): string {
+    return /* HTML */ ` <div id="tab-friends" class="tab-content hidden">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+        ${Header1({
+          text: i18next.t("statsView.dashboard"),
+          id: "friends-dashboard-header",
+          variant: "default"
+        })}
+        ${this.getFriendsDashboard()}
+      </div>
+    </div>`;
+  }
+
+  getFriendsDashboard(): string {
+    return /* HTML */ `<div class="p-6 mx-auto space-y-8">
+      <div class="flex gap-8">
+        <div id="friend-selector"></div>
+        ${Chart({
+          title: i18next.t("chart.summary"),
+          chartId: "friends-winrate"
+        })}
+      </div>
+      <div class="flex gap-8">
+        ${Chart({
+          title: i18next.t("chart.summary"),
+          chartId: "friends-match-stats"
+        })}
+        ${Chart({
+          title: i18next.t("chart.summary"),
+          chartId: "friends-winstreak"
+        })}
+      </div>
+    </div> `;
+  }
+
+  toggleFriendSelection(friendName: string) {
+    if (this.selectedFriends.includes(friendName)) {
+      this.selectedFriends = this.selectedFriends.filter(
+        (name) => name !== friendName
+      );
+    } else {
+      if (this.selectedFriends.length < 4) {
+        this.selectedFriends.push(friendName);
+      } else {
+        toaster.warn("You can compare a maximum of 3 friends.");
+      }
+    }
+    this.renderFriendSelector(this.dashboardFriends!.friendsWithStats);
+    this.renderCharts();
+  }
+
+  renderFriendSelector(friends: FriendStatsSeries) {
+    const container = document.getElementById("friend-selector");
+    container!.innerHTML = "";
+
+    friends.forEach((friend) => {
+      if (friend.name === this.username) return;
+      const btn = document.createElement("button");
+      btn.innerText = friend.name;
+      btn.className = this.selectedFriends.includes(friend.name)
+        ? "bg-blue-500 text-white p-2 m-1"
+        : "bg-gray-200 text-black p-2 m-1";
+
+      btn.onclick = () => this.toggleFriendSelection(friend.name);
+      container!.appendChild(btn);
+    });
+  }
+
+  filterSelectedFriendStats(
+    allFriends: FriendStatsSeries,
+    selected: string[]
+  ): FriendStatsSeries {
+    return allFriends.filter((f) => selected.includes(f.name));
+  }
+
+  renderCharts() {
+    const filteredStats = this.filterSelectedFriendStats(
+      this.dashboardFriends!.friendsWithStats,
+      this.selectedFriends
+    );
+
+    const { winRateSeries, matchStatsSeries, winstreakSeries } =
+      splitFriendStatsToCharts(filteredStats);
+
+    this.charts["friends"]["friends-winrate"].updateSeries(winRateSeries);
+    this.charts["friends"]["friends-match-stats"].updateSeries(
+      matchStatsSeries
+    );
+    this.charts["friends"]["friends-winstreak"].updateSeries(winstreakSeries);
+  }
+
   getName(): string {
     return "stats";
   }
@@ -323,11 +428,16 @@ export default class StatsView extends AbstractView {
 
   async fetchData() {
     if (this.viewType === "self") {
+      this.userStats = getDataOrThrow(await getUserStats());
       this.dashboardMatches = getDataOrThrow(await getUserDashboardMatches());
       this.dashboardTournaments = getDataOrThrow(
         await getUserDashboardTournaments()
       );
-      this.userStats = getDataOrThrow(await getUserStats());
+      this.dashboardFriends = getDataOrThrow(await getUserDashboardFriends());
+      this.dashboardFriends.friendsWithStats = [
+        { name: this.username, stats: this.userStats },
+        ...this.dashboardFriends.friendsWithStats
+      ];
       this.matches = getDataOrThrow(await getUserPlayedMatches());
       return;
     }
@@ -382,7 +492,15 @@ export default class StatsView extends AbstractView {
     if (!this.dashboardMatches) throw new Error("Dashboard matches is null");
     if (!this.dashboardTournaments)
       throw new Error("Tournament matches is null");
+    if (!this.dashboardFriends) throw new Error("Dashboard friends is null");
     if (!this.userStats) throw new Error("User stats is null");
+
+    const filteredStats = this.filterSelectedFriendStats(
+      this.dashboardFriends!.friendsWithStats,
+      this.selectedFriends
+    );
+    const { winRateSeries, matchStatsSeries, winstreakSeries } =
+      splitFriendStatsToCharts(filteredStats);
 
     this.chartOptions["matches"] = {
       "win-loss-chart": makeWinLossOptions(
@@ -439,6 +557,11 @@ export default class StatsView extends AbstractView {
         this.dashboardTournaments.progress[16].reverse(),
         16
       )
+    };
+    this.chartOptions["friends"] = {
+      "friends-winrate": makeFriendsWinRateOptions(winRateSeries),
+      "friends-match-stats": makeFriendsMatchStatsOptions(matchStatsSeries),
+      "friends-winstreak": makeFriendsWinstreakOptions(winstreakSeries)
     };
   }
 
