@@ -266,7 +266,7 @@ export async function createBackupCodes(backupCodes) {
   });
 }
 
-export async function deleteBackupCodes(backupCodes, userId) {
+export async function deleteBackupCodes(userId) {
   await prisma.backupCode.deleteMany({
     where: {
       userId: userId
