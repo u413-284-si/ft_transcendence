@@ -42,9 +42,9 @@ const twoFaBackupCodeSchema = {
   $id: "twoFaBackupCodeSchema",
   type: "object",
   properties: {
-    code: { $ref: "commonDefinitionsSchema#/definitions/twoFaBackupCode" }
+    backupCode: { $ref: "commonDefinitionsSchema#/definitions/twoFaBackupCode" }
   },
-  required: ["code"],
+  required: ["backupCode"],
   additionalProperties: false
 };
 

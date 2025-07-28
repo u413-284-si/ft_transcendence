@@ -39,7 +39,7 @@ const commonDefinitionsSchema = {
       description:
         "The 2FA code must be 6 characters long and contain only digits."
     },
-    backupCode: {
+    twoFaBackupCode: {
       type: "string",
       minLength: 8,
       maxLength: 8,
