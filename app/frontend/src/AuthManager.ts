@@ -101,7 +101,7 @@ export class AuthManager {
         }
       } else {
         this.twoFaPending = true;
-        router.navigate("/2fa-verify", false);
+        router.navigate("/2FaVerification", false);
       }
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
