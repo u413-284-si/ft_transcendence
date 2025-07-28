@@ -29,7 +29,7 @@ export default async function authRoutes(fastify) {
   fastify.post("/2fa/qrcode", optionTwoFaQrCode, twoFaQRCodeHandler);
 
   fastify.post(
-    "2fa/backup-codes",
+    "/2fa/backupCodes",
     optionTwoFaBackupCodes,
     twoFaBackupCodesHandler
   );
