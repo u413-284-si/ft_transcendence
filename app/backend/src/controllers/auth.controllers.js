@@ -20,7 +20,8 @@ import {
   hashBackupCodes,
   getBackupCodes,
   createBackupCodes,
-  deleteBackupCodes
+  deleteBackupCodes,
+  verifyBackupCode
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -354,18 +355,69 @@ export async function twoFaBackupCodesHandler(request, reply) {
       );
     }
 
-    if (getBackupCodes(userId).length > 0)
-      await deleteBackupCodes(hashedBackupCodes, userId);
+    const existingBackupCodes = await getBackupCodes(userId);
+    if (existingBackupCodes.length > 0) await deleteBackupCodes(userId);
 
-    const backupCodes = generateBackupCodes();
-    const hashedBackupCodes = await hashBackupCodes(userId, backupCodes);
+    const newBackupCodes = generateBackupCodes();
+    const hashedBackupCodes = await hashBackupCodes(userId, newBackupCodes);
     await createBackupCodes(hashedBackupCodes);
-    const data = { backupCodes: backupCodes };
+    const data = { backupCodes: newBackupCodes };
 
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data });
   } catch (error) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaBackupCodeVerifyHandler(request, reply) {
+  const action = "Verify backup codes";
+  try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
+    const { backupCode } = request.body;
+
+    if (!(await verifyBackupCode(userId, backupCode))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid backup code"
+      );
+    }
+
+    const { username } = await getUser(userId);
+    const payload = await getTokenData(username, "username");
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+    reply.clearCookie("twoFaLoginToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth/2fa/login/"
+    });
+    return setAuthCookies(reply, accessToken, refreshToken)
+      .code(200)
+      .send({
+        message: createResponseMessage(action, true),
+        data: { username: username }
+      });
+  } catch (err) {
     request.log.error(
       { err, body: request.body },
       `RefreshHandler: ${createResponseMessage(action, false)}`
