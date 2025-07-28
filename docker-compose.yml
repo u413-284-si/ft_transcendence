@@ -31,12 +31,19 @@ services:
       restart_policy:
         condition: always
         window: 120s
+    user: root # FIXME: only for development, should be removed in production
     environment:
+      # nginx settings
       BACKEND: http://app:4001
       PORT: 8080
       SSL_PORT: 8443
       NGINX_ALWAYS_TLS_REDIRECT: on
-    # volumes:
+      # modsecurity settings
+      MODSEC_RULE_ENGINE: DetectionOnly
+      MODSEC_DEBUG_LOGLEVEL: 3 # errors, warnings, and notices
+      MODSEC_AUDIT_LOG: "/var/log/nginx/modsec_audit.log"
+    volumes:
+      - modsec_logs:/var/log/nginx # FIXME: only for development, should be removed in production
     #   - ./waf/nginx/template/includes/:/etc/nginx/templates/includes/
     #   - ./waf/modsecurity/crs-setup.conf:/etc/modsecurity.d/crs-setup.conf
     #   - ./waf/modsecurity/modsecurity.conf:/etc/modsecurity.d/modsecurity.conf
@@ -51,4 +58,9 @@ networks:
   pong-network:
 
 volumes:
-  db:
+  modsec_logs: # FIXME: only for development, should be removed in production
+    driver: local
+    driver_opts:
+      type: none
+      device: /workspaces/ft_transcendence/waf/modsecurity/logs
+      o: bind
