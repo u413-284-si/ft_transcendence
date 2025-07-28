@@ -9,6 +9,7 @@ import { Input } from "../components/Input.js";
 import { Image } from "../components/Image.js";
 import { getEl, getInputEl } from "../utility.js";
 import {
+  generateBackupCodes,
   generateTwoFaQrcode as generateTwoFaQrcode,
   geTwoFaStatus,
   removeTwoFa,
@@ -28,7 +29,8 @@ import { Table } from "../components/Table.js";
 export default class SettingsView extends AbstractView {
   private hasTwoFa: boolean = false;
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
-  private isTwoFaGoingToBeRemoved: boolean = false;
+
+  private passwordFormAction: "setup" | "remove" | "backupCodes" = "setup";
 
   constructor() {
     super();
@@ -91,12 +93,17 @@ export default class SettingsView extends AbstractView {
                     type: "submit"
                   })
                 : Button({
-                    id: "two-fa-remove",
-                    text: "Deactivate",
-                    variant: "danger",
-                    size: "md",
-                    type: "submit"
-                  })
+                    id: "generate-backup-codes",
+                    text: "Generate Backup Codes",
+                    type: "button"
+                  }),
+              Button({
+                id: "two-fa-remove",
+                text: "Deactivate",
+                variant: "danger",
+                size: "md",
+                type: "submit"
+              })
             ],
             id: "two-fa-form"
           })
@@ -159,13 +166,6 @@ export default class SettingsView extends AbstractView {
           })
         ]
       })}
-      ${Button({
-        id: "show-backup-codes-button",
-        text: "Show backup codes",
-        variant: "default",
-        size: "md",
-        type: "button"
-      })}
     `;
   }
 
@@ -189,7 +189,9 @@ export default class SettingsView extends AbstractView {
   protected addListeners(): void {
     document
       .getElementById("setup-two-fa-button")
-      ?.addEventListener("click", () => this.displayTwoFaPasswordModal());
+      ?.addEventListener("click", () =>
+        this.displayTwoFaPasswordModal("setup")
+      );
     document
       .getElementById("two-fa-password-form")
       ?.addEventListener("submit", (event) =>
@@ -200,20 +202,26 @@ export default class SettingsView extends AbstractView {
       ?.addEventListener("click", () => this.hideTwoFaSetupModal());
     document
       .getElementById("close-two-fa-password-modal-button")
-      ?.addEventListener("click", () => this.hideTwoFaPasswordModal());
+      ?.addEventListener("click", () =>
+        this.hideModal("two-fa-password-modal")
+      );
     document
       .getElementById("two-fa-form")
       ?.addEventListener("submit", (event) => this.callTwoFaFormAction(event));
 
-    document
-      .getElementById("show-backup-codes-button")
-      ?.addEventListener("click", () => this.displayBackupCodesModal());
-    document
-      .getElementById("close-backup-codes-modal-button")
-      ?.addEventListener("click", () => this.hideBackupCodesModal());
-    document
-      .getElementById("donwload-backup-codes-link")
-      ?.addEventListener("click", () => this.downloadBackupCodes());
+    if (this.hasTwoFa) {
+      document
+        .getElementById("generate-backup-codes")!
+        .addEventListener("click", () =>
+          this.displayTwoFaPasswordModal("backupCodes")
+        );
+      document
+        .getElementById("donwload-backup-codes-link")
+        ?.addEventListener("click", () => this.downloadBackupCodes());
+      document
+        .getElementById("close-backup-codes-modal-button")
+        ?.addEventListener("click", () => this.hideBackupCodesModal());
+    }
   }
 
   async render() {
@@ -226,44 +234,49 @@ export default class SettingsView extends AbstractView {
     return "settings";
   }
 
+  private async generateAndDisplayBackupCodes(event: Event) {
+    try {
+      event.preventDefault();
+      const twoFaPasswordInputEl = getInputEl("two-fa-password-input");
+      const twoFaPasswordInputErrorEl = getEl("two-fa-password-input-error");
+      // // FIXME: activate when password policy is applied
+      // // if (!validatePassword(twoFaPasswordInputEl, twoFaPasswordInputErrorEl))
+      // //   return;
+
+      const apiResponse = await generateBackupCodes(twoFaPasswordInputEl.value);
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          markInvalid(
+            "Invalid password.",
+            twoFaPasswordInputEl,
+            twoFaPasswordInputErrorEl
+          );
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      this.fillBackupCodesTable(apiResponse.data.backupCodes);
+      this.setupBackupCodesLink(apiResponse.data.backupCodes);
+      this.displayModal("backup-codes-modal");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   private async callTwoFaFormAction(event: Event): Promise<void> {
     try {
       event.preventDefault();
       if (!this.hasTwoFa) {
-        const twoFaQrCodeInput = getEl(
-          "two-fa-qr-code-input"
-        ) as HTMLInputElement;
-        const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
-
-        const isTwoFaCodeValid = await validateTwoFaCode(
-          twoFaQrCodeInput,
-          twoFaQrCodeErrorEl
-        );
-        if (!isTwoFaCodeValid) {
-          return;
-        }
-
-        const apiResponse = await verifyTwoFaCode(twoFaQrCodeInput.value);
-        if (!apiResponse.success) {
-          if (apiResponse.status === 401) {
-            markInvalid("Invalid code.", twoFaQrCodeInput, twoFaQrCodeErrorEl);
-            return;
-          } else {
-            throw new ApiError(apiResponse);
-          }
-        }
-
-        this.fillBackupCodesTable(apiResponse.data.backupCodes);
-        this.setupBackupCodesLink(apiResponse.data.backupCodes);
+        const isTwoFaCodeCorrect = await this.validateAndVerifyTwoFaCode();
+        if (!isTwoFaCodeCorrect) return;
 
         this.hideTwoFaSetupModal();
-        this.displayBackupCodesModal();
         this.render();
         toaster.success("2FA setup successful");
       } else {
         this.hideTwoFaSetupModal();
-        this.displayTwoFaPasswordModal();
-        this.isTwoFaGoingToBeRemoved = true;
+        this.displayTwoFaPasswordModal("remove");
       }
     } catch (error) {
       router.handleError("Error in callTwoFaFormAction", error);
@@ -271,10 +284,12 @@ export default class SettingsView extends AbstractView {
   }
 
   private callPasswordFormAction(event: Event): void {
-    if (this.isTwoFaGoingToBeRemoved) {
-      this.removeTwoFa(event);
-    } else {
+    if (this.passwordFormAction === "setup") {
       this.displayTwoFaSetup(event);
+    } else if (this.passwordFormAction === "remove") {
+      this.removeTwoFa(event);
+    } else if (this.passwordFormAction === "backupCodes") {
+      this.generateAndDisplayBackupCodes(event);
     }
   }
 
@@ -300,8 +315,9 @@ export default class SettingsView extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
-      this.hideTwoFaPasswordModal();
-      this.isTwoFaGoingToBeRemoved = false;
+      twoFaPasswordInputEl.value = "";
+      this.hideModal("two-fa-password-modal");
+      this.passwordFormAction = "setup";
       this.render();
       toaster.success("2FA removed successfully");
     } catch (error) {
@@ -332,17 +348,41 @@ export default class SettingsView extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
+      twoFaPasswordInputEl.value = "";
       const { qrcode } = apiResponse.data;
 
       const twoFaQrCodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
       twoFaQrCodeEl.src = qrcode;
 
       this.hideOverlay();
-      this.hideTwoFaPasswordModal();
-      this.displayTwoFaSetupModal();
+      this.displayModal("two-fa-modal");
     } catch (error) {
       router.handleError("Error displaying 2FA setup", error);
     }
+  }
+
+  private async validateAndVerifyTwoFaCode(): Promise<boolean> {
+    const twoFaQrCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
+    const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
+
+    const isTwoFaCodeValid = await validateTwoFaCode(
+      twoFaQrCodeInput,
+      twoFaQrCodeErrorEl
+    );
+    if (!isTwoFaCodeValid) {
+      return false;
+    }
+
+    const apiResponse = await verifyTwoFaCode(twoFaQrCodeInput.value);
+    if (!apiResponse.success) {
+      if (apiResponse.status === 401) {
+        markInvalid("Invalid code.", twoFaQrCodeInput, twoFaQrCodeErrorEl);
+        return false;
+      } else {
+        throw new ApiError(apiResponse);
+      }
+    }
+    return true;
   }
 
   private fillBackupCodesTable(backupCodes: string[]) {
@@ -380,12 +420,6 @@ export default class SettingsView extends AbstractView {
     downloadBackupCodesLink.click();
   }
 
-  private displayTwoFaSetupModal() {
-    const twoFaModal = getEl("two-fa-modal");
-    twoFaModal.classList.remove("hidden");
-    this.displayOverlay();
-  }
-
   private hideTwoFaSetupModal() {
     const twoFaModal = getEl("two-fa-modal");
     const twoFaQrCodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
@@ -394,28 +428,19 @@ export default class SettingsView extends AbstractView {
     this.hideOverlay();
   }
 
-  private displayTwoFaPasswordModal() {
-    const twoFaModal = getEl("two-fa-password-modal");
-    twoFaModal.classList.remove("hidden");
-    this.displayOverlay();
-  }
-
-  private hideTwoFaPasswordModal() {
-    const twoFaModal = getEl("two-fa-password-modal");
-    twoFaModal.classList.add("hidden");
-    this.hideOverlay();
-  }
-
-  private displayBackupCodesModal() {
-    const backupCodesModal = getEl("backup-codes-modal");
-    backupCodesModal.classList.remove("hidden");
+  private displayTwoFaPasswordModal(
+    action: "setup" | "remove" | "backupCodes"
+  ) {
+    this.hideAllModals();
+    this.displayModal("two-fa-password-modal");
+    this.passwordFormAction = action;
     this.displayOverlay();
   }
 
   private hideBackupCodesModal() {
-    const backupCodesModal = getEl("backup-codes-modal");
-    backupCodesModal.classList.add("hidden");
-    this.hideOverlay();
+    const backupCodesTableEl = getEl("backup-codes-table") as HTMLTableElement;
+    backupCodesTableEl.tBodies[0].innerHTML = "";
+    this.hideModal("backup-codes-modal");
   }
 
   private displayOverlay(): void {
@@ -426,6 +451,24 @@ export default class SettingsView extends AbstractView {
   private hideOverlay(): void {
     const overlay = document.getElementById("overlay-root");
     overlay?.classList.add("hidden");
+  }
+
+  private hideModal(modalId: string) {
+    this.hideOverlay();
+    const modal = getEl(modalId);
+    modal.classList.add("hidden");
+  }
+  private hideAllModals() {
+    const allModals = document.querySelectorAll("[id$='-modal']");
+    allModals.forEach((modal) => {
+      this.hideModal(modal.id);
+    });
+  }
+  private displayModal(modalId: string) {
+    this.hideAllModals();
+    this.displayOverlay();
+    const modal = getEl(modalId);
+    modal.classList.remove("hidden");
   }
 
   private async fetchData(): Promise<void> {
