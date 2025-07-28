@@ -251,11 +251,11 @@ export async function hashBackupCodes(userId, backupCodes) {
 }
 
 export async function verifyBackupCode(userId, backupCode) {
-  const hashedBackupCodes = getBackupCodes(userId);
+  const hashedBackupCodes = await getBackupCodes(userId);
   for (const hashedBackupCode of hashedBackupCodes) {
-	if (await verifyHash(hashedBackupCode.backupCode, backupCode)) {
-	  return true;
-	}
+    if (await verifyHash(hashedBackupCode.backupCode, backupCode)) {
+      return true;
+    }
   }
   return false;
 }
