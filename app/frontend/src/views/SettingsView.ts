@@ -137,11 +137,11 @@ export default class SettingsView extends AbstractView {
         ]
       })}
       ${Modal({
-        id: "backup-codes-modal",
-        idCloseButton: "close-backup-codes-modal-button",
+        id: "two-fa-backup-codes-modal",
+        idCloseButton: "two-fa-close-backup-codes-modal-button",
         children: [
           TextBox({
-            id: "backup-codes-info",
+            id: "two-fa-backup-codes-info",
             text: [
               "Those are your backup codes.",
               "Copy or download them",
@@ -151,13 +151,13 @@ export default class SettingsView extends AbstractView {
             variant: "warning"
           }),
           Table({
-            id: "backup-codes-table",
+            id: "two-fa-backup-codes-table",
             headers: [],
             rows: [],
             className: "border border-neon-cyan rounded-lg divide-none mt-8"
           }),
           Link({
-            id: "download-backup-codes-link",
+            id: "two-fa-download-backup-codes-link",
             text: "Download",
             variant: "empty",
             href: "",
@@ -219,7 +219,7 @@ export default class SettingsView extends AbstractView {
         .getElementById("donwload-backup-codes-link")
         ?.addEventListener("click", () => this.downloadBackupCodes());
       document
-        .getElementById("close-backup-codes-modal-button")
+        .getElementById("two-fa-close-backup-codes-modal-button")
         ?.addEventListener("click", () => this.hideBackupCodesModal());
     }
   }
@@ -355,14 +355,16 @@ export default class SettingsView extends AbstractView {
       }
       this.fillBackupCodesTable(apiResponse.data.backupCodes);
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
-      this.displayModal("backup-codes-modal");
+      this.displayModal("two-fa-backup-codes-modal");
     } catch (error) {
       console.error(error);
     }
   }
 
   private fillBackupCodesTable(backupCodes: string[]) {
-    const backupCodesTableEl = getEl("backup-codes-table") as HTMLTableElement;
+    const backupCodesTableEl = getEl(
+      "two-fa-backup-codes-table"
+    ) as HTMLTableElement;
 
     const tbody = backupCodesTableEl.tBodies[0];
     tbody.classList.add("divide-none");
@@ -381,7 +383,7 @@ export default class SettingsView extends AbstractView {
 
   private setupBackupCodesLink(backupCodes: string[]) {
     const downloadBackupCodesLink = getEl(
-      "download-backup-codes-link"
+      "two-fa-download-backup-codes-link"
     ) as HTMLAnchorElement;
     downloadBackupCodesLink.href =
       "data:text/plain;charset=utf-8," +
@@ -450,9 +452,11 @@ export default class SettingsView extends AbstractView {
   }
 
   private hideBackupCodesModal() {
-    const backupCodesTableEl = getEl("backup-codes-table") as HTMLTableElement;
+    const backupCodesTableEl = getEl(
+      "two-fa-backup-codes-table"
+    ) as HTMLTableElement;
     backupCodesTableEl.tBodies[0].innerHTML = "";
-    this.hideModal("backup-codes-modal");
+    this.hideModal("two-fa-backup-codes-modal");
   }
 
   private hideOverlay(): void {
