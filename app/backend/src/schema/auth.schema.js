@@ -38,6 +38,16 @@ const twoFaCodeSchema = {
   additionalProperties: false
 };
 
+const twoFaBackupCodeSchema = {
+  $id: "twoFaBackupCodeSchema",
+  type: "object",
+  properties: {
+    code: { $ref: "commonDefinitionsSchema#/definitions/twoFaBackupCode" }
+  },
+  required: ["code"],
+  additionalProperties: false
+};
+
 const twoFaPasswordSchema = {
   $id: "twoFaPasswordSchema",
   type: "object",
@@ -52,5 +62,6 @@ export const authSchemas = [
   loginUserSchema,
   loginUserResponseSchema,
   twoFaCodeSchema,
+  twoFaBackupCodeSchema,
   twoFaPasswordSchema
 ];

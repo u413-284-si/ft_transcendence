@@ -39,6 +39,14 @@ const commonDefinitionsSchema = {
       description:
         "The 2FA code must be 6 characters long and contain only digits."
     },
+    backupCode: {
+      type: "string",
+      minLength: 8,
+      maxLength: 8,
+      pattern: "^\\d{8}$",
+      description:
+        "The baccup code must be 8 characters long and contain only digits."
+    },
     usernameOrEmail: {
       oneOf: [
         { $ref: "commonDefinitionsSchema#/definitions/username" },
