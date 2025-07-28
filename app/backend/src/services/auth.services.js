@@ -254,6 +254,7 @@ export async function verifyBackupCode(userId, backupCode) {
   const hashedBackupCodes = await getBackupCodes(userId);
   for (const hashedBackupCode of hashedBackupCodes) {
     if (await verifyHash(hashedBackupCode.backupCode, backupCode)) {
+      await deleteBackupCode(hashedBackupCode.id);
       return true;
     }
   }
@@ -270,6 +271,14 @@ export async function deleteBackupCodes(userId) {
   await prisma.backupCode.deleteMany({
     where: {
       userId: userId
+    }
+  });
+}
+
+export async function deleteBackupCode(backupCodeId) {
+  await prisma.backupCode.delete({
+    where: {
+      id: backupCodeId
     }
   });
 }
