@@ -361,10 +361,14 @@ export async function twoFaBackupCodesHandler(request, reply) {
     const hashedBackupCodes = await hashBackupCodes(userId, backupCodes);
     await createBackupCodes(hashedBackupCodes);
     const data = { backupCodes: backupCodes };
+
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
   } catch (error) {
     request.log.error(
       { err, body: request.body },
-      `RefreshHandler: ${createResponseMessage(action, false, data)}`
+      `RefreshHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
