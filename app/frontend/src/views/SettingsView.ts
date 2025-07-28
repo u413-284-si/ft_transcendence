@@ -41,7 +41,7 @@ export default class SettingsView extends AbstractView {
     return /* HTML */ `
       ${Button({
         id: "setup-two-fa-button",
-        text: "Setup 2FA",
+        text: "2FA Setup",
         variant: "default",
         type: "button"
       })}
