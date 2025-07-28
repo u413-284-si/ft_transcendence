@@ -1,5 +1,6 @@
 import Login from "./views/LoginView.js";
 import TwoFaVerify from "./views/TwoFaVerifyView.js";
+import TwoFaBackupCodeVerify from "./views/TwoFaBackupCodeVerifyView.js";
 import Register from "./views/RegisterView.js";
 import Home from "./views/HomeView.js";
 import NewGame from "./views/NewGameView.js";
