@@ -38,8 +38,8 @@ const twoFaCodeSchema = {
   additionalProperties: false
 };
 
-const twoFaRemoveSchema = {
-  $id: "twoFaRemoveSchema",
+const twoFaPasswordSchema = {
+  $id: "twoFaConfirmSchema",
   type: "object",
   properties: {
     password: { $ref: "commonDefinitionsSchema#/definitions/password" }
