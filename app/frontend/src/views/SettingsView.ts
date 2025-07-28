@@ -249,7 +249,7 @@ export default class SettingsView extends AbstractView {
         this.displayTwoFaPasswordModal("remove");
       }
     } catch (error) {
-      router.handleError("Error in callTwoFaFormAction", error);
+      router.handleError("Error in callTwoFaFormAction()", error);
     }
   }
 
@@ -295,7 +295,7 @@ export default class SettingsView extends AbstractView {
       this.hideOverlay();
       this.displayModal("two-fa-modal");
     } catch (error) {
-      router.handleError("Error displaying 2FA setup", error);
+      router.handleError("Error in displayTwoFaSetup()", error);
     }
   }
 
@@ -327,7 +327,7 @@ export default class SettingsView extends AbstractView {
       this.render();
       toaster.success("2FA removed successfully");
     } catch (error) {
-      router.handleError("Error removing 2FA", error);
+      router.handleError("Error in removeTwoFa()", error);
     }
   }
 
@@ -357,7 +357,7 @@ export default class SettingsView extends AbstractView {
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
       this.displayModal("two-fa-backup-codes-modal");
     } catch (error) {
-      console.error(error);
+      router.handleError("Error in generateAndDisplayBackupCodes()", error);
     }
   }
 
@@ -481,7 +481,7 @@ export default class SettingsView extends AbstractView {
       if (this.hasLocalAuth)
         this.hasTwoFa = getDataOrThrow(await geTwoFaStatus()).hasTwoFa;
     } catch (error) {
-      router.handleError("Error fetching data", error);
+      router.handleError("Error in fetchData()", error);
     }
   }
 }
