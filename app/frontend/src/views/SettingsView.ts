@@ -228,20 +228,20 @@ export default class SettingsView extends AbstractView {
 
   private async callTwoFaFormAction(event: Event): Promise<void> {
     try {
-    event.preventDefault();
-    if (!this.hasTwoFa) {
-      const twoFaQrCodeInput = getEl(
-        "two-fa-qr-code-input"
-      ) as HTMLInputElement;
-      const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
+      event.preventDefault();
+      if (!this.hasTwoFa) {
+        const twoFaQrCodeInput = getEl(
+          "two-fa-qr-code-input"
+        ) as HTMLInputElement;
+        const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
 
-      const isTwoFaCodeValid = await validateTwoFaCode(
-        twoFaQrCodeInput,
-        twoFaQrCodeErrorEl
-      );
-      if (!isTwoFaCodeValid) {
-        return;
-      }
+        const isTwoFaCodeValid = await validateTwoFaCode(
+          twoFaQrCodeInput,
+          twoFaQrCodeErrorEl
+        );
+        if (!isTwoFaCodeValid) {
+          return;
+        }
 
         const apiResponse = await verifyTwoFaCode(twoFaQrCodeInput.value);
         if (!apiResponse.success) {
@@ -256,14 +256,14 @@ export default class SettingsView extends AbstractView {
         this.fillBackupCodesTable(apiResponse.data.backupCodes);
         this.setupBackupCodesLink(apiResponse.data.backupCodes);
 
-      this.hideTwoFaSetupModal();
+        this.hideTwoFaSetupModal();
         this.displayBackupCodesModal();
-      this.render();
-      toaster.success("2FA setup successful");
-    } else {
-      this.hideTwoFaSetupModal();
-      this.displayTwoFaPasswordModal();
-      this.isTwoFaGoingToBeRemoved = true;
+        this.render();
+        toaster.success("2FA setup successful");
+      } else {
+        this.hideTwoFaSetupModal();
+        this.displayTwoFaPasswordModal();
+        this.isTwoFaGoingToBeRemoved = true;
       }
     } catch (error) {
       router.handleError("Error in callTwoFaFormAction", error);
