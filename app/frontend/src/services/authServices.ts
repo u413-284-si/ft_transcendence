@@ -113,6 +113,22 @@ export async function generateBackupCodes(
   );
 }
 
+export async function verifyBackupCode(
+  backupCode: string
+): Promise<ApiResponse<void>> {
+  const url = "/api/auth/2fa/backupCodes/verify";
+
+  return apiFetch<void>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ backupCode })
+    },
+    false
+  );
+}
+
 export async function verifyLoginTwoFaCode(
   code: string
 ): Promise<ApiResponse<null>> {
