@@ -24,7 +24,11 @@ router
     view: Register,
     guard: guestOnlyGuard
   })
-  .addRoute("/2fa-verify", { view: TwoFaVerify, guard: twoFaVerifyGuard })
+  .addRoute("/2FaVerification", { view: TwoFaVerify, guard: twoFaVerifyGuard })
+  .addRoute("/2FaBackupCodeVerification", {
+    view: TwoFaBackupCodeVerify,
+    guard: twoFaVerifyGuard
+  })
   .addRoute("/home", { view: Home, guard: authGuard })
   .addRoute("/newGame", { view: NewGame, guard: authGuard })
   .addRoute("/newTournament", {
