@@ -58,6 +58,5 @@ export function makeTournamentProgressOptions(
       theme: "dark"
     }
   };
-  console.log(options);
   return options;
 }
