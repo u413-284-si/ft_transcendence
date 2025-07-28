@@ -250,6 +250,16 @@ export async function hashBackupCodes(userId, backupCodes) {
   return hashedBackupCodes;
 }
 
+export async function verifyBackupCode(userId, backupCode) {
+  const hashedBackupCodes = getBackupCodes(userId);
+  for (const hashedBackupCode of hashedBackupCodes) {
+	if (await verifyHash(hashedBackupCode.backupCode, backupCode)) {
+	  return true;
+	}
+  }
+  return false;
+}
+
 export async function createBackupCodes(backupCodes) {
   await prisma.backupCode.createMany({
     data: backupCodes
