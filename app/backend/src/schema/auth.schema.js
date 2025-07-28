@@ -39,7 +39,7 @@ const twoFaCodeSchema = {
 };
 
 const twoFaPasswordSchema = {
-  $id: "twoFaConfirmSchema",
+  $id: "twoFaPasswordSchema",
   type: "object",
   properties: {
     password: { $ref: "commonDefinitionsSchema#/definitions/password" }
