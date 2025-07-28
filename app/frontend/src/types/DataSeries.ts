@@ -1,4 +1,5 @@
 import { TournamentSize } from "./ITournament";
+import { UserStats } from "./IUserStats";
 
 type WinratePoint = {
   x: string; // ISO 8601 date-time string
@@ -71,4 +72,15 @@ export type DashboardTournaments = {
   summary: TournamentSummaryData;
   progress: TournamentProgressData;
   lastNDays: TournamentDayData;
+};
+
+type FriendStatsPoint = {
+  name: string;
+  stats: UserStats;
+};
+
+export type FriendStatsSeries = FriendStatsPoint[];
+
+export type DashboardFriends = {
+  friendsWithStats: FriendStatsSeries;
 };

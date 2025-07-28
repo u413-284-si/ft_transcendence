@@ -323,12 +323,11 @@ export async function getDashboardFriendsData(userId) {
   const friendsWithStats = await Promise.all(
     friends.map(async (friend) => {
       const stats = await getUserStats(friend.friendId);
-      const data = userStatsKeys.map((key) => stats[key] ?? 0);
       return {
         name: friend.friendUsername,
-        data
+        stats
       };
     })
   );
-  return friendsWithStats;
+  return { friendsWithStats };
 }
