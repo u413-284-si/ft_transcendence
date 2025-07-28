@@ -36,7 +36,7 @@ export default async function authRoutes(fastify) {
   );
 
   fastify.post(
-    "/2fa/backupCodes/verify",
+    "/2fa/login/backupCodes/verify",
     optionTwoFaBackupCodesVerify,
     twoFaBackupCodeVerifyHandler
   );
