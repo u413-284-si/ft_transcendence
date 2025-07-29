@@ -24,7 +24,7 @@ export default class NewTournamentView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle("New Tournament");
+    this.setTitle(i18next.t("newTournamentView.title"));
   }
 
   createHTML() {
@@ -32,33 +32,46 @@ export default class NewTournamentView extends AbstractView {
       ${Form({
         children: [
           Header1({
-            text: "New Tournament",
+            text: i18next.t("newTournamentView.title"),
             variant: "default"
           }),
           Paragraph({
-            text: "Enter the tournament name and select the number of players"
+            text: i18next.t("newTournamentView.newTournamentDescription")
           }),
           Input({
             id: "tournament-name-input",
-            label: "Tournament Name:",
+            label: i18next.t("newTournamentView.tournamentName"),
             name: "tournament-name",
+            placeholder: i18next.t("newTournamentView.enterTournamentName"),
             type: "text",
             errorId: "tournament-name-error"
           }),
           RadioGroup({
             name: "players",
-            label: "Number of players",
+            label: i18next.t("newTournamentView.numberOfPlayers"),
             options: [
-              { id: "players-4", value: "4", label: "4 players" },
-              { id: "players-8", value: "8", label: "8 players" },
-              { id: "players-16", value: "16", label: "16 players" }
+              {
+                id: "players-4",
+                value: "4",
+                label: i18next.t("newTournamentView.players4")
+              },
+              {
+                id: "players-8",
+                value: "8",
+                label: i18next.t("newTournamentView.players8")
+              },
+              {
+                id: "players-16",
+                value: "16",
+                label: i18next.t("newTournamentView.players16")
+              }
             ],
             selectedValue: "4",
             errorId: "player-error",
             layout: "vertical"
           }),
           Button({
-            text: "Start Tournament",
+            text: i18next.t("newTournamentView.startTournament"),
             variant: "default",
             size: "md",
             type: "submit"

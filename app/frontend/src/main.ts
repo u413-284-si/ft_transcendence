@@ -18,6 +18,12 @@ import {
 import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
 import { layout } from "./Layout.js";
+import { Language } from "./types/User.js";
+import de from "./locales/de.js";
+import en from "./locales/en.js";
+import fr from "./locales/fr.js";
+import pi from "./locales/pi.js";
+import tr from "./locales/tr.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard })
@@ -47,14 +53,33 @@ router
   .addRouteChangeListener(logRouteChange)
   .addRouteChangeListener(updateUI);
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const preferredLang = localStorage.getItem(
+    "preferredLanguage"
+  ) as Language | null;
+
+  await i18next.init({
+    lng: preferredLang || "en",
+    fallbackLng: "fr",
+    resources: {
+      en,
+      fr,
+      de,
+      tr,
+      pi
+    },
+    interpolation: { escapeValue: false }
+  });
+
   auth.onChange(async (isAuth) => {
     console.info("Layout listener initialized.");
     if (isAuth) layout.update("auth");
     else layout.update("guest");
+    router.reload();
   });
+
+  router.start();
   auth.initialize().then(() => {
-    router.start();
     auth.onChange(async (isAuth) => {
       const path = window.location.pathname;
       if (!isAuth && path !== "/login") {

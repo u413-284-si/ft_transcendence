@@ -1,13 +1,10 @@
 import AbstractView from "./AbstractView.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
-import { Button } from "../components/Button.js";
 import { Modal } from "../components/Modal.js";
-import { Form } from "../components/Form.js";
 import { TextBox } from "../components/TextBox.js";
 import { Input } from "../components/Input.js";
 import { Image } from "../components/Image.js";
-import { getEl, getInputEl } from "../utility.js";
 import {
   generateBackupCodes,
   generateTwoFaQrcode as generateTwoFaQrcode,
@@ -15,16 +12,22 @@ import {
   removeTwoFa,
   verifyTwoFaCode
 } from "../services/authServices.js";
-import { auth } from "../AuthManager.js";
 import {
   markInvalid,
   validatTwoFaCode as validateTwoFaCode
 } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
-import { toaster } from "../Toaster.js";
 import { router } from "../routing/Router.js";
 import { Link } from "../components/Link.js";
 import { Table } from "../components/Table.js";
+import { Form } from "../components/Form.js";
+import { Button } from "../components/Button.js";
+import { LanguageSwitcher } from "../components/LanguageSwitcher.js";
+import { patchUser } from "../services/userServices.js";
+import { toaster } from "../Toaster.js";
+import { auth } from "../AuthManager.js";
+import { User, Language } from "../types/User.js";
+import { getButtonEl, getEl, getInputEl } from "../utility.js";
 
 export default class SettingsView extends AbstractView {
   private hasTwoFa: boolean = false;
@@ -32,9 +35,14 @@ export default class SettingsView extends AbstractView {
 
   private passwordFormAction: "setup" | "remove" | "backupCodes" = "setup";
 
+  private preferredLanguageFormEl!: HTMLFormElement;
+  private preferredLanguageButtonEl!: HTMLElement;
+  private preferredLanguageOptionsEl!: HTMLElement;
+  private selectedLanguage: Language = i18next.language as Language;
+
   constructor() {
     super();
-    this.setTitle("Settings");
+    this.setTitle(i18next.t("settingsView.title"));
   }
 
   private get2FaSetupHTML(): string {
@@ -81,7 +89,8 @@ export default class SettingsView extends AbstractView {
                     name: "two-fa-qr-code-input",
                     type: "text",
                     placeholder: "Code",
-                    errorId: "two-fa-qr-code-input-error"
+                    errorId: "two-fa-qr-code-input-error",
+					className: "text-left"
                   })
                 : "",
               !this.hasTwoFa
@@ -92,18 +101,18 @@ export default class SettingsView extends AbstractView {
                     size: "md",
                     type: "submit"
                   })
-                : Button({
+                : (Button({
                     id: "generate-backup-codes",
                     text: "Generate Backup Codes",
                     type: "button"
                   }),
-              Button({
-                id: "two-fa-remove",
-                text: "Deactivate",
-                variant: "danger",
-                size: "md",
-                type: "submit"
-              })
+                  Button({
+                    id: "two-fa-remove",
+                    text: "Deactivate",
+                    variant: "danger",
+                    size: "md",
+                    type: "submit"
+                  }))
             ],
             id: "two-fa-form"
           })
@@ -173,18 +182,45 @@ export default class SettingsView extends AbstractView {
     return /* HTML */ `
       <div class="text-center space-y-4">
         ${Header1({
-          text: "Settings",
+          text: i18next.t("settingsView.title"),
           variant: "default"
         })}
         ${Paragraph({
-          text: "Configure your preferences and settings here.",
+          text: i18next.t("settingsView.settings"),
           id: "settings-intro"
         })}
-		${this.hasLocalAuth ? this.get2FaSetupHTML() : ""}
+        <div class="mt-24 text-center inline-block">
+          ${this.hasLocalAuth ? this.get2FaSetupHTML() : ""}
+          ${Form({
+            id: "preferred-language-form",
+            className: "flex flex-col gap-4",
+            children: [
+              Paragraph({
+                text: i18next.t("settingsView.preferredLanguage")
+              }),
+              `<div class="flex flex-wrap items-end gap-4 mt-2">
+			  ${LanguageSwitcher({
+          id: "preferred-language",
+          selectedLang: i18next.language as Language,
+          className: "w-64",
+          size: "lg"
+        })}
+			  ${Button({
+          text: i18next.t("settingsView.saveLanguage"),
+          variant: "default",
+          size: "md",
+          type: "submit",
+          className: "mt-2 self-start"
+        })}
+			</div>`
+            ]
+          })}
         </div>
       </div>
     `;
   }
+
+  // ${this.hasLocalAuth ? this.get2FaSetupHTML() : ""}
 
   protected addListeners(): void {
     document
@@ -222,12 +258,89 @@ export default class SettingsView extends AbstractView {
         .getElementById("two-fa-close-backup-codes-modal-button")
         ?.addEventListener("click", () => this.hideBackupCodesModal());
     }
+
+    this.preferredLanguageFormEl.addEventListener("submit", (event) =>
+      this.updatePreferredLanguage(event)
+    );
+
+    this.preferredLanguageButtonEl.addEventListener("click", () => {
+      this.preferredLanguageOptionsEl.classList.toggle("hidden");
+    });
+
+    this.preferredLanguageOptionsEl
+      .querySelectorAll("button[data-lang]")
+      .forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const lang = (e.currentTarget as HTMLElement).dataset
+            .lang as Language;
+          auth.updateLanguage(lang);
+        });
+      });
+
+    document.addEventListener("click", this.onDocumentClick);
   }
 
   async render() {
     await this.fetchData();
     this.updateHTML();
+    this.preferredLanguageFormEl = document.querySelector<HTMLFormElement>(
+      "#preferred-language-form"
+    )!;
+    this.preferredLanguageButtonEl = getButtonEl("preferred-language-button")!;
+    this.preferredLanguageOptionsEl = getEl("preferred-language-options")!;
     this.addListeners();
+  }
+
+  private onDocumentClick = (event: MouseEvent) => {
+    if (
+      !this.preferredLanguageButtonEl.contains(event.target as Node) &&
+      !this.preferredLanguageOptionsEl.contains(event.target as Node)
+    ) {
+      this.preferredLanguageOptionsEl.classList.add("hidden");
+    }
+  };
+
+  //   protected addListeners() {
+  //     this.preferredLanguageFormEl.addEventListener("submit", (event) =>
+  //       this.updatePreferredLanguage(event)
+  //     );
+
+  //     this.preferredLanguageButtonEl.addEventListener("click", () => {
+  //       this.preferredLanguageOptionsEl.classList.toggle("hidden");
+  //     });
+
+  //     this.preferredLanguageOptionsEl
+  //       .querySelectorAll("button[data-lang]")
+  //       .forEach((btn) => {
+  //         btn.addEventListener("click", (e) => {
+  //           const lang = (e.currentTarget as HTMLElement).dataset
+  //             .lang as Language;
+  //           auth.updateLanguage(lang);
+  //         });
+  //       });
+
+  //     document.addEventListener("click", this.onDocumentClick);
+  //   }
+
+  unmount(): void {
+    document.removeEventListener("click", this.onDocumentClick);
+  }
+
+  private async updatePreferredLanguage(event: Event): Promise<void> {
+    event.preventDefault();
+
+    const updatedUser: Partial<User> = {
+      ...(this.selectedLanguage ? { language: this.selectedLanguage } : {})
+    };
+
+    try {
+      getDataOrThrow(await patchUser(updatedUser));
+      toaster.success(i18next.t("toast.profileUpdatedSuccess"));
+      auth.updateUser(updatedUser);
+    } catch (err) {
+      console.error("Failed to update preferred language:", err);
+      toaster.error(i18next.t("toast.profileUpdateFailed"));
+    }
   }
 
   getName(): string {
