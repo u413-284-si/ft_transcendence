@@ -39,7 +39,7 @@ services:
       SSL_PORT: 8443
       NGINX_ALWAYS_TLS_REDIRECT: on
       # modsecurity settings
-      MODSEC_RULE_ENGINE: DetectionOnly
+      MODSEC_RULE_ENGINE: On #DetectionOnly
       MODSEC_DEBUG_LOGLEVEL: 3 # errors, warnings, and notices
       MODSEC_AUDIT_LOG: "/var/log/nginx/modsec_audit.log"
     volumes:
