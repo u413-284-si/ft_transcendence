@@ -4,11 +4,10 @@ import AbstractView from "./AbstractView.js";
 import {
   markInvalid,
   validatTwoFaCode,
-  validateUsernameOrEmail
 } from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
-import { addTogglePasswordListener, Input } from "../components/Input.js";
+import { Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getEl } from "../utility.js";

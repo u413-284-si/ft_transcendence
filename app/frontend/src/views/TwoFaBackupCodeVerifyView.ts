@@ -1,24 +1,15 @@
 import AbstractView from "./AbstractView.js";
 // FIXME: activate when password policy is applied
 //import { validatePassword, validateUsernameOrEmail } from "../validate.js";
-import {
-  markInvalid,
-  validatTwoFaBackupCode,
-  validatTwoFaCode,
-  validateUsernameOrEmail
-} from "../validate.js";
+import { markInvalid, validatTwoFaBackupCode } from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
-import { addTogglePasswordListener, Input } from "../components/Input.js";
+import { Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getEl } from "../utility.js";
-import {
-  verifyBackupCode,
-  verifyLoginTwoFaCode
-} from "../services/authServices.js";
+import { verifyBackupCode } from "../services/authServices.js";
 import { ApiError } from "../services/api.js";
-import { Link } from "../components/Link.js";
 
 export default class TwoFaBackupCodeVerifyView extends AbstractView {
   constructor() {
