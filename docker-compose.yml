@@ -14,6 +14,8 @@ services:
       restart_policy:
         condition: always
         window: 120s
+    volumes:
+      - db-data:/app/db
     networks:
       - pong-network
   waf:
@@ -62,3 +64,4 @@ volumes:
       type: none
       device: /workspaces/ft_transcendence/waf/modsecurity/logs
       o: bind
+  db-data:
