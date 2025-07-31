@@ -18,7 +18,9 @@ COPY package*.json ./
 RUN npm ci --ignore-scripts
 
 COPY ./scripts ./scripts
-COPY ./app ./app
+COPY ./app/backend ./app/backend
+COPY ./app/frontend ./app/frontend
+COPY ./app/db ./app/db
 
 RUN npx prisma generate && npm run style && npm run build
 
