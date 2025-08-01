@@ -5,8 +5,7 @@ import { ApiResponse } from "../types/IApiResponse.js";
 import {
   DashboardFriends,
   DashboardMatches,
-  DashboardTournaments,
-  FriendStatsSeries
+  DashboardTournaments
 } from "../types/DataSeries.js";
 
 export async function getUserStats(): Promise<ApiResponse<UserStats>> {
