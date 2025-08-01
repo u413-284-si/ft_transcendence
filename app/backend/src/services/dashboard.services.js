@@ -310,15 +310,6 @@ export async function getDashboardTournamentsData(userId) {
 }
 
 export async function getDashboardFriendsData(userId) {
-  const userStatsKeys = [
-    "matchesPlayed",
-    "matchesWon",
-    "matchesLost",
-    "winRate",
-    "winstreakCur",
-    "winstreakMax"
-  ];
-
   const friends = await getUserFriends(userId);
   const friendsWithStats = await Promise.all(
     friends.map(async (friend) => {
