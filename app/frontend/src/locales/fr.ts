@@ -248,7 +248,9 @@ const fr: TranslationShape = {
       reachedThisStage: "Étape atteinte",
       win: "Victoires",
       loss: "Défaites",
-      played: "Tournois joués{{range}}"
+      played: "Tournois joués{{range}}",
+      activity: "Activité",
+      current: "Actuelle"
     },
 
     toast: {

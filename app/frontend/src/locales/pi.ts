@@ -238,7 +238,9 @@ const pi: TranslationShape = {
       reachedThisStage: "Landed 'ere",
       win: "Victory",
       loss: "Defeats",
-      played: "Battles fought{{range}}"
+      played: "Battles fought{{range}}",
+      activity: "Booty Huntin'",
+      current: "As o' Now"
     },
 
     toast: {

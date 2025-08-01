@@ -238,7 +238,9 @@ const en = {
       reachedThisStage: "Reached this stage",
       win: "Win",
       loss: "Loss",
-      played: "Tournaments played{{range}}"
+      played: "Tournaments played{{range}}",
+      activity: "Activity",
+      current: "Current"
     },
 
     toast: {

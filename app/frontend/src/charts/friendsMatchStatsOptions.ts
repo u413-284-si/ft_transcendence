@@ -1,4 +1,5 @@
 import { ApexOptions } from "apexcharts";
+import { chartColors } from "./utils.js";
 
 export function makeFriendsMatchStatsOptions(
   series: ApexAxisChartSeries,
@@ -13,20 +14,27 @@ export function makeFriendsMatchStatsOptions(
       height: 300,
       width: 750
     },
-    title: {
-      text: "Match Stats",
-      style: { color: "#fff" }
-    },
     xaxis: {
-      categories: ["Played", "Won", "Lost"],
-      labels: { style: { colors: ["#fff"] } }
+      categories: [
+        i18next.t("statsView.played"),
+        i18next.t("global.won"),
+        i18next.t("global.lost")
+      ],
+      labels: {
+        style: {
+          colors: [chartColors.white, chartColors.white, chartColors.white]
+        }
+      }
     },
     yaxis: {
-      labels: { style: { colors: ["#fff"] } }
+      labels: { style: { colors: [chartColors.white] } },
+      title: {
+        text: i18next.t("statsView.matches"),
+        style: { color: chartColors.white }
+      }
     },
     plotOptions: {
       bar: {
-        horizontal: false,
         columnWidth: "60%"
       }
     },

@@ -341,17 +341,17 @@ export default class StatsView extends AbstractView {
           <div id="friend-selector"></div>
         </div>
         ${Chart({
-          title: i18next.t("chart.summary"),
+          title: i18next.t("chart.activity"),
           chartId: "friends-match-stats"
         })}
       </div>
       <div class="flex gap-8">
         ${Chart({
-          title: i18next.t("chart.summary"),
+          title: i18next.t("statsView.winRate"),
           chartId: "friends-winrate"
         })}
         ${Chart({
-          title: i18next.t("chart.summary"),
+          title: i18next.t("statsView.winstreak"),
           chartId: "friends-winstreak"
         })}
       </div>

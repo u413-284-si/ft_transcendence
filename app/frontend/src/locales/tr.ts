@@ -238,7 +238,9 @@ const tr: TranslationShape = {
       reachedThisStage: "Access Achieved",
       win: "W",
       loss: "L",
-      played: "TOURNAMENT_ACTIVITY{{range}}"
+      played: "TOURNAMENT_ACTIVITY{{range}}",
+      activity: "LOG",
+      current: "ACTIVE"
     },
 
     toast: {

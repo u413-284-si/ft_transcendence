@@ -1,4 +1,5 @@
 import { ApexOptions } from "apexcharts";
+import { chartColors } from "./utils.js";
 
 export function makeFriendsWinRateOptions(
   series: ApexAxisChartSeries,
@@ -14,18 +15,19 @@ export function makeFriendsWinRateOptions(
       width: 600
     },
     xaxis: {
-      categories: ["Win Rate"],
-      labels: { style: { colors: ["#fff"] } }
+      categories: [i18next.t("statsView.winRate")],
+      labels: { style: { colors: [chartColors.white] } }
     },
     yaxis: {
       min: 0,
       max: 100,
       labels: {
-        style: { colors: ["#fff"] },
+        style: { colors: [chartColors.white] },
         formatter: (val: number) => `${val}%`
       },
       title: {
-        style: { color: "#fff" }
+        text: i18next.t("statsView.winRate"),
+        style: { color: chartColors.white }
       }
     },
     tooltip: { theme: "dark" },
