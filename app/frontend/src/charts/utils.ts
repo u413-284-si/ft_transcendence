@@ -89,16 +89,15 @@ export function removeFriend(friend: string): void {
 }
 
 export function getColors(friends: string[]): string[] {
-  return friends.map((f) => {
-    const index = friendColorMap.get(f);
+  return friends.map((friend) => {
+    const index = friendColorMap.get(friend);
+    if (!index) console.error(`No color for ${friend}`);
     return index !== undefined ? friendsColors[index] : "grey";
   });
 }
 
 export function getColor(friend: string): string {
   const index = friendColorMap.get(friend);
-  if (!index) {
-    throw new Error(`No color for ${friend}`);
-  }
-  return friendsColorsTailwind[index];
+  if (!index) console.error(`No color for ${friend}`);
+  return index !== undefined ? friendsColorsTailwind[index] : "grey";
 }
