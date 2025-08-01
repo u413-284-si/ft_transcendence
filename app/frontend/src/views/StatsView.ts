@@ -44,7 +44,8 @@ import {
   getColor,
   getColors,
   removeFriend,
-  renderChart
+  renderChart,
+  splitFriendStatsToCharts
 } from "../charts/utils.js";
 import { maketournamentSummaryOptions } from "../charts/tournamentSummaryOptions.js";
 import { makeTournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
@@ -53,10 +54,10 @@ import { toaster } from "../Toaster.js";
 import { formatDate } from "../formatDate.js";
 import { TextBox } from "../components/TextBox.js";
 import { makeTournamentPlayedOptions } from "../charts/tournamentPlayedOptions.js";
-import { splitFriendStatsToCharts } from "../charts/friendsCompareOptions.js";
 import { makeFriendsWinRateOptions } from "../charts/friendsWinRateOptions.js";
 import { makeFriendsMatchStatsOptions } from "../charts/friendsMatchStatsOptions.js";
 import { makeFriendsWinstreakOptions } from "../charts/friendsWinstreakOptions.js";
+import { Header3 } from "../components/Header3.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -144,9 +145,10 @@ export default class StatsView extends AbstractView {
     this.updateHTML();
     if (this.viewType === "public") return;
     this.addListeners();
+    addFriend(this.username);
+    this.renderFriendSelector(this.dashboardFriends!.friendsWithStats);
     this.populateChartOptions();
     this.initChartsForTab("matches");
-    this.renderFriendSelector(this.dashboardFriends!.friendsWithStats);
   }
 
   getTabsHTML(): string {
@@ -331,16 +333,22 @@ export default class StatsView extends AbstractView {
   getFriendsDashboard(): string {
     return /* HTML */ `<div class="p-6 mx-auto space-y-8">
       <div class="flex gap-8">
-        <div id="friend-selector"></div>
+        <div class="flex flex-col">
+          ${Header3({
+            text: "Select upto 3 friends",
+            variant: "white"
+          })}
+          <div id="friend-selector"></div>
+        </div>
         ${Chart({
           title: i18next.t("chart.summary"),
-          chartId: "friends-winrate"
+          chartId: "friends-match-stats"
         })}
       </div>
       <div class="flex gap-8">
         ${Chart({
           title: i18next.t("chart.summary"),
-          chartId: "friends-match-stats"
+          chartId: "friends-winrate"
         })}
         ${Chart({
           title: i18next.t("chart.summary"),
@@ -351,6 +359,10 @@ export default class StatsView extends AbstractView {
   }
 
   toggleFriendSelection(friendName: string) {
+    if (friendName === this.username) {
+      toaster.warn("You cannot remove yourself");
+      return;
+    }
     if (this.selectedFriends.includes(friendName)) {
       this.selectedFriends = this.selectedFriends.filter(
         (name) => name !== friendName
@@ -373,12 +385,11 @@ export default class StatsView extends AbstractView {
     container!.innerHTML = "";
 
     friends.forEach((friend) => {
-      if (friend.name === this.username) return;
       const btn = document.createElement("button");
       btn.innerText = friend.name;
       btn.className = this.selectedFriends.includes(friend.name)
-        ? `${getColor(friend.name)} text-white p-2 m-1`
-        : "bg-gray-200 text-black p-2 m-1";
+        ? `w-full ${getColor(friend.name)} text-white p-2 m-1`
+        : "w-full bg-gray-200 text-black p-2 m-1";
 
       btn.onclick = () => this.toggleFriendSelection(friend.name);
       container!.appendChild(btn);
@@ -520,7 +531,6 @@ export default class StatsView extends AbstractView {
     const { winRateSeries, matchStatsSeries, winstreakSeries } =
       splitFriendStatsToCharts(filteredStats);
 
-    addFriend(this.username);
     const colors = getColors(this.selectedFriends);
 
     this.chartOptions["matches"] = {

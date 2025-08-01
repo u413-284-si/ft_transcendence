@@ -11,7 +11,7 @@ export function makeFriendsWinRateOptions(
       background: "transparent",
       toolbar: { show: false },
       height: 300,
-      width: 500
+      width: 600
     },
     xaxis: {
       categories: ["Win Rate"],
@@ -31,10 +31,10 @@ export function makeFriendsWinRateOptions(
     tooltip: { theme: "dark" },
     plotOptions: {
       bar: {
-        columnWidth: "50%"
+        columnWidth: "70%"
       }
     },
-    legend: { labels: { colors: ["#fff"] } },
+    legend: { show: false },
     colors: colors,
     series
   };

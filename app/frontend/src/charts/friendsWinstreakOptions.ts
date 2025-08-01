@@ -9,11 +9,11 @@ export function makeFriendsWinstreakOptions(
       type: "bar",
       fontFamily: "inherit",
       background: "transparent",
-      toolbar: {
-        show: false
-      },
-      height: 300
+      toolbar: { show: false },
+      height: 300,
+      width: 600
     },
+    legend: { show: false },
     xaxis: {
       categories: ["Current", "Max"],
       labels: { style: { colors: ["#fff"] } }
@@ -22,7 +22,6 @@ export function makeFriendsWinstreakOptions(
       labels: { style: { colors: ["#fff"] } },
       forceNiceScale: true
     },
-    legend: { labels: { colors: ["#fff"] } },
     tooltip: { theme: "dark" },
     series,
     colors: colors

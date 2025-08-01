@@ -7,9 +7,11 @@ export function makeFriendsMatchStatsOptions(
   return {
     chart: {
       type: "bar",
+      fontFamily: "inherit",
       background: "transparent",
+      toolbar: { show: false },
       height: 300,
-      width: 500
+      width: 750
     },
     title: {
       text: "Match Stats",
@@ -28,7 +30,7 @@ export function makeFriendsMatchStatsOptions(
         columnWidth: "60%"
       }
     },
-    legend: { labels: { colors: ["#fff"] } },
+    legend: { show: false },
     tooltip: { theme: "dark" },
     series,
     colors
