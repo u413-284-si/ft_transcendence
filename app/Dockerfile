@@ -37,8 +37,7 @@ WORKDIR /
 
 COPY --from=builder /build/app ./app
 COPY --from=builder /build/node_modules ./node_modules
-COPY --from=builder /build/package*.json ./
 
 EXPOSE 4001
 
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "./app/backend/src/app.js" ]
