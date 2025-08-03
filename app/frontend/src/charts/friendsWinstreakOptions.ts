@@ -1,15 +1,15 @@
 import { ApexOptions } from "apexcharts";
-import { chartColors, getColors } from "./utils.js";
+import { chartColors } from "./utils.js";
 import { FriendStatsSeries } from "../types/DataSeries.js";
 
 export function makeFriendsWinstreakOptions(
   data: FriendStatsSeries,
-  selectedFriends: string[]
+  selectedFriends: string[],
+  colors: string[]
 ): ApexOptions {
   const filtered = data.filter((friend) =>
     selectedFriends.includes(friend.name)
   );
-  const colors = getColors(selectedFriends);
   return {
     chart: {
       type: "bar",

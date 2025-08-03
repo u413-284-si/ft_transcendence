@@ -39,12 +39,7 @@ import { makeWinLossOptions } from "../charts/winLossOptions.js";
 import { makeWinrateOptions } from "../charts/winrateOptions.js";
 import { makeScoreDiffOptions } from "../charts/scoreDiffOptions.js";
 import { makeScoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions.js";
-import {
-  addFriend,
-  getColor,
-  removeFriend,
-  renderChart
-} from "../charts/utils.js";
+import { renderChart } from "../charts/utils.js";
 import { maketournamentSummaryOptions } from "../charts/tournamentSummaryOptions.js";
 import { makeTournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
 import { maketournamentLastNDaysOptions } from "../charts/tournamentsLastNDaysOptions.js";
@@ -56,6 +51,7 @@ import { makeFriendsWinRateOptions } from "../charts/friendsWinRateOptions.js";
 import { makeFriendsMatchStatsOptions } from "../charts/friendsMatchStatsOptions.js";
 import { makeFriendsWinstreakOptions } from "../charts/friendsWinstreakOptions.js";
 import { Header3 } from "../components/Header3.js";
+import { FriendManager } from "../charts/FriendManager.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -72,7 +68,7 @@ export default class StatsView extends AbstractView {
     {};
   private rangeMatches = i18next.t("chart.rangeLastMatches", { count: 10 });
   private rangeDays = i18next.t("chart.rangeLastDays", { count: 10 });
-  private selectedFriends: string[] = [`${this.username}`];
+  private friendManager: FriendManager | null = null;
 
   constructor() {
     super();
@@ -143,11 +139,14 @@ export default class StatsView extends AbstractView {
     this.updateHTML();
     if (this.viewType === "public") return;
     this.addListeners();
-    this.populateChartOptions();
+    this.chartOptions["matches"] = this.populateMatchesCharts();
+    this.chartOptions["tournaments"] = this.populateTournamentsCharts();
     this.initChartsForTab("matches");
     if (this.viewType !== "self") return;
-    addFriend(this.username);
+    this.friendManager = new FriendManager();
+    this.friendManager.selectFriend(this.username);
     this.renderFriendSelector(this.dashboardFriends!.matchStats);
+    this.chartOptions["friends"] = this.populateFriendsCharts();
   }
 
   getTabsHTML(): string {
@@ -364,18 +363,20 @@ export default class StatsView extends AbstractView {
   }
 
   renderFriendSelector(friends: FriendStatsSeries) {
+    if (!this.friendManager) return new Error("FriendManager null");
     if (!friends || friends.length === 0) {
       console.warn("No friends to display");
       return;
     }
     const container = getEl("friend-selector");
+    const selectedFriends = this.friendManager.getSelectedFriends();
 
     friends.forEach((friend) => {
       const btn = document.createElement("button");
       btn.innerText = friend.name;
       btn.dataset.friendName = friend.name;
-      btn.className = this.selectedFriends.includes(friend.name)
-        ? `w-full ${getColor(friend.name)} text-white p-2 m-1`
+      btn.className = selectedFriends.includes(friend.name)
+        ? `w-full ${this.friendManager?.getColor(friend.name)} text-white p-2 m-1`
         : "w-full bg-grey text-black p-2 m-1";
 
       btn.onclick = () => this.toggleFriendSelection(friend.name, btn);
@@ -384,51 +385,58 @@ export default class StatsView extends AbstractView {
   }
 
   toggleFriendSelection(friendName: string, button: HTMLButtonElement) {
+    if (!this.friendManager) return new Error("FriendManager null");
     if (friendName === this.username) {
       toaster.warn(i18next.t("toast.cannotRemoveYourself"));
       return;
     }
+    const selectedFriends = this.friendManager.getSelectedFriends();
+    const isSelected = selectedFriends.includes(friendName);
 
-    if (this.selectedFriends.includes(friendName)) {
-      this.selectedFriends = this.selectedFriends.filter(
-        (name) => name !== friendName
-      );
-      removeFriend(friendName);
+    if (isSelected) {
+      this.friendManager.deselectFriend(friendName);
     } else {
-      if (this.selectedFriends.length < 4) {
-        this.selectedFriends.push(friendName);
-        addFriend(friendName);
+      if (selectedFriends.length < 4) {
+        this.friendManager.selectFriend(friendName);
       } else {
         toaster.warn(i18next.t("toast.compareMaxThree"));
         return;
       }
     }
-    this.updateFriendButton(button, friendName);
+    this.updateFriendButton(button, friendName, !isSelected);
     this.updateFriendsCharts();
   }
 
-  private updateFriendButton(button: HTMLButtonElement, friendName: string) {
-    const isSelected = this.selectedFriends.includes(friendName);
+  private updateFriendButton(
+    button: HTMLButtonElement,
+    friendName: string,
+    isSelected: boolean
+  ) {
     button.className = isSelected
-      ? `w-full ${getColor(friendName)} text-white p-2 m-1`
+      ? `w-full ${this.friendManager?.getColor(friendName)} text-white p-2 m-1`
       : "w-full bg-gray-200 text-black p-2 m-1";
   }
 
   updateFriendsCharts() {
-    if (!this.dashboardFriends)
+    if (!this.dashboardFriends || !this.friendManager)
       throw new Error("Dashboard friends is undefined");
+    const selectedFriends = this.friendManager.getSelectedFriends();
+    const colors = this.friendManager.getColors();
 
     const winrateOptions = makeFriendsWinRateOptions(
       this.dashboardFriends.winRate,
-      this.selectedFriends
+      selectedFriends,
+      colors
     );
     const matchStatsOptions = makeFriendsMatchStatsOptions(
       this.dashboardFriends.matchStats,
-      this.selectedFriends
+      selectedFriends,
+      colors
     );
     const winstreakOptions = makeFriendsWinstreakOptions(
       this.dashboardFriends.winstreak,
-      this.selectedFriends
+      selectedFriends,
+      colors
     );
 
     this.charts["friends"]["friends-winrate"].updateOptions(winrateOptions);
@@ -522,14 +530,6 @@ export default class StatsView extends AbstractView {
     });
   }
 
-  private populateChartOptions(): void {
-    this.chartOptions["matches"] = this.populateMatchesCharts();
-    this.chartOptions["tournaments"] = this.populateTournamentsCharts();
-    if (this.viewType === "self") {
-      this.chartOptions["friends"] = this.populateFriendsCharts();
-    }
-  }
-
   private populateMatchesCharts(): Record<string, ApexCharts.ApexOptions> {
     if (!this.dashboardMatches || !this.userStats)
       throw new Error("Matches data or user stats is null");
@@ -597,20 +597,27 @@ export default class StatsView extends AbstractView {
   }
 
   private populateFriendsCharts(): Record<string, ApexCharts.ApexOptions> {
-    if (!this.dashboardFriends) throw new Error("Dashboard friends is null");
+    if (!this.dashboardFriends || !this.friendManager)
+      throw new Error("Dashboard friends is null");
+
+    const selectedFriends = this.friendManager.getSelectedFriends();
+    const colors = this.friendManager.getColors();
 
     return {
       "friends-winrate": makeFriendsWinRateOptions(
         this.dashboardFriends.winRate,
-        this.selectedFriends
+        selectedFriends,
+        colors
       ),
       "friends-match-stats": makeFriendsMatchStatsOptions(
         this.dashboardFriends.matchStats,
-        this.selectedFriends
+        selectedFriends,
+        colors
       ),
       "friends-winstreak": makeFriendsWinstreakOptions(
         this.dashboardFriends.winstreak,
-        this.selectedFriends
+        selectedFriends,
+        colors
       )
     };
   }
