@@ -282,7 +282,9 @@ const tr: TranslationShape = {
       userStatus: "{{username}} status: {{status}}",
       userVerificationError:
         "An error occurred while verifying the user:<br>Redirecting to login.",
-      validateTournamentNameError: "Error verifying tournament ID."
+      validateTournamentNameError: "Error verifying tournament ID.",
+      cannotRemoveYourself: "Self-removal not permitted.",
+      compareMaxThree: "Data limit: 3 nodes."
     }
   }
 };

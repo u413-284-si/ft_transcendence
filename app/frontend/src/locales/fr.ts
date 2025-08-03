@@ -296,7 +296,9 @@ const fr: TranslationShape = {
       userVerificationError:
         "Une erreur s'est produite lors de la vérification de l'utilisateur:<br>Redirection vers la page de connexion.",
       validateTournamentNameError:
-        "Une erreur s'est produite lors de la validation du nom du tournoi."
+        "Une erreur s'est produite lors de la validation du nom du tournoi.",
+      cannotRemoveYourself: "Vous ne pouvez pas vous supprimer.",
+      compareMaxThree: "Vous pouvez comparer un maximum de 3 amis."
     }
   }
 };

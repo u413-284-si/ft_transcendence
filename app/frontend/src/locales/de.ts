@@ -294,7 +294,9 @@ const de: TranslationShape = {
       userVerificationError:
         "Fehler bei der Benutzerverifizierung:<br>Weiterleitung zur Anmeldung.",
       validateTournamentNameError:
-        "Fehler bei der Validierung des Turniernamens."
+        "Fehler bei der Validierung des Turniernamens.",
+      cannotRemoveYourself: "Du kannst dich selbst nicht entfernen.",
+      compareMaxThree: "Du kannst höchstens 3 Freunde vergleichen."
     }
   }
 };

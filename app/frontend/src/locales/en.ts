@@ -283,7 +283,9 @@ const en = {
       userVerificationError:
         "An error occurred while verifying the user:<br>Redirecting to login.",
       validateTournamentNameError:
-        "An error occurred while validating the tournament name."
+        "An error occurred while validating the tournament name.",
+      cannotRemoveYourself: "You cannot remove yourself",
+      compareMaxThree: "You can compare a maximum of 3 friends."
     }
   }
 } as const;

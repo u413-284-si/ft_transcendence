@@ -385,7 +385,7 @@ export default class StatsView extends AbstractView {
 
   toggleFriendSelection(friendName: string, button: HTMLButtonElement) {
     if (friendName === this.username) {
-      toaster.warn("You cannot remove yourself");
+      toaster.warn(i18next.t("toast.cannotRemoveYourself"));
       return;
     }
 
@@ -399,7 +399,7 @@ export default class StatsView extends AbstractView {
         this.selectedFriends.push(friendName);
         addFriend(friendName);
       } else {
-        toaster.warn("You can compare a maximum of 3 friends.");
+        toaster.warn(i18next.t("toast.compareMaxThree"));
         return;
       }
     }

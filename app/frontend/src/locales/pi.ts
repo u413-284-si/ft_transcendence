@@ -283,7 +283,9 @@ const pi: TranslationShape = {
       userVerificationError:
         "Yer pirate pass be faulty:<br>Back to the login docks.",
       validateTournamentNameError:
-        "Tourney name not approved by the Pirate Council."
+        "Tourney name not approved by the Pirate Council.",
+      cannotRemoveYourself: "Ye can't be tossin' yerself.",
+      compareMaxThree: "Ye can weigh up no more than 3 mateys."
     }
   }
 };
