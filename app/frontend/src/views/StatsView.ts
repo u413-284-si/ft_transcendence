@@ -13,7 +13,7 @@ import {
   getUserPlayedMatches,
   getUserPlayedMatchesByUsername
 } from "../services/userServices.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getEl } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
 import { Table } from "../components/Table.js";
@@ -362,11 +362,32 @@ export default class StatsView extends AbstractView {
     </div> `;
   }
 
-  toggleFriendSelection(friendName: string) {
+  renderFriendSelector(friends: FriendStatsSeries) {
+    if (!friends || friends.length === 0) {
+      console.warn("No friends to display");
+      return;
+    }
+    const container = getEl("friend-selector");
+
+    friends.forEach((friend) => {
+      const btn = document.createElement("button");
+      btn.innerText = friend.name;
+      btn.dataset.friendName = friend.name;
+      btn.className = this.selectedFriends.includes(friend.name)
+        ? `w-full ${getColor(friend.name)} text-white p-2 m-1`
+        : "w-full bg-grey text-black p-2 m-1";
+
+      btn.onclick = () => this.toggleFriendSelection(friend.name, btn);
+      container.appendChild(btn);
+    });
+  }
+
+  toggleFriendSelection(friendName: string, button: HTMLButtonElement) {
     if (friendName === this.username) {
       toaster.warn("You cannot remove yourself");
       return;
     }
+
     if (this.selectedFriends.includes(friendName)) {
       this.selectedFriends = this.selectedFriends.filter(
         (name) => name !== friendName
@@ -378,40 +399,21 @@ export default class StatsView extends AbstractView {
         addFriend(friendName);
       } else {
         toaster.warn("You can compare a maximum of 3 friends.");
+        return;
       }
     }
-    this.renderFriendSelector(this.dashboardFriends!.matchStats);
-    this.renderCharts();
+    this.updateFriendButton(button, friendName);
+    this.updateFriendsCharts();
   }
 
-  renderFriendSelector(friends: FriendStatsSeries) {
-    if (!friends || friends.length === 0) {
-      console.warn("No friends to display");
-      return;
-    }
-    const container = document.getElementById("friend-selector");
-    container!.innerHTML = "";
-
-    friends.forEach((friend) => {
-      const btn = document.createElement("button");
-      btn.innerText = friend.name;
-      btn.className = this.selectedFriends.includes(friend.name)
-        ? `w-full ${getColor(friend.name)} text-white p-2 m-1`
-        : "w-full bg-gray-200 text-black p-2 m-1";
-
-      btn.onclick = () => this.toggleFriendSelection(friend.name);
-      container!.appendChild(btn);
-    });
+  private updateFriendButton(button: HTMLButtonElement, friendName: string) {
+    const isSelected = this.selectedFriends.includes(friendName);
+    button.className = isSelected
+      ? `w-full ${getColor(friendName)} text-white p-2 m-1`
+      : "w-full bg-gray-200 text-black p-2 m-1";
   }
 
-  filterSelectedFriendStats(
-    allFriends: FriendStatsSeries,
-    selected: string[]
-  ): FriendStatsSeries {
-    return allFriends.filter((f) => selected.includes(f.name));
-  }
-
-  renderCharts() {
+  updateFriendsCharts() {
     if (!this.dashboardFriends)
       throw new Error("Dashboard friends is undefined");
 
@@ -519,14 +521,19 @@ export default class StatsView extends AbstractView {
     });
   }
 
-  populateChartOptions(): void {
-    if (!this.dashboardMatches) throw new Error("Dashboard matches is null");
-    if (!this.dashboardTournaments)
-      throw new Error("Tournament matches is null");
-    if (!this.dashboardFriends) throw new Error("Dashboard friends is null");
-    if (!this.userStats) throw new Error("User stats is null");
+  private populateChartOptions(): void {
+    this.chartOptions["matches"] = this.populateMatchesCharts();
+    this.chartOptions["tournaments"] = this.populateTournamentsCharts();
+    if (this.viewType === "self") {
+      this.chartOptions["friends"] = this.populateFriendsCharts();
+    }
+  }
 
-    this.chartOptions["matches"] = {
+  private populateMatchesCharts(): Record<string, ApexCharts.ApexOptions> {
+    if (!this.dashboardMatches || !this.userStats)
+      throw new Error("Matches data or user stats is null");
+
+    return {
       "win-loss-chart": makeWinLossOptions(
         this.userStats.matchesWon,
         this.userStats.matchesLost,
@@ -547,7 +554,13 @@ export default class StatsView extends AbstractView {
         this.dashboardMatches.scores
       )
     };
-    this.chartOptions["tournaments"] = {
+  }
+
+  private populateTournamentsCharts(): Record<string, ApexCharts.ApexOptions> {
+    if (!this.dashboardTournaments)
+      throw new Error("Tournament matches is null");
+
+    return {
       "tournament-summary": maketournamentSummaryOptions(
         i18next.t("chart.summary"),
         this.dashboardTournaments.summary
@@ -580,7 +593,12 @@ export default class StatsView extends AbstractView {
         16
       )
     };
-    this.chartOptions["friends"] = {
+  }
+
+  private populateFriendsCharts(): Record<string, ApexCharts.ApexOptions> {
+    if (!this.dashboardFriends) throw new Error("Dashboard friends is null");
+
+    return {
       "friends-winrate": makeFriendsWinRateOptions(
         this.dashboardFriends.winRate,
         this.selectedFriends
