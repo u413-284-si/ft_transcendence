@@ -530,9 +530,7 @@ export default class StatsView extends AbstractView {
       "win-loss-chart": makeWinLossOptions(
         this.userStats.matchesWon,
         this.userStats.matchesLost,
-        this.userStats.winRate,
-        [i18next.t("global.won"), i18next.t("global.lost")],
-        i18next.t("statsView.winRate")
+        this.userStats.winRate
       ),
       "winrate-chart": makeWinrateOptions(
         i18next.t("statsView.winRate"),

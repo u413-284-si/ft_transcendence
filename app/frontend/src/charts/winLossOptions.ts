@@ -4,9 +4,7 @@ import { chartColors } from "./utils.js";
 export function makeWinLossOptions(
   wins: number,
   losses: number,
-  winRate: number,
-  labelsLegend: string[],
-  labelTotal: string
+  winRate: number
 ): ApexOptions {
   const winLossOptions: ApexOptions = {
     chart: {
@@ -17,7 +15,7 @@ export function makeWinLossOptions(
       height: 300
     },
     series: [wins, losses],
-    labels: labelsLegend,
+    labels: [i18next.t("global.won"), i18next.t("global.lost")],
     colors: [chartColors.cyan, chartColors.red],
     legend: {
       position: "bottom",
@@ -47,7 +45,7 @@ export function makeWinLossOptions(
             },
             total: {
               show: true,
-              label: labelTotal,
+              label: i18next.t("statsView.winRate"),
               color: chartColors.white,
               fontSize: "10px",
               formatter: () => `${winRate.toFixed(1)}%`
