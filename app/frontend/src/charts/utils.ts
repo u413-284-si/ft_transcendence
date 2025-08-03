@@ -1,7 +1,6 @@
 import type { ApexOptions } from "apexcharts";
 import { getEl } from "../utility.js";
 import { TournamentSize } from "../types/ITournament.js";
-import { FriendStatsSeries } from "../types/DataSeries.js";
 
 export async function renderChart(
   id: string,
@@ -101,39 +100,4 @@ export function getColor(friend: string): string {
   const index = friendColorMap.get(friend);
   if (!index) console.error(`No color for ${friend}`);
   return index !== undefined ? friendsColorsTailwind[index] : "grey";
-}
-
-export function splitFriendStatsToCharts(friends: FriendStatsSeries): {
-  winRateSeries: ApexAxisChartSeries;
-  matchStatsSeries: ApexAxisChartSeries;
-  winstreakSeries: ApexAxisChartSeries;
-} {
-  const winRateSeries: ApexAxisChartSeries = [];
-  const matchStatsSeries: ApexAxisChartSeries = [];
-  const winstreakSeries: ApexAxisChartSeries = [];
-
-  for (const friend of friends) {
-    const { name, stats } = friend;
-
-    winRateSeries.push({
-      name,
-      data: [stats.winRate]
-    });
-
-    matchStatsSeries.push({
-      name,
-      data: [stats.matchesPlayed, stats.matchesWon, stats.matchesLost]
-    });
-
-    winstreakSeries.push({
-      name,
-      data: [stats.winstreakCur, stats.winstreakMax]
-    });
-  }
-
-  return {
-    winRateSeries,
-    matchStatsSeries,
-    winstreakSeries
-  };
 }

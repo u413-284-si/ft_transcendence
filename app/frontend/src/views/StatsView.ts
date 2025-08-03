@@ -42,10 +42,8 @@ import { makeScoresLastTenDaysOptions } from "../charts/scoresLastTenDaysOptions
 import {
   addFriend,
   getColor,
-  getColors,
   removeFriend,
-  renderChart,
-  splitFriendStatsToCharts
+  renderChart
 } from "../charts/utils.js";
 import { maketournamentSummaryOptions } from "../charts/tournamentSummaryOptions.js";
 import { makeTournamentProgressOptions } from "../charts/tournamentProgressOptions.js";
@@ -146,7 +144,7 @@ export default class StatsView extends AbstractView {
     if (this.viewType === "public") return;
     this.addListeners();
     addFriend(this.username);
-    this.renderFriendSelector(this.dashboardFriends!.friendsWithStats);
+    this.renderFriendSelector(this.dashboardFriends!.matchStats);
     this.populateChartOptions();
     this.initChartsForTab("matches");
   }
@@ -169,12 +167,18 @@ export default class StatsView extends AbstractView {
           text: i18next.t("statsView.tournaments"),
           tabId: "tournaments"
         })}
-        ${TabButton({ text: i18next.t("statsView.friends"), tabId: "friends" })}
+        ${this.viewType === "self"
+          ? TabButton({
+              text: i18next.t("statsView.friends"),
+              tabId: "friends"
+            })
+          : ""}
       </div>
       ${this.getMatchesTabHTML()} ${this.getTournamentsTabHTML()}
-      ${this.getFriendsTabHTML()}
+      ${this.viewType === "self" ? this.getFriendsTabHTML() : ""}
     `;
   }
+
   getMatchesTabHTML(): string {
     return /* HTML */ ` <div id="tab-matches" class="tab-content">
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
@@ -376,11 +380,15 @@ export default class StatsView extends AbstractView {
         toaster.warn("You can compare a maximum of 3 friends.");
       }
     }
-    this.renderFriendSelector(this.dashboardFriends!.friendsWithStats);
+    this.renderFriendSelector(this.dashboardFriends!.matchStats);
     this.renderCharts();
   }
 
   renderFriendSelector(friends: FriendStatsSeries) {
+    if (!friends || friends.length === 0) {
+      console.warn("No friends to display");
+      return;
+    }
     const container = document.getElementById("friend-selector");
     container!.innerHTML = "";
 
@@ -404,22 +412,20 @@ export default class StatsView extends AbstractView {
   }
 
   renderCharts() {
-    const filteredStats = this.filterSelectedFriendStats(
-      this.dashboardFriends!.friendsWithStats,
+    if (!this.dashboardFriends)
+      throw new Error("Dashboard friends is undefined");
+
+    const winrateOptions = makeFriendsWinRateOptions(
+      this.dashboardFriends.winRate,
       this.selectedFriends
     );
-
-    const { winRateSeries, matchStatsSeries, winstreakSeries } =
-      splitFriendStatsToCharts(filteredStats);
-    const colors = getColors(this.selectedFriends);
-    const winrateOptions = makeFriendsWinRateOptions(winRateSeries, colors);
     const matchStatsOptions = makeFriendsMatchStatsOptions(
-      matchStatsSeries,
-      colors
+      this.dashboardFriends.matchStats,
+      this.selectedFriends
     );
     const winstreakOptions = makeFriendsWinstreakOptions(
-      winstreakSeries,
-      colors
+      this.dashboardFriends.winstreak,
+      this.selectedFriends
     );
 
     this.charts["friends"]["friends-winrate"].updateOptions(winrateOptions);
@@ -463,10 +469,6 @@ export default class StatsView extends AbstractView {
         await getUserDashboardTournaments()
       );
       this.dashboardFriends = getDataOrThrow(await getUserDashboardFriends());
-      this.dashboardFriends.friendsWithStats = [
-        { name: this.username, stats: this.userStats },
-        ...this.dashboardFriends.friendsWithStats
-      ];
       this.matches = getDataOrThrow(await getUserPlayedMatches());
       return;
     }
@@ -523,15 +525,6 @@ export default class StatsView extends AbstractView {
       throw new Error("Tournament matches is null");
     if (!this.dashboardFriends) throw new Error("Dashboard friends is null");
     if (!this.userStats) throw new Error("User stats is null");
-
-    const filteredStats = this.filterSelectedFriendStats(
-      this.dashboardFriends!.friendsWithStats,
-      this.selectedFriends
-    );
-    const { winRateSeries, matchStatsSeries, winstreakSeries } =
-      splitFriendStatsToCharts(filteredStats);
-
-    const colors = getColors(this.selectedFriends);
 
     this.chartOptions["matches"] = {
       "win-loss-chart": makeWinLossOptions(
@@ -590,12 +583,18 @@ export default class StatsView extends AbstractView {
       )
     };
     this.chartOptions["friends"] = {
-      "friends-winrate": makeFriendsWinRateOptions(winRateSeries, colors),
-      "friends-match-stats": makeFriendsMatchStatsOptions(
-        matchStatsSeries,
-        colors
+      "friends-winrate": makeFriendsWinRateOptions(
+        this.dashboardFriends.winRate,
+        this.selectedFriends
       ),
-      "friends-winstreak": makeFriendsWinstreakOptions(winstreakSeries, colors)
+      "friends-match-stats": makeFriendsMatchStatsOptions(
+        this.dashboardFriends.matchStats,
+        this.selectedFriends
+      ),
+      "friends-winstreak": makeFriendsWinstreakOptions(
+        this.dashboardFriends.winstreak,
+        this.selectedFriends
+      )
     };
   }
 
