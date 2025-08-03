@@ -36,7 +36,6 @@ services:
       restart_policy:
         condition: always
         window: 120s
-    user: root # FIXME: only for development, should be removed in production
     environment:
       # nginx settings
       BACKEND: http://app:4001
@@ -46,14 +45,10 @@ services:
       SSL_CERT: /etc/nginx/conf/self-signed.crt
       SSL_CERT_KEY: /etc/nginx/conf/self-signed.key
       # modsecurity settings
-      MODSEC_RULE_ENGINE: On #DetectionOnly
+      MODSEC_RULE_ENGINE: On
       MODSEC_DEBUG_LOGLEVEL: 3 # errors, warnings, and notices
-      MODSEC_AUDIT_LOG: "/var/log/nginx/modsec_audit.log"
       # CRS settings
       BLOCKING_PARANOIA: 2
-    volumes:
-      - modsec_logs:/var/log/nginx # FIXME: only for development, should be removed in production
-    #   - ./waf/modsecurity/crs-setup.conf:/etc/modsecurity.d/crs-setup.conf
     depends_on:
       - app
     networks:
@@ -63,12 +58,6 @@ networks:
   pong-network:
 
 volumes:
-  modsec_logs: # FIXME: only for development, should be removed in production
-    driver: local
-    driver_opts:
-      type: none
-      device: /workspaces/ft_transcendence/waf/modsecurity/logs
-      o: bind
   db-data:
 
 secrets:

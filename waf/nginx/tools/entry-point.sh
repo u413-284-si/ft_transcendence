@@ -23,5 +23,4 @@ log "Invoking docker-entrypoint.sh for nginx setup"
 . /docker-entrypoint.sh "$@"
 
 log "Starting nginx as user 'nginx'"
-# exec su-exec nginx "$@"
-exec "$@"
+exec su-exec nginx "$@"
