@@ -143,10 +143,11 @@ export default class StatsView extends AbstractView {
     this.updateHTML();
     if (this.viewType === "public") return;
     this.addListeners();
-    addFriend(this.username);
-    this.renderFriendSelector(this.dashboardFriends!.matchStats);
     this.populateChartOptions();
     this.initChartsForTab("matches");
+    if (this.viewType !== "self") return;
+    addFriend(this.username);
+    this.renderFriendSelector(this.dashboardFriends!.matchStats);
   }
 
   getTabsHTML(): string {
