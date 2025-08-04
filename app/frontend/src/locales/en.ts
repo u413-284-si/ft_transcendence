@@ -104,6 +104,8 @@ const en = {
         "Password must be 10 to 64 characters and include at least one digit, one uppercase and one lowercase letter, and one special character from the set @$!%*?&",
       passwordConfirmationEmpty: "Please re-enter your password",
       passwordConfirmation: "Password confirmation does not match.",
+      twoFaCodeEmpty: "2FA code cannot be empty.",
+      twoFaCodeFormat: "2FA code must be a 6-digit number.",
       playerSelection: "Please select the number of players.",
       tournamentNameEmpty: "Tournament name cannot be empty.",
       tournamentNameFormat:

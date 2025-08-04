@@ -273,12 +273,12 @@ export async function validateTwoFaCode(
 
   clearInvalid(inputEl, errorEl);
   if (isEmptyString(twoFaCode)) {
-    // markInvalid(i18next.t("invalid.twoFaCodeEmpty"), inputEl, errorEl);
+    markInvalid(i18next.t("invalid.twoFaCodeEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(twoFaCode, twoFaCodeRegex)) {
-    // markInvalid(i18next.t("invalid.twoFaCodeFormat"), inputEl, errorEl);
+    markInvalid(i18next.t("invalid.twoFaCodeFormat"), inputEl, errorEl);
     return false;
   }
   return true;

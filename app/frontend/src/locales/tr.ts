@@ -106,6 +106,8 @@ const tr: TranslationShape = {
         "Access code must be 10-64 chars, include digit, uppercase, lowercase, and special char @$!%*?&",
       passwordConfirmationEmpty: "Re-enter your access code",
       passwordConfirmation: "Access code confirmation mismatch.",
+      twoFaCodeEmpty: "Cipher code field cannot be void.",
+      twoFaCodeFormat: "Cipher code must be a 6-digit number.",
       playerSelection: "Select number of operatives.",
       tournamentNameEmpty: "Tournament ID cannot be empty.",
       tournamentNameFormat:
