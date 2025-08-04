@@ -1,10 +1,7 @@
 import AbstractView from "./AbstractView.js";
 // FIXME: activate when password policy is applied
 //import { validatePassword, validateUsernameOrEmail } from "../validate.js";
-import {
-  markInvalid,
-  validatTwoFaCode,
-} from "../validate.js";
+import { markInvalid, validateTwoFaCode } from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
 import { Input } from "../components/Input.js";
@@ -70,11 +67,11 @@ export default class TwoFaVerifyView extends AbstractView {
     const twoFaQrCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
     const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
 
-    const iTwoFaCodeValid = await validatTwoFaCode(
+    const isTwoFaCodeValid = await validateTwoFaCode(
       twoFaQrCodeInput,
       twoFaQrCodeErrorEl
     );
-    if (!iTwoFaCodeValid) {
+    if (!isTwoFaCodeValid) {
       return;
     }
 

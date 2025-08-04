@@ -264,7 +264,7 @@ export function validateImageFile(
   return true;
 }
 
-export async function validatTwoFaCode(
+export async function validateTwoFaCode(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): Promise<boolean> {

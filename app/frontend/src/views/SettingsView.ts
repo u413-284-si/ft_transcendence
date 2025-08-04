@@ -14,7 +14,7 @@ import {
 } from "../services/authServices.js";
 import {
   markInvalid,
-  validatTwoFaCode as validateTwoFaCode
+  validateTwoFaCode as validateTwoFaCode
 } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { router } from "../routing/Router.js";
