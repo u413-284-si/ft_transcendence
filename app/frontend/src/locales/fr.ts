@@ -112,9 +112,12 @@ const fr: TranslationShape = {
       passwordConfirmationEmpty: "Veuillez saisir à nouveau votre mot de passe",
       passwordConfirmation:
         "La confirmation du mot de passe ne correspond pas au mot de passe saisi.",
+      twoFaCode:
+        "Le mot de passe de vérification à deux facteurs est invalide.",
       twoFaCodeEmpty:
         "Le mot de passe de vérification à deux facteurs ne peut pas être vide.",
-      twoFaCodeFormat: "Le mot de passe de vérification à deux facteurs doit contenir six chiffres.",
+      twoFaCodeFormat:
+        "Le mot de passe de vérification à deux facteurs doit contenir six chiffres.",
       playerSelection: "Veuillez sélectionner le nombre de joueurs.",
       tournamentNameEmpty: "Le nom du tournoi ne peut pas être vide.",
       tournamentNameFormat:

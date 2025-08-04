@@ -105,6 +105,7 @@ const pi: TranslationShape = {
       passwordEmpty: "Don’t leave yer treasure chest wide open!",
       passwordFormat:
         "Yer code needs numbers, big letters, little letters, and pirate symbols @$!%*?&",
+      twoFaCode: "Yer secret digits be wrong, savvy!",
       twoFaCodeEmpty: "Don’t leave yer secret digits chest all empty, matey!",
       twoFaCodeFormat:
         "That secret chest be needin’ six shiny numbers, no more, no less!",

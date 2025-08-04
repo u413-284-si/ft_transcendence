@@ -109,6 +109,7 @@ const de: TranslationShape = {
         "Passwort muss 10 bis 64 Zeichen enthalten und mindestens eine Zahl, einen Groß- und Kleinbuchstaben sowie ein Sonderzeichen: @$!%*?&",
       passwordConfirmationEmpty: "Bitte wiederhole dein Passwort",
       passwordConfirmation: "Passwörter stimmen nicht überein.",
+      twoFaCode: "2FA-Kennzahl ist falsch.",
       twoFaCodeEmpty: "2FA-Kennzahl darf nicht leer sein.",
       twoFaCodeFormat: "2FA-Kennzahl muss eine sechsstellige Zahl sein.",
       playerSelection: "Bitte Anzahl der Spieler auswählen.",

@@ -376,7 +376,7 @@ export default class SettingsView extends AbstractView {
         if (!apiResponse.success) {
           if (apiResponse.status === 401) {
             markInvalid(
-              "Invalid code.",
+              i18next.t("invalid.twoFaCode"),
               this.twoFaCodeInputEl,
               this.twoFaCodeInputErrorEl
             );
