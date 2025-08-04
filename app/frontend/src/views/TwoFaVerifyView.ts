@@ -50,7 +50,7 @@ export default class TwoFaVerifyView extends AbstractView {
   protected addListeners() {
     document
       .getElementById("two-fa-verify-form")
-      ?.addEventListener("submit", (event) => this.verifTwoFa(event));
+      ?.addEventListener("submit", (event) => this.verifyTwoFa(event));
   }
 
   async render() {
@@ -62,7 +62,7 @@ export default class TwoFaVerifyView extends AbstractView {
     return "login";
   }
 
-  private async verifTwoFa(event: Event) {
+  private async verifyTwoFa(event: Event) {
     event.preventDefault();
     const twoFaQrCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
     const twoFaQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
