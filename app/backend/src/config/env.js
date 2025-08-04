@@ -59,7 +59,7 @@ const schema = {
     },
     TWO_FA_TEMP_TOKEN_TIME_TO_EXPIRE_IN_MS: {
       type: "string",
-      default: "180000"
+      default: "60000"
     },
     MAX_FILE_SIZE_IN_BYTES: {
       type: "number",
