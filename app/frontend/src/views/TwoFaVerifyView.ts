@@ -59,7 +59,7 @@ export default class TwoFaVerifyView extends AbstractView {
   }
 
   getName(): string {
-    return "login";
+    return "2fa-verify";
   }
 
   private async verifyTwoFa(event: Event) {
