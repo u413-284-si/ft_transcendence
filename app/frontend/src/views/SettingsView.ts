@@ -10,7 +10,7 @@ import {
   generateTwoFaQrcode as generateTwoFaQrcode,
   geTwoFaStatus,
   removeTwoFa,
-  verifyTwoFaCode
+  verifyTwoFaCodeAndGetBackupCodes
 } from "../services/authServices.js";
 import {
   markInvalid,
@@ -257,13 +257,13 @@ export default class SettingsView extends AbstractView {
       this.twoFaGenerateBackupCodesButtonEl.addEventListener("click", () =>
         this.displayTwoFaPasswordModal("backupCodes")
       );
-      this.twoFaDownloadBackupCodesLinkEl.addEventListener("click", () =>
-        this.downloadBackupCodes()
-      );
-      this.twoFaBackupCodesCloseModalButtonEl.addEventListener("click", () =>
-        this.hideBackupCodesModal()
-      );
     }
+    this.twoFaDownloadBackupCodesLinkEl.addEventListener("click", () =>
+      this.downloadBackupCodes()
+    );
+    this.twoFaBackupCodesCloseModalButtonEl.addEventListener("click", () =>
+      this.hideBackupCodesModal()
+    );
 
     this.preferredLanguageFormEl.addEventListener("submit", (event) =>
       this.updatePreferredLanguage(event)
@@ -362,12 +362,34 @@ export default class SettingsView extends AbstractView {
     try {
       event.preventDefault();
       if (!this.hasTwoFa) {
-        const isTwoFaCodeCorrect = await this.validateAndVerifyTwoFaCode();
-        if (!isTwoFaCodeCorrect) return;
+        const isTwoFaCodeValid = await validateTwoFaCode(
+          this.twoFaCodeInputEl,
+          this.twoFaCodeInputErrorEl
+        );
+        if (!isTwoFaCodeValid) {
+          return;
+        }
 
-        this.hideTwoFaSetupModal();
-        this.render();
+        const apiResponse = await verifyTwoFaCodeAndGetBackupCodes(
+          this.twoFaCodeInputEl.value
+        );
+        if (!apiResponse.success) {
+          if (apiResponse.status === 401) {
+            markInvalid(
+              "Invalid code.",
+              this.twoFaCodeInputEl,
+              this.twoFaCodeInputErrorEl
+            );
+            return;
+          } else {
+            throw new ApiError(apiResponse);
+          }
+        }
+
         toaster.success("2FA setup successful");
+        this.fillBackupCodesTable(apiResponse.data.backupCodes);
+        this.setupBackupCodesLink(apiResponse.data.backupCodes);
+        this.displayModal("two-fa-backup-codes-modal");
       } else {
         this.hideTwoFaSetupModal();
         this.displayTwoFaPasswordModal("remove");
@@ -474,6 +496,7 @@ export default class SettingsView extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
+      this.twoFaPasswordInputEl.value = "";
       this.fillBackupCodesTable(apiResponse.data.backupCodes);
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
       this.displayModal("two-fa-backup-codes-modal");
@@ -510,31 +533,6 @@ export default class SettingsView extends AbstractView {
 
   private downloadBackupCodes() {
     this.twoFaDownloadBackupCodesLinkEl.click();
-  }
-
-  private async validateAndVerifyTwoFaCode(): Promise<boolean> {
-    const isTwoFaCodeValid = await validateTwoFaCode(
-      this.twoFaCodeInputEl,
-      this.twoFaCodeInputErrorEl
-    );
-    if (!isTwoFaCodeValid) {
-      return false;
-    }
-
-    const apiResponse = await verifyTwoFaCode(this.twoFaCodeInputEl.value);
-    if (!apiResponse.success) {
-      if (apiResponse.status === 401) {
-        markInvalid(
-          "Invalid code.",
-          this.twoFaCodeInputEl,
-          this.twoFaCodeInputErrorEl
-        );
-        return false;
-      } else {
-        throw new ApiError(apiResponse);
-      }
-    }
-    return true;
   }
 
   private hideTwoFaSetupModal() {
