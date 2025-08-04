@@ -105,13 +105,17 @@ const pi: TranslationShape = {
       passwordEmpty: "Don’t leave yer treasure chest wide open!",
       passwordFormat:
         "Yer code needs numbers, big letters, little letters, and pirate symbols @$!%*?&",
+      passwordConfirmationEmpty: "Confirm yer code, or walk the plank!",
+      passwordConfirmation: "Codes don't match! Ye fool!",
       twoFaCode: "Yer secret digits be wrong, savvy!",
       twoFaCodeEmpty: "Don’t leave yer secret digits chest all empty, matey!",
       twoFaCodeFormat:
         "That secret chest be needin’ six shiny numbers, no more, no less!",
-      passwordConfirmationEmpty: "Confirm yer code, or walk the plank!",
-      passwordConfirmation: "Codes don't match! Ye fool!",
-
+      twoFaBackupCode: "Yer spare secret digits be wrong, ye scallywag!",
+      twoFaBackupCodeEmpty:
+        "Don’t be leavin’ yer spare digits chest all empty, matey!",
+      twoFaBackupCodeFormat:
+        "That spare chest be needin’ eight shiny numbers, not a digit more or less!",
       playerSelection: "Pick yer fighters, landlubber!",
       tournamentNameEmpty: "No name, no fame!",
       tournamentNameFormat: "Needs 3–20 marks like -!?_$.",

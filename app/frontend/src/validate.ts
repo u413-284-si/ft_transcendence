@@ -293,12 +293,12 @@ export async function validatTwoFaBackupCode(
 
   clearInvalid(inputEl, errorEl);
   if (isEmptyString(twoFaBackupCode)) {
-    markInvalid("Please enter a 8-digit code.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.twoFaBackupCodeEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(twoFaBackupCode, twoFaBackupCodeRegex)) {
-    markInvalid("Code must be a 8-digit number.", inputEl, errorEl);
+    markInvalid(i18next.t("invalid.twoFaBackupCodeFormat"), inputEl, errorEl);
     return false;
   }
   return true;

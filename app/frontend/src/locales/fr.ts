@@ -118,6 +118,12 @@ const fr: TranslationShape = {
         "Le mot de passe de vérification à deux facteurs ne peut pas être vide.",
       twoFaCodeFormat:
         "Le mot de passe de vérification à deux facteurs doit contenir six chiffres.",
+      twoFaBackupCode:
+        "Le mot de passe de secours à deux facteurs est invalide.",
+      twoFaBackupCodeEmpty:
+        "Le mot de passe de secours à deux facteurs ne peut pas être vide.",
+      twoFaBackupCodeFormat:
+        "Le mot de passe de secours à deux facteurs doit contenir huit chiffres.",
       playerSelection: "Veuillez sélectionner le nombre de joueurs.",
       tournamentNameEmpty: "Le nom du tournoi ne peut pas être vide.",
       tournamentNameFormat:

@@ -109,6 +109,9 @@ const en = {
       twoFaCode: "2FA code is invald.",
       twoFaCodeEmpty: "2FA code cannot be empty.",
       twoFaCodeFormat: "2FA code must be a 6-digit number.",
+      twoFaBackupCode: "2FA backup code is invalid.",
+      twoFaBackupCodeEmpty: "2FA backup code cannot be empty.",
+      twoFaBackupCodeFormat: "2FA backup code must be a 8-digit number.",
       playerSelection: "Please select the number of players.",
       tournamentNameEmpty: "Tournament name cannot be empty.",
       tournamentNameFormat:

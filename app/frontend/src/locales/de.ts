@@ -112,6 +112,9 @@ const de: TranslationShape = {
       twoFaCode: "2FA-Kennzahl ist falsch.",
       twoFaCodeEmpty: "2FA-Kennzahl darf nicht leer sein.",
       twoFaCodeFormat: "2FA-Kennzahl muss eine sechsstellige Zahl sein.",
+      twoFaBackupCode: "2FA-Wiederherstellungskennzahl ist falsch.",
+      twoFaBackupCodeEmpty: "2FA-Wiederherstellungskennzahl darf nicht leer sein.",
+      twoFaBackupCodeFormat: "2FA-Wiederherstellungskennzahl muss eine achtstellige Zahl sein.",
       playerSelection: "Bitte Anzahl der Spieler auswählen.",
       tournamentNameEmpty: "Turniername darf nicht leer sein.",
       tournamentNameFormat:
@@ -137,9 +140,9 @@ const de: TranslationShape = {
     },
 
     twoFaBackupCodeVerifyView: {
-      title: "2FA Wiederherstellungs-Kennzahl Verifizierung",
-      twoFaBackupCode: "2FA Wiederherstellungs-Kennzahl",
-      enterTwoFaBackupCode: "Gib die 2FA Wiederherstellungs-Kennzahl ein:",
+      title: "2FA-Wiederherstellungskennzahl Verifizierung",
+      twoFaBackupCode: "2FA-Wiederherstellungskennzahl",
+      enterTwoFaBackupCode: "Gib die 2FA-Wiederherstellungskennzahl ein:",
       submitTwoFaBackupCode: "Bestätigen"
     },
 

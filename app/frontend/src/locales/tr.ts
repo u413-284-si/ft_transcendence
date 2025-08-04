@@ -109,6 +109,9 @@ const tr: TranslationShape = {
       twoFaCode: "Cipher code invalid.",
       twoFaCodeEmpty: "Cipher code field cannot be void.",
       twoFaCodeFormat: "Cipher code must be a 6-digit number.",
+      twoFaBackupCode: "Backup cipher invalid.",
+      twoFaBackupCodeEmpty: "Backup cipher field cannot be void.",
+      twoFaBackupCodeFormat: "Backup cipher must be an 8-digit sequence.",
       playerSelection: "Select number of operatives.",
       tournamentNameEmpty: "Tournament ID cannot be empty.",
       tournamentNameFormat:
