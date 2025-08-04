@@ -1,12 +1,6 @@
-import { auth } from "./AuthManager.js";
-import { ApiError, getDataOrThrow } from "./services/api.js";
-import {
-  verifyLoginTwoFaCode as verifyLoginTwoFaCode,
-  verifyTwoFaCode
-} from "./services/authServices.js";
+import { getDataOrThrow } from "./services/api.js";
 import { getUserTournaments } from "./services/tournamentService.js";
 import { toaster } from "./Toaster.js";
-import { ApiResponse } from "./types/IApiResponse.js";
 
 export function isEmptyString(str: string): boolean {
   return str === "";
@@ -279,12 +273,12 @@ export async function validatTwoFaCode(
 
   clearInvalid(inputEl, errorEl);
   if (isEmptyString(twoFaCode)) {
-    markInvalid("Please enter a 6-digit code.", inputEl, errorEl);
+    // markInvalid(i18next.t("invalid.twoFaCodeEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(twoFaCode, twoFaCodeRegex)) {
-    markInvalid("Code must be a 6-digit number.", inputEl, errorEl);
+    // markInvalid(i18next.t("invalid.twoFaCodeFormat"), inputEl, errorEl);
     return false;
   }
   return true;
