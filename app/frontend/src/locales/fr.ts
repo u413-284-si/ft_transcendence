@@ -134,6 +134,15 @@ const fr: TranslationShape = {
       usernameOrEmail: "Nom d'utilisateur ou addresse mail"
     },
 
+    twoFaVerifyView: {
+      title: "Vérification du mot de passe à deux facteurs",
+      twoFaCode: "Mot de passe à deux facteurs",
+      enterTwoFaCode:
+        "Entrez votre mot de passe de vérification à deux facteurs:",
+      submitTwoFaCode: "Valider",
+      useBackupCode: "Utiliser le code de secours"
+    },
+
     matchAnnouncementView: {
       abortTournament: "Annuler le Tournoi",
       nextMatch: "Prochain match à jouer:",

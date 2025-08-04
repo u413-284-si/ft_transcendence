@@ -126,6 +126,14 @@ const pi: TranslationShape = {
       usernameOrEmail: "Pirate name or message bottle address:"
     },
 
+    twoFaVerifyView: {
+      title: "Verify yer secret digits code",
+	  twoFaCode: "Secret digits code:",
+      enterTwoFaCode: "Enter yer secret digits:",
+      submitTwoFaCode: "Hoist it!",
+      useBackupCode: "Use yer spare code"
+    },
+
     matchAnnouncementView: {
       abortTournament: "Scuttle the Tournament!",
       nextMatch: "Next skirmish to set sail:",

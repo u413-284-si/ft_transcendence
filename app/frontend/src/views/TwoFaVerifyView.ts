@@ -15,7 +15,7 @@ import { Link } from "../components/Link.js";
 export default class TwoFaVerifyView extends AbstractView {
   constructor() {
     super();
-    this.setTitle("Two Factor Authentication");
+    this.setTitle(i18next.t("twoFaVerifyView.title"));
   }
 
   createHTML() {
@@ -25,19 +25,19 @@ export default class TwoFaVerifyView extends AbstractView {
         children: [
           Input({
             id: "two-fa-qr-code-input",
-            label: "Enter your 2FA code:",
+            label: i18next.t("twoFaVerifyView.enterTwoFaCode"),
             name: "two-fa-qr-code-input",
-            placeholder: "Code",
+            placeholder: i18next.t("twoFaVerifyView.twoFaCode"),
             type: "text",
             errorId: "two-fa-qr-code-input-error"
           }),
           Link({
             id: "two-fa-backup-code-link",
-            text: "Use backup code",
+            text: i18next.t("twoFaVerifyView.useBackupCode"),
             href: "/2FaBackupCodeVerification"
           }),
           Button({
-            text: "Submit",
+            text: i18next.t("twoFaVerifyView.submitTwoFaCode"),
             variant: "default",
             size: "md",
             type: "submit"

@@ -128,6 +128,14 @@ const de: TranslationShape = {
       usernameOrEmail: "Benutzername oder E-Mail-Adresse"
     },
 
+    twoFaVerifyView: {
+      title: "2FA-Kennzahl Verifizierung",
+      twoFaCode: "2FA-Kennzahl",
+      enterTwoFaCode: "Gib die 2FA-Kennzahl ein:",
+      submitTwoFaCode: "Bestätigen",
+      useBackupCode: "Wiederherstellungs-Kennzahl verwenden"
+    },
+
     matchAnnouncementView: {
       abortTournament: "Turnier abbrechen",
       nextMatch: "Nächstes Spiel:",

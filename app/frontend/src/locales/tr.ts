@@ -124,6 +124,14 @@ const tr: TranslationShape = {
       usernameOrEmail: "User ID or Data Address"
     },
 
+    twoFaVerifyView: {
+      title: "Cipher code verification",
+      twoFaCode: "Cipher code",
+      enterTwoFaCode: "Input cipher code:",
+      submitTwoFaCode: "Transmit",
+      useBackupCode: "Deploy backup cipher"
+    },
+
     matchAnnouncementView: {
       abortTournament: "TERMINATE TOURNAMENT",
       nextMatch: "Next session queued:",

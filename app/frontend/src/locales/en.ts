@@ -123,6 +123,14 @@ const en = {
       usernameOrEmail: "Username or email address"
     },
 
+    twoFaVerifyView: {
+      title: "2FA Verification",
+      twoFaCode: "2FA Code",
+      enterTwoFaCode: "Enter your 2FA code:",
+      submitTwoFaCode: "Submit",
+      useBackupCode: "Use backup code"
+    },
+
     matchAnnouncementView: {
       abortTournament: "Abort Tournament",
       nextMatch: "Next match to play:",
