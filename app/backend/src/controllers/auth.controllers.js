@@ -318,9 +318,17 @@ export async function twoFaVerifyHandler(request, reply) {
 
     await update2FaStatus(userId, true);
 
+    const existingBackupCodes = await getBackupCodes(userId);
+    if (existingBackupCodes.length > 0) await deleteBackupCodes(userId);
+
+    const newBackupCodes = generateBackupCodes();
+    const hashedBackupCodes = await hashBackupCodes(userId, newBackupCodes);
+    await createBackupCodes(hashedBackupCodes);
+    const data = { backupCodes: newBackupCodes };
+
     return reply
       .code(200)
-      .send({ message: createResponseMessage(action, true) });
+      .send({ message: createResponseMessage(action, true), data });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
