@@ -10,7 +10,7 @@ import { router } from "../routing/Router.js";
 import { ApiError } from "../services/api.js";
 import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
-import { addTogglePasswordListener, Input } from "../components/Input.js";
+import { Input, addTogglePasswordListener } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { toaster } from "../Toaster.js";
@@ -32,8 +32,8 @@ export default class Register extends AbstractView {
           Input({
             id: "email",
             label: i18next.t("global.label", {
-            field: i18next.t("global.email")
-          }),
+              field: i18next.t("global.email")
+            }),
             name: "email",
             placeholder: i18next.t("global.email"),
             type: "email",
@@ -42,8 +42,8 @@ export default class Register extends AbstractView {
           Input({
             id: "username",
             label: i18next.t("global.label", {
-            field: i18next.t("global.username")
-          }),
+              field: i18next.t("global.username")
+            }),
             name: "username",
             placeholder: i18next.t("global.username"),
             type: "text",
@@ -52,8 +52,8 @@ export default class Register extends AbstractView {
           Input({
             id: "password",
             label: i18next.t("global.label", {
-            field: i18next.t("global.password")
-          }),
+              field: i18next.t("global.password")
+            }),
             name: "password",
             placeholder: i18next.t("global.password"),
             type: "password",
@@ -63,8 +63,8 @@ export default class Register extends AbstractView {
           Input({
             id: "confirm",
             label: i18next.t("global.label", {
-            field: i18next.t("global.confirmNewPassword")
-          }),
+              field: i18next.t("global.confirmNewPassword")
+            }),
             name: "confirm",
             placeholder: i18next.t("global.confirmNewPassword"),
             type: "password",
@@ -144,12 +144,18 @@ export default class Register extends AbstractView {
       if (!apiResponse.success) {
         if (apiResponse.status === 409) {
           toaster.error(i18next.t("toast.emailOrUsernameExists"));
+          toaster.error(i18next.t("toast.emailOrUsernameExists"));
           return;
         } else {
           throw new ApiError(apiResponse);
         }
       }
       const username = escapeHTML(apiResponse.data.username);
+      toaster.success(
+        i18next.t("toast.registrationSuccess", {
+          username: username
+        })
+      );
       toaster.success(
         i18next.t("toast.registrationSuccess", {
           username: username

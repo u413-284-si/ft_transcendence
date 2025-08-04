@@ -1,5 +1,3 @@
-import TwoFaBackupCodeVerifyView from "../views/TwoFaBackupCodeVerifyView";
-
 const en = {
   translation: {
     error: {
@@ -281,7 +279,7 @@ const en = {
       passwordUpdateFailed: "Failed to update password. Please try again.",
       passwordUpdatedSuccess: "Password updated successfully!",
       twoFaSetupSuccess: "2FA setup successfully!",
-	  twoFaRemoveSuccess: "2FA deactivated successfully!",
+      twoFaRemoveSuccess: "2FA deactivated successfully!",
       profileUpdateFailed: "Failed to update profile. Please try again.",
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess: "Successfully registered {{username}}!",

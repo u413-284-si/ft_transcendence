@@ -59,6 +59,11 @@ export function validateNicknames(
         inputEl,
         errorElements[i]
       );
+      markInvalid(
+        i18next.t("invalid.nicknameEmpty"),
+        inputEl,
+        errorElements[i]
+      );
       isValid = false;
     } else if (!validateAgainstRegex(nickname, nicknameRegex)) {
       markInvalid(
@@ -68,6 +73,11 @@ export function validateNicknames(
       );
       isValid = false;
     } else if (nicknames.filter((n) => n === nickname).length > 1) {
+      markInvalid(
+        i18next.t("invalid.nicknameUniqueness"),
+        inputEl,
+        errorElements[i]
+      );
       markInvalid(
         i18next.t("invalid.nicknameUniqueness"),
         inputEl,
@@ -90,10 +100,12 @@ export function validateTournamentName(
 
   if (isEmptyString(tournamentName)) {
     markInvalid(i18next.t("invalid.tournamentNameEmpty"), inputEl, errorEl);
+    markInvalid(i18next.t("invalid.tournamentNameEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(tournamentName, tournamentNameRegex)) {
+    markInvalid(i18next.t("invalid.tournamentNameFormat"), inputEl, errorEl);
     markInvalid(i18next.t("invalid.tournamentNameFormat"), inputEl, errorEl);
     return false;
   }
@@ -122,6 +134,7 @@ export async function isTournamentNameAvailable(
   } catch (error) {
     console.error("Error fetching tournaments:", error);
     toaster.error(i18next.t("toast.validateTournamentNameError"));
+    toaster.error(i18next.t("toast.validateTournamentNameError"));
     return false;
   }
   return true;
@@ -135,6 +148,7 @@ export function validatePlayersSelection(
   clearInvalid(selectionEl, errorEl);
 
   if (!playersSelected) {
+    markInvalid(i18next.t("invalid.playerSelection"), selectionEl, errorEl);
     markInvalid(i18next.t("invalid.playerSelection"), selectionEl, errorEl);
     return false;
   }
@@ -153,10 +167,12 @@ export function validatePassword(
 
   if (isEmptyString(password)) {
     markInvalid(i18next.t("invalid.passwordEmpty"), inputEl, errorEl);
+    markInvalid(i18next.t("invalid.passwordEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(password, passwordRegex)) {
+    markInvalid(i18next.t("invalid.passwordFormat"), inputEl, errorEl);
     markInvalid(i18next.t("invalid.passwordFormat"), inputEl, errorEl);
     return false;
   }
@@ -174,10 +190,16 @@ export function validateConfirmPassword(
       inputElTwo,
       errorEl
     );
+    markInvalid(
+      i18next.t("invalid.passwordConfirmationEmpty"),
+      inputElTwo,
+      errorEl
+    );
     return false;
   }
 
   if (inputElOne.value !== inputElTwo.value) {
+    markInvalid(i18next.t("invalid.passwordConfirmation"), inputElTwo, errorEl);
     markInvalid(i18next.t("invalid.passwordConfirmation"), inputElTwo, errorEl);
     return false;
   }
@@ -197,10 +219,12 @@ export function validateUsername(
 
   if (isEmptyString(username)) {
     markInvalid(i18next.t("invalid.usernameEmpty"), inputEl, errorEl);
+    markInvalid(i18next.t("invalid.usernameEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(username, usernameRegex)) {
+    markInvalid(i18next.t("invalid.usernameFormat"), inputEl, errorEl);
     markInvalid(i18next.t("invalid.usernameFormat"), inputEl, errorEl);
     return false;
   }
@@ -218,10 +242,12 @@ export function validateEmail(
 
   if (isEmptyString(email)) {
     markInvalid(i18next.t("invalid.emailEmpty"), inputEl, errorEl);
+    markInvalid(i18next.t("invalid.emailEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateAgainstRegex(email, emailRegex)) {
+    markInvalid(i18next.t("invalid.emailFormat"), inputEl, errorEl);
     markInvalid(i18next.t("invalid.emailFormat"), inputEl, errorEl);
     return false;
   }
@@ -235,10 +261,12 @@ export function validateUsernameOrEmail(
   clearInvalid(inputEl, errorEl);
   if (isEmptyString(inputEl.value)) {
     markInvalid(i18next.t("invalid.emailOrUsernameEmpty"), inputEl, errorEl);
+    markInvalid(i18next.t("invalid.emailOrUsernameEmpty"), inputEl, errorEl);
     return false;
   }
 
   if (!validateUsername(inputEl, errorEl) && !validateEmail(inputEl, errorEl)) {
+    markInvalid(i18next.t("invalid.emailOrUsernameFormat"), inputEl, errorEl);
     markInvalid(i18next.t("invalid.emailOrUsernameFormat"), inputEl, errorEl);
     return false;
   }
@@ -252,6 +280,7 @@ export function validateImageFile(
   clearInvalid(inputEl, errorEl);
 
   if (!inputEl || !inputEl.files || inputEl.files.length === 0) {
+    markInvalid(i18next.t("invalid.imageFileEmpty"), inputEl, errorEl);
     markInvalid(i18next.t("invalid.imageFileEmpty"), inputEl, errorEl);
     return false;
   }
