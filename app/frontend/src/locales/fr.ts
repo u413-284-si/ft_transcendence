@@ -72,6 +72,7 @@ const fr: TranslationShape = {
       offline: "Hors ligne",
       online: "En ligne",
       password: "Mot de passe",
+      twoFaCode: "Mot de passe à deux facteurs",
       pongGame: "Jeu de pong",
       player: "Joueur",
       playerWins: "{{player}} a gagné",
@@ -142,7 +143,6 @@ const fr: TranslationShape = {
 
     twoFaVerifyView: {
       title: "Vérification du mot de passe à deux facteurs",
-      twoFaCode: "Mot de passe à deux facteurs",
       enterTwoFaCode:
         "Entrez votre mot de passe de vérification à deux facteurs:",
       submitTwoFaCode: "Valider",
@@ -233,10 +233,31 @@ const fr: TranslationShape = {
     },
 
     settingsView: {
+      title: "Paramètres",
+      settings: "Configurez vos préférences et paramètres ici.",
       preferredLanguage: "Choisissez votre langue préférée.",
       saveLanguage: "Enregistrer la langue",
-      settings: "Configurez vos préférences et paramètres ici.",
-      title: "Paramètres"
+      twoFaSetup: "Paramètres de vérification à deux facteurs",
+      twoFaInfo: [
+        "Activer la vérification à deux facteurs :",
+        "",
+        "Veuillez utiliser une application d’authentification",
+        "pour scanner le code QR ci-dessous."
+      ],
+      twoFaActivated: ["Vérification à deux facteurs activée"],
+      twoFaBackupCode: "Mot de passe de secours à deux facteurs",
+      enterTwoFaCode: "Entrez votre mot de passe à deux facteurs :",
+      activateTwoFa: "Activer",
+      deactivateTwoFa: "Désactiver",
+      twoFaGenerateBackupCodes: "Générer des mots de passe de secours",
+      confirmPassword: "Confirmation",
+      twoFaBackupCodeInfo: [
+        "Voici vos mots de passe de secours.",
+        "Copiez-les ou téléchargez-les.",
+        "",
+        "Ils ne seront plus affichés par la suite."
+      ],
+      twoFaDownloadBackupCodes: "Télécharger"
     },
 
     statsView: {
@@ -278,6 +299,10 @@ const fr: TranslationShape = {
       passwordUpdatedSuccess: "Mot de passe mis à jour avec succès !",
       profileUpdateFailed:
         "Échec de la mise à jour du profil. Veuillez réessayer.",
+      twoFaSetupSuccess:
+        "Configuration du mot de passe à deux facteurs réussie !",
+      twoFaRemoveSuccess:
+        "Désactivation du mot de passe à deux facteurs réussie !",
       profileUpdatedSuccess: "Profil mis à jour avec succès !",
       registrationSuccess: "Inscription de {{username}} réussie !",
       sendSuccess: "Demande d'ami envoyée avec succès à {{username}}",

@@ -27,7 +27,7 @@ export default class TwoFaVerifyView extends AbstractView {
             id: "two-fa-qr-code-input",
             label: i18next.t("twoFaVerifyView.enterTwoFaCode"),
             name: "two-fa-qr-code-input",
-            placeholder: i18next.t("twoFaVerifyView.twoFaCode"),
+            placeholder: i18next.t("global.twoFaCode"),
             type: "text",
             errorId: "two-fa-qr-code-input-error"
           }),

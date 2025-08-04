@@ -64,7 +64,7 @@ export default class SettingsView extends AbstractView {
     return /* HTML */ `
       ${Button({
         id: "setup-two-fa-button",
-        text: "2FA Setup",
+        text: i18next.t("settingsView.twoFaSetup"),
         variant: "default",
         type: "button"
       })}
@@ -78,17 +78,17 @@ export default class SettingsView extends AbstractView {
                 ? TextBox({
                     id: "two-fa-qr-code-info",
                     text: [
-                      "Activate 2FA:",
-                      "",
-                      "please use an authenticator app",
-                      "to scan the QR code below."
+                      i18next.t("settingsView.twoFaInfo.0"),
+                      i18next.t("settingsView.twoFaInfo.1"),
+                      i18next.t("settingsView.twoFaInfo.2"),
+                      i18next.t("settingsView.twoFaInfo.3")
                     ],
                     variant: "info",
                     size: "sm"
                   })
                 : TextBox({
                     id: "two-fa-qr-code-info",
-                    text: ["2FA activated"],
+                    text: [i18next.t("settingsView.twoFaActivated.0")],
                     variant: "info",
                     size: "sm"
                   }),
@@ -100,29 +100,29 @@ export default class SettingsView extends AbstractView {
               !this.hasTwoFa
                 ? Input({
                     id: "two-fa-code-input",
-                    label: "Enter code",
+                    label: i18next.t("settingsView.enterTwoFaCode"),
                     name: "two-fa-code-input",
                     type: "text",
-                    placeholder: "Code",
+                    placeholder: i18next.t("global.twoFaCode"),
                     errorId: "two-fa-code-input-error",
                     className: "text-left"
                   })
                 : Button({
                     id: "two-fa-generate-backup-codes",
-                    text: "Generate Backup Codes",
+                    text: i18next.t("settingsView.twoFaGenerateBackupCodes"),
                     type: "button"
                   }),
               !this.hasTwoFa
                 ? Button({
                     id: "two-fa-submit",
-                    text: "Activate",
+                    text: i18next.t("settingsView.activateTwoFa"),
                     variant: "default",
                     size: "md",
                     type: "submit"
                   })
                 : Button({
                     id: "two-fa-remove",
-                    text: "Deactivate",
+                    text: i18next.t("settingsView.deactivateTwoFa"),
                     variant: "danger",
                     size: "md",
                     type: "submit"
@@ -141,16 +141,16 @@ export default class SettingsView extends AbstractView {
             children: [
               Input({
                 id: "two-fa-password-input",
-                label: "Password",
+                label: i18next.t("global.password"),
                 name: "two-fa-password-input",
-                placeholder: "Password",
+                placeholder: i18next.t("global.password"),
                 type: "password",
                 errorId: "two-fa-password-input-error",
                 hasToggle: true
               }),
               Button({
                 id: "two-fa-submit-password",
-                text: "Confirm",
+                text: i18next.t("settingsView.confirmPassword"),
                 variant: "default",
                 size: "md",
                 type: "submit"
@@ -166,10 +166,10 @@ export default class SettingsView extends AbstractView {
           TextBox({
             id: "two-fa-backup-codes-info",
             text: [
-              "Those are your backup codes.",
-              "Copy or download them",
-              "",
-              "THEY WILL NOT BE SHOWN AGAIN."
+              i18next.t("settingsView.twoFaBackupCodeInfo.0"),
+              i18next.t("settingsView.twoFaBackupCodeInfo.1"),
+              i18next.t("settingsView.twoFaBackupCodeInfo.2"),
+              i18next.t("settingsView.twoFaBackupCodeInfo.3")
             ],
             variant: "warning"
           }),
@@ -181,7 +181,7 @@ export default class SettingsView extends AbstractView {
           }),
           Link({
             id: "two-fa-download-backup-codes-link",
-            text: "Download",
+            text: i18next.t("settingsView.twoFaDownloadBackupCodes"),
             variant: "empty",
             href: "",
             className:
@@ -310,7 +310,6 @@ export default class SettingsView extends AbstractView {
     this.twoFaGenerateBackupCodesButtonEl = getButtonEl(
       "two-fa-generate-backup-codes"
     );
-    console.log("button el:", this.twoFaGenerateBackupCodesButtonEl);
     this.twoFaBackupCodesTableEl = getEl(
       "two-fa-backup-codes-table"
     ) as HTMLTableElement;
@@ -386,7 +385,7 @@ export default class SettingsView extends AbstractView {
           }
         }
 
-        toaster.success("2FA setup successful");
+        toaster.success(i18next.t("toast.twoFaSetupSuccess"));
         this.fillBackupCodesTable(apiResponse.data.backupCodes);
         this.setupBackupCodesLink(apiResponse.data.backupCodes);
         this.displayModal("two-fa-backup-codes-modal");
@@ -401,6 +400,7 @@ export default class SettingsView extends AbstractView {
 
   private callPasswordFormAction(event: Event): void {
     if (this.passwordFormAction === "setup") {
+      this.render();
       this.displayTwoFaSetup(event);
     } else if (this.passwordFormAction === "remove") {
       this.removeTwoFa(event);
@@ -467,8 +467,7 @@ export default class SettingsView extends AbstractView {
       this.twoFaPasswordInputEl.value = "";
       this.hideModal("two-fa-password-modal");
       this.passwordFormAction = "setup";
-      this.render();
-      toaster.success("2FA removed successfully");
+      toaster.success(i18next.t("toast.twoFaRemoveSuccess"));
     } catch (error) {
       router.handleError("Error in removeTwoFa()", error);
     }

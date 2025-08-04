@@ -69,6 +69,7 @@ const tr: TranslationShape = {
       offline: "Offline",
       online: "Online",
       password: "Access code",
+      twoFaCode: "Cipher code",
       pongGame: "PONG GRID",
       player: "Operative",
       playerWins: "Operative {{player}} victorious",
@@ -129,7 +130,6 @@ const tr: TranslationShape = {
 
     twoFaVerifyView: {
       title: "Cipher code verification",
-      twoFaCode: "Cipher code",
       enterTwoFaCode: "Input cipher code:",
       submitTwoFaCode: "Transmit",
       useBackupCode: "Deploy backup cipher"
@@ -216,10 +216,31 @@ const tr: TranslationShape = {
     },
 
     settingsView: {
+      title: "System Settings",
+      settings: "Configure your system parameters.",
       preferredLanguage: "Select interface language protocol.",
       saveLanguage: "Save language preference",
-      settings: "Configure your system parameters.",
-      title: "System Settings"
+      twoFaSetup: "Cipher Configuration",
+      twoFaInfo: [
+        "Activate Cipher:",
+        "",
+        "Use an Authenticator App",
+        "to scan the QR code below."
+      ],
+      twoFaActivated: ["Cipher Active"],
+      twoFaBackupCode: "Backup cipher code",
+      enterTwoFaCode: "Input cipher code:",
+      activateTwoFa: "Activate",
+      deactivateTwoFa: "Deactivate",
+      twoFaGenerateBackupCodes: "Generate backup cipher codes",
+      confirmPassword: "Confirm Access Code",
+      twoFaBackupCodeInfo: [
+        "These are your backup cipher codes.",
+        "Copy or download them securely.",
+        "",
+        "They won’t be shown again."
+      ],
+      twoFaDownloadBackupCodes: "Download"
     },
 
     statsView: {
@@ -257,6 +278,8 @@ const tr: TranslationShape = {
       logoutError: "Logout failed. Reattempt required.",
       passwordUpdateFailed: "Access code update failed. Retry advised.",
       passwordUpdatedSuccess: "Access code updated successfully!",
+      twoFaSetupSuccess: "Cipher activated successfully!",
+      twoFaRemoveSuccess: "Cipher deactivated successfully!",
       profileUpdateFailed: "Profile update failed. Retry advised.",
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess:
