@@ -143,6 +143,14 @@ const fr: TranslationShape = {
       useBackupCode: "Utiliser le code de secours"
     },
 
+    twoFaBackupCodeVerifyView: {
+      title: "Vérification du mot de passe de secours à deux facteurs",
+      twoFaBackupCode: "Mot de passe de secours à deux facteurs",
+      enterTwoFaBackupCode:
+        "Entrez votre mot de passe de secours à deux facteurs :",
+      submitTwoFaBackupCode: "Valider"
+    },
+
     matchAnnouncementView: {
       abortTournament: "Annuler le Tournoi",
       nextMatch: "Prochain match à jouer:",

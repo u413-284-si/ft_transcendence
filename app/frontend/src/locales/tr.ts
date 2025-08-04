@@ -132,6 +132,13 @@ const tr: TranslationShape = {
       useBackupCode: "Deploy backup cipher"
     },
 
+    twoFaBackupCodeVerifyView: {
+      title: "Backup cipher verification",
+      twoFaBackupCode: "Backup cipher",
+      enterTwoFaBackupCode: "Input backup cipher:",
+      submitTwoFaBackupCode: "Transmit"
+    },
+
     matchAnnouncementView: {
       abortTournament: "TERMINATE TOURNAMENT",
       nextMatch: "Next session queued:",

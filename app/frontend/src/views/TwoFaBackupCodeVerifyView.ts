@@ -14,7 +14,7 @@ import { ApiError } from "../services/api.js";
 export default class TwoFaBackupCodeVerifyView extends AbstractView {
   constructor() {
     super();
-    this.setTitle("Two Factor Backup Code Authentication");
+    this.setTitle(i18next.t("twoFaBackupCodeVerifyView.title"));
   }
 
   createHTML() {
@@ -24,14 +24,14 @@ export default class TwoFaBackupCodeVerifyView extends AbstractView {
         children: [
           Input({
             id: "two-fa-backup-code-input",
-            label: "Enter your 2FA backup code:",
+            label: i18next.t("twoFaBackupCodeVerifyView.enterTwoFaBackupCode"),
             name: "two-fa-backup-code-input",
-            placeholder: "Code",
+            placeholder: i18next.t("twoFaBackupCodeVerifyView.twoFaBackupCode"),
             type: "text",
             errorId: "two-fa-backup-code-input-error"
           }),
           Button({
-            text: "Submit",
+            text: i18next.t("twoFaBackupCodeVerifyView.submitTwoFaBackupCode"),
             variant: "default",
             size: "md",
             type: "submit"

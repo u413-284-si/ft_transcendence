@@ -1,3 +1,5 @@
+import TwoFaBackupCodeVerifyView from "../views/TwoFaBackupCodeVerifyView";
+
 const en = {
   translation: {
     error: {
@@ -129,6 +131,13 @@ const en = {
       enterTwoFaCode: "Enter your 2FA code:",
       submitTwoFaCode: "Submit",
       useBackupCode: "Use backup code"
+    },
+
+    twoFaBackupCodeVerifyView: {
+      title: "2FA Backup Code Verification",
+      twoFaBackupCode: "2FA Backup Code",
+      enterTwoFaBackupCode: "Enter your 2FA backup code:",
+      submitTwoFaBackupCode: "Submit"
     },
 
     matchAnnouncementView: {

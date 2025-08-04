@@ -136,6 +136,13 @@ const de: TranslationShape = {
       useBackupCode: "Wiederherstellungs-Kennzahl verwenden"
     },
 
+    twoFaBackupCodeVerifyView: {
+      title: "2FA Wiederherstellungs-Kennzahl Verifizierung",
+      twoFaBackupCode: "2FA Wiederherstellungs-Kennzahl",
+      enterTwoFaBackupCode: "Gib die 2FA Wiederherstellungs-Kennzahl ein:",
+      submitTwoFaBackupCode: "Bestätigen"
+    },
+
     matchAnnouncementView: {
       abortTournament: "Turnier abbrechen",
       nextMatch: "Nächstes Spiel:",

@@ -128,10 +128,17 @@ const pi: TranslationShape = {
 
     twoFaVerifyView: {
       title: "Verify yer secret digits code",
-	  twoFaCode: "Secret digits code:",
+      twoFaCode: "Secret digits code:",
       enterTwoFaCode: "Enter yer secret digits:",
       submitTwoFaCode: "Hoist it!",
       useBackupCode: "Use yer spare code"
+    },
+
+    twoFaBackupCodeVerifyView: {
+      title: "Verify yer spare secret digits",
+      twoFaBackupCode: "Spare secret digits:",
+      enterTwoFaBackupCode: "Enter yer spare secret digits:",
+      submitTwoFaBackupCode: "Hoist it!"
     },
 
     matchAnnouncementView: {
