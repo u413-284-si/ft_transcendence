@@ -237,6 +237,7 @@ const fr: TranslationShape = {
       settings: "Configurez vos préférences et paramètres ici.",
       preferredLanguage: "Choisissez votre langue préférée.",
       saveLanguage: "Enregistrer la langue",
+	  editTwoFaSetup: "Modifier la configuration de la vérification à deux facteurs",
       twoFaSetup: "Paramètres de vérification à deux facteurs",
       twoFaInfo: [
         "Activer la vérification à deux facteurs :",

@@ -222,6 +222,7 @@ const pi: TranslationShape = {
       settings: "Change yer sails and adjust the wind here.",
       preferredLanguage: "Choose yer tongue, matey.",
       saveLanguage: "Stash yer tongue",
+      editTwoFaSetup: "Tweak yer secret digits riggin’",
       twoFaSetup: "Riggin’ the Secret Digits",
       twoFaInfo: [
         "Rigg the Secret Digits:",

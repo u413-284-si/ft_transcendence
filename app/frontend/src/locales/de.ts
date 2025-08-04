@@ -228,6 +228,7 @@ const de: TranslationShape = {
       settings: "Lege hier deine Einstellungen und Präferenzen fest.",
       preferredLanguage: "Wähle dein bevorzugte Sprache aus.",
       saveLanguage: "Sprache speichern",
+      editTwoFaSetup: "2FA Einstellungen bearbeiten",
       twoFaSetup: "2FA Einstellungen",
       twoFaInfo: [
         "Aktiviere 2FA:",
@@ -290,7 +291,7 @@ const de: TranslationShape = {
         "Passwort konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       passwordUpdatedSuccess: "Passwort erfolgreich aktualisiert!",
       twoFaSetupSuccess: "2FA erfolgreich aktiviert!",
-	  twoFaRemoveSuccess: "2FA erfolgreich deaktiviert!",
+      twoFaRemoveSuccess: "2FA erfolgreich deaktiviert!",
       profileUpdateFailed:
         "Profil konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       profileUpdatedSuccess: "Profil erfolgreich aktualisiert!",

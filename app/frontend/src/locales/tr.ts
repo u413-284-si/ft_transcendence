@@ -220,6 +220,7 @@ const tr: TranslationShape = {
       settings: "Configure your system parameters.",
       preferredLanguage: "Select interface language protocol.",
       saveLanguage: "Save language preference",
+	  editTwoFaSetup: "Edit your cipher configuration",
       twoFaSetup: "Cipher Configuration",
       twoFaInfo: [
         "Activate Cipher:",

@@ -65,7 +65,7 @@ export default class SettingsView extends AbstractView {
       <div>
         ${Paragraph({
           id: "two-fa-intro",
-          text: "Edit your 2FA setup"
+          text: i18next.t("settingsView.editTwoFaSetup")
         })}
         ${Button({
           id: "setup-two-fa-button",
