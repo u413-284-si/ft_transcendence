@@ -62,12 +62,19 @@ export default class SettingsView extends AbstractView {
 
   private get2FaSetupHTML(): string {
     return /* HTML */ `
-      ${Button({
-        id: "setup-two-fa-button",
-        text: i18next.t("settingsView.twoFaSetup"),
-        variant: "default",
-        type: "button"
-      })}
+      <div>
+        ${Paragraph({
+          id: "two-fa-intro",
+          text: "Edit your 2FA setup"
+        })}
+        ${Button({
+          id: "setup-two-fa-button",
+          text: i18next.t("settingsView.twoFaSetup"),
+          variant: "default",
+          size: "md",
+          type: "button",
+        })}
+      </div>
       ${Modal({
         id: "two-fa-modal",
         idCloseButton: "close-two-fa-modal-button",
@@ -203,30 +210,28 @@ export default class SettingsView extends AbstractView {
           text: i18next.t("settingsView.settings"),
           id: "settings-intro"
         })}
-        <div class="mt-24 text-center inline-block">
+        <div class="flex flex-col mt-10">
           ${this.hasLocalAuth ? this.get2FaSetupHTML() : ""}
           ${Form({
             id: "preferred-language-form",
-            className: "flex flex-col gap-4",
+            className: "mt-10",
             children: [
               Paragraph({
                 text: i18next.t("settingsView.preferredLanguage")
               }),
-              `<div class="flex flex-wrap items-end gap-4 mt-2">
-			  ${LanguageSwitcher({
-          id: "preferred-language",
-          selectedLang: i18next.language as Language,
-          className: "w-64",
-          size: "lg"
-        })}
-			  ${Button({
-          text: i18next.t("settingsView.saveLanguage"),
-          variant: "default",
-          size: "md",
-          type: "submit",
-          className: "mt-2 self-start"
-        })}
-			</div>`
+              LanguageSwitcher({
+                id: "preferred-language",
+                selectedLang: i18next.language as Language,
+                className: "w-64",
+                size: "lg"
+              }),
+              Button({
+                text: i18next.t("settingsView.saveLanguage"),
+                variant: "default",
+                size: "md",
+                type: "submit",
+                className: "mt-2 self-start"
+              })
             ]
           })}
         </div>
