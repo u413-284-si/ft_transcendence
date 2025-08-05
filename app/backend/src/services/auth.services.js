@@ -1,6 +1,9 @@
 import pkg from "argon2";
 import prisma from "../prisma/prismaClient.js";
 import env from "../config/env.js";
+import * as otpAuth from "otpauth";
+import QRCode from "qrcode";
+import { randSequence } from "@ngneat/falso";
 
 export async function verifyAccessToken(request) {
   return await request.accessTokenVerify();
@@ -8,6 +11,15 @@ export async function verifyAccessToken(request) {
 
 export async function verifyRefreshToken(request) {
   return await request.refreshTokenVerify();
+}
+
+export async function verifyTwoFaLoginToken(request) {
+  return await request.twoFaLoginTokenVerify();
+}
+
+export function verify2FaToken(totp, token) {
+  const delta = totp.validate({ token, window: 1 });
+  return delta !== null;
 }
 
 export async function createHash(value) {
@@ -28,6 +40,10 @@ export async function createAccessToken(reply, user) {
 
 export async function createRefreshToken(reply, user) {
   return await reply.refreshTokenSign(user);
+}
+
+export async function creatTwoFaLoginToken(reply, user) {
+  return await reply.twoFaLoginTokenSign(user);
 }
 
 export async function updateUserRefreshToken(userId, hashedRefreshToken) {
@@ -72,9 +88,35 @@ export async function getTokenHash(userId) {
   return authentication.refreshToken;
 }
 
+export async function getTotpSecret(userId) {
+  const authentication = await prisma.authentication.findUniqueOrThrow({
+    where: {
+      userId: userId
+    },
+    select: {
+      totpSecret: true
+    }
+  });
+  return authentication.totpSecret;
+}
+
+export async function get2FaStatus(userId) {
+  const authentication = await prisma.authentication.findUniqueOrThrow({
+    where: {
+      userId: userId
+    },
+    select: {
+      has2FA: true
+    }
+  });
+  return authentication.has2FA;
+}
+
 export async function createAuthTokens(reply, payload) {
-  const accessToken = await createAccessToken(reply, payload);
-  const refreshToken = await createRefreshToken(reply, { id: payload.id });
+  const accessTokenPayload = { ...payload, tokenTyp: "access" };
+  const refreshTokenPayload = { id: payload.id, tokenTyp: "refresh" };
+  const accessToken = await createAccessToken(reply, accessTokenPayload);
+  const refreshToken = await createRefreshToken(reply, refreshTokenPayload);
 
   const newHashedRefreshToken = await createHash(refreshToken);
 
@@ -83,7 +125,16 @@ export async function createAuthTokens(reply, payload) {
   return { accessToken, refreshToken };
 }
 
-export function setCookies(reply, accessToken, refreshToken) {
+export async function createTwoFaToken(reply, payload) {
+  const twoFaLoginTokenPayload = { ...payload, tokenTyp: "twoFaLogin" };
+  const twoFaLoginToken = await creatTwoFaLoginToken(
+    reply,
+    twoFaLoginTokenPayload
+  );
+  return twoFaLoginToken;
+}
+
+export function setAuthCookies(reply, accessToken, refreshToken) {
   const accessTokenTimeToExpire = new Date(
     Date.now() + parseInt(env.accessTokenTimeToExpireInMs)
   );
@@ -107,6 +158,42 @@ export function setCookies(reply, accessToken, refreshToken) {
     });
 }
 
+export function setTwoFaCookie(reply, twoFaLoginToken) {
+  const twoFaLoginTokenTimeToExpire = new Date(
+    Date.now() + parseInt(env.twoFaLoginTokenTimeToExpireInMS)
+  );
+
+  return reply.setCookie("twoFaLoginToken", twoFaLoginToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    path: "/api/auth/2fa/login/",
+    expires: twoFaLoginTokenTimeToExpire
+  });
+}
+
+export function generateTotp(username, secret) {
+  return new otpAuth.TOTP({
+    issuer: "ft_transcendence",
+    label: username,
+    algorithm: "SHA1",
+    digits: 6,
+    period: 30,
+    secret: secret
+  });
+}
+
+export async function generate2FaQrCode(totp) {
+  const uri = totp.toString();
+  return await QRCode.toDataURL(uri);
+}
+
+export function generate2FaSecret() {
+  return new otpAuth.Secret({
+    size: 20
+  }).base32;
+}
+
 export async function updatePassword(userId, hashedNewPassword) {
   await prisma.authentication.update({
     where: {
@@ -114,6 +201,92 @@ export async function updatePassword(userId, hashedNewPassword) {
     },
     data: {
       password: hashedNewPassword
+    }
+  });
+}
+
+export async function updateTotpSecret(userId, secret) {
+  await prisma.authentication.update({
+    where: {
+      userId: userId
+    },
+    data: {
+      totpSecret: secret
+    }
+  });
+}
+
+export async function update2FaStatus(userId, status) {
+  await prisma.authentication.update({
+    where: {
+      userId: userId
+    },
+    data: {
+      has2FA: status
+    }
+  });
+}
+
+export function generateBackupCode() {
+  return randSequence({ size: 8, charType: "numeric" });
+}
+
+export function generateBackupCodes() {
+  let backupCodes = [];
+  for (let i = 0; i < 10; i++) {
+    backupCodes.push(generateBackupCode());
+  }
+  return backupCodes;
+}
+
+export async function hashBackupCodes(userId, backupCodes) {
+  let hashedBackupCodes = [];
+  for (const backupCode of backupCodes) {
+    hashedBackupCodes.push({
+      userId: userId,
+      backupCode: await createHash(backupCode)
+    });
+  }
+  return hashedBackupCodes;
+}
+
+export async function verifyBackupCode(userId, backupCode) {
+  const hashedBackupCodes = await getBackupCodes(userId);
+  for (const hashedBackupCode of hashedBackupCodes) {
+    if (await verifyHash(hashedBackupCode.backupCode, backupCode)) {
+      await deleteBackupCode(hashedBackupCode.id);
+      return true;
+    }
+  }
+  return false;
+}
+
+export async function createBackupCodes(backupCodes) {
+  await prisma.backupCode.createMany({
+    data: backupCodes
+  });
+}
+
+export async function deleteBackupCodes(userId) {
+  await prisma.backupCode.deleteMany({
+    where: {
+      userId: userId
+    }
+  });
+}
+
+export async function deleteBackupCode(backupCodeId) {
+  await prisma.backupCode.delete({
+    where: {
+      id: backupCodeId
+    }
+  });
+}
+
+export async function getBackupCodes(userId) {
+  return await prisma.backupCode.findMany({
+    where: {
+      userId: userId
     }
   });
 }

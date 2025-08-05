@@ -10,7 +10,7 @@ import { router } from "../routing/Router.js";
 import { ApiError } from "../services/api.js";
 import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
-import { addTogglePasswordListener, Input } from "../components/Input.js";
+import { Input, addTogglePasswordListener } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { toaster } from "../Toaster.js";
@@ -19,66 +19,69 @@ export default class Register extends AbstractView {
   constructor() {
     super();
     this.setTitle(i18next.t("registerView.title"));
+    this.setTitle(i18next.t("registerView.title"));
   }
 
   createHTML(): string {
-    return /* HTML */ ` ${Form({
-      children: [
-        Header1({
-          text: i18next.t("registerView.register"),
-          variant: "default"
-        }),
-        Input({
-          id: "email",
-          label: i18next.t("global.label", {
-            field: i18next.t("global.email")
+    return /* HTML */ `
+      ${Form({
+        children: [
+          Header1({
+            text: i18next.t("registerView.register"),
+            variant: "default"
           }),
-          name: "email",
-          placeholder: i18next.t("global.email"),
-          type: "email",
-          errorId: "email-error"
-        }),
-        Input({
-          id: "username",
-          label: i18next.t("global.label", {
-            field: i18next.t("global.username")
+          Input({
+            id: "email",
+            label: i18next.t("global.label", {
+              field: i18next.t("global.email")
+            }),
+            name: "email",
+            placeholder: i18next.t("global.email"),
+            type: "email",
+            errorId: "email-error"
           }),
-          name: "username",
-          placeholder: i18next.t("global.username"),
-          type: "text",
-          errorId: "username-error"
-        }),
-        Input({
-          id: "password",
-          label: i18next.t("global.label", {
-            field: i18next.t("global.password")
+          Input({
+            id: "username",
+            label: i18next.t("global.label", {
+              field: i18next.t("global.username")
+            }),
+            name: "username",
+            placeholder: i18next.t("global.username"),
+            type: "text",
+            errorId: "username-error"
           }),
-          name: "password",
-          placeholder: i18next.t("global.password"),
-          type: "password",
-          errorId: "password-error",
-          hasToggle: true
-        }),
-        Input({
-          id: "confirm",
-          label: i18next.t("global.label", {
-            field: i18next.t("global.confirmNewPassword")
+          Input({
+            id: "password",
+            label: i18next.t("global.label", {
+              field: i18next.t("global.password")
+            }),
+            name: "password",
+            placeholder: i18next.t("global.password"),
+            type: "password",
+            errorId: "password-error",
+            hasToggle: true
           }),
-          name: "confirm",
-          placeholder: i18next.t("global.confirmNewPassword"),
-          type: "password",
-          errorId: "confirm-error",
-          hasToggle: true
-        }),
-        Button({
-          text: i18next.t("registerView.register"),
-          variant: "default",
-          size: "md",
-          type: "submit"
-        })
-      ],
-      id: "register-form"
-    })}`;
+          Input({
+            id: "confirm",
+            label: i18next.t("global.label", {
+              field: i18next.t("global.confirmNewPassword")
+            }),
+            name: "confirm",
+            placeholder: i18next.t("global.confirmNewPassword"),
+            type: "password",
+            errorId: "confirm-error",
+            hasToggle: true
+          }),
+          Button({
+            text: i18next.t("registerView.register"),
+            variant: "default",
+            size: "md",
+            type: "submit"
+          })
+        ],
+        id: "register-form"
+      })}
+    `;
   }
 
   protected addListeners(): void {

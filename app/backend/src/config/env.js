@@ -45,6 +45,10 @@ const schema = {
       type: "string",
       default: "refresh_secret"
     },
+    JWT_TWO_FA_TEMP_TOKEN_SECRET: {
+      type: "string",
+      default: "two_fa_temp_secret"
+    },
     ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS: {
       type: "string",
       default: "900000"
@@ -52,6 +56,10 @@ const schema = {
     REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS: {
       type: "string",
       default: "86400000"
+    },
+    TWO_FA_TEMP_TOKEN_TIME_TO_EXPIRE_IN_MS: {
+      type: "string",
+      default: "60000"
     },
     MAX_FILE_SIZE_IN_BYTES: {
       type: "number",
@@ -107,7 +115,7 @@ const schema = {
     },
     AUTH_RATE_LIMIT_MAX: {
       type: "number",
-      default: 10,
+      default: 20,
       description:
         "Maximum number of requests inside a timeWindow for auth routes"
     },
@@ -133,8 +141,11 @@ const envConfig = {
   dbFile: config.DB_FILE,
   jwtAccessTokenSecret: config.JWT_ACCESS_TOKEN_SECRET,
   jwtRefreshTokenSecret: config.JWT_REFRESH_TOKEN_SECRET,
+  jwTwoFaLoginTokenSecret: config.JWT_TWO_FA_TEMP_TOKEN_SECRET,
   accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
   refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
+  twoFaLoginTokenTimeToExpireInMS:
+    config.TWO_FA_TEMP_TOKEN_TIME_TO_EXPIRE_IN_MS,
   maxFileSizeInBytes: config.MAX_FILE_SIZE_IN_BYTES,
   imagePath: config.IMAGE_PATH,
   googleOauth2ClientId: config.GOOGLE_OAUTH2_CLIENT_ID,

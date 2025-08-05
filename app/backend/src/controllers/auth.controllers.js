@@ -5,19 +5,37 @@ import {
   createAuthTokens,
   getTokenHash,
   deleteUserRefreshToken,
-  setCookies
+  setAuthCookies,
+  updateTotpSecret,
+  generateTotp,
+  generate2FaQrCode,
+  generate2FaSecret,
+  verify2FaToken,
+  getTotpSecret,
+  update2FaStatus,
+  get2FaStatus,
+  createTwoFaToken,
+  setTwoFaCookie,
+  generateBackupCodes,
+  hashBackupCodes,
+  getBackupCodes,
+  createBackupCodes,
+  deleteBackupCodes,
+  verifyBackupCode
 } from "../services/auth.services.js";
 import {
   getTokenData,
   getUserByEmail,
   getUserByUsername,
   createRandomUsername,
-  isUserNameValid
+  isUserNameValid,
+  getUser
 } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
+import env from "../config/env.js";
 import fastify from "../app.js";
 
 export async function loginUserHandler(request, reply) {
@@ -49,11 +67,21 @@ export async function loginUserHandler(request, reply) {
       );
     }
 
+    if ((await get2FaStatus(payload.id)) === true) {
+      const twoFaLoginToken = await createTwoFaToken(reply, payload);
+      return setTwoFaCookie(reply, twoFaLoginToken)
+        .code(200)
+        .send({
+          message: createResponseMessage(action, true),
+          data: { username: payload.username }
+        });
+    }
+
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
       payload
     );
-    return setCookies(reply, accessToken, refreshToken)
+    return setAuthCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
@@ -124,7 +152,7 @@ export async function googleOauth2LoginHandler(request, reply) {
       payload
     );
 
-    reply = setCookies(reply, accessToken, refreshToken);
+    reply = setAuthCookies(reply, accessToken, refreshToken);
 
     return reply.redirect("http://localhost:4000/home");
   } catch (err) {
@@ -138,6 +166,22 @@ export async function googleOauth2LoginHandler(request, reply) {
 
 export async function authAndDecodeAccessHandler(request, reply) {
   const action = "Auth and decode access token";
+  try {
+    const data = request.user;
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `authAndDecodeAccessHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function authAndDecodTwoFaLoginHandler(request, reply) {
+  const action = "Auth and decode 2FA login token";
   try {
     const data = request.user;
     return reply
@@ -184,7 +228,318 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    return setCookies(reply, accessToken, refreshToken)
+    return setAuthCookies(reply, accessToken, refreshToken)
+      .code(200)
+      .send({ message: createResponseMessage(action, true) });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaQRCodeHandler(request, reply) {
+  const action = "Generate 2FA QR Code";
+  try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA Qrcode can not be generated. User uses Google auth provider"
+      );
+    }
+
+    const { password } = request.body;
+    const hashedPassword = await getPasswordHash(userId);
+
+    if (!(await verifyHash(hashedPassword, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
+
+    const username = request.user.username;
+    let secret = "";
+    if (await get2FaStatus(userId)) {
+      secret = await getTotpSecret(request.user.id);
+    } else {
+      secret = generate2FaSecret();
+    }
+
+    const totp = generateTotp(username, secret);
+    const qrcode = await generate2FaQrCode(totp);
+    const data = { qrcode: qrcode };
+
+    await updateTotpSecret(userId, secret);
+
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaVerifyHandler(request, reply) {
+  const action = "Verify 2FA Code";
+  try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
+    const { code } = request.body;
+    const secret = await getTotpSecret(userId);
+    const totp = generateTotp(request.user.username, secret);
+    if (!verify2FaToken(totp, code)) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid 2FA code"
+      );
+    }
+
+    await update2FaStatus(userId, true);
+
+    const existingBackupCodes = await getBackupCodes(userId);
+    if (existingBackupCodes.length > 0) await deleteBackupCodes(userId);
+
+    const newBackupCodes = generateBackupCodes();
+    const hashedBackupCodes = await hashBackupCodes(userId, newBackupCodes);
+    await createBackupCodes(hashedBackupCodes);
+    const data = { backupCodes: newBackupCodes };
+
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaBackupCodesHandler(request, reply) {
+  const action = "Generate backup codes";
+  try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
+    const { password } = request.body;
+    const hashedPassword = await getPasswordHash(userId);
+
+    if (!(await verifyHash(hashedPassword, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
+
+    const existingBackupCodes = await getBackupCodes(userId);
+    if (existingBackupCodes.length > 0) await deleteBackupCodes(userId);
+
+    const newBackupCodes = generateBackupCodes();
+    const hashedBackupCodes = await hashBackupCodes(userId, newBackupCodes);
+    await createBackupCodes(hashedBackupCodes);
+    const data = { backupCodes: newBackupCodes };
+
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (error) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaBackupCodeVerifyHandler(request, reply) {
+  const action = "Verify backup codes";
+  try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
+    const { backupCode } = request.body;
+
+    if (!(await verifyBackupCode(userId, backupCode))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid backup code"
+      );
+    }
+
+    const { username } = await getUser(userId);
+    const payload = await getTokenData(username, "username");
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+    reply.clearCookie("twoFaLoginToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth/2fa/login/"
+    });
+    return setAuthCookies(reply, accessToken, refreshToken)
+      .code(200)
+      .send({
+        message: createResponseMessage(action, true),
+        data: { username: username }
+      });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaLoginVerifyHandler(request, reply) {
+  const action = "Verify 2FA Code during login";
+  try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
+    const { code } = request.body;
+    const secret = await getTotpSecret(userId);
+    const totp = generateTotp(request.user.username, secret);
+    if (!verify2FaToken(totp, code)) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid 2FA code"
+      );
+    }
+
+    const { username } = await getUser(userId);
+    const payload = await getTokenData(username, "username");
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+    reply.clearCookie("twoFaLoginToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth/2fa/login/"
+    });
+    return setAuthCookies(reply, accessToken, refreshToken)
+      .code(200)
+      .send({
+        message: createResponseMessage(action, true),
+        data: { username: username }
+      });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaStatusHandler(request, reply) {
+  const action = "Get 2FA status";
+  try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
+    const hasTwoFa = await get2FaStatus(userId);
+    const data = { hasTwoFa: hasTwoFa };
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFaRemoveHandler(request, reply) {
+  const action = "Remove 2FA";
+  try {
+    const userId = request.user.id;
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "2FA code can not be verified. User uses Google auth provider"
+      );
+    }
+
+    const { password } = request.body;
+    const hashedPassword = await getPasswordHash(userId);
+
+    if (!(await verifyHash(hashedPassword, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
+
+    await update2FaStatus(userId, false);
+    return reply
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {

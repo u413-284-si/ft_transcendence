@@ -24,6 +24,17 @@ export async function refreshAccessToken(): Promise<ApiResponse<null>> {
   );
 }
 
+export async function authAndDecodTwoFaLoginToken(): Promise<
+  ApiResponse<Token>
+> {
+  const url = "/api/auth/2fa/login/token";
+
+  return apiFetch<Token>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+}
+
 export async function userLogin(
   usernameOrEmail: string,
   password: string
@@ -49,6 +60,117 @@ export async function userLogout(): Promise<ApiResponse<{ username: string }>> {
     {
       method: "PATCH",
       credentials: "same-origin"
+    },
+    false
+  );
+}
+
+export async function generateTwoFaQrcode(
+  password: string
+): Promise<ApiResponse<{ qrcode: string }>> {
+  const url = "/api/auth/2fa/qrcode";
+
+  return apiFetch<{ qrcode: string }>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ password })
+    },
+    false
+  );
+}
+
+export async function verifyTwoFaCodeAndGetBackupCodes(
+  code: string
+): Promise<ApiResponse<{ backupCodes: string[] }>> {
+  const url = "/api/auth/2fa/verify";
+
+  return apiFetch<{ backupCodes: string[] }>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ code })
+    },
+    false
+  );
+}
+
+export async function generateBackupCodes(
+  password: string
+): Promise<ApiResponse<{ backupCodes: string[] }>> {
+  const url = "/api/auth/2fa/backupCodes";
+
+  return apiFetch<{ backupCodes: string[] }>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ password })
+    },
+    false
+  );
+}
+
+export async function verifyBackupCode(
+  backupCode: string
+): Promise<ApiResponse<void>> {
+  const url = "/api/auth/2fa/login/backupCodes/verify";
+
+  return apiFetch<void>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ backupCode })
+    },
+    false
+  );
+}
+
+export async function verifyLoginTwoFaCode(
+  code: string
+): Promise<ApiResponse<null>> {
+  const url = "/api/auth/2fa/login/verify";
+
+  return apiFetch<null>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ code })
+    },
+    false
+  );
+}
+
+export async function geTwoFaStatus(): Promise<
+  ApiResponse<{ hasTwoFa: boolean }>
+> {
+  const url = "/api/auth/2fa/status";
+
+  return apiFetch<{ hasTwoFa: boolean }>(
+    url,
+    {
+      method: "GET",
+      credentials: "same-origin"
+    },
+    false
+  );
+}
+
+export async function removeTwoFa(
+  password: string
+): Promise<ApiResponse<null>> {
+  const url = "/api/auth/2fa/remove";
+
+  return apiFetch<null>(
+    url,
+    {
+      method: "POST",
+      credentials: "same-origin",
+      body: JSON.stringify({ password })
     },
     false
   );

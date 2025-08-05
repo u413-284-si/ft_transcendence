@@ -69,6 +69,7 @@ const tr: TranslationShape = {
       offline: "Offline",
       online: "Online",
       password: "Access code",
+      twoFaCode: "Cipher code",
       pongGame: "PONG GRID",
       player: "Operative",
       playerWins: "Operative {{player}} victorious",
@@ -106,6 +107,12 @@ const tr: TranslationShape = {
         "Access code must be 10-64 chars, include digit, uppercase, lowercase, and special char @$!%*?&",
       passwordConfirmationEmpty: "Re-enter your access code",
       passwordConfirmation: "Access code confirmation mismatch.",
+      twoFaCode: "Cipher code invalid.",
+      twoFaCodeEmpty: "Cipher code field cannot be void.",
+      twoFaCodeFormat: "Cipher code must be a 6-digit number.",
+      twoFaBackupCode: "Backup cipher invalid.",
+      twoFaBackupCodeEmpty: "Backup cipher field cannot be void.",
+      twoFaBackupCodeFormat: "Backup cipher must be an 8-digit sequence.",
       playerSelection: "Select number of operatives.",
       tournamentNameEmpty: "Tournament ID cannot be empty.",
       tournamentNameFormat:
@@ -119,6 +126,20 @@ const tr: TranslationShape = {
     loginView: {
       title: "ACCESS NODE",
       usernameOrEmail: "User ID or Data Address"
+    },
+
+    twoFaVerifyView: {
+      title: "Cipher code verification",
+      enterTwoFaCode: "Input cipher code:",
+      submitTwoFaCode: "Transmit",
+      useBackupCode: "Deploy backup cipher"
+    },
+
+    twoFaBackupCodeVerifyView: {
+      title: "Backup cipher verification",
+      twoFaBackupCode: "Backup cipher",
+      enterTwoFaBackupCode: "Input backup cipher:",
+      submitTwoFaBackupCode: "Transmit"
     },
 
     matchAnnouncementView: {
@@ -195,10 +216,32 @@ const tr: TranslationShape = {
     },
 
     settingsView: {
+      title: "System Settings",
+      settings: "Configure your system parameters.",
       preferredLanguage: "Select interface language protocol.",
       saveLanguage: "Save language preference",
-      settings: "Configure your system parameters.",
-      title: "System Settings"
+	  editTwoFaSetup: "Edit your cipher configuration",
+      twoFaSetup: "Cipher Configuration",
+      twoFaInfo: [
+        "Activate Cipher:",
+        "",
+        "Use an Authenticator App",
+        "to scan the QR code below."
+      ],
+      twoFaActivated: ["Cipher Active"],
+      twoFaBackupCode: "Backup cipher code",
+      enterTwoFaCode: "Input cipher code:",
+      activateTwoFa: "Activate",
+      deactivateTwoFa: "Deactivate",
+      twoFaGenerateBackupCodes: "Generate backup cipher codes",
+      confirmPassword: "Confirm Access Code",
+      twoFaBackupCodeInfo: [
+        "These are your backup cipher codes.",
+        "Copy or download them securely.",
+        "",
+        "They won’t be shown again."
+      ],
+      twoFaDownloadBackupCodes: "Download"
     },
 
     statsView: {
@@ -236,6 +279,8 @@ const tr: TranslationShape = {
       logoutError: "Logout failed. Reattempt required.",
       passwordUpdateFailed: "Access code update failed. Retry advised.",
       passwordUpdatedSuccess: "Access code updated successfully!",
+      twoFaSetupSuccess: "Cipher activated successfully!",
+      twoFaRemoveSuccess: "Cipher deactivated successfully!",
       profileUpdateFailed: "Profile update failed. Retry advised.",
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess:

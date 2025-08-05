@@ -31,6 +31,22 @@ const commonDefinitionsSchema = {
         "number, one uppercase and one lowercase letter and one of the " +
         "following special characters inside brackets: [@$!%*?&]."
     },
+    twoFaCode: {
+      type: "string",
+      minLength: 6,
+      maxLength: 6,
+      pattern: "^\\d{6}$",
+      description:
+        "The 2FA code must be 6 characters long and contain only digits."
+    },
+    twoFaBackupCode: {
+      type: "string",
+      minLength: 8,
+      maxLength: 8,
+      pattern: "^\\d{8}$",
+      description:
+        "The baccup code must be 8 characters long and contain only digits."
+    },
     usernameOrEmail: {
       oneOf: [
         { $ref: "commonDefinitionsSchema#/definitions/username" },
