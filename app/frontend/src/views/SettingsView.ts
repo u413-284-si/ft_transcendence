@@ -72,7 +72,7 @@ export default class SettingsView extends AbstractView {
           text: i18next.t("settingsView.twoFaSetup"),
           variant: "default",
           size: "md",
-          type: "button",
+          type: "button"
         })}
       </div>
       ${Modal({
@@ -263,9 +263,6 @@ export default class SettingsView extends AbstractView {
         this.displayTwoFaPasswordModal("backupCodes")
       );
     }
-    this.twoFaDownloadBackupCodesLinkEl.addEventListener("click", () =>
-      this.downloadBackupCodes()
-    );
     this.twoFaBackupCodesCloseModalButtonEl.addEventListener("click", () =>
       this.hideBackupCodesModal()
     );
@@ -533,10 +530,6 @@ export default class SettingsView extends AbstractView {
       "download",
       "backup-codes.txt"
     );
-  }
-
-  private downloadBackupCodes() {
-    this.twoFaDownloadBackupCodesLinkEl.click();
   }
 
   private hideTwoFaSetupModal() {
