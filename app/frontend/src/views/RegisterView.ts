@@ -19,6 +19,7 @@ export default class Register extends AbstractView {
   constructor() {
     super();
     this.setTitle(i18next.t("registerView.title"));
+    this.setTitle(i18next.t("registerView.title"));
   }
 
   createHTML(): string {
@@ -144,18 +145,12 @@ export default class Register extends AbstractView {
       if (!apiResponse.success) {
         if (apiResponse.status === 409) {
           toaster.error(i18next.t("toast.emailOrUsernameExists"));
-          toaster.error(i18next.t("toast.emailOrUsernameExists"));
           return;
         } else {
           throw new ApiError(apiResponse);
         }
       }
       const username = escapeHTML(apiResponse.data.username);
-      toaster.success(
-        i18next.t("toast.registrationSuccess", {
-          username: username
-        })
-      );
       toaster.success(
         i18next.t("toast.registrationSuccess", {
           username: username

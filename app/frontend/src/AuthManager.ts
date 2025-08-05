@@ -62,10 +62,8 @@ export class AuthManager {
     try {
       if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
         toaster.error(i18next.t("toast.emailExists"));
-        toaster.error(i18next.t("toast.emailExists"));
         document.cookie =
           "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
-        this.notify();
         this.notify();
         return;
       }
@@ -73,7 +71,6 @@ export class AuthManager {
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
           console.log("JWT validation failed or no token found.");
-          this.notify();
           this.notify();
           return;
         } else {
@@ -84,7 +81,6 @@ export class AuthManager {
       this.user = getDataOrThrow(await getUserProfile());
       this.updateAuthState(token);
     } catch (error) {
-      this.notify();
       this.notify();
       router.handleError("Error in AuthManager.initialize():", error);
     }
@@ -112,9 +108,6 @@ export class AuthManager {
       }
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
-      await i18next.changeLanguage(this.user.language);
-      localStorage.setItem("preferredLanguage", this.user!.language);
-      console.info(`Language switched to ${this.user!.language}`);
       await i18next.changeLanguage(this.user.language);
       localStorage.setItem("preferredLanguage", this.user!.language);
       console.info(`Language switched to ${this.user!.language}`);
@@ -164,14 +157,12 @@ export class AuthManager {
     } catch (error) {
       console.error("Error while logout()", error);
       toaster.error(i18next.t("toast.logoutError"));
-      toaster.error(i18next.t("toast.logoutError"));
     }
   }
 
   public clearTokenOnError(): void {
     if (this.authenticated) {
       console.error("Could not verify user");
-      toaster.error(i18next.t("toast.userVerificationError"));
       toaster.error(i18next.t("toast.userVerificationError"));
       this.updateAuthState(null);
     }
@@ -187,12 +178,10 @@ export class AuthManager {
 
   public getToken(): Token {
     if (!this.token) throw new Error(i18next.t("error.noActiveToken"));
-    if (!this.token) throw new Error(i18next.t("error.noActiveToken"));
     return this.token;
   }
 
   public getUser(): User {
-    if (!this.user) throw new Error(i18next.t("error.userNotFound"));
     if (!this.user) throw new Error(i18next.t("error.userNotFound"));
     return this.user;
   }
@@ -279,7 +268,6 @@ export class AuthManager {
       const apiResponse = await refreshAccessToken();
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
-          toaster.error(i18next.t("toast.tokenRefreshFailed"));
           toaster.error(i18next.t("toast.tokenRefreshFailed"));
           this.clearTokenOnError();
           return;
