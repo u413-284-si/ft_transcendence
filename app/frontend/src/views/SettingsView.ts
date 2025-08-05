@@ -509,17 +509,22 @@ export default class SettingsView extends AbstractView {
   private fillBackupCodesTable(backupCodes: string[]) {
     const tbody = this.twoFaBackupCodesTableEl.tBodies[0];
     tbody.classList.add("divide-none");
-    tbody.innerHTML = backupCodes
-      .map((code, index, array) => {
-        if (index % 2 === 0) {
-          return `<tr class="divide-none">
-				  <td class="p-2">${code}</td>
-				  <td class="p-2">${array[index + 1]}
-			  </tr>`;
-        }
-        return "";
-      })
-      .join("");
+    for (let i = 0; i < backupCodes.length; i += 2) {
+      const tr = document.createElement("tr");
+      tr.classList.add("divide-none");
+
+      const td1 = document.createElement("td");
+      td1.classList.add("p-2");
+      td1.textContent = backupCodes[i];
+
+      const td2 = document.createElement("td");
+      td2.classList.add("p-2");
+      td2.textContent = backupCodes[i + 1];
+
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tbody.appendChild(tr);
+    }
   }
 
   private setupBackupCodesLink(backupCodes: string[]) {
