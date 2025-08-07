@@ -21,20 +21,20 @@ model User {
     language   Language @default(en)
     dateJoined DateTime @default(now())
 
-    authentication    Authentication?
-    stats             UserStats?
-    accountStatus     AccountStatus?
-    sentRequests      FriendRequest[] @relation("SentRequests")
-    receivedRequests  FriendRequest[] @relation("ReceivedRequests")
-    matchesPlayed     Match[]         @relation("UserPlayed")
-    tournament        Tournament[]
+    authentication   Authentication?
+    stats            UserStats?
+    accountStatus    AccountStatus?
+    sentRequests     FriendRequest[] @relation("SentRequests")
+    receivedRequests FriendRequest[] @relation("ReceivedRequests")
+    matchesPlayed    Match[]         @relation("UserPlayed")
+    tournament       Tournament[]
 
     @@map("users") // Maps to users table in the database
 }
 
 model Authentication {
-    userId   Int     @id
-    password String?
+    userId       Int              @id
+    password     String?
     refreshToken String?
     authProvider AuthProviderType @default(LOCAL)
     // has2FA        Boolean @default(false)
@@ -49,9 +49,9 @@ model Authentication {
 }
 
 model UserStats {
-    userId        Int   @id
-    matchesPlayed Int   @default(0)
-    matchesWon    Int   @default(0)
+    userId        Int @id
+    matchesPlayed Int @default(0)
+    matchesWon    Int @default(0)
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -69,48 +69,48 @@ model AccountStatus {
 }
 
 model FriendRequest {
-  id         Int      @id @default(autoincrement())
-  senderId   Int
-  receiverId Int
-  status     FriendRequestStatus @default(PENDING)
+    id         Int                 @id @default(autoincrement())
+    senderId   Int
+    receiverId Int
+    status     FriendRequestStatus @default(PENDING)
 
-  sender     User     @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver   User     @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+    sender   User @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+    receiver User @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  @@map("friend_requests")
+    @@map("friend_requests")
 }
 
 model Match {
-    id               Int        @id @default(autoincrement())
-    userId           Int
-    playedAs         PlayedAs   @default(PLAYERONE)
-    player1Nickname  String
-    player2Nickname  String
-    player1Score     Int
-    player2Score     Int
-    tournamentId     Int?
-    date             DateTime   @default(now())
+    id              Int      @id @default(autoincrement())
+    userId          Int
+    playedAs        PlayedAs @default(PLAYERONE)
+    player1Nickname String
+    player2Nickname String
+    player1Score    Int
+    player2Score    Int
+    tournamentId    Int?
+    date            DateTime @default(now())
 
     user       User        @relation("UserPlayed", fields: [userId], references: [id], onDelete: Cascade)
-    tournament Tournament?  @relation(fields: [tournamentId], references: [id])
+    tournament Tournament? @relation(fields: [tournamentId], references: [id])
 
     @@map("matches")
 }
 
 model Tournament {
-    id            Int              @id @default(autoincrement())
-    name          String
-    maxPlayers    Int              @default(4)
-    isPrivate     Boolean          @default(false)
-    isFinished    Boolean          @default(false)
-    userId        Int
-    userNickname  String           @default("Mister Bombastic")
-    bracket       Json
-    roundReached  Int              @default(1)
-    updatedAt     DateTime         @updatedAt
+    id           Int      @id @default(autoincrement())
+    name         String
+    maxPlayers   Int      @default(4)
+    isPrivate    Boolean  @default(false)
+    isFinished   Boolean  @default(false)
+    userId       Int
+    userNickname String   @default("Mister Bombastic")
+    bracket      Json
+    roundReached Int      @default(1)
+    updatedAt    DateTime @updatedAt
 
     user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     matches Match[]
@@ -125,19 +125,19 @@ enum PlayedAs {
 }
 
 enum FriendRequestStatus {
-  PENDING
-  ACCEPTED
+    PENDING
+    ACCEPTED
 }
 
 enum AuthProviderType {
-	LOCAL
-	GOOGLE
+    LOCAL
+    GOOGLE
 }
 
 enum Language {
-  en
-  fr
-  de
-  pi
-  tr
+    en
+    fr
+    de
+    pi
+    tr
 }
