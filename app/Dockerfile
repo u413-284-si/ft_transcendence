@@ -3,15 +3,6 @@ FROM node:slim AS builder
 
 ENV NODE_ENV production
 
-# System dependencies if needed
-RUN apt update && apt upgrade -y && apt install -y \
-    curl \
-    python3 \
-    make \
-    g++ \
-    openssl \
-    && apt clean && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /build
 
 COPY package*.json ./
