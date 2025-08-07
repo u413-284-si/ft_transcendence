@@ -9,11 +9,11 @@ COPY package*.json ./
 RUN npm ci --ignore-scripts
 
 COPY ./scripts ./scripts
-COPY ./app/backend ./app/backend
-COPY ./app/frontend ./app/frontend
-COPY ./app/db ./app/db
+COPY ./app ./app
 
-RUN npx prisma generate && npm run style && npm run build
+RUN npx prisma generate \
+  && npm run style \
+  && npm run build
 
 # Stage 2: Serve the application
 FROM node:slim
