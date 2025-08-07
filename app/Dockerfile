@@ -6,12 +6,13 @@ ENV NODE_ENV production
 WORKDIR /build
 
 COPY package*.json ./
-RUN npm ci --ignore-scripts
 
 COPY ./scripts ./scripts
+
 COPY ./app ./app
 
-RUN npx prisma generate \
+RUN npm ci --ignore-scripts \
+  && npx prisma generate \
   && npm run style \
   && npm run build
 
