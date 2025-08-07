@@ -2,7 +2,6 @@ import fastifyRateLimit from "@fastify/rate-limit";
 import fastifyStatic from "@fastify/static";
 import env from "../config/env.js";
 import path from "path";
-import { fileURLToPath } from "url";
 
 export default async function staticModule(fastify) {
   await fastify.register(fastifyRateLimit, {
@@ -15,8 +14,7 @@ export default async function staticModule(fastify) {
     }
   });
 
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
+  const __dirname = import.meta.dirname;
 
   await fastify.register(fastifyStatic, {
     root: path.join(__dirname, "..", "..", "..", "frontend", "public")
