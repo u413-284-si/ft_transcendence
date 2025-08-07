@@ -21,9 +21,9 @@ FROM node:slim
 
 ENV NODE_ENV production
 
-RUN apt update && apt install -y \
+RUN apt-get update && apt-get install -y \
     openssl \
-    && apt clean && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /
 
