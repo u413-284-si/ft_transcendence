@@ -53,6 +53,22 @@ services:
       - app
     networks:
       - pong-network
+  vault:
+    build:
+      context: .
+      dockerfile: ./vault/Dockerfile
+    container_name: vault
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      restart_policy:
+        condition: always
+        window: 120s
+    depends_on:
+      - app
+    networks:
+      - pong-network
 
 networks:
   pong-network:
