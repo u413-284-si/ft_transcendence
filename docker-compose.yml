@@ -1,7 +1,6 @@
 services:
   app:
     build:
-      context: .
       dockerfile: ./app/Dockerfile
     container_name: app
     init: true
@@ -20,7 +19,6 @@ services:
       - pong-network
   waf:
     build:
-      context: .
       dockerfile: ./waf/Dockerfile
     container_name: waf
     init: true
