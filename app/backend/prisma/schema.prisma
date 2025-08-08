@@ -52,9 +52,8 @@ model UserStats {
     userId        Int @id
     matchesPlayed Int @default(0)
     matchesWon    Int @default(0)
-    winstreakCur  Int   @default(0)
-    winstreakMax  Int   @default(0)
-
+    winstreakCur  Int @default(0)
+    winstreakMax  Int @default(0)
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
