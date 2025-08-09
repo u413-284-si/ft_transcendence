@@ -1,14 +1,9 @@
 import AbstractView from "./AbstractView.js";
 import {
-  getUserDashboardMatchesByUsername,
-  getUserDashboardTournamentsByUsername,
   getUserStats,
   getUserStatsByUsername
 } from "../services/userStatsServices.js";
-import {
-  getUserByUsername,
-  getUserPlayedMatchesByUsername
-} from "../services/userServices.js";
+import { getUserByUsername } from "../services/userServices.js";
 import { escapeHTML } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
