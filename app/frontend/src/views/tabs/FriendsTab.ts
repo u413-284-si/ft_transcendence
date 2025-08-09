@@ -2,27 +2,26 @@ import { FriendManager } from "../../charts/FriendManager.js";
 import { makeFriendsMatchStatsOptions } from "../../charts/friendsMatchStatsOptions.js";
 import { makeFriendsWinRateOptions } from "../../charts/friendsWinRateOptions.js";
 import { makeFriendsWinstreakOptions } from "../../charts/friendsWinstreakOptions.js";
-import { renderChart } from "../../charts/utils.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { Header3 } from "../../components/Header3.js";
+import { getDataOrThrow } from "../../services/api.js";
+import { getUserDashboardFriends } from "../../services/userStatsServices.js";
 import { toaster } from "../../Toaster.js";
 import { DashboardFriends, FriendStatsSeries } from "../../types/DataSeries.js";
 import { getEl } from "../../utility.js";
 import { AbstractTab } from "./AbstractTab.js";
 
 export class FriendsTab extends AbstractTab {
-  private dashboard: DashboardFriends;
+  private dashboard: DashboardFriends | null = null;
   private username: string;
   private friendManager: FriendManager;
 
-  constructor(dashboard: DashboardFriends, username: string) {
+  constructor(username: string) {
     super();
-    this.dashboard = dashboard;
     this.username = username;
     this.friendManager = new FriendManager();
     this.friendManager.selectFriend(this.username);
-    this.populateChartOptions();
   }
 
   getHTML(): string {
@@ -66,19 +65,15 @@ export class FriendsTab extends AbstractTab {
     </div> `;
   }
 
-  async onShow(): Promise<void> {
-    for (const chartId in this.chartOptions) {
-      try {
-        this.charts[chartId] = await renderChart(
-          chartId,
-          this.chartOptions[chartId]
-        );
-      } catch (error) {
-        console.error(`Chart ${chartId} failed to initialize`, error);
-        toaster.error(i18next.t("toast.chartError"));
-      }
-    }
-    this.renderFriendSelector(this.dashboard.matchStats);
+  override async onShow(): Promise<void> {
+    await super.onShow();
+    this.renderFriendSelector(this.dashboard!.matchStats);
+  }
+
+  async init(): Promise<void> {
+    this.dashboard = getDataOrThrow(await getUserDashboardFriends());
+    this.populateChartOptions();
+    this.isInit = true;
   }
 
   override onHide(): void {
@@ -88,6 +83,8 @@ export class FriendsTab extends AbstractTab {
   }
 
   private populateChartOptions(): void {
+    if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
+
     const selectedFriends = this.friendManager.getSelectedFriends();
     const colors = this.friendManager.getColors();
 
@@ -111,7 +108,6 @@ export class FriendsTab extends AbstractTab {
   }
 
   renderFriendSelector(friends: FriendStatsSeries) {
-    if (!this.friendManager) return new Error("FriendManager null");
     if (!friends || friends.length === 0) {
       console.warn("No friends to display");
       return;
@@ -165,6 +161,8 @@ export class FriendsTab extends AbstractTab {
   }
 
   updateFriendsCharts() {
+    if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
+
     const selectedFriends = this.friendManager.getSelectedFriends();
     const colors = this.friendManager.getColors();
 

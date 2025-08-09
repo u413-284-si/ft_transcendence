@@ -1,22 +1,17 @@
 import AbstractView from "./AbstractView.js";
 import {
-  getUserDashboardFriends,
-  getUserDashboardMatches,
   getUserDashboardMatchesByUsername,
-  getUserDashboardTournaments,
   getUserDashboardTournamentsByUsername,
   getUserStats,
   getUserStatsByUsername
 } from "../services/userStatsServices.js";
 import {
   getUserByUsername,
-  getUserPlayedMatches,
   getUserPlayedMatchesByUsername
 } from "../services/userServices.js";
 import { escapeHTML } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
-import { Match } from "../types/IMatch.js";
 import { router } from "../routing/Router.js";
 import { getUserFriendRequestByUsername } from "../services/friendsServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
@@ -26,11 +21,6 @@ import { Paragraph } from "../components/Paragraph.js";
 import { StatFieldGroup } from "../components/StatField.js";
 import { getDataOrThrow } from "../services/api.js";
 import { TabButton } from "../components/TabButton.js";
-import {
-  DashboardFriends,
-  DashboardMatches,
-  DashboardTournaments
-} from "../types/DataSeries.js";
 import { formatDate } from "../formatDate.js";
 import { TextBox } from "../components/TextBox.js";
 import { AbstractTab } from "./tabs/AbstractTab.js";
@@ -43,11 +33,7 @@ export default class StatsView extends AbstractView {
   private username = escapeHTML(router.getParams().username);
   private user: User | null = null;
   private userStats: UserStats | null = null;
-  private matches: Match[] | null = null;
   private friendRequest: FriendRequest | null = null;
-  private dashboardMatches: DashboardMatches | null = null;
-  private dashboardTournaments: DashboardTournaments | null = null;
-  private dashboardFriends: DashboardFriends | null = null;
   private tabs: Record<string, AbstractTab> = {};
   private currentTabId?: string;
 
@@ -119,20 +105,12 @@ export default class StatsView extends AbstractView {
     await this.fetchData();
     this.updateHTML();
     if (this.viewType === "public") return;
-    this.tabs["matches"] = new MatchesTab(
-      this.matches!,
-      this.dashboardMatches!,
-      this.userStats!,
-      this.username
-    );
-    this.tabs["tournaments"] = new TournamentsTab(this.dashboardTournaments!);
+    this.tabs["matches"] = new MatchesTab(this.userStats!, this.username);
+    this.tabs["tournaments"] = new TournamentsTab();
     await this.showTab("matches");
     this.addListeners();
     if (this.viewType !== "self") return;
-    this.tabs["friends"] = new FriendsTab(
-      this.dashboardFriends!,
-      this.username
-    );
+    this.tabs["friends"] = new FriendsTab(this.username);
   }
 
   async showTab(tabId: string) {
@@ -205,12 +183,6 @@ export default class StatsView extends AbstractView {
   async fetchData() {
     if (this.viewType === "self") {
       this.userStats = getDataOrThrow(await getUserStats());
-      this.dashboardMatches = getDataOrThrow(await getUserDashboardMatches());
-      this.dashboardTournaments = getDataOrThrow(
-        await getUserDashboardTournaments()
-      );
-      this.dashboardFriends = getDataOrThrow(await getUserDashboardFriends());
-      this.matches = getDataOrThrow(await getUserPlayedMatches());
       return;
     }
     const userStatsArray = getDataOrThrow(
@@ -219,17 +191,6 @@ export default class StatsView extends AbstractView {
     if (!userStatsArray[0])
       throw new Error(i18next.t("error.userStatsNotFound"));
     this.userStats = userStatsArray[0];
-    if (this.viewType === "friend") {
-      this.matches = getDataOrThrow(
-        await getUserPlayedMatchesByUsername(this.username)
-      );
-      this.dashboardMatches = getDataOrThrow(
-        await getUserDashboardMatchesByUsername(this.username)
-      );
-      this.dashboardTournaments = getDataOrThrow(
-        await getUserDashboardTournamentsByUsername(this.username)
-      );
-    }
   }
 
   protected addListeners(): void {

@@ -2,20 +2,18 @@ import { makeTournamentPlayedOptions } from "../../charts/tournamentPlayedOption
 import { makeTournamentProgressOptions } from "../../charts/tournamentProgressOptions.js";
 import { maketournamentLastNDaysOptions } from "../../charts/tournamentsLastNDaysOptions.js";
 import { maketournamentSummaryOptions } from "../../charts/tournamentSummaryOptions.js";
-import { renderChart } from "../../charts/utils.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
-import { toaster } from "../../Toaster.js";
+import { getDataOrThrow } from "../../services/api.js";
+import { getUserDashboardTournaments } from "../../services/userStatsServices.js";
 import { DashboardTournaments } from "../../types/DataSeries.js";
 import { AbstractTab } from "./AbstractTab.js";
 
 export class TournamentsTab extends AbstractTab {
-  private dashboard: DashboardTournaments;
+  private dashboard: DashboardTournaments | null = null;
 
-  constructor(dashboard: DashboardTournaments) {
+  constructor() {
     super();
-    this.dashboard = dashboard;
-    this.populateChartOptions();
   }
 
   getHTML(): string {
@@ -90,21 +88,15 @@ export class TournamentsTab extends AbstractTab {
     return /* HTML */ ``;
   }
 
-  async onShow(): Promise<void> {
-    for (const chartId in this.chartOptions) {
-      try {
-        this.charts[chartId] = await renderChart(
-          chartId,
-          this.chartOptions[chartId]
-        );
-      } catch (error) {
-        console.error(`Chart ${chartId} failed to initialize`, error);
-        toaster.error(i18next.t("toast.chartError"));
-      }
-    }
+  async init(): Promise<void> {
+    this.dashboard = getDataOrThrow(await getUserDashboardTournaments());
+    this.populateChartOptions();
+    this.isInit = true;
   }
 
   private populateChartOptions(): void {
+    if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
+
     this.chartOptions = {
       "tournament-summary": maketournamentSummaryOptions(
         i18next.t("chart.summary"),

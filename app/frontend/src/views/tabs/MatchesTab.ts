@@ -1,36 +1,29 @@
 import { makeScoreDiffOptions } from "../../charts/scoreDiffOptions.js";
 import { makeScoresLastTenDaysOptions } from "../../charts/scoresLastTenDaysOptions.js";
-import { renderChart } from "../../charts/utils.js";
 import { makeWinLossOptions } from "../../charts/winLossOptions.js";
 import { makeWinrateOptions } from "../../charts/winrateOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
 import { Table } from "../../components/Table.js";
-import { toaster } from "../../Toaster.js";
+import { getDataOrThrow } from "../../services/api.js";
+import { getUserPlayedMatches } from "../../services/userServices.js";
+import { getUserDashboardMatches } from "../../services/userStatsServices.js";
 import { DashboardMatches } from "../../types/DataSeries.js";
 import { Match } from "../../types/IMatch.js";
 import { UserStats } from "../../types/IUserStats.js";
 import { AbstractTab } from "./AbstractTab.js";
 
 export class MatchesTab extends AbstractTab {
-  private matches: Match[];
-  private dashboard: DashboardMatches;
+  private matches: Match[] | null = null;
+  private dashboard: DashboardMatches | null = null;
   private userStats: UserStats;
   private username: string;
 
-  constructor(
-    matches: Match[],
-    dashboard: DashboardMatches,
-    userStats: UserStats,
-    username: string
-  ) {
+  constructor(userStats: UserStats, username: string) {
     super();
-    this.matches = matches;
-    this.dashboard = dashboard;
     this.userStats = userStats;
     this.username = username;
-    this.populateMatchesCharts();
   }
 
   getHTML(): string {
@@ -41,7 +34,7 @@ export class MatchesTab extends AbstractTab {
           id: "match-dashboard-header",
           variant: "default"
         })}
-        ${this.getMatchesDashboard()}
+        ${this.getDashboardHTML()}
       </div>
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
         ${Header1({
@@ -49,12 +42,12 @@ export class MatchesTab extends AbstractTab {
           id: "match-details-header",
           variant: "default"
         })}
-        ${this.getMatchesTableHTML()}
+        <div id="match-history-table"></div>
       </div>
     </div>`;
   }
 
-  getMatchesDashboard(): string {
+  getDashboardHTML(): string {
     const rangeMatches = i18next.t("chart.rangeLastMatches", { count: 10 });
     const rangeDays = i18next.t("chart.rangeLastDays", { count: 10 });
 
@@ -83,7 +76,11 @@ export class MatchesTab extends AbstractTab {
     </div>`;
   }
 
-  getMatchesTableHTML(): string {
+  updateMatchesTable(): void {
+    if (!this.matches) throw new Error(i18next.t("error.somethingWentWrong"));
+
+    const table = document.getElementById("match-history-table");
+
     const matchesRows =
       this.matches.length === 0
         ? [NoMatchesRow()]
@@ -91,7 +88,7 @@ export class MatchesTab extends AbstractTab {
             MatchRow(matchRaw, this.username)
           );
 
-    return /* HTML */ `${Table({
+    table!.innerHTML = /* HTML */ `${Table({
       id: "match-history-table",
       headers: [
         i18next.t("statsView.player1"),
@@ -106,21 +103,21 @@ export class MatchesTab extends AbstractTab {
     })}`;
   }
 
-  async onShow(): Promise<void> {
-    for (const chartId in this.chartOptions) {
-      try {
-        this.charts[chartId] = await renderChart(
-          chartId,
-          this.chartOptions[chartId]
-        );
-      } catch (error) {
-        console.error(`Chart ${chartId} failed to initialize`, error);
-        toaster.error(i18next.t("toast.chartError"));
-      }
-    }
+  override async onShow(): Promise<void> {
+    await super.onShow();
+    this.updateMatchesTable();
+  }
+
+  async init(): Promise<void> {
+    this.dashboard = getDataOrThrow(await getUserDashboardMatches());
+    this.matches = getDataOrThrow(await getUserPlayedMatches());
+    this.populateMatchesCharts();
+    this.isInit = true;
   }
 
   private populateMatchesCharts(): void {
+    if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
+
     this.chartOptions = {
       "win-loss-chart": makeWinLossOptions(
         this.userStats.matchesWon,
