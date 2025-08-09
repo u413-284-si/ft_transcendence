@@ -58,12 +58,13 @@ export async function getMatch(id) {
 }
 
 export async function getUserMatches(userId, filter) {
+  const where = {
+    userId: userId,
+    ...(filter.playedAs ? { playedAs: { in: filter.playedAs } } : {}),
+    ...(filter.date ? { date: filter.date } : {})
+  };
   const matches = await prisma.match.findMany({
-    where: {
-      userId: userId,
-      ...(filter.playedAs ? { playedAs: { in: filter.playedAs } } : {}),
-      ...(filter.date ? { date: filter.date } : {})
-    },
+    where: where,
     select: matchSelect,
     take: filter.limit,
     skip: filter.offset,
@@ -71,24 +72,10 @@ export async function getUserMatches(userId, filter) {
       date: filter.sort
     }
   });
-  return matches;
-}
-
-export async function getUserMatchesByUsername(username, filter) {
-  const matches = await prisma.match.findMany({
-    where: {
-      user: { username: username },
-      ...(filter.playedAs ? { playedAs: { in: filter.playedAs } } : {}),
-      ...(filter.date ? { date: filter.date } : {})
-    },
-    select: matchSelect,
-    take: filter.limit,
-    skip: filter.offset,
-    orderBy: {
-      date: filter.sort
-    }
+  const total = await prisma.match.count({
+    where: where
   });
-  return matches;
+  return { items: matches, total };
 }
 
 export async function deleteAllMatches() {

@@ -13,10 +13,7 @@ import {
   flattenUser
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
-import {
-  getUserMatches,
-  getUserMatchesByUsername
-} from "../services/matches.services.js";
+import { getUserMatches } from "../services/matches.services.js";
 import {
   getUserTournaments,
   getUserActiveTournament
@@ -169,49 +166,27 @@ export async function deleteUserHandler(request, reply) {
   }
 }
 
-export async function getUserMatchesHandler(request, reply) {
-  const action = "Get user matches";
+export async function getUserMatchesByUsernameHandler(request, reply) {
+  const action = "Get user matches by username";
   try {
-    const id = parseInt(request.user.id, 10);
+    let userId = parseInt(request.user.id, 10);
+    const { username } = request.params;
+    if (username !== request.user.username) {
+      const friendId = await getFriendId(userId, username);
+      if (!friendId) {
+        return httpError(reply, 401, "You need to be friends");
+      }
+      userId = friendId;
+    }
     const filter = {
       playedAs: request.query.playedAs,
       limit: request.query.limit,
       offset: request.query.offset,
       sort: request.query.sort
     };
-    const data = await getUserMatches(id, filter);
-    const count = data.length;
+    const data = await getUserMatches(userId, filter);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
-      count: count,
-      data: data
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getUserMatchesHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function getUserMatchesByUsernameHandler(request, reply) {
-  const action = "Get user matches by username";
-  try {
-    const id = parseInt(request.user.id, 10);
-    const filter = { playedAs: request.query.playedAs };
-    const { username } = request.params;
-    if (username !== request.user.username) {
-      const friendId = await getFriendId(id, username);
-      if (!friendId) {
-        return httpError(reply, 401, "You need to be friends");
-      }
-    }
-    const data = await getUserMatchesByUsername(username, filter);
-    const count = data.length;
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      count: count,
       data: data
     });
   } catch (err) {

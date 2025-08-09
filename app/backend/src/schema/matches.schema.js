@@ -76,13 +76,19 @@ const matchArrayResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    count: { type: "integer" },
     data: {
-      type: "array",
-      items: { $ref: "matchSchema" }
+      type: "object",
+      properties: {
+        items: {
+          type: "array",
+          items: { $ref: "matchSchema" }
+        },
+        total: { type: "integer" }
+      },
+      required: ["items", "total"]
     }
   },
-  required: ["message", "count", "data"],
+  required: ["message", "data"],
   additionalProperties: false
 };
 
