@@ -229,7 +229,9 @@ const de: TranslationShape = {
       tournaments: "Tuniere",
       friends: "Freunde",
       dashboard: "Übersicht",
-      details: "Details"
+      details: "Details",
+      usedNickname: "Verwendeter Spitzname",
+      eliminatedInRound: "Ausgeschieden in Runde {{round}}"
     },
 
     chart: {

@@ -4,12 +4,20 @@ import { maketournamentLastNDaysOptions } from "../../charts/tournamentsLastNDay
 import { maketournamentSummaryOptions } from "../../charts/tournamentSummaryOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
+import { Table } from "../../components/Table.js";
+import {
+  NoTournamentsRow,
+  TournamentRow
+} from "../../components/TournamentRow.js";
 import { getDataOrThrow } from "../../services/api.js";
+import { getUserTournaments } from "../../services/tournamentService.js";
 import { getUserDashboardTournamentsByUsername } from "../../services/userStatsServices.js";
 import { DashboardTournaments } from "../../types/DataSeries.js";
+import { TournamentDTO } from "../../types/ITournament.js";
 import { AbstractTab } from "./AbstractTab.js";
 
 export class TournamentsTab extends AbstractTab {
+  private tournaments: TournamentDTO[] | null = null;
   private dashboard: DashboardTournaments | null = null;
   private username: string;
 
@@ -34,7 +42,7 @@ export class TournamentsTab extends AbstractTab {
           id: "tournament-details-header",
           variant: "default"
         })}
-        ${this.getTableHTML()}
+        <div id="tournaments-history-table"></div>
       </div>
     </div>`;
   }
@@ -86,14 +94,38 @@ export class TournamentsTab extends AbstractTab {
     </div>`;
   }
 
-  getTableHTML(): string {
-    return /* HTML */ ``;
+  updateTournamentsTable(tournaments: TournamentDTO[]): void {
+    const table = document.getElementById("tournaments-history-table");
+
+    const tournamentsRows =
+      tournaments.length === 0
+        ? [NoTournamentsRow()]
+        : tournaments.map((tournament: TournamentDTO) =>
+            TournamentRow(tournament)
+          );
+
+    table!.innerHTML = /* HTML */ `${Table({
+      id: "tournaments-history-table",
+      headers: [
+        i18next.t("newTournamentView.tournamentName"),
+        i18next.t("newTournamentView.numberOfPlayers"),
+        i18next.t("statsView.usedNickname"),
+        i18next.t("statsView.result")
+      ],
+      rows: tournamentsRows
+    })}`;
+  }
+
+  override async onShow(): Promise<void> {
+    await super.onShow();
+    this.updateTournamentsTable(this.tournaments!);
   }
 
   async init(): Promise<void> {
     this.dashboard = getDataOrThrow(
       await getUserDashboardTournamentsByUsername(this.username)
     );
+    this.tournaments = getDataOrThrow(await getUserTournaments());
     this.populateChartOptions();
     this.isInit = true;
   }

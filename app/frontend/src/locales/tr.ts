@@ -222,7 +222,9 @@ const tr: TranslationShape = {
       tournaments: "Tournaments",
       friends: "Connections",
       dashboard: "Core",
-      details: "Data"
+      details: "Data",
+      usedNickname: "Alias",
+      eliminatedInRound: "User derezzed in cycle {{round}}"
     },
 
     chart: {

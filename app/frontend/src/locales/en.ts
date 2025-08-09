@@ -222,7 +222,9 @@ const en = {
       tournaments: "Tournaments",
       friends: "Friends",
       dashboard: "Dashboard",
-      details: "Details"
+      details: "Details",
+      usedNickname: "Used nickname",
+      eliminatedInRound: "Eliminated in round {{round}}"
     },
 
     chart: {

@@ -222,7 +222,9 @@ const pi: TranslationShape = {
       tournaments: "Tourneys",
       friends: "Mates",
       dashboard: "Cap`n`s Log",
-      details: "Secrets"
+      details: "Secrets",
+      usedNickname: "Name ye used",
+      eliminatedInRound: "Keelhauled in round {{round}}, arr!"
     },
 
     chart: {

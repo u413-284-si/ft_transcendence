@@ -232,7 +232,9 @@ const fr: TranslationShape = {
       tournaments: "Tournois",
       friends: "Amis",
       dashboard: "Tableau",
-      details: "Détails"
+      details: "Détails",
+      usedNickname: "Surnom utilisé",
+      eliminatedInRound: "Éliminé au tour {{round}}"
     },
 
     chart: {
