@@ -5,6 +5,7 @@ import { makeWinrateOptions } from "../../charts/winrateOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
+import { PaginationControls } from "../../components/Pagination.js";
 import { Table } from "../../components/Table.js";
 import { Paginator } from "../../Paginator.js";
 import { getDataOrThrow } from "../../services/api.js";
@@ -45,24 +46,13 @@ export class MatchesTab extends AbstractTab {
           variant: "default"
         })}
         <div id="match-history-table"></div>
-        <div id="matches-pagination" class="flex items-center gap-4 mt-2">
-          <button
-            id="matches-prev-btn"
-            class="bg-neon-cyan text-white rounded px-4 py-2 disabled:bg-teal disabled:text-grey disabled:cursor-not-allowed"
-          >
-            Prev
-          </button>
-          <span
-            id="matches-page-indicator"
-            class="px-4 py-2 rounded bg-neon-cyan text-white text-md"
-          ></span>
-          <button
-            id="matches-next-btn"
-            class="bg-neon-cyan text-white rounded px-4 py-2 disabled:bg-teal disabled:text-grey disabled:cursor-not-allowed"
-          >
-            Next
-          </button>
-        </div>
+        ${PaginationControls({
+          prevId: "matches-prev-btn",
+          nextId: "matches-next-btn",
+          indicatorId: "matches-page-indicator",
+          prevLabel: "<",
+          nextLabel: ">"
+        })}
       </div>
     </div>`;
   }
