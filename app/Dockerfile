@@ -3,6 +3,11 @@ FROM node:slim AS builder
 
 ENV NODE_ENV production
 
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    openssl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /build
 
 COPY package*.json ./
