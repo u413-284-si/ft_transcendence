@@ -101,7 +101,7 @@ export default class StatsView extends AbstractView {
     this.updateHTML();
     if (this.viewType === "public") return;
     this.tabs["matches"] = new MatchesTab(this.userStats!, this.username);
-    this.tabs["tournaments"] = new TournamentsTab();
+    this.tabs["tournaments"] = new TournamentsTab(this.username);
     await this.showTab("matches");
     this.addListeners();
     if (this.viewType !== "self") return;

@@ -5,15 +5,17 @@ import { maketournamentSummaryOptions } from "../../charts/tournamentSummaryOpti
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { getDataOrThrow } from "../../services/api.js";
-import { getUserDashboardTournaments } from "../../services/userStatsServices.js";
+import { getUserDashboardTournamentsByUsername } from "../../services/userStatsServices.js";
 import { DashboardTournaments } from "../../types/DataSeries.js";
 import { AbstractTab } from "./AbstractTab.js";
 
 export class TournamentsTab extends AbstractTab {
   private dashboard: DashboardTournaments | null = null;
+  private username: string;
 
-  constructor() {
+  constructor(username: string) {
     super();
+    this.username = username;
   }
 
   getHTML(): string {
@@ -89,7 +91,9 @@ export class TournamentsTab extends AbstractTab {
   }
 
   async init(): Promise<void> {
-    this.dashboard = getDataOrThrow(await getUserDashboardTournaments());
+    this.dashboard = getDataOrThrow(
+      await getUserDashboardTournamentsByUsername(this.username)
+    );
     this.populateChartOptions();
     this.isInit = true;
   }

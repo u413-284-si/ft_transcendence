@@ -1,8 +1,6 @@
 import {
   getAllUserStatsHandler,
   deleteAllUserStatsHandler,
-  getDashboardMatchesHandler,
-  getDashboardTournamentsHandler,
   getDashboardMatchesByUsernameHandler,
   getDashboardTournamentsByUsernameHandler,
   getDashboardFriendsHandler
@@ -16,24 +14,6 @@ export default async function userstatsRoutes(fastify) {
   fastify.delete("/", optionsDeleteAllUserStats, deleteAllUserStatsHandler);
 
   fastify.get(
-    "/me/dashboard-matches",
-    optionsGetDashboardMatches,
-    getDashboardMatchesHandler
-  );
-
-  fastify.get(
-    "/me/dashboard-tournaments",
-    optionsGetDashboardTournaments,
-    getDashboardTournamentsHandler
-  );
-
-  fastify.get(
-    "/me/dashboard-friends",
-    optionsGetDashboardFriends,
-    getDashboardFriendsHandler
-  );
-
-  fastify.get(
     "/:username/dashboard-matches",
     optionsGetDashboardMatchesByUsername,
     getDashboardMatchesByUsernameHandler
@@ -43,6 +23,12 @@ export default async function userstatsRoutes(fastify) {
     "/:username/dashboard-tournaments",
     optionsGetDashboardTournamentsByUsername,
     getDashboardTournamentsByUsernameHandler
+  );
+
+  fastify.get(
+    "/me/dashboard-friends",
+    optionsGetDashboardFriends,
+    getDashboardFriendsHandler
   );
 }
 
@@ -68,26 +54,6 @@ const optionsGetAllUserStats = {
 const optionsDeleteAllUserStats = {
   schema: {
     response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetDashboardMatches = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      200: { $ref: "dashboardMatchesResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetDashboardTournaments = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      200: { $ref: "dashboardTournamentsResponseSchema" },
       ...errorResponses
     }
   }

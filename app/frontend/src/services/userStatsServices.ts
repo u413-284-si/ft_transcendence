@@ -29,39 +29,6 @@ export async function getUserStatsByUsername(
   });
 }
 
-export async function getUserDashboardMatches(): Promise<
-  ApiResponse<DashboardMatches>
-> {
-  const url = "/api/user-stats/me/dashboard-matches";
-
-  return apiFetch<DashboardMatches>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
-export async function getUserDashboardTournaments(): Promise<
-  ApiResponse<DashboardTournaments>
-> {
-  const url = "/api/user-stats/me/dashboard-tournaments";
-
-  return apiFetch<DashboardTournaments>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
-export async function getUserDashboardFriends(): Promise<
-  ApiResponse<DashboardFriends>
-> {
-  const url = "/api/user-stats/me/dashboard-friends";
-
-  return apiFetch<DashboardFriends>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
 export async function getUserDashboardMatchesByUsername(
   username: string
 ): Promise<ApiResponse<DashboardMatches>> {
@@ -81,6 +48,17 @@ export async function getUserDashboardTournamentsByUsername(
   const url = `/api/user-stats/${encoded}/dashboard-tournaments`;
 
   return apiFetch<DashboardTournaments>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+}
+
+export async function getUserDashboardFriends(): Promise<
+  ApiResponse<DashboardFriends>
+> {
+  const url = "/api/user-stats/me/dashboard-friends";
+
+  return apiFetch<DashboardFriends>(url, {
     method: "GET",
     credentials: "same-origin"
   });

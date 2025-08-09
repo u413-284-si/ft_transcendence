@@ -8,7 +8,7 @@ import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
 import { Table } from "../../components/Table.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserPlayedMatches } from "../../services/userServices.js";
-import { getUserDashboardMatches } from "../../services/userStatsServices.js";
+import { getUserDashboardMatchesByUsername } from "../../services/userStatsServices.js";
 import { DashboardMatches } from "../../types/DataSeries.js";
 import { Match } from "../../types/IMatch.js";
 import { UserStats } from "../../types/IUserStats.js";
@@ -109,7 +109,9 @@ export class MatchesTab extends AbstractTab {
   }
 
   async init(): Promise<void> {
-    this.dashboard = getDataOrThrow(await getUserDashboardMatches());
+    this.dashboard = getDataOrThrow(
+      await getUserDashboardMatchesByUsername(this.username)
+    );
     this.matches = getDataOrThrow(await getUserPlayedMatches());
     this.populateMatchesCharts();
     this.isInit = true;
