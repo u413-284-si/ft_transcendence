@@ -86,9 +86,15 @@ export async function getUserTournaments(
     where: {
       userId: userId,
       ...(filter.isFinished ? { isFinished: filter.isFinished } : {}),
-      ...(filter.updatedAt ? { updatedAt: filter.updatedAt } : {})
+      ...(filter.updatedAt ? { updatedAt: filter.updatedAt } : {}),
+      ...(filter.name ? { name: filter.name } : {})
     },
-    select: select
+    select: select,
+    take: filter.limit,
+    skip: filter.offset,
+    orderBy: {
+      date: filter.sort
+    }
   });
   return tournaments;
 }

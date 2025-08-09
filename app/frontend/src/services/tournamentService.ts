@@ -40,10 +40,15 @@ export async function updateTournamentBracket(
   });
 }
 
-export async function getUserTournaments(): Promise<
-  ApiResponse<TournamentDTO[]>
-> {
-  const url = "/api/users/me/tournaments";
+export async function getUserTournaments(
+  name?: string
+): Promise<ApiResponse<TournamentDTO[]>> {
+  let url = "/api/users/me/tournaments";
+
+  if (name) {
+    const params = new URLSearchParams({ name });
+    url += `?${params.toString()}`;
+  }
 
   return apiFetch<TournamentDTO[]>(url, {
     method: "GET",

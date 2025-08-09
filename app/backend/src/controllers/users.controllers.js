@@ -222,8 +222,12 @@ export async function getUserStatsHandler(request, reply) {
 export async function getUserTournamentsHandler(request, reply) {
   const action = "Get user tournaments";
   try {
-    const id = parseInt(request.user.id, 10);
-    const data = await getUserTournaments(id);
+    const userId = parseInt(request.user.id, 10);
+    const { name } = request.query;
+    const filter = {
+      name
+    };
+    const data = await getUserTournaments(userId, undefined, filter);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
