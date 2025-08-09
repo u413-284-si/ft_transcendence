@@ -6,16 +6,18 @@ import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
 import { Table } from "../../components/Table.js";
+import { Paginator } from "../../Paginator.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserPlayedMatchesByUsername } from "../../services/userServices.js";
 import { getUserDashboardMatchesByUsername } from "../../services/userStatsServices.js";
+import { toaster } from "../../Toaster.js";
 import { DashboardMatches } from "../../types/DataSeries.js";
 import { Match } from "../../types/IMatch.js";
 import { UserStats } from "../../types/IUserStats.js";
 import { AbstractTab } from "./AbstractTab.js";
 
 export class MatchesTab extends AbstractTab {
-  private matches: Match[] | null = null;
+  private paginator = new Paginator<Match>(10);
   private dashboard: DashboardMatches | null = null;
   private userStats: UserStats;
   private username: string;
@@ -43,6 +45,24 @@ export class MatchesTab extends AbstractTab {
           variant: "default"
         })}
         <div id="match-history-table"></div>
+        <div id="matches-pagination" class="flex items-center gap-4 mt-2">
+          <button
+            id="matches-prev-btn"
+            class="bg-neon-cyan text-white rounded px-4 py-2 disabled:bg-teal disabled:text-grey disabled:cursor-not-allowed"
+          >
+            Prev
+          </button>
+          <span
+            id="matches-page-indicator"
+            class="px-4 py-2 rounded bg-neon-cyan text-white text-md"
+          ></span>
+          <button
+            id="matches-next-btn"
+            class="bg-neon-cyan text-white rounded px-4 py-2 disabled:bg-teal disabled:text-grey disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>`;
   }
@@ -76,17 +96,13 @@ export class MatchesTab extends AbstractTab {
     </div>`;
   }
 
-  updateMatchesTable(): void {
-    if (!this.matches) throw new Error(i18next.t("error.somethingWentWrong"));
-
+  updateMatchesTable(matches: Match[]): void {
     const table = document.getElementById("match-history-table");
 
     const matchesRows =
-      this.matches.length === 0
+      matches.length === 0
         ? [NoMatchesRow()]
-        : this.matches.map((matchRaw: Match) =>
-            MatchRow(matchRaw, this.username)
-          );
+        : matches.map((matchRaw: Match) => MatchRow(matchRaw, this.username));
 
     table!.innerHTML = /* HTML */ `${Table({
       id: "match-history-table",
@@ -105,16 +121,14 @@ export class MatchesTab extends AbstractTab {
 
   override async onShow(): Promise<void> {
     await super.onShow();
-    this.updateMatchesTable();
+    await this.loadPage(this.paginator.getCurrentPage());
+    this.addListeners();
   }
 
   async init(): Promise<void> {
     this.dashboard = getDataOrThrow(
       await getUserDashboardMatchesByUsername(this.username)
     );
-    this.matches = getDataOrThrow(
-      await getUserPlayedMatchesByUsername(this.username)
-    ).items;
     this.populateMatchesCharts();
     this.isInit = true;
   }
@@ -143,5 +157,86 @@ export class MatchesTab extends AbstractTab {
         this.dashboard.scores
       )
     };
+  }
+
+  private async loadPage(page: number) {
+    const cached = this.paginator.getCachedPage(page);
+    if (cached) {
+      this.updateMatchesTable(cached);
+      this.updatePaginationControls();
+      return;
+    }
+
+    const limit = this.paginator.getPageSize();
+    const offset = page * limit;
+
+    try {
+      const response = getDataOrThrow(
+        await getUserPlayedMatchesByUsername(this.username, limit, offset)
+      );
+
+      this.paginator.setTotalItems(response.total);
+      this.paginator.cachePage(page, response.items);
+      this.updateMatchesTable(response.items);
+      this.updatePaginationControls();
+    } catch (error) {
+      console.error("Failed to load matches page:", error);
+      toaster.error("Failed to fetch");
+    }
+  }
+
+  private updatePaginationControls() {
+    const prevBtn = document.getElementById(
+      "matches-prev-btn"
+    ) as HTMLButtonElement;
+    const nextBtn = document.getElementById(
+      "matches-next-btn"
+    ) as HTMLButtonElement;
+
+    prevBtn.disabled = !this.paginator.canGoPrev();
+    nextBtn.disabled = !this.paginator.canGoNext();
+
+    this.updatePageIndicator();
+  }
+
+  private updatePageIndicator() {
+    const pageIndicator = document.getElementById("matches-page-indicator");
+    if (!pageIndicator) return;
+
+    const currentPage = this.paginator.getCurrentPage() + 1;
+    const totalPages = this.paginator.getTotalPages();
+
+    pageIndicator.textContent = `${currentPage} / ${totalPages}`;
+  }
+
+  public async goPrevPage() {
+    if (this.paginator.canGoPrev()) {
+      this.paginator.goPrev();
+      await this.loadPage(this.paginator.getCurrentPage());
+    }
+  }
+
+  public async goNextPage() {
+    if (this.paginator.canGoNext()) {
+      this.paginator.goNext();
+      await this.loadPage(this.paginator.getCurrentPage());
+    }
+  }
+
+  addListeners() {
+    const prevBtn = document.getElementById("matches-prev-btn");
+    const nextBtn = document.getElementById("matches-next-btn");
+
+    console.log("Prev button:", prevBtn);
+    console.log("Next button:", nextBtn);
+
+    prevBtn?.addEventListener("click", () => {
+      console.log("Prev clicked");
+      this.goPrevPage();
+    });
+    nextBtn?.addEventListener("click", () => {
+      console.log("Next clicked");
+      this.goNextPage();
+    });
   }
 }
