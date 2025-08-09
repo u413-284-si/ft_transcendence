@@ -57,7 +57,7 @@ export async function getMatch(id) {
   return match;
 }
 
-export async function getUserMatches(userId, filter) {
+export async function getUserMatches(userId, filter = {}) {
   const matches = await prisma.match.findMany({
     where: {
       userId: userId,
@@ -74,7 +74,7 @@ export async function getUserMatches(userId, filter) {
   return matches;
 }
 
-export async function getUserMatchesCount(userId, filter) {
+export async function getUserMatchesCount(userId, filter = {}) {
   const total = await prisma.match.count({
     where: {
       userId: userId,
