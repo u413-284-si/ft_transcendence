@@ -13,7 +13,10 @@ import {
   flattenUser
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
-import { getUserMatches } from "../services/matches.services.js";
+import {
+  getUserMatches,
+  getUserMatchesCount
+} from "../services/matches.services.js";
 import {
   getUserTournaments,
   getUserActiveTournament
@@ -184,10 +187,11 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
       offset: request.query.offset,
       sort: request.query.sort
     };
-    const data = await getUserMatches(userId, filter);
+    const matches = await getUserMatches(userId, filter);
+    const total = await getUserMatchesCount(userId, filter);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
-      data: data
+      data: { items: matches, total }
     });
   } catch (err) {
     request.log.error(
