@@ -34,6 +34,14 @@ export class FriendManager {
     this.friendColorMap.delete(friend);
   }
 
+  deselectAllFriendsExcept(currentUser: string): void {
+    for (const friend of [...this.selectedFriends]) {
+      if (friend !== currentUser) {
+        this.deselectFriend(friend);
+      }
+    }
+  }
+
   getSelectedFriends(): string[] {
     return this.selectedFriends;
   }
