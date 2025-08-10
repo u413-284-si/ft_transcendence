@@ -1,7 +1,6 @@
 services:
   app:
     build:
-      context: .
       dockerfile: ./app/Dockerfile
     container_name: app
     init: true
@@ -10,17 +9,13 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4001
-    deploy:
-      restart_policy:
-        condition: always
-        window: 120s
+    restart: always
     volumes:
       - db-data:/app/db
     networks:
       - pong-network
   waf:
     build:
-      context: .
       dockerfile: ./waf/Dockerfile
     container_name: waf
     init: true
@@ -32,10 +27,7 @@ services:
     ports:
       - "8080:8080"
       - "8443:8443"
-    deploy:
-      restart_policy:
-        condition: always
-        window: 120s
+    restart: always
     environment:
       # nginx settings
       BACKEND: http://app:4001

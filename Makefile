@@ -61,7 +61,7 @@ down:
 # Services are built once and then tagged
 .PHONY: build
 build:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build --no-cache
+	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build
 
 # Services are built once and then tagged without cache
 .PHONY: buildnc
@@ -110,9 +110,9 @@ exec:
 # Create secrets if there is no appropriate directory or the directory is empty
 .PHONY: --secrets
 --secrets:
-	@if [ ! -d $(DIR_SECRETS) ] || [ -z "$$(ls -A $(DIR_SECRETS))" ]; then \
+	mkdir -p $(DIR_SECRETS);
+	@if [ -z "$$(ls -A $(DIR_SECRETS))" ]; then \
 		echo "$(BOLD)$(BLUE)Creating secrets...$(RESET)"; \
-		mkdir -p $(DIR_SECRETS); \
 		cd $(DIR_SECRETS) && \
 		../$(DIR_SCRIPTS)/generate-ssl-certs.sh \
 	else \

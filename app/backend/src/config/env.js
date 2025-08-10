@@ -21,7 +21,7 @@ const schema = {
   properties: {
     PORT: {
       type: "number",
-      default: Number(process.env.PORT) || 4000
+      default: 4000
     },
     LOG_LEVEL: {
       type: "string",
