@@ -84,7 +84,7 @@ export async function generateTwoFAQRcode(
 export async function verifyTwoFACodeAndGetBackupCodes(
   code: string
 ): Promise<ApiResponse<{ backupCodes: string[] }>> {
-  const url = "/api/auth/2fa/verify";
+  const url = "/api/auth/2fa/enable";
 
   return apiFetch<{ backupCodes: string[] }>(
     url,
