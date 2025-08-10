@@ -4,19 +4,23 @@ import { maketournamentLastNDaysOptions } from "../../charts/tournamentsLastNDay
 import { maketournamentSummaryOptions } from "../../charts/tournamentSummaryOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
+import { PaginationControls } from "../../components/Pagination.js";
 import { Table } from "../../components/Table.js";
 import {
   NoTournamentsRow,
   TournamentRow
 } from "../../components/TournamentRow.js";
+import { Paginator } from "../../Paginator.js";
 import { getDataOrThrow } from "../../services/api.js";
-import { getUserTournaments } from "../../services/tournamentService.js";
+import { getUserTournamentsByUsername } from "../../services/tournamentService.js";
 import { getUserDashboardTournamentsByUsername } from "../../services/userStatsServices.js";
+import { toaster } from "../../Toaster.js";
 import { DashboardTournaments } from "../../types/DataSeries.js";
 import { TournamentDTO } from "../../types/ITournament.js";
 import { AbstractTab } from "./AbstractTab.js";
 
 export class TournamentsTab extends AbstractTab {
+  private paginator = new Paginator<TournamentDTO>(10);
   private tournaments: TournamentDTO[] | null = null;
   private dashboard: DashboardTournaments | null = null;
   private username: string;
@@ -43,6 +47,13 @@ export class TournamentsTab extends AbstractTab {
           variant: "default"
         })}
         <div id="tournaments-history-table"></div>
+        ${PaginationControls({
+          prevId: "tournaments-prev-btn",
+          nextId: "tournaments-next-btn",
+          indicatorId: "tournaments-page-indicator",
+          prevLabel: "<",
+          nextLabel: ">"
+        })}
       </div>
     </div>`;
   }
@@ -118,14 +129,14 @@ export class TournamentsTab extends AbstractTab {
 
   override async onShow(): Promise<void> {
     await super.onShow();
-    this.updateTournamentsTable(this.tournaments!);
+    await this.loadPage(this.paginator.getCurrentPage());
+    this.addListeners();
   }
 
   async init(): Promise<void> {
     this.dashboard = getDataOrThrow(
       await getUserDashboardTournamentsByUsername(this.username)
     );
-    this.tournaments = getDataOrThrow(await getUserTournaments());
     this.populateChartOptions();
     this.isInit = true;
   }
@@ -166,5 +177,77 @@ export class TournamentsTab extends AbstractTab {
         16
       )
     };
+  }
+
+  private async loadPage(page: number) {
+    const cached = this.paginator.getCachedPage(page);
+    if (cached) {
+      this.updateTournamentsTable(cached);
+      this.updatePaginationControls();
+      return;
+    }
+
+    const limit = this.paginator.getPageSize();
+    const offset = page * limit;
+
+    try {
+      const response = getDataOrThrow(
+        await getUserTournamentsByUsername(this.username, limit, offset)
+      );
+
+      this.paginator.setTotalItems(response.total);
+      this.paginator.cachePage(page, response.items);
+      this.updateTournamentsTable(response.items);
+      this.updatePaginationControls();
+    } catch (error) {
+      console.error("Failed to load matches page:", error);
+      toaster.error("Failed to fetch");
+    }
+  }
+
+  private updatePaginationControls() {
+    const prevBtn = document.getElementById(
+      "tournaments-prev-btn"
+    ) as HTMLButtonElement;
+    const nextBtn = document.getElementById(
+      "tournaments-next-btn"
+    ) as HTMLButtonElement;
+
+    prevBtn.disabled = !this.paginator.canGoPrev();
+    nextBtn.disabled = !this.paginator.canGoNext();
+
+    this.updatePageIndicator();
+  }
+
+  private updatePageIndicator() {
+    const pageIndicator = document.getElementById("tournaments-page-indicator");
+    if (!pageIndicator) return;
+
+    const currentPage = this.paginator.getCurrentPage() + 1;
+    const totalPages = this.paginator.getTotalPages();
+
+    pageIndicator.textContent = `${currentPage} / ${totalPages}`;
+  }
+
+  public async goPrevPage() {
+    if (this.paginator.canGoPrev()) {
+      this.paginator.goPrev();
+      await this.loadPage(this.paginator.getCurrentPage());
+    }
+  }
+
+  public async goNextPage() {
+    if (this.paginator.canGoNext()) {
+      this.paginator.goNext();
+      await this.loadPage(this.paginator.getCurrentPage());
+    }
+  }
+
+  addListeners() {
+    const prevBtn = document.getElementById("tournaments-prev-btn");
+    const nextBtn = document.getElementById("tournaments-next-btn");
+
+    prevBtn?.addEventListener("click", () => this.goPrevPage());
+    nextBtn?.addEventListener("click", () => this.goNextPage());
   }
 }
