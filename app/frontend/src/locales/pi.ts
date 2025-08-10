@@ -202,8 +202,9 @@ const pi: TranslationShape = {
 
     statsView: {
       date: "Chart Date",
-      friendOnly: "Only mates get to see yer ship logs",
-      joined: "Swore the Oath on",
+      friendOnly:
+        "Ye must be true mates to lay eyes on these secret scrolls o' stats!",
+      joined: "Swore the Oath on {{date}}",
       matchHistory: "Past Duels",
       played: "Engaged",
       player1: "Buccaneer 1",

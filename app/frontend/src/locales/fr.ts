@@ -212,8 +212,9 @@ const fr: TranslationShape = {
 
     statsView: {
       date: "Date",
-      friendOnly: "Vous devez être amis pour voir l'historique des matchs",
-      joined: "Inscrit le",
+      friendOnly:
+        "Vous devez être amis avec ce joueur pour voir les statistiques détaillées.",
+      joined: "Inscrit le {{date}}",
       matchHistory: "Historique des matchs",
       played: "Joué",
       player1: "Joueur 1",
