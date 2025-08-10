@@ -217,16 +217,7 @@ export class MatchesTab extends AbstractTab {
     const prevBtn = document.getElementById("matches-prev-btn");
     const nextBtn = document.getElementById("matches-next-btn");
 
-    console.log("Prev button:", prevBtn);
-    console.log("Next button:", nextBtn);
-
-    prevBtn?.addEventListener("click", () => {
-      console.log("Prev clicked");
-      this.goPrevPage();
-    });
-    nextBtn?.addEventListener("click", () => {
-      console.log("Next clicked");
-      this.goNextPage();
-    });
+    prevBtn?.addEventListener("click", () => this.goPrevPage());
+    nextBtn?.addEventListener("click", () => this.goNextPage());
   }
 }
