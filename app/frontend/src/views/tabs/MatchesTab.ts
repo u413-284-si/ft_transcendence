@@ -1,7 +1,7 @@
-import { makeScoreDiffOptions } from "../../charts/scoreDiffOptions.js";
-import { makeScoresLastTenDaysOptions } from "../../charts/scoresLastTenDaysOptions.js";
-import { makeWinLossOptions } from "../../charts/winLossOptions.js";
-import { makeWinrateOptions } from "../../charts/winrateOptions.js";
+import { buildMatchesScoreDiffOptions } from "../../charts/scoreDiffOptions.js";
+import { buildMatchesScoresLastTenDaysOptions } from "../../charts/scoresLastTenDaysOptions.js";
+import { buildMatchesWinLossOptions } from "../../charts/winLossOptions.js";
+import { buildMatchesWinrateOptions } from "../../charts/winrateOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
@@ -127,22 +127,22 @@ export class MatchesTab extends AbstractTab {
     if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
 
     this.chartOptions = {
-      "win-loss-chart": makeWinLossOptions(
+      "win-loss-chart": buildMatchesWinLossOptions(
         this.userStats.matchesWon,
         this.userStats.matchesLost,
         this.userStats.winRate
       ),
-      "winrate-chart": makeWinrateOptions(
+      "winrate-chart": buildMatchesWinrateOptions(
         i18next.t("statsView.winRate"),
         this.dashboard.winrate,
         this.userStats.matchesPlayed
       ),
-      "score-diff-chart": makeScoreDiffOptions(
+      "score-diff-chart": buildMatchesScoreDiffOptions(
         i18next.t("chart.scoreDiff", { range: "" }),
         this.dashboard.scoreDiff,
         this.userStats.matchesPlayed
       ),
-      "scores-last-ten": makeScoresLastTenDaysOptions(
+      "scores-last-ten": buildMatchesScoresLastTenDaysOptions(
         i18next.t("chart.scores", { range: "" }),
         this.dashboard.scores
       )

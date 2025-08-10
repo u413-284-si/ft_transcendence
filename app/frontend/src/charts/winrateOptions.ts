@@ -2,7 +2,7 @@ import type { ApexOptions } from "apexcharts";
 import { chartColors, toAxisSeries } from "./chartUtils.js";
 import { formatDateTime } from "../formatDate.js";
 
-export function makeWinrateOptions(
+export function buildMatchesWinrateOptions(
   name: string,
   data: { x: string; y: number }[],
   totalMatches: number

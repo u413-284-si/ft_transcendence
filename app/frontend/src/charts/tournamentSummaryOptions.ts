@@ -2,7 +2,7 @@ import type { ApexOptions } from "apexcharts";
 import { TournamentSummaryData } from "../types/DataSeries";
 import { tournamentColors } from "./chartUtils.js";
 
-export function maketournamentSummaryOptions(
+export function buildTournamentsSummaryOptions(
   name: string,
   data: TournamentSummaryData
 ): ApexOptions {

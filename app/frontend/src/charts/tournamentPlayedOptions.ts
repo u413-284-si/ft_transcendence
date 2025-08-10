@@ -7,7 +7,7 @@ import { chartColors, tournamentColors } from "./chartUtils.js";
 import { TournamentSize } from "../types/ITournament.js";
 import { formatDayMonth } from "../formatDate.js";
 
-export function makeTournamentPlayedOptions(
+export function buildTournamentsPlayedOptions(
   data: TournamentDayData
 ): ApexOptions {
   const transformedSeries = computePlayedSeriesFromDayData(data);

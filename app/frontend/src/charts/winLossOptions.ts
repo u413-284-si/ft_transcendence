@@ -1,7 +1,7 @@
 import type { ApexOptions } from "apexcharts";
 import { chartColors } from "./chartUtils.js";
 
-export function makeWinLossOptions(
+export function buildMatchesWinLossOptions(
   wins: number,
   losses: number,
   winRate: number

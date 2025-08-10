@@ -2,7 +2,7 @@ import { ApexOptions } from "apexcharts";
 import { tournamentColors } from "./chartUtils.js";
 import { TournamentSize } from "../types/ITournament.js";
 
-export function makeTournamentProgressOptions(
+export function buildTournamentsProgressOptions(
   data: { x: number; y: number }[],
   size: TournamentSize
 ): ApexOptions {

@@ -2,7 +2,7 @@ import type { ApexOptions } from "apexcharts";
 import { chartColors, toAxisSeries } from "./chartUtils.js";
 import { formatDate, formatDayMonth } from "../formatDate.js";
 
-export function makeScoresLastTenDaysOptions(
+export function buildMatchesScoresLastTenDaysOptions(
   name: string,
   data: { x: string; y: number }[]
 ): ApexOptions {

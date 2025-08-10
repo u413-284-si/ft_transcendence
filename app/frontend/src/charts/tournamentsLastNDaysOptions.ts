@@ -4,7 +4,7 @@ import { chartColors, tournamentColors } from "./chartUtils.js";
 import { formatDayMonth } from "../formatDate.js";
 import { TournamentSize } from "../types/ITournament.js";
 
-export function maketournamentLastNDaysOptions(
+export function buildTournamentsLastTenDaysOptions(
   data: TournamentDaySeries[],
   size: TournamentSize
 ): ApexOptions {

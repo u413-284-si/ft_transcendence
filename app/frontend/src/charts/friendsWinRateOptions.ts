@@ -2,7 +2,7 @@ import { ApexOptions } from "apexcharts";
 import { chartColors } from "./chartUtils.js";
 import { FriendStatsSeries } from "../types/DataSeries.js";
 
-export function makeFriendsWinRateOptions(
+export function buildFriendsWinRateOptions(
   data: FriendStatsSeries,
   selectedFriends: string[],
   colors: string[]

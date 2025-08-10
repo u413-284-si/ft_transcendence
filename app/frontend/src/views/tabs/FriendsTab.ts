@@ -1,7 +1,7 @@
 import { FriendManager } from "../../charts/FriendManager.js";
-import { makeFriendsMatchStatsOptions } from "../../charts/friendsMatchStatsOptions.js";
-import { makeFriendsWinRateOptions } from "../../charts/friendsWinRateOptions.js";
-import { makeFriendsWinstreakOptions } from "../../charts/friendsWinstreakOptions.js";
+import { buildFriendsMatchStatsOptions } from "../../charts/friendsMatchStatsOptions.js";
+import { buildFriendsWinRateOptions } from "../../charts/friendsWinRateOptions.js";
+import { buildFriendsWinstreakOptions } from "../../charts/friendsWinstreakOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { Header3 } from "../../components/Header3.js";
@@ -89,17 +89,17 @@ export class FriendsTab extends AbstractTab {
     const colors = this.friendManager.getColors();
 
     this.chartOptions = {
-      "friends-winrate": makeFriendsWinRateOptions(
+      "friends-winrate": buildFriendsWinRateOptions(
         this.dashboard.winRate,
         selectedFriends,
         colors
       ),
-      "friends-match-stats": makeFriendsMatchStatsOptions(
+      "friends-match-stats": buildFriendsMatchStatsOptions(
         this.dashboard.matchStats,
         selectedFriends,
         colors
       ),
-      "friends-winstreak": makeFriendsWinstreakOptions(
+      "friends-winstreak": buildFriendsWinstreakOptions(
         this.dashboard.winstreak,
         selectedFriends,
         colors
@@ -166,17 +166,17 @@ export class FriendsTab extends AbstractTab {
     const selectedFriends = this.friendManager.getSelectedFriends();
     const colors = this.friendManager.getColors();
 
-    const winrateOptions = makeFriendsWinRateOptions(
+    const winrateOptions = buildFriendsWinRateOptions(
       this.dashboard.winRate,
       selectedFriends,
       colors
     );
-    const matchStatsOptions = makeFriendsMatchStatsOptions(
+    const matchStatsOptions = buildFriendsMatchStatsOptions(
       this.dashboard.matchStats,
       selectedFriends,
       colors
     );
-    const winstreakOptions = makeFriendsWinstreakOptions(
+    const winstreakOptions = buildFriendsWinstreakOptions(
       this.dashboard.winstreak,
       selectedFriends,
       colors

@@ -1,7 +1,7 @@
-import { makeTournamentPlayedOptions } from "../../charts/tournamentPlayedOptions.js";
-import { makeTournamentProgressOptions } from "../../charts/tournamentProgressOptions.js";
-import { maketournamentLastNDaysOptions } from "../../charts/tournamentsLastNDaysOptions.js";
-import { maketournamentSummaryOptions } from "../../charts/tournamentSummaryOptions.js";
+import { buildTournamentsPlayedOptions } from "../../charts/tournamentPlayedOptions.js";
+import { buildTournamentsProgressOptions } from "../../charts/tournamentProgressOptions.js";
+import { buildTournamentsLastTenDaysOptions } from "../../charts/tournamentsLastNDaysOptions.js";
+import { buildTournamentsSummaryOptions } from "../../charts/tournamentSummaryOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { PaginationControls } from "../../components/Pagination.js";
@@ -144,34 +144,34 @@ export class TournamentsTab extends AbstractTab {
     if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
 
     this.chartOptions = {
-      "tournament-summary": maketournamentSummaryOptions(
+      "tournament-summary": buildTournamentsSummaryOptions(
         i18next.t("chart.summary"),
         this.dashboard.summary
       ),
-      "tournament-played": makeTournamentPlayedOptions(
+      "tournament-played": buildTournamentsPlayedOptions(
         this.dashboard.lastNDays
       ),
-      "tournament-last-10-days-4": maketournamentLastNDaysOptions(
+      "tournament-last-10-days-4": buildTournamentsLastTenDaysOptions(
         this.dashboard.lastNDays[4],
         4
       ),
-      "tournament-progress-4": makeTournamentProgressOptions(
+      "tournament-progress-4": buildTournamentsProgressOptions(
         this.dashboard.progress[4].reverse(),
         4
       ),
-      "tournament-last-10-days-8": maketournamentLastNDaysOptions(
+      "tournament-last-10-days-8": buildTournamentsLastTenDaysOptions(
         this.dashboard.lastNDays[8],
         8
       ),
-      "tournament-progress-8": makeTournamentProgressOptions(
+      "tournament-progress-8": buildTournamentsProgressOptions(
         this.dashboard.progress[8].reverse(),
         8
       ),
-      "tournament-last-10-days-16": maketournamentLastNDaysOptions(
+      "tournament-last-10-days-16": buildTournamentsLastTenDaysOptions(
         this.dashboard.lastNDays[16],
         16
       ),
-      "tournament-progress-16": makeTournamentProgressOptions(
+      "tournament-progress-16": buildTournamentsProgressOptions(
         this.dashboard.progress[16].reverse(),
         16
       )
