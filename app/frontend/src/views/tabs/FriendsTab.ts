@@ -58,7 +58,7 @@ export class FriendsTab extends AbstractTab {
           chartId: "friends-winrate"
         })}
         ${Chart({
-          title: i18next.t("statsView.winstreak"),
+          title: i18next.t("statsView.winstreakCur"),
           chartId: "friends-winstreak"
         })}
       </div>

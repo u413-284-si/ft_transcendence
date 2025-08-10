@@ -23,14 +23,14 @@ export function makeFriendsWinstreakOptions(
     xaxis: {
       categories: [
         i18next.t("chart.current"),
-        i18next.t("statsView.maxStreak")
+        i18next.t("statsView.winstreakMax")
       ],
       labels: { style: { colors: [chartColors.white, chartColors.white] } }
     },
     yaxis: {
       labels: { style: { colors: [chartColors.white] } },
       title: {
-        text: i18next.t("statsView.winstreak"),
+        text: i18next.t("statsView.winstreakCur"),
         style: { color: chartColors.white }
       },
       forceNiceScale: true
