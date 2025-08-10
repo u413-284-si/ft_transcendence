@@ -25,7 +25,11 @@ export async function seedUsers(count = 10) {
   users.push(adminUser);
 
   for (let i = 1; i < count; i++) {
-    const username = createRandomUsername();
+    const user_regex = new RegExp("^[a-zA-Z0-9-!?_$.]{3,20}$");
+    let username = createRandomUsername();
+    while (!user_regex.test(username)) {
+      username = createRandomUsername();
+    }
     const email = randEmail();
     const hashedPassword = await createHash("123");
     const authProvider = "LOCAL";
