@@ -21,7 +21,6 @@ import { AbstractTab } from "./AbstractTab.js";
 
 export class TournamentsTab extends AbstractTab {
   private paginator = new Paginator<TournamentDTO>(10);
-  private tournaments: TournamentDTO[] | null = null;
   private dashboard: DashboardTournaments | null = null;
   private username: string;
 

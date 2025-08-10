@@ -60,22 +60,19 @@ export async function getUserTournaments(
 }
 
 export async function getUserTournamentsByUsername(
-  name?: string,
+  username: string,
   limit = 10,
   offset = 0,
   sort: "asc" | "desc" = "desc"
 ): Promise<ApiResponse<TournamentsPageResponse>> {
+  const encoded = encodeURIComponent(username);
   const params = new URLSearchParams({
     limit: limit.toString(),
     offset: offset.toString(),
     sort
   });
 
-  if (name) {
-    params.set("name", name);
-  }
-
-  const url = `/api/users/me/tournaments?${params.toString()}`;
+  const url = `/api/users/${encoded}/tournaments?${params.toString()}`;
 
   return apiFetch<TournamentsPageResponse>(url, {
     method: "GET",
