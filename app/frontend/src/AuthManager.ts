@@ -15,6 +15,7 @@ import { Token } from "./types/Token.js";
 import { User, Language } from "./types/User.js";
 import { getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
+import TwoFAVerifyView from "./views/TwoFAVerifyView.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
 
@@ -24,7 +25,6 @@ export class AuthManager {
   private token: Token | null = null;
   private listeners: AuthChangeCallback[] = [];
   private user: User | null = null;
-  private twoFAPending: boolean = false;
 
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
@@ -99,8 +99,8 @@ export class AuthManager {
 
       const hasTwoFA = apiResponseUserLogin.data.hasTwoFA;
       if (hasTwoFA) {
-        this.twoFAPending = true;
-        router.navigate("/2FaVerification", false);
+        router.switchView(new TwoFAVerifyView());
+        return false;
       }
 
       const token = getDataOrThrow(await authAndDecodeAccessToken());
@@ -121,10 +121,7 @@ export class AuthManager {
     try {
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
-      console.log("User logged in");
-      console.log("token", token);
       this.updateAuthState(token);
-      this.twoFAPending = false;
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -167,10 +164,6 @@ export class AuthManager {
 
   public isAuthenticated(): boolean {
     return this.authenticated;
-  }
-
-  public isTwoFAPending(): boolean {
-    return this.twoFAPending;
   }
 
   public getToken(): Token {

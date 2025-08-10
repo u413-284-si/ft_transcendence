@@ -11,6 +11,7 @@ import { getEl } from "../utility.js";
 import { verifyLoginTwoFACode } from "../services/authServices.js";
 import { ApiError } from "../services/api.js";
 import { Link } from "../components/Link.js";
+import TwoFABackupCodeVerifyView from "./TwoFABackupCodeVerifyView.js";
 
 export default class TwoFAVerifyView extends AbstractView {
   constructor() {
@@ -33,8 +34,7 @@ export default class TwoFAVerifyView extends AbstractView {
           }),
           Link({
             id: "two-fa-backup-code-link",
-            text: i18next.t("twoFAVerifyView.useBackupCode"),
-            href: "/2FaBackupCodeVerification"
+            text: i18next.t("twoFAVerifyView.useBackupCode")
           }),
           Button({
             text: i18next.t("twoFAVerifyView.submitTwoFACode"),
@@ -51,6 +51,11 @@ export default class TwoFAVerifyView extends AbstractView {
     document
       .getElementById("two-fa-verify-form")
       ?.addEventListener("submit", (event) => this.verifyTwoFA(event));
+    document
+      .getElementById("two-fa-backup-code-link")
+      ?.addEventListener("click", () =>
+        router.switchView(new TwoFABackupCodeVerifyView())
+      );
   }
 
   async render() {
