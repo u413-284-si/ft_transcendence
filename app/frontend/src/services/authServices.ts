@@ -132,7 +132,7 @@ export async function verifyBackupCode(
 export async function verifyLoginTwoFACode(
   code: string
 ): Promise<ApiResponse<null>> {
-  const url = "/api/auth/2fa/login/verify";
+  const url = "/api/auth/2fa/login/";
 
   return apiFetch<null>(
     url,
