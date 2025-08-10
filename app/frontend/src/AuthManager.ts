@@ -1,7 +1,6 @@
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
-  authAndDecodTwoFALoginToken,
   refreshAccessToken,
   userLogin,
   userLogout
@@ -97,15 +96,13 @@ export class AuthManager {
           throw new ApiError(apiResponseUserLogin);
         }
       }
-      const apiResponsTwoFALogin = await authAndDecodTwoFALoginToken();
-      if (!apiResponsTwoFALogin.success) {
-        if (apiResponsTwoFALogin.status === 401) {
-          console.log("2FA login token not found");
-        }
-      } else {
+
+      const hasTwoFA = apiResponseUserLogin.data.hasTwoFA;
+      if (hasTwoFA) {
         this.twoFAPending = true;
         router.navigate("/2FaVerification", false);
       }
+
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
       await i18next.changeLanguage(this.user.language);

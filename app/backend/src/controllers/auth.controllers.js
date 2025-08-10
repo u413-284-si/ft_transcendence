@@ -60,14 +60,15 @@ export async function loginUserHandler(request, reply) {
       );
     }
 
-    if ((await getTwoFAStatus(payload.id)) === true) {
+    const hasTwoFA = await getTwoFAStatus(payload.id);
+    if (hasTwoFA) {
       const twoFALoginToken = await createTwoFAToken(reply, payload);
       return reply
         .setTwoFACookie(twoFALoginToken)
         .code(200)
         .send({
           message: createResponseMessage(action, true),
-          data: { username: payload.username }
+          data: { username: payload.username, hasTwoFA: hasTwoFA }
         });
     }
 
@@ -75,12 +76,13 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
+
     return reply
       .setAuthCookies(accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: payload.username }
+        data: { username: payload.username, hasTwoFA: hasTwoFA }
       });
   } catch (err) {
     request.log.error(
@@ -170,22 +172,6 @@ export async function authAndDecodeAccessHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `authAndDecodeAccessHandler: ${createResponseMessage(action, false)}`
-    );
-    handlePrismaError(reply, action, err);
-  }
-}
-
-export async function authAndDecodeTwoFALoginHandler(request, reply) {
-  const action = "Auth and decode 2FA login token";
-  try {
-    const data = request.user;
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), data });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `authAndDecodeTwoFALoginHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }

@@ -24,24 +24,13 @@ export async function refreshAccessToken(): Promise<ApiResponse<null>> {
   );
 }
 
-export async function authAndDecodTwoFALoginToken(): Promise<
-  ApiResponse<Token>
-> {
-  const url = "/api/auth/2fa/login/token";
-
-  return apiFetch<Token>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
 export async function userLogin(
   usernameOrEmail: string,
   password: string
-): Promise<ApiResponse<{ username: string }>> {
+): Promise<ApiResponse<{ username: string; hasTwoFA: boolean }>> {
   const url = "/api/auth/login";
 
-  return apiFetch<{ username: string }>(
+  return apiFetch<{ username: string; hasTwoFA: boolean }>(
     url,
     {
       method: "POST",
