@@ -116,7 +116,7 @@ export async function generateBackupCodes(
 export async function verifyBackupCode(
   backupCode: string
 ): Promise<ApiResponse<void>> {
-  const url = "/api/auth/2fa/login/backupCodes/verify";
+  const url = "/api/auth/2fa/login/backupCode";
 
   return apiFetch<void>(
     url,
