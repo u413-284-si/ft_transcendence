@@ -1,7 +1,7 @@
 # Stage 1: Build the application
 FROM node:slim AS builder
 
-ENV NODE_ENV production
+ENV NODE_ENV development
 
 # System dependencies
 RUN apt-get update && apt-get install -y \
@@ -19,7 +19,8 @@ COPY ./app ./app
 RUN npm ci --ignore-scripts \
   && npx prisma generate \
   && npm run style \
-  && npm run build
+  && npm run build \
+  && npm prune --omit=dev
 
 # Stage 2: Serve the application
 FROM node:slim
@@ -33,6 +34,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /
 
 COPY --from=builder /build/app ./app
+
 COPY --from=builder /build/node_modules ./node_modules
 
 EXPOSE 4001
