@@ -113,8 +113,8 @@ export async function get2FaStatus(userId) {
 }
 
 export async function createAuthTokens(reply, payload) {
-  const accessTokenPayload = { ...payload, tokenTyp: "access" };
-  const refreshTokenPayload = { id: payload.id, tokenTyp: "refresh" };
+  const accessTokenPayload = { ...payload, type: "access" };
+  const refreshTokenPayload = { id: payload.id, type: "refresh" };
   const accessToken = await createAccessToken(reply, accessTokenPayload);
   const refreshToken = await createRefreshToken(reply, refreshTokenPayload);
 
@@ -126,7 +126,7 @@ export async function createAuthTokens(reply, payload) {
 }
 
 export async function createTwoFAToken(reply, payload) {
-  const twoFALoginTokenPayload = { ...payload, tokenTyp: "twoFALogin" };
+  const twoFALoginTokenPayload = { ...payload, type: "twoFALogin" };
   const twoFALoginToken = await creatTwoFALoginToken(
     reply,
     twoFALoginTokenPayload

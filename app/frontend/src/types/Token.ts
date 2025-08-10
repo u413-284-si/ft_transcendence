@@ -1,6 +1,6 @@
 export type Token = {
   id: number;
-  tokenType: string;
+  type: string;
   username: string;
   exp: number;
 };
