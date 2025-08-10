@@ -64,24 +64,24 @@ export default class TwoFAVerifyView extends AbstractView {
 
   private async verifyTwoFA(event: Event) {
     event.preventDefault();
-    const twoFAQrCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
-    const twoFAQrCodeErrorEl = getEl("two-fa-qr-code-input-error");
+    const twoFAQRCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
+    const twoFAQRCodeErrorEl = getEl("two-fa-qr-code-input-error");
 
     const isTwoFACodeValid = await validateTwoFACode(
-      twoFAQrCodeInput,
-      twoFAQrCodeErrorEl
+      twoFAQRCodeInput,
+      twoFAQRCodeErrorEl
     );
     if (!isTwoFACodeValid) {
       return;
     }
 
-    const apiResponse = await verifyLoginTwoFACode(twoFAQrCodeInput.value);
+    const apiResponse = await verifyLoginTwoFACode(twoFAQRCodeInput.value);
     if (!apiResponse.success) {
       if (apiResponse.status === 401) {
         markInvalid(
           i18next.t("invalid.twoFACode"),
-          twoFAQrCodeInput,
-          twoFAQrCodeErrorEl
+          twoFAQRCodeInput,
+          twoFAQRCodeErrorEl
         );
         return;
       } else {

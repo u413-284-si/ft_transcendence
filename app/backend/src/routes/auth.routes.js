@@ -113,7 +113,7 @@ const optionsGoogleOauth2Login = {
   }
 };
 
-const optionsTwoFAQrCode = {
+const optionsTwoFAQRCode = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {

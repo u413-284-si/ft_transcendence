@@ -183,7 +183,7 @@ export function generateTotp(username, secret) {
   });
 }
 
-export async function generate2FaQrCode(totp) {
+export async function generate2FaQRCode(totp) {
   const uri = totp.toString();
   return await QRCode.toDataURL(uri);
 }

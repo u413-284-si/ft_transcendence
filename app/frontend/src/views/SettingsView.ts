@@ -7,7 +7,7 @@ import { Input } from "../components/Input.js";
 import { Image } from "../components/Image.js";
 import {
   generateBackupCodes,
-  generateTwoFAQrcode as generateTwoFAQrcode,
+  generateTwoFAQRcode as generateTwoFAQRcode,
   geTwoFAStatus,
   removeTwoFA,
   verifyTwoFACodeAndGetBackupCodes
@@ -48,7 +48,7 @@ export default class SettingsView extends AbstractView {
   private twoFABackupCodesTableEl!: HTMLTableElement;
   private twoFADownloadBackupCodesLinkEl!: HTMLAnchorElement;
   private twoFABackupCodesCloseModalButtonEl!: HTMLElement;
-  private twoFAQrCodeEl!: HTMLImageElement;
+  private twoFAQRCodeEl!: HTMLImageElement;
 
   private preferredLanguageFormEl!: HTMLFormElement;
   private preferredLanguageButtonEl!: HTMLElement;
@@ -321,7 +321,7 @@ export default class SettingsView extends AbstractView {
     this.twoFABackupCodesCloseModalButtonEl = getButtonEl(
       "two-fa-close-backup-codes-modal-button"
     );
-    this.twoFAQrCodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
+    this.twoFAQRCodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
     this.addListeners();
   }
 
@@ -419,7 +419,7 @@ export default class SettingsView extends AbstractView {
       // if (!validatePassword(this.twoFAPasswordInputEl, this.twoFAPasswordInputErrorEl))
       //   return;
 
-      const apiResponse = await generateTwoFAQrcode(
+      const apiResponse = await generateTwoFAQRcode(
         this.twoFAPasswordInputEl.value
       );
       if (!apiResponse.success) {
@@ -437,7 +437,7 @@ export default class SettingsView extends AbstractView {
       this.twoFAPasswordInputEl.value = "";
       const { qrcode } = apiResponse.data;
 
-      this.twoFAQrCodeEl.src = qrcode;
+      this.twoFAQRCodeEl.src = qrcode;
 
       this.hideOverlay();
       this.displayModal("two-fa-modal");
@@ -538,7 +538,7 @@ export default class SettingsView extends AbstractView {
   }
 
   private hideTwoFASetupModal() {
-    this.twoFAQrCodeEl.src = "";
+    this.twoFAQRCodeEl.src = "";
     this.hideModal("two-fa-modal");
     this.hideOverlay();
   }

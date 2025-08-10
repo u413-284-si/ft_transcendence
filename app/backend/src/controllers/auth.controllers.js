@@ -8,7 +8,7 @@ import {
   setAuthCookies,
   updateTotpSecret,
   generateTotp,
-  generate2FaQrCode,
+  generate2FaQRCode,
   generate2FaSecret,
   verify2FaToken,
   getTotpSecret,
@@ -273,7 +273,7 @@ export async function twoFAQRCodeHandler(request, reply) {
     }
 
     const totp = generateTotp(username, secret);
-    const qrcode = await generate2FaQrCode(totp);
+    const qrcode = await generate2FaQRCode(totp);
     const data = { qrcode: qrcode };
 
     await updateTotpSecret(userId, secret);
