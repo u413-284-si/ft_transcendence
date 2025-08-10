@@ -179,7 +179,7 @@ export async function authAndDecodeAccessHandler(request, reply) {
   }
 }
 
-export async function authAndDecodTwoFALoginHandler(request, reply) {
+export async function authAndDecodeTwoFALoginHandler(request, reply) {
   const action = "Auth and decode 2FA login token";
   try {
     const data = request.user;

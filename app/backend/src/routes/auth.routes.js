@@ -8,7 +8,7 @@ import {
   twoFAVerifyHandler,
   twoFAStatusHandler,
   twoFARemoveHandler,
-  authAndDecodTwoFALoginHandler,
+  authAndDecodeTwoFALoginHandler,
   twoFALoginVerifyHandler,
   twoFABackupCodesHandler,
   twoFABackupCodeVerifyHandler
@@ -52,7 +52,7 @@ export default async function authRoutes(fastify) {
   fastify.get(
     "/2fa/login/token",
     optionsAuthUseTwoFALogin,
-    authAndDecodTwoFALoginHandler
+    authAndDecodeTwoFALoginHandler
   );
 
   fastify.get("/2fa/status", optionsTwoFAStatus, twoFAStatusHandler);
