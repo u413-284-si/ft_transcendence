@@ -18,7 +18,7 @@ import type { BracketMatch } from "../../../frontend/src/types/IMatch.ts";
 import type { Tournament as TournamentType, User } from "@prisma/client";
 type PublicTournament = Omit<TournamentType, "isPrivate">;
 
-export async function seedTournamentsPerUser(users: User[], min: 1, max: 10) {
+export async function seedTournamentsPerUser(users: User[], min = 1, max = 10) {
   const allTournaments: PublicTournament[] = [];
 
   for (const user of users) {
