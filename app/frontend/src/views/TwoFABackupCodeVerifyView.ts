@@ -65,7 +65,6 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
       "two-fa-backup-code-input"
     ) as HTMLInputElement;
     const twoFABackupCodeErrorEl = getEl("two-fa-backup-code-input-error");
-    console.log("backupCode:", twoFABackupCodeInput.value);
 
     const isBackupCodeValid = await validateTwoFABackupCode(
       twoFABackupCodeInput,
