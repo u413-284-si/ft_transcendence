@@ -23,20 +23,24 @@ import { Paragraph } from "../components/Paragraph.js";
 import { StatFieldGroup } from "../components/StatField.js";
 import { getDataOrThrow } from "../services/api.js";
 import { formatDate } from "../formatDate.js";
+import { AbstractTab } from "./tabs/AbstractTab.js";
+import { TextBox } from "../components/TextBox.js";
+import { TabButton } from "../components/TabButton.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
   private username = escapeHTML(router.getParams().username);
   private user: User | null = null;
+  private userStats: UserStats | null = null;
   private friendRequest: FriendRequest | null = null;
+  private tabs: Record<string, AbstractTab> = {};
+  private currentTabId?: string;
+  private matches: Match[] | null = null;
 
   constructor() {
     super();
     this.setTitle(i18next.t("statsView.title"));
   }
-
-  private userStats: UserStats | null = null;
-  private matches: Match[] | null = null;
 
   createHTML() {
     if (!this.user) throw new Error(i18next.t("error.somethingWentWrong"));
@@ -97,7 +101,7 @@ export default class StatsView extends AbstractView {
           id: "match-history-header",
           variant: "default"
         })}
-        ${this.getMatchesHTML()}
+        ${this.getTabsHTML()}
       </div> `;
   }
 
@@ -105,6 +109,10 @@ export default class StatsView extends AbstractView {
     await this.setViewType();
     await this.fetchData();
     this.updateHTML();
+    if (this.viewType === "public") return;
+    //this.tabs["matches"] = new MatchesTab(this.userStats!, this.username);
+    await this.showTab("matches");
+    this.addListeners();
   }
 
   getMatchesHTML(): string {
@@ -181,5 +189,63 @@ export default class StatsView extends AbstractView {
         await getUserPlayedMatchesByUsername(this.username)
       );
     }
+  }
+
+  async showTab(tabId: string) {
+    if (this.currentTabId) {
+      this.tabs[this.currentTabId].onHide();
+    }
+    this.currentTabId = tabId;
+
+    const container = document.getElementById("tab-content")!;
+    container.innerHTML = this.tabs[tabId].getHTML();
+
+    await this.tabs[tabId].onShow();
+  }
+
+  getTabsHTML(): string {
+    if (this.viewType === "public") {
+      return /* HTML */ ` ${TextBox({
+        text: [i18next.t("statsView.friendOnly")],
+        variant: "info"
+      })}`;
+    }
+    return /* HTML */ `
+      <div class="flex space-x-4 border-b border-grey mb-4">
+        ${TabButton({
+          text: i18next.t("statsView.matches"),
+          tabId: "matches",
+          isActive: true
+        })}
+        ${TabButton({
+          text: i18next.t("statsView.tournaments"),
+          tabId: "tournaments"
+        })}
+        ${this.viewType === "self"
+          ? TabButton({
+              text: i18next.t("statsView.friends"),
+              tabId: "friends"
+            })
+          : ""}
+      </div>
+      <div id="tab-content"></div>
+    `;
+  }
+
+  protected addListeners(): void {
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-button");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tabId = button.dataset.tab!;
+        await this.showTab(tabId);
+
+        buttons.forEach((btn) => {
+          btn.classList.remove("active-link");
+        });
+
+        button.classList.add("active-link");
+      });
+    });
   }
 }

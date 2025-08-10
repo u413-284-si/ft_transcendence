@@ -204,7 +204,9 @@ const pi: TranslationShape = {
       date: "Chart Date",
       friendOnly:
         "Ye must be true mates to lay eyes on these secret scrolls o' stats!",
+      friends: "Mates",
       joined: "Swore the Oath on {{date}}",
+      matches: "Battles",
       matchHistory: "Past Duels",
       played: "Engaged",
       player1: "Buccaneer 1",
@@ -214,6 +216,7 @@ const pi: TranslationShape = {
       result: "Outcome",
       title: "Ship Logs",
       tournament: "Skull & Crossbones Cup",
+      tournaments: "Skull & Crossbones Cups",
       winRate: "Victory Percentage",
       winstreakCur: "Plunder Trail",
       winstreakMax: "Mighty Streak"

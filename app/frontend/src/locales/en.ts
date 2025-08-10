@@ -204,7 +204,9 @@ const en = {
     statsView: {
       date: "Date",
       friendOnly: "You must be friends to view detailed stats.",
+      friends: "Friends",
       joined: "Joined on {{date}}",
+      matches: "Matches",
       matchHistory: "Match History",
       played: "Played",
       player1: "Player 1",
@@ -214,6 +216,7 @@ const en = {
       result: "Result",
       title: "Statistics",
       tournament: "Tournament",
+      tournaments: "Tournaments",
       winRate: "Win Rate",
       winstreakCur: "Winstreak",
       winstreakMax: "Max Streak"

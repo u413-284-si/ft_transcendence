@@ -214,7 +214,9 @@ const fr: TranslationShape = {
       date: "Date",
       friendOnly:
         "Vous devez être amis avec ce joueur pour voir les statistiques détaillées.",
+      friends: "Amis",
       joined: "Inscrit le {{date}}",
+      matches: "Matchs",
       matchHistory: "Historique des matchs",
       played: "Joué",
       player1: "Joueur 1",
@@ -224,6 +226,7 @@ const fr: TranslationShape = {
       result: "Résultat",
       title: "Statistiques",
       tournament: "Tournoi",
+      tournaments: "Tournois",
       winRate: "Taux de victoire",
       winstreakCur: "Série de victoires",
       winstreakMax: "Max-Série"

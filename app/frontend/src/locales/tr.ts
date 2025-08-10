@@ -204,7 +204,9 @@ const tr: TranslationShape = {
     statsView: {
       date: "Cycle Date",
       friendOnly: "Link established required to access complete logs.",
+      friends: "Connections",
       joined: "Node integrated: {{date}}",
+      matches: "Sessions",
       matchHistory: "Session Log",
       played: "Engaged",
       player1: "Agent 1",
@@ -214,6 +216,7 @@ const tr: TranslationShape = {
       result: "Session Outcome",
       title: "Performance Stats",
       tournament: "Tournament Grid",
+      tournaments: "Tournaments",
       winRate: "Victory Ratio",
       winstreakCur: "Sequence",
       winstreakMax: "Max Sequence"
