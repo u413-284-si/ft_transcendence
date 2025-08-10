@@ -3,9 +3,6 @@ FROM mcr.microsoft.com/devcontainers/base:noble
 RUN apt-get update \
   && apt-get -y install --no-install-recommends \
   curl \
-  gnupg \
-  ca-certificates \
-  lsb-release \
   && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://deb.nodesource.com/setup_23.x -o nodesource_setup.sh \
