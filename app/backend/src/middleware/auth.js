@@ -29,7 +29,7 @@ export async function authorizeUserAccess(request, reply) {
   }
 }
 
-export async function authorizeUseTwoFALoginAccess(request, reply) {
+export async function authorizeUserTwoFALoginAccess(request, reply) {
   const action = "Authorize user's two factor login token";
 
   const token = request.cookies.twoFALoginToken;
@@ -46,7 +46,7 @@ export async function authorizeUseTwoFALoginAccess(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authorizeUseTwoFALoginAccess: ${createResponseMessage(action, false)}`
+      `authorizeUserTwoFALoginAccess: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
