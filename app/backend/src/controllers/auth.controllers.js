@@ -7,12 +7,12 @@ import {
   deleteUserRefreshToken,
   updateTotpSecret,
   generateTotp,
-  generate2FaQRCode,
-  generate2FaSecret,
-  verify2FaToken,
+  generateTwoFAQRCode,
+  generateTwoFASecret,
+  verifyTwoFAToken,
   getTotpSecret,
-  update2FaStatus,
-  get2FaStatus,
+  updateTwoFAStatus,
+  getTwoFAStatus,
   createTwoFAToken,
   deleteBackupCodes,
   verifyBackupCode,
@@ -60,7 +60,7 @@ export async function loginUserHandler(request, reply) {
       );
     }
 
-    if ((await get2FaStatus(payload.id)) === true) {
+    if ((await getTwoFAStatus(payload.id)) === true) {
       const twoFALoginToken = await createTwoFAToken(reply, payload);
       return reply
         .setTwoFACookie(twoFALoginToken)
@@ -255,15 +255,15 @@ export async function twoFAQRCodeHandler(request, reply) {
 
     const username = request.user.username;
     let secret = "";
-    if (await get2FaStatus(userId)) {
+    if (await getTwoFAStatus(userId)) {
       secret = await getTotpSecret(request.user.id);
     } else {
-      secret = generate2FaSecret();
+      secret = generateTwoFASecret();
       await updateTotpSecret(userId, secret);
     }
 
     const totp = generateTotp(username, secret);
-    const qrcode = await generate2FaQRCode(totp);
+    const qrcode = await generateTwoFAQRCode(totp);
     const data = { qrcode: qrcode };
 
     return reply
@@ -286,7 +286,7 @@ export async function twoFAVerifyHandler(request, reply) {
     const { code } = request.body;
     const secret = await getTotpSecret(userId);
     const totp = generateTotp(request.user.username, secret);
-    if (!verify2FaToken(totp, code)) {
+    if (!verifyTwoFAToken(totp, code)) {
       return httpError(
         reply,
         401,
@@ -295,7 +295,7 @@ export async function twoFAVerifyHandler(request, reply) {
       );
     }
 
-    await update2FaStatus(userId, true);
+    await updateTwoFAStatus(userId, true);
 
     const newBackupCodes = await updateBackupCodes(userId);
     const data = { backupCodes: newBackupCodes };
@@ -397,7 +397,7 @@ export async function twoFALoginVerifyHandler(request, reply) {
     const { code } = request.body;
     const secret = await getTotpSecret(userId);
     const totp = generateTotp(request.user.username, secret);
-    if (!verify2FaToken(totp, code)) {
+    if (!verifyTwoFAToken(totp, code)) {
       return httpError(
         reply,
         401,
@@ -438,7 +438,7 @@ export async function twoFAStatusHandler(request, reply) {
   try {
     const userId = request.user.id;
 
-    const hasTwoFA = await get2FaStatus(userId);
+    const hasTwoFA = await getTwoFAStatus(userId);
     const data = { hasTwoFA: hasTwoFA };
     return reply
       .code(200)
@@ -469,7 +469,7 @@ export async function twoFARemoveHandler(request, reply) {
       );
     }
 
-    await update2FaStatus(userId, false);
+    await updateTwoFAStatus(userId, false);
     await updateTotpSecret(userId, null);
     await deleteBackupCodes(userId);
     return reply

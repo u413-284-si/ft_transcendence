@@ -17,7 +17,7 @@ export async function verifyTwoFALoginToken(request) {
   return await request.twoFALoginTokenVerify();
 }
 
-export function verify2FaToken(totp, token) {
+export function verifyTwoFAToken(totp, token) {
   const delta = totp.validate({ token, window: 1 });
   return delta !== null;
 }
@@ -100,7 +100,7 @@ export async function getTotpSecret(userId) {
   return authentication.totpSecret;
 }
 
-export async function get2FaStatus(userId) {
+export async function getTwoFAStatus(userId) {
   const authentication = await prisma.authentication.findUniqueOrThrow({
     where: {
       userId: userId
@@ -181,12 +181,12 @@ export function generateTotp(username, secret) {
   });
 }
 
-export async function generate2FaQRCode(totp) {
+export async function generateTwoFAQRCode(totp) {
   const uri = totp.toString();
   return await QRCode.toDataURL(uri);
 }
 
-export function generate2FaSecret() {
+export function generateTwoFASecret() {
   return new otpAuth.Secret({
     size: 20
   }).base32;
@@ -214,7 +214,7 @@ export async function updateTotpSecret(userId, secret) {
   });
 }
 
-export async function update2FaStatus(userId, status) {
+export async function updateTwoFAStatus(userId, status) {
   await prisma.authentication.update({
     where: {
       userId: userId

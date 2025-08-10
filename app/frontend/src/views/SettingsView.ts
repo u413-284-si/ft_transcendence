@@ -57,7 +57,7 @@ export default class SettingsView extends AbstractView {
     this.setTitle(i18next.t("settingsView.title"));
   }
 
-  private get2FaSetupHTML(): string {
+  private getTwoFASetupHTML(): string {
     return /* HTML */ `
       <div>
         ${Paragraph({
@@ -208,7 +208,7 @@ export default class SettingsView extends AbstractView {
           id: "settings-intro"
         })}
         <div class="flex flex-col mt-10">
-          ${this.hasLocalAuth ? this.get2FaSetupHTML() : ""}
+          ${this.hasLocalAuth ? this.getTwoFASetupHTML() : ""}
           ${Form({
             id: "preferred-language-form",
             className: "mt-10",
