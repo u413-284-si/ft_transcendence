@@ -202,7 +202,9 @@ const en = {
     },
 
     statsView: {
+      dashboard: "Dashboard",
       date: "Date",
+      details: "Details",
       friendOnly: "You must be friends to view detailed stats.",
       friends: "Friends",
       joined: "Joined on {{date}}",
@@ -263,6 +265,24 @@ const en = {
         "An error occurred while verifying the user:<br>Redirecting to login.",
       validateTournamentNameError:
         "An error occurred while validating the tournament name."
+    },
+
+    chart: {
+      activity: "Activity",
+      current: "Current",
+      loss: "Loss",
+      numPlayers: "{{num}}-Players",
+      played: "Tournaments played{{range}}",
+      progress: "Progress ({{num}}-Players)",
+      progression: "Winrate Progression{{range}}",
+      rangeLastDays: " (Last {{count}} Days)",
+      rangeLastMatches: " (Last {{count}} Matches)",
+      reachedThisStage: "Reached this stage",
+      scoreDiff: "Score Difference{{range}}",
+      scores: "Scores{{range}}",
+      summary: "Summary",
+      win: "Win",
+      winLoss: "Wins vs Losses{{range}}"
     }
   }
 } as const;

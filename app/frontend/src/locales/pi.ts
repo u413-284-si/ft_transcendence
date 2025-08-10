@@ -201,7 +201,9 @@ const pi: TranslationShape = {
     },
 
     statsView: {
+      dashboard: "Cap`n`s Log",
       date: "Chart Date",
+      details: "Secrets",
       friendOnly:
         "Ye must be true mates to lay eyes on these secret scrolls o' stats!",
       friends: "Mates",
@@ -263,6 +265,24 @@ const pi: TranslationShape = {
         "Yer pirate pass be faulty:<br>Back to the login docks.",
       validateTournamentNameError:
         "Tourney name not approved by the Pirate Council."
+    },
+
+    chart: {
+      activity: "Booty Huntin'",
+      current: "As o' Now",
+      loss: "Defeats",
+      numPlayers: "{{num}} sea dogs",
+      played: "Battles fought{{range}}",
+      progress: "Climb - {{num}} sea dogs",
+      progression: "Victory Percentage{{range}}",
+      rangeLastDays: " - last {{count}} Days",
+      rangeLastMatches: " - last {{count}} Battles",
+      reachedThisStage: "Landed 'ere",
+      scoreDiff: "Score Gap{{range}}",
+      scores: "Booty Count{{range}}",
+      summary: "Battle Recap",
+      win: "Victory",
+      winLoss: "Plunder vs Defeats{{range}}"
     }
   }
 };

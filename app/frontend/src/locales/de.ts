@@ -208,7 +208,9 @@ const de: TranslationShape = {
     },
 
     statsView: {
+      dashboard: "Übersicht",
       date: "Datum",
+      details: "Details",
       friends: "Freunde",
       friendOnly:
         "Du musst befreundet sein, um detaillierte Statistiken zu sehen.",
@@ -274,6 +276,24 @@ const de: TranslationShape = {
         "Fehler bei der Benutzerverifizierung:<br>Weiterleitung zur Anmeldung.",
       validateTournamentNameError:
         "Fehler bei der Validierung des Turniernamens."
+    },
+
+    chart: {
+      activity: "Aktivität",
+      current: "Aktuell",
+      loss: "Niederlage",
+      numPlayers: "{{num}} Spieler",
+      played: "Gespielte Turniere{{range}}",
+      progress: "Fortschritt ({{num}} Spieler)",
+      progression: "Siegquote{{range}}",
+      rangeLastDays: " (Letzten {{count}} Tage)",
+      rangeLastMatches: " (Letzten {{count}} Spiele)",
+      reachedThisStage: "Diese Stufe erreicht",
+      scoreDiff: "Punktedifferenz{{range}}",
+      scores: "Punkte{{range}}",
+      summary: "Übersicht",
+      win: "Sieg",
+      winLoss: "Siege vs Niederlagen{{range}}"
     }
   }
 };
