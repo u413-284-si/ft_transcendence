@@ -29,7 +29,7 @@ export async function authorizeUserAccess(request, reply) {
 }
 
 export async function authorizeUseTwoFALoginAccess(request, reply) {
-  const action = "Authorize user's two factor temp token";
+  const action = "Authorize user's two factor login token";
 
   const token = request.cookies.twoFALoginToken;
   if (!token) {
