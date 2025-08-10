@@ -214,7 +214,9 @@ const tr: TranslationShape = {
       result: "Session Outcome",
       title: "Performance Stats",
       tournament: "Tournament Grid",
-      winRate: "Victory Ratio"
+      winRate: "Victory Ratio",
+      winstreakCur: "Sequence",
+      winstreakMax: "Max Sequence"
     },
 
     toast: {

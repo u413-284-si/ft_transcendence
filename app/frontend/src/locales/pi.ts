@@ -213,7 +213,9 @@ const pi: TranslationShape = {
       result: "Outcome",
       title: "Ship Logs",
       tournament: "Skull & Crossbones Cup",
-      winRate: "Victory Percentage"
+      winRate: "Victory Percentage",
+      winstreakCur: "Plunder Trail",
+      winstreakMax: "Mighty Streak"
     },
 
     toast: {

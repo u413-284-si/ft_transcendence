@@ -214,7 +214,9 @@ const en = {
       result: "Result",
       title: "Statistics",
       tournament: "Tournament",
-      winRate: "Win Rate"
+      winRate: "Win Rate",
+      winstreakCur: "Winstreak",
+      winstreakMax: "Max Streak"
     },
 
     toast: {
