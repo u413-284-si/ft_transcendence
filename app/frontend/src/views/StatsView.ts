@@ -53,7 +53,9 @@ export default class StatsView extends AbstractView {
               variant: "username"
             })}
             ${Paragraph({
-              text: `${i18next.t("statsView.joined")}: ${this.user?.dateJoined.slice(0, 10)}`
+              text: `${i18next.t("statsView.joined", {
+                date: formatDate(this.user.dateJoined)
+              })}`
             })}
           </div>
 
