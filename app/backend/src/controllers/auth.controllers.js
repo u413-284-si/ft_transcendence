@@ -425,6 +425,7 @@ export async function twoFALoginVerifyHandler(request, reply) {
   const action = "Verify 2FA Code during login";
   try {
     const userId = request.user.id;
+    const username = request.user.username;
     if ((await getUserAuthProvider(userId)) !== "LOCAL") {
       return httpError(
         reply,
@@ -446,8 +447,7 @@ export async function twoFALoginVerifyHandler(request, reply) {
       );
     }
 
-    const { username } = await getUser(userId);
-    const payload = await getTokenData(username, "username");
+    const payload = { id: userId, username: username };
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
       payload
