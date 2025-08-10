@@ -84,13 +84,19 @@ const tournamentArrayResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    count: { type: "integer" },
     data: {
-      type: "array",
-      items: { $ref: "tournamentSchema" }
+      type: "object",
+      properties: {
+        items: {
+          type: "array",
+          items: { $ref: "tournamentSchema" }
+        },
+        total: { type: "integer" }
+      },
+      required: ["items"]
     }
   },
-  required: ["message", "count", "data"],
+  required: ["message", "data"],
   additionalProperties: false
 };
 
