@@ -1,6 +1,6 @@
 import Login from "./views/LoginView.js";
-import TwoFaVerify from "./views/TwoFaVerifyView.js";
-import TwoFaBackupCodeVerify from "./views/TwoFaBackupCodeVerifyView.js";
+import TwoFAVerify from "./views/TwoFAVerifyView.js";
+import TwoFABackupCodeVerify from "./views/TwoFABackupCodeVerifyView.js";
 import Register from "./views/RegisterView.js";
 import Home from "./views/HomeView.js";
 import NewGame from "./views/NewGameView.js";
@@ -13,7 +13,7 @@ import { router } from "./routing/Router.js";
 import {
   authGuard,
   guestOnlyGuard,
-  twoFaVerifyGuard
+  twoFAVerifyGuard
 } from "./routing/routeGuard.js";
 import { auth } from "./AuthManager.js";
 import { logRouteChange, updateUI } from "./routing/routeChangeListener.js";
@@ -31,10 +31,10 @@ router
     view: Register,
     guard: guestOnlyGuard
   })
-  .addRoute("/2FaVerification", { view: TwoFaVerify, guard: twoFaVerifyGuard })
+  .addRoute("/2FaVerification", { view: TwoFAVerify, guard: twoFAVerifyGuard })
   .addRoute("/2FaBackupCodeVerification", {
-    view: TwoFaBackupCodeVerify,
-    guard: twoFaVerifyGuard
+    view: TwoFABackupCodeVerify,
+    guard: twoFAVerifyGuard
   })
   .addRoute("/home", { view: Home, guard: authGuard })
   .addRoute("/newGame", { view: NewGame, guard: authGuard })

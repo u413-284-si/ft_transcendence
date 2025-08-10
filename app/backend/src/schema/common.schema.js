@@ -31,7 +31,7 @@ const commonDefinitionsSchema = {
         "number, one uppercase and one lowercase letter and one of the " +
         "following special characters inside brackets: [@$!%*?&]."
     },
-    twoFaCode: {
+    twoFACode: {
       type: "string",
       minLength: 6,
       maxLength: 6,
@@ -39,7 +39,7 @@ const commonDefinitionsSchema = {
       description:
         "The 2FA code must be 6 characters long and contain only digits."
     },
-    twoFaBackupCode: {
+    twoFABackupCode: {
       type: "string",
       minLength: 8,
       maxLength: 8,

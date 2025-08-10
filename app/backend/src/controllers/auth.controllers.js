@@ -14,8 +14,8 @@ import {
   getTotpSecret,
   update2FaStatus,
   get2FaStatus,
-  createTwoFaToken,
-  setTwoFaCookie,
+  createTwoFAToken,
+  setTwoFACookie,
   generateBackupCodes,
   hashBackupCodes,
   getBackupCodes,
@@ -68,8 +68,8 @@ export async function loginUserHandler(request, reply) {
     }
 
     if ((await get2FaStatus(payload.id)) === true) {
-      const twoFaLoginToken = await createTwoFaToken(reply, payload);
-      return setTwoFaCookie(reply, twoFaLoginToken)
+      const twoFALoginToken = await createTwoFAToken(reply, payload);
+      return setTwoFACookie(reply, twoFALoginToken)
         .code(200)
         .send({
           message: createResponseMessage(action, true),
@@ -180,7 +180,7 @@ export async function authAndDecodeAccessHandler(request, reply) {
   }
 }
 
-export async function authAndDecodTwoFaLoginHandler(request, reply) {
+export async function authAndDecodTwoFALoginHandler(request, reply) {
   const action = "Auth and decode 2FA login token";
   try {
     const data = request.user;
@@ -240,7 +240,7 @@ export async function authRefreshHandler(request, reply) {
   }
 }
 
-export async function twoFaQRCodeHandler(request, reply) {
+export async function twoFAQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
   try {
     const userId = request.user.id;
@@ -291,7 +291,7 @@ export async function twoFaQRCodeHandler(request, reply) {
   }
 }
 
-export async function twoFaVerifyHandler(request, reply) {
+export async function twoFAVerifyHandler(request, reply) {
   const action = "Verify 2FA Code";
   try {
     const userId = request.user.id;
@@ -338,7 +338,7 @@ export async function twoFaVerifyHandler(request, reply) {
   }
 }
 
-export async function twoFaBackupCodesHandler(request, reply) {
+export async function twoFABackupCodesHandler(request, reply) {
   const action = "Generate backup codes";
   try {
     const userId = request.user.id;
@@ -383,7 +383,7 @@ export async function twoFaBackupCodesHandler(request, reply) {
   }
 }
 
-export async function twoFaBackupCodeVerifyHandler(request, reply) {
+export async function twoFABackupCodeVerifyHandler(request, reply) {
   const action = "Verify backup codes";
   try {
     const userId = request.user.id;
@@ -413,7 +413,7 @@ export async function twoFaBackupCodeVerifyHandler(request, reply) {
       reply,
       payload
     );
-    reply.clearCookie("twoFaLoginToken", {
+    reply.clearCookie("twoFALoginToken", {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
@@ -434,7 +434,7 @@ export async function twoFaBackupCodeVerifyHandler(request, reply) {
   }
 }
 
-export async function twoFaLoginVerifyHandler(request, reply) {
+export async function twoFALoginVerifyHandler(request, reply) {
   const action = "Verify 2FA Code during login";
   try {
     const userId = request.user.id;
@@ -465,7 +465,7 @@ export async function twoFaLoginVerifyHandler(request, reply) {
       reply,
       payload
     );
-    reply.clearCookie("twoFaLoginToken", {
+    reply.clearCookie("twoFALoginToken", {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
@@ -486,7 +486,7 @@ export async function twoFaLoginVerifyHandler(request, reply) {
   }
 }
 
-export async function twoFaStatusHandler(request, reply) {
+export async function twoFAStatusHandler(request, reply) {
   const action = "Get 2FA status";
   try {
     const userId = request.user.id;
@@ -499,8 +499,8 @@ export async function twoFaStatusHandler(request, reply) {
       );
     }
 
-    const hasTwoFa = await get2FaStatus(userId);
-    const data = { hasTwoFa: hasTwoFa };
+    const hasTwoFA = await get2FaStatus(userId);
+    const data = { hasTwoFA: hasTwoFA };
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data });
@@ -513,7 +513,7 @@ export async function twoFaStatusHandler(request, reply) {
   }
 }
 
-export async function twoFaRemoveHandler(request, reply) {
+export async function twoFARemoveHandler(request, reply) {
   const action = "Remove 2FA";
   try {
     const userId = request.user.id;

@@ -4,19 +4,19 @@ import {
   loginUserHandler,
   logoutUserHandler,
   googleOauth2LoginHandler,
-  twoFaQRCodeHandler,
-  twoFaVerifyHandler,
-  twoFaStatusHandler,
-  twoFaRemoveHandler,
-  authAndDecodTwoFaLoginHandler,
-  twoFaLoginVerifyHandler,
-  twoFaBackupCodesHandler,
-  twoFaBackupCodeVerifyHandler
+  twoFAQRCodeHandler,
+  twoFAVerifyHandler,
+  twoFAStatusHandler,
+  twoFARemoveHandler,
+  authAndDecodTwoFALoginHandler,
+  twoFALoginVerifyHandler,
+  twoFABackupCodesHandler,
+  twoFABackupCodeVerifyHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import {
   authorizeUserAccess,
-  authorizeUseTwoFaLoginAccess
+  authorizeUseTwoFALoginAccess
 } from "../middleware/auth.js";
 import env from "../config/env.js";
 
@@ -27,37 +27,37 @@ export default async function authRoutes(fastify) {
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 
-  fastify.post("/2fa/qrcode", optionTwoFaQrCode, twoFaQRCodeHandler);
+  fastify.post("/2fa/qrcode", optionTwoFAQrCode, twoFAQRCodeHandler);
 
   fastify.post(
     "/2fa/backupCodes",
-    optionTwoFaBackupCodes,
-    twoFaBackupCodesHandler
+    optionTwoFABackupCodes,
+    twoFABackupCodesHandler
   );
 
   fastify.post(
     "/2fa/login/backupCodes/verify",
-    optionTwoFaBackupCodesVerify,
-    twoFaBackupCodeVerifyHandler
+    optionTwoFABackupCodesVerify,
+    twoFABackupCodeVerifyHandler
   );
 
-  fastify.post("/2fa/verify", optionTwoFaVerify, twoFaVerifyHandler);
+  fastify.post("/2fa/verify", optionTwoFAVerify, twoFAVerifyHandler);
 
   fastify.post(
     "/2fa/login/verify",
-    optionTwoFaLoginVerify,
-    twoFaLoginVerifyHandler
+    optionTwoFALoginVerify,
+    twoFALoginVerifyHandler
   );
 
   fastify.get(
     "/2fa/login/token",
-    optionsAuthUseTwoFaLogin,
-    authAndDecodTwoFaLoginHandler
+    optionsAuthUseTwoFALogin,
+    authAndDecodTwoFALoginHandler
   );
 
-  fastify.get("/2fa/status", optionTwoFaStatus, twoFaStatusHandler);
+  fastify.get("/2fa/status", optionTwoFAStatus, twoFAStatusHandler);
 
-  fastify.post("/2fa/remove", optionTwoFaRemove, twoFaRemoveHandler);
+  fastify.post("/2fa/remove", optionTwoFARemove, twoFARemoveHandler);
 
   fastify.patch("/logout", optionsLogoutUser, logoutUserHandler);
 
@@ -113,7 +113,7 @@ const optionsGoogleOauth2Login = {
   }
 };
 
-const optionTwoFaQrCode = {
+const optionTwoFAQrCode = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
@@ -122,8 +122,8 @@ const optionTwoFaQrCode = {
   }
 };
 
-const optionsAuthUseTwoFaLogin = {
-  onRequest: [authorizeUseTwoFaLoginAccess],
+const optionsAuthUseTwoFALogin = {
+  onRequest: [authorizeUseTwoFALoginAccess],
   schema: {
     response: {
       ...errorResponses
@@ -131,27 +131,27 @@ const optionsAuthUseTwoFaLogin = {
   }
 };
 
-const optionTwoFaVerify = {
+const optionTwoFAVerify = {
   onRequest: [authorizeUserAccess],
   schema: {
-    body: { $ref: "twoFaCodeSchema" },
+    body: { $ref: "twoFACodeSchema" },
     response: {
       ...errorResponses
     }
   }
 };
 
-const optionTwoFaLoginVerify = {
-  onRequest: [authorizeUseTwoFaLoginAccess],
+const optionTwoFALoginVerify = {
+  onRequest: [authorizeUseTwoFALoginAccess],
   schema: {
-    body: { $ref: "twoFaCodeSchema" },
+    body: { $ref: "twoFACodeSchema" },
     response: {
       ...errorResponses
     }
   }
 };
 
-const optionTwoFaStatus = {
+const optionTwoFAStatus = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
@@ -160,30 +160,30 @@ const optionTwoFaStatus = {
   }
 };
 
-const optionTwoFaRemove = {
+const optionTwoFARemove = {
   onRequest: [authorizeUserAccess],
   schema: {
-    body: { $ref: "twoFaPasswordSchema" },
+    body: { $ref: "twoFAPasswordSchema" },
     response: {
       ...errorResponses
     }
   }
 };
 
-const optionTwoFaBackupCodes = {
+const optionTwoFABackupCodes = {
   onRequest: [authorizeUserAccess],
   schema: {
-    body: { $ref: "twoFaPasswordSchema" },
+    body: { $ref: "twoFAPasswordSchema" },
     response: {
       ...errorResponses
     }
   }
 };
 
-const optionTwoFaBackupCodesVerify = {
-  onRequest: [authorizeUseTwoFaLoginAccess],
+const optionTwoFABackupCodesVerify = {
+  onRequest: [authorizeUseTwoFALoginAccess],
   schema: {
-    body: { $ref: "twoFaBackupCodeSchema" },
+    body: { $ref: "twoFABackupCodeSchema" },
     response: {
       ...errorResponses
     }

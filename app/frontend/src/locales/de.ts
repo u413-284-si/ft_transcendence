@@ -71,7 +71,7 @@ const de: TranslationShape = {
       offline: "Offline",
       online: "Online",
       password: "Passwort",
-      twoFaCode: "2FA-Kennzahl",
+      twoFACode: "2FA-Kennzahl",
       pongGame: "Pong-Spiel",
       player: "Spieler",
       playerWins: "{{player}} gewinnt",
@@ -110,13 +110,13 @@ const de: TranslationShape = {
         "Passwort muss 10 bis 64 Zeichen enthalten und mindestens eine Zahl, einen Groß- und Kleinbuchstaben sowie ein Sonderzeichen: @$!%*?&",
       passwordConfirmationEmpty: "Bitte wiederhole dein Passwort",
       passwordConfirmation: "Passwörter stimmen nicht überein.",
-      twoFaCode: "2FA-Kennzahl ist falsch.",
-      twoFaCodeEmpty: "2FA-Kennzahl darf nicht leer sein.",
-      twoFaCodeFormat: "2FA-Kennzahl muss eine sechsstellige Zahl sein.",
-      twoFaBackupCode: "2FA-Wiederherstellungskennzahl ist falsch.",
-      twoFaBackupCodeEmpty:
+      twoFACode: "2FA-Kennzahl ist falsch.",
+      twoFACodeEmpty: "2FA-Kennzahl darf nicht leer sein.",
+      twoFACodeFormat: "2FA-Kennzahl muss eine sechsstellige Zahl sein.",
+      twoFABackupCode: "2FA-Wiederherstellungskennzahl ist falsch.",
+      twoFABackupCodeEmpty:
         "2FA-Wiederherstellungskennzahl darf nicht leer sein.",
-      twoFaBackupCodeFormat:
+      twoFABackupCodeFormat:
         "2FA-Wiederherstellungskennzahl muss eine achtstellige Zahl sein.",
       playerSelection: "Bitte Anzahl der Spieler auswählen.",
       tournamentNameEmpty: "Turniername darf nicht leer sein.",
@@ -134,18 +134,18 @@ const de: TranslationShape = {
       usernameOrEmail: "Benutzername oder E-Mail-Adresse"
     },
 
-    twoFaVerifyView: {
+    twoFAVerifyView: {
       title: "2FA-Kennzahl Verifizierung",
-      enterTwoFaCode: "Gib die 2FA-Kennzahl ein:",
-      submitTwoFaCode: "Bestätigen",
+      enterTwoFACode: "Gib die 2FA-Kennzahl ein:",
+      submitTwoFACode: "Bestätigen",
       useBackupCode: "Wiederherstellungs-Kennzahl verwenden"
     },
 
-    twoFaBackupCodeVerifyView: {
+    twoFABackupCodeVerifyView: {
       title: "2FA-Wiederherstellungskennzahl Verifizierung",
-      twoFaBackupCode: "2FA-Wiederherstellungskennzahl",
-      enterTwoFaBackupCode: "Gib die 2FA-Wiederherstellungskennzahl ein:",
-      submitTwoFaBackupCode: "Bestätigen"
+      twoFABackupCode: "2FA-Wiederherstellungskennzahl",
+      enterTwoFABackupCode: "Gib die 2FA-Wiederherstellungskennzahl ein:",
+      submitTwoFABackupCode: "Bestätigen"
     },
 
     matchAnnouncementView: {
@@ -228,28 +228,28 @@ const de: TranslationShape = {
       settings: "Lege hier deine Einstellungen und Präferenzen fest.",
       preferredLanguage: "Wähle dein bevorzugte Sprache aus.",
       saveLanguage: "Sprache speichern",
-      editTwoFaSetup: "2FA Einstellungen bearbeiten",
-      twoFaSetup: "2FA Einstellungen",
-      twoFaInfo: [
+      editTwoFASetup: "2FA Einstellungen bearbeiten",
+      twoFASetup: "2FA Einstellungen",
+      twoFAInfo: [
         "Aktiviere 2FA:",
         "",
         "Bitte verwende eine Authentifizierungs App",
         "um den QR-Code unten zu scannen."
       ],
-      twoFaActivated: ["2FA aktiviert"],
-      twoFaBackupCode: "2FA Wiederherstellungskennzahl",
-      enterTwoFaCode: "Gib die 2FA-Kennzahl ein:",
-      activateTwoFa: "Aktivieren",
-      deactivateTwoFa: "Deaktivieren",
-      twoFaGenerateBackupCodes: "Wiederherstellungskennzahlen generieren",
+      twoFAActivated: ["2FA aktiviert"],
+      twoFABackupCode: "2FA Wiederherstellungskennzahl",
+      enterTwoFACode: "Gib die 2FA-Kennzahl ein:",
+      activateTwoFA: "Aktivieren",
+      deactivateTwoFA: "Deaktivieren",
+      twoFAGenerateBackupCodes: "Wiederherstellungskennzahlen generieren",
       confirmPassword: "Bestätigen",
-      twoFaBackupCodeInfo: [
+      twoFABackupCodeInfo: [
         "Das sind deine Wiederherstellungskennzahlen.",
         "Kopiere diese oder lade sie herunter",
         "",
         "Sie werden nicht nochmal angezeigt"
       ],
-      twoFaDownloadBackupCodes: "Herunterladen"
+      twoFADownloadBackupCodes: "Herunterladen"
     },
 
     statsView: {
@@ -290,8 +290,8 @@ const de: TranslationShape = {
       passwordUpdateFailed:
         "Passwort konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       passwordUpdatedSuccess: "Passwort erfolgreich aktualisiert!",
-      twoFaSetupSuccess: "2FA erfolgreich aktiviert!",
-      twoFaRemoveSuccess: "2FA erfolgreich deaktiviert!",
+      twoFASetupSuccess: "2FA erfolgreich aktiviert!",
+      twoFARemoveSuccess: "2FA erfolgreich deaktiviert!",
       profileUpdateFailed:
         "Profil konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       profileUpdatedSuccess: "Profil erfolgreich aktualisiert!",

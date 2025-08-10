@@ -24,7 +24,7 @@ export async function refreshAccessToken(): Promise<ApiResponse<null>> {
   );
 }
 
-export async function authAndDecodTwoFaLoginToken(): Promise<
+export async function authAndDecodTwoFALoginToken(): Promise<
   ApiResponse<Token>
 > {
   const url = "/api/auth/2fa/login/token";
@@ -65,7 +65,7 @@ export async function userLogout(): Promise<ApiResponse<{ username: string }>> {
   );
 }
 
-export async function generateTwoFaQrcode(
+export async function generateTwoFAQrcode(
   password: string
 ): Promise<ApiResponse<{ qrcode: string }>> {
   const url = "/api/auth/2fa/qrcode";
@@ -81,7 +81,7 @@ export async function generateTwoFaQrcode(
   );
 }
 
-export async function verifyTwoFaCodeAndGetBackupCodes(
+export async function verifyTwoFACodeAndGetBackupCodes(
   code: string
 ): Promise<ApiResponse<{ backupCodes: string[] }>> {
   const url = "/api/auth/2fa/verify";
@@ -129,7 +129,7 @@ export async function verifyBackupCode(
   );
 }
 
-export async function verifyLoginTwoFaCode(
+export async function verifyLoginTwoFACode(
   code: string
 ): Promise<ApiResponse<null>> {
   const url = "/api/auth/2fa/login/verify";
@@ -145,12 +145,12 @@ export async function verifyLoginTwoFaCode(
   );
 }
 
-export async function geTwoFaStatus(): Promise<
-  ApiResponse<{ hasTwoFa: boolean }>
+export async function geTwoFAStatus(): Promise<
+  ApiResponse<{ hasTwoFA: boolean }>
 > {
   const url = "/api/auth/2fa/status";
 
-  return apiFetch<{ hasTwoFa: boolean }>(
+  return apiFetch<{ hasTwoFA: boolean }>(
     url,
     {
       method: "GET",
@@ -160,7 +160,7 @@ export async function geTwoFaStatus(): Promise<
   );
 }
 
-export async function removeTwoFa(
+export async function removeTwoFA(
   password: string
 ): Promise<ApiResponse<null>> {
   const url = "/api/auth/2fa/remove";

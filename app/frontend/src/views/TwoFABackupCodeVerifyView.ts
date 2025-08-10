@@ -3,7 +3,7 @@ import AbstractView from "./AbstractView.js";
 //import { validatePassword, validateUsernameOrEmail } from "../validate.js";
 import {
   markInvalid,
-  validatTwoFaBackupCode as validateTwoFaBackupCode
+  validatTwoFABackupCode as validateTwoFABackupCode
 } from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
@@ -14,10 +14,10 @@ import { getEl } from "../utility.js";
 import { verifyBackupCode } from "../services/authServices.js";
 import { ApiError } from "../services/api.js";
 
-export default class TwoFaBackupCodeVerifyView extends AbstractView {
+export default class TwoFABackupCodeVerifyView extends AbstractView {
   constructor() {
     super();
-    this.setTitle(i18next.t("twoFaBackupCodeVerifyView.title"));
+    this.setTitle(i18next.t("twoFABackupCodeVerifyView.title"));
   }
 
   createHTML() {
@@ -27,14 +27,14 @@ export default class TwoFaBackupCodeVerifyView extends AbstractView {
         children: [
           Input({
             id: "two-fa-backup-code-input",
-            label: i18next.t("twoFaBackupCodeVerifyView.enterTwoFaBackupCode"),
+            label: i18next.t("twoFABackupCodeVerifyView.enterTwoFABackupCode"),
             name: "two-fa-backup-code-input",
-            placeholder: i18next.t("twoFaBackupCodeVerifyView.twoFaBackupCode"),
+            placeholder: i18next.t("twoFABackupCodeVerifyView.twoFABackupCode"),
             type: "text",
             errorId: "two-fa-backup-code-input-error"
           }),
           Button({
-            text: i18next.t("twoFaBackupCodeVerifyView.submitTwoFaBackupCode"),
+            text: i18next.t("twoFABackupCodeVerifyView.submitTwoFABackupCode"),
             variant: "default",
             size: "md",
             type: "submit"
@@ -47,7 +47,7 @@ export default class TwoFaBackupCodeVerifyView extends AbstractView {
   protected addListeners() {
     document
       .getElementById("two-fa-verify-backup-code-form")
-      ?.addEventListener("submit", (event) => this.verifTwoFaBackupCode(event));
+      ?.addEventListener("submit", (event) => this.verifTwoFABackupCode(event));
   }
 
   async render() {
@@ -59,29 +59,29 @@ export default class TwoFaBackupCodeVerifyView extends AbstractView {
     return "login";
   }
 
-  private async verifTwoFaBackupCode(event: Event) {
+  private async verifTwoFABackupCode(event: Event) {
     event.preventDefault();
-    const twoFaBackupCodeInput = getEl(
+    const twoFABackupCodeInput = getEl(
       "two-fa-backup-code-input"
     ) as HTMLInputElement;
-    const twoFaBackupCodeErrorEl = getEl("two-fa-backup-code-input-error");
-    console.log("backupCode:", twoFaBackupCodeInput.value);
+    const twoFABackupCodeErrorEl = getEl("two-fa-backup-code-input-error");
+    console.log("backupCode:", twoFABackupCodeInput.value);
 
-    const isBackupCodeValid = await validateTwoFaBackupCode(
-      twoFaBackupCodeInput,
-      twoFaBackupCodeErrorEl
+    const isBackupCodeValid = await validateTwoFABackupCode(
+      twoFABackupCodeInput,
+      twoFABackupCodeErrorEl
     );
     if (!isBackupCodeValid) {
       return;
     }
 
-    const apiResponse = await verifyBackupCode(twoFaBackupCodeInput.value);
+    const apiResponse = await verifyBackupCode(twoFABackupCodeInput.value);
     if (!apiResponse.success) {
       if (apiResponse.status === 401) {
         markInvalid(
-          i18next.t("invalid.twoFaBackupCode"),
-          twoFaBackupCodeInput,
-          twoFaBackupCodeErrorEl
+          i18next.t("invalid.twoFABackupCode"),
+          twoFABackupCodeInput,
+          twoFABackupCodeErrorEl
         );
         return;
       } else {
@@ -89,7 +89,7 @@ export default class TwoFaBackupCodeVerifyView extends AbstractView {
       }
     }
 
-    const isAllowed = await auth.loginAfteTwoFa();
+    const isAllowed = await auth.loginAfteTwoFA();
     if (!isAllowed) return;
     router.navigate("/home", false);
   }

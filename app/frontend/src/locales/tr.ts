@@ -69,7 +69,7 @@ const tr: TranslationShape = {
       offline: "Offline",
       online: "Online",
       password: "Access code",
-      twoFaCode: "Cipher code",
+      twoFACode: "Cipher code",
       pongGame: "PONG GRID",
       player: "Operative",
       playerWins: "Operative {{player}} victorious",
@@ -107,12 +107,12 @@ const tr: TranslationShape = {
         "Access code must be 10-64 chars, include digit, uppercase, lowercase, and special char @$!%*?&",
       passwordConfirmationEmpty: "Re-enter your access code",
       passwordConfirmation: "Access code confirmation mismatch.",
-      twoFaCode: "Cipher code invalid.",
-      twoFaCodeEmpty: "Cipher code field cannot be void.",
-      twoFaCodeFormat: "Cipher code must be a 6-digit number.",
-      twoFaBackupCode: "Backup cipher invalid.",
-      twoFaBackupCodeEmpty: "Backup cipher field cannot be void.",
-      twoFaBackupCodeFormat: "Backup cipher must be an 8-digit sequence.",
+      twoFACode: "Cipher code invalid.",
+      twoFACodeEmpty: "Cipher code field cannot be void.",
+      twoFACodeFormat: "Cipher code must be a 6-digit number.",
+      twoFABackupCode: "Backup cipher invalid.",
+      twoFABackupCodeEmpty: "Backup cipher field cannot be void.",
+      twoFABackupCodeFormat: "Backup cipher must be an 8-digit sequence.",
       playerSelection: "Select number of operatives.",
       tournamentNameEmpty: "Tournament ID cannot be empty.",
       tournamentNameFormat:
@@ -128,18 +128,18 @@ const tr: TranslationShape = {
       usernameOrEmail: "User ID or Data Address"
     },
 
-    twoFaVerifyView: {
+    twoFAVerifyView: {
       title: "Cipher code verification",
-      enterTwoFaCode: "Input cipher code:",
-      submitTwoFaCode: "Transmit",
+      enterTwoFACode: "Input cipher code:",
+      submitTwoFACode: "Transmit",
       useBackupCode: "Deploy backup cipher"
     },
 
-    twoFaBackupCodeVerifyView: {
+    twoFABackupCodeVerifyView: {
       title: "Backup cipher verification",
-      twoFaBackupCode: "Backup cipher",
-      enterTwoFaBackupCode: "Input backup cipher:",
-      submitTwoFaBackupCode: "Transmit"
+      twoFABackupCode: "Backup cipher",
+      enterTwoFABackupCode: "Input backup cipher:",
+      submitTwoFABackupCode: "Transmit"
     },
 
     matchAnnouncementView: {
@@ -220,28 +220,28 @@ const tr: TranslationShape = {
       settings: "Configure your system parameters.",
       preferredLanguage: "Select interface language protocol.",
       saveLanguage: "Save language preference",
-	  editTwoFaSetup: "Edit your cipher configuration",
-      twoFaSetup: "Cipher Configuration",
-      twoFaInfo: [
+      editTwoFASetup: "Edit your cipher configuration",
+      twoFASetup: "Cipher Configuration",
+      twoFAInfo: [
         "Activate Cipher:",
         "",
         "Use an Authenticator App",
         "to scan the QR code below."
       ],
-      twoFaActivated: ["Cipher Active"],
-      twoFaBackupCode: "Backup cipher code",
-      enterTwoFaCode: "Input cipher code:",
-      activateTwoFa: "Activate",
-      deactivateTwoFa: "Deactivate",
-      twoFaGenerateBackupCodes: "Generate backup cipher codes",
+      twoFAActivated: ["Cipher Active"],
+      twoFABackupCode: "Backup cipher code",
+      enterTwoFACode: "Input cipher code:",
+      activateTwoFA: "Activate",
+      deactivateTwoFA: "Deactivate",
+      twoFAGenerateBackupCodes: "Generate backup cipher codes",
       confirmPassword: "Confirm Access Code",
-      twoFaBackupCodeInfo: [
+      twoFABackupCodeInfo: [
         "These are your backup cipher codes.",
         "Copy or download them securely.",
         "",
         "They won’t be shown again."
       ],
-      twoFaDownloadBackupCodes: "Download"
+      twoFADownloadBackupCodes: "Download"
     },
 
     statsView: {
@@ -279,8 +279,8 @@ const tr: TranslationShape = {
       logoutError: "Logout failed. Reattempt required.",
       passwordUpdateFailed: "Access code update failed. Retry advised.",
       passwordUpdatedSuccess: "Access code updated successfully!",
-      twoFaSetupSuccess: "Cipher activated successfully!",
-      twoFaRemoveSuccess: "Cipher deactivated successfully!",
+      twoFASetupSuccess: "Cipher activated successfully!",
+      twoFARemoveSuccess: "Cipher deactivated successfully!",
       profileUpdateFailed: "Profile update failed. Retry advised.",
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess:

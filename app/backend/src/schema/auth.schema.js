@@ -28,28 +28,28 @@ const loginUserResponseSchema = {
   additionalProperties: false
 };
 
-const twoFaCodeSchema = {
-  $id: "twoFaCodeSchema",
+const twoFACodeSchema = {
+  $id: "twoFACodeSchema",
   type: "object",
   properties: {
-    code: { $ref: "commonDefinitionsSchema#/definitions/twoFaCode" }
+    code: { $ref: "commonDefinitionsSchema#/definitions/twoFACode" }
   },
   required: ["code"],
   additionalProperties: false
 };
 
-const twoFaBackupCodeSchema = {
-  $id: "twoFaBackupCodeSchema",
+const twoFABackupCodeSchema = {
+  $id: "twoFABackupCodeSchema",
   type: "object",
   properties: {
-    backupCode: { $ref: "commonDefinitionsSchema#/definitions/twoFaBackupCode" }
+    backupCode: { $ref: "commonDefinitionsSchema#/definitions/twoFABackupCode" }
   },
   required: ["backupCode"],
   additionalProperties: false
 };
 
-const twoFaPasswordSchema = {
-  $id: "twoFaPasswordSchema",
+const twoFAPasswordSchema = {
+  $id: "twoFAPasswordSchema",
   type: "object",
   properties: {
     password: { $ref: "commonDefinitionsSchema#/definitions/password" }
@@ -61,7 +61,7 @@ const twoFaPasswordSchema = {
 export const authSchemas = [
   loginUserSchema,
   loginUserResponseSchema,
-  twoFaCodeSchema,
-  twoFaBackupCodeSchema,
-  twoFaPasswordSchema
+  twoFACodeSchema,
+  twoFABackupCodeSchema,
+  twoFAPasswordSchema
 ];

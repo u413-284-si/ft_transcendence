@@ -71,7 +71,7 @@ const pi: TranslationShape = {
       offline: "Adrift",
       online: "Ahoy!",
       password: "Secret Code",
-      twoFaCode: "Secret Digits Code",
+      twoFACode: "Secret Digits Code",
       pongGame: "High-Seas Paddle Fight",
       player: "Pirate",
       playerWins: "{{player}} plunders the win!",
@@ -108,14 +108,14 @@ const pi: TranslationShape = {
         "Yer code needs numbers, big letters, little letters, and pirate symbols @$!%*?&",
       passwordConfirmationEmpty: "Confirm yer code, or walk the plank!",
       passwordConfirmation: "Codes don't match! Ye fool!",
-      twoFaCode: "Yer secret digits be wrong, savvy!",
-      twoFaCodeEmpty: "Don’t leave yer secret digits chest all empty, matey!",
-      twoFaCodeFormat:
+      twoFACode: "Yer secret digits be wrong, savvy!",
+      twoFACodeEmpty: "Don’t leave yer secret digits chest all empty, matey!",
+      twoFACodeFormat:
         "That secret chest be needin’ six shiny numbers, no more, no less!",
-      twoFaBackupCode: "Yer spare secret digits be wrong, ye scallywag!",
-      twoFaBackupCodeEmpty:
+      twoFABackupCode: "Yer spare secret digits be wrong, ye scallywag!",
+      twoFABackupCodeEmpty:
         "Don’t be leavin’ yer spare digits chest all empty, matey!",
-      twoFaBackupCodeFormat:
+      twoFABackupCodeFormat:
         "That spare chest be needin’ eight shiny numbers, not a digit more or less!",
       playerSelection: "Pick yer fighters, landlubber!",
       tournamentNameEmpty: "No name, no fame!",
@@ -131,18 +131,18 @@ const pi: TranslationShape = {
       usernameOrEmail: "Pirate name or message bottle address:"
     },
 
-    twoFaVerifyView: {
+    twoFAVerifyView: {
       title: "Verify yer secret digits code",
-      enterTwoFaCode: "Enter yer secret digits:",
-      submitTwoFaCode: "Hoist it!",
+      enterTwoFACode: "Enter yer secret digits:",
+      submitTwoFACode: "Hoist it!",
       useBackupCode: "Use yer spare code"
     },
 
-    twoFaBackupCodeVerifyView: {
+    twoFABackupCodeVerifyView: {
       title: "Verify yer spare secret digits",
-      twoFaBackupCode: "Spare secret digits:",
-      enterTwoFaBackupCode: "Enter yer spare secret digits:",
-      submitTwoFaBackupCode: "Hoist it!"
+      twoFABackupCode: "Spare secret digits:",
+      enterTwoFABackupCode: "Enter yer spare secret digits:",
+      submitTwoFABackupCode: "Hoist it!"
     },
 
     matchAnnouncementView: {
@@ -222,28 +222,28 @@ const pi: TranslationShape = {
       settings: "Change yer sails and adjust the wind here.",
       preferredLanguage: "Choose yer tongue, matey.",
       saveLanguage: "Stash yer tongue",
-      editTwoFaSetup: "Tweak yer secret digits riggin’",
-      twoFaSetup: "Riggin’ the Secret Digits",
-      twoFaInfo: [
+      editTwoFASetup: "Tweak yer secret digits riggin’",
+      twoFASetup: "Riggin’ the Secret Digits",
+      twoFAInfo: [
         "Rigg the Secret Digits:",
         "",
         "Use a trusty Authenticator App,",
         "to scan the QR treasure map below."
       ],
-      twoFaActivated: ["Flyin’ high"],
-      twoFaBackupCode: "Spare secret digits",
-      enterTwoFaCode: "Enter yer secret digits:",
-      activateTwoFa: "Hoist the Flag",
-      deactivateTwoFa: "Lower the Colors",
-      twoFaGenerateBackupCodes: "Forge new spare secret digits",
+      twoFAActivated: ["Flyin’ high"],
+      twoFABackupCode: "Spare secret digits",
+      enterTwoFACode: "Enter yer secret digits:",
+      activateTwoFA: "Hoist the Flag",
+      deactivateTwoFA: "Lower the Colors",
+      twoFAGenerateBackupCodes: "Forge new spare secret digits",
       confirmPassword: "Confirm yer secret code",
-      twoFaBackupCodeInfo: [
+      twoFABackupCodeInfo: [
         "Here be yer spare secret digits.",
         "Copy ‘em down or save ‘em to yer chest,",
         "",
         "They won’t be shown again, savvy?"
       ],
-      twoFaDownloadBackupCodes: "Download Yer Treasure"
+      twoFADownloadBackupCodes: "Download Yer Treasure"
     },
 
     statsView: {
@@ -282,8 +282,8 @@ const pi: TranslationShape = {
       passwordUpdateFailed:
         "Couldn’t set yer new passphrase. Try again or be cursed!",
       passwordUpdatedSuccess: "Secret code changed! Keep it close!",
-      twoFaSetupSuccess: "Secret digits be rigged ‘n ready!",
-      twoFaRemoveSuccess: "Secret digits be scuttled! Ye be sailin’ free!",
+      twoFASetupSuccess: "Secret digits be rigged ‘n ready!",
+      twoFARemoveSuccess: "Secret digits be scuttled! Ye be sailin’ free!",
       profileUpdateFailed: "Profile be cursed – try again later!",
       profileUpdatedSuccess: "Profile polished like a cutlass!",
       registrationSuccess: "You be aboard, sailor {{username}}!",

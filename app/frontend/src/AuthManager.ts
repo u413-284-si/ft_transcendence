@@ -1,7 +1,7 @@
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
-  authAndDecodTwoFaLoginToken,
+  authAndDecodTwoFALoginToken,
   refreshAccessToken,
   userLogin,
   userLogout
@@ -25,7 +25,7 @@ export class AuthManager {
   private token: Token | null = null;
   private listeners: AuthChangeCallback[] = [];
   private user: User | null = null;
-  private twoFaPending: boolean = false;
+  private twoFAPending: boolean = false;
 
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
@@ -97,13 +97,13 @@ export class AuthManager {
           throw new ApiError(apiResponseUserLogin);
         }
       }
-      const apiResponsTwoFaLogin = await authAndDecodTwoFaLoginToken();
-      if (!apiResponsTwoFaLogin.success) {
-        if (apiResponsTwoFaLogin.status === 401) {
+      const apiResponsTwoFALogin = await authAndDecodTwoFALoginToken();
+      if (!apiResponsTwoFALogin.success) {
+        if (apiResponsTwoFALogin.status === 401) {
           console.log("2FA login token not found");
         }
       } else {
-        this.twoFaPending = true;
+        this.twoFAPending = true;
         router.navigate("/2FaVerification", false);
       }
       const token = getDataOrThrow(await authAndDecodeAccessToken());
@@ -120,14 +120,14 @@ export class AuthManager {
     }
   }
 
-  public async loginAfteTwoFa() {
+  public async loginAfteTwoFA() {
     try {
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
       console.log("User logged in");
       console.log("token", token);
       this.updateAuthState(token);
-      this.twoFaPending = false;
+      this.twoFAPending = false;
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -172,8 +172,8 @@ export class AuthManager {
     return this.authenticated;
   }
 
-  public isTwoFaPending(): boolean {
-    return this.twoFaPending;
+  public isTwoFAPending(): boolean {
+    return this.twoFAPending;
   }
 
   public getToken(): Token {

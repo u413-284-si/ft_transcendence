@@ -5,8 +5,8 @@ export const authGuard: RouteGuard = () => {
   return auth.isAuthenticated() ? true : "/login";
 };
 
-export const twoFaVerifyGuard: RouteGuard = () => {
-  return auth.isTwoFaPending() ? true : "/login";
+export const twoFAVerifyGuard: RouteGuard = () => {
+  return auth.isTwoFAPending() ? true : "/login";
 };
 
 // If you are logged in and try to go to guarded page, you get redirected to /home.

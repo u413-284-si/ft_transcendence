@@ -264,41 +264,41 @@ export function validateImageFile(
   return true;
 }
 
-export async function validateTwoFaCode(
+export async function validateTwoFACode(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): Promise<boolean> {
-  const twoFaCodeRegex: RegExp = /^\d{6}$/;
-  const twoFaCode = inputEl.value;
+  const twoFACodeRegex: RegExp = /^\d{6}$/;
+  const twoFACode = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
-  if (isEmptyString(twoFaCode)) {
-    markInvalid(i18next.t("invalid.twoFaCodeEmpty"), inputEl, errorEl);
+  if (isEmptyString(twoFACode)) {
+    markInvalid(i18next.t("invalid.twoFACodeEmpty"), inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(twoFaCode, twoFaCodeRegex)) {
-    markInvalid(i18next.t("invalid.twoFaCodeFormat"), inputEl, errorEl);
+  if (!validateAgainstRegex(twoFACode, twoFACodeRegex)) {
+    markInvalid(i18next.t("invalid.twoFACodeFormat"), inputEl, errorEl);
     return false;
   }
   return true;
 }
 
-export async function validatTwoFaBackupCode(
+export async function validatTwoFABackupCode(
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): Promise<boolean> {
-  const twoFaBackupCodeRegex: RegExp = /^\d{8}$/;
-  const twoFaBackupCode = inputEl.value;
+  const twoFABackupCodeRegex: RegExp = /^\d{8}$/;
+  const twoFABackupCode = inputEl.value;
 
   clearInvalid(inputEl, errorEl);
-  if (isEmptyString(twoFaBackupCode)) {
-    markInvalid(i18next.t("invalid.twoFaBackupCodeEmpty"), inputEl, errorEl);
+  if (isEmptyString(twoFABackupCode)) {
+    markInvalid(i18next.t("invalid.twoFABackupCodeEmpty"), inputEl, errorEl);
     return false;
   }
 
-  if (!validateAgainstRegex(twoFaBackupCode, twoFaBackupCodeRegex)) {
-    markInvalid(i18next.t("invalid.twoFaBackupCodeFormat"), inputEl, errorEl);
+  if (!validateAgainstRegex(twoFABackupCode, twoFABackupCodeRegex)) {
+    markInvalid(i18next.t("invalid.twoFABackupCodeFormat"), inputEl, errorEl);
     return false;
   }
   return true;

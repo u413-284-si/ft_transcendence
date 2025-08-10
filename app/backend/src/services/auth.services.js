@@ -13,8 +13,8 @@ export async function verifyRefreshToken(request) {
   return await request.refreshTokenVerify();
 }
 
-export async function verifyTwoFaLoginToken(request) {
-  return await request.twoFaLoginTokenVerify();
+export async function verifyTwoFALoginToken(request) {
+  return await request.twoFALoginTokenVerify();
 }
 
 export function verify2FaToken(totp, token) {
@@ -42,8 +42,8 @@ export async function createRefreshToken(reply, user) {
   return await reply.refreshTokenSign(user);
 }
 
-export async function creatTwoFaLoginToken(reply, user) {
-  return await reply.twoFaLoginTokenSign(user);
+export async function creatTwoFALoginToken(reply, user) {
+  return await reply.twoFALoginTokenSign(user);
 }
 
 export async function updateUserRefreshToken(userId, hashedRefreshToken) {
@@ -125,13 +125,13 @@ export async function createAuthTokens(reply, payload) {
   return { accessToken, refreshToken };
 }
 
-export async function createTwoFaToken(reply, payload) {
-  const twoFaLoginTokenPayload = { ...payload, tokenTyp: "twoFaLogin" };
-  const twoFaLoginToken = await creatTwoFaLoginToken(
+export async function createTwoFAToken(reply, payload) {
+  const twoFALoginTokenPayload = { ...payload, tokenTyp: "twoFALogin" };
+  const twoFALoginToken = await creatTwoFALoginToken(
     reply,
-    twoFaLoginTokenPayload
+    twoFALoginTokenPayload
   );
-  return twoFaLoginToken;
+  return twoFALoginToken;
 }
 
 export function setAuthCookies(reply, accessToken, refreshToken) {
@@ -158,17 +158,17 @@ export function setAuthCookies(reply, accessToken, refreshToken) {
     });
 }
 
-export function setTwoFaCookie(reply, twoFaLoginToken) {
-  const twoFaLoginTokenTimeToExpire = new Date(
-    Date.now() + parseInt(env.twoFaLoginTokenTimeToExpireInMS)
+export function setTwoFACookie(reply, twoFALoginToken) {
+  const twoFALoginTokenTimeToExpire = new Date(
+    Date.now() + parseInt(env.twoFALoginTokenTimeToExpireInMS)
   );
 
-  return reply.setCookie("twoFaLoginToken", twoFaLoginToken, {
+  return reply.setCookie("twoFALoginToken", twoFALoginToken, {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
     path: "/api/auth/2fa/login/",
-    expires: twoFaLoginTokenTimeToExpire
+    expires: twoFALoginTokenTimeToExpire
   });
 }
 

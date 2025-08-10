@@ -68,7 +68,7 @@ const en = {
       offline: "Offline",
       online: "Online",
       password: "Password",
-      twoFaCode: "2FA Code",
+      twoFACode: "2FA Code",
       pongGame: "Pong game",
       player: "Player",
       playerWins: "{{player}} wins",
@@ -105,12 +105,12 @@ const en = {
         "Password must be 10 to 64 characters and include at least one digit, one uppercase and one lowercase letter, and one special character from the set @$!%*?&",
       passwordConfirmationEmpty: "Please re-enter your password",
       passwordConfirmation: "Password confirmation does not match.",
-      twoFaCode: "2FA code is invald.",
-      twoFaCodeEmpty: "2FA code cannot be empty.",
-      twoFaCodeFormat: "2FA code must be a 6-digit number.",
-      twoFaBackupCode: "2FA backup code is invalid.",
-      twoFaBackupCodeEmpty: "2FA backup code cannot be empty.",
-      twoFaBackupCodeFormat: "2FA backup code must be a 8-digit number.",
+      twoFACode: "2FA code is invald.",
+      twoFACodeEmpty: "2FA code cannot be empty.",
+      twoFACodeFormat: "2FA code must be a 6-digit number.",
+      twoFABackupCode: "2FA backup code is invalid.",
+      twoFABackupCodeEmpty: "2FA backup code cannot be empty.",
+      twoFABackupCodeFormat: "2FA backup code must be a 8-digit number.",
       playerSelection: "Please select the number of players.",
       tournamentNameEmpty: "Tournament name cannot be empty.",
       tournamentNameFormat:
@@ -127,18 +127,18 @@ const en = {
       usernameOrEmail: "Username or email address"
     },
 
-    twoFaVerifyView: {
+    twoFAVerifyView: {
       title: "2FA Verification",
-      enterTwoFaCode: "Enter your 2FA code:",
-      submitTwoFaCode: "Submit",
+      enterTwoFACode: "Enter your 2FA code:",
+      submitTwoFACode: "Submit",
       useBackupCode: "Use backup code"
     },
 
-    twoFaBackupCodeVerifyView: {
+    twoFABackupCodeVerifyView: {
       title: "2FA Backup Code Verification",
-      twoFaBackupCode: "2FA Backup Code",
-      enterTwoFaBackupCode: "Enter your 2FA backup code:",
-      submitTwoFaBackupCode: "Submit"
+      twoFABackupCode: "2FA Backup Code",
+      enterTwoFABackupCode: "Enter your 2FA backup code:",
+      submitTwoFABackupCode: "Submit"
     },
 
     matchAnnouncementView: {
@@ -220,28 +220,28 @@ const en = {
       settings: "Set your preferences and settings here.",
       preferredLanguage: "Select your preferred language.",
       saveLanguage: "Save Language",
-      editTwoFaSetup: "Edit your 2FA setup",
-      twoFaSetup: "2FA Setup",
-      twoFaInfo: [
+      editTwoFASetup: "Edit your 2FA setup",
+      twoFASetup: "2FA Setup",
+      twoFAInfo: [
         "Activate 2FA:",
         "",
         "please use an authenticator app",
         "to scan the QR code below."
       ],
-      twoFaActivated: ["2FA activated"],
-      twoFaBackupCode: "2FA Backup Code",
-      enterTwoFaCode: "Enter your 2FA code:",
-      activateTwoFa: "Activate",
-      deactivateTwoFa: "Deactivate",
-      twoFaGenerateBackupCodes: "Generate Backup Codes",
+      twoFAActivated: ["2FA activated"],
+      twoFABackupCode: "2FA Backup Code",
+      enterTwoFACode: "Enter your 2FA code:",
+      activateTwoFA: "Activate",
+      deactivateTwoFA: "Deactivate",
+      twoFAGenerateBackupCodes: "Generate Backup Codes",
       confirmPassword: "Confirm",
-      twoFaBackupCodeInfo: [
+      twoFABackupCodeInfo: [
         "Those are your backup codes.",
         "Copy or download them",
         "",
         "They will not be shown again."
       ],
-      twoFaDownloadBackupCodes: "Download"
+      twoFADownloadBackupCodes: "Download"
     },
 
     statsView: {
@@ -279,8 +279,8 @@ const en = {
       logoutError: "Error logging out. Please try again.",
       passwordUpdateFailed: "Failed to update password. Please try again.",
       passwordUpdatedSuccess: "Password updated successfully!",
-      twoFaSetupSuccess: "2FA setup successfully!",
-      twoFaRemoveSuccess: "2FA deactivated successfully!",
+      twoFASetupSuccess: "2FA setup successfully!",
+      twoFARemoveSuccess: "2FA deactivated successfully!",
       profileUpdateFailed: "Failed to update profile. Please try again.",
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess: "Successfully registered {{username}}!",
