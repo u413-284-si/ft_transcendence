@@ -3,17 +3,10 @@ import {
   getUserStats,
   getUserStatsByUsername
 } from "../services/userStatsServices.js";
-import {
-  getUserByUsername,
-  getUserPlayedMatches,
-  getUserPlayedMatchesByUsername
-} from "../services/userServices.js";
+import { getUserByUsername } from "../services/userServices.js";
 import { escapeHTML } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
-import { Table } from "../components/Table.js";
-import { MatchRow, NoMatchesRow } from "../components/MatchRow.js";
-import { Match } from "../types/IMatch.js";
 import { router } from "../routing/Router.js";
 import { getUserFriendRequestByUsername } from "../services/friendsServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
@@ -26,6 +19,7 @@ import { formatDate } from "../formatDate.js";
 import { AbstractTab } from "./tabs/AbstractTab.js";
 import { TextBox } from "../components/TextBox.js";
 import { TabButton } from "../components/TabButton.js";
+import { MatchesTab } from "./tabs/MatchesTab.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -35,7 +29,6 @@ export default class StatsView extends AbstractView {
   private friendRequest: FriendRequest | null = null;
   private tabs: Record<string, AbstractTab> = {};
   private currentTabId?: string;
-  private matches: Match[] | null = null;
 
   constructor() {
     super();
@@ -110,40 +103,9 @@ export default class StatsView extends AbstractView {
     await this.fetchData();
     this.updateHTML();
     if (this.viewType === "public") return;
-    //this.tabs["matches"] = new MatchesTab(this.userStats!, this.username);
+    this.tabs["matches"] = new MatchesTab(this.userStats!, this.username);
     await this.showTab("matches");
     this.addListeners();
-  }
-
-  getMatchesHTML(): string {
-    if (this.viewType === "public") {
-      return /* HTML */ ` ${Paragraph({
-        text: i18next.t("statsView.friendOnly")
-      })}`;
-    }
-
-    if (!this.matches) throw new Error(i18next.t("error.nullMatches"));
-
-    const matchesRows =
-      this.matches.length === 0
-        ? [NoMatchesRow()]
-        : this.matches.map((matchRaw: Match) =>
-            MatchRow(matchRaw, this.username)
-          );
-
-    return /* HTML */ `${Table({
-      id: "match-history-table",
-      headers: [
-        i18next.t("statsView.player1"),
-        i18next.t("statsView.player1Score"),
-        i18next.t("statsView.player2"),
-        i18next.t("statsView.player2Score"),
-        i18next.t("statsView.result"),
-        i18next.t("statsView.date"),
-        i18next.t("statsView.tournament")
-      ],
-      rows: matchesRows
-    })}`;
   }
 
   getName(): string {
@@ -175,7 +137,6 @@ export default class StatsView extends AbstractView {
   async fetchData() {
     if (this.viewType === "self") {
       this.userStats = getDataOrThrow(await getUserStats());
-      this.matches = getDataOrThrow(await getUserPlayedMatches());
       return;
     }
     const userStatsArray = getDataOrThrow(
@@ -184,11 +145,6 @@ export default class StatsView extends AbstractView {
     if (!userStatsArray[0])
       throw new Error(i18next.t("error.userStatsNotFound"));
     this.userStats = userStatsArray[0];
-    if (this.viewType === "friend") {
-      this.matches = getDataOrThrow(
-        await getUserPlayedMatchesByUsername(this.username)
-      );
-    }
   }
 
   async showTab(tabId: string) {
@@ -217,16 +173,6 @@ export default class StatsView extends AbstractView {
           tabId: "matches",
           isActive: true
         })}
-        ${TabButton({
-          text: i18next.t("statsView.tournaments"),
-          tabId: "tournaments"
-        })}
-        ${this.viewType === "self"
-          ? TabButton({
-              text: i18next.t("statsView.friends"),
-              tabId: "friends"
-            })
-          : ""}
       </div>
       <div id="tab-content"></div>
     `;
