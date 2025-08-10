@@ -29,6 +29,23 @@ const loginUserResponseSchema = {
   additionalProperties: false
 };
 
+const logoutUserResponseSchema = {
+  $id: "logoutUserResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: ["username"]
+    }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
 const twoFACodeSchema = {
   $id: "twoFACodeSchema",
   type: "object",
@@ -62,6 +79,7 @@ const twoFAPasswordSchema = {
 export const authSchemas = [
   loginUserSchema,
   loginUserResponseSchema,
+  logoutUserResponseSchema,
   twoFACodeSchema,
   twoFABackupCodeSchema,
   twoFAPasswordSchema

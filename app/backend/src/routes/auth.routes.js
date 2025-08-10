@@ -89,7 +89,7 @@ const optionsLogoutUser = {
   onRequest: [authorizeUserAccess],
   schema: {
     response: {
-      200: { $ref: "loginUserResponseSchema" },
+      200: { $ref: "logoutUserResponseSchema" },
       ...errorResponses
     }
   }
