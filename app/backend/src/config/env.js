@@ -115,7 +115,7 @@ const schema = {
     },
     AUTH_RATE_LIMIT_MAX: {
       type: "number",
-      default: 20,
+      default: 10,
       description:
         "Maximum number of requests inside a timeWindow for auth routes"
     },
