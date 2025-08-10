@@ -1,7 +1,7 @@
-import { buildMatchesScoreDiffOptions } from "../../charts/scoreDiffOptions.js";
-import { buildMatchesScoresLastTenDaysOptions } from "../../charts/scoresLastTenDaysOptions.js";
-import { buildMatchesWinLossOptions } from "../../charts/winLossOptions.js";
-import { buildMatchesWinrateOptions } from "../../charts/winrateOptions.js";
+import { buildMatchesScoreDiffOptions } from "../../charts/matchesScoreDiffOptions.js";
+import { buildMatchesScoresLastTenDaysOptions } from "../../charts/matchesScoresLastTenDaysOptions.js";
+import { buildMatchesWinLossOptions } from "../../charts/matchesWinLossOptions.js";
+import { buildMatchesWinrateOptions } from "../../charts/matchesWinrateOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
