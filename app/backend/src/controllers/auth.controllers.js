@@ -151,9 +151,9 @@ export async function googleOauth2LoginHandler(request, reply) {
       payload
     );
 
-    reply = setAuthCookies(reply, accessToken, refreshToken);
-
-    return reply.redirect("http://localhost:4000/home");
+    return setAuthCookies(reply, accessToken, refreshToken).redirect(
+      "http://localhost:4000/home"
+    );
   } catch (err) {
     request.log.error(
       { err, body: request.body },
