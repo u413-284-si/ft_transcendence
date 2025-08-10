@@ -278,8 +278,8 @@ export async function twoFAQRCodeHandler(request, reply) {
   }
 }
 
-export async function twoFAVerifyHandler(request, reply) {
-  const action = "Verify 2FA Code";
+export async function enableTwoFAHandler(request, reply) {
+  const action = "Enable 2FA";
   try {
     const userId = request.user.id;
 
@@ -306,7 +306,7 @@ export async function twoFAVerifyHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `twoFAVerifyHandler: ${createResponseMessage(action, false)}`
+      `enableTwoFAHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }

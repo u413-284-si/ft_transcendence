@@ -5,7 +5,7 @@ import {
   logoutUserHandler,
   googleOauth2LoginHandler,
   twoFAQRCodeHandler,
-  twoFAVerifyHandler,
+  enableTwoFAHandler,
   twoFAStatusHandler,
   twoFARemoveHandler,
   authAndDecodeTwoFALoginHandler,
@@ -42,7 +42,7 @@ export default async function authRoutes(fastify) {
     twoFABackupCodeVerifyHandler
   );
 
-  fastify.post("/2fa/verify", optionsTwoFAVerify, twoFAVerifyHandler);
+  fastify.post("/2fa/verify", optionsEnableTwoFA, enableTwoFAHandler);
 
   fastify.post(
     "/2fa/login/verify",
@@ -132,7 +132,7 @@ const optionsAuthUseTwoFALogin = {
   }
 };
 
-const optionsTwoFAVerify = {
+const optionsEnableTwoFA = {
   onRequest: [authorizeUserAccess, ensureLocalAuthProvider],
   schema: {
     body: { $ref: "twoFACodeSchema" },
