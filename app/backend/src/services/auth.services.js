@@ -134,36 +134,34 @@ export async function createTwoFAToken(reply, payload) {
   return twoFALoginToken;
 }
 
-export function setAuthCookies(reply, accessToken, refreshToken) {
+export function setAuthCookies(accessToken, refreshToken) {
   const accessTokenTimeToExpire = new Date(
     Date.now() + parseInt(env.accessTokenTimeToExpireInMs)
   );
   const refreshTokenTimeToExpire = new Date(
     Date.now() + parseInt(env.refreshTokenTimeToExpireInMS)
   );
-  return reply
-    .setCookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/",
-      expires: accessTokenTimeToExpire
-    })
-    .setCookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      path: "/api/auth/refresh",
-      expires: refreshTokenTimeToExpire
-    });
+  return this.setCookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    path: "/",
+    expires: accessTokenTimeToExpire
+  }).setCookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    path: "/api/auth/refresh",
+    expires: refreshTokenTimeToExpire
+  });
 }
 
-export function setTwoFACookie(reply, twoFALoginToken) {
+export function setTwoFACookie(twoFALoginToken) {
   const twoFALoginTokenTimeToExpire = new Date(
     Date.now() + parseInt(env.twoFALoginTokenTimeToExpireInMS)
   );
 
-  return reply.setCookie("twoFALoginToken", twoFALoginToken, {
+  return this.setCookie("twoFALoginToken", twoFALoginToken, {
     httpOnly: true,
     secure: true,
     sameSite: "strict",

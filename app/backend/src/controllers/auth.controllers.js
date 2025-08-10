@@ -69,7 +69,8 @@ export async function loginUserHandler(request, reply) {
 
     if ((await get2FaStatus(payload.id)) === true) {
       const twoFALoginToken = await createTwoFAToken(reply, payload);
-      return setTwoFACookie(reply, twoFALoginToken)
+      return reply
+        .setTwoFACookie(twoFALoginToken)
         .code(200)
         .send({
           message: createResponseMessage(action, true),
@@ -81,7 +82,8 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
@@ -152,9 +154,9 @@ export async function googleOauth2LoginHandler(request, reply) {
       payload
     );
 
-    return setAuthCookies(reply, accessToken, refreshToken).redirect(
-      "http://localhost:4000/home"
-    );
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
+      .redirect("http://localhost:4000/home");
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -228,7 +230,8 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {
@@ -413,7 +416,8 @@ export async function twoFABackupCodeVerifyHandler(request, reply) {
       sameSite: "strict",
       path: "/api/auth/2fa/login/"
     });
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
@@ -465,7 +469,8 @@ export async function twoFALoginVerifyHandler(request, reply) {
       sameSite: "strict",
       path: "/api/auth/2fa/login/"
     });
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
