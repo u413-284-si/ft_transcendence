@@ -106,10 +106,10 @@ export async function get2FaStatus(userId) {
       userId: userId
     },
     select: {
-      has2FA: true
+      hasTwoFA: true
     }
   });
-  return authentication.has2FA;
+  return authentication.hasTwoFA;
 }
 
 export async function createAuthTokens(reply, payload) {
@@ -222,7 +222,7 @@ export async function update2FaStatus(userId, status) {
       userId: userId
     },
     data: {
-      has2FA: status
+      hasTwoFA: status
     }
   });
 }

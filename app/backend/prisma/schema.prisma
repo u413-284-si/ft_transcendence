@@ -33,13 +33,13 @@ model User {
 }
 
 model Authentication {
-    userId   Int     @id
-    password String?
-	refreshToken String?
-	authProvider AuthProviderType @default(LOCAL)
-    totpSecret    String?
-    has2FA        Boolean @default(false)
-	backupCodes BackupCode[] @relation("BackupCodes")
+    userId       Int              @id
+    password     String?
+    refreshToken String?
+    authProvider AuthProviderType @default(LOCAL)
+    totpSecret   String?
+    hasTwoFA     Boolean          @default(false)
+    backupCodes  BackupCode[]     @relation("BackupCodes")
     // oauthProvider String?
     // emailVerificationToken String?
     // emailVerified          Boolean @default(false)
@@ -50,11 +50,11 @@ model Authentication {
 }
 
 model BackupCode {
-	id			Int @id @default(autoincrement())
-	userId 		Int
-	backupCode	String?
+    id         Int     @id @default(autoincrement())
+    userId     Int
+    backupCode String?
 
-	authentication Authentication @relation("BackupCodes", fields: [userId], references: [userId], onDelete: Cascade)
+    authentication Authentication @relation("BackupCodes", fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model UserStats {

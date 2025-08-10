@@ -7,7 +7,7 @@ CREATE TABLE "new_authentications" (
     "refreshToken" TEXT,
     "authProvider" TEXT NOT NULL DEFAULT 'LOCAL',
     "totpSecret" TEXT,
-    "has2FA" BOOLEAN NOT NULL DEFAULT false,
+    "hasTwoFA" BOOLEAN NOT NULL DEFAULT false,
     CONSTRAINT "authentications_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 INSERT INTO "new_authentications" ("authProvider", "password", "refreshToken", "totpSecret", "userId") SELECT "authProvider", "password", "refreshToken", "totpSecret", "userId" FROM "authentications";
