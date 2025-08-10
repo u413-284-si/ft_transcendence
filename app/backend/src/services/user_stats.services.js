@@ -7,11 +7,27 @@ const userStatsSelect = {
 };
 
 export async function updateUserStatsTx(tx, userId, hasWon) {
+  const currentStats = await tx.userStats.findUniqueOrThrow({
+    where: { userId },
+    select: {
+      winstreakCur: true,
+      winstreakMax: true
+    }
+  });
+
+  const newWinstreakCur = hasWon ? currentStats.winstreakCur + 1 : 0;
+  const newWinstreakMax =
+    hasWon && newWinstreakCur > currentStats.winstreakMax
+      ? newWinstreakCur
+      : currentStats.winstreakMax;
+
   const stats = await tx.userStats.update({
     where: { userId },
     data: {
       matchesPlayed: { increment: 1 },
-      matchesWon: hasWon ? { increment: 1 } : undefined
+      matchesWon: hasWon ? { increment: 1 } : undefined,
+      winstreakCur: newWinstreakCur,
+      winstreakMax: newWinstreakMax
     },
     select: userStatsSelect
   });
