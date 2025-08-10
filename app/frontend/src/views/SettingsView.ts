@@ -237,30 +237,31 @@ export default class SettingsView extends AbstractView {
   }
 
   protected addListeners(): void {
-    this.twoFASetupButtonEl.addEventListener("click", () =>
-      this.displayTwoFAPasswordModal("setup")
-    );
-    this.twoFAPasswordFormEl.addEventListener("submit", (event) =>
-      this.callPasswordFormAction(event)
-    );
-    this.twoFACloseTwoFAModalButtonEl.addEventListener("click", () =>
-      this.hideTwoFASetupModal()
-    );
-    this.twoFAClosePasswordModalButtonEl.addEventListener("click", () =>
-      this.hideModal("two-fa-password-modal")
-    );
-    this.twoFAFormEl.addEventListener("submit", (event) =>
-      this.callTwoFAFormAction(event)
-    );
-
-    if (this.hasTwoFA) {
-      this.twoFAGenerateBackupCodesButtonEl.addEventListener("click", () =>
-        this.displayTwoFAPasswordModal("backupCodes")
+    if (this.hasLocalAuth) {
+      this.twoFASetupButtonEl.addEventListener("click", () =>
+        this.displayTwoFAPasswordModal("setup")
+      );
+      this.twoFAFormEl.addEventListener("submit", (event) =>
+        this.callTwoFAFormAction(event)
+      );
+      this.twoFAPasswordFormEl.addEventListener("submit", (event) =>
+        this.callPasswordFormAction(event)
+      );
+      this.twoFACloseTwoFAModalButtonEl.addEventListener("click", () =>
+        this.hideTwoFASetupModal()
+      );
+      this.twoFAClosePasswordModalButtonEl.addEventListener("click", () =>
+        this.hideModal("two-fa-password-modal")
+      );
+      if (this.hasTwoFA) {
+        this.twoFAGenerateBackupCodesButtonEl.addEventListener("click", () =>
+          this.displayTwoFAPasswordModal("backupCodes")
+        );
+      }
+      this.twoFABackupCodesCloseModalButtonEl.addEventListener("click", () =>
+        this.hideBackupCodesModal()
       );
     }
-    this.twoFABackupCodesCloseModalButtonEl.addEventListener("click", () =>
-      this.hideBackupCodesModal()
-    );
 
     this.preferredLanguageFormEl.addEventListener("submit", (event) =>
       this.updatePreferredLanguage(event)
