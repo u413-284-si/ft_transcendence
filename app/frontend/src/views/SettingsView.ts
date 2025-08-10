@@ -236,8 +236,6 @@ export default class SettingsView extends AbstractView {
     `;
   }
 
-  // ${this.hasLocalAuth ? this.get2FaSetupHTML() : ""}
-
   protected addListeners(): void {
     this.twoFASetupButtonEl.addEventListener("click", () =>
       this.displayTwoFAPasswordModal("setup")
