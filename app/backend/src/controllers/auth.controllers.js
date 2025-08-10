@@ -14,10 +14,6 @@ import {
   update2FaStatus,
   get2FaStatus,
   createTwoFAToken,
-  generateBackupCodes,
-  hashBackupCodes,
-  getBackupCodes,
-  createBackupCodes,
   deleteBackupCodes,
   verifyBackupCode,
   updateBackupCodes
@@ -531,6 +527,8 @@ export async function twoFARemoveHandler(request, reply) {
     }
 
     await update2FaStatus(userId, false);
+    await updateTotpSecret(userId, null);
+    await deleteBackupCodes(userId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true) });
