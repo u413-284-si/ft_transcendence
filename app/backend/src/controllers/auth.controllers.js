@@ -378,7 +378,7 @@ export async function twoFABackupCodesHandler(request, reply) {
       { error, body: request.body },
       `RefreshHandler: ${createResponseMessage(action, false)}`
     );
-    handlePrismaError(reply, action, err);
+    handlePrismaError(reply, action, error);
   }
 }
 
