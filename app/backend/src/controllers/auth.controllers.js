@@ -240,14 +240,6 @@ export async function twoFAQRCodeHandler(request, reply) {
   const action = "Generate 2FA QR Code";
   try {
     const userId = request.user.id;
-    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
-      return httpError(
-        reply,
-        403,
-        createResponseMessage(action, false),
-        "2FA Qrcode can not be generated. User uses Google auth provider"
-      );
-    }
 
     const { password } = request.body;
     const hashedPassword = await getPasswordHash(userId);
@@ -290,14 +282,6 @@ export async function twoFAVerifyHandler(request, reply) {
   const action = "Verify 2FA Code";
   try {
     const userId = request.user.id;
-    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
-      return httpError(
-        reply,
-        403,
-        createResponseMessage(action, false),
-        "2FA code can not be verified. User uses Google auth provider"
-      );
-    }
 
     const { code } = request.body;
     const secret = await getTotpSecret(userId);
@@ -332,14 +316,6 @@ export async function twoFABackupCodesHandler(request, reply) {
   const action = "Generate backup codes";
   try {
     const userId = request.user.id;
-    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
-      return httpError(
-        reply,
-        403,
-        createResponseMessage(action, false),
-        "2FA code can not be verified. User uses Google auth provider"
-      );
-    }
 
     const { password } = request.body;
     const hashedPassword = await getPasswordHash(userId);
@@ -373,14 +349,6 @@ export async function twoFABackupCodeVerifyHandler(request, reply) {
   try {
     const userId = request.user.id;
     const username = request.user.username;
-    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
-      return httpError(
-        reply,
-        403,
-        createResponseMessage(action, false),
-        "2FA code can not be verified. User uses Google auth provider"
-      );
-    }
 
     const { backupCode } = request.body;
 
@@ -425,14 +393,6 @@ export async function twoFALoginVerifyHandler(request, reply) {
   try {
     const userId = request.user.id;
     const username = request.user.username;
-    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
-      return httpError(
-        reply,
-        403,
-        createResponseMessage(action, false),
-        "2FA code can not be verified. User uses Google auth provider"
-      );
-    }
 
     const { code } = request.body;
     const secret = await getTotpSecret(userId);
@@ -477,14 +437,6 @@ export async function twoFAStatusHandler(request, reply) {
   const action = "Get 2FA status";
   try {
     const userId = request.user.id;
-    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
-      return httpError(
-        reply,
-        403,
-        createResponseMessage(action, false),
-        "2FA code can not be verified. User uses Google auth provider"
-      );
-    }
 
     const hasTwoFA = await get2FaStatus(userId);
     const data = { hasTwoFA: hasTwoFA };
@@ -504,14 +456,6 @@ export async function twoFARemoveHandler(request, reply) {
   const action = "Remove 2FA";
   try {
     const userId = request.user.id;
-    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
-      return httpError(
-        reply,
-        403,
-        createResponseMessage(action, false),
-        "2FA code can not be verified. User uses Google auth provider"
-      );
-    }
 
     const { password } = request.body;
     const hashedPassword = await getPasswordHash(userId);

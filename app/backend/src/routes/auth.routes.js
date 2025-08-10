@@ -16,7 +16,8 @@ import {
 import { errorResponses } from "../utils/error.js";
 import {
   authorizeUserAccess,
-  authorizeUseTwoFALoginAccess
+  authorizeUseTwoFALoginAccess,
+  ensureLocalAuthProvider
 } from "../middleware/auth.js";
 import env from "../config/env.js";
 
@@ -114,7 +115,7 @@ const optionsGoogleOauth2Login = {
 };
 
 const optionsTwoFAQRCode = {
-  onRequest: [authorizeUserAccess],
+  onRequest: [authorizeUserAccess, ensureLocalAuthProvider],
   schema: {
     response: {
       ...errorResponses
@@ -123,7 +124,7 @@ const optionsTwoFAQRCode = {
 };
 
 const optionsAuthUseTwoFALogin = {
-  onRequest: [authorizeUseTwoFALoginAccess],
+  onRequest: [authorizeUseTwoFALoginAccess, ensureLocalAuthProvider],
   schema: {
     response: {
       ...errorResponses
@@ -132,7 +133,7 @@ const optionsAuthUseTwoFALogin = {
 };
 
 const optionsTwoFAVerify = {
-  onRequest: [authorizeUserAccess],
+  onRequest: [authorizeUserAccess, ensureLocalAuthProvider],
   schema: {
     body: { $ref: "twoFACodeSchema" },
     response: {
@@ -142,7 +143,7 @@ const optionsTwoFAVerify = {
 };
 
 const optionsTwoFALoginVerify = {
-  onRequest: [authorizeUseTwoFALoginAccess],
+  onRequest: [authorizeUseTwoFALoginAccess, ensureLocalAuthProvider],
   schema: {
     body: { $ref: "twoFACodeSchema" },
     response: {
@@ -152,7 +153,7 @@ const optionsTwoFALoginVerify = {
 };
 
 const optionsTwoFAStatus = {
-  onRequest: [authorizeUserAccess],
+  onRequest: [authorizeUserAccess, ensureLocalAuthProvider],
   schema: {
     response: {
       ...errorResponses
@@ -161,7 +162,7 @@ const optionsTwoFAStatus = {
 };
 
 const optionsTwoFARemove = {
-  onRequest: [authorizeUserAccess],
+  onRequest: [authorizeUserAccess, ensureLocalAuthProvider],
   schema: {
     body: { $ref: "twoFAPasswordSchema" },
     response: {
@@ -171,7 +172,7 @@ const optionsTwoFARemove = {
 };
 
 const optionsTwoFABackupCodes = {
-  onRequest: [authorizeUserAccess],
+  onRequest: [authorizeUserAccess, ensureLocalAuthProvider],
   schema: {
     body: { $ref: "twoFAPasswordSchema" },
     response: {
@@ -181,7 +182,7 @@ const optionsTwoFABackupCodes = {
 };
 
 const optionsTwoFABackupCodesVerify = {
-  onRequest: [authorizeUseTwoFALoginAccess],
+  onRequest: [authorizeUseTwoFALoginAccess, ensureLocalAuthProvider],
   schema: {
     body: { $ref: "twoFABackupCodeSchema" },
     response: {

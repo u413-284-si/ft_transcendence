@@ -4,6 +4,7 @@ import {
 } from "../services/auth.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
+import { getUserAuthProvider } from "../services/users.services.js";
 
 export async function authorizeUserAccess(request, reply) {
   const action = "Authorize user's access token";
@@ -46,6 +47,29 @@ export async function authorizeUseTwoFALoginAccess(request, reply) {
     request.log.error(
       { err, body: request.body },
       `authorizeUseTwoFALoginAccess: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function ensureLocalAuthProvider(request, reply) {
+  const action = "Ensure local auth provider";
+  try {
+    const userId = request.user.id;
+    const provider = await getUserAuthProvider(userId);
+
+    if (provider !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        `2FA operation can not be performed. User uses ${provider} auth provider`
+      );
+    }
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `ensureLocalAuthProvider: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
