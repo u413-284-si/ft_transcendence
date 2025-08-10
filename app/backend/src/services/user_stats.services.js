@@ -74,6 +74,7 @@ function assembleUserStats({
   const matchesLost = matchesPlayed - matchesWon;
   const winRate =
     matchesPlayed > 0 ? ((matchesWon / matchesPlayed) * 100).toFixed(2) : 0;
+
   return {
     matchesPlayed,
     matchesWon,

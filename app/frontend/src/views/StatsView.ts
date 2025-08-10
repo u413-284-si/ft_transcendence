@@ -81,12 +81,12 @@ export default class StatsView extends AbstractView {
               text: i18next.t("statsView.winRate")
             },
             {
-              value: `${this.userStats.winstreakCur}`,
-              text: i18next.t("statsView.winstreak")
+              value: `${this.userStats?.winstreakCur}`,
+              text: i18next.t("statsView.winstreakCur")
             },
             {
-              value: `${this.userStats.winstreakMax}`,
-              text: i18next.t("statsView.maxStreak")
+              value: `${this.userStats?.winstreakMax}`,
+              text: i18next.t("statsView.winstreakMax")
             }
           ])}
         </div>
