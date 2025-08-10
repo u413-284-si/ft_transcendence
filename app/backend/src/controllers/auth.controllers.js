@@ -318,12 +318,7 @@ export async function twoFAVerifyHandler(request, reply) {
 
     await update2FaStatus(userId, true);
 
-    const existingBackupCodes = await getBackupCodes(userId);
-    if (existingBackupCodes.length > 0) await deleteBackupCodes(userId);
-
-    const newBackupCodes = generateBackupCodes();
-    const hashedBackupCodes = await hashBackupCodes(userId, newBackupCodes);
-    await createBackupCodes(hashedBackupCodes);
+    const newBackupCodes = await updateBackupCodes(userId);
     const data = { backupCodes: newBackupCodes };
 
     return reply
