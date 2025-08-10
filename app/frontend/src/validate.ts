@@ -106,7 +106,7 @@ export async function isTournamentNameAvailable(
 ): Promise<boolean> {
   try {
     const tournaments = getDataOrThrow(await getUserTournaments(inputEl.value));
-    if (tournaments.length === 0) {
+    if (tournaments.items.length === 0) {
       return true;
     }
 

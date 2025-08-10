@@ -1,5 +1,8 @@
 import { Tournament } from "../Tournament.js";
-import { TournamentDTO } from "../types/ITournament.js";
+import {
+  TournamentDTO,
+  TournamentsPageResponse
+} from "../types/ITournament.js";
 import { ApiError, apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 
@@ -42,7 +45,7 @@ export async function updateTournamentBracket(
 
 export async function getUserTournaments(
   name?: string
-): Promise<ApiResponse<TournamentDTO[]>> {
+): Promise<ApiResponse<{ items: TournamentDTO[] }>> {
   let url = "/api/users/me/tournaments";
 
   if (name) {
@@ -50,7 +53,31 @@ export async function getUserTournaments(
     url += `?${params.toString()}`;
   }
 
-  return apiFetch<TournamentDTO[]>(url, {
+  return apiFetch<{ items: TournamentDTO[] }>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+}
+
+export async function getUserTournamentsByUsername(
+  name?: string,
+  limit = 10,
+  offset = 0,
+  sort: "asc" | "desc" = "desc"
+): Promise<ApiResponse<TournamentsPageResponse>> {
+  const params = new URLSearchParams({
+    limit: limit.toString(),
+    offset: offset.toString(),
+    sort
+  });
+
+  if (name) {
+    params.set("name", name);
+  }
+
+  const url = `/api/users/me/tournaments?${params.toString()}`;
+
+  return apiFetch<TournamentsPageResponse>(url, {
     method: "GET",
     credentials: "same-origin"
   });
@@ -61,7 +88,7 @@ export async function getActiveTournament(): Promise<
 > {
   const url = `/api/users/me/tournaments?isFinished=false`;
 
-  const apiResponse = await apiFetch<TournamentDTO[]>(url, {
+  const apiResponse = await apiFetch<{ items: TournamentDTO[] }>(url, {
     method: "GET"
   });
 
@@ -70,8 +97,8 @@ export async function getActiveTournament(): Promise<
   }
 
   const firstTournament =
-    apiResponse.data && apiResponse.data.length > 0
-      ? apiResponse.data[0]
+    apiResponse.data && apiResponse.data.items.length > 0
+      ? apiResponse.data.items[0]
       : null;
 
   return {

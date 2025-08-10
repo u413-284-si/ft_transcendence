@@ -9,3 +9,5 @@ export interface TournamentDTO {
   roundReached: number;
   bracket: string;
 }
+
+export type TournamentsPageResponse = { items: TournamentDTO[]; total: number };
