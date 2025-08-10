@@ -7,7 +7,7 @@ import { Input } from "../components/Input.js";
 import { Image } from "../components/Image.js";
 import {
   generateBackupCodes,
-  generateTwoFAQRcode as generateTwoFAQRcode,
+  generateTwoFAQRcode,
   geTwoFAStatus,
   removeTwoFA,
   verifyTwoFACodeAndGetBackupCodes
