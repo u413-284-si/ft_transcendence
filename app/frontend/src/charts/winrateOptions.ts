@@ -1,5 +1,5 @@
 import type { ApexOptions } from "apexcharts";
-import { chartColors, toAxisSeries } from "./utils.js";
+import { chartColors, toAxisSeries } from "./chartUtils.js";
 import { formatDateTime } from "../formatDate.js";
 
 export function makeWinrateOptions(

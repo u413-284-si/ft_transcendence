@@ -1,5 +1,5 @@
 import { ApexOptions } from "apexcharts";
-import { chartColors } from "./utils.js";
+import { chartColors } from "./chartUtils.js";
 import { FriendStatsSeries } from "../types/DataSeries.js";
 
 export function makeFriendsWinstreakOptions(

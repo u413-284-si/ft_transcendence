@@ -1,4 +1,4 @@
-import { renderChart } from "../../charts/utils.js";
+import { renderChart } from "../../charts/chartUtils.js";
 import { toaster } from "../../Toaster.js";
 
 export abstract class AbstractTab {

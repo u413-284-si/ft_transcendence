@@ -3,7 +3,7 @@ import {
   TournamentDayData,
   TournamentPlayedSeries
 } from "../types/DataSeries.js";
-import { chartColors, tournamentColors } from "./utils.js";
+import { chartColors, tournamentColors } from "./chartUtils.js";
 import { TournamentSize } from "../types/ITournament.js";
 import { formatDayMonth } from "../formatDate.js";
 

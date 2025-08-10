@@ -1,6 +1,6 @@
 import { ApexOptions } from "apexcharts";
 import { TournamentDaySeries } from "../types/DataSeries.js";
-import { chartColors, tournamentColors } from "./utils.js";
+import { chartColors, tournamentColors } from "./chartUtils.js";
 import { formatDayMonth } from "../formatDate.js";
 import { TournamentSize } from "../types/ITournament.js";
 

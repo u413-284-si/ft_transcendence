@@ -1,4 +1,4 @@
-import { friendsColors, friendsColorsTailwind } from "./utils.js";
+import { friendsColors, friendsColorsTailwind } from "./chartUtils.js";
 
 export class FriendManager {
   private friendColorMap: Map<string, number> = new Map();

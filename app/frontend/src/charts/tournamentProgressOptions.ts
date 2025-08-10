@@ -1,5 +1,5 @@
 import { ApexOptions } from "apexcharts";
-import { tournamentColors } from "./utils.js";
+import { tournamentColors } from "./chartUtils.js";
 import { TournamentSize } from "../types/ITournament.js";
 
 export function makeTournamentProgressOptions(
