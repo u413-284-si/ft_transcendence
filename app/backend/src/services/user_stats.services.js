@@ -1,9 +1,10 @@
 import prisma from "../prisma/prismaClient.js";
 
 const userStatsSelect = {
-  userId: true,
   matchesPlayed: true,
-  matchesWon: true
+  matchesWon: true,
+  winstreakCur: true,
+  winstreakMax: true
 };
 
 export async function updateUserStatsTx(tx, userId, hasWon) {
