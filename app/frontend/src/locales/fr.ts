@@ -223,7 +223,9 @@ const fr: TranslationShape = {
       result: "Résultat",
       title: "Statistiques",
       tournament: "Tournoi",
-      winRate: "Taux de victoire"
+      winRate: "Taux de victoire",
+      winstreakCur: "Série de victoires",
+      winstreakMax: "Max-Série"
     },
 
     toast: {
