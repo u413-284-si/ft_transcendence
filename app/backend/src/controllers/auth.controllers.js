@@ -35,7 +35,6 @@ import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
-import env from "../config/env.js";
 import fastify from "../app.js";
 
 export async function loginUserHandler(request, reply) {
@@ -376,7 +375,7 @@ export async function twoFABackupCodesHandler(request, reply) {
       .send({ message: createResponseMessage(action, true), data });
   } catch (error) {
     request.log.error(
-      { err, body: request.body },
+      { error, body: request.body },
       `RefreshHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
