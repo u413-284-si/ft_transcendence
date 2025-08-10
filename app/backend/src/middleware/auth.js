@@ -29,7 +29,7 @@ export async function authorizeUserAccess(request, reply) {
   }
 }
 
-export async function authorizeUserTwoFALoginAccess(request, reply) {
+export async function authorizeUserTwoFALogin(request, reply) {
   const action = "Authorize user's two factor login token";
 
   const token = request.cookies.twoFALoginToken;

@@ -16,7 +16,7 @@ import {
 import { errorResponses } from "../utils/error.js";
 import {
   authorizeUserAccess,
-  authorizeUserTwoFALoginAccess,
+  authorizeUserTwoFALogin,
   ensureLocalAuthProvider
 } from "../middleware/auth.js";
 import env from "../config/env.js";
@@ -124,7 +124,7 @@ const optionsTwoFAQRCode = {
 };
 
 const optionsAuthUseTwoFALogin = {
-  onRequest: [authorizeUserTwoFALoginAccess, ensureLocalAuthProvider],
+  onRequest: [authorizeUserTwoFALogin, ensureLocalAuthProvider],
   schema: {
     response: {
       ...errorResponses
@@ -143,7 +143,7 @@ const optionsTwoFAVerify = {
 };
 
 const optionsTwoFALoginVerify = {
-  onRequest: [authorizeUserTwoFALoginAccess, ensureLocalAuthProvider],
+  onRequest: [authorizeUserTwoFALogin, ensureLocalAuthProvider],
   schema: {
     body: { $ref: "twoFACodeSchema" },
     response: {
@@ -182,7 +182,7 @@ const optionsTwoFABackupCodes = {
 };
 
 const optionsTwoFABackupCodesVerify = {
-  onRequest: [authorizeUserTwoFALoginAccess, ensureLocalAuthProvider],
+  onRequest: [authorizeUserTwoFALogin, ensureLocalAuthProvider],
   schema: {
     body: { $ref: "twoFABackupCodeSchema" },
     response: {
