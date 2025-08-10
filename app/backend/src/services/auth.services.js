@@ -261,6 +261,17 @@ export async function verifyBackupCode(userId, backupCode) {
   return false;
 }
 
+export async function updateBackupCodes(userId) {
+  const existingBackupCodes = await getBackupCodes(userId);
+  if (existingBackupCodes.length > 0) await deleteBackupCodes(userId);
+
+  const newBackupCodes = generateBackupCodes();
+  const hashedBackupCodes = await hashBackupCodes(userId, newBackupCodes);
+  await createBackupCodes(hashedBackupCodes);
+
+  return newBackupCodes;
+}
+
 export async function createBackupCodes(backupCodes) {
   await prisma.backupCode.createMany({
     data: backupCodes
