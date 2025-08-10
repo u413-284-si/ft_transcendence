@@ -38,8 +38,8 @@ export default class StatsView extends AbstractView {
   }
 
   createHTML() {
-    if (!this.user) throw new Error(i18next.t("error.userNotFound"));
-    if (!this.userStats) throw new Error(i18next.t("error.userStatsNotFound"));
+    if (!this.user) throw new Error(i18next.t("error.somethingWentWrong"));
+    if (!this.userStats) throw new Error(i18next.t("error.somethingWentWrong"));
 
     return /* HTML */ `<div
         class="flex flex-row items-center gap-y-6 gap-x-8 mb-12 pl-6"
@@ -56,9 +56,9 @@ export default class StatsView extends AbstractView {
               variant: "username"
             })}
             ${Paragraph({
-              text: i18next.t("statsView.joined", {
+              text: `${i18next.t("statsView.joined", {
                 date: formatDate(this.user.dateJoined)
-              })
+              })}`
             })}
           </div>
           ${StatFieldGroup([

@@ -204,7 +204,7 @@ const tr: TranslationShape = {
 
     statsView: {
       date: "Cycle Date",
-      friendOnly: "Link established required to access complete logs",
+      friendOnly: "Link established required to access complete logs.",
       joined: "Node integrated: {{date}}",
       matchHistory: "Session Log",
       played: "Engaged",
