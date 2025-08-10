@@ -17,8 +17,8 @@ export async function verifyTwoFALoginToken(request) {
   return await request.twoFALoginTokenVerify();
 }
 
-export function verifyTwoFAToken(totp, token) {
-  const delta = totp.validate({ token, window: 1 });
+export function verifyTwoFACode(twoFA, code) {
+  const delta = twoFA.validate({ token: code, window: 1 });
   return delta !== null;
 }
 
@@ -88,16 +88,16 @@ export async function getTokenHash(userId) {
   return authentication.refreshToken;
 }
 
-export async function getTotpSecret(userId) {
+export async function getTwoFASecret(userId) {
   const authentication = await prisma.authentication.findUniqueOrThrow({
     where: {
       userId: userId
     },
     select: {
-      totpSecret: true
+      twoFASecret: true
     }
   });
-  return authentication.totpSecret;
+  return authentication.twoFASecret;
 }
 
 export async function getTwoFAStatus(userId) {
@@ -170,7 +170,7 @@ export function setTwoFACookie(twoFALoginToken) {
   });
 }
 
-export function generateTotp(username, secret) {
+export function generateTwoFA(username, secret) {
   return new otpAuth.TOTP({
     issuer: "ft_transcendence",
     label: username,
@@ -181,8 +181,8 @@ export function generateTotp(username, secret) {
   });
 }
 
-export async function generateTwoFAQRCode(totp) {
-  const uri = totp.toString();
+export async function generateTwoFAQRCode(twoFA) {
+  const uri = twoFA.toString();
   return await QRCode.toDataURL(uri);
 }
 
@@ -203,13 +203,13 @@ export async function updatePassword(userId, hashedNewPassword) {
   });
 }
 
-export async function updateTotpSecret(userId, secret) {
+export async function updateTwoFASecret(userId, secret) {
   await prisma.authentication.update({
     where: {
       userId: userId
     },
     data: {
-      totpSecret: secret
+      twoFASecret: secret
     }
   });
 }
