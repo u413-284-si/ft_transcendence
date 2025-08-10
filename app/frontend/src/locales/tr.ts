@@ -223,6 +223,7 @@ const tr: TranslationShape = {
       acceptedFriendRequest: "Link request accepted by ",
       avatarUploadFailed: "Avatar upload interrupted. Reattempt required.",
       avatarUploadedSuccess: "Avatar successfully embedded!",
+      chartError: "Chart failed to initialize",
       connectionLost:
         "Signal lost — attempting reconnection in {{delay}} cycles... (Attempt {{attempt}} of {{maxAttempts}})",
       connectionReestablished: "Signal reestablished",

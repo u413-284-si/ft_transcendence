@@ -231,6 +231,7 @@ const de: TranslationShape = {
       avatarUploadFailed:
         "Avatar konnte nicht hochgeladen werden. Bitte versuche es erneut.",
       avatarUploadedSuccess: "Avatar erfolgreich hochgeladen!",
+      chartError: "Ein Diagramm konnte nicht initialisiert werden",
       connectionLost:
         "Verbindung verloren - erneuter Versuch in {{delay}} Sekunden... (Versuch {{attempt}} von {{maxAttempts}})",
       connectionReestablished: "Verbindung wiederhergestellt",

@@ -223,6 +223,7 @@ const pi: TranslationShape = {
       acceptedFriendRequest: "Parley accepted by ",
       avatarUploadFailed: "Couldn’t hoist yer flag – try again!",
       avatarUploadedSuccess: "Yer colors be flyin’ high now!",
+      chartError: "Thar be a chart that refused t' hoist its sails",
       connectionLost:
         "Connection to the crow's nest lost – tryin’ again in {{delay}} seconds... (Try {{attempt}} o’ {{maxAttempts}})",
       connectionReestablished: "Riggings reattached!",

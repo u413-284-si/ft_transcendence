@@ -234,6 +234,7 @@ const fr: TranslationShape = {
       avatarUploadFailed:
         "Échec du téléchargement de l'avatar. Veuillez réessayer.",
       avatarUploadedSuccess: "Avatar téléchargé avec succès !",
+      chartError: "Un graphique n'a pas pu être initialisé",
       connectionUnavailable:
         "Impossible de se reconnecter. Tentatives arrêter jusqu'à l'actualisation.",
       connectionLost:

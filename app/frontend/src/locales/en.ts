@@ -223,6 +223,7 @@ const en = {
       acceptedFriendRequest: "Friend request accepted by ",
       avatarUploadFailed: "Avatar upload failed. Please try again.",
       avatarUploadedSuccess: "Avatar uploaded successfully!",
+      chartError: "A chart failed to initialize",
       connectionLost:
         "Connection lost - retrying in {{delay}} seconds... (Attempt {{attempt}} of {{maxAttempts}})",
       connectionReestablished: "Connection reestablished",
