@@ -1,5 +1,5 @@
-import { getUserMatches } from "./matches.services";
-import { getUserStats } from "./user_stats.services";
+import { getUserMatches } from "./matches.services.js";
+import { getUserStats } from "./user_stats.services.js";
 
 export function computeWinrateLastNMatches(userStats, lastNMatches) {
   const lastNMatchesWithResults = lastNMatches
