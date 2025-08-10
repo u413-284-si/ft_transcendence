@@ -22,7 +22,7 @@ export async function authorizeUserAccess(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authorizeUserHandler: ${createResponseMessage(action, false)}`
+      `authorizeUserAccess: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
@@ -45,7 +45,7 @@ export async function authorizeUseTwoFALoginAccess(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authorizeUserHandler: ${createResponseMessage(action, false)}`
+      `authorizeUseTwoFALoginAccess: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }

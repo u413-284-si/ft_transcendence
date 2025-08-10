@@ -189,7 +189,7 @@ export async function authAndDecodTwoFALoginHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `authAndDecodeAccessHandler: ${createResponseMessage(action, false)}`
+      `authAndDecodeTwoFALoginHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
@@ -284,7 +284,7 @@ export async function twoFAQRCodeHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `RefreshHandler: ${createResponseMessage(action, false)}`
+      `twoFAQRCodeHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
@@ -331,7 +331,7 @@ export async function twoFAVerifyHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `RefreshHandler: ${createResponseMessage(action, false)}`
+      `twoFAVerifyHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
@@ -376,7 +376,7 @@ export async function twoFABackupCodesHandler(request, reply) {
   } catch (error) {
     request.log.error(
       { error, body: request.body },
-      `RefreshHandler: ${createResponseMessage(action, false)}`
+      `twoFABackupCodesHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, error);
   }
@@ -427,7 +427,7 @@ export async function twoFABackupCodeVerifyHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `RefreshHandler: ${createResponseMessage(action, false)}`
+      `twoFABackupCodeVerifyHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
@@ -479,7 +479,7 @@ export async function twoFALoginVerifyHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `RefreshHandler: ${createResponseMessage(action, false)}`
+      `twoFALoginVerifyHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
@@ -506,7 +506,7 @@ export async function twoFAStatusHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `RefreshHandler: ${createResponseMessage(action, false)}`
+      `twoFAStatusHandler: ${createResponseMessage(action, false)}`
     );
     handlePrismaError(reply, action, err);
   }
