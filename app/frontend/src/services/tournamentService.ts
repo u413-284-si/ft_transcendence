@@ -1,6 +1,6 @@
 import { Tournament } from "../Tournament.js";
 import { TournamentDTO } from "../types/ITournament.js";
-import { apiFetch } from "./api.js";
+import { ApiError, apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 
 export async function createTournament(
@@ -59,11 +59,25 @@ export async function getUserTournaments(
 export async function getActiveTournament(): Promise<
   ApiResponse<TournamentDTO | null>
 > {
-  const url = `/api/users/me/tournaments/active`;
+  const url = `/api/users/me/tournaments?isFinished=false`;
 
-  return apiFetch<TournamentDTO | null>(url, {
+  const apiResponse = await apiFetch<TournamentDTO[]>(url, {
     method: "GET"
   });
+
+  if (!apiResponse.success) {
+    throw new ApiError(apiResponse);
+  }
+
+  const firstTournament =
+    apiResponse.data && apiResponse.data.length > 0
+      ? apiResponse.data[0]
+      : null;
+
+  return {
+    ...apiResponse,
+    data: firstTournament
+  };
 }
 
 export async function deleteTournament(
