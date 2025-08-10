@@ -12,10 +12,7 @@ import {
   removeTwoFA,
   verifyTwoFACodeAndGetBackupCodes
 } from "../services/authServices.js";
-import {
-  markInvalid,
-  validateTwoFACode as validateTwoFACode
-} from "../validate.js";
+import { markInvalid, validateTwoFACode } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { router } from "../routing/Router.js";
 import { Link } from "../components/Link.js";
