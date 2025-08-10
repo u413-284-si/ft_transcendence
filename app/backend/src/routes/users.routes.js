@@ -192,15 +192,7 @@ const optionsGetUserStats = {
 const optionsGetUserTournaments = {
   onRequest: [authorizeUserAccess],
   schema: {
-    querystring: {
-      type: "object",
-      properties: {
-        name: {
-          $ref: "tournamentDefinitionsSchema#/definitions/tournamentName"
-        }
-      },
-      required: []
-    },
+    querystring: { $ref: "querystringTournamentSchema" },
     response: {
       200: { $ref: "tournamentArrayResponseSchema" },
       ...errorResponses

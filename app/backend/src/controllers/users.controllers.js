@@ -223,9 +223,12 @@ export async function getUserTournamentsHandler(request, reply) {
   const action = "Get user tournaments";
   try {
     const userId = parseInt(request.user.id, 10);
-    const { name } = request.query;
     const filter = {
-      name
+      name: request.query.name,
+      isFinished: request.query.isFinished,
+      limit: request.query.limit,
+      offset: request.query.offset,
+      sort: request.query.sort
     };
     const data = await getUserTournaments(userId, undefined, filter);
     const count = data.length;
