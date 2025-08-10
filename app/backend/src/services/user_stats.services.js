@@ -65,15 +65,22 @@ export async function deleteAllUserStats() {
   return userStats;
 }
 
-function assembleUserStats(userStats) {
+function assembleUserStats({
+  matchesPlayed,
+  matchesWon,
+  winstreakCur,
+  winstreakMax
+}) {
+  const matchesLost = matchesPlayed - matchesWon;
+  const winRate =
+    matchesPlayed > 0 ? ((matchesWon / matchesPlayed) * 100).toFixed(2) : 0;
+
   return {
-    userId: userStats.userId,
-    matchesPlayed: userStats.matchesPlayed,
-    matchesWon: userStats.matchesWon,
-    matchesLost: userStats.matchesPlayed - userStats.matchesWon,
-    winRate:
-      userStats.matchesPlayed > 0
-        ? (userStats.matchesWon / userStats.matchesPlayed) * 100
-        : 0
+    matchesPlayed,
+    matchesWon,
+    matchesLost,
+    winRate,
+    winstreakCur,
+    winstreakMax
   };
 }
