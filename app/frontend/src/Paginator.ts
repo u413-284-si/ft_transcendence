@@ -13,7 +13,7 @@ export class Paginator<T> {
   }
 
   getTotalPages(): number {
-    return Math.ceil(this.totalItems / this.pageSize);
+    return Math.max(1, Math.ceil(this.totalItems / this.pageSize));
   }
 
   getCurrentPage(): number {
