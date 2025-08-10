@@ -60,12 +60,6 @@ export default async function userRoutes(fastify) {
   );
 
   fastify.get(
-    "/me/tournaments/active",
-    optionsGetUserActiveTournament,
-    getUserActiveTournamentHandler
-  );
-
-  fastify.get(
     "/me/friend-requests",
     optionsGetAllUserFriendRequests,
     getAllUserFriendRequestsHandler
@@ -195,16 +189,6 @@ const optionsGetUserTournaments = {
     querystring: { $ref: "querystringTournamentSchema" },
     response: {
       200: { $ref: "tournamentArrayResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetUserActiveTournament = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      200: { $ref: "tournamentResponseSchema" },
       ...errorResponses
     }
   }
