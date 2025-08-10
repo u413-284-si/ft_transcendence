@@ -45,7 +45,7 @@ const commonDefinitionsSchema = {
       maxLength: 8,
       pattern: "^\\d{8}$",
       description:
-        "The baccup code must be 8 characters long and contain only digits."
+        "The backup code must be 8 characters long and contain only digits."
     },
     usernameOrEmail: {
       oneOf: [
