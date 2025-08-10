@@ -270,13 +270,12 @@ export async function twoFAQRCodeHandler(request, reply) {
       secret = await getTotpSecret(request.user.id);
     } else {
       secret = generate2FaSecret();
+      await updateTotpSecret(userId, secret);
     }
 
     const totp = generateTotp(username, secret);
     const qrcode = await generate2FaQRCode(totp);
     const data = { qrcode: qrcode };
-
-    await updateTotpSecret(userId, secret);
 
     return reply
       .code(200)
