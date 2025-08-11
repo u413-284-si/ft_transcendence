@@ -56,7 +56,7 @@ export class MatchesTab extends AbstractTab {
         })}
         ${Chart({
           title: i18next.t("chart.progression", { range: rangeMatches }),
-          chartId: "winrate-chart"
+          chartId: "win-rate-chart"
         })}
       </div>
       <div class="grid grid-cols-2 gap-8">
@@ -66,7 +66,7 @@ export class MatchesTab extends AbstractTab {
         })}
         ${Chart({
           title: i18next.t("chart.scores", { range: rangeDays }),
-          chartId: "scores-last-ten"
+          chartId: "scores-last-ten-chart"
         })}
       </div>
     </div>`;
@@ -112,7 +112,7 @@ export class MatchesTab extends AbstractTab {
         this.userStats.matchesLost,
         this.userStats.winRate
       ),
-      "winrate-chart": buildMatchesWinRateOptions(
+      "win-rate-chart": buildMatchesWinRateOptions(
         i18next.t("statsView.winRate"),
         this.dashboard.winrate,
         this.userStats.matchesPlayed
@@ -122,7 +122,7 @@ export class MatchesTab extends AbstractTab {
         this.dashboard.scoreDiff,
         this.userStats.matchesPlayed
       ),
-      "scores-last-ten": buildMatchesScoresLastTenDaysOptions(
+      "scores-last-ten-chart": buildMatchesScoresLastTenDaysOptions(
         i18next.t("chart.scores", { range: "" }),
         this.dashboard.scores
       )
