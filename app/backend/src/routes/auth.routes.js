@@ -45,9 +45,7 @@ export default async function authRoutes(fastify) {
 
   fastify.post("/2fa/login/", optionsTwoFALoginVerify, twoFALoginVerifyHandler);
 
-  fastify.get("/2fa/status", optionsTwoFAStatus, twoFAStatusHandler);
-
-  fastify.post("/2fa/remove", optionsTwoFARemove, twoFARemoveHandler);
+  fastify.post("/2fa/disable", optionsTwoFARemove, twoFARemoveHandler);
 
   fastify.patch("/logout", optionsLogoutUser, logoutUserHandler);
 
