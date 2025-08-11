@@ -102,10 +102,10 @@ export class TournamentsTab extends AbstractTab {
         this.dashboard.summary
       ),
       "tournament-played": buildTournamentsPlayedOptions(
-        this.dashboard.lastNDays
+        this.dashboard.lastTenDays
       ),
       "tournament-last-10-days-4": buildTournamentsLastTenDaysOptions(
-        this.dashboard.lastNDays[4],
+        this.dashboard.lastTenDays[4],
         4
       ),
       "tournament-progress-4": buildTournamentsProgressOptions(
@@ -113,7 +113,7 @@ export class TournamentsTab extends AbstractTab {
         4
       ),
       "tournament-last-10-days-8": buildTournamentsLastTenDaysOptions(
-        this.dashboard.lastNDays[8],
+        this.dashboard.lastTenDays[8],
         8
       ),
       "tournament-progress-8": buildTournamentsProgressOptions(
@@ -121,7 +121,7 @@ export class TournamentsTab extends AbstractTab {
         8
       ),
       "tournament-last-10-days-16": buildTournamentsLastTenDaysOptions(
-        this.dashboard.lastNDays[16],
+        this.dashboard.lastTenDays[16],
         16
       ),
       "tournament-progress-16": buildTournamentsProgressOptions(
