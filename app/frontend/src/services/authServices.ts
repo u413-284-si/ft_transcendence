@@ -134,25 +134,10 @@ export async function verifyLoginTwoFACode(
   );
 }
 
-export async function geTwoFAStatus(): Promise<
-  ApiResponse<{ hasTwoFA: boolean }>
-> {
-  const url = "/api/auth/2fa/status";
-
-  return apiFetch<{ hasTwoFA: boolean }>(
-    url,
-    {
-      method: "GET",
-      credentials: "same-origin"
-    },
-    false
-  );
-}
-
 export async function removeTwoFA(
   password: string
 ): Promise<ApiResponse<null>> {
-  const url = "/api/auth/2fa/remove";
+  const url = "/api/auth/2fa/disable";
 
   return apiFetch<null>(
     url,
