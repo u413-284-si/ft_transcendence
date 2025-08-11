@@ -1,6 +1,8 @@
+import { getUserFriends } from "./friends.services.js";
 import { getUserMatches } from "./matches.services.js";
 import { getUserTournaments } from "./tournaments.services.js";
 import { getUserStats } from "./user_stats.services.js";
+import { getTokenData } from "./users.services.js";
 
 const supportedSizes = [4, 8, 16];
 
@@ -318,4 +320,53 @@ export async function getDashboardTournamentsData(userId) {
   const lastTenDays = computeTournamentsLastNDays(tournamentsLastNDays, N);
 
   return { summary, progress, lastTenDays };
+}
+
+export async function getDashboardFriendsData(userId) {
+  const friends = await getUserFriends(userId);
+  const { username } = await getTokenData(userId, "id");
+
+  const friendsWithSelf = [
+    { requestId: 0, friendId: userId, friendUsername: username },
+    ...friends
+  ];
+
+  const friendsWithStats = await Promise.all(
+    friendsWithSelf.map(async (friend) => {
+      const stats = await getUserStats(friend.friendId);
+      return {
+        name: friend.friendUsername,
+        stats
+      };
+    })
+  );
+
+  const matchStats = [];
+  const winRate = [];
+  const winstreak = [];
+
+  for (const friend of friendsWithStats) {
+    const { name, stats } = friend;
+
+    matchStats.push({
+      name,
+      data: [stats.matchesPlayed, stats.matchesWon, stats.matchesLost]
+    });
+
+    winRate.push({
+      name,
+      data: [stats.winRate]
+    });
+
+    winstreak.push({
+      name,
+      data: [stats.winstreakCur, stats.winstreakMax]
+    });
+  }
+
+  return {
+    matchStats,
+    winRate,
+    winstreak
+  };
 }
