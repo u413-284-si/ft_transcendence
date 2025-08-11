@@ -38,3 +38,17 @@ export const tournamentColors: Record<TournamentSize, string> = {
   8: chartColors.yellow,
   16: chartColors.purple
 };
+
+export const friendsColors = [
+  chartColors.cyan,
+  chartColors.yellow,
+  chartColors.purple,
+  chartColors.green
+];
+
+export const friendsColorsTailwind = [
+  "bg-neon-cyan",
+  "bg-neon-yellow",
+  "bg-neon-purple",
+  "bg-neon-green"
+];
