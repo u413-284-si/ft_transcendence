@@ -171,7 +171,7 @@ export async function getUserMatchesHandler(request, reply) {
   try {
     const id = parseInt(request.user.id, 10);
     const { playedAs } = request.query;
-    const data = await getUserMatches(id, playedAs);
+    const data = await getUserMatches(id, undefined, playedAs);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),

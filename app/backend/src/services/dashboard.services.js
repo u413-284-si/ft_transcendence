@@ -113,14 +113,22 @@ function formatDate(date) {
 export async function getDashboardMatchesData(userId) {
   const userStats = await getUserStats(userId);
 
+  const N = 10;
+
+  const select = {
+    playedAs: true,
+    player1Score: true,
+    player2Score: true,
+    date: true
+  };
+
   const lastNMatchesFilter = {
     playedAs: ["PLAYERONE", "PLAYERTWO"],
-    limit: 10,
+    limit: N,
     sort: "desc"
   };
-  const lastNMatches = await getUserMatches(userId, lastNMatchesFilter);
+  const lastNMatches = await getUserMatches(userId, select, lastNMatchesFilter);
 
-  const N = 10;
   const NDaysAgo = new Date();
   NDaysAgo.setDate(NDaysAgo.getDate() - N);
 
@@ -130,7 +138,11 @@ export async function getDashboardMatchesData(userId) {
     sort: "desc"
   };
 
-  const matchesLastNDays = await getUserMatches(userId, matchesLastNDaysFilter);
+  const matchesLastNDays = await getUserMatches(
+    userId,
+    select,
+    matchesLastNDaysFilter
+  );
 
   const winrate = computeWinrateLastNMatches(userStats, lastNMatches);
   const scoreDiff = computeScoreDiffLastNMatches(lastNMatches);

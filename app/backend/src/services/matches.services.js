@@ -57,19 +57,21 @@ export async function getMatch(id) {
   return match;
 }
 
-export async function getUserMatches(userId, filter = {}) {
+export async function getUserMatches(
+  userId,
+  select = matchSelect,
+  filter = {}
+) {
   const matches = await prisma.match.findMany({
     where: {
       userId: userId,
       ...(filter.playedAs ? { playedAs: { in: filter.playedAs } } : {}),
       ...(filter.date ? { date: filter.date } : {})
     },
-    select: matchSelect,
+    select: select,
     take: filter.limit,
     skip: filter.offset,
-    orderBy: {
-      date: filter.sort
-    }
+    orderBy: { date: filter.sort || "desc" }
   });
   return matches;
 }
