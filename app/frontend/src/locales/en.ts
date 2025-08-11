@@ -228,6 +228,8 @@ const en = {
       acceptedFriendRequest: "Friend request accepted by ",
       avatarUploadFailed: "Avatar upload failed. Please try again.",
       avatarUploadedSuccess: "Avatar uploaded successfully!",
+      chartCannotRemoveYourself: "You cannot remove yourself",
+      chartCompareMaxThree: "You can compare a maximum of 3 friends.",
       chartError: "A chart failed to initialize",
       connectionLost:
         "Connection lost - retrying in {{delay}} seconds... (Attempt {{attempt}} of {{maxAttempts}})",

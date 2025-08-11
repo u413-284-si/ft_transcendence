@@ -228,6 +228,8 @@ const tr: TranslationShape = {
       acceptedFriendRequest: "Link request accepted by ",
       avatarUploadFailed: "Avatar upload interrupted. Reattempt required.",
       avatarUploadedSuccess: "Avatar successfully embedded!",
+      chartCannotRemoveYourself: "Self-removal not permitted.",
+      chartCompareMaxThree: "Data limit: 3 nodes.",
       chartError: "Chart failed to initialize",
       connectionLost:
         "Signal lost — attempting reconnection in {{delay}} cycles... (Attempt {{attempt}} of {{maxAttempts}})",
