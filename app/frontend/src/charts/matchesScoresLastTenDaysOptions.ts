@@ -1,10 +1,11 @@
 import type { ApexOptions } from "apexcharts";
 import { chartColors, toAxisSeries } from "./chartUtils.js";
 import { formatDate, formatDayMonth } from "../formatDate.js";
+import { DataSeries } from "../types/DataSeries.js";
 
 export function buildMatchesScoresLastTenDaysOptions(
   name: string,
-  data: { x: string; y: number }[]
+  data: DataSeries
 ): ApexOptions {
   const transformedData = data.map((point) => ({
     x: formatDayMonth(point.x),

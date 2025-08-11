@@ -1,10 +1,11 @@
 import type { ApexOptions } from "apexcharts";
 import { chartColors, toAxisSeries } from "./chartUtils.js";
 import { formatDateTime } from "../formatDate.js";
+import { DataSeries } from "../types/DataSeries.js";
 
 export function buildMatchesScoreDiffOptions(
   name: string,
-  data: { x: string; y: number }[],
+  data: DataSeries,
   totalMatches: number
 ): ApexOptions {
   const startingPoint = Math.max(totalMatches - data.length + 1, 0);
