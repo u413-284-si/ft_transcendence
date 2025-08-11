@@ -1,7 +1,8 @@
 import {
   getAllUserStatsHandler,
   deleteAllUserStatsHandler,
-  getDashboardMatchesByUsernameHandler
+  getDashboardMatchesByUsernameHandler,
+  getDashboardTournamentsByUsernameHandler
 } from "../controllers/user_stats.controllers.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
 import { errorResponses } from "../utils/error.js";
@@ -15,6 +16,12 @@ export default async function userstatsRoutes(fastify) {
     "/:username/dashboard-matches",
     optionsGetDashboardMatchesByUsername,
     getDashboardMatchesByUsernameHandler
+  );
+
+  fastify.get(
+    "/:username/dashboard-tournaments",
+    optionsGetDashboardTournamentsByUsername,
+    getDashboardTournamentsByUsernameHandler
   );
 }
 
@@ -57,6 +64,23 @@ const optionsGetDashboardMatchesByUsername = {
     },
     response: {
       200: { $ref: "dashboardMatchesResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetDashboardTournamentsByUsername = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    params: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: ["username"]
+    },
+    response: {
+      200: { $ref: "dashboardTournamentsResponseSchema" },
       ...errorResponses
     }
   }
