@@ -88,14 +88,7 @@ export default class StatsView extends AbstractView {
           ])}
         </div>
       </div>
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
-        ${Header1({
-          text: i18next.t("statsView.matchHistory"),
-          id: "match-history-header",
-          variant: "default"
-        })}
-        ${this.getTabsHTML()}
-      </div> `;
+      ${this.getTabsHTML()} `;
   }
 
   async render() {
