@@ -100,7 +100,7 @@ export class FriendsTab extends AbstractTab {
         colors
       ),
       "friends-winstreak": buildFriendsWinstreakOptions(
-        this.dashboard.winstreak,
+        this.dashboard.winStreak,
         selectedFriends,
         colors
       )
@@ -177,7 +177,7 @@ export class FriendsTab extends AbstractTab {
       colors
     );
     const winstreakOptions = buildFriendsWinstreakOptions(
-      this.dashboard.winstreak,
+      this.dashboard.winStreak,
       selectedFriends,
       colors
     );

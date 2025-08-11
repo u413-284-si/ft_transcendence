@@ -69,5 +69,5 @@ export type FriendStatsSeries = FriendStatsPoint[];
 export type DashboardFriends = {
   matchStats: FriendStatsSeries;
   winRate: FriendStatsSeries;
-  winstreak: FriendStatsSeries;
+  winStreak: FriendStatsSeries;
 };

@@ -343,7 +343,7 @@ export async function getDashboardFriendsData(userId) {
 
   const matchStats = [];
   const winRate = [];
-  const winstreak = [];
+  const winStreak = [];
 
   for (const friend of friendsWithStats) {
     const { name, stats } = friend;
@@ -358,7 +358,7 @@ export async function getDashboardFriendsData(userId) {
       data: [stats.winRate]
     });
 
-    winstreak.push({
+    winStreak.push({
       name,
       data: [stats.winstreakCur, stats.winstreakMax]
     });
@@ -367,6 +367,6 @@ export async function getDashboardFriendsData(userId) {
   return {
     matchStats,
     winRate,
-    winstreak
+    winStreak
   };
 }
