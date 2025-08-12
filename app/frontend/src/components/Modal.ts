@@ -30,7 +30,7 @@ export function Modal({
     `<div class="flex justify-end mb-4 w-full">
     ${Button({
       id: idCloseButton,
-      text: "X"
+      text: "&times;"
     })}
   </div>`,
     ...children
