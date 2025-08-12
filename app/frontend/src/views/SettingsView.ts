@@ -351,6 +351,7 @@ export default class SettingsView extends AbstractView {
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
       auth.updateUser(updatedUser);
     } catch (err) {
+      console.error("Failed to update preferred language:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
     }
   }

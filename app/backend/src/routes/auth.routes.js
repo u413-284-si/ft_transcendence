@@ -6,7 +6,6 @@ import {
   googleOauth2LoginHandler,
   twoFAQRCodeHandler,
   enableTwoFAHandler,
-  twoFAStatusHandler,
   twoFARemoveHandler,
   twoFALoginVerifyHandler,
   twoFABackupCodesHandler,
@@ -124,15 +123,6 @@ const optionsTwoFALoginVerify = {
   onRequest: [authorizeUserTwoFALogin, ensureLocalAuthProvider],
   schema: {
     body: { $ref: "twoFACodeSchema" },
-    response: {
-      ...errorResponses
-    }
-  }
-};
-
-const optionsTwoFAStatus = {
-  onRequest: [authorizeUserAccess, ensureLocalAuthProvider],
-  schema: {
     response: {
       ...errorResponses
     }
