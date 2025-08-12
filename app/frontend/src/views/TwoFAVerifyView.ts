@@ -37,7 +37,7 @@ export default class TwoFAVerifyView extends AbstractView {
             text: i18next.t("twoFAVerifyView.useBackupCode")
           }),
           Button({
-            text: i18next.t("twoFAVerifyView.submitTwoFACode"),
+            text: i18next.t("global.submit"),
             variant: "default",
             size: "md",
             type: "submit"

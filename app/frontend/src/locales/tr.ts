@@ -58,6 +58,7 @@ const tr: TranslationShape = {
 
     global: {
       avatar: "USER AVATAR",
+      submit: "Transmit",
       confirmNewPassword: "Confirm new access code",
       continue: "Press [ENTER] to proceed",
       editProfile: "Modify your data matrix",
@@ -131,15 +132,13 @@ const tr: TranslationShape = {
     twoFAVerifyView: {
       title: "Cipher code verification",
       enterTwoFACode: "Input cipher code:",
-      submitTwoFACode: "Transmit",
       useBackupCode: "Deploy backup cipher"
     },
 
     twoFABackupCodeVerifyView: {
       title: "Backup cipher verification",
       twoFABackupCode: "Backup cipher",
-      enterTwoFABackupCode: "Input backup cipher:",
-      submitTwoFABackupCode: "Transmit"
+      enterTwoFABackupCode: "Input backup cipher:"
     },
 
     matchAnnouncementView: {

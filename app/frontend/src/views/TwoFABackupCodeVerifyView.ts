@@ -34,7 +34,7 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
             errorId: "two-fa-backup-code-input-error"
           }),
           Button({
-            text: i18next.t("twoFABackupCodeVerifyView.submitTwoFABackupCode"),
+            text: i18next.t("global.submit"),
             variant: "default",
             size: "md",
             type: "submit"

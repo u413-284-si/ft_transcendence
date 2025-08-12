@@ -61,6 +61,7 @@ const fr: TranslationShape = {
 
     global: {
       avatar: "Avatar",
+      submit: "Valider",
       confirmNewPassword: "Confirmez le nouveau mot de passe",
       continue: "Appuyez sur la touche ENTER pour continuer",
       editProfile: "Modifier votre profil",
@@ -145,7 +146,6 @@ const fr: TranslationShape = {
       title: "Vérification du mot de passe à deux facteurs",
       enterTwoFACode:
         "Entrez votre mot de passe de vérification à deux facteurs:",
-      submitTwoFACode: "Valider",
       useBackupCode: "Utiliser le code de secours"
     },
 
@@ -153,8 +153,7 @@ const fr: TranslationShape = {
       title: "Vérification du mot de passe de secours à deux facteurs",
       twoFABackupCode: "Mot de passe de secours à deux facteurs",
       enterTwoFABackupCode:
-        "Entrez votre mot de passe de secours à deux facteurs :",
-      submitTwoFABackupCode: "Valider"
+        "Entrez votre mot de passe de secours à deux facteurs :"
     },
 
     matchAnnouncementView: {

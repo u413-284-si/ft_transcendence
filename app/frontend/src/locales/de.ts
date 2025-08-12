@@ -60,6 +60,7 @@ const de: TranslationShape = {
 
     global: {
       avatar: "Avatar",
+      submit: "Bestätigen",
       confirmNewPassword: "Neues Passwort bestätigen",
       continue: "ENTER drücken, um fortzufahren",
       editProfile: "Profil bearbeiten",
@@ -71,7 +72,7 @@ const de: TranslationShape = {
       offline: "Offline",
       online: "Online",
       password: "Passwort",
-      twoFACode: "2FA-Kennzahl",
+      twoFACode: "2FA-Code",
       pongGame: "Pong-Spiel",
       player: "Spieler",
       playerWins: "{{player}} gewinnt",
@@ -110,14 +111,12 @@ const de: TranslationShape = {
         "Passwort muss 10 bis 64 Zeichen enthalten und mindestens eine Zahl, einen Groß- und Kleinbuchstaben sowie ein Sonderzeichen: @$!%*?&",
       passwordConfirmationEmpty: "Bitte wiederhole dein Passwort",
       passwordConfirmation: "Passwörter stimmen nicht überein.",
-      twoFACode: "2FA-Kennzahl ist falsch.",
-      twoFACodeEmpty: "2FA-Kennzahl darf nicht leer sein.",
-      twoFACodeFormat: "2FA-Kennzahl muss eine sechsstellige Zahl sein.",
-      twoFABackupCode: "2FA-Wiederherstellungskennzahl ist falsch.",
-      twoFABackupCodeEmpty:
-        "2FA-Wiederherstellungskennzahl darf nicht leer sein.",
-      twoFABackupCodeFormat:
-        "2FA-Wiederherstellungskennzahl muss eine achtstellige Zahl sein.",
+      twoFACode: "2FA-Code ist falsch.",
+      twoFACodeEmpty: "2FA-Code darf nicht leer sein.",
+      twoFACodeFormat: "2FA-Code muss eine sechsstellige Zahl sein.",
+      twoFABackupCode: "Backup-Code ist falsch.",
+      twoFABackupCodeEmpty: "Backup-Code darf nicht leer sein.",
+      twoFABackupCodeFormat: "Backup-Code muss eine achtstellige Zahl sein.",
       playerSelection: "Bitte Anzahl der Spieler auswählen.",
       tournamentNameEmpty: "Turniername darf nicht leer sein.",
       tournamentNameFormat:
@@ -135,17 +134,15 @@ const de: TranslationShape = {
     },
 
     twoFAVerifyView: {
-      title: "2FA-Kennzahl Verifizierung",
-      enterTwoFACode: "Gib die 2FA-Kennzahl ein:",
-      submitTwoFACode: "Bestätigen",
-      useBackupCode: "Wiederherstellungs-Kennzahl verwenden"
+      title: "2FA-Code Verifizierung",
+      enterTwoFACode: "Gib den 2FA-Code ein:",
+      useBackupCode: "Backup-Code verwenden"
     },
 
     twoFABackupCodeVerifyView: {
-      title: "2FA-Wiederherstellungskennzahl Verifizierung",
-      twoFABackupCode: "2FA-Wiederherstellungskennzahl",
-      enterTwoFABackupCode: "Gib die 2FA-Wiederherstellungskennzahl ein:",
-      submitTwoFABackupCode: "Bestätigen"
+      title: "Backup-Code Verifizierung",
+      twoFABackupCode: "Backup-Code",
+      enterTwoFABackupCode: "Gib den Backup-Code ein:"
     },
 
     matchAnnouncementView: {
@@ -238,7 +235,7 @@ const de: TranslationShape = {
       ],
       twoFAActivated: ["2FA aktiviert"],
       twoFABackupCode: "2FA Wiederherstellungskennzahl",
-      enterTwoFACode: "Gib die 2FA-Kennzahl ein:",
+      enterTwoFACode: "Gib den 2FA-Code ein:",
       activateTwoFA: "Aktivieren",
       deactivateTwoFA: "Deaktivieren",
       twoFAGenerateBackupCodes: "Wiederherstellungskennzahlen generieren",

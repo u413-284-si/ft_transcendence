@@ -57,6 +57,7 @@ const en = {
 
     global: {
       avatar: "Avatar",
+      submit: "Submit",
       confirmNewPassword: "Confirm new password",
       continue: "Press ENTER to continue",
       editProfile: "Edit your profile",
@@ -130,15 +131,13 @@ const en = {
     twoFAVerifyView: {
       title: "2FA Verification",
       enterTwoFACode: "Enter your 2FA code:",
-      submitTwoFACode: "Submit",
       useBackupCode: "Use backup code"
     },
 
     twoFABackupCodeVerifyView: {
       title: "2FA Backup Code Verification",
       twoFABackupCode: "2FA Backup Code",
-      enterTwoFABackupCode: "Enter your 2FA backup code:",
-      submitTwoFABackupCode: "Submit"
+      enterTwoFABackupCode: "Enter your 2FA backup code:"
     },
 
     matchAnnouncementView: {

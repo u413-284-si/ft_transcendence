@@ -60,6 +60,7 @@ const pi: TranslationShape = {
 
     global: {
       avatar: "Jolly Roger",
+      submit: "Hoist it!",
       confirmNewPassword: "Confirm yer new secret code",
       continue: "Hit ENTER to sail onward",
       editProfile: "Polish yer pirate profile",
@@ -134,15 +135,13 @@ const pi: TranslationShape = {
     twoFAVerifyView: {
       title: "Verify yer secret digits code",
       enterTwoFACode: "Enter yer secret digits:",
-      submitTwoFACode: "Hoist it!",
       useBackupCode: "Use yer spare code"
     },
 
     twoFABackupCodeVerifyView: {
       title: "Verify yer spare secret digits",
       twoFABackupCode: "Spare secret digits:",
-      enterTwoFABackupCode: "Enter yer spare secret digits:",
-      submitTwoFABackupCode: "Hoist it!"
+      enterTwoFABackupCode: "Enter yer spare secret digits:"
     },
 
     matchAnnouncementView: {
