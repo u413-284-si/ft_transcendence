@@ -212,15 +212,22 @@ export function generateBackupCodes() {
   return backupCodes;
 }
 
-export async function hashBackupCodes(userId, backupCodes) {
-  let hashedBackupCodes = [];
+export async function hashBackupCodes(backupCodes) {
+  const hashedBackupCodes = await Promise.all(
+    backupCodes.map(async (backupCode) => await createHash(backupCode))
+  );
+  return hashedBackupCodes;
+}
+
+export async function packageBackupCodes(userId, backupCodes) {
+  let packagedBackupCodes = [];
   for (const backupCode of backupCodes) {
-    hashedBackupCodes.push({
+    packagedBackupCodes.push({
       userId: userId,
-      backupCode: await createHash(backupCode)
+      backupCode: backupCode
     });
   }
-  return hashedBackupCodes;
+  return packagedBackupCodes;
 }
 
 export async function verifyBackupCode(userId, backupCode) {
@@ -239,8 +246,12 @@ export async function updateBackupCodes(userId) {
   if (existingBackupCodes.length > 0) await deleteBackupCodes(userId);
 
   const newBackupCodes = generateBackupCodes();
-  const hashedBackupCodes = await hashBackupCodes(userId, newBackupCodes);
-  await createBackupCodes(hashedBackupCodes);
+  const hashedBackupCodes = await hashBackupCodes(newBackupCodes);
+  const packagedBackupCodes = await packageBackupCodes(
+    userId,
+    hashedBackupCodes
+  );
+  await createBackupCodes(packagedBackupCodes);
 
   return newBackupCodes;
 }
