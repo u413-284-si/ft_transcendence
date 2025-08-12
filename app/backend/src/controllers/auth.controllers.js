@@ -1,6 +1,5 @@
 import {
   getPasswordHash,
-  verifyRefreshToken,
   verifyHash,
   createAuthTokens,
   getTokenHash,
@@ -190,7 +189,7 @@ export async function authRefreshHandler(request, reply) {
       );
     }
 
-    const userDataRefreshToken = await verifyRefreshToken(request);
+    const userDataRefreshToken = await request.refreshTokenVerify();
     const userId = userDataRefreshToken.id;
 
     const hashedRefreshToken = await getTokenHash(userId);

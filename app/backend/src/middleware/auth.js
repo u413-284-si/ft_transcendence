@@ -1,7 +1,3 @@
-import {
-  verifyAccessToken,
-  verifyTwoFALoginToken
-} from "../services/auth.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { getUserAuthProvider } from "../services/users.services.js";
@@ -19,7 +15,7 @@ export async function authorizeUserAccess(request, reply) {
     );
   }
   try {
-    await verifyAccessToken(request);
+    await request.accessTokenVerify();
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -42,7 +38,7 @@ export async function authorizeUserTwoFALogin(request, reply) {
     );
   }
   try {
-    await verifyTwoFALoginToken(request);
+    await request.twoFALoginTokenVerify();
   } catch (err) {
     request.log.error(
       { err, body: request.body },

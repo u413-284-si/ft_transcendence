@@ -5,18 +5,6 @@ import * as otpAuth from "otpauth";
 import QRCode from "qrcode";
 import { randSequence } from "@ngneat/falso";
 
-export async function verifyAccessToken(request) {
-  return await request.accessTokenVerify();
-}
-
-export async function verifyRefreshToken(request) {
-  return await request.refreshTokenVerify();
-}
-
-export async function verifyTwoFALoginToken(request) {
-  return await request.twoFALoginTokenVerify();
-}
-
 export function verifyTwoFACode(twoFA, code) {
   const delta = twoFA.validate({ token: code, window: 1 });
   return delta !== null;
@@ -32,18 +20,6 @@ export async function createHash(value) {
 
 export async function verifyHash(hash, value) {
   return await pkg.verify(hash, value);
-}
-
-export async function createAccessToken(reply, user) {
-  return await reply.accessTokenSign(user);
-}
-
-export async function createRefreshToken(reply, user) {
-  return await reply.refreshTokenSign(user);
-}
-
-export async function creatTwoFALoginToken(reply, user) {
-  return await reply.twoFALoginTokenSign(user);
 }
 
 export async function updateUserRefreshToken(userId, hashedRefreshToken) {
@@ -115,8 +91,8 @@ export async function getTwoFAStatus(userId) {
 export async function createAuthTokens(reply, payload) {
   const accessTokenPayload = { ...payload, type: "access" };
   const refreshTokenPayload = { id: payload.id, type: "refresh" };
-  const accessToken = await createAccessToken(reply, accessTokenPayload);
-  const refreshToken = await createRefreshToken(reply, refreshTokenPayload);
+  const accessToken = await reply.accessTokenSign(accessTokenPayload);
+  const refreshToken = await reply.refreshTokenSign(refreshTokenPayload);
 
   const newHashedRefreshToken = await createHash(refreshToken);
 
@@ -127,8 +103,7 @@ export async function createAuthTokens(reply, payload) {
 
 export async function createTwoFAToken(reply, payload) {
   const twoFALoginTokenPayload = { ...payload, type: "twoFALogin" };
-  const twoFALoginToken = await creatTwoFALoginToken(
-    reply,
+  const twoFALoginToken = await reply.twoFALoginTokenSign(
     twoFALoginTokenPayload
   );
   return twoFALoginToken;
