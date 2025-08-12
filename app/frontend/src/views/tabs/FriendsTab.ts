@@ -108,8 +108,8 @@ export class FriendsTab extends AbstractTab {
       const isSelected = selectedFriends.includes(friend.name);
       btn.dataset.selected = isSelected ? "true" : "false";
       btn.className = isSelected
-        ? `w-full ${this.friendManager?.getTwClassesSelected(friend.name)} text-white p-2 m-1`
-        : `w-full ${this.friendManager?.getTwClassesNotSelected()} text-white p-2 m-1`;
+        ? `${this.friendManager.getBtnClassesSelected(friend.name)}`
+        : `${this.friendManager?.getBtnClassesNotSelected()}`;
 
       btn.onclick = () => this.toggleFriendSelection(friend.name, btn);
       container.appendChild(btn);
@@ -144,7 +144,7 @@ export class FriendsTab extends AbstractTab {
     isSelected: boolean
   ) {
     if (isSelected) {
-      button.className = `w-full ${this.friendManager?.getTwClassesSelected(friendName)} text-white p-2 m-1`;
+      button.className = `${this.friendManager?.getBtnClassesSelected(friendName)}`;
       button.dataset.selected = "true";
     } else {
       button.dataset.selected = "false";
@@ -154,7 +154,7 @@ export class FriendsTab extends AbstractTab {
     buttons.forEach((btn) => {
       const selected = btn.dataset.selected === "true";
       if (!selected) {
-        btn.className = `w-full ${this.friendManager?.getTwClassesNotSelected()} text-white p-2 m-1`;
+        btn.className = `${this.friendManager?.getBtnClassesNotSelected()}`;
       }
     });
   }
