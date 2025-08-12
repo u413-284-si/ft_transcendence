@@ -281,6 +281,7 @@ const tr: TranslationShape = {
       reachedThisStage: "Access Achieved",
       scoreDiff: "Δ_SCORE{{range}}",
       scores: "SCORE_LOG{{range}}",
+      selectUpto: "LINK ≤ 3 UNITS",
       summary: "SYS_SUM",
       win: "W",
       winLoss: "W/L LOG{{range}}"

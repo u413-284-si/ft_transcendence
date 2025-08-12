@@ -282,6 +282,7 @@ const en = {
       reachedThisStage: "Reached this stage",
       scoreDiff: "Score Difference{{range}}",
       scores: "Scores{{range}}",
+      selectUpto: "Select upto 3 friends",
       summary: "Summary",
       win: "Win",
       winLoss: "Wins vs Losses{{range}}"
