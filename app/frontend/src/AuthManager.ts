@@ -110,6 +110,10 @@ export class AuthManager {
       console.info(`Language switched to ${this.user!.language}`);
       console.log("User logged in");
       this.updateAuthState(token);
+      const updatedUser: Partial<User> = {
+        hasTwoFA: false
+      };
+      auth.updateUser(updatedUser);
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -122,6 +126,10 @@ export class AuthManager {
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
       this.updateAuthState(token);
+      const updatedUser: Partial<User> = {
+        hasTwoFA: true
+      };
+      auth.updateUser(updatedUser);
       return true;
     } catch (error) {
       router.handleError("Login error", error);
