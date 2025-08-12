@@ -85,6 +85,15 @@ export class AuthManager {
     }
   }
 
+  private async fetchUserDataAndSetLanguage(): Promise<Token> {
+    const token = getDataOrThrow(await authAndDecodeAccessToken());
+    this.user = getDataOrThrow(await getUserProfile());
+    await i18next.changeLanguage(this.user.language);
+    localStorage.setItem("preferredLanguage", this.user!.language);
+    console.info(`Language switched to ${this.user!.language}`);
+    return token;
+  }
+
   public async login(username: string, password: string): Promise<boolean> {
     try {
       const apiResponseUserLogin = await userLogin(username, password);
@@ -103,12 +112,7 @@ export class AuthManager {
         return false;
       }
 
-      const token = getDataOrThrow(await authAndDecodeAccessToken());
-      this.user = getDataOrThrow(await getUserProfile());
-      await i18next.changeLanguage(this.user.language);
-      localStorage.setItem("preferredLanguage", this.user!.language);
-      console.info(`Language switched to ${this.user!.language}`);
-      console.log("User logged in");
+      const token = await this.fetchUserDataAndSetLanguage();
       this.updateAuthState(token);
       const updatedUser: Partial<User> = {
         hasTwoFA: false
@@ -123,8 +127,7 @@ export class AuthManager {
 
   public async loginAfterTwoFA() {
     try {
-      const token = getDataOrThrow(await authAndDecodeAccessToken());
-      this.user = getDataOrThrow(await getUserProfile());
+      const token = await this.fetchUserDataAndSetLanguage();
       this.updateAuthState(token);
       const updatedUser: Partial<User> = {
         hasTwoFA: true
