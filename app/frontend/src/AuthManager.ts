@@ -188,7 +188,10 @@ export class AuthManager {
     this.listeners.push(callback);
   }
 
-  public updateUser(update: Partial<User>) {
+  public updateUser(
+    update: Partial<User>,
+    options: { notify?: boolean } = { notify: true }
+  ): void {
     if (!this.authenticated) {
       console.log("User not authenticated. Cannot update user.");
       return;
@@ -202,7 +205,7 @@ export class AuthManager {
       ...this.user!,
       ...update
     };
-    this.notify();
+    if (options.notify) this.notify();
   }
 
   public async updateLanguage(lang: Language): Promise<void> {
