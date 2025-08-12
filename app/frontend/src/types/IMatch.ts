@@ -26,3 +26,5 @@ export type BracketMatch = {
   nextMatchId?: number;
   winnerSlot?: 1 | 2;
 };
+
+export type MatchesPageResponse = { items: Match[]; total: number };
