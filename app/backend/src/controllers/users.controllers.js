@@ -15,7 +15,8 @@ import {
 import { getUserStats } from "../services/user_stats.services.js";
 import {
   getUserMatches,
-  getUserMatchesByUsername
+  getUserMatchesByUsername,
+  getUserMatchesCount
 } from "../services/matches.services.js";
 import {
   getUserTournaments,
@@ -29,7 +30,10 @@ import {
   updatePassword,
   verifyHash
 } from "../services/auth.services.js";
-import { getAllUserFriendRequests } from "../services/friends.services.js";
+import {
+  getAllUserFriendRequests,
+  getFriendId
+} from "../services/friends.services.js";
 import { fileTypeFromBuffer } from "file-type";
 
 export async function createUserHandler(request, reply) {
@@ -190,21 +194,26 @@ export async function getUserMatchesHandler(request, reply) {
 export async function getUserMatchesByUsernameHandler(request, reply) {
   const action = "Get user matches by username";
   try {
-    const id = parseInt(request.user.id, 10);
-    const { playedAs } = request.query;
+    let userId = parseInt(request.user.id, 10);
     const { username } = request.params;
     if (username !== request.user.username) {
-      const friend = await getAllUserFriendRequests(id, username);
-      if (!friend.length || !friend.some((req) => req.status === "ACCEPTED")) {
+      const friendId = await getFriendId(userId, username);
+      if (!friendId) {
         return httpError(reply, 401, "You need to be friends");
       }
+      userId = friendId;
     }
-    const data = await getUserMatchesByUsername(username, playedAs);
-    const count = data.length;
+    const filter = {
+      playedAs: request.query.playedAs,
+      limit: request.query.limit,
+      offset: request.query.offset,
+      sort: request.query.sort
+    };
+    const matches = await getUserMatches(userId, undefined, filter);
+    const total = await getUserMatchesCount(userId, filter);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
-      count: count,
-      data: data
+      data: { items: matches, total }
     });
   } catch (err) {
     request.log.error(
