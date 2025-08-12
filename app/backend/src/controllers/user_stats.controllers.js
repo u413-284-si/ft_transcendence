@@ -111,8 +111,9 @@ export async function getDashboardFriendsHandler(request, reply) {
   const action = "Get dashboard friends";
   try {
     const userId = parseInt(request.user.id, 10);
+    const username = request.user.username;
 
-    const data = await getDashboardFriendsData(userId);
+    const data = await getDashboardFriendsData(userId, username);
 
     return reply.code(200).send({
       message: createResponseMessage(action, true),

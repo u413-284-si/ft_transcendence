@@ -322,9 +322,8 @@ export async function getDashboardTournamentsData(userId) {
   return { summary, progress, lastTenDays };
 }
 
-export async function getDashboardFriendsData(userId) {
+export async function getDashboardFriendsData(userId, username) {
   const friends = await getUserFriends(userId);
-  const { username } = await getTokenData(userId, "id");
 
   const friendsWithSelf = [
     { requestId: 0, friendId: userId, friendUsername: username },
