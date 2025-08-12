@@ -245,7 +245,6 @@ export async function twoFAQRCodeHandler(request, reply) {
       secret = await getTwoFASecret(request.user.id);
     } else {
       secret = generateTwoFASecret();
-      console.log("generated secret: ", secret);
       await updateTwoFASecret(userId, secret);
     }
 
