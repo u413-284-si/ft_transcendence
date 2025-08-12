@@ -103,8 +103,9 @@ function aggregatePlayerScores(matches, totals) {
 }
 
 function getPlayerScore(match) {
-  if (match.playedAs === "NONE") return 0;
-  if (match.playedAs === "PLAYERONE") {
+  if (match.playedAs === "NONE") {
+    return 0;
+  } else if (match.playedAs === "PLAYERONE") {
     return match.player1Score;
   } else if (match.playedAs === "PLAYERTWO") {
     return match.player2Score;
