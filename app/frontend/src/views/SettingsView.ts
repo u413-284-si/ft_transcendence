@@ -188,10 +188,8 @@ export default class SettingsView extends AbstractView {
           Link({
             id: "two-fa-download-backup-codes-link",
             text: i18next.t("settingsView.twoFADownloadBackupCodes"),
-            variant: "empty",
-            href: "",
-            className:
-              "px-4 py-2 text-base inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan uppercase border border-neon-cyan text-white hover:shadow-neon-cyan hover:bg-neon-cyan transition-all duration-500 ease-in-out"
+            variant: "download",
+            filename: "backup-codes.txt"
           })
         ]
       })}
@@ -546,10 +544,6 @@ export default class SettingsView extends AbstractView {
     this.twoFADownloadBackupCodesLinkEl.href =
       "data:text/plain;charset=utf-8," +
       encodeURIComponent(backupCodes.join("\n"));
-    this.twoFADownloadBackupCodesLinkEl.setAttribute(
-      "download",
-      "backup-codes.txt"
-    );
   }
 
   private hideTwoFASetupModal() {
