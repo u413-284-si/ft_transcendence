@@ -239,10 +239,12 @@ export function computeTournamentsLastNDays(tournaments, days) {
   return result;
 }
 
-export async function getDashboardMatchesData(userId) {
+export async function getDashboardMatchesData(
+  userId,
+  matchesNumber = 10,
+  daysBack = 10
+) {
   const userStats = await getUserStats(userId);
-
-  const N = 10;
 
   const select = {
     playedAs: true,
@@ -252,13 +254,13 @@ export async function getDashboardMatchesData(userId) {
   };
   const lastNMatchesFilter = {
     playedAs: ["PLAYERONE", "PLAYERTWO"],
-    limit: N,
+    limit: matchesNumber,
     sort: "desc"
   };
   const lastNMatches = await getUserMatches(userId, select, lastNMatchesFilter);
 
   const NDaysAgo = new Date();
-  NDaysAgo.setDate(NDaysAgo.getDate() - N);
+  NDaysAgo.setDate(NDaysAgo.getDate() - daysBack);
 
   const matchesLastNDaysFilter = {
     playedAs: ["PLAYERONE", "PLAYERTWO"],
@@ -274,7 +276,7 @@ export async function getDashboardMatchesData(userId) {
 
   const winrate = computeWinrateLastNMatches(userStats, lastNMatches);
   const scoreDiff = computeScoreDiffLastNMatches(lastNMatches);
-  const scores = computeScoresLastNDays(matchesLastNDays, N);
+  const scores = computeScoresLastNDays(matchesLastNDays, daysBack);
 
   return { winrate, scoreDiff, scores };
 }
