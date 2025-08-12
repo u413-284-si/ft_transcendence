@@ -14,6 +14,8 @@ export function buildFriendsWinstreakOptions(
       width: 600
     },
     legend: { show: false },
+    series: data,
+    tooltip: { theme: "dark" },
     xaxis: {
       categories: [
         i18next.t("chart.current"),
@@ -28,8 +30,6 @@ export function buildFriendsWinstreakOptions(
         style: { color: chartColors.white }
       },
       forceNiceScale: true
-    },
-    tooltip: { theme: "dark" },
-    series: data
+    }
   };
 }

@@ -13,6 +13,14 @@ export function buildFriendsMatchStatsOptions(
       height: 300,
       width: 750
     },
+    legend: { show: false },
+    plotOptions: {
+      bar: {
+        columnWidth: "60%"
+      }
+    },
+    series: data,
+    tooltip: { theme: "dark" },
     xaxis: {
       categories: [
         i18next.t("statsView.played"),
@@ -31,14 +39,6 @@ export function buildFriendsMatchStatsOptions(
         text: i18next.t("statsView.matches"),
         style: { color: chartColors.white }
       }
-    },
-    plotOptions: {
-      bar: {
-        columnWidth: "60%"
-      }
-    },
-    legend: { show: false },
-    tooltip: { theme: "dark" },
-    series: data
+    }
   };
 }

@@ -13,6 +13,14 @@ export function buildFriendsWinRateOptions(
       height: 300,
       width: 600
     },
+    legend: { show: false },
+    plotOptions: {
+      bar: {
+        columnWidth: "70%"
+      }
+    },
+    series: data,
+    tooltip: { theme: "dark" },
     xaxis: {
       categories: [i18next.t("statsView.winRate")],
       labels: { style: { colors: [chartColors.white] } }
@@ -28,15 +36,7 @@ export function buildFriendsWinRateOptions(
         text: i18next.t("statsView.winRate"),
         style: { color: chartColors.white }
       }
-    },
-    tooltip: { theme: "dark" },
-    plotOptions: {
-      bar: {
-        columnWidth: "70%"
-      }
-    },
-    legend: { show: false },
-    series: data
+    }
   };
   return options;
 }
