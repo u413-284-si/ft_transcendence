@@ -37,8 +37,8 @@ model Authentication {
     password     String?
     refreshToken String?
     authProvider AuthProviderType @default(LOCAL)
-    twoFASecret  String?
     hasTwoFA     Boolean          @default(false)
+    twoFASecret  String?
     backupCodes  BackupCode[]     @relation("BackupCodes")
     // oauthProvider String?
     // emailVerificationToken String?
