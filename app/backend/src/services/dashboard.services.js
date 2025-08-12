@@ -73,9 +73,9 @@ function calcScoreDiff(match) {
 }
 
 export function computeScoresLastNDays(matchesLastNDays, N) {
-  const { totals } = initializeDailyTotals(N);
+  const { totals, sortedDates } = initializeDailyTotals(N);
   aggregatePlayerScores(matchesLastNDays, totals);
-  return Object.entries(totals).map(([x, y]) => ({ x, y }));
+  return sortedDates.map((date) => ({ x: date, y: totals[date] }));
 }
 
 function initializeDailyTotals(days, valueFactory = () => 0) {
