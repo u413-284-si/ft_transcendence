@@ -19,7 +19,6 @@ export default class Register extends AbstractView {
   constructor() {
     super();
     this.setTitle(i18next.t("registerView.title"));
-    this.setTitle(i18next.t("registerView.title"));
   }
 
   createHTML(): string {
