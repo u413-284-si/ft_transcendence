@@ -2,7 +2,6 @@ import { getUserFriends } from "./friends.services.js";
 import { getUserMatches } from "./matches.services.js";
 import { getUserTournaments } from "./tournaments.services.js";
 import { getUserStats } from "./user_stats.services.js";
-import { getTokenData } from "./users.services.js";
 
 const supportedSizes = [4, 8, 16];
 

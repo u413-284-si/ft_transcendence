@@ -4,7 +4,6 @@ import { buildFriendsWinRateOptions } from "../../charts/friendsWinRateOptions.j
 import { buildFriendsWinstreakOptions } from "../../charts/friendsWinStreakOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
-import { Header3 } from "../../components/Header3.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserDashboardFriends } from "../../services/userStatsServices.js";
 import { toaster } from "../../Toaster.js";
