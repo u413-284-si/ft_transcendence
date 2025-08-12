@@ -91,3 +91,14 @@ export async function deleteAllMatches() {
   const matches = await prisma.match.deleteMany();
   return matches;
 }
+
+export async function getUserMatchesCount(userId, filter = {}) {
+  const total = await prisma.match.count({
+    where: {
+      userId: userId,
+      ...(filter.playedAs ? { playedAs: { in: filter.playedAs } } : {}),
+      ...(filter.date ? { date: filter.date } : {})
+    }
+  });
+  return total;
+}
