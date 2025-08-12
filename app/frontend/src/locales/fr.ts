@@ -240,12 +240,12 @@ const fr: TranslationShape = {
     chart: {
       winLoss: "Victoires vs Défaites{{range}}",
       progression: "Taux de victoire{{range}}",
-      scoreDiff: "Différence de score{{range}}",
-      scores: "Scores{{range}}",
+      scoreDiff: "Différence de points{{range}}",
+      scores: "Points{{range}}",
       summary: "Résumé",
       progress: "Progression ({{num}}-Players)",
       rangeLastMatches: " ({{count}} derniers matchs)",
-      rangeLastDays: " ({{count}} derniers jouers)",
+      rangeLastDays: " ({{count}} derniers jours)",
       numPlayers: "{{num}} joueurs",
       reachedThisStage: "Étape atteinte",
       win: "Victoires",
@@ -260,7 +260,7 @@ const fr: TranslationShape = {
       avatarUploadFailed:
         "Échec du téléchargement de l'avatar. Veuillez réessayer.",
       avatarUploadedSuccess: "Avatar téléchargé avec succès !",
-      chartError: "Un graphique n'a pas pu être initialisé",
+      chartError: "Un diagramme n'a pas pu être initialisé",
       connectionUnavailable:
         "Impossible de se reconnecter. Tentatives arrêter jusqu'à l'actualisation.",
       connectionLost:
