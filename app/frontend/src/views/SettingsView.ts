@@ -320,8 +320,8 @@ export default class SettingsView extends AbstractView {
     this.preferredLanguageFormEl = document.querySelector<HTMLFormElement>(
       "#preferred-language-form"
     )!;
-    this.preferredLanguageButtonEl = getButtonEl("preferred-language-button")!;
-    this.preferredLanguageOptionsEl = getEl("preferred-language-options")!;
+    this.preferredLanguageButtonEl = getButtonEl("preferred-language-button");
+    this.preferredLanguageOptionsEl = getEl("preferred-language-options");
     this.renderTwoFASetup();
     this.addListeners();
   }
