@@ -5,7 +5,6 @@ import {
   getAllUsersHandler,
   updateUserHandler,
   deleteUserHandler,
-  getUserMatchesHandler,
   patchUserHandler,
   getUserStatsHandler,
   getUserTournamentsHandler,
@@ -37,8 +36,6 @@ export default async function userRoutes(fastify) {
   fastify.patch("/me", optionsPatchUser, patchUserHandler);
 
   fastify.delete("/:id", optionsDeleteUser, deleteUserHandler);
-
-  fastify.get("/me/matches", optionsGetUserMatches, getUserMatchesHandler);
 
   fastify.get(
     "/:username/matches",
@@ -159,17 +156,6 @@ const optionsDeleteUser = {
     params: { $ref: "idSchema" },
     response: {
       200: { $ref: "userResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetUserMatches = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    querystring: { $ref: "querystringMatchSchema" },
-    response: {
-      200: { $ref: "matchArrayResponseSchema" },
       ...errorResponses
     }
   }

@@ -15,7 +15,6 @@ import {
 import { getUserStats } from "../services/user_stats.services.js";
 import {
   getUserMatches,
-  getUserMatchesByUsername,
   getUserMatchesCount
 } from "../services/matches.services.js";
 import {
@@ -165,27 +164,6 @@ export async function deleteUserHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `deleteUserHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function getUserMatchesHandler(request, reply) {
-  const action = "Get user matches";
-  try {
-    const id = parseInt(request.user.id, 10);
-    const { playedAs } = request.query;
-    const data = await getUserMatches(id, undefined, playedAs);
-    const count = data.length;
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      count: count,
-      data: data
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getUserMatchesHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
