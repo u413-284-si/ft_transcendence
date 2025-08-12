@@ -1,10 +1,27 @@
-import { friendsColors, friendsColorsTailwind } from "./chartUtils.js";
+import { friendsColors } from "./chartUtils.js";
+
+const friendsTwClassesSelected = [
+  "border border-neon-cyan bg-neon-cyan",
+  "border border-neon-yellow bg-neon-yellow",
+  "border border-neon-purple bg-neon-purple",
+  "border border-neon-green bg-neon-green",
+  "border border-grey bg-grey"
+];
+
+const friendsTwClassesNotSelected = [
+  "border border-grey hover:bg-neon-cyan",
+  "border border-grey hover:bg-neon-yellow",
+  "border border-grey hover:bg-neon-purple",
+  "border border-grey hover:bg-neon-green",
+  "border border-grey"
+];
 
 export class FriendManager {
   private friendColorMap: Map<string, number> = new Map();
   private selectedFriends: string[] = [];
   private readonly colors: string[] = friendsColors;
-  private readonly tailwindColors: string[] = friendsColorsTailwind;
+  private readonly twColorsSelected: string[] = friendsTwClassesSelected;
+  private readonly twColorsNotSelected: string[] = friendsTwClassesNotSelected;
 
   constructor() {}
 
@@ -63,6 +80,11 @@ export class FriendManager {
       console.error(`No color for ${friend}`);
       return "grey";
     }
-    return this.tailwindColors[index];
+    return this.twColorsSelected[index];
+  }
+
+  getNextColor(): string {
+    const index = this.getNextAvailableColorIndex();
+    return this.twColorsNotSelected[index];
   }
 }

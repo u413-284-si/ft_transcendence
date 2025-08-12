@@ -43,12 +43,6 @@ export const friendsColors = [
   chartColors.cyan,
   chartColors.yellow,
   chartColors.purple,
-  chartColors.green
-];
-
-export const friendsColorsTailwind = [
-  "bg-neon-cyan",
-  "bg-neon-yellow",
-  "bg-neon-purple",
-  "bg-neon-green"
+  chartColors.green,
+  chartColors.white
 ];

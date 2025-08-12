@@ -118,10 +118,11 @@ export class FriendsTab extends AbstractTab {
     friends.forEach((friend) => {
       const btn = document.createElement("button");
       btn.innerText = friend.name;
-      btn.dataset.friendName = friend.name;
-      btn.className = selectedFriends.includes(friend.name)
+      const isSelected = selectedFriends.includes(friend.name);
+      btn.dataset.selected = isSelected ? "true" : "false";
+      btn.className = isSelected
         ? `w-full ${this.friendManager?.getColor(friend.name)} text-white p-2 m-1`
-        : "w-full bg-grey text-black p-2 m-1";
+        : `w-full ${this.friendManager?.getNextColor()} text-white p-2 m-1`;
 
       btn.onclick = () => this.toggleFriendSelection(friend.name, btn);
       container.appendChild(btn);
@@ -155,16 +156,29 @@ export class FriendsTab extends AbstractTab {
     friendName: string,
     isSelected: boolean
   ) {
-    button.className = isSelected
-      ? `w-full ${this.friendManager?.getColor(friendName)} text-white p-2 m-1`
-      : "w-full bg-gray-200 text-black p-2 m-1";
+    if (isSelected) {
+      button.className = `w-full ${this.friendManager?.getColor(friendName)} text-white p-2 m-1`;
+      button.dataset.selected = "true";
+    } else {
+      button.dataset.selected = "false";
+    }
+    const container = getEl("friend-selector");
+    const buttons = container.querySelectorAll("button");
+    buttons.forEach((btn) => {
+      const selected = btn.dataset.selected === "true";
+      if (!selected) {
+        btn.className = `w-full ${this.friendManager?.getNextColor()} text-white p-2 m-1`;
+      }
+    });
   }
 
   updateFriendsCharts() {
     if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
 
     const selectedFriends = this.friendManager.getSelectedFriends();
+    console.log(selectedFriends);
     const colors = this.friendManager.getColors();
+    console.log(colors);
 
     const winrateOptions = buildFriendsWinRateOptions(
       this.dashboard.winRate,
