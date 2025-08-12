@@ -185,8 +185,8 @@ function togglePasswordVisibility(
 ): void {
   const isHidden = passwordEl.type === "password";
   passwordEl.type = isHidden ? "text" : "password";
-    showEyeEl.classList.toggle("hidden", isHidden);
-    hideEyeEl.classList.toggle("hidden", !isHidden);
+  showEyeEl.classList.toggle("hidden", isHidden);
+  hideEyeEl.classList.toggle("hidden", !isHidden);
 }
 
 export function addTogglePasswordListener(id: string) {
