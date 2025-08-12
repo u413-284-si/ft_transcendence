@@ -40,13 +40,12 @@ export class FriendsTab extends AbstractTab {
   getDashboardHTML(): string {
     return /* HTML */ `<div class="p-6 mx-auto space-y-8">
       <div class="flex gap-8">
-        <div class="flex flex-col">
-          ${Header3({
-            text: "Select upto 3 friends",
-            variant: "white"
-          })}
-          <div id="friend-selector"></div>
-        </div>
+        ${Chart({
+          title: "Select upto 3 friends",
+          chartId: "friend-selector",
+          chartClassName:
+            "h-[300px] w-[450px] flex flex-col gap-2 overflow-scroll px-3"
+        })}
         ${Chart({
           title: i18next.t("chart.activity"),
           chartId: "friends-match-stats"

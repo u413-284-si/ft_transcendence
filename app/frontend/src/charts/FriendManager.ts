@@ -1,7 +1,7 @@
 import { DashboardFriends, FriendStatsSeries } from "../types/DataSeries.js";
 import { friendsColors } from "./chartUtils.js";
 
-const btnBaseClasses = "w-full p-2 m-1 text-white";
+const btnBaseClasses = "w-full p-2 text-white";
 
 const btnSelected = [
   " border border-neon-cyan bg-neon-cyan",
