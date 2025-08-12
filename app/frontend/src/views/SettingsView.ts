@@ -8,7 +8,6 @@ import { Image } from "../components/Image.js";
 import {
   generateBackupCodes,
   generateTwoFAQRcode,
-  geTwoFAStatus,
   removeTwoFA,
   verifyTwoFACodeAndGetBackupCodes
 } from "../services/authServices.js";
@@ -27,7 +26,6 @@ import { User, Language } from "../types/User.js";
 import { getButtonEl, getEl, getInputEl } from "../utility.js";
 
 export default class SettingsView extends AbstractView {
-  private hasTwoFA: boolean = false;
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
   private passwordFormAction: "setup" | "remove" | "backupCodes" = "setup";
@@ -57,6 +55,10 @@ export default class SettingsView extends AbstractView {
     this.setTitle(i18next.t("settingsView.title"));
   }
 
+  private hasTwoFA(): boolean {
+    return auth.getUser().hasTwoFA;
+  }
+
   private getTwoFASetupHTML(): string {
     return /* HTML */ `
       <div>
@@ -78,7 +80,7 @@ export default class SettingsView extends AbstractView {
         children: [
           Form({
             children: [
-              !this.hasTwoFA
+              !this.hasTwoFA()
                 ? TextBox({
                     id: "two-fa-qr-code-info",
                     text: [
@@ -101,7 +103,7 @@ export default class SettingsView extends AbstractView {
                 src: "",
                 alt: "QR Code"
               }),
-              !this.hasTwoFA
+              !this.hasTwoFA()
                 ? Input({
                     id: "two-fa-code-input",
                     label: i18next.t("settingsView.enterTwoFACode"),
@@ -116,7 +118,7 @@ export default class SettingsView extends AbstractView {
                     text: i18next.t("settingsView.twoFAGenerateBackupCodes"),
                     type: "button"
                   }),
-              !this.hasTwoFA
+              !this.hasTwoFA()
                 ? Button({
                     id: "two-fa-submit",
                     text: i18next.t("settingsView.activateTwoFA"),
@@ -253,7 +255,7 @@ export default class SettingsView extends AbstractView {
       this.twoFAClosePasswordModalButtonEl.addEventListener("click", () =>
         this.hideModal("two-fa-password-modal")
       );
-      if (this.hasTwoFA) {
+      if (this.hasTwoFA()) {
         this.twoFAGenerateBackupCodesButtonEl.addEventListener("click", () =>
           this.displayTwoFAPasswordModal("backupCodes")
         );
@@ -284,14 +286,7 @@ export default class SettingsView extends AbstractView {
     document.addEventListener("click", this.onDocumentClick);
   }
 
-  async render() {
-    await this.fetchData();
-    this.updateHTML();
-    this.preferredLanguageFormEl = document.querySelector<HTMLFormElement>(
-      "#preferred-language-form"
-    )!;
-    this.preferredLanguageButtonEl = getButtonEl("preferred-language-button")!;
-    this.preferredLanguageOptionsEl = getEl("preferred-language-options")!;
+  private renderTwoFASetup(): void {
     this.twoFASetupButtonEl = getButtonEl("setup-two-fa-button");
     this.twoFAFormEl = getEl("two-fa-form") as HTMLFormElement;
     this.twoFACodeInputEl = getInputEl("two-fa-code-input");
@@ -318,6 +313,16 @@ export default class SettingsView extends AbstractView {
       "two-fa-close-backup-codes-modal-button"
     );
     this.twoFAQRCodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
+  }
+
+  async render() {
+    this.updateHTML();
+    this.preferredLanguageFormEl = document.querySelector<HTMLFormElement>(
+      "#preferred-language-form"
+    )!;
+    this.preferredLanguageButtonEl = getButtonEl("preferred-language-button")!;
+    this.preferredLanguageOptionsEl = getEl("preferred-language-options")!;
+    this.renderTwoFASetup();
     this.addListeners();
   }
 
@@ -357,7 +362,7 @@ export default class SettingsView extends AbstractView {
   private async callTwoFAFormAction(event: Event): Promise<void> {
     try {
       event.preventDefault();
-      if (!this.hasTwoFA) {
+      if (!this.hasTwoFA()) {
         const isTwoFACodeValid = await validateTwoFACode(
           this.twoFACodeInputEl,
           this.twoFACodeInputErrorEl
@@ -382,9 +387,17 @@ export default class SettingsView extends AbstractView {
           }
         }
 
+        const backupCodes = apiResponse.data.backupCodes;
+
+        const updatedUser: Partial<User> = {
+          hasTwoFA: true
+        };
+        auth.updateUser(updatedUser, { notify: false });
+        this.render();
+
         toaster.success(i18next.t("toast.twoFASetupSuccess"));
-        this.fillBackupCodesTable(apiResponse.data.backupCodes);
-        this.setupBackupCodesLink(apiResponse.data.backupCodes);
+        this.fillBackupCodesTable(backupCodes);
+        this.setupBackupCodesLink(backupCodes);
         this.displayModal("two-fa-backup-codes-modal");
       } else {
         this.hideTwoFASetupModal();
@@ -397,7 +410,6 @@ export default class SettingsView extends AbstractView {
 
   private callPasswordFormAction(event: Event): void {
     if (this.passwordFormAction === "setup") {
-      this.render();
       this.displayTwoFASetup(event);
     } else if (this.passwordFormAction === "remove") {
       this.removeTwoFA(event);
@@ -461,6 +473,13 @@ export default class SettingsView extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
+
+      const updatedUser: Partial<User> = {
+        hasTwoFA: false
+      };
+      auth.updateUser(updatedUser, { notify: false });
+      this.render();
+
       this.twoFAPasswordInputEl.value = "";
       this.hideModal("two-fa-password-modal");
       this.passwordFormAction = "setup";
@@ -579,14 +598,5 @@ export default class SettingsView extends AbstractView {
     allModals.forEach((modal) => {
       this.hideModal(modal.id);
     });
-  }
-
-  private async fetchData(): Promise<void> {
-    try {
-      if (this.hasLocalAuth)
-        this.hasTwoFA = getDataOrThrow(await geTwoFAStatus()).hasTwoFA;
-    } catch (error) {
-      router.handleError("Error in fetchData()", error);
-    }
   }
 }
