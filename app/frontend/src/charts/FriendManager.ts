@@ -1,3 +1,4 @@
+import { DashboardFriends, FriendStatsSeries } from "../types/DataSeries.js";
 import { friendsColors } from "./chartUtils.js";
 
 const friendsTwClassesSelected = [
@@ -20,8 +21,8 @@ export class FriendManager {
   private friendColorMap: Map<string, number> = new Map();
   private selectedFriends: string[] = [];
   private readonly colors: string[] = friendsColors;
-  private readonly twColorsSelected: string[] = friendsTwClassesSelected;
-  private readonly twColorsNotSelected: string[] = friendsTwClassesNotSelected;
+  private readonly twClassesSelected: string[] = friendsTwClassesSelected;
+  private readonly twClassesNotSelected: string[] = friendsTwClassesNotSelected;
 
   constructor() {}
 
@@ -33,6 +34,27 @@ export class FriendManager {
       }
     }
     throw new Error("No available colors left!");
+  }
+
+  private getColor(friend: string): string {
+    const index = this.friendColorMap.get(friend);
+    if (index === undefined) {
+      console.error(`No color for ${friend}`);
+      return "grey";
+    }
+    return this.colors[index];
+  }
+
+  private filterSeriesAndAddColor(
+    series: FriendStatsSeries
+  ): ApexAxisChartSeries {
+    return this.selectedFriends
+      .map((name) => series.find((friend) => friend.name === name))
+      .filter((friend): friend is FriendStatsSeries[number] => Boolean(friend))
+      .map((series) => ({
+        ...series,
+        color: this.getColor(series.name)
+      }));
   }
 
   selectFriend(friend: string): void {
@@ -63,28 +85,29 @@ export class FriendManager {
     return this.selectedFriends;
   }
 
-  getColors(): string[] {
-    return this.selectedFriends.map((friend) => {
-      const index = this.friendColorMap.get(friend);
-      if (index === undefined) {
-        console.error(`No color for ${friend}`);
-        return "grey";
-      }
-      return this.colors[index];
-    });
-  }
-
-  getColor(friend: string): string {
+  getTwClassesSelected(friend: string): string {
     const index = this.friendColorMap.get(friend);
     if (index === undefined) {
       console.error(`No color for ${friend}`);
       return "grey";
     }
-    return this.twColorsSelected[index];
+    return this.twClassesSelected[index];
   }
 
-  getNextColor(): string {
+  getTwClassesNotSelected(): string {
     const index = this.getNextAvailableColorIndex();
-    return this.twColorsNotSelected[index];
+    return this.twClassesNotSelected[index];
+  }
+
+  getFilteredSeries(dashboard: DashboardFriends): {
+    matchStats: ApexAxisChartSeries;
+    winRate: ApexAxisChartSeries;
+    winStreak: ApexAxisChartSeries;
+  } {
+    return {
+      matchStats: this.filterSeriesAndAddColor(dashboard.matchStats),
+      winRate: this.filterSeriesAndAddColor(dashboard.winRate),
+      winStreak: this.filterSeriesAndAddColor(dashboard.winStreak)
+    };
   }
 }

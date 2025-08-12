@@ -1,15 +1,9 @@
 import { ApexOptions } from "apexcharts";
 import { chartColors } from "./chartUtils.js";
-import { FriendStatsSeries } from "../types/DataSeries.js";
 
 export function buildFriendsWinRateOptions(
-  data: FriendStatsSeries,
-  selectedFriends: string[],
-  colors: string[]
+  data: ApexAxisChartSeries
 ): ApexOptions {
-  const filtered = data.filter((friend) =>
-    selectedFriends.includes(friend.name)
-  );
   const options: ApexOptions = {
     chart: {
       type: "bar",
@@ -42,8 +36,7 @@ export function buildFriendsWinRateOptions(
       }
     },
     legend: { show: false },
-    colors: colors,
-    series: filtered
+    series: data
   };
   return options;
 }

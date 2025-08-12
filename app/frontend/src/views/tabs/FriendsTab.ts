@@ -85,25 +85,12 @@ export class FriendsTab extends AbstractTab {
   private populateChartOptions(): void {
     if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
 
-    const selectedFriends = this.friendManager.getSelectedFriends();
-    const colors = this.friendManager.getColors();
+    const filtered = this.friendManager.getFilteredSeries(this.dashboard);
 
     this.chartOptions = {
-      "friends-winrate": buildFriendsWinRateOptions(
-        this.dashboard.winRate,
-        selectedFriends,
-        colors
-      ),
-      "friends-match-stats": buildFriendsMatchStatsOptions(
-        this.dashboard.matchStats,
-        selectedFriends,
-        colors
-      ),
-      "friends-winstreak": buildFriendsWinstreakOptions(
-        this.dashboard.winStreak,
-        selectedFriends,
-        colors
-      )
+      "friends-winrate": buildFriendsWinRateOptions(filtered.winRate),
+      "friends-match-stats": buildFriendsMatchStatsOptions(filtered.matchStats),
+      "friends-winstreak": buildFriendsWinstreakOptions(filtered.winStreak)
     };
   }
 
@@ -121,8 +108,8 @@ export class FriendsTab extends AbstractTab {
       const isSelected = selectedFriends.includes(friend.name);
       btn.dataset.selected = isSelected ? "true" : "false";
       btn.className = isSelected
-        ? `w-full ${this.friendManager?.getColor(friend.name)} text-white p-2 m-1`
-        : `w-full ${this.friendManager?.getNextColor()} text-white p-2 m-1`;
+        ? `w-full ${this.friendManager?.getTwClassesSelected(friend.name)} text-white p-2 m-1`
+        : `w-full ${this.friendManager?.getTwClassesNotSelected()} text-white p-2 m-1`;
 
       btn.onclick = () => this.toggleFriendSelection(friend.name, btn);
       container.appendChild(btn);
@@ -157,7 +144,7 @@ export class FriendsTab extends AbstractTab {
     isSelected: boolean
   ) {
     if (isSelected) {
-      button.className = `w-full ${this.friendManager?.getColor(friendName)} text-white p-2 m-1`;
+      button.className = `w-full ${this.friendManager?.getTwClassesSelected(friendName)} text-white p-2 m-1`;
       button.dataset.selected = "true";
     } else {
       button.dataset.selected = "false";
@@ -167,7 +154,7 @@ export class FriendsTab extends AbstractTab {
     buttons.forEach((btn) => {
       const selected = btn.dataset.selected === "true";
       if (!selected) {
-        btn.className = `w-full ${this.friendManager?.getNextColor()} text-white p-2 m-1`;
+        btn.className = `w-full ${this.friendManager?.getTwClassesNotSelected()} text-white p-2 m-1`;
       }
     });
   }
@@ -175,29 +162,10 @@ export class FriendsTab extends AbstractTab {
   updateFriendsCharts() {
     if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
 
-    const selectedFriends = this.friendManager.getSelectedFriends();
-    console.log(selectedFriends);
-    const colors = this.friendManager.getColors();
-    console.log(colors);
+    const filtered = this.friendManager.getFilteredSeries(this.dashboard);
 
-    const winrateOptions = buildFriendsWinRateOptions(
-      this.dashboard.winRate,
-      selectedFriends,
-      colors
-    );
-    const matchStatsOptions = buildFriendsMatchStatsOptions(
-      this.dashboard.matchStats,
-      selectedFriends,
-      colors
-    );
-    const winstreakOptions = buildFriendsWinstreakOptions(
-      this.dashboard.winStreak,
-      selectedFriends,
-      colors
-    );
-
-    this.charts["friends-winrate"].updateOptions(winrateOptions);
-    this.charts["friends-match-stats"].updateOptions(matchStatsOptions);
-    this.charts["friends-winstreak"].updateOptions(winstreakOptions);
+    this.charts["friends-winrate"].updateSeries(filtered.winRate);
+    this.charts["friends-match-stats"].updateSeries(filtered.matchStats);
+    this.charts["friends-winstreak"].updateSeries(filtered.winStreak);
   }
 }
