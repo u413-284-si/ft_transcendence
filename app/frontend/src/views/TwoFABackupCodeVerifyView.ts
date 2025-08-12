@@ -88,7 +88,7 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
       }
     }
 
-    const isAllowed = await auth.loginAfteTwoFA();
+    const isAllowed = await auth.loginAfterTwoFA();
     if (!isAllowed) return;
     router.navigate("/home", false);
   }

@@ -121,7 +121,7 @@ export class AuthManager {
     }
   }
 
-  public async loginAfteTwoFA() {
+  public async loginAfterTwoFA() {
     try {
       const token = getDataOrThrow(await authAndDecodeAccessToken());
       this.user = getDataOrThrow(await getUserProfile());
