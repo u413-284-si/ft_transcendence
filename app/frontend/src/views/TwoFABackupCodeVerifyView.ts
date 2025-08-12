@@ -56,7 +56,7 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
   }
 
   getName(): string {
-    return "login";
+    return "twoFABackupCodeVerification";
   }
 
   private async verifTwoFABackupCode(event: Event) {
