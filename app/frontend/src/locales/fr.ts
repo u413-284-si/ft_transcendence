@@ -295,7 +295,7 @@ const fr: TranslationShape = {
       reachedThisStage: "Étape atteinte",
       scoreDiff: "Différence de score{{range}}",
       scores: "Scores{{range}}",
-      selectUpto: "Sélectionnez jusqu'à 3 amis",
+      selectUpTo: "Sélectionnez jusqu'à 3 amis",
       summary: "Résumé",
       win: "Victoires",
       winLoss: "Victoires vs Défaites{{range}}"

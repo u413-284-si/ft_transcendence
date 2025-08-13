@@ -293,7 +293,7 @@ const de: TranslationShape = {
       reachedThisStage: "Diese Stufe erreicht",
       scoreDiff: "Punktedifferenz{{range}}",
       scores: "Punkte{{range}}",
-      selectUpto: "Wähle bis zu 3 Freunde aus",
+      selectUpTo: "Wähle bis zu 3 Freunde aus",
       summary: "Übersicht",
       win: "Sieg",
       winLoss: "Siege vs Niederlagen{{range}}"

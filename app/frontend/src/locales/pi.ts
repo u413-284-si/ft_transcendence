@@ -282,7 +282,7 @@ const pi: TranslationShape = {
       reachedThisStage: "Landed 'ere",
       scoreDiff: "Score Gap{{range}}",
       scores: "Booty Count{{range}}",
-      selectUpto: "Pick ye up to 3 mateys, arrr!",
+      selectUpTo: "Pick ye up to 3 mateys, arrr!",
       summary: "Battle Recap",
       win: "Victory",
       winLoss: "Plunder vs Defeats{{range}}"

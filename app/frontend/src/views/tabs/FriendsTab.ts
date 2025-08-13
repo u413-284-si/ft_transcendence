@@ -40,7 +40,7 @@ export class FriendsTab extends AbstractTab {
     return /* HTML */ `<div class="p-6 mx-auto space-y-8">
       <div class="flex gap-8">
         ${Chart({
-          title: i18next.t("chart.selectUpto"),
+          title: i18next.t("chart.selectUpTo"),
           chartId: "friend-selector",
           chartClassName:
             "h-[300px] w-[450px] flex flex-col gap-2 overflow-scroll px-3"
