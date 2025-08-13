@@ -133,8 +133,10 @@ export class Router {
   }
 
   async refresh() {
-    if (!this.currentView) throw new Error(i18next.t("error.unexpected"));
-
+    if (!this.currentView) {
+      await this.navigate(window.location.pathname, false);
+      return;
+    }
     await this.currentView.render();
   }
 
