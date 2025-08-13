@@ -94,10 +94,10 @@ export default class SettingsView extends AbstractView {
     this.preferredLanguageOptionsEl
       .querySelectorAll("button[data-lang]")
       .forEach((btn) => {
-        btn.addEventListener("click", (e) => {
+        btn.addEventListener("click", async (e) => {
           const lang = (e.currentTarget as HTMLElement).dataset
             .lang as Language;
-          auth.updateLanguage(lang);
+          await auth.updateLanguage(lang);
         });
       });
 
@@ -118,7 +118,7 @@ export default class SettingsView extends AbstractView {
     try {
       getDataOrThrow(await patchUser(updatedUser));
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
-      auth.updateUser(updatedUser);
+      await auth.updateUser(updatedUser);
     } catch (err) {
       console.error("Failed to update preferred language:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
