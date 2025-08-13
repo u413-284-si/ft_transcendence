@@ -1,16 +1,16 @@
-import { Match } from "../types/IMatch.js";
+import { Match, playedAs } from "../types/IMatch.js";
 import { escapeHTML } from "../utility.js";
 
 export function MatchRow(match: Match, user: string): string {
-  const isPlayerOne = match.playedAs === "PLAYERONE";
+  const isPlayerOne = match.playedAs === playedAs.PLAYERONE;
 
   const result = isPlayerOne
     ? match.player1Score > match.player2Score
-      ? "Won"
-      : "Lost"
+      ? i18next.t("global.won")
+      : i18next.t("global.lost")
     : match.player2Score > match.player1Score
-      ? "Won"
-      : "Lost";
+      ? i18next.t("global.won")
+      : i18next.t("global.lost");
 
   const player1Display = isPlayerOne
     ? `${match.player1Nickname} (${user})`
@@ -21,7 +21,9 @@ export function MatchRow(match: Match, user: string): string {
     : `${match.player2Nickname} (${user})`;
 
   const tournamentDisplay = match.tournament?.name
-    ? `Name: ${match.tournament.name}`
+    ? i18next.t("global.tournament", {
+        tournamentName: match.tournament.name
+      })
     : "N/A";
 
   return /* HTML */ `
@@ -43,6 +45,16 @@ export function MatchRow(match: Match, user: string): string {
         ${new Date(match.date!).toLocaleString()}
       </td>
       <td class="border border-dark-emerald px-4 py-2">${tournamentDisplay}</td>
+    </tr>
+  `;
+}
+
+export function NoMatchesRow(): string {
+  return /* HTML */ `
+    <tr>
+      <td colspan="7" class="text-center text-teal py-4">
+        No matches played yet
+      </td>
     </tr>
   `;
 }

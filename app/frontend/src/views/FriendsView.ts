@@ -1,25 +1,29 @@
 import { router } from "../routing/Router.js";
 import { sanitizeHTML } from "../sanitize.js";
-import { ApiError } from "../services/api.js";
+import { getDataOrThrow } from "../services/api.js";
 import {
   deleteFriendRequest,
   getUserFriendRequests,
   acceptFriendRequest,
-  createFriendRequest
+  createFriendRequest,
+  getUserFriendRequestByUsername
 } from "../services/friendsServices.js";
 import { getUserByUsername } from "../services/userServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
-import { FriendStatusChangeEvent } from "../types/FriendStatusChangeEvent.js";
-import { getEl, getInputEl } from "../utility.js";
+import {
+  FriendRequestEvent,
+  FriendStatusChangeEvent
+} from "../types/ServerSentEvents.js";
+import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
 import { Button } from "../components/Button.js";
 import { Input } from "../components/Input.js";
 import { Form } from "../components/Form.js";
-import { Span } from "../components/Span.js";
 import { Header1 } from "../components/Header1.js";
 import { FriendListItem } from "../components/FriendListItem.js";
 import { Header2 } from "../components/Header2.js";
+import { toaster } from "../Toaster.js";
 
 type RequestListType = "friend" | "incoming" | "outgoing";
 
@@ -29,7 +33,7 @@ export default class FriendsView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle("Friends");
+    this.setTitle(i18next.t("friendsView.title"));
   }
 
   getName(): string {
@@ -37,7 +41,7 @@ export default class FriendsView extends AbstractView {
   }
 
   async render(): Promise<void> {
-    this.friendRequests = await getUserFriendRequests();
+    this.friendRequests = getDataOrThrow(await getUserFriendRequests());
     this.updateHTML();
     this.addListeners();
   }
@@ -59,7 +63,9 @@ export default class FriendsView extends AbstractView {
         containerId = "request-list-out";
         break;
       default:
-        throw new Error(`Unknown list type: ${type}`);
+        throw new Error(
+          i18next.t("error.unknownRequestListType", { type: type })
+        );
     }
 
     getEl(containerId).innerHTML = cleanHTML;
@@ -71,7 +77,7 @@ export default class FriendsView extends AbstractView {
       <section>
         <div class="flex flex-col justify-center items-center gap-4 mb-12">
           ${Header1({
-            text: "Your Friends",
+            text: i18next.t("friendsView.yourFriends"),
             id: "friends-header",
             variant: "default"
           })}
@@ -83,28 +89,23 @@ export default class FriendsView extends AbstractView {
         ${Form({
           children: [
             Header1({
-              text: "Add a Friend",
+              text: i18next.t("friendsView.addFriend"),
               id: "send-request-header",
               variant: "default"
             }),
             Input({
               id: "username-input",
               type: "text",
-              placeholder: "Exact username",
-              label: "Username",
+              placeholder: i18next.t("friendsView.exactUsername"),
+              label: i18next.t("global.username"),
               errorId: "username-error"
             }),
             Button({
               id: "send-request-btn",
-              text: "Send Friend Request",
+              text: i18next.t("friendsView.sendFriendRequest"),
               variant: "default",
               size: "md",
               type: "submit"
-            }),
-            Span({
-              id: "status-message",
-              className: "transition-opacity duration-500 opacity-0",
-              variant: "success"
             })
           ],
           id: "send-request-form"
@@ -114,13 +115,13 @@ export default class FriendsView extends AbstractView {
       <section>
         <div class="flex flex-col justify-center items-center gap-4">
           ${Header1({
-            text: "Friend Requests",
+            text: i18next.t("friendsView.friendRequests"),
             id: "friends-request-header",
             variant: "default"
           })}
           <div class="mb-4">
             ${Header2({
-              text: "Incoming Friend Requests",
+              text: i18next.t("friendsView.incomingRequests"),
               variant: "default"
             })}
             <div id="request-list-in">
@@ -129,7 +130,7 @@ export default class FriendsView extends AbstractView {
           </div>
           <div>
             ${Header2({
-              text: "Outgoing Friend Requests",
+              text: i18next.t("friendsView.outgoingRequests"),
               variant: "default"
             })}
             <div id="request-list-out">
@@ -148,22 +149,24 @@ export default class FriendsView extends AbstractView {
     switch (type) {
       case "friend":
         filtered = this.friendRequests.filter((r) => r.status === "ACCEPTED");
-        emptyMessage = "You have no friends yet";
+        emptyMessage = i18next.t("friendsView.noFriends");
         break;
       case "incoming":
         filtered = this.friendRequests.filter(
           (r) => r.status === "PENDING" && !r.sender
         );
-        emptyMessage = "No incoming friend requests";
+        emptyMessage = i18next.t("friendsView.noIncoming");
         break;
       case "outgoing":
         filtered = this.friendRequests.filter(
           (r) => r.status === "PENDING" && r.sender
         );
-        emptyMessage = "No outgoing friend requests";
+        emptyMessage = i18next.t("friendsView.noOutgoing");
         break;
       default:
-        throw new Error(`Unknown request list type: ${type}`);
+        throw new Error(
+          i18next.t("error.unknownRequestListType", { type: type })
+        );
     }
 
     if (filtered.length === 0) {
@@ -179,8 +182,16 @@ export default class FriendsView extends AbstractView {
 
   protected addListeners(): void {
     window.addEventListener(
-      "friendStatusChange",
+      "app:FriendStatusChangeEvent",
       this.handleFriendStatusChange,
+      {
+        signal: this.controller.signal
+      }
+    );
+
+    window.addEventListener(
+      "app:FriendRequestEvent",
+      this.handleFriendRequestEvent,
       {
         signal: this.controller.signal
       }
@@ -203,23 +214,32 @@ export default class FriendsView extends AbstractView {
     selector: string,
     confirmMessage: string | null,
     refreshTypes: RequestListType[] | null,
-    handler: (event: Event) => Promise<void> | void
+    handler: (event: Event) => Promise<string>,
+    toastMessage: string,
+    toastIcon?: string
   ): void => {
     document.querySelectorAll(selector).forEach((btn) => {
       btn.addEventListener(
         "click",
         async (event) => {
-          if (confirmMessage) {
-            const confirmed = confirm(confirmMessage);
-            if (!confirmed) return;
-          }
-
-          await handler(event);
-
-          if (refreshTypes) {
-            for (const type of refreshTypes) {
-              this.refreshRequestList(type);
+          try {
+            if (confirmMessage) {
+              const confirmed = confirm(confirmMessage);
+              if (!confirmed) return;
             }
+
+            const username = await handler(event);
+
+            if (refreshTypes) {
+              for (const type of refreshTypes) {
+                this.refreshRequestList(type);
+              }
+            }
+
+            toaster.success(`${toastMessage} ${username}`, toastIcon);
+          } catch (error) {
+            console.error(error);
+            toaster.error(i18next.t("toast.friendRequestButtonError"));
           }
         },
         {
@@ -234,9 +254,11 @@ export default class FriendsView extends AbstractView {
       case "friend":
         this.addButtonListeners(
           ".remove-friend-btn",
-          "Are you sure you want to remove this friend?",
+          i18next.t("friendsView.confirmRemoveFriend"),
           ["friend"],
-          this.handleDeleteButton
+          this.handleDeleteButton,
+          i18next.t("toast.terminatedFriendship"),
+          "💀"
         );
         break;
 
@@ -245,55 +267,57 @@ export default class FriendsView extends AbstractView {
           ".accept-btn",
           null,
           ["incoming", "friend"],
-          this.handleAcceptButton
+          this.handleAcceptButton,
+          i18next.t("toast.acceptedFriendRequest"),
+          "❤️"
         );
         this.addButtonListeners(
           ".decline-btn",
-          "Are you sure you want to decline this request?",
+          i18next.t("friendsView.confirmDeclineRequest"),
           ["incoming"],
-          this.handleDeleteButton
+          this.handleDeleteButton,
+          i18next.t("toast.declinedFriendRequest"),
+          "💔"
         );
         break;
 
       case "outgoing":
         this.addButtonListeners(
           ".delete-request-btn",
-          "Are you sure you want to delete this request?",
+          i18next.t("friendsView.confirmDeleteRequest"),
           ["outgoing"],
-          this.handleDeleteButton
+          this.handleDeleteButton,
+          i18next.t("toast.deletedFriendRequest"),
+          "💔"
         );
         break;
     }
   };
 
-  private handleDeleteButton = async (event: Event) => {
-    try {
-      const btn = event.currentTarget as HTMLButtonElement;
-      const requestId = this.getRequestIdFromButton(btn);
-      const request = await deleteFriendRequest(requestId);
-      this.removeFriendRequest(request.id);
-    } catch (error) {
-      router.handleError("Error in handleDeleteButton()", error);
-    }
+  private handleDeleteButton = async (event: Event): Promise<string> => {
+    const btn = event.currentTarget as HTMLButtonElement;
+    const requestId = this.getRequestIdFromButton(btn);
+    const request = getDataOrThrow(await deleteFriendRequest(requestId));
+    this.removeFriendRequest(request.id);
+    const username = escapeHTML(request.friendUsername);
+    return username;
   };
 
-  private handleAcceptButton = async (event: Event) => {
-    try {
-      const btn = event.currentTarget as HTMLButtonElement;
-      const requestid = this.getRequestIdFromButton(btn);
-      const request = await acceptFriendRequest(requestid);
-      this.removeFriendRequest(request.id);
-      this.addFriendRequest(request);
-    } catch (error) {
-      router.handleError("Error in handleAcceptButton()", error);
-    }
+  private handleAcceptButton = async (event: Event): Promise<string> => {
+    const btn = event.currentTarget as HTMLButtonElement;
+    const requestid = this.getRequestIdFromButton(btn);
+    const request = getDataOrThrow(await acceptFriendRequest(requestid));
+    this.removeFriendRequest(request.id);
+    this.addFriendRequest(request);
+    const username = escapeHTML(request.friendUsername);
+    return username;
   };
 
   private handleFriendStatusChange = (event: Event) => {
     const customEvent = event as FriendStatusChangeEvent;
-    const { userId, isOnline } = customEvent.detail;
+    const { requestId, isOnline } = customEvent.detail;
     const container = document.querySelector<HTMLElement>(
-      `li[data-friend-id="${userId}"]`
+      `li[data-request-id="${requestId}"]`
     );
     if (!container) {
       console.warn("Tried to update status, but container not found");
@@ -301,7 +325,9 @@ export default class FriendsView extends AbstractView {
     }
     const statusSpan = container.querySelector(".online-status")!;
 
-    statusSpan.textContent = isOnline ? "Online" : "Offline";
+    statusSpan.textContent = isOnline
+      ? i18next.t("global.online")
+      : i18next.t("global.offline");
     statusSpan.classList.toggle("text-neon-green", isOnline);
     statusSpan.classList.toggle("text-grey", !isOnline);
   };
@@ -318,33 +344,31 @@ export default class FriendsView extends AbstractView {
     const username = inputEl.value.trim();
 
     try {
-      const user = await getUserByUsername(username);
+      const user = getDataOrThrow(await getUserByUsername(username));
 
       if (user === null) {
-        markInvalid("User not found.", inputEl, errorEl);
+        markInvalid(i18next.t("global.userNotFound"), inputEl, errorEl);
         return;
       }
       clearInvalid(inputEl, errorEl);
 
-      const request = await createFriendRequest(user.id);
+      const request = getDataOrThrow(await createFriendRequest(user.id));
       this.removeFriendRequest(request.id);
       this.addFriendRequest(request);
       inputEl.value = "";
       this.refreshRequestList("outgoing");
       if (request.status === "PENDING") {
-        this.showStatusMessage("Successfully sent friend request");
+        toaster.success(i18next.t("toast.sendSuccess", { username: username }));
       } else if (request.status === "ACCEPTED") {
-        this.showStatusMessage("Added friend!");
+        toaster.success(
+          i18next.t("toast.friendAdded", { username: username }),
+          "❤️"
+        );
+        this.refreshRequestList("incoming");
         this.refreshRequestList("friend");
       }
     } catch (error) {
-      console.error(error);
-      let message = "Something went wrong.";
-      if (error instanceof ApiError) {
-        message = error.cause ? error.cause : error.message;
-      }
-      markInvalid(`${message}`, inputEl, errorEl);
-      inputEl.disabled = false;
+      router.handleError("handleSendRequestButton()", error);
     }
   };
 
@@ -355,8 +379,16 @@ export default class FriendsView extends AbstractView {
 
   private getRequestIdFromButton(btn: Element): number {
     const li = btn.closest("li");
-    if (!li || !li.dataset.requestId) throw new Error("Missing request ID");
+    if (!li || !li.dataset.requestId)
+      throw new Error(i18next.t("error.missingRequestID"));
     return Number(li.dataset.requestId);
+  }
+
+  private getFriendRequest(requestId: number): FriendRequest {
+    const request = this.friendRequests.find((r) => r.id === requestId);
+    if (!request)
+      throw new Error(i18next.t("error.requestNotFound", { id: requestId }));
+    return request;
   }
 
   private addFriendRequest(request: FriendRequest): void {
@@ -367,18 +399,51 @@ export default class FriendsView extends AbstractView {
     this.friendRequests = this.friendRequests.filter((r) => r.id !== requestId);
   }
 
-  private showStatusMessage(text: string) {
-    const messageElement = getEl("status-message");
-    if (!messageElement) return;
-
-    messageElement.textContent = text;
-    messageElement.classList.remove("opacity-0");
-    messageElement.classList.add("opacity-100");
-
-    // Hide it after 1 second
-    setTimeout(() => {
-      messageElement.classList.remove("opacity-100");
-      messageElement.classList.add("opacity-0");
-    }, 1000);
-  }
+  private handleFriendRequestEvent = async (event: Event) => {
+    try {
+      const customEvent = event as FriendRequestEvent;
+      const { requestId, username, status } = customEvent.detail;
+      switch (status) {
+        case "PENDING": {
+          const requests = getDataOrThrow(
+            await getUserFriendRequestByUsername(username)
+          );
+          if (requests[0]) {
+            this.addFriendRequest(requests[0]);
+            this.refreshRequestList("incoming");
+          }
+          break;
+        }
+        case "ACCEPTED": {
+          const request = getDataOrThrow(
+            await getUserFriendRequestByUsername(username)
+          );
+          if (request[0]) {
+            this.removeFriendRequest(requestId);
+            this.addFriendRequest(request[0]);
+            this.refreshRequestList("friend");
+            this.refreshRequestList("outgoing");
+          }
+          break;
+        }
+        case "DECLINED": {
+          this.removeFriendRequest(requestId);
+          this.refreshRequestList("outgoing");
+          break;
+        }
+        case "RESCINDED": {
+          this.removeFriendRequest(requestId);
+          this.refreshRequestList("incoming");
+          break;
+        }
+        case "DELETED": {
+          this.removeFriendRequest(requestId);
+          this.refreshRequestList("friend");
+          break;
+        }
+      }
+    } catch (error) {
+      router.handleError("Error in handleFriendRequestEvent()", error);
+    }
+  };
 }

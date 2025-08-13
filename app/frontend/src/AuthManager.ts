@@ -1,4 +1,4 @@
-import { ApiError } from "./services/api.js";
+import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   authAndDecodeAccessToken,
   refreshAccessToken,
@@ -6,12 +6,15 @@ import {
   userLogout
 } from "./services/authServices.js";
 import {
-  startOnlineStatusTracking,
-  stopOnlineStatusTracking
-} from "./services/onlineStatusServices.js";
+  openSSEConnection,
+  closeSSEConnection
+} from "./services/serverSentEventsServices.js";
 import { getUserProfile } from "./services/userServices.js";
+import { toaster } from "./Toaster.js";
 import { Token } from "./types/Token.js";
-import { User } from "./types/User.js";
+import { User, Language } from "./types/User.js";
+import { getCookieValueByName } from "./utility.js";
+import { router } from "./routing/Router.js";
 
 type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
 
@@ -42,12 +45,12 @@ export class AuthManager {
       this.authenticated = true;
       this.scheduleTokenValidation(token);
       this.registerActivityListeners();
-      startOnlineStatusTracking();
+      openSSEConnection();
     } else {
       this.authenticated = false;
       this.clearRefreshTimer();
       this.removeActivityListeners();
-      stopOnlineStatusTracking();
+      closeSSEConnection();
     }
     this.notify();
   }
@@ -55,48 +58,88 @@ export class AuthManager {
   public async initialize(): Promise<void> {
     console.log("Checking for existing auth token");
     try {
-      const token = await authAndDecodeAccessToken();
+      if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
+        toaster.error(i18next.t("toast.emailExists"));
+        document.cookie =
+          "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
+        this.notify();
+        return;
+      }
+      const apiResponse = await authAndDecodeAccessToken();
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          console.log("JWT validation failed or no token found.");
+          this.notify();
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const token = apiResponse.data;
+      this.user = getDataOrThrow(await getUserProfile());
       this.updateAuthState(token);
-      if (this.authenticated) {
-        this.user = await getUserProfile();
-        console.log("User profile fetched:", this.user);
-      }
     } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        console.log("JWT validation failed or no token found.");
-      } else {
-        console.error("Unexpected error:", error);
-      }
+      this.notify();
+      router.handleError("Error in AuthManager.initialize():", error);
     }
   }
 
   public async login(username: string, password: string): Promise<boolean> {
     try {
-      await userLogin(username, password);
-      const token = await authAndDecodeAccessToken();
-      this.updateAuthState(token);
+      const apiResponse = await userLogin(username, password);
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          toaster.error(i18next.t("toast.invalidUsernameOrPW"));
+          return false;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const token = getDataOrThrow(await authAndDecodeAccessToken());
+      this.user = getDataOrThrow(await getUserProfile());
+      await i18next.changeLanguage(this.user.language);
+      localStorage.setItem("preferredLanguage", this.user!.language);
+      console.info(`Language switched to ${this.user!.language}`);
       console.log("User logged in");
-      this.user = await getUserProfile();
-      console.log("User profile fetched:", this.user);
+      this.updateAuthState(token);
       return true;
     } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        alert("Invalid username or password");
-      } else {
-        console.error("Unexpected login error:", error);
-        alert("An unexpected error occurred.");
-      }
+      router.handleError("Login error", error);
       return false;
     }
   }
 
+  public loginWithGoogle() {
+    window.location.pathname = "/login/google";
+  }
+
   public async logout(): Promise<void> {
-    await userLogout();
-    this.updateAuthState(null);
+    try {
+      const apiResponse = await userLogout();
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          console.warn("No auth cookies set");
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+
+      const sidebar = document.getElementById("drawer-sidebar");
+      if (sidebar) sidebar.remove();
+
+      this.updateAuthState(null);
+    } catch (error) {
+      console.error("Error while logout()", error);
+      toaster.error(i18next.t("toast.logoutError"));
+    }
   }
 
   public clearTokenOnError(): void {
-    this.updateAuthState(null);
+    if (this.authenticated) {
+      console.error("Could not verify user");
+      toaster.error(i18next.t("toast.userVerificationError"));
+      this.updateAuthState(null);
+    }
   }
 
   public isAuthenticated(): boolean {
@@ -104,17 +147,41 @@ export class AuthManager {
   }
 
   public getToken(): Token {
-    if (!this.token) throw new Error("No active Token");
+    if (!this.token) throw new Error(i18next.t("error.noActiveToken"));
     return this.token;
   }
 
   public getUser(): User {
-    if (!this.user) throw new Error("User profile not loaded");
+    if (!this.user) throw new Error(i18next.t("error.userNotFound"));
     return this.user;
   }
 
   public onChange(callback: AuthChangeCallback): void {
     this.listeners.push(callback);
+  }
+
+  public updateUser(update: Partial<User>) {
+    if (!this.authenticated) {
+      console.log("User not authenticated. Cannot update user.");
+      return;
+    }
+    if (!update) {
+      console.log("No update data provided.");
+      return;
+    }
+
+    this.user = {
+      ...this.user!,
+      ...update
+    };
+    this.notify();
+  }
+
+  public async updateLanguage(lang: Language): Promise<void> {
+    await i18next.changeLanguage(lang);
+    console.info(`Language switched to ${lang}`);
+    localStorage.setItem("preferredLanguage", lang);
+    this.notify();
   }
 
   private notify(): void {
@@ -168,11 +235,20 @@ export class AuthManager {
   private async refreshToken(): Promise<void> {
     console.log("Refresh token");
     try {
-      await refreshAccessToken();
-      const newToken = await authAndDecodeAccessToken();
+      const apiResponse = await refreshAccessToken();
+      if (!apiResponse.success) {
+        if (apiResponse.status === 401) {
+          toaster.error(i18next.t("toast.tokenRefreshFailed"));
+          this.clearTokenOnError();
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
+      }
+      const newToken = getDataOrThrow(await authAndDecodeAccessToken());
       this.updateAuthState(newToken);
-    } catch {
-      console.warn("Token refresh failed or expired. Logging out.");
+    } catch (error) {
+      console.warn("Token refresh failed", error);
       this.clearTokenOnError();
     }
   }

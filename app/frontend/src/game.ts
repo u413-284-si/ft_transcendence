@@ -5,8 +5,9 @@ import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { auth } from "./AuthManager.js";
 import { GameType } from "./views/GameView.js";
+import { playedAs } from "./types/IMatch.js";
+import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
 
 let isAborted: boolean = false;
@@ -25,7 +26,7 @@ export function setIsAborted(value: boolean) {
 export async function startGame(
   nickname1: string,
   nickname2: string,
-  userRole: string | null,
+  userRole: playedAs,
   gameType: GameType,
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
@@ -203,7 +204,7 @@ function checkWinner(gameState: GameState) {
 async function endGame(
   gameState: GameState,
   tournament: Tournament | null,
-  userRole: string | null
+  userRole: playedAs
 ) {
   if (tournament) {
     const matchId = tournament.getNextMatchToPlay()!.matchId;
@@ -212,20 +213,21 @@ async function endGame(
         ? gameState.player1
         : gameState.player2;
     tournament.updateBracketWithResult(matchId, winner);
-    await updateTournamentBracket(tournament);
+    getDataOrThrow(await updateTournamentBracket(tournament));
   }
 
-  await createMatch({
-    tournament: tournament
-      ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
-      : null,
-    userId: userRole ? auth.getToken().id : null,
-    playedAs: userRole,
-    player1Nickname: gameState.player1,
-    player2Nickname: gameState.player2,
-    player1Score: gameState.player1Score,
-    player2Score: gameState.player2Score
-  });
+  getDataOrThrow(
+    await createMatch({
+      playedAs: userRole,
+      player1Nickname: gameState.player1,
+      player2Nickname: gameState.player2,
+      player1Score: gameState.player1Score,
+      player2Score: gameState.player2Score,
+      tournament: tournament
+        ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
+        : null
+    })
+  );
 
   await waitForEnterKey();
 }

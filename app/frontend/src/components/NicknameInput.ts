@@ -7,12 +7,14 @@ export function NicknameInput(players: number): string {
     const isChecked = i === 1 ? true : false;
 
     nicknameInputs += /* HTML */ `
-      <div class="border border-teal p-4 rounded shadow-sm">
+      <div
+        class="border border-teal p-4 rounded shadow-sm flex flex-col space-y-4"
+      >
         ${Input({
           id: `nickname${i}`,
-          label: `Player ${i} Nickname`,
+          label: i18next.t("nicknameInput.playerNickname", { i: i }),
           name: `player-${i}`,
-          placeholder: "Enter your nickname",
+          placeholder: i18next.t("nicknameInput.enterYourNickname"),
           type: "text",
           errorId: `player-error-${i}`
         })}
@@ -20,7 +22,7 @@ export function NicknameInput(players: number): string {
           id: `choice-${i}`,
           name: "userChoice",
           value: `${i}`,
-          label: `I will play as Player ${i}`,
+          label: i18next.t("nicknameInput.playerChoice", { i: i }),
           checked: isChecked
         })}
       </div>

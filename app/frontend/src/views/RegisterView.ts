@@ -8,61 +8,70 @@ import {
 import { registerUser } from "../services/userServices.js";
 import { router } from "../routing/Router.js";
 import { ApiError } from "../services/api.js";
-import { getEl, getInputEl } from "../utility.js";
+import { escapeHTML, getEl, getInputEl } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
+import { toaster } from "../Toaster.js";
 
 export default class Register extends AbstractView {
   constructor() {
     super();
-    this.setTitle("Register");
+    this.setTitle(i18next.t("registerView.title"));
   }
 
   createHTML(): string {
     return /* HTML */ ` ${Form({
       children: [
         Header1({
-          text: "Register Here",
+          text: i18next.t("registerView.register"),
           variant: "default"
         }),
         Input({
           id: "email",
-          label: "Email",
+          label: i18next.t("global.label", {
+            field: i18next.t("global.email")
+          }),
           name: "email",
-          placeholder: "Email",
+          placeholder: i18next.t("global.email"),
           type: "email",
           errorId: "email-error"
         }),
         Input({
           id: "username",
-          label: "Username",
+          label: i18next.t("global.label", {
+            field: i18next.t("global.username")
+          }),
           name: "username",
-          placeholder: "Username",
+          placeholder: i18next.t("global.username"),
           type: "text",
           errorId: "username-error"
         }),
         Input({
           id: "password",
-          label: "Password",
+          label: i18next.t("global.label", {
+            field: i18next.t("global.password")
+          }),
           name: "password",
-          placeholder: "Password",
+          placeholder: i18next.t("global.password"),
           type: "password",
           errorId: "password-error",
           hasToggle: true
         }),
         Input({
           id: "confirm",
-          label: "Confirm Password",
+          label: i18next.t("global.label", {
+            field: i18next.t("global.confirmNewPassword")
+          }),
           name: "confirm",
-          placeholder: "Confirm Password",
+          placeholder: i18next.t("global.confirmNewPassword"),
           type: "password",
           errorId: "confirm-error",
           hasToggle: true
         }),
         Button({
-          text: "Register",
+          text: i18next.t("registerView.register"),
           variant: "default",
           size: "md",
           type: "submit"
@@ -125,14 +134,27 @@ export default class Register extends AbstractView {
     }
 
     try {
-      await registerUser(emailEL.value, userEl.value, passwordEl.value);
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 409) {
-        alert("Email or username already exists");
-        return;
+      const apiResponse = await registerUser(
+        emailEL.value,
+        userEl.value,
+        passwordEl.value
+      );
+      if (!apiResponse.success) {
+        if (apiResponse.status === 409) {
+          toaster.error(i18next.t("toast.emailOrUsernameExists"));
+          return;
+        } else {
+          throw new ApiError(apiResponse);
+        }
       }
+      const username = escapeHTML(apiResponse.data.username);
+      toaster.success(
+        i18next.t("toast.registrationSuccess", {
+          username: username
+        })
+      );
+    } catch (error) {
+      router.handleError("validateAndRegisterUser()", error);
     }
-    alert("Registration was successful!");
-    router.navigate("/login", false);
   }
 }

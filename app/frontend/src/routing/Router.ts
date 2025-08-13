@@ -3,20 +3,22 @@ import {
   RouteConfig,
   RouteChangeListener,
   RouteChangeInfo,
-  routeEvent
+  routeEvent,
+  RouteEntry,
+  RouteGuard
 } from "../types/Route.js";
 import ErrorView from "../views/ErrorView.js";
-import { Layout } from "../Layout.js";
-import { stopOnlineStatusTracking } from "../services/onlineStatusServices.js";
+import { closeSSEConnection } from "../services/serverSentEventsServices.js";
+import { ApiError } from "../services/api.js";
 
 export class Router {
   private static instance: Router;
-  private routes: Map<string, RouteConfig> = new Map();
+  private routes: RouteEntry[] = [];
   private currentView: AbstractView | null = null;
   private currentPath: string = "";
+  private currentParams: Record<string, string> = {};
   private previousPath: string = "";
   private routeChangeListeners: RouteChangeListener[] = [];
-  private layout = new Layout("guest");
 
   private constructor() {}
 
@@ -28,7 +30,36 @@ export class Router {
   }
 
   addRoute(path: string, config: RouteConfig): this {
-    this.routes.set(path, config);
+    let regex: RegExp;
+    let dynamicParam: string | undefined;
+
+    if (path.includes(":")) {
+      // Must be dynamic.
+      // Only allow one dynamic param at the end.
+      const match = path.match(/^(.*)\/:([a-zA-Z0-9_]+)$/);
+      if (!match) {
+        throw new Error(
+          i18next.t("error.invalidDynamicRoutePattern", { pattern: path })
+        );
+      }
+
+      const staticPart = match[1];
+      dynamicParam = match[2];
+
+      const paramRegex = config.regex ?? "[^/]+";
+      regex = new RegExp(`^${staticPart}/(${paramRegex})$`);
+    } else {
+      // Static: match exactly.
+      regex = new RegExp(`^${path}$`);
+    }
+
+    this.routes.push({
+      path,
+      regex,
+      dynamicParam,
+      config
+    });
+
     return this;
   }
 
@@ -36,7 +67,6 @@ export class Router {
     window.addEventListener("popstate", this.handlePopState);
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.body.addEventListener("click", this.handleLinkClick);
-    await this.navigate(window.location.pathname, false);
   }
 
   async navigate(path: string, push: boolean = true): Promise<void> {
@@ -49,15 +79,23 @@ export class Router {
 
       console.log(`Try to navigate to ${path} from ${this.currentPath}`);
 
-      const route = this.routes.get(path);
+      const route = this.routes.find((r) => r.regex.test(path));
       if (!route) {
         console.warn(`No route found for path: ${path}. Navigate to /home`);
         await this.navigate("/home", false);
         return;
       }
 
-      const isAllowed = await this.evaluateGuard(route);
-      if (!isAllowed) return;
+      if (route.config.guard) {
+        const isAllowed = await this.evaluateGuard(route.config.guard);
+        if (!isAllowed) return;
+      }
+
+      this.currentParams = {};
+      if (route.dynamicParam) {
+        const match = path.match(route.regex)!;
+        this.currentParams[route.dynamicParam] = match[1];
+      }
 
       if (push) {
         console.log(`Push state for ${path}`);
@@ -69,9 +107,7 @@ export class Router {
       this.previousPath = this.currentPath;
       this.currentPath = path;
 
-      this.layout.update(route.layout);
-
-      const view = new route.view();
+      const view = new route.config.view();
       await this.setView(view);
 
       this.notifyRouteChange("nav");
@@ -93,10 +129,13 @@ export class Router {
   }
 
   async reload() {
-    await this.navigate(this.currentPath, false);
+    await this.navigate(window.location.pathname, false);
   }
 
   async handleError(message: string, error: unknown) {
+    if (error instanceof ApiError && error.status === 401) {
+      return;
+    }
     console.error(message, error);
     const view = new ErrorView(error);
     await this.setView(view);
@@ -144,14 +183,12 @@ export class Router {
 
   private handleBeforeUnload = () => {
     console.log(`BeforeUnload triggered`);
-    stopOnlineStatusTracking();
+    closeSSEConnection();
   };
 
-  private async evaluateGuard(route: RouteConfig): Promise<boolean> {
-    if (!route.guard) return true;
-
+  private async evaluateGuard(guard: RouteGuard): Promise<boolean> {
     try {
-      const result = route.guard();
+      const result = guard();
       console.log(`Route guard result: ${result}`);
 
       if (result === false) {
@@ -189,6 +226,10 @@ export class Router {
 
   normalizePath(path: string): string {
     return path.replace(/\/+$/, "") || "/";
+  }
+
+  getParams(): Record<string, string> {
+    return this.currentParams;
   }
 }
 

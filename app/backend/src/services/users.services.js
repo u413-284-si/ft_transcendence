@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import env from "../config/env.js";
 import { fileTypeFromBuffer } from "file-type";
+import { randAdjective, randWord, randSequence } from "@ngneat/falso";
 
 const tokenSelect = {
   id: true,
@@ -14,10 +15,21 @@ const userSelect = {
   username: true,
   email: true,
   avatar: true,
-  dateJoined: true
+  language: true,
+  dateJoined: true,
+  authentication: {
+    select: {
+      authProvider: true
+    }
+  }
 };
 
-export async function createUser(username, email, hashedPassword) {
+export async function createUser(
+  username,
+  email,
+  hashedPassword,
+  authProvider
+) {
   const user = await prisma.user.create({
     data: {
       username: username,
@@ -25,7 +37,8 @@ export async function createUser(username, email, hashedPassword) {
       dateJoined: new Date(),
       authentication: {
         create: {
-          password: hashedPassword
+          password: hashedPassword,
+          authProvider: authProvider
         }
       },
       stats: { create: {} },
@@ -34,6 +47,22 @@ export async function createUser(username, email, hashedPassword) {
     select: userSelect
   });
   return user;
+}
+
+export function createRandomUsername() {
+  return (
+    randAdjective().toLowerCase() +
+    "_" +
+    randWord().toLowerCase() +
+    "_" +
+    randSequence({ size: 4, charType: "numeric" })
+  );
+}
+
+export function isUserNameValid(request, username) {
+  return request.validateInput(username, {
+    $ref: "commonDefinitionsSchema#/definitions/username"
+  });
 }
 
 export async function getUser(id) {
@@ -127,7 +156,31 @@ export async function deleteUserAvatar(currentAvatarUrl) {
 export async function getUserByUsername(username) {
   const user = await prisma.user.findUnique({
     where: { username },
-    select: { id: true, username: true }
+    select: { id: true, username: true, dateJoined: true }
   });
   return user;
+}
+
+export async function getUserByEmail(email) {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, username: true, email: true, dateJoined: true }
+  });
+  return user;
+}
+
+export async function getUserAuthProvider(id) {
+  const user = await prisma.authentication.findUniqueOrThrow({
+    where: { userId: id },
+    select: { authProvider: true }
+  });
+  return user.authProvider;
+}
+
+export function flattenUser(user) {
+  const { authentication, ...rest } = user;
+  return {
+    ...rest,
+    authProvider: authentication.authProvider
+  };
 }

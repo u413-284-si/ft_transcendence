@@ -1,25 +1,34 @@
 import prisma from "../prisma/prismaClient.js";
 
 const userStatsSelect = {
-  userId: true,
   matchesPlayed: true,
-  matchesWon: true
+  matchesWon: true,
+  winstreakCur: true,
+  winstreakMax: true
 };
 
-export async function updateUserStats(userId, hasWon) {
-  const userStats = await prisma.userStats.findUnique({
+export async function updateUserStatsTx(tx, userId, hasWon) {
+  const currentStats = await tx.userStats.findUniqueOrThrow({
     where: { userId },
-    select: { matchesPlayed: true, matchesWon: true }
+    select: {
+      winstreakCur: true,
+      winstreakMax: true
+    }
   });
 
-  const matchesPlayed = userStats.matchesPlayed + 1;
-  const matchesWon = userStats.matchesWon + (hasWon ? 1 : 0);
+  const newWinstreakCur = hasWon ? currentStats.winstreakCur + 1 : 0;
+  const newWinstreakMax =
+    hasWon && newWinstreakCur > currentStats.winstreakMax
+      ? newWinstreakCur
+      : currentStats.winstreakMax;
 
-  const stats = await prisma.userStats.update({
+  const stats = await tx.userStats.update({
     where: { userId },
     data: {
-      matchesPlayed,
-      matchesWon
+      matchesPlayed: { increment: 1 },
+      matchesWon: hasWon ? { increment: 1 } : undefined,
+      winstreakCur: newWinstreakCur,
+      winstreakMax: newWinstreakMax
     },
     select: userStatsSelect
   });
@@ -27,9 +36,15 @@ export async function updateUserStats(userId, hasWon) {
   return stats;
 }
 
-export async function getAllUserStats() {
+export async function getAllUserStats(filter) {
+  const whereFilter = filter.username
+    ? { user: { username: filter.username } }
+    : {};
   const userStats = await prisma.userStats.findMany({
-    select: userStatsSelect
+    select: userStatsSelect,
+    where: whereFilter,
+    take: filter.limit,
+    skip: filter.offset
   });
   return userStats.map(assembleUserStats);
 }
@@ -50,15 +65,22 @@ export async function deleteAllUserStats() {
   return userStats;
 }
 
-function assembleUserStats(userStats) {
+function assembleUserStats({
+  matchesPlayed,
+  matchesWon,
+  winstreakCur,
+  winstreakMax
+}) {
+  const matchesLost = matchesPlayed - matchesWon;
+  const winRate =
+    matchesPlayed > 0 ? ((matchesWon / matchesPlayed) * 100).toFixed(2) : 0;
+
   return {
-    userId: userStats.userId,
-    matchesPlayed: userStats.matchesPlayed,
-    matchesWon: userStats.matchesWon,
-    matchesLost: userStats.matchesPlayed - userStats.matchesWon,
-    winRate:
-      userStats.matchesPlayed > 0
-        ? (userStats.matchesWon / userStats.matchesPlayed) * 100
-        : 0
+    matchesPlayed,
+    matchesWon,
+    matchesLost,
+    winRate,
+    winstreakCur,
+    winstreakMax
   };
 }

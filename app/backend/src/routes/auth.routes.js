@@ -2,25 +2,28 @@ import {
   authAndDecodeAccessHandler,
   authRefreshHandler,
   loginUserHandler,
-  logoutUserHandler
+  logoutUserHandler,
+  googleOauth2LoginHandler
 } from "../controllers/auth.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
+import env from "../config/env.js";
 
 export default async function authRoutes(fastify) {
-  fastify.post("/", optionsloginUser, loginUserHandler);
+  fastify.post("/login", optionsloginUser, loginUserHandler);
 
-  fastify.get("/", optionsAuthUserAccess, authAndDecodeAccessHandler);
+  fastify.get("/token", optionsAuthUserAccess, authAndDecodeAccessHandler);
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 
-  fastify.patch("/logout/", optionsLogoutUser, logoutUserHandler);
-}
+  fastify.patch("/logout", optionsLogoutUser, logoutUserHandler);
 
-const authRateLimit = {
-  max: 10, // Maximum 10 requests
-  timeWindow: "1 minute" // Per minute
-};
+  fastify.get(
+    env.googleOauth2CallbackRoute,
+    optionsGoogleOauth2Login,
+    googleOauth2LoginHandler
+  );
+}
 
 const optionsloginUser = {
   schema: {
@@ -29,8 +32,7 @@ const optionsloginUser = {
       200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
-  },
-  rateLimit: authRateLimit
+  }
 };
 
 const optionsAuthUserAccess = {
@@ -39,8 +41,7 @@ const optionsAuthUserAccess = {
     response: {
       ...errorResponses
     }
-  },
-  rateLimit: authRateLimit
+  }
 };
 
 const optionsAuthUserRefresh = {
@@ -48,8 +49,7 @@ const optionsAuthUserRefresh = {
     response: {
       ...errorResponses
     }
-  },
-  rateLimit: authRateLimit
+  }
 };
 
 const optionsLogoutUser = {
@@ -57,6 +57,14 @@ const optionsLogoutUser = {
   schema: {
     response: {
       200: { $ref: "loginUserResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGoogleOauth2Login = {
+  schema: {
+    response: {
       ...errorResponses
     }
   }

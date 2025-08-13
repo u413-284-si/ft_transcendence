@@ -11,7 +11,7 @@ import { Form } from "../components/Form.js";
 export default class LoginView extends AbstractView {
   constructor() {
     super();
-    this.setTitle("Login");
+    this.setTitle(i18next.t("loginView.title"));
   }
 
   createHTML() {
@@ -20,26 +20,37 @@ export default class LoginView extends AbstractView {
         children: [
           Input({
             id: "usernameOrEmail",
-            label: "Username or Email:",
+            label: i18next.t("global.label", {
+              field: i18next.t("loginView.usernameOrEmail")
+            }),
             name: "usernameOrEmail",
-            placeholder: "Username or Email",
+            placeholder: i18next.t("loginView.usernameOrEmail"),
             type: "text",
             errorId: "usernameOrEmail-error"
           }),
           Input({
             id: "password",
-            label: "Password:",
+            label: i18next.t("global.label", {
+              field: i18next.t("global.password")
+            }),
             name: "password",
-            placeholder: "Password",
+            placeholder: i18next.t("global.password"),
             type: "password",
             errorId: "password-error",
             hasToggle: true
           }),
           Button({
-            text: "Login",
+            text: i18next.t("loginView.title"),
             variant: "default",
             size: "md",
             type: "submit"
+          }),
+          Button({
+            id: "google-login",
+            text: "",
+            variant: "google",
+            size: "empty",
+            type: "button"
           })
         ],
         id: "login-form"
@@ -53,6 +64,9 @@ export default class LoginView extends AbstractView {
       ?.addEventListener("submit", (event) => this.validateAndLoginUser(event));
 
     addTogglePasswordListener("password");
+    document
+      .getElementById("google-login")
+      ?.addEventListener("click", () => auth.loginWithGoogle());
   }
 
   async render() {
@@ -64,7 +78,7 @@ export default class LoginView extends AbstractView {
     return "login";
   }
 
-  async validateAndLoginUser(event: Event) {
+  private async validateAndLoginUser(event: Event) {
     event.preventDefault();
     const userEl = document.getElementById(
       "usernameOrEmail"

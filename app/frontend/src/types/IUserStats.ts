@@ -3,4 +3,6 @@ export interface UserStats {
   matchesWon: number;
   matchesLost: number;
   winRate: number;
+  winstreakCur: number;
+  winstreakMax: number;
 }

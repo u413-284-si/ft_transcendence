@@ -7,17 +7,28 @@ import {
   getUserAvatar,
   createUserAvatar,
   deleteUserAvatar,
-  getUserByUsername
+  getUserByUsername,
+  getUserByEmail,
+  getUserAuthProvider,
+  flattenUser
 } from "../services/users.services.js";
 import { getUserStats } from "../services/user_stats.services.js";
-import { getUserMatches } from "../services/matches.services.js";
+import {
+  getUserMatches,
+  getUserMatchesByUsername
+} from "../services/matches.services.js";
 import {
   getUserTournaments,
   getUserActiveTournament
 } from "../services/tournaments.services.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
-import { createHash } from "../services/auth.services.js";
+import {
+  createHash,
+  getPasswordHash,
+  updatePassword,
+  verifyHash
+} from "../services/auth.services.js";
 import { getAllUserFriendRequests } from "../services/friends.services.js";
 import { fileTypeFromBuffer } from "file-type";
 
@@ -28,7 +39,7 @@ export async function createUserHandler(request, reply) {
 
     const hashedPassword = await createHash(password);
 
-    const data = await createUser(username, email, hashedPassword);
+    const data = await createUser(username, email, hashedPassword, "LOCAL");
     return reply
       .code(201)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -53,7 +64,8 @@ export async function getUserHandler(request, reply) {
   const action = "Get user";
   try {
     const id = parseInt(request.user.id, 10);
-    const data = await getUser(id);
+    const user = await getUser(id);
+    const data = flattenUser(user);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -105,7 +117,17 @@ export async function updateUserHandler(request, reply) {
 export async function patchUserHandler(request, reply) {
   const action = "Patch user";
   try {
-    const id = parseInt(request.params.id, 10);
+    const id = parseInt(request.user.id, 10);
+
+    if (request.body.email && (await getUserAuthProvider(id)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "Email can not be changed. User uses Google auth provider"
+      );
+    }
+
     const data = await updateUser(id, request.body);
     return reply
       .code(200)
@@ -115,6 +137,14 @@ export async function patchUserHandler(request, reply) {
       { err, body: request.body },
       `patchUserHandler: ${createResponseMessage(action, false)}`
     );
+    if (err.code === "P2002") {
+      return httpError(
+        reply,
+        409,
+        createResponseMessage(action, false),
+        "Email or username already exists"
+      );
+    }
     return handlePrismaError(reply, action, err);
   }
 }
@@ -140,7 +170,8 @@ export async function getUserMatchesHandler(request, reply) {
   const action = "Get user matches";
   try {
     const id = parseInt(request.user.id, 10);
-    const data = await getUserMatches(id);
+    const { playedAs } = request.query;
+    const data = await getUserMatches(id, playedAs);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
@@ -151,6 +182,34 @@ export async function getUserMatchesHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserMatchesHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getUserMatchesByUsernameHandler(request, reply) {
+  const action = "Get user matches by username";
+  try {
+    const id = parseInt(request.user.id, 10);
+    const { playedAs } = request.query;
+    const { username } = request.params;
+    if (username !== request.user.username) {
+      const friend = await getAllUserFriendRequests(id, username);
+      if (!friend.length || !friend.some((req) => req.status === "ACCEPTED")) {
+        return httpError(reply, 401, "You need to be friends");
+      }
+    }
+    const data = await getUserMatchesByUsername(username, playedAs);
+    const count = data.length;
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      count: count,
+      data: data
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserMatchesByUsernameHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
@@ -210,11 +269,12 @@ export async function getUserActiveTournamentHandler(request, reply) {
   }
 }
 
-export async function getUserFriendRequestsHandler(request, reply) {
-  const action = "Get user friend requests";
+export async function getAllUserFriendRequestsHandler(request, reply) {
+  const action = "Get all user friend requests";
   try {
     const userId = parseInt(request.user.id, 10);
-    const data = await getAllUserFriendRequests(userId);
+    const { username } = request.query;
+    const data = await getAllUserFriendRequests(userId, username);
     const count = data.length;
     return reply.code(200).send({
       message: createResponseMessage(action, true),
@@ -224,7 +284,7 @@ export async function getUserFriendRequestsHandler(request, reply) {
   } catch (err) {
     request.log.error(
       { err, body: request.body },
-      `getUserFriendsHandler: ${createResponseMessage(action, false)}`
+      `getAllUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
@@ -326,9 +386,16 @@ export async function deleteUserAvatarHandler(request, reply) {
 
 export async function searchUserHandler(request, reply) {
   const action = "Search user";
+
   try {
-    const { username } = request.query;
-    const data = await getUserByUsername(username);
+    const { username, email } = request.query;
+
+    const isEmail = email !== undefined;
+
+    const data = isEmail
+      ? await getUserByEmail(email)
+      : await getUserByUsername(username);
+
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: data
@@ -337,6 +404,50 @@ export async function searchUserHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserFriendRequestsHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function updateUserPasswordHandler(request, reply) {
+  const action = "Update user password";
+  try {
+    const userId = parseInt(request.user.id, 10);
+
+    if ((await getUserAuthProvider(userId)) !== "LOCAL") {
+      return httpError(
+        reply,
+        403,
+        createResponseMessage(action, false),
+        "Password can not be changed. User uses Google auth provider"
+      );
+    }
+
+    const { currentPassword, newPassword } = request.body;
+
+    const hashedPassword = await getPasswordHash(userId);
+    if (!(await verifyHash(hashedPassword, currentPassword))) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Current password is incorrect"
+      );
+    }
+
+    // Hash the new password
+    const hashedNewPassword = await createHash(newPassword);
+
+    // Update the user's password
+    await updatePassword(userId, hashedNewPassword);
+
+    return reply.code(200).send({
+      message: createResponseMessage(action, true)
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `updateUserPasswordHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

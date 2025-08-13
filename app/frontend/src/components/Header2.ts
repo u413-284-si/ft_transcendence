@@ -4,6 +4,7 @@ export type Header2Options = {
   text: string;
   id?: string;
   variant?: HeaderVariant;
+  className?: string;
 };
 
 const headerVariants: Record<HeaderVariant, string> = {
@@ -14,9 +15,13 @@ const headerVariants: Record<HeaderVariant, string> = {
 export function Header2({
   text,
   id = "",
-  variant = "default"
+  variant = "default",
+  className = ""
 }: Header2Options): string {
-  const classes = headerVariants[variant] || headerVariants.default;
+  const classes = [
+    headerVariants[variant] || headerVariants.default,
+    className
+  ].join(" ");
   const idAttr = id ? ` id="${id}"` : "";
   return `<h2${idAttr} class="${classes}">${text}</h2>`;
 }

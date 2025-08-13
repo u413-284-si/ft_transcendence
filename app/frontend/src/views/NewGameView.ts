@@ -8,13 +8,14 @@ import { Paragraph } from "../components/Paragraph.js";
 import { escapeHTML } from "../utility.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
+import { playedAs } from "../types/IMatch.js";
 
 export default class NewGameView extends AbstractView {
   private formEl!: HTMLFormElement;
 
   constructor() {
     super();
-    this.setTitle("New Game");
+    this.setTitle(i18next.t("newGameView.title"));
   }
 
   createHTML() {
@@ -22,11 +23,13 @@ export default class NewGameView extends AbstractView {
       ${Form({
         children: [
           Paragraph({
-            text: `Select which player will be controlled by ${escapeHTML(auth.getToken().username)}.`
+            text: i18next.t("newGameView.selectPlayer", {
+              username: escapeHTML(auth.getUser().username)
+            })
           }),
           NicknameInput(2),
           Button({
-            text: "Start Game",
+            text: i18next.t("newGameView.startGame"),
             variant: "default",
             size: "md",
             type: "submit"
@@ -67,7 +70,7 @@ export default class NewGameView extends AbstractView {
     const gameView = new GameView(
       nicknames[0],
       nicknames[1],
-      userNumber == "1" ? "PLAYERONE" : "PLAYERTWO",
+      userNumber == "1" ? playedAs.PLAYERONE : playedAs.PLAYERTWO,
       GameType.single,
       null
     );

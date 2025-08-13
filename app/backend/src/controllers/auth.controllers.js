@@ -4,13 +4,21 @@ import {
   verifyHash,
   createAuthTokens,
   getTokenHash,
-  deleteUserRefreshToken
+  deleteUserRefreshToken,
+  setCookies
 } from "../services/auth.services.js";
-import { getTokenData } from "../services/users.services.js";
+import {
+  getTokenData,
+  getUserByEmail,
+  getUserByUsername,
+  createRandomUsername,
+  isUserNameValid
+} from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError } from "../utils/error.js";
 import { httpError } from "../utils/error.js";
-import { setAuthCookies } from "../utils/cookie.js";
+import { createUser, getUserAuthProvider } from "../services/users.services.js";
+import fastify from "../app.js";
 
 export async function loginUserHandler(request, reply) {
   const action = "Login user";
@@ -19,6 +27,16 @@ export async function loginUserHandler(request, reply) {
 
     const identifier = usernameOrEmail.includes("@") ? "email" : "username";
     const payload = await getTokenData(usernameOrEmail, identifier);
+
+    const authProvider = await getUserAuthProvider(payload.id);
+    if (authProvider !== "LOCAL") {
+      return httpError(
+        reply,
+        409,
+        createResponseMessage(action, false),
+        "User already registered with " + authProvider
+      );
+    }
 
     const hashedPassword = await getPasswordHash(payload.id);
 
@@ -35,7 +53,7 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return setCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
@@ -54,6 +72,66 @@ export async function loginUserHandler(request, reply) {
         "Wrong credentials"
       );
     }
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function googleOauth2LoginHandler(request, reply) {
+  const action = "OAuth2 login user";
+  try {
+    const { token } =
+      await fastify.googleOauth2.getAccessTokenFromAuthorizationCodeFlow(
+        request
+      );
+    if (!token) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "No token provided"
+      );
+    }
+
+    reply
+      .clearCookie("oauth2-code-verifier")
+      .clearCookie("oauth2-redirect-state");
+
+    const googleUser = await fastify.googleOauth2.userinfo(token.access_token);
+    const dbUser = await getUserByEmail(googleUser.email);
+    if (!dbUser) {
+      let username = createRandomUsername();
+      while (
+        (await getUserByUsername(username)) ||
+        !isUserNameValid(request, username)
+      ) {
+        username = createRandomUsername();
+      }
+      await createUser(username, googleUser.email, "", "GOOGLE");
+    } else if ((await getUserAuthProvider(dbUser.id)) !== "GOOGLE") {
+      return reply
+        .setCookie("authProviderConflict", "GOOGLE", {
+          secure: true,
+          path: "/login",
+          maxAge: 10
+        })
+        .redirect("http://localhost:4000/login");
+    }
+
+    const payload = await getTokenData(googleUser.email, "email");
+
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+
+    reply = setCookies(reply, accessToken, refreshToken);
+
+    return reply.redirect("http://localhost:4000/home");
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `oAuth2LoginUserHandler: ${createResponseMessage(action, false)}`
+    );
     handlePrismaError(reply, action, err);
   }
 }
@@ -106,7 +184,7 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    return setAuthCookies(reply, accessToken, refreshToken)
+    return setCookies(reply, accessToken, refreshToken)
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {
@@ -122,6 +200,7 @@ export async function logoutUserHandler(request, reply) {
   const action = "Logout user";
   try {
     const userId = parseInt(request.user.id, 10);
+    const username = request.user.username;
     reply.clearCookie("accessToken", {
       httpOnly: true,
       secure: true,
@@ -135,9 +214,10 @@ export async function logoutUserHandler(request, reply) {
       path: "/api/auth/refresh"
     });
     await deleteUserRefreshToken(userId);
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true) });
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: { username: username }
+    });
   } catch (err) {
     request.log.error(
       { err, body: request.body },

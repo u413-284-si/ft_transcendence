@@ -11,6 +11,7 @@ import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
+import { getDataOrThrow } from "../services/api.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -20,7 +21,7 @@ export default class PlayerNicknamesView extends AbstractView {
     private tournamentName: string
   ) {
     super();
-    this.setTitle("Enter Player Nicknames");
+    this.setTitle(i18next.t("playerNicknamesView.title"));
   }
 
   createHTML() {
@@ -28,18 +29,22 @@ export default class PlayerNicknamesView extends AbstractView {
       ${Form({
         children: [
           Header1({
-            text: "Enter Player Nicknames",
+            text: i18next.t("playerNicknamesView.enterPlayerNicknames"),
             variant: "default"
           }),
           Paragraph({
-            text: `Tournament: <strong>${escapeHTML(this.tournamentName)}</strong>`
+            text: i18next.t("global.tournament", {
+              tournamentName: escapeHTML(this.tournamentName)
+            })
           }),
           Paragraph({
-            text: `Select which player will be controlled by ${escapeHTML(auth.getToken().username)}`
+            text: i18next.t("playerNicknamesView.selectControlledPlayer", {
+              username: escapeHTML(auth.getUser().username)
+            })
           }),
           NicknameInput(this.numberOfPlayers),
           Button({
-            text: "Submit Nicknames",
+            text: i18next.t("playerNicknamesView.submitNicknames"),
             variant: "default",
             size: "md",
             type: "submit"
@@ -89,7 +94,9 @@ export default class PlayerNicknamesView extends AbstractView {
         userId
       );
 
-      const createdTournament = await createTournament(tournament);
+      const createdTournament = getDataOrThrow(
+        await createTournament(tournament)
+      );
       const { id } = createdTournament;
       if (id) {
         tournament.setId(id);
