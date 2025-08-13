@@ -7,24 +7,21 @@ import { Header1 } from "../../components/Header1.js";
 import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
 import { PaginationControls } from "../../components/PaginationControls.js";
 import { Table } from "../../components/Table.js";
-import { Paginator } from "../../Paginator.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserPlayedMatchesByUsername } from "../../services/userServices.js";
 import { getUserDashboardMatchesByUsername } from "../../services/userStatsServices.js";
-import { toaster } from "../../Toaster.js";
 import { DashboardMatches } from "../../types/DataSeries.js";
 import { Match } from "../../types/IMatch.js";
 import { UserStats } from "../../types/IUserStats.js";
-import { AbstractTab } from "./AbstractTab.js";
+import { PaginatedTab } from "./PaginatedTab.js";
 
-export class MatchesTab extends AbstractTab {
+export class MatchesTab extends PaginatedTab<Match> {
   private dashboard: DashboardMatches | null = null;
   private userStats: UserStats;
   private username: string;
-  private paginator = new Paginator<Match>(10);
 
   constructor(userStats: UserStats, username: string) {
-    super();
+    super(10, "matches-prev-btn", "matches-next-btn", "matches-page-indicator");
     this.userStats = userStats;
     this.username = username;
   }
@@ -85,15 +82,16 @@ export class MatchesTab extends AbstractTab {
     </div>`;
   }
 
-  updateMatchesTable(matches: Match[]): void {
+  protected updateTable(matches: Match[]): void {
     const table = document.getElementById("match-history-table");
+    if (!table) return;
 
     const matchesRows =
       matches.length === 0
         ? [NoMatchesRow()]
         : matches.map((matchRaw: Match) => MatchRow(matchRaw, this.username));
 
-    table!.innerHTML = /* HTML */ `${Table({
+    table.innerHTML = Table({
       id: "match-history-table",
       headers: [
         i18next.t("statsView.player1"),
@@ -105,13 +103,13 @@ export class MatchesTab extends AbstractTab {
         i18next.t("statsView.tournament")
       ],
       rows: matchesRows
-    })}`;
+    });
   }
 
-  override async onShow(): Promise<void> {
-    await super.onShow();
-    await this.loadPage(this.paginator.getCurrentPage());
-    this.addListeners();
+  protected async fetchPage(limit: number, offset: number) {
+    return getDataOrThrow(
+      await getUserPlayedMatchesByUsername(this.username, limit, offset)
+    );
   }
 
   async init(): Promise<void> {
@@ -146,74 +144,5 @@ export class MatchesTab extends AbstractTab {
         this.dashboard.scores
       )
     };
-  }
-
-  private async loadPage(page: number) {
-    const cached = this.paginator.getCachedPage(page);
-    if (cached) {
-      this.updateMatchesTable(cached);
-      this.updatePaginationControls();
-      return;
-    }
-
-    const limit = this.paginator.getPageSize();
-    const offset = page * limit;
-
-    try {
-      const response = getDataOrThrow(
-        await getUserPlayedMatchesByUsername(this.username, limit, offset)
-      );
-
-      this.paginator.setTotalItems(response.total);
-      this.paginator.cachePage(page, response.items);
-      this.updateMatchesTable(response.items);
-      this.updatePaginationControls();
-    } catch (error) {
-      console.error("Failed to load matches page:", error);
-      toaster.error("Failed to fetch");
-    }
-  }
-
-  private updatePaginationControls() {
-    const prevBtn =
-      document.querySelector<HTMLButtonElement>("#matches-prev-btn");
-    const nextBtn =
-      document.querySelector<HTMLButtonElement>("#matches-next-btn");
-    const pageIndicator = document.querySelector<HTMLSpanElement>(
-      "#matches-page-indicator"
-    );
-    if (!prevBtn || !nextBtn || !pageIndicator) return;
-
-    prevBtn.disabled = !this.paginator.canGoPrev();
-    nextBtn.disabled = !this.paginator.canGoNext();
-
-    const currentPage = this.paginator.getCurrentPage() + 1;
-    const totalPages = this.paginator.getTotalPages();
-    pageIndicator.textContent = `${currentPage} / ${totalPages}`;
-  }
-
-  public async goPrevPage() {
-    if (this.paginator.canGoPrev()) {
-      this.paginator.goPrev();
-      await this.loadPage(this.paginator.getCurrentPage());
-    }
-  }
-
-  public async goNextPage() {
-    if (this.paginator.canGoNext()) {
-      this.paginator.goNext();
-      await this.loadPage(this.paginator.getCurrentPage());
-    }
-  }
-
-  addListeners() {
-    const prevBtn =
-      document.querySelector<HTMLButtonElement>("#matches-prev-btn");
-    const nextBtn =
-      document.querySelector<HTMLButtonElement>("#matches-next-btn");
-    if (!prevBtn || !nextBtn) return;
-
-    prevBtn.addEventListener("click", () => this.goPrevPage());
-    nextBtn.addEventListener("click", () => this.goNextPage());
   }
 }
