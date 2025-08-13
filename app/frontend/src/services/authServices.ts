@@ -104,10 +104,10 @@ export async function generateBackupCodes(
 
 export async function verifyBackupCode(
   backupCode: string
-): Promise<ApiResponse<void>> {
+): Promise<ApiResponse<null>> {
   const url = "/api/auth/2fa/login/backupCode";
 
-  return apiFetch<void>(
+  return apiFetch<null>(
     url,
     {
       method: "POST",
