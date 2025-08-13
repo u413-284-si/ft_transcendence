@@ -1,16 +1,7 @@
 import { apiFetch } from "./api.js";
-import { Match, MatchesPageResponse } from "../types/IMatch.js";
+import { MatchesPageResponse } from "../types/IMatch.js";
 import { User } from "../types/User.js";
 import { ApiResponse } from "../types/IApiResponse.js";
-
-export async function getUserPlayedMatches(): Promise<ApiResponse<Match[]>> {
-  const url = "/api/users/me/matches?playedAs=PLAYERONE&playedAs=PLAYERTWO";
-
-  return apiFetch<Match[]>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
 
 export async function getUserProfile(): Promise<ApiResponse<User>> {
   const url = "/api/users/me";
