@@ -3,7 +3,7 @@ import {
   rand,
   randNoun,
   randNumber,
-  randPastDate,
+  randRecentDate,
   randUserName
 } from "@ngneat/falso";
 import { Tournament } from "/workspaces/ft_transcendence/app/frontend/src/Tournament.ts";
@@ -18,7 +18,7 @@ import type { BracketMatch } from "../../../frontend/src/types/IMatch.ts";
 import type { Tournament as TournamentType, User } from "@prisma/client";
 type PublicTournament = Omit<TournamentType, "isPrivate">;
 
-export async function seedTournamentsPerUser(users: User[], min: 1, max: 10) {
+export async function seedTournamentsPerUser(users: User[], min = 1, max = 10) {
   const allTournaments: PublicTournament[] = [];
 
   for (const user of users) {
@@ -70,10 +70,10 @@ export async function seedSingleTournament(userId: number) {
 
   tournamentClass.setId(id);
 
-  const randomStartDate = randPastDate({ years: 1 });
+  const randomStartDate = randRecentDate({ days: 10 });
   const dateFactory = incrementalDate({
     from: randomStartDate,
-    step: 10 * 60 * 1000 // 10 minutes in milliseconds
+    step: 1 * 60 * 1000 // 1 minute in milliseconds
   });
 
   let nextMatch: BracketMatch | null;
@@ -108,7 +108,7 @@ export async function seedSingleTournament(userId: number) {
     bracket: tournamentClass.getBracket(),
     isFinished: true,
     roundReached: tournamentClass.getRoundReached(),
-    updatedAt: dateFactory(),
+    updatedAt: dateFactory()
   });
   console.log(
     `Seeded tournament ${tournamentName} with ${numberOfPlayers} players`

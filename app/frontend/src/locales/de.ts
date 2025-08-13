@@ -251,8 +251,9 @@ const de: TranslationShape = {
 
     statsView: {
       date: "Datum",
-      friendOnly: "Du musst befreundet sein, um die Match-Historie zu sehen",
-      joined: "Beigetreten am",
+      friendOnly:
+        "Du musst befreundet sein, um detaillierte Statistiken zu sehen.",
+      joined: "Beigetreten am {{date}}",
       matchHistory: "Spielverlauf",
       played: "Gespielt",
       player1: "Spieler 1",
@@ -262,7 +263,9 @@ const de: TranslationShape = {
       result: "Ergebnis",
       title: "Statistiken",
       tournament: "Turnier",
-      winRate: "Siegquote"
+      winRate: "Siegquote",
+      winstreakCur: "Siegesserie",
+      winstreakMax: "Max-Serie"
     },
 
     toast: {

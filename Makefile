@@ -20,6 +20,8 @@ RED := \033[31m
 BLUE := \033[34m
 
 # Directories
+DIR_SECRETS = secrets
+DIR_SCRIPTS = scripts
 
 ######### Targets #########
 
@@ -43,7 +45,7 @@ help:
 
 # Builds, (re)creates, starts, and attaches to containers for a service.
 .PHONY: up
-up:
+up: --secrets
 	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d
 
 # Watches for changes in files and rebuilds containers
@@ -59,7 +61,7 @@ down:
 # Services are built once and then tagged
 .PHONY: build
 build:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build 
+	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build
 
 # Services are built once and then tagged without cache
 .PHONY: buildnc
@@ -102,3 +104,17 @@ exec:
 	@read -p "Service name: " service; \
 	read -p "Command: " cmd; \
 	docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) exec $$service $$cmd
+
+######### Private targets #########
+
+# Create secrets if there is no appropriate directory or the directory is empty
+.PHONY: --secrets
+--secrets:
+	mkdir -p $(DIR_SECRETS);
+	@if [ -z "$$(ls -A $(DIR_SECRETS))" ]; then \
+		echo "$(BOLD)$(BLUE)Creating secrets...$(RESET)"; \
+		cd $(DIR_SECRETS) && \
+		../$(DIR_SCRIPTS)/generate-ssl-certs.sh \
+	else \
+		echo "$(BOLD)$(GREEN)Secrets already exist$(RESET)"; \
+	fi

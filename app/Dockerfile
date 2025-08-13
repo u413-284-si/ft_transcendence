@@ -1,20 +1,42 @@
-FROM node:slim
+# Stage 1: Build the application
+FROM node:slim AS builder
 
-WORKDIR /app
 ENV NODE_ENV development
 
-# Can be removed after development
-RUN apt update && apt upgrade -y && apt install -y \
-	curl
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    openssl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy package.json and package-lock.json
-COPY package*.json /app
+WORKDIR /build
 
-# Install only dependencies needed to run the app in a production environment
-RUN npm install 
+COPY package*.json ./
 
-# Copy the rest of the application code
-COPY ./backend /app/backend
-COPY ./frontend /app/frontend
+COPY ./scripts ./scripts
 
-CMD [ "node", "backend/src/app.js" ]
+COPY ./app ./app
+
+RUN npm ci --ignore-scripts \
+  && npx prisma generate \
+  && npm run style \
+  && npm run build \
+  && npm prune --omit=dev
+
+# Stage 2: Serve the application
+FROM node:slim
+
+ENV NODE_ENV production
+
+RUN apt-get update && apt-get install -y \
+    openssl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /
+
+COPY --from=builder /build/app ./app
+
+COPY --from=builder /build/node_modules ./node_modules
+
+EXPOSE 4001
+
+CMD [ "node", "./app/backend/src/app.js" ]

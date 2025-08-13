@@ -177,3 +177,6 @@ cython_debug/
 
 # External libs
 ext/
+
+# secret stuff
+secrets/

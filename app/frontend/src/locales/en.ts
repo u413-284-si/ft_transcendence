@@ -245,8 +245,8 @@ const en = {
 
     statsView: {
       date: "Date",
-      friendOnly: "You must be friends to view match history",
-      joined: "Joined on",
+      friendOnly: "You must be friends to view detailed stats.",
+      joined: "Joined on {{date}}",
       matchHistory: "Match History",
       played: "Played",
       player1: "Player 1",
@@ -256,7 +256,9 @@ const en = {
       result: "Result",
       title: "Statistics",
       tournament: "Tournament",
-      winRate: "Win Rate"
+      winRate: "Win Rate",
+      winstreakCur: "Winstreak",
+      winstreakMax: "Max Streak"
     },
 
     toast: {
