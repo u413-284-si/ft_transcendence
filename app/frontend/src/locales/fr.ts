@@ -73,7 +73,7 @@ const fr: TranslationShape = {
       offline: "Hors ligne",
       online: "En ligne",
       password: "Mot de passe",
-      twoFACode: "Mot de passe à deux facteurs",
+      twoFACode: "Code 2FA",
       pongGame: "Jeu de pong",
       player: "Joueur",
       playerWins: "{{player}} a gagné",
@@ -114,18 +114,12 @@ const fr: TranslationShape = {
       passwordConfirmationEmpty: "Veuillez saisir à nouveau votre mot de passe",
       passwordConfirmation:
         "La confirmation du mot de passe ne correspond pas au mot de passe saisi.",
-      twoFACode:
-        "Le mot de passe de vérification à deux facteurs est invalide.",
-      twoFACodeEmpty:
-        "Le mot de passe de vérification à deux facteurs ne peut pas être vide.",
-      twoFACodeFormat:
-        "Le mot de passe de vérification à deux facteurs doit contenir six chiffres.",
-      twoFABackupCode:
-        "Le mot de passe de secours à deux facteurs est invalide.",
-      twoFABackupCodeEmpty:
-        "Le mot de passe de secours à deux facteurs ne peut pas être vide.",
-      twoFABackupCodeFormat:
-        "Le mot de passe de secours à deux facteurs doit contenir huit chiffres.",
+      twoFACode: "Code 2FA est invalide.",
+      twoFACodeEmpty: "Code 2FA ne peut pas être vide.",
+      twoFACodeFormat: "Code 2FA doit contenir six chiffres.",
+      twoFABackupCode: "Code de secours est invalide.",
+      twoFABackupCodeEmpty: "Code de secours ne peut pas être vide.",
+      twoFABackupCodeFormat: "Code de secours doit contenir huit chiffres.",
       playerSelection: "Veuillez sélectionner le nombre de joueurs.",
       tournamentNameEmpty: "Le nom du tournoi ne peut pas être vide.",
       tournamentNameFormat:
@@ -143,17 +137,15 @@ const fr: TranslationShape = {
     },
 
     twoFAVerifyView: {
-      title: "Vérification du mot de passe à deux facteurs",
-      enterTwoFACode:
-        "Entrez votre mot de passe de vérification à deux facteurs:",
+      title: "Vérification du code 2FA",
+      enterTwoFACode: "Entrez votre code 2FA :",
       useBackupCode: "Utiliser le code de secours"
     },
 
     twoFABackupCodeVerifyView: {
-      title: "Vérification du mot de passe de secours à deux facteurs",
-      twoFABackupCode: "Mot de passe de secours à deux facteurs",
-      enterTwoFABackupCode:
-        "Entrez votre mot de passe de secours à deux facteurs :"
+      title: "Vérification du code de secours",
+      twoFABackupCode: "Code de secours",
+      enterTwoFABackupCode: "Entrez votre code de secours :"
     },
 
     matchAnnouncementView: {
@@ -237,23 +229,23 @@ const fr: TranslationShape = {
       preferredLanguage: "Choisissez votre langue préférée.",
       saveLanguage: "Enregistrer la langue",
       editTwoFASetup:
-        "Modifier la configuration de la vérification à deux facteurs",
-      twoFASetup: "Paramètres de vérification à deux facteurs",
+        "Modifier la configuration de l’authentification à deux facteurs",
+      twoFASetup: "Paramètres de l’authentification à deux facteurs",
       twoFAInfo: [
-        "Activer la vérification à deux facteurs :",
+        "Activer l’authentification à deux facteurs :",
         "",
         "Veuillez utiliser une application d’authentification",
         "pour scanner le code QR ci-dessous."
       ],
-      twoFAActivated: ["Vérification à deux facteurs activée"],
-      twoFABackupCode: "Mot de passe de secours à deux facteurs",
-      enterTwoFACode: "Entrez votre mot de passe à deux facteurs :",
+      twoFAActivated: ["L’authentification  à deux facteurs activée"],
+      twoFABackupCode: "Codes de secours",
+      enterTwoFACode: "Entrez votre code 2FA :",
       activateTwoFA: "Activer",
       deactivateTwoFA: "Désactiver",
-      twoFAGenerateBackupCodes: "Générer des mots de passe de secours",
+      twoFAGenerateBackupCodes: "Générer des codes de secours",
       confirmPassword: "Confirmation",
       twoFABackupCodeInfo: [
-        "Voici vos mots de passe de secours.",
+        "Voici vos codes de secours.",
         "Copiez-les ou téléchargez-les.",
         "",
         "Ils ne seront plus affichés par la suite."
@@ -301,9 +293,9 @@ const fr: TranslationShape = {
       profileUpdateFailed:
         "Échec de la mise à jour du profil. Veuillez réessayer.",
       twoFASetupSuccess:
-        "Configuration du mot de passe à deux facteurs réussie !",
+        "Configuration de l’authentification à deux facteurs réussie !",
       twoFARemoveSuccess:
-        "Désactivation du mot de passe à deux facteurs réussie !",
+        "Désactivation de l’authentification à deux facteurs réussie !",
       profileUpdatedSuccess: "Profil mis à jour avec succès !",
       registrationSuccess: "Inscription de {{username}} réussie !",
       sendSuccess: "Demande d'ami envoyée avec succès à {{username}}",
