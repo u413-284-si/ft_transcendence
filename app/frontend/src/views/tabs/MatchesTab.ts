@@ -175,26 +175,20 @@ export class MatchesTab extends AbstractTab {
   }
 
   private updatePaginationControls() {
-    const prevBtn = document.getElementById(
-      "matches-prev-btn"
-    ) as HTMLButtonElement;
-    const nextBtn = document.getElementById(
-      "matches-next-btn"
-    ) as HTMLButtonElement;
+    const prevBtn =
+      document.querySelector<HTMLButtonElement>("#matches-prev-btn");
+    const nextBtn =
+      document.querySelector<HTMLButtonElement>("#matches-next-btn");
+    const pageIndicator = document.querySelector<HTMLSpanElement>(
+      "#matches-page-indicator"
+    );
+    if (!prevBtn || !nextBtn || !pageIndicator) return;
 
     prevBtn.disabled = !this.paginator.canGoPrev();
     nextBtn.disabled = !this.paginator.canGoNext();
 
-    this.updatePageIndicator();
-  }
-
-  private updatePageIndicator() {
-    const pageIndicator = document.getElementById("matches-page-indicator");
-    if (!pageIndicator) return;
-
     const currentPage = this.paginator.getCurrentPage() + 1;
     const totalPages = this.paginator.getTotalPages();
-
     pageIndicator.textContent = `${currentPage} / ${totalPages}`;
   }
 
@@ -213,10 +207,13 @@ export class MatchesTab extends AbstractTab {
   }
 
   addListeners() {
-    const prevBtn = document.getElementById("matches-prev-btn");
-    const nextBtn = document.getElementById("matches-next-btn");
+    const prevBtn =
+      document.querySelector<HTMLButtonElement>("#matches-prev-btn");
+    const nextBtn =
+      document.querySelector<HTMLButtonElement>("#matches-next-btn");
+    if (!prevBtn || !nextBtn) return;
 
-    prevBtn?.addEventListener("click", () => this.goPrevPage());
-    nextBtn?.addEventListener("click", () => this.goNextPage());
+    prevBtn.addEventListener("click", () => this.goPrevPage());
+    nextBtn.addEventListener("click", () => this.goNextPage());
   }
 }
