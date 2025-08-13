@@ -98,7 +98,7 @@ const fr: TranslationShape = {
       imageFileFormat: "Veuillez télécharger un fichier image valide.",
       nicknameEmpty: "Le pseudonyme ne peut pas être vide.",
       nicknameFormat:
-        "Le pseudonyme doit être composé de 3 à 20 caractères et peut comprendre des lettres, des chiffres ou les caractères spéciaux suivants : -!?\_$.",
+        "Le pseudonyme doit être composé de 3 à 20 caractères et peut comprendre des lettres, des chiffres ou les caractères spéciaux suivants : -!?_$.",
       nicknameUniqueness: "Le pseudonyme doit être unique.",
       passwordEmpty: "Le mot de passe ne peut pas être vide.",
       passwordFormat:
@@ -116,11 +116,11 @@ const fr: TranslationShape = {
       playerSelection: "Veuillez sélectionner le nombre de joueurs.",
       tournamentNameEmpty: "Le nom du tournoi ne peut pas être vide.",
       tournamentNameFormat:
-        "Le nom du tournoi doit être composé de 3 à 20 caractères et ne peut contenir que des lettres, des chiffres ou les caractères spéciaux suivants : -!?\_$.",
+        "Le nom du tournoi doit être composé de 3 à 20 caractères et ne peut contenir que des lettres, des chiffres ou les caractères spéciaux suivants : -!?_$.",
       tournamentNameUniqueness: "Le nom du tournoi doit être unique.",
       usernameEmpty: "Le nom d’utilisateur ne peut pas être vide.",
       usernameFormat:
-        "Le nom d’utilisateur doit être composé de 3 à 20 caractères et peut comprendre des lettres, des chiffres ou les caractères spéciaux suivants : -!?\_$.",
+        "Le nom d’utilisateur doit être composé de 3 à 20 caractères et peut comprendre des lettres, des chiffres ou les caractères spéciaux suivants : -!?_$.",
       usernameUniqueness: "Le nom d’utilisateur doit être unique."
     },
     loginView: {
