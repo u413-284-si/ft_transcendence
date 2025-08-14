@@ -234,14 +234,14 @@ const de: TranslationShape = {
         "um den QR-Code unten zu scannen."
       ],
       twoFAActivated: ["2FA aktiviert"],
-      twoFABackupCode: "2FA Wiederherstellungskennzahl",
+      twoFABackupCode: "2FA Backup-Code",
       enterTwoFACode: "Gib den 2FA-Code ein:",
       activateTwoFA: "Aktivieren",
       deactivateTwoFA: "Deaktivieren",
-      twoFAGenerateBackupCodes: "Wiederherstellungskennzahlen generieren",
+      twoFAGenerateBackupCodes: "Backup-Codes generieren",
       confirmPassword: "Bestätigen",
       twoFABackupCodeInfo: [
-        "Das sind deine Wiederherstellungskennzahlen.",
+        "Das sind deine Backup-Codes.",
         "Kopiere diese oder lade sie herunter",
         "",
         "Sie werden nicht nochmal angezeigt"
