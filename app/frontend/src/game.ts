@@ -7,6 +7,7 @@ import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
 import { playedAs } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
+import { PlayerAI } from "./PlayerAI.js";
 
 let isAborted: boolean = false;
 
@@ -23,13 +24,29 @@ export async function startGame(
   nickname2: string,
   userRole: playedAs,
   tournament: Tournament | null,
-  keys: Record<GameKey, boolean>
+  keys: Record<GameKey, boolean>,
+  aiRole: "NONE" | "PLAYERONE" | "PLAYERTWO" | "BOTH"
 ) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
 
   setIsAborted(false);
-  const gameState = initGameState(canvas, nickname1, nickname2, keys);
+  let playerAI1: PlayerAI | null = null;
+  let playerAI2: PlayerAI | null = null;
+  if (aiRole === "PLAYERONE" || aiRole === "BOTH") {
+    playerAI1 = new PlayerAI("left", { reactionInterval: 800 });
+  }
+  if (aiRole === "PLAYERTWO" || aiRole === "BOTH") {
+    playerAI2 = new PlayerAI("right", { reactionInterval: 800 });
+  }
+  const gameState = initGameState(
+    canvas,
+    nickname1,
+    nickname2,
+    keys,
+    playerAI1,
+    playerAI2
+  );
   await new Promise<void>((resolve) => {
     gameLoop(ctx, gameState, resolve);
   });
@@ -43,7 +60,9 @@ function initGameState(
   canvas: HTMLCanvasElement,
   player1: string,
   player2: string,
-  keys: Record<GameKey, boolean>
+  keys: Record<GameKey, boolean>,
+  player1AI: PlayerAI | null,
+  player2AI: PlayerAI | null
 ): GameState {
   return {
     player1: player1,
@@ -65,7 +84,9 @@ function initGameState(
     paddleWidth: 10,
     paddleSpeed: 6,
     gameOver: false,
-    keys: keys
+    keys: keys,
+    player1AI: player1AI,
+    player2AI: player2AI
   };
 }
 
