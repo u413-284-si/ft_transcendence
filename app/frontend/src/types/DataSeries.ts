@@ -56,7 +56,7 @@ export type TournamentPlayedSeries = {
 export type DashboardTournaments = {
   summary: TournamentSummaryData;
   progress: TournamentProgressData;
-  lastNDays: TournamentDayData;
+  lastTenDays: TournamentDayData;
 };
 
 type FriendStatsPoint = {

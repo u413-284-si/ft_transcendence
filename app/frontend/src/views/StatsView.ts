@@ -187,6 +187,41 @@ export default class StatsView extends AbstractView {
     this.userStats = userStatsArray[0];
   }
 
+  async showTab(tabId: string) {
+    if (this.currentTabId) {
+      this.tabs[this.currentTabId].onHide();
+    }
+    this.currentTabId = tabId;
+
+    const container = document.getElementById("tab-content")!;
+    container.innerHTML = this.tabs[tabId].getHTML();
+
+    await this.tabs[tabId].onShow();
+  }
+
+  getTabsHTML(): string {
+    if (this.viewType === "public") {
+      return /* HTML */ ` ${TextBox({
+        text: [i18next.t("statsView.friendOnly")],
+        variant: "info"
+      })}`;
+    }
+    return /* HTML */ `
+      <div class="flex space-x-4 border-b border-grey mb-4">
+        ${TabButton({
+          text: i18next.t("statsView.matches"),
+          tabId: "matches",
+          isActive: true
+        })}
+        ${TabButton({
+          text: i18next.t("statsView.tournaments"),
+          tabId: "tournaments"
+        })}
+      </div>
+      <div id="tab-content"></div>
+    `;
+  }
+
   protected addListeners(): void {
     const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-button");
 

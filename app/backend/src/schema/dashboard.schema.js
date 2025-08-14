@@ -75,8 +75,8 @@ const dashboardMatchesResponseSchema = {
   additionalProperties: false
 };
 
-const dashboardTournamentSummarySchema = {
-  $id: "dashboardTournamentSummarySchema",
+const dashboardTournamentsSummarySchema = {
+  $id: "dashboardTournamentsSummarySchema",
   type: "object",
   description: "Summary of winrate and tournament participation by size",
   properties: {
@@ -110,8 +110,8 @@ const dashboardTournamentSummarySchema = {
   additionalProperties: false
 };
 
-const dashboardTournamentProgressItemSchema = {
-  $id: "dashboardTournamentProgressItemSchema",
+const dashboardTournamentsProgressItemSchema = {
+  $id: "dashboardTournamentsProgressItemSchema",
   type: "object",
   description: "A single data point in tournament progress chart",
   properties: {
@@ -127,30 +127,30 @@ const dashboardTournamentProgressItemSchema = {
   additionalProperties: false
 };
 
-const dashboardTournamentProgressSchema = {
-  $id: "dashboardTournamentProgressSchema",
+const dashboardTournamentsProgressSchema = {
+  $id: "dashboardTournamentsProgressSchema",
   type: "object",
   description: "Progress per tournament size",
   properties: {
     4: {
       type: "array",
-      items: { $ref: "dashboardTournamentProgressItemSchema" }
+      items: { $ref: "dashboardTournamentsProgressItemSchema" }
     },
     8: {
       type: "array",
-      items: { $ref: "dashboardTournamentProgressItemSchema" }
+      items: { $ref: "dashboardTournamentsProgressItemSchema" }
     },
     16: {
       type: "array",
-      items: { $ref: "dashboardTournamentProgressItemSchema" }
+      items: { $ref: "dashboardTournamentsProgressItemSchema" }
     }
   },
   required: ["4", "8", "16"],
   additionalProperties: false
 };
 
-const dashboardTournamentLastNDaysOutcomeItemSchema = {
-  $id: "dashboardTournamentLastNDaysOutcomeItemSchema",
+const dashboardTournamentsLastTenDaysOutcomeItemSchema = {
+  $id: "dashboardTournamentsLastTenDaysOutcomeItemSchema",
   description: "Win or Loss data over the last N days",
   type: "array",
   items: {
@@ -168,8 +168,8 @@ const dashboardTournamentLastNDaysOutcomeItemSchema = {
   }
 };
 
-const dashboardTournamentLastNDaysOutcomeGroupSchema = {
-  $id: "dashboardTournamentLastNDaysOutcomeGroupSchema",
+const dashboardTournamentsLastTenDaysOutcomeGroupSchema = {
+  $id: "dashboardTournamentsLastTenDaysOutcomeGroupSchema",
   type: "object",
   properties: {
     name: {
@@ -177,28 +177,29 @@ const dashboardTournamentLastNDaysOutcomeGroupSchema = {
       enum: ["win", "loss"],
       description: "Name of data package"
     },
-    data: { $ref: "dashboardTournamentLastNDaysOutcomeItemSchema" }
+    data: { $ref: "dashboardTournamentsLastTenDaysOutcomeItemSchema" }
   },
   required: ["name", "data"],
   additionalProperties: false
 };
 
-const dashboardTournamentLastNDaysSchema = {
-  $id: "dashboardTournamentLastNDaysSchema",
+const dashboardTournamentsLastTenDaysSchema = {
+  $id: "dashboardTournamentsLastTenDaysSchema",
   type: "object",
-  description: "Win/Loss data over the last N days, grouped by tournament size",
+  description:
+    "Win/Loss data over the last 10 days, grouped by tournament size",
   properties: {
     4: {
       type: "array",
-      items: { $ref: "dashboardTournamentLastNDaysOutcomeGroupSchema" }
+      items: { $ref: "dashboardTournamentsLastTenDaysOutcomeGroupSchema" }
     },
     8: {
       type: "array",
-      items: { $ref: "dashboardTournamentLastNDaysOutcomeGroupSchema" }
+      items: { $ref: "dashboardTournamentsLastTenDaysOutcomeGroupSchema" }
     },
     16: {
       type: "array",
-      items: { $ref: "dashboardTournamentLastNDaysOutcomeGroupSchema" }
+      items: { $ref: "dashboardTournamentsLastTenDaysOutcomeGroupSchema" }
     }
   },
   required: ["4", "8", "16"],
@@ -209,11 +210,11 @@ const dashboardTournamentsSchema = {
   $id: "dashboardTournamentsSchema",
   type: "object",
   properties: {
-    summary: { $ref: "dashboardTournamentSummarySchema" },
-    progress: { $ref: "dashboardTournamentProgressSchema" },
-    lastNDays: { $ref: "dashboardTournamentLastNDaysSchema" }
+    summary: { $ref: "dashboardTournamentsSummarySchema" },
+    progress: { $ref: "dashboardTournamentsProgressSchema" },
+    lastTenDays: { $ref: "dashboardTournamentsLastTenDaysSchema" }
   },
-  required: ["summary", "progress", "lastNDays"],
+  required: ["summary", "progress", "lastTenDays"],
   additionalProperties: false
 };
 
@@ -234,12 +235,12 @@ export const dashboardSchemas = [
   dashboardMatchesScoresSchema,
   dashboardMatchesSchema,
   dashboardMatchesResponseSchema,
-  dashboardTournamentSummarySchema,
-  dashboardTournamentProgressItemSchema,
-  dashboardTournamentProgressSchema,
-  dashboardTournamentLastNDaysOutcomeItemSchema,
-  dashboardTournamentLastNDaysOutcomeGroupSchema,
-  dashboardTournamentLastNDaysSchema,
+  dashboardTournamentsSummarySchema,
+  dashboardTournamentsProgressItemSchema,
+  dashboardTournamentsProgressSchema,
+  dashboardTournamentsLastTenDaysOutcomeItemSchema,
+  dashboardTournamentsLastTenDaysOutcomeGroupSchema,
+  dashboardTournamentsLastTenDaysSchema,
   dashboardTournamentsSchema,
   dashboardTournamentsResponseSchema
 ];
