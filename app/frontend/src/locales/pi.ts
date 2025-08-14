@@ -201,10 +201,14 @@ const pi: TranslationShape = {
     },
 
     statsView: {
+      dashboard: "Cap`n`s Log",
       date: "Chart Date",
+      details: "Secrets",
       friendOnly:
         "Ye must be true mates to lay eyes on these secret scrolls o' stats!",
+      friends: "Mates",
       joined: "Swore the Oath on {{date}}",
+      matches: "Battles",
       matchHistory: "Past Duels",
       played: "Engaged",
       player1: "Buccaneer 1",
@@ -214,6 +218,7 @@ const pi: TranslationShape = {
       result: "Outcome",
       title: "Ship Logs",
       tournament: "Skull & Crossbones Cup",
+      tournaments: "Skull & Crossbones Cups",
       winRate: "Victory Percentage",
       winstreakCur: "Plunder Trail",
       winstreakMax: "Mighty Streak"
@@ -223,6 +228,7 @@ const pi: TranslationShape = {
       acceptedFriendRequest: "Parley accepted by ",
       avatarUploadFailed: "Couldn’t hoist yer flag – try again!",
       avatarUploadedSuccess: "Yer colors be flyin’ high now!",
+      chartError: "Thar be a chart that refused t' hoist its sails",
       connectionLost:
         "Connection to the crow's nest lost – tryin’ again in {{delay}} seconds... (Try {{attempt}} o’ {{maxAttempts}})",
       connectionReestablished: "Riggings reattached!",
@@ -259,6 +265,24 @@ const pi: TranslationShape = {
         "Yer pirate pass be faulty:<br>Back to the login docks.",
       validateTournamentNameError:
         "Tourney name not approved by the Pirate Council."
+    },
+
+    chart: {
+      activity: "Booty Huntin'",
+      current: "As o' Now",
+      loss: "Defeats",
+      numPlayers: "{{num}} sea dogs",
+      played: "Battles fought{{range}}",
+      progress: "Climb - {{num}} sea dogs",
+      progression: "Victory Percentage{{range}}",
+      rangeLastDays: " - last {{count}} Days",
+      rangeLastMatches: " - last {{count}} Battles",
+      reachedThisStage: "Landed 'ere",
+      scoreDiff: "Score Gap{{range}}",
+      scores: "Booty Count{{range}}",
+      summary: "Battle Recap",
+      win: "Victory",
+      winLoss: "Plunder vs Defeats{{range}}"
     }
   }
 };

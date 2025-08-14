@@ -31,8 +31,8 @@ const matchSchema = {
       description: "The score of player 2 in the match"
     },
     date: {
-      $ref: "commonDefinitionsSchema#/definitions/date",
-      description: "The date of the match"
+      $ref: "commonDefinitionsSchema#/definitions/datetime",
+      description: "The date-time of the match"
     },
     tournament: {
       oneOf: [
