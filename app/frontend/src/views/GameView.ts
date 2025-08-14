@@ -14,6 +14,8 @@ export enum GameType {
   tournament
 }
 
+export type AIRole = "NONE" | "PLAYERONE" | "PLAYERTWO" | "BOTH";
+
 export class GameView extends AbstractView {
   private keys: Record<GameKey, boolean> = {
     w: false,
@@ -28,7 +30,8 @@ export class GameView extends AbstractView {
     private nickname2: string,
     private userRole: playedAs,
     private gameType: GameType,
-    private tournament: Tournament | null
+    private tournament: Tournament | null,
+    private aiRole: AIRole
   ) {
     super();
     this.setTitle(i18next.t("gameView.title"));
@@ -88,7 +91,7 @@ export class GameView extends AbstractView {
         this.userRole,
         this.tournament,
         this.keys,
-        "NONE"
+        this.aiRole
       );
       if (getIsAborted()) return;
 

@@ -1,9 +1,12 @@
 import AbstractView from "./AbstractView.js";
-import { GameType, GameView } from "./GameView.js";
+import { AIRole, GameType, GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
-import { NicknameInput } from "../components/NicknameInput.js";
+import {
+  initNicknameInputListeners,
+  NicknameInput
+} from "../components/NicknameInput.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { escapeHTML } from "../utility.js";
 import { Button } from "../components/Button.js";
@@ -44,6 +47,7 @@ export default class NewGameView extends AbstractView {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartGame(event)
     );
+    initNicknameInputListeners();
   }
 
   async render() {
@@ -65,14 +69,27 @@ export default class NewGameView extends AbstractView {
     const nicknames = inputElements.map((input) => input.value);
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
+
     const userNumber = formData.get("userChoice");
+    const aiPlayerOne = formData.has("ai-player-1"); // true if checked
+    const aiPlayerTwo = formData.has("ai-player-2");
+
+    let aiRole: AIRole;
+    if (aiPlayerOne) {
+      aiRole = "PLAYERONE";
+    } else if (aiPlayerTwo) {
+      aiRole = "PLAYERTWO";
+    } else {
+      aiRole = "NONE";
+    }
 
     const gameView = new GameView(
       nicknames[0],
       nicknames[1],
       userNumber == "1" ? playedAs.PLAYERONE : playedAs.PLAYERTWO,
       GameType.single,
-      null
+      null,
+      aiRole
     );
     router.switchView(gameView);
   }
