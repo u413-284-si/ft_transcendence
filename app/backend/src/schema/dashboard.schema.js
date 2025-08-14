@@ -32,9 +32,12 @@ const dashboardMatchesScoresSchema = {
   properties: {
     x: {
       $ref: "commonDefinitionsSchema#/definitions/date",
-      description: "Date for the match count"
+      description: "Date for the score count"
     },
-    y: { type: "number", description: "Number of matches played" }
+    y: {
+      type: "number",
+      description: "Total score of all played matches (on that date)"
+    }
   },
   required: ["x", "y"],
   additionalProperties: false
