@@ -49,15 +49,15 @@ const dashboardMatchesSchema = {
   properties: {
     winrate: {
       type: "array",
-      items: { $ref: "dashboardWinrateSchema" }
+      items: { $ref: "dashboardMatchesWinrateSchema" }
     },
     scoreDiff: {
       type: "array",
-      items: { $ref: "dashboardScoreDiffSchema" }
+      items: { $ref: "dashboardMatchesScoreDiffSchema" }
     },
     scores: {
       type: "array",
-      items: { $ref: "dashboardScoresSchema" }
+      items: { $ref: "dashboardMatchesScoresSchema" }
     }
   },
   required: ["winrate", "scoreDiff", "scores"],
