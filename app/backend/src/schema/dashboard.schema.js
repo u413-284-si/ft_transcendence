@@ -1,5 +1,5 @@
-const dashboardWinrateSchema = {
-  $id: "dashboardWinrateSchema",
+const dashboardMatchesWinrateSchema = {
+  $id: "dashboardMatchesWinrateSchema",
   type: "object",
   properties: {
     x: {
@@ -12,8 +12,8 @@ const dashboardWinrateSchema = {
   additionalProperties: false
 };
 
-const dashboardScoreDiffSchema = {
-  $id: "dashboardScoreDiffSchema",
+const dashboardMatchesScoreDiffSchema = {
+  $id: "dashboardMatchesScoreDiffSchema",
   type: "object",
   properties: {
     x: {
@@ -26,15 +26,18 @@ const dashboardScoreDiffSchema = {
   additionalProperties: false
 };
 
-const dashboardScoresSchema = {
-  $id: "dashboardScoresSchema",
+const dashboardMatchesScoresSchema = {
+  $id: "dashboardMatchesScoresSchema",
   type: "object",
   properties: {
     x: {
       $ref: "commonDefinitionsSchema#/definitions/date",
-      description: "Date for the match count"
+      description: "Date for the score count"
     },
-    y: { type: "number", description: "Number of matches played" }
+    y: {
+      type: "number",
+      description: "Total score of all played matches (on that date)"
+    }
   },
   required: ["x", "y"],
   additionalProperties: false
@@ -226,9 +229,9 @@ const dashboardTournamentsResponseSchema = {
 };
 
 export const dashboardSchemas = [
-  dashboardWinrateSchema,
-  dashboardScoreDiffSchema,
-  dashboardScoresSchema,
+  dashboardMatchesWinrateSchema,
+  dashboardMatchesScoreDiffSchema,
+  dashboardMatchesScoresSchema,
   dashboardMatchesSchema,
   dashboardMatchesResponseSchema,
   dashboardTournamentSummarySchema,

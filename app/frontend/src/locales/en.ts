@@ -203,9 +203,13 @@ const en = {
     },
 
     statsView: {
+      dashboard: "Dashboard",
       date: "Date",
+      details: "Details",
       friendOnly: "You must be friends to view detailed stats.",
+      friends: "Friends",
       joined: "Joined on {{date}}",
+      matches: "Matches",
       matchHistory: "Match History",
       played: "Played",
       player1: "Player 1",
@@ -215,34 +219,12 @@ const en = {
       result: "Result",
       title: "Statistics",
       tournament: "Tournament",
+      tournaments: "Tournaments",
       winRate: "Win Rate",
       winstreakCur: "Winstreak",
       winstreakMax: "Max Streak",
-      matches: "Matches",
-      tournaments: "Tournaments",
-      friends: "Friends",
-      dashboard: "Dashboard",
-      details: "Details",
       usedNickname: "Used nickname",
       eliminatedInRound: "Eliminated in round {{round}}"
-    },
-
-    chart: {
-      winLoss: "Wins vs Losses{{range}}",
-      progression: "Winrate Progression{{range}}",
-      scoreDiff: "Score Difference{{range}}",
-      scores: "Scores{{range}}",
-      summary: "Summary",
-      progress: "Progress ({{num}}-Players)",
-      rangeLastMatches: " (Last {{count}} Matches)",
-      rangeLastDays: " (Last {{count}} Days)",
-      numPlayers: "{{num}}-Players",
-      reachedThisStage: "Reached this stage",
-      win: "Win",
-      loss: "Loss",
-      played: "Tournaments played{{range}}",
-      activity: "Activity",
-      current: "Current"
     },
 
     toast: {
@@ -288,6 +270,24 @@ const en = {
         "An error occurred while validating the tournament name.",
       cannotRemoveYourself: "You cannot remove yourself",
       compareMaxThree: "You can compare a maximum of 3 friends."
+    },
+
+    chart: {
+      activity: "Activity",
+      current: "Current",
+      loss: "Loss",
+      numPlayers: "{{num}}-Players",
+      played: "Tournaments played{{range}}",
+      progress: "Progress ({{num}}-Players)",
+      progression: "Winrate Progression{{range}}",
+      rangeLastDays: " (Last {{count}} Days)",
+      rangeLastMatches: " (Last {{count}} Matches)",
+      reachedThisStage: "Reached this stage",
+      scoreDiff: "Score Difference{{range}}",
+      scores: "Scores{{range}}",
+      summary: "Summary",
+      win: "Win",
+      winLoss: "Wins vs Losses{{range}}"
     }
   }
 } as const;

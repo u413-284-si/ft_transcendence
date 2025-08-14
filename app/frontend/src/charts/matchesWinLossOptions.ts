@@ -11,22 +11,19 @@ export function buildMatchesWinLossOptions(
       type: "donut",
       fontFamily: "inherit",
       background: "transparent",
+      toolbar: {
+        show: false
+      },
       width: 450,
       height: 300
     },
-    series: [wins, losses],
-    labels: [i18next.t("global.won"), i18next.t("global.lost")],
     colors: [chartColors.cyan, chartColors.red],
+    labels: [i18next.t("global.won"), i18next.t("global.lost")],
     legend: {
       position: "bottom",
       labels: {
         colors: [chartColors.white, chartColors.white]
       }
-    },
-    stroke: {
-      show: true,
-      width: 1,
-      colors: [chartColors.white]
     },
     plotOptions: {
       pie: {
@@ -53,6 +50,12 @@ export function buildMatchesWinLossOptions(
           }
         }
       }
+    },
+    series: [wins, losses],
+    stroke: {
+      show: true,
+      width: 1,
+      colors: [chartColors.white]
     },
     tooltip: {
       theme: "dark",

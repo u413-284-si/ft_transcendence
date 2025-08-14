@@ -13,16 +13,6 @@ export async function renderChart(
   return chart;
 }
 
-export function makeChartOptions(
-  base: Omit<ApexOptions, "series">,
-  series: ApexAxisChartSeries
-): ApexOptions {
-  return {
-    ...base,
-    series
-  };
-}
-
 export function toAxisSeries(
   name: string,
   data: { x: string | Date; y: number }[]

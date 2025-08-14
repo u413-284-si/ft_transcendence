@@ -202,10 +202,14 @@ const pi: TranslationShape = {
     },
 
     statsView: {
+      dashboard: "Cap`n`s Log",
       date: "Chart Date",
+      details: "Secrets",
       friendOnly:
         "Ye must be true mates to lay eyes on these secret scrolls o' stats!",
+      friends: "Mates",
       joined: "Swore the Oath on {{date}}",
+      matches: "Battles",
       matchHistory: "Past Duels",
       played: "Engaged",
       player1: "Buccaneer 1",
@@ -215,34 +219,12 @@ const pi: TranslationShape = {
       result: "Outcome",
       title: "Ship Logs",
       tournament: "Skull & Crossbones Cup",
+      tournaments: "Skull & Crossbones Cups",
       winRate: "Victory Percentage",
       winstreakCur: "Plunder Trail",
       winstreakMax: "Mighty Streak",
-      matches: "Battles",
-      tournaments: "Tourneys",
-      friends: "Mates",
-      dashboard: "Cap`n`s Log",
-      details: "Secrets",
       usedNickname: "Name ye used",
       eliminatedInRound: "Keelhauled in round {{round}}, arr!"
-    },
-
-    chart: {
-      winLoss: "Plunder vs Defeats{{range}}",
-      progression: "Victory Percentage{{range}}",
-      scoreDiff: "Score Gap{{range}}",
-      scores: "Booty Count{{range}}",
-      summary: "Battle Recap",
-      progress: "Climb - {{num}} sea dogs",
-      rangeLastMatches: " - last {{count}} Battles",
-      rangeLastDays: " - last {{count}} Days",
-      numPlayers: "{{num}} sea dogs",
-      reachedThisStage: "Landed 'ere",
-      win: "Victory",
-      loss: "Defeats",
-      played: "Battles fought{{range}}",
-      activity: "Booty Huntin'",
-      current: "As o' Now"
     },
 
     toast: {
@@ -288,6 +270,24 @@ const pi: TranslationShape = {
         "Tourney name not approved by the Pirate Council.",
       cannotRemoveYourself: "Ye can't be tossin' yerself.",
       compareMaxThree: "Ye can weigh up no more than 3 mateys."
+    },
+
+    chart: {
+      activity: "Booty Huntin'",
+      current: "As o' Now",
+      loss: "Defeats",
+      numPlayers: "{{num}} sea dogs",
+      played: "Battles fought{{range}}",
+      progress: "Climb - {{num}} sea dogs",
+      progression: "Victory Percentage{{range}}",
+      rangeLastDays: " - last {{count}} Days",
+      rangeLastMatches: " - last {{count}} Battles",
+      reachedThisStage: "Landed 'ere",
+      scoreDiff: "Score Gap{{range}}",
+      scores: "Booty Count{{range}}",
+      summary: "Battle Recap",
+      win: "Victory",
+      winLoss: "Plunder vs Defeats{{range}}"
     }
   }
 };

@@ -1,7 +1,7 @@
 import { buildMatchesScoreDiffOptions } from "../../charts/matchesScoreDiffOptions.js";
 import { buildMatchesScoresLastTenDaysOptions } from "../../charts/matchesScoresLastTenDaysOptions.js";
 import { buildMatchesWinLossOptions } from "../../charts/matchesWinLossOptions.js";
-import { buildMatchesWinrateOptions } from "../../charts/matchesWinrateOptions.js";
+import { buildMatchesWinRateOptions } from "../../charts/matchesWinRateOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
@@ -132,7 +132,7 @@ export class MatchesTab extends AbstractTab {
         this.userStats.matchesLost,
         this.userStats.winRate
       ),
-      "winrate-chart": buildMatchesWinrateOptions(
+      "winrate-chart": buildMatchesWinRateOptions(
         i18next.t("statsView.winRate"),
         this.dashboard.winrate,
         this.userStats.matchesPlayed

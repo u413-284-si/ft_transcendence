@@ -209,10 +209,14 @@ const de: TranslationShape = {
     },
 
     statsView: {
+      dashboard: "Übersicht",
       date: "Datum",
+      details: "Details",
+      friends: "Freunde",
       friendOnly:
         "Du musst befreundet sein, um detaillierte Statistiken zu sehen.",
       joined: "Beigetreten am {{date}}",
+      matches: "Spiele",
       matchHistory: "Spielverlauf",
       played: "Gespielt",
       player1: "Spieler 1",
@@ -222,34 +226,12 @@ const de: TranslationShape = {
       result: "Ergebnis",
       title: "Statistiken",
       tournament: "Turnier",
+      tournaments: "Turniere",
       winRate: "Siegquote",
       winstreakCur: "Siegesserie",
       winstreakMax: "Max-Serie",
-      matches: "Spiele",
-      tournaments: "Tuniere",
-      friends: "Freunde",
-      dashboard: "Übersicht",
-      details: "Details",
       usedNickname: "Verwendeter Spitzname",
       eliminatedInRound: "Ausgeschieden in Runde {{round}}"
-    },
-
-    chart: {
-      winLoss: "Siege vs Niederlagen{{range}}",
-      progression: "Siegquote{{range}}",
-      scoreDiff: "Punktedifferenz{{range}}",
-      scores: "Punkte{{range}}",
-      summary: "Übersicht",
-      progress: "Fortschritt ({{num}} Spieler)",
-      rangeLastMatches: " (Letzten {{count}} Spiele)",
-      rangeLastDays: " (Letzten {{count}} Tage)",
-      numPlayers: "{{num}} Spieler",
-      reachedThisStage: "Diese Stufe erreicht",
-      win: "Sieg",
-      loss: "Niederlage",
-      played: "Gespielte Turniere{{range}}",
-      activity: "Aktivität",
-      current: "Aktuell"
     },
 
     toast: {
@@ -299,6 +281,24 @@ const de: TranslationShape = {
         "Fehler bei der Validierung des Turniernamens.",
       cannotRemoveYourself: "Du kannst dich selbst nicht entfernen.",
       compareMaxThree: "Du kannst höchstens 3 Freunde vergleichen."
+    },
+
+    chart: {
+      activity: "Aktivität",
+      current: "Aktuell",
+      loss: "Niederlage",
+      numPlayers: "{{num}} Spieler",
+      played: "Gespielte Turniere{{range}}",
+      progress: "Fortschritt ({{num}} Spieler)",
+      progression: "Siegquote{{range}}",
+      rangeLastDays: " (Letzten {{count}} Tage)",
+      rangeLastMatches: " (Letzten {{count}} Spiele)",
+      reachedThisStage: "Diese Stufe erreicht",
+      scoreDiff: "Punktedifferenz{{range}}",
+      scores: "Punkte{{range}}",
+      summary: "Übersicht",
+      win: "Sieg",
+      winLoss: "Siege vs Niederlagen{{range}}"
     }
   }
 };

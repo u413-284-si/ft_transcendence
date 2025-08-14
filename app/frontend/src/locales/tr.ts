@@ -203,9 +203,13 @@ const tr: TranslationShape = {
     },
 
     statsView: {
+      dashboard: "Core",
       date: "Cycle Date",
+      details: "Data",
       friendOnly: "Link established required to access complete logs.",
+      friends: "Connections",
       joined: "Node integrated: {{date}}",
+      matches: "Sessions",
       matchHistory: "Session Log",
       played: "Engaged",
       player1: "Agent 1",
@@ -215,34 +219,12 @@ const tr: TranslationShape = {
       result: "Session Outcome",
       title: "Performance Stats",
       tournament: "Tournament Grid",
+      tournaments: "Tournaments",
       winRate: "Victory Ratio",
       winstreakCur: "Sequence",
       winstreakMax: "Max Sequence",
-      matches: "Sessions",
-      tournaments: "Tournaments",
-      friends: "Connections",
-      dashboard: "Core",
-      details: "Data",
       usedNickname: "Alias",
       eliminatedInRound: "User derezzed in cycle {{round}}"
-    },
-
-    chart: {
-      winLoss: "W/L LOG{{range}}",
-      progression: "WINRATE_Δ{{range}}",
-      scoreDiff: "Δ_SCORE{{range}}",
-      scores: "SCORE_LOG{{range}}",
-      summary: "SYS_SUM",
-      progress: "PROG_P({{num}})",
-      rangeLastMatches: " [{{count}}x]",
-      rangeLastDays: " [D{{count}}]",
-      numPlayers: "P({{num}})",
-      reachedThisStage: "Access Achieved",
-      win: "W",
-      loss: "L",
-      played: "TOURNAMENT_ACTIVITY{{range}}",
-      activity: "LOG",
-      current: "ACTIVE"
     },
 
     toast: {
@@ -287,6 +269,24 @@ const tr: TranslationShape = {
       validateTournamentNameError: "Error verifying tournament ID.",
       cannotRemoveYourself: "Self-removal not permitted.",
       compareMaxThree: "Data limit: 3 nodes."
+    },
+
+    chart: {
+      activity: "Log",
+      current: "Active",
+      loss: "Loss",
+      numPlayers: "({{num}}) Operatives",
+      played: "Tournament Log{{range}}",
+      progress: "Progress {{num}}%",
+      progression: "Winrate Change{{range}}",
+      rangeLastDays: " (Last {{count}} Days)",
+      rangeLastMatches: " (Last {{count}} Matches)",
+      reachedThisStage: "Stage Reached",
+      scoreDiff: "Score Change{{range}}",
+      scores: "Score Log{{range}}",
+      summary: "System Summary",
+      win: "Win",
+      winLoss: "Win/Loss Log{{range}}"
     }
   }
 };

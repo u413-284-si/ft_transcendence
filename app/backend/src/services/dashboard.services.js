@@ -1,7 +1,7 @@
-import { getUserFriends } from "./friends.services.js";
 import { getUserMatches } from "./matches.services.js";
-import { getUserTournaments } from "./tournaments.services.js";
 import { getUserStats } from "./user_stats.services.js";
+import { getUserFriends } from "./friends.services.js";
+import { getUserTournaments } from "./tournaments.services.js";
 import { getTokenData } from "./users.services.js";
 
 const supportedSizes = [4, 8, 16];
@@ -73,9 +73,9 @@ function calcScoreDiff(match) {
 }
 
 export function computeScoresLastNDays(matchesLastNDays, N) {
-  const { totals, sortedDates } = initializeDailyTotals(N);
+  const { totals } = initializeDailyTotals(N);
   aggregatePlayerScores(matchesLastNDays, totals);
-  return sortedDates.map((date) => ({ x: date, y: totals[date] }));
+  return Object.entries(totals).map(([x, y]) => ({ x, y }));
 }
 
 function initializeDailyTotals(days, valueFactory = () => 0) {
@@ -103,9 +103,8 @@ function aggregatePlayerScores(matches, totals) {
 }
 
 function getPlayerScore(match) {
-  if (match.playedAs === "NONE") {
-    return 0;
-  } else if (match.playedAs === "PLAYERONE") {
+  if (match.playedAs === "NONE") return 0;
+  if (match.playedAs === "PLAYERONE") {
     return match.player1Score;
   } else if (match.playedAs === "PLAYERTWO") {
     return match.player2Score;
@@ -114,6 +113,47 @@ function getPlayerScore(match) {
 
 function formatDate(date) {
   return date.toISOString().split("T")[0];
+}
+
+export async function getDashboardMatchesData(userId) {
+  const userStats = await getUserStats(userId);
+
+  const N = 10;
+
+  const select = {
+    playedAs: true,
+    player1Score: true,
+    player2Score: true,
+    date: true
+  };
+
+  const lastNMatchesFilter = {
+    playedAs: ["PLAYERONE", "PLAYERTWO"],
+    limit: N,
+    sort: "desc"
+  };
+  const lastNMatches = await getUserMatches(userId, select, lastNMatchesFilter);
+
+  const NDaysAgo = new Date();
+  NDaysAgo.setDate(NDaysAgo.getDate() - N);
+
+  const matchesLastNDaysFilter = {
+    playedAs: ["PLAYERONE", "PLAYERTWO"],
+    date: { gte: NDaysAgo },
+    sort: "desc"
+  };
+
+  const matchesLastNDays = await getUserMatches(
+    userId,
+    select,
+    matchesLastNDaysFilter
+  );
+
+  const winrate = computeWinrateLastNMatches(userStats, lastNMatches);
+  const scoreDiff = computeScoreDiffLastNMatches(lastNMatches);
+  const scores = computeScoresLastNDays(matchesLastNDays, N);
+
+  return { winrate, scoreDiff, scores };
 }
 
 export function computeTournamentSummary(tournaments) {
@@ -237,48 +277,6 @@ export function computeTournamentsLastNDays(tournaments, days) {
   }
 
   return result;
-}
-
-export async function getDashboardMatchesData(
-  userId,
-  matchesNumber = 10,
-  daysBack = 10
-) {
-  const userStats = await getUserStats(userId);
-
-  const select = {
-    playedAs: true,
-    player1Score: true,
-    player2Score: true,
-    date: true
-  };
-  const lastNMatchesFilter = {
-    playedAs: ["PLAYERONE", "PLAYERTWO"],
-    limit: matchesNumber,
-    sort: "desc"
-  };
-  const lastNMatches = await getUserMatches(userId, select, lastNMatchesFilter);
-
-  const NDaysAgo = new Date();
-  NDaysAgo.setDate(NDaysAgo.getDate() - daysBack);
-
-  const matchesLastNDaysFilter = {
-    playedAs: ["PLAYERONE", "PLAYERTWO"],
-    date: { gte: NDaysAgo },
-    sort: "desc"
-  };
-
-  const matchesLastNDays = await getUserMatches(
-    userId,
-    select,
-    matchesLastNDaysFilter
-  );
-
-  const winrate = computeWinrateLastNMatches(userStats, lastNMatches);
-  const scoreDiff = computeScoreDiffLastNMatches(lastNMatches);
-  const scores = computeScoresLastNDays(matchesLastNDays, daysBack);
-
-  return { winrate, scoreDiff, scores };
 }
 
 export async function getDashboardTournamentsData(userId) {

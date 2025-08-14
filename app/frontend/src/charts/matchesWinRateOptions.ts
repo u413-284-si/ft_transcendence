@@ -3,7 +3,7 @@ import { chartColors, toAxisSeries } from "./chartUtils.js";
 import { formatDateTime } from "../formatDate.js";
 import { DataSeries } from "../types/DataSeries.js";
 
-export function buildMatchesScoreDiffOptions(
+export function buildMatchesWinRateOptions(
   name: string,
   data: DataSeries,
   totalMatches: number
@@ -20,56 +20,39 @@ export function buildMatchesScoreDiffOptions(
 
   const options: ApexOptions = {
     chart: {
-      type: "bar",
+      type: "line",
       fontFamily: "inherit",
       background: "transparent",
       toolbar: {
         show: false
       },
-      height: 300
-    },
-    legend: {
-      show: false
-    },
-    plotOptions: {
-      bar: {
-        distributed: true,
-        colors: {
-          ranges: [
-            {
-              from: -100,
-              to: -1,
-              color: chartColors.red
-            },
-            {
-              from: 0,
-              to: 100,
-              color: chartColors.cyan
-            }
-          ]
-        }
+      width: 750,
+      height: 300,
+      zoom: {
+        enabled: false
       }
     },
+    colors: [chartColors.cyan],
+    markers: { size: 5 },
     series: series,
+    stroke: { curve: "smooth", width: 3 },
     tooltip: {
       theme: "dark",
       x: {
         formatter: (_val, opts) => datetimeLabels[opts.dataPointIndex]
       },
-      y: {
-        formatter: (val: number) => `${val > 0 ? "+" : ""}${val}`
-      }
+      y: { formatter: (val: number) => `${val.toFixed(2)}%` }
     },
     xaxis: {
       type: "category",
       labels: { style: { colors: chartColors.white } }
     },
     yaxis: {
-      title: {
-        text: name,
-        style: { color: chartColors.white }
-      },
-      labels: { style: { colors: chartColors.white } }
+      title: { text: name, style: { color: chartColors.white } },
+      labels: {
+        style: { colors: chartColors.white },
+        formatter: (val: number) => `${val}%`
+      }
     }
   };
   return options;

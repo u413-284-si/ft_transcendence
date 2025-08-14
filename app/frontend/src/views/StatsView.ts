@@ -91,7 +91,6 @@ export default class StatsView extends AbstractView {
           ])}
         </div>
       </div>
-
       ${this.getTabsHTML()} `;
   }
 
