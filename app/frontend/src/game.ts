@@ -5,7 +5,6 @@ import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { GameType } from "./views/GameView.js";
 import { playedAs } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 
@@ -23,7 +22,6 @@ export async function startGame(
   nickname1: string,
   nickname2: string,
   userRole: playedAs,
-  gameType: GameType,
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
 ) {

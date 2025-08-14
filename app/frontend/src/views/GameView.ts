@@ -86,7 +86,6 @@ export class GameView extends AbstractView {
         this.nickname1,
         this.nickname2,
         this.userRole,
-        this.gameType,
         this.tournament,
         this.keys
       );
