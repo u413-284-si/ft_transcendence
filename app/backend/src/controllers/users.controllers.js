@@ -187,8 +187,10 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
       offset: request.query.offset,
       sort: request.query.sort
     };
-    const matches = await getUserMatches(userId, undefined, filter);
-    const total = await getUserMatchesCount(userId, filter);
+    const [matches, total] = await Promise.all([
+      getUserMatches(userId, undefined, filter),
+      getUserMatchesCount(userId, filter)
+    ]);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: { items: matches, total }
