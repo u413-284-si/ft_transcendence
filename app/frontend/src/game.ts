@@ -34,10 +34,10 @@ export async function startGame(
   let playerAI1: PlayerAI | null = null;
   let playerAI2: PlayerAI | null = null;
   if (aiRole === "PLAYERONE" || aiRole === "BOTH") {
-    playerAI1 = new PlayerAI("left", { reactionInterval: 800 });
+    playerAI1 = new PlayerAI("left");
   }
   if (aiRole === "PLAYERTWO" || aiRole === "BOTH") {
-    playerAI2 = new PlayerAI("right", { reactionInterval: 800 });
+    playerAI2 = new PlayerAI("right");
   }
   const gameState = initGameState(
     canvas,
