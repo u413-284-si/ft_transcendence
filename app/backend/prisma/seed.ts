@@ -17,7 +17,7 @@ async function main() {
 
   await seedFriendRequests(users, 30);
 
-  await seedTournamentsPerUser(users, 1, 10);
+  await seedTournamentsPerUser(users, 1, 10, 0.5, 0.9);
 
   console.log("Seeding complete!");
 }
