@@ -269,22 +269,22 @@ const tr: TranslationShape = {
     },
 
     chart: {
-      activity: "LOG",
-      current: "ACTIVE",
-      loss: "L",
-      numPlayers: "P({{num}})",
-      played: "TOURNAMENT_ACTIVITY{{range}}",
-      progress: "PROG_P({{num}})",
-      progression: "WINRATE_Δ{{range}}",
-      rangeLastDays: " [D{{count}}]",
-      rangeLastMatches: " [{{count}}x]",
-      reachedThisStage: "Access Achieved",
-      scoreDiff: "Δ_SCORE{{range}}",
-      scores: "SCORE_LOG{{range}}",
-      selectUpTo: "LINK ≤ 3 UNITS",
-      summary: "SYS_SUM",
-      win: "W",
-      winLoss: "W/L LOG{{range}}"
+      activity: "Log",
+      current: "Active",
+      loss: "Loss",
+      numPlayers: "({{num}}) Operatives",
+      played: "Tournament Log{{range}}",
+      progress: "Progress {{num}}%",
+      progression: "Winrate Change{{range}}",
+      rangeLastDays: " (Last {{count}} Days)",
+      rangeLastMatches: " (Last {{count}} Matches)",
+      reachedThisStage: "Stage Reached",
+      scoreDiff: "Score Change{{range}}",
+      scores: "Score Log{{range}}",
+      selectUpTo: "Select ≤ 3 nodes",
+      summary: "System Summary",
+      win: "Win",
+      winLoss: "Win/Loss Log{{range}}"
     }
   }
 };
