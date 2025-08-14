@@ -1,3 +1,4 @@
+import { Checkbox } from "./Checkbox.js";
 import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
 
@@ -25,15 +26,12 @@ export function NicknameInput(players: number): string {
           label: i18next.t("nicknameInput.playerChoice", { i: i }),
           checked: isChecked
         })}
-        <label class="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            id="ai-${i}"
-            name="ai-player-${i}"
-            ${isChecked ? "disabled" : ""}
-          />
-          <span>${"AI Player"}</span>
-        </label>
+        ${Checkbox({
+          id: `ai-${i}`,
+          name: `ai-player-${i}`,
+          label: "AI Player",
+          disabled: isChecked
+        })}
       </div>
     `;
   }
