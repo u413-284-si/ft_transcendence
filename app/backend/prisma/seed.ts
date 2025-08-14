@@ -13,7 +13,7 @@ async function main() {
 
   const users = await seedUsers(10);
 
-  await seedMatchesPerUser(users, 1, 10);
+  await seedMatchesPerUser(users, 1, 10, 0.5, 0.9);
 
   await seedFriendRequests(users, 30);
 
