@@ -61,8 +61,8 @@ function initGameState(
   player1: string,
   player2: string,
   keys: Record<GameKey, boolean>,
-  player1AI: PlayerAI | null,
-  player2AI: PlayerAI | null
+  playerAI1: PlayerAI | null,
+  playerAI2: PlayerAI | null
 ): GameState {
   return {
     player1: player1,
@@ -85,8 +85,8 @@ function initGameState(
     paddleSpeed: 6,
     gameOver: false,
     keys: keys,
-    player1AI: player1AI,
-    player2AI: player2AI
+    playerAI1: playerAI1,
+    playerAI2: playerAI2
   };
 }
 
@@ -108,6 +108,30 @@ function update(gameState: GameState) {
   if (gameState.gameOver) return;
 
   updatePaddlePositions(gameState);
+
+  if (gameState.playerAI1) {
+    gameState.playerAI1.updatePerception(gameState);
+
+    const move = gameState.playerAI1.decideMove(
+      gameState.paddle1Y,
+      gameState.paddleHeight
+    );
+
+    gameState.keys["w"] = move === "up";
+    gameState.keys["s"] = move === "down";
+  }
+
+  if (gameState.playerAI2) {
+    gameState.playerAI2.updatePerception(gameState);
+
+    const move = gameState.playerAI2.decideMove(
+      gameState.paddle2Y,
+      gameState.paddleHeight
+    );
+
+    gameState.keys["ArrowUp"] = move === "up";
+    gameState.keys["ArrowDown"] = move === "down";
+  }
 
   // Move the ball
   gameState.ballX += gameState.ballSpeedX;

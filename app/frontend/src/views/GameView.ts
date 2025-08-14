@@ -87,7 +87,8 @@ export class GameView extends AbstractView {
         this.nickname2,
         this.userRole,
         this.tournament,
-        this.keys
+        this.keys,
+        "NONE"
       );
       if (getIsAborted()) return;
 
