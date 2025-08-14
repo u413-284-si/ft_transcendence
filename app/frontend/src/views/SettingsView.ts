@@ -83,18 +83,17 @@ export default class SettingsView extends AbstractView {
               !this.hasTwoFA()
                 ? TextBox({
                     id: "two-fa-qr-code-info",
-                    text: [
-                      i18next.t("settingsView.twoFAInfo.0"),
-                      i18next.t("settingsView.twoFAInfo.1"),
-                      i18next.t("settingsView.twoFAInfo.2"),
-                      i18next.t("settingsView.twoFAInfo.3")
-                    ],
+                    text: i18next.t("settingsView.twoFAInfo", {
+                      returnObjects: true
+                    }),
                     variant: "info",
                     size: "sm"
                   })
                 : TextBox({
                     id: "two-fa-qr-code-info",
-                    text: [i18next.t("settingsView.twoFAActivated.0")],
+                    text: i18next.t("settingsView.twoFAActivated", {
+                      returnObjects: true
+                    }),
                     variant: "info",
                     size: "sm"
                   }),
