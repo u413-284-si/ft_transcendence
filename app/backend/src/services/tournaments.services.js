@@ -77,12 +77,26 @@ export async function deleteTournament(id, userId) {
   return tournament;
 }
 
-export async function getUserTournaments(userId) {
+export async function getUserTournaments(
+  userId,
+  select = tournamentSelect,
+  filter = {}
+) {
   const tournaments = await prisma.tournament.findMany({
     where: {
-      userId
+      userId: userId,
+      ...(filter.isFinished !== undefined
+        ? { isFinished: filter.isFinished }
+        : {}),
+      ...(filter.updatedAt ? { updatedAt: filter.updatedAt } : {}),
+      ...(filter.name ? { name: filter.name } : {})
     },
-    select: tournamentSelect
+    select: select,
+    take: filter.limit,
+    skip: filter.offset,
+    orderBy: {
+      updatedAt: filter.sort
+    }
   });
   return tournaments;
 }

@@ -20,6 +20,14 @@
   --color-neon-green: oklch(0.74 0.18 145.78);
   --color-neon-purple: oklch(0.5616 0.2578 328.59);
 
+  /* Hex representation for ApexCharts */
+  --color-white-hex: #ffffff;
+  --color-neon-cyan-hex: #3dfdfb;
+  --color-neon-red-hex: #ef1717;
+  --color-neon-green-hex: #50c85f;
+  --color-neon-yellow-hex: #e7c62d;
+  --color-neon-purple-hex: #be00bd;
+
   --shadow-neon-cyan: 0 0 30px
     color-mix(in oklch, oklch(0.9054 0.1446 193.77) 70%, transparent);
   --shadow-neon-orange: 0 0 30px

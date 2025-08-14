@@ -129,3 +129,21 @@ export async function getFriendRequest(id, userId) {
   const formatted = formatFriendRequest(request, userId);
   return formatted;
 }
+
+export async function getFriendId(userId, friendUsername) {
+  const request = await prisma.friendRequest.findFirst({
+    where: {
+      OR: [
+        { senderId: userId, receiver: { username: friendUsername } },
+        { sender: { username: friendUsername }, receiverId: userId }
+      ],
+      status: "ACCEPTED"
+    },
+    include: friendRequestInclude
+  });
+  if (!request) {
+    return null;
+  }
+  const formatted = formatFriendRequest(request, userId);
+  return formatted.friendId;
+}

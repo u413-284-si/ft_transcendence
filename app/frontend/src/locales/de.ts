@@ -208,10 +208,14 @@ const de: TranslationShape = {
     },
 
     statsView: {
+      dashboard: "Übersicht",
       date: "Datum",
+      details: "Details",
+      friends: "Freunde",
       friendOnly:
         "Du musst befreundet sein, um detaillierte Statistiken zu sehen.",
       joined: "Beigetreten am {{date}}",
+      matches: "Spiele",
       matchHistory: "Spielverlauf",
       played: "Gespielt",
       player1: "Spieler 1",
@@ -221,6 +225,7 @@ const de: TranslationShape = {
       result: "Ergebnis",
       title: "Statistiken",
       tournament: "Turnier",
+      tournaments: "Turniere",
       winRate: "Siegquote",
       winstreakCur: "Siegesserie",
       winstreakMax: "Max-Serie"
@@ -231,6 +236,7 @@ const de: TranslationShape = {
       avatarUploadFailed:
         "Avatar konnte nicht hochgeladen werden. Bitte versuche es erneut.",
       avatarUploadedSuccess: "Avatar erfolgreich hochgeladen!",
+      chartError: "Ein Diagramm konnte nicht initialisiert werden",
       connectionLost:
         "Verbindung verloren - erneuter Versuch in {{delay}} Sekunden... (Versuch {{attempt}} von {{maxAttempts}})",
       connectionReestablished: "Verbindung wiederhergestellt",
@@ -270,6 +276,24 @@ const de: TranslationShape = {
         "Fehler bei der Benutzerverifizierung:<br>Weiterleitung zur Anmeldung.",
       validateTournamentNameError:
         "Fehler bei der Validierung des Turniernamens."
+    },
+
+    chart: {
+      activity: "Aktivität",
+      current: "Aktuell",
+      loss: "Niederlage",
+      numPlayers: "{{num}} Spieler",
+      played: "Gespielte Turniere{{range}}",
+      progress: "Fortschritt ({{num}} Spieler)",
+      progression: "Siegquote{{range}}",
+      rangeLastDays: " (Letzten {{count}} Tage)",
+      rangeLastMatches: " (Letzten {{count}} Spiele)",
+      reachedThisStage: "Diese Stufe erreicht",
+      scoreDiff: "Punktedifferenz{{range}}",
+      scores: "Punkte{{range}}",
+      summary: "Übersicht",
+      win: "Sieg",
+      winLoss: "Siege vs Niederlagen{{range}}"
     }
   }
 };
