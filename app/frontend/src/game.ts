@@ -33,7 +33,7 @@ export async function startGame(
   setIsAborted(false);
   const gameState = initGameState(canvas, nickname1, nickname2, keys);
   await new Promise<void>((resolve) => {
-    gameLoop(canvas, ctx, gameState, resolve);
+    gameLoop(ctx, gameState, resolve);
   });
   if (getIsAborted()) {
     return;
@@ -53,6 +53,8 @@ function initGameState(
     player1Score: 0,
     player2Score: 0,
     winningScore: 1, // FIXME: needs to be a higher value
+    canvasHeight: canvas.height,
+    canvasWidth: canvas.width,
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
     ballSpeedX: 7,
@@ -70,7 +72,6 @@ function initGameState(
 }
 
 function gameLoop(
-  canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   gameState: GameState,
   resolve: () => void
@@ -79,30 +80,30 @@ function gameLoop(
     resolve();
     return;
   }
-  update(canvas, gameState);
-  draw(canvas, ctx, gameState);
-  requestAnimationFrame(() => gameLoop(canvas, ctx, gameState, resolve));
+  update(gameState);
+  draw(ctx, gameState);
+  requestAnimationFrame(() => gameLoop(ctx, gameState, resolve));
 }
 
-function update(canvas: HTMLCanvasElement, gameState: GameState) {
+function update(gameState: GameState) {
   if (gameState.gameOver) return;
 
-  updatePaddlePositions(canvas, gameState);
+  updatePaddlePositions(gameState);
 
   // Move the ball
   gameState.ballX += gameState.ballSpeedX;
   gameState.ballY += gameState.ballSpeedY;
 
   // Ball collision with top & bottom
-  if (gameState.ballY <= 0 || gameState.ballY >= canvas.height)
+  if (gameState.ballY <= 0 || gameState.ballY >= gameState.canvasHeight)
     gameState.ballSpeedY *= -1;
 
   // Ball collision with paddles
   if (
-    (gameState.ballX <= 20 &&
+    (gameState.ballX <= gameState.paddle1X &&
       gameState.ballY >= gameState.paddle1Y &&
       gameState.ballY <= gameState.paddle1Y + gameState.paddleHeight) ||
-    (gameState.ballX >= canvas.width - 20 &&
+    (gameState.ballX >= gameState.paddle2X &&
       gameState.ballY >= gameState.paddle2Y &&
       gameState.ballY <= gameState.paddle2Y + gameState.paddleHeight)
   ) {
@@ -113,19 +114,19 @@ function update(canvas: HTMLCanvasElement, gameState: GameState) {
   if (gameState.ballX <= 0) {
     gameState.player2Score++;
     checkWinner(gameState);
-    resetBall(canvas, gameState);
+    resetBall(gameState);
   }
 
-  if (gameState.ballX >= canvas.width) {
+  if (gameState.ballX >= gameState.canvasWidth) {
     gameState.player1Score++;
     checkWinner(gameState);
-    resetBall(canvas, gameState);
+    resetBall(gameState);
   }
 }
 
-function resetBall(canvas: HTMLCanvasElement, gameState: GameState) {
-  gameState.ballX = canvas.width / 2;
-  gameState.ballY = canvas.height / 2;
+function resetBall(gameState: GameState) {
+  gameState.ballX = gameState.canvasWidth / 2;
+  gameState.ballY = gameState.canvasHeight / 2;
   gameState.ballSpeedX *= -1; // Change direction after scoring
 }
 

@@ -6,6 +6,8 @@ export interface GameState {
   player1Score: number;
   player2Score: number;
   winningScore: number;
+  canvasHeight: number;
+  canvasWidth: number;
   ballX: number;
   ballY: number;
   ballSpeedX: number;
