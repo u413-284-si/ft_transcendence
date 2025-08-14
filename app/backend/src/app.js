@@ -95,7 +95,7 @@ await fastify.register(jwt, {
 });
 await fastify.register(jwt, {
   namespace: "twoFALoginToken",
-  secret: env.jwTwoFALoginTokenSecret,
+  secret: env.jwtTwoFALoginTokenSecret,
   jwtVerify: "twoFALoginTokenVerify",
   jwtSign: "twoFALoginTokenSign",
   sign: { expiresIn: env.twoFALoginTokenTimeToExpireInMS },
