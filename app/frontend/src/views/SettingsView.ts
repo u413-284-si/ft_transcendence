@@ -15,7 +15,6 @@ export default class SettingsView extends AbstractView {
   private preferredLanguageFormEl!: HTMLFormElement;
   private preferredLanguageButtonEl!: HTMLElement;
   private preferredLanguageOptionsEl!: HTMLElement;
-  private selectedLanguage: Language = i18next.language as Language;
 
   constructor() {
     super();
@@ -111,8 +110,10 @@ export default class SettingsView extends AbstractView {
   private async updatePreferredLanguage(event: Event): Promise<void> {
     event.preventDefault();
 
+    const selectedLanguage = i18next.language as Language;
+
     const updatedUser: Partial<User> = {
-      ...(this.selectedLanguage ? { language: this.selectedLanguage } : {})
+      ...(selectedLanguage ? { language: selectedLanguage } : {})
     };
 
     try {
