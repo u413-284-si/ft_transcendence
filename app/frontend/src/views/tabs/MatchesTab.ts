@@ -28,7 +28,7 @@ export class MatchesTab extends PaginatedTab<Match> {
 
   getHTML(): string {
     return /* HTML */ ` <div id="tab-matches" class="tab-content">
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4 space-y-8">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
           id: "match-dashboard-header",
@@ -36,7 +36,7 @@ export class MatchesTab extends PaginatedTab<Match> {
         })}
         ${this.getDashboardHTML()}
       </div>
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4 space-y-8">
         ${Header1({
           text: i18next.t("statsView.details"),
           id: "match-details-header",
