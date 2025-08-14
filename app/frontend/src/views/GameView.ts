@@ -63,16 +63,35 @@ export class GameView extends AbstractView {
     });
   }
 
+  private isKeyAllowedForPlayer(key: GameKey): boolean {
+    const keysPlayerOne: GameKey[] = ["w", "s"];
+    const keysPlayerTwo: GameKey[] = ["ArrowUp", "ArrowDown"];
+
+    if (
+      (this.aiRole === "PLAYERONE" || this.aiRole === "BOTH") &&
+      keysPlayerOne.includes(key)
+    ) {
+      return false;
+    }
+    if (
+      (this.aiRole === "PLAYERTWO" || this.aiRole === "BOTH") &&
+      keysPlayerTwo.includes(key)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
   private onKeyDown = (event: KeyboardEvent): void => {
     const key = event.key as GameKey;
-    if (key in this.keys) {
+    if (key in this.keys && this.isKeyAllowedForPlayer(key)) {
       this.keys[key] = true;
     }
   };
 
   private onKeyUp = (event: KeyboardEvent): void => {
     const key = event.key as GameKey;
-    if (key in this.keys) {
+    if (key in this.keys && this.isKeyAllowedForPlayer(key)) {
       this.keys[key] = false;
     }
   };
