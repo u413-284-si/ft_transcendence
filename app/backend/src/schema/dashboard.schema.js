@@ -20,7 +20,7 @@ const dashboardMatchesScoreDiffSchema = {
       $ref: "commonDefinitionsSchema#/definitions/datetime",
       description: "Date-time of the played match"
     },
-    y: { type: "number", description: "Score difference of match" }
+    y: { type: "integer", description: "Score difference of match" }
   },
   required: ["x", "y"],
   additionalProperties: false
@@ -35,7 +35,7 @@ const dashboardMatchesScoresSchema = {
       description: "Date for the score count"
     },
     y: {
-      type: "number",
+      type: "integer",
       description: "Total score of all played matches (on that date)"
     }
   },

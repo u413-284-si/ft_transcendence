@@ -5,28 +5,30 @@ import { buildMatchesWinRateOptions } from "../../charts/matchesWinRateOptions.j
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
 import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
+import { PaginationControls } from "../../components/PaginationControls.js";
 import { Table } from "../../components/Table.js";
 import { getDataOrThrow } from "../../services/api.js";
+import { getUserPlayedMatchesByUsername } from "../../services/userServices.js";
 import { getUserDashboardMatchesByUsername } from "../../services/userStatsServices.js";
 import { DashboardMatches } from "../../types/DataSeries.js";
 import { Match } from "../../types/IMatch.js";
 import { UserStats } from "../../types/IUserStats.js";
-import { AbstractTab } from "./AbstractTab.js";
+import { PaginatedTab } from "./PaginatedTab.js";
 
-export class MatchesTab extends AbstractTab {
+export class MatchesTab extends PaginatedTab<Match> {
   private dashboard: DashboardMatches | null = null;
   private userStats: UserStats;
   private username: string;
 
   constructor(userStats: UserStats, username: string) {
-    super();
+    super(10, "matches-prev-btn", "matches-next-btn", "matches-page-indicator");
     this.userStats = userStats;
     this.username = username;
   }
 
   getHTML(): string {
     return /* HTML */ ` <div id="tab-matches" class="tab-content">
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
           id: "match-dashboard-header",
@@ -34,11 +36,19 @@ export class MatchesTab extends AbstractTab {
         })}
         ${this.getDashboardHTML()}
       </div>
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
         ${Header1({
           text: i18next.t("statsView.details"),
           id: "match-details-header",
           variant: "default"
+        })}
+        <div id="match-history-table" class="p-6"></div>
+        ${PaginationControls({
+          prevId: "matches-prev-btn",
+          nextId: "matches-next-btn",
+          indicatorId: "matches-page-indicator",
+          prevLabel: "<",
+          nextLabel: ">"
         })}
       </div>
     </div>`;
@@ -72,15 +82,16 @@ export class MatchesTab extends AbstractTab {
     </div>`;
   }
 
-  updateMatchesTable(matches: Match[]): void {
+  protected updateTable(matches: Match[]): void {
     const table = document.getElementById("match-history-table");
+    if (!table) return;
 
     const matchesRows =
       matches.length === 0
         ? [NoMatchesRow()]
         : matches.map((matchRaw: Match) => MatchRow(matchRaw, this.username));
 
-    table!.innerHTML = /* HTML */ `${Table({
+    table.innerHTML = Table({
       id: "match-history-table",
       headers: [
         i18next.t("statsView.player1"),
@@ -92,7 +103,13 @@ export class MatchesTab extends AbstractTab {
         i18next.t("statsView.tournament")
       ],
       rows: matchesRows
-    })}`;
+    });
+  }
+
+  protected async fetchPage(limit: number, offset: number) {
+    return getDataOrThrow(
+      await getUserPlayedMatchesByUsername(this.username, limit, offset)
+    );
   }
 
   async init(): Promise<void> {
