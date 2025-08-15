@@ -112,10 +112,11 @@ export default class MatchAnnouncementView extends AbstractView {
     const gameView = new GameView(
       this.player1,
       this.player2,
+      "HUMAN",
+      "HUMAN",
       this.userRole,
       GameType.tournament,
-      this.tournament,
-      "NONE"
+      this.tournament
     );
     router.switchView(gameView);
   }

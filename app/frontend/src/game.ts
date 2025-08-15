@@ -5,7 +5,7 @@ import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { playedAs } from "./types/IMatch.js";
+import { playedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { PlayerAI } from "./PlayerAI.js";
 
@@ -22,10 +22,11 @@ export function setIsAborted(value: boolean) {
 export async function startGame(
   nickname1: string,
   nickname2: string,
+  type1: PlayerType,
+  type2: PlayerType,
   userRole: playedAs,
   tournament: Tournament | null,
-  keys: Record<GameKey, boolean>,
-  aiRole: "NONE" | "PLAYERONE" | "PLAYERTWO" | "BOTH"
+  keys: Record<GameKey, boolean>
 ) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
@@ -33,10 +34,10 @@ export async function startGame(
   setIsAborted(false);
   let playerAI1: PlayerAI | null = null;
   let playerAI2: PlayerAI | null = null;
-  if (aiRole === "PLAYERONE" || aiRole === "BOTH") {
+  if (type1 === "AI") {
     playerAI1 = new PlayerAI("left");
   }
-  if (aiRole === "PLAYERTWO" || aiRole === "BOTH") {
+  if (type2 === "AI") {
     playerAI2 = new PlayerAI("right");
   }
   const gameState = initGameState(

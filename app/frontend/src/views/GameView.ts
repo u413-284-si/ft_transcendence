@@ -5,7 +5,7 @@ import MatchAnnouncement from "./MatchAnnouncementView.js";
 import ResultsView from "./ResultsView.js";
 import NewGameView from "./NewGameView.js";
 import { Tournament } from "../Tournament.js";
-import { playedAs } from "../types/IMatch.js";
+import { playedAs, PlayerType } from "../types/IMatch.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -13,8 +13,6 @@ export enum GameType {
   single,
   tournament
 }
-
-export type AIRole = "NONE" | "PLAYERONE" | "PLAYERTWO" | "BOTH";
 
 export class GameView extends AbstractView {
   private keys: Record<GameKey, boolean> = {
@@ -28,10 +26,11 @@ export class GameView extends AbstractView {
   constructor(
     private nickname1: string,
     private nickname2: string,
+    private type1: PlayerType,
+    private type2: PlayerType,
     private userRole: playedAs,
     private gameType: GameType,
-    private tournament: Tournament | null,
-    private aiRole: AIRole
+    private tournament: Tournament | null
   ) {
     super();
     this.setTitle(i18next.t("gameView.title"));
@@ -67,16 +66,10 @@ export class GameView extends AbstractView {
     const keysPlayerOne: GameKey[] = ["w", "s"];
     const keysPlayerTwo: GameKey[] = ["ArrowUp", "ArrowDown"];
 
-    if (
-      (this.aiRole === "PLAYERONE" || this.aiRole === "BOTH") &&
-      keysPlayerOne.includes(key)
-    ) {
+    if (this.type1 !== "HUMAN" && keysPlayerOne.includes(key)) {
       return false;
     }
-    if (
-      (this.aiRole === "PLAYERTWO" || this.aiRole === "BOTH") &&
-      keysPlayerTwo.includes(key)
-    ) {
+    if (this.type2 !== "HUMAN" && keysPlayerTwo.includes(key)) {
       return false;
     }
     return true;
@@ -107,10 +100,11 @@ export class GameView extends AbstractView {
       await startGame(
         this.nickname1,
         this.nickname2,
+        this.type1,
+        this.type2,
         this.userRole,
         this.tournament,
-        this.keys,
-        this.aiRole
+        this.keys
       );
       if (getIsAborted()) return;
 
