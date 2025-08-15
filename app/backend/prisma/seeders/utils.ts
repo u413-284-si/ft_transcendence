@@ -1,9 +1,16 @@
 import { randBoolean, randNumber } from "@ngneat/falso";
 
-export function generateNonTiedScores(min = 0, max = 10) {
+export function generateNonTiedScores(
+  min = 0,
+  max = 10,
+  opts?: { winner?: "PLAYERONE" | "PLAYERTWO" }
+) {
   const baseScore = randNumber({ min, max: max - 1 });
-  const player1Wins = randBoolean();
   const winningScore = randNumber({ min: baseScore + 1, max });
+  const player1Wins = opts?.winner
+    ? opts.winner === "PLAYERONE"
+    : randBoolean();
+
   if (player1Wins) {
     return {
       player1Score: winningScore,

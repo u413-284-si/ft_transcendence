@@ -101,3 +101,13 @@ const optionsGetDashboardTournamentsByUsername = {
     }
   }
 };
+
+const optionsGetDashboardFriends = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    response: {
+      200: { $ref: "dashboardFriendsResponseSchema" },
+      ...errorResponses
+    }
+  }
+};

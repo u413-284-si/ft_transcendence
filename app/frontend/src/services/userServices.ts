@@ -1,7 +1,8 @@
 import { apiFetch } from "./api.js";
-import { MatchesPageResponse } from "../types/IMatch.js";
 import { User } from "../types/User.js";
 import { ApiResponse } from "../types/IApiResponse.js";
+import { FetchPageResult } from "../types/FetchPageResult.js";
+import { Match } from "../types/IMatch.js";
 
 export async function getUserProfile(): Promise<ApiResponse<User>> {
   const url = "/api/users/me";
@@ -85,7 +86,7 @@ export async function getUserPlayedMatchesByUsername(
   limit = 10,
   offset = 0,
   sort: "asc" | "desc" = "desc"
-): Promise<ApiResponse<MatchesPageResponse>> {
+): Promise<ApiResponse<FetchPageResult<Match>>> {
   const encoded = encodeURIComponent(username);
   const params = new URLSearchParams();
   params.set("limit", limit.toString());
@@ -96,7 +97,7 @@ export async function getUserPlayedMatchesByUsername(
 
   const url = `/api/users/${encoded}/matches?${params.toString()}`;
 
-  return apiFetch<MatchesPageResponse>(url, {
+  return apiFetch<FetchPageResult<Match>>(url, {
     method: "GET",
     credentials: "same-origin"
   });

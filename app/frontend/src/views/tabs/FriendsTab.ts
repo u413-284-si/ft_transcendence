@@ -1,10 +1,9 @@
 import { FriendManager } from "../../charts/FriendManager.js";
 import { buildFriendsMatchStatsOptions } from "../../charts/friendsMatchStatsOptions.js";
 import { buildFriendsWinRateOptions } from "../../charts/friendsWinRateOptions.js";
-import { buildFriendsWinstreakOptions } from "../../charts/friendsWinstreakOptions.js";
+import { buildFriendsWinstreakOptions } from "../../charts/friendsWinStreakOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
-import { Header3 } from "../../components/Header3.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserDashboardFriends } from "../../services/userStatsServices.js";
 import { toaster } from "../../Toaster.js";
@@ -40,13 +39,12 @@ export class FriendsTab extends AbstractTab {
   getDashboardHTML(): string {
     return /* HTML */ `<div class="p-6 mx-auto space-y-8">
       <div class="flex gap-8">
-        <div class="flex flex-col">
-          ${Header3({
-            text: "Select upto 3 friends",
-            variant: "white"
-          })}
-          <div id="friend-selector"></div>
-        </div>
+        ${Chart({
+          title: i18next.t("chart.selectUpTo"),
+          chartId: "friend-selector",
+          chartClassName:
+            "h-[300px] w-[450px] flex flex-col gap-2 overflow-scroll px-3"
+        })}
         ${Chart({
           title: i18next.t("chart.activity"),
           chartId: "friends-match-stats"
@@ -85,25 +83,12 @@ export class FriendsTab extends AbstractTab {
   private populateChartOptions(): void {
     if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
 
-    const selectedFriends = this.friendManager.getSelectedFriends();
-    const colors = this.friendManager.getColors();
+    const filtered = this.friendManager.getFilteredSeries(this.dashboard);
 
     this.chartOptions = {
-      "friends-winrate": buildFriendsWinRateOptions(
-        this.dashboard.winRate,
-        selectedFriends,
-        colors
-      ),
-      "friends-match-stats": buildFriendsMatchStatsOptions(
-        this.dashboard.matchStats,
-        selectedFriends,
-        colors
-      ),
-      "friends-winstreak": buildFriendsWinstreakOptions(
-        this.dashboard.winstreak,
-        selectedFriends,
-        colors
-      )
+      "friends-winrate": buildFriendsWinRateOptions(filtered.winRate),
+      "friends-match-stats": buildFriendsMatchStatsOptions(filtered.matchStats),
+      "friends-winstreak": buildFriendsWinstreakOptions(filtered.winStreak)
     };
   }
 
@@ -118,10 +103,11 @@ export class FriendsTab extends AbstractTab {
     friends.forEach((friend) => {
       const btn = document.createElement("button");
       btn.innerText = friend.name;
-      btn.dataset.friendName = friend.name;
-      btn.className = selectedFriends.includes(friend.name)
-        ? `w-full ${this.friendManager?.getColor(friend.name)} text-white p-2 m-1`
-        : "w-full bg-grey text-black p-2 m-1";
+      const isSelected = selectedFriends.includes(friend.name);
+      btn.dataset.selected = isSelected ? "true" : "false";
+      btn.className = isSelected
+        ? `${this.friendManager.getBtnClassesSelected(friend.name)}`
+        : `${this.friendManager?.getBtnClassesNotSelected()}`;
 
       btn.onclick = () => this.toggleFriendSelection(friend.name, btn);
       container.appendChild(btn);
@@ -130,7 +116,7 @@ export class FriendsTab extends AbstractTab {
 
   toggleFriendSelection(friendName: string, button: HTMLButtonElement) {
     if (friendName === this.username) {
-      toaster.warn(i18next.t("toast.cannotRemoveYourself"));
+      toaster.warn(i18next.t("toast.chartCannotRemoveYourself"));
       return;
     }
     const selectedFriends = this.friendManager.getSelectedFriends();
@@ -142,7 +128,7 @@ export class FriendsTab extends AbstractTab {
       if (selectedFriends.length < 4) {
         this.friendManager.selectFriend(friendName);
       } else {
-        toaster.warn(i18next.t("toast.compareMaxThree"));
+        toaster.warn(i18next.t("toast.chartCompareMaxThree"));
         return;
       }
     }
@@ -155,35 +141,29 @@ export class FriendsTab extends AbstractTab {
     friendName: string,
     isSelected: boolean
   ) {
-    button.className = isSelected
-      ? `w-full ${this.friendManager?.getColor(friendName)} text-white p-2 m-1`
-      : "w-full bg-gray-200 text-black p-2 m-1";
+    if (isSelected) {
+      button.className = `${this.friendManager?.getBtnClassesSelected(friendName)}`;
+      button.dataset.selected = "true";
+    } else {
+      button.dataset.selected = "false";
+    }
+    const container = getEl("friend-selector");
+    const buttons = container.querySelectorAll("button");
+    buttons.forEach((btn) => {
+      const selected = btn.dataset.selected === "true";
+      if (!selected) {
+        btn.className = `${this.friendManager?.getBtnClassesNotSelected()}`;
+      }
+    });
   }
 
   updateFriendsCharts() {
     if (!this.dashboard) throw new Error(i18next.t("error.somethingWentWrong"));
 
-    const selectedFriends = this.friendManager.getSelectedFriends();
-    const colors = this.friendManager.getColors();
+    const filtered = this.friendManager.getFilteredSeries(this.dashboard);
 
-    const winrateOptions = buildFriendsWinRateOptions(
-      this.dashboard.winRate,
-      selectedFriends,
-      colors
-    );
-    const matchStatsOptions = buildFriendsMatchStatsOptions(
-      this.dashboard.matchStats,
-      selectedFriends,
-      colors
-    );
-    const winstreakOptions = buildFriendsWinstreakOptions(
-      this.dashboard.winstreak,
-      selectedFriends,
-      colors
-    );
-
-    this.charts["friends-winrate"].updateOptions(winrateOptions);
-    this.charts["friends-match-stats"].updateOptions(matchStatsOptions);
-    this.charts["friends-winstreak"].updateOptions(winstreakOptions);
+    this.charts["friends-winrate"].updateSeries(filtered.winRate);
+    this.charts["friends-match-stats"].updateSeries(filtered.matchStats);
+    this.charts["friends-winstreak"].updateSeries(filtered.winStreak);
   }
 }

@@ -76,6 +76,11 @@ export async function getUserMatches(
   return matches;
 }
 
+export async function deleteAllMatches() {
+  const matches = await prisma.match.deleteMany();
+  return matches;
+}
+
 export async function getUserMatchesCount(userId, filter = {}) {
   const total = await prisma.match.count({
     where: {
@@ -85,9 +90,4 @@ export async function getUserMatchesCount(userId, filter = {}) {
     }
   });
   return total;
-}
-
-export async function deleteAllMatches() {
-  const matches = await prisma.match.deleteMany();
-  return matches;
 }

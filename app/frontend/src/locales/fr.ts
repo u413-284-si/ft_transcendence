@@ -242,6 +242,8 @@ const fr: TranslationShape = {
       avatarUploadFailed:
         "Échec du téléchargement de l'avatar. Veuillez réessayer.",
       avatarUploadedSuccess: "Avatar téléchargé avec succès !",
+      chartCannotRemoveYourself: "Vous ne pouvez pas vous supprimer.",
+      chartCompareMaxThree: "Vous pouvez comparer un maximum de 3 amis.",
       chartError: "Un diagramme n'a pas pu être initialisé",
       connectionUnavailable:
         "Impossible de se reconnecter. Tentatives arrêter jusqu'à l'actualisation.",
@@ -298,6 +300,7 @@ const fr: TranslationShape = {
       reachedThisStage: "Étape atteinte",
       scoreDiff: "Différence de score{{range}}",
       scores: "Scores{{range}}",
+      selectUpTo: "Sélectionnez jusqu'à 3 amis",
       summary: "Résumé",
       win: "Victoires",
       winLoss: "Victoires vs Défaites{{range}}"

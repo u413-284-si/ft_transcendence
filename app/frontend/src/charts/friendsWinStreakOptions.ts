@@ -1,10 +1,10 @@
 import { ApexOptions } from "apexcharts";
 import { chartColors } from "./chartUtils.js";
 
-export function buildFriendsWinRateOptions(
+export function buildFriendsWinstreakOptions(
   data: ApexAxisChartSeries
 ): ApexOptions {
-  const options: ApexOptions = {
+  return {
     chart: {
       type: "bar",
       fontFamily: "inherit",
@@ -14,29 +14,22 @@ export function buildFriendsWinRateOptions(
       width: 600
     },
     legend: { show: false },
-    plotOptions: {
-      bar: {
-        columnWidth: "70%"
-      }
-    },
     series: data,
     tooltip: { theme: "dark" },
     xaxis: {
-      categories: [i18next.t("statsView.winRate")],
-      labels: { style: { colors: [chartColors.white] } }
+      categories: [
+        i18next.t("chart.current"),
+        i18next.t("statsView.winstreakMax")
+      ],
+      labels: { style: { colors: [chartColors.white, chartColors.white] } }
     },
     yaxis: {
-      min: 0,
-      max: 100,
-      labels: {
-        style: { colors: [chartColors.white] },
-        formatter: (val: number) => `${val}%`
-      },
+      labels: { style: { colors: [chartColors.white] } },
       title: {
-        text: i18next.t("statsView.winRate"),
+        text: i18next.t("statsView.winstreakCur"),
         style: { color: chartColors.white }
-      }
+      },
+      forceNiceScale: true
     }
   };
-  return options;
 }

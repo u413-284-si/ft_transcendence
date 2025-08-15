@@ -1,3 +1,4 @@
+import { getUserFriends } from "./friends.services.js";
 import { getUserMatches } from "./matches.services.js";
 import { getUserTournaments } from "./tournaments.services.js";
 import { getUserStats } from "./user_stats.services.js";
@@ -322,9 +323,8 @@ export async function getDashboardTournamentsData(userId) {
   return { summary, progress, lastTenDays };
 }
 
-export async function getDashboardFriendsData(userId) {
+export async function getDashboardFriendsData(userId, username) {
   const friends = await getUserFriends(userId);
-  const { username } = await getTokenData(userId, "id");
 
   const friendsWithSelf = [
     { requestId: 0, friendId: userId, friendUsername: username },
@@ -343,7 +343,7 @@ export async function getDashboardFriendsData(userId) {
 
   const matchStats = [];
   const winRate = [];
-  const winstreak = [];
+  const winStreak = [];
 
   for (const friend of friendsWithStats) {
     const { name, stats } = friend;
@@ -358,7 +358,7 @@ export async function getDashboardFriendsData(userId) {
       data: [stats.winRate]
     });
 
-    winstreak.push({
+    winStreak.push({
       name,
       data: [stats.winstreakCur, stats.winstreakMax]
     });
@@ -367,6 +367,6 @@ export async function getDashboardFriendsData(userId) {
   return {
     matchStats,
     winRate,
-    winstreak
+    winStreak
   };
 }

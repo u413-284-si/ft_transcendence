@@ -2,12 +2,12 @@ const userStatsSchema = {
   $id: "userStatsSchema",
   type: "object",
   properties: {
-    matchesPlayed: { type: "number" },
-    matchesWon: { type: "number" },
-    matchesLost: { type: "number" },
+    matchesPlayed: { type: "integer" },
+    matchesWon: { type: "integer" },
+    matchesLost: { type: "integer" },
     winRate: { type: "number" },
-    winstreakCur: { type: "number" },
-    winstreakMax: { type: "number" }
+    winstreakCur: { type: "integer" },
+    winstreakMax: { type: "integer" }
   },
   required: [
     "matchesPlayed",
@@ -24,8 +24,8 @@ const createUserStatsResponseSchema = {
   $id: "createUserStatsResponseSchema",
   type: "object",
   properties: {
-    matchesPlayed: { type: "number" },
-    matchesWon: { type: "number" }
+    matchesPlayed: { type: "integer" },
+    matchesWon: { type: "integer" }
   },
   required: ["matchesPlayed", "matchesWon"],
   additionalProperties: false

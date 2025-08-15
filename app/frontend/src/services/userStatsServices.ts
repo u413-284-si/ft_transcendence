@@ -1,7 +1,6 @@
 import { apiFetch } from "./api.js";
 import { UserStats } from "../types/IUserStats.js";
 import { ApiResponse } from "../types/IApiResponse.js";
-
 import {
   DashboardFriends,
   DashboardMatches,
