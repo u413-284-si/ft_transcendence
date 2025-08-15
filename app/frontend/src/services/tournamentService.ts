@@ -1,10 +1,8 @@
 import { Tournament } from "../Tournament.js";
-import {
-  TournamentDTO,
-  TournamentsPageResponse
-} from "../types/ITournament.js";
+import { TournamentDTO } from "../types/ITournament.js";
 import { ApiError, apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
+import { FetchPageResult } from "../types/FetchPageResult.js";
 
 export async function createTournament(
   tournament: Tournament
@@ -64,7 +62,7 @@ export async function getUserTournamentsByUsername(
   limit = 10,
   offset = 0,
   sort: "asc" | "desc" = "desc"
-): Promise<ApiResponse<TournamentsPageResponse>> {
+): Promise<ApiResponse<FetchPageResult<TournamentDTO>>> {
   const encoded = encodeURIComponent(username);
   const params = new URLSearchParams({
     limit: limit.toString(),
@@ -74,7 +72,7 @@ export async function getUserTournamentsByUsername(
 
   const url = `/api/users/${encoded}/tournaments?${params.toString()}`;
 
-  return apiFetch<TournamentsPageResponse>(url, {
+  return apiFetch<FetchPageResult<TournamentDTO>>(url, {
     method: "GET",
     credentials: "same-origin"
   });
