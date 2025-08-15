@@ -168,7 +168,7 @@ export class AuthManager {
       console.log("User not authenticated. Cannot update user.");
       return;
     }
-    if (!update) {
+    if (Object.keys(update).length === 0) {
       console.log("No update data provided.");
       return;
     }
