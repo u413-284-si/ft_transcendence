@@ -19,7 +19,8 @@ import {
 } from "../services/matches.services.js";
 import {
   getUserTournaments,
-  getUserActiveTournament
+  getUserActiveTournament,
+  getUserTournamentsCount
 } from "../services/tournaments.services.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
@@ -224,18 +225,62 @@ export async function getUserStatsHandler(request, reply) {
 export async function getUserTournamentsHandler(request, reply) {
   const action = "Get user tournaments";
   try {
-    const id = parseInt(request.user.id, 10);
-    const data = await getUserTournaments(id);
-    const count = data.length;
+    const userId = parseInt(request.user.id, 10);
+    const filter = {
+      name: request.query.name,
+      isFinished: request.query.isFinished,
+      limit: request.query.limit,
+      offset: request.query.offset,
+      sort: request.query.sort
+    };
+    const data = await getUserTournaments(userId, filter);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
-      count: count,
-      data: data
+      data: { items: data }
     });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
       `getUserTournamentsHandler: ${createResponseMessage(action, false)}`
+    );
+    return handlePrismaError(reply, action, err);
+  }
+}
+
+export async function getUserTournamentsByUsernameHandler(request, reply) {
+  const action = "Get user tournaments by username";
+  try {
+    let userId = parseInt(request.user.id, 10);
+    const { username } = request.params;
+    if (username !== request.user.username) {
+      const friendId = await getFriendId(userId, username);
+      if (!friendId) {
+        return httpError(reply, 401, "You need to be friends");
+      }
+      userId = friendId;
+    }
+    const filter = {
+      name: request.query.name,
+      isFinished: request.query.isFinished,
+      limit: request.query.limit,
+      offset: request.query.offset,
+      sort: request.query.sort
+    };
+    const [tournaments, total] = await Promise.all([
+      getUserTournaments(userId, undefined, filter),
+      getUserTournamentsCount(userId, filter)
+    ]);
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: {
+        items: tournaments,
+        total
+      }
+    });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `getUserTournamentsByUsernameHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }
