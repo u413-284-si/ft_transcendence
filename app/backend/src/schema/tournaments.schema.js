@@ -84,13 +84,19 @@ const tournamentArrayResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    count: { type: "integer" },
     data: {
-      type: "array",
-      items: { $ref: "tournamentSchema" }
+      type: "object",
+      properties: {
+        items: {
+          type: "array",
+          items: { $ref: "tournamentSchema" }
+        },
+        total: { type: "integer" }
+      },
+      required: ["items"]
     }
   },
-  required: ["message", "count", "data"],
+  required: ["message", "data"],
   additionalProperties: false
 };
 
@@ -139,11 +145,26 @@ const patchTournamentSchema = {
   ]
 };
 
+const querystringTournamentSchema = {
+  $id: "querystringTournamentSchema",
+  type: "object",
+  properties: {
+    name: { $ref: "tournamentDefinitionsSchema#/definitions/tournamentName" },
+    isFinished: { type: "boolean" },
+    limit: { type: "integer", minimum: 1, maximum: 50, default: 10 },
+    offset: { type: "integer", minimum: 0 },
+    sort: { type: "string", enum: ["asc", "desc"], default: "desc" }
+  },
+  required: [],
+  additionalProperties: false
+};
+
 export const tournamentSchemas = [
   tournamentDefinitionsSchema,
   tournamentSchema,
   tournamentResponseSchema,
   tournamentArrayResponseSchema,
   createTournamentSchema,
-  patchTournamentSchema
+  patchTournamentSchema,
+  querystringTournamentSchema
 ];
