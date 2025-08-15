@@ -2,7 +2,7 @@ import { GameState } from "./types/IGameState";
 
 type PlayerSide = "left" | "right";
 
-export class PlayerAI {
+export class AIPlayer {
   private side: PlayerSide;
 
   private lastSeenBallX: number = 0;

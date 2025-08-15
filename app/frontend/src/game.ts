@@ -7,7 +7,7 @@ import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
 import { playedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
-import { PlayerAI } from "./PlayerAI.js";
+import { AIPlayer } from "./AIPlayer.js";
 
 let isAborted: boolean = false;
 
@@ -32,21 +32,21 @@ export async function startGame(
   const ctx = canvas.getContext("2d")!;
 
   setIsAborted(false);
-  let playerAI1: PlayerAI | null = null;
-  let playerAI2: PlayerAI | null = null;
+  let aiPlayer1: AIPlayer | null = null;
+  let aiPlayer2: AIPlayer | null = null;
   if (type1 === "AI") {
-    playerAI1 = new PlayerAI("left");
+    aiPlayer1 = new AIPlayer("left");
   }
   if (type2 === "AI") {
-    playerAI2 = new PlayerAI("right");
+    aiPlayer2 = new AIPlayer("right");
   }
   const gameState = initGameState(
     canvas,
     nickname1,
     nickname2,
     keys,
-    playerAI1,
-    playerAI2
+    aiPlayer1,
+    aiPlayer2
   );
   await new Promise<void>((resolve) => {
     gameLoop(ctx, gameState, resolve);
@@ -62,8 +62,8 @@ function initGameState(
   player1: string,
   player2: string,
   keys: Record<GameKey, boolean>,
-  playerAI1: PlayerAI | null,
-  playerAI2: PlayerAI | null
+  aiPlayer1: AIPlayer | null,
+  aiPlayer2: AIPlayer | null
 ): GameState {
   return {
     player1: player1,
@@ -86,8 +86,8 @@ function initGameState(
     paddleSpeed: 6,
     gameOver: false,
     keys: keys,
-    playerAI1: playerAI1,
-    playerAI2: playerAI2
+    aiPlayer1: aiPlayer1,
+    aiPlayer2: aiPlayer2
   };
 }
 
@@ -110,10 +110,10 @@ function update(gameState: GameState) {
 
   updatePaddlePositions(gameState);
 
-  if (gameState.playerAI1) {
-    gameState.playerAI1.updatePerception(gameState);
+  if (gameState.aiPlayer1) {
+    gameState.aiPlayer1.updatePerception(gameState);
 
-    const move = gameState.playerAI1.decideMove(
+    const move = gameState.aiPlayer1.decideMove(
       gameState.paddle1Y,
       gameState.paddleHeight
     );
@@ -122,10 +122,10 @@ function update(gameState: GameState) {
     gameState.keys["s"] = move === "down";
   }
 
-  if (gameState.playerAI2) {
-    gameState.playerAI2.updatePerception(gameState);
+  if (gameState.aiPlayer2) {
+    gameState.aiPlayer2.updatePerception(gameState);
 
-    const move = gameState.playerAI2.decideMove(
+    const move = gameState.aiPlayer2.decideMove(
       gameState.paddle2Y,
       gameState.paddleHeight
     );
@@ -205,8 +205,8 @@ async function endGame(
       player2Nickname: gameState.player2,
       player1Score: gameState.player1Score,
       player2Score: gameState.player2Score,
-      player1Type: gameState.playerAI1 ? "AI" : "HUMAN",
-      player2Type: gameState.playerAI2 ? "AI" : "HUMAN",
+      player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
+      player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN",
       tournament: tournament
         ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
         : null

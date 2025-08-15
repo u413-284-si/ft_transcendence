@@ -1,4 +1,4 @@
-import { PlayerAI } from "../PlayerAI.js";
+import { AIPlayer } from "../AIPlayer.js";
 import { GameKey } from "../views/GameView.js";
 
 export interface GameState {
@@ -22,6 +22,6 @@ export interface GameState {
   paddleSpeed: number;
   gameOver: boolean;
   keys: Record<GameKey, boolean>;
-  playerAI1: PlayerAI | null;
-  playerAI2: PlayerAI | null;
+  aiPlayer1: AIPlayer | null;
+  aiPlayer2: AIPlayer | null;
 }
