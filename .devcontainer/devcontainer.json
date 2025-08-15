@@ -23,7 +23,8 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "Postman.postman-for-vscode",
-        "Prisma.prisma"
+        "Prisma.prisma",
+        "bradlc.vscode-tailwindcss"
       ],
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",

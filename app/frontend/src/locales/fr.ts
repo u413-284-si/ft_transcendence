@@ -211,9 +211,14 @@ const fr: TranslationShape = {
     },
 
     statsView: {
+      dashboard: "Tableau",
       date: "Date",
-      friendOnly: "Vous devez être amis pour voir l'historique des matchs",
-      joined: "Inscrit le",
+      details: "Détails",
+      friendOnly:
+        "Vous devez être amis avec ce joueur pour voir les statistiques détaillées.",
+      friends: "Amis",
+      joined: "Inscrit le {{date}}",
+      matches: "Matchs",
       matchHistory: "Historique des matchs",
       played: "Joué",
       player1: "Joueur 1",
@@ -223,7 +228,10 @@ const fr: TranslationShape = {
       result: "Résultat",
       title: "Statistiques",
       tournament: "Tournoi",
-      winRate: "Taux de victoire"
+      tournaments: "Tournois",
+      winRate: "Taux de victoire",
+      winstreakCur: "Série de victoires",
+      winstreakMax: "Max-Série"
     },
 
     toast: {
@@ -231,6 +239,9 @@ const fr: TranslationShape = {
       avatarUploadFailed:
         "Échec du téléchargement de l'avatar. Veuillez réessayer.",
       avatarUploadedSuccess: "Avatar téléchargé avec succès !",
+      chartCannotRemoveYourself: "Vous ne pouvez pas vous supprimer.",
+      chartCompareMaxThree: "Vous pouvez comparer un maximum de 3 amis.",
+      chartError: "Un graphique n'a pas pu être initialisé",
       connectionUnavailable:
         "Impossible de se reconnecter. Tentatives arrêter jusqu'à l'actualisation.",
       connectionLost:
@@ -269,6 +280,25 @@ const fr: TranslationShape = {
         "Une erreur s'est produite lors de la vérification de l'utilisateur:<br>Redirection vers la page de connexion.",
       validateTournamentNameError:
         "Une erreur s'est produite lors de la validation du nom du tournoi."
+    },
+
+    chart: {
+      activity: "Activité",
+      current: "Actuelle",
+      loss: "Défaites",
+      numPlayers: "{{num}} joueurs",
+      played: "Tournois joués{{range}}",
+      progress: "Progression ({{num}}-Players)",
+      progression: "Taux de victoire{{range}}",
+      rangeLastDays: " ({{count}} derniers jouers)",
+      rangeLastMatches: " ({{count}} derniers matchs)",
+      reachedThisStage: "Étape atteinte",
+      scoreDiff: "Différence de score{{range}}",
+      scores: "Scores{{range}}",
+      selectUpTo: "Sélectionnez jusqu'à 3 amis",
+      summary: "Résumé",
+      win: "Victoires",
+      winLoss: "Victoires vs Défaites{{range}}"
     }
   }
 };

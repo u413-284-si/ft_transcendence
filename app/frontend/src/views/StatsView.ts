@@ -3,17 +3,10 @@ import {
   getUserStats,
   getUserStatsByUsername
 } from "../services/userStatsServices.js";
-import {
-  getUserByUsername,
-  getUserPlayedMatches,
-  getUserPlayedMatchesByUsername
-} from "../services/userServices.js";
+import { getUserByUsername } from "../services/userServices.js";
 import { escapeHTML } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
-import { Table } from "../components/Table.js";
-import { MatchRow, NoMatchesRow } from "../components/MatchRow.js";
-import { Match } from "../types/IMatch.js";
 import { router } from "../routing/Router.js";
 import { getUserFriendRequestByUsername } from "../services/friendsServices.js";
 import { FriendRequest } from "../types/FriendRequest.js";
@@ -22,106 +15,95 @@ import { UserStats } from "../types/IUserStats.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { StatFieldGroup } from "../components/StatField.js";
 import { getDataOrThrow } from "../services/api.js";
+import { formatDate } from "../formatDate.js";
+import { AbstractTab } from "./tabs/AbstractTab.js";
+import { TextBox } from "../components/TextBox.js";
+import { TabButton } from "../components/TabButton.js";
+import { MatchesTab } from "./tabs/MatchesTab.js";
+import { TournamentsTab } from "./tabs/TournamentsTab.js";
+import { FriendsTab } from "./tabs/FriendsTab.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
   private username = escapeHTML(router.getParams().username);
   private user: User | null = null;
+  private userStats: UserStats | null = null;
   private friendRequest: FriendRequest | null = null;
+  private tabs: Record<string, AbstractTab> = {};
+  private currentTabId?: string;
 
   constructor() {
     super();
     this.setTitle(i18next.t("statsView.title"));
   }
 
-  private userStats: UserStats | null = null;
-  private matches: Match[] | null = null;
-
   createHTML() {
+    if (!this.user) throw new Error(i18next.t("error.somethingWentWrong"));
+    if (!this.userStats) throw new Error(i18next.t("error.somethingWentWrong"));
+
     return /* HTML */ `<div
         class="flex flex-row items-center gap-y-6 gap-x-8 mb-12 pl-6"
       >
         <img
-          src=${this.user?.avatar || "/images/default-avatar.png"}
-          alt="Avatar"
+          src=${this.user.avatar || "/images/default-avatar.png"}
+          alt=${i18next.t("global.avatar")}
           class="w-20 h-20 rounded-full border-2 border-neon-cyan shadow-neon-cyan"
         />
         <div class="flex flex-col md:flex-row md:items-center md:gap-x-8">
           <div>
             ${Header1({
-              text: this.username,
+              text: escapeHTML(this.username),
               variant: "username"
             })}
             ${Paragraph({
-              text: `${i18next.t("statsView.joined")}: ${this.user?.dateJoined.slice(0, 10)}`
+              text: `${i18next.t("statsView.joined", {
+                date: formatDate(this.user.dateJoined)
+              })}`
             })}
           </div>
 
           ${StatFieldGroup([
             {
-              value: `${this.userStats?.matchesPlayed}`,
+              value: `${this.userStats.matchesPlayed}`,
               text: i18next.t("statsView.played")
             },
             {
-              value: `${this.userStats?.matchesWon}`,
+              value: `${this.userStats.matchesWon}`,
               text: i18next.t("global.won")
             },
             {
-              value: `${this.userStats?.matchesLost}`,
+              value: `${this.userStats.matchesLost}`,
               text: i18next.t("global.lost")
             },
             {
-              value: `${this.userStats?.winRate.toFixed(2)} %`,
+              value: `${this.userStats.winRate.toFixed(2)} %`,
               text: i18next.t("statsView.winRate")
+            },
+            {
+              value: `${this.userStats?.winstreakCur}`,
+              text: i18next.t("statsView.winstreakCur")
+            },
+            {
+              value: `${this.userStats?.winstreakMax}`,
+              text: i18next.t("statsView.winstreakMax")
             }
           ])}
         </div>
       </div>
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
-        ${Header1({
-          text: i18next.t("statsView.matchHistory"),
-          id: "match-history-header",
-          variant: "default"
-        })}
-        ${this.getMatchesHTML()}
-      </div> `;
+      ${this.getTabsHTML()} `;
   }
 
   async render() {
     await this.setViewType();
     await this.fetchData();
     this.updateHTML();
-  }
-
-  getMatchesHTML(): string {
-    if (this.viewType === "public") {
-      return /* HTML */ ` ${Paragraph({
-        text: i18next.t("statsView.friendOnly")
-      })}`;
-    }
-
-    if (!this.matches) throw new Error(i18next.t("error.nullMatches"));
-
-    const matchesRows =
-      this.matches.length === 0
-        ? [NoMatchesRow()]
-        : this.matches.map((matchRaw: Match) =>
-            MatchRow(matchRaw, this.username)
-          );
-
-    return /* HTML */ `${Table({
-      id: "match-history-table",
-      headers: [
-        i18next.t("statsView.player1"),
-        i18next.t("statsView.player1Score"),
-        i18next.t("statsView.player2"),
-        i18next.t("statsView.player2Score"),
-        i18next.t("statsView.result"),
-        i18next.t("statsView.date"),
-        i18next.t("statsView.tournament")
-      ],
-      rows: matchesRows
-    })}`;
+    if (this.viewType === "public") return;
+    this.tabs["matches"] = new MatchesTab(this.userStats!, this.username);
+    this.tabs["tournaments"] = new TournamentsTab(this.username);
+    await this.showTab("matches");
+    this.addListeners();
+    if (this.viewType !== "self") return;
+    this.tabs["friends"] = new FriendsTab(this.username);
   }
 
   getName(): string {
@@ -153,7 +135,6 @@ export default class StatsView extends AbstractView {
   async fetchData() {
     if (this.viewType === "self") {
       this.userStats = getDataOrThrow(await getUserStats());
-      this.matches = getDataOrThrow(await getUserPlayedMatches());
       return;
     }
     const userStatsArray = getDataOrThrow(
@@ -162,10 +143,63 @@ export default class StatsView extends AbstractView {
     if (!userStatsArray[0])
       throw new Error(i18next.t("error.userStatsNotFound"));
     this.userStats = userStatsArray[0];
-    if (this.viewType === "friend") {
-      this.matches = getDataOrThrow(
-        await getUserPlayedMatchesByUsername(this.username)
-      );
+  }
+
+  async showTab(tabId: string) {
+    if (this.currentTabId) {
+      this.tabs[this.currentTabId].onHide();
     }
+    this.currentTabId = tabId;
+
+    const container = document.getElementById("tab-content")!;
+    container.innerHTML = this.tabs[tabId].getHTML();
+
+    await this.tabs[tabId].onShow();
+  }
+
+  getTabsHTML(): string {
+    if (this.viewType === "public") {
+      return /* HTML */ ` ${TextBox({
+        text: [i18next.t("statsView.friendOnly")],
+        variant: "info"
+      })}`;
+    }
+    return /* HTML */ `
+      <div class="flex space-x-4 border-b border-grey mb-4">
+        ${TabButton({
+          text: i18next.t("statsView.matches"),
+          tabId: "matches",
+          isActive: true
+        })}
+        ${TabButton({
+          text: i18next.t("statsView.tournaments"),
+          tabId: "tournaments"
+        })}
+        ${this.viewType === "self"
+          ? TabButton({
+              text: i18next.t("statsView.friends"),
+              tabId: "friends"
+            })
+          : ""}
+      </div>
+      <div id="tab-content"></div>
+    `;
+  }
+
+  protected addListeners(): void {
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-button");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const tabId = button.dataset.tab!;
+        await this.showTab(tabId);
+
+        buttons.forEach((btn) => {
+          btn.classList.remove("active-link");
+        });
+
+        button.classList.add("active-link");
+      });
+    });
   }
 }

@@ -202,9 +202,13 @@ const en = {
     },
 
     statsView: {
+      dashboard: "Dashboard",
       date: "Date",
-      friendOnly: "You must be friends to view match history",
-      joined: "Joined on",
+      details: "Details",
+      friendOnly: "You must be friends to view detailed stats.",
+      friends: "Friends",
+      joined: "Joined on {{date}}",
+      matches: "Matches",
       matchHistory: "Match History",
       played: "Played",
       player1: "Player 1",
@@ -214,13 +218,19 @@ const en = {
       result: "Result",
       title: "Statistics",
       tournament: "Tournament",
-      winRate: "Win Rate"
+      tournaments: "Tournaments",
+      winRate: "Win Rate",
+      winstreakCur: "Winstreak",
+      winstreakMax: "Max Streak"
     },
 
     toast: {
       acceptedFriendRequest: "Friend request accepted by ",
       avatarUploadFailed: "Avatar upload failed. Please try again.",
       avatarUploadedSuccess: "Avatar uploaded successfully!",
+      chartCannotRemoveYourself: "You cannot remove yourself",
+      chartCompareMaxThree: "You can compare a maximum of 3 friends.",
+      chartError: "A chart failed to initialize",
       connectionLost:
         "Connection lost - retrying in {{delay}} seconds... (Attempt {{attempt}} of {{maxAttempts}})",
       connectionReestablished: "Connection reestablished",
@@ -257,6 +267,25 @@ const en = {
         "An error occurred while verifying the user:<br>Redirecting to login.",
       validateTournamentNameError:
         "An error occurred while validating the tournament name."
+    },
+
+    chart: {
+      activity: "Activity",
+      current: "Current",
+      loss: "Loss",
+      numPlayers: "{{num}}-Players",
+      played: "Tournaments played{{range}}",
+      progress: "Progress ({{num}}-Players)",
+      progression: "Winrate Progression{{range}}",
+      rangeLastDays: " (Last {{count}} Days)",
+      rangeLastMatches: " (Last {{count}} Matches)",
+      reachedThisStage: "Reached this stage",
+      scoreDiff: "Score Difference{{range}}",
+      scores: "Scores{{range}}",
+      selectUpTo: "Select up to 3 friends",
+      summary: "Summary",
+      win: "Win",
+      winLoss: "Wins vs Losses{{range}}"
     }
   }
 } as const;

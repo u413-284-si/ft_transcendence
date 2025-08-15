@@ -132,6 +132,14 @@ export class Router {
     await this.navigate(window.location.pathname, false);
   }
 
+  async refresh() {
+    if (!this.currentView) {
+      await this.navigate(window.location.pathname, false);
+      return;
+    }
+    await this.currentView.render();
+  }
+
   async handleError(message: string, error: unknown) {
     if (error instanceof ApiError && error.status === 401) {
       return;

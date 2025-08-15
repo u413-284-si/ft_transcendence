@@ -1,17 +1,34 @@
 import prisma from "../prisma/prismaClient.js";
 
 const userStatsSelect = {
-  userId: true,
   matchesPlayed: true,
-  matchesWon: true
+  matchesWon: true,
+  winstreakCur: true,
+  winstreakMax: true
 };
 
 export async function updateUserStatsTx(tx, userId, hasWon) {
+  const currentStats = await tx.userStats.findUniqueOrThrow({
+    where: { userId },
+    select: {
+      winstreakCur: true,
+      winstreakMax: true
+    }
+  });
+
+  const newWinstreakCur = hasWon ? currentStats.winstreakCur + 1 : 0;
+  const newWinstreakMax =
+    hasWon && newWinstreakCur > currentStats.winstreakMax
+      ? newWinstreakCur
+      : currentStats.winstreakMax;
+
   const stats = await tx.userStats.update({
     where: { userId },
     data: {
       matchesPlayed: { increment: 1 },
-      matchesWon: hasWon ? { increment: 1 } : undefined
+      matchesWon: hasWon ? { increment: 1 } : undefined,
+      winstreakCur: newWinstreakCur,
+      winstreakMax: newWinstreakMax
     },
     select: userStatsSelect
   });
@@ -48,15 +65,22 @@ export async function deleteAllUserStats() {
   return userStats;
 }
 
-function assembleUserStats(userStats) {
+function assembleUserStats({
+  matchesPlayed,
+  matchesWon,
+  winstreakCur,
+  winstreakMax
+}) {
+  const matchesLost = matchesPlayed - matchesWon;
+  const winRate =
+    matchesPlayed > 0 ? ((matchesWon / matchesPlayed) * 100).toFixed(2) : 0;
+
   return {
-    userId: userStats.userId,
-    matchesPlayed: userStats.matchesPlayed,
-    matchesWon: userStats.matchesWon,
-    matchesLost: userStats.matchesPlayed - userStats.matchesWon,
-    winRate:
-      userStats.matchesPlayed > 0
-        ? (userStats.matchesWon / userStats.matchesPlayed) * 100
-        : 0
+    matchesPlayed,
+    matchesWon,
+    matchesLost,
+    winRate,
+    winstreakCur,
+    winstreakMax
   };
 }
