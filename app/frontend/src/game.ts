@@ -204,6 +204,8 @@ async function endGame(
       player2Nickname: gameState.player2,
       player1Score: gameState.player1Score,
       player2Score: gameState.player2Score,
+      player1Type: gameState.playerAI1 ? "AI" : "HUMAN",
+      player2Type: gameState.playerAI2 ? "AI" : "HUMAN",
       tournament: tournament
         ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
         : null

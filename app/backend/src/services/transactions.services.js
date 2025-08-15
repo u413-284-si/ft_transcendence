@@ -9,6 +9,8 @@ export async function transactionMatch(
   player2Nickname,
   player1Score,
   player2Score,
+  player1Type,
+  player2Type,
   tournament,
   date
 ) {
@@ -21,6 +23,8 @@ export async function transactionMatch(
       player2Nickname,
       player1Score,
       player2Score,
+      player1Type,
+      player2Type,
       tournament,
       date
     );

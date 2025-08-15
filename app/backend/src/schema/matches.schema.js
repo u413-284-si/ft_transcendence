@@ -5,6 +5,11 @@ const matchDefinitionsSchema = {
       type: "string",
       enum: ["NONE", "PLAYERONE", "PLAYERTWO"],
       description: "The player assignment for the logged-in user"
+    },
+    playerType: {
+      type: "string",
+      enum: ["HUMAN", "AI"],
+      description: "Type of the player."
     }
   }
 };
@@ -29,6 +34,12 @@ const matchSchema = {
     player2Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
       description: "The score of player 2 in the match"
+    },
+    player1Type: {
+      $ref: "matchDefinitionsSchema#/definitions/playerType"
+    },
+    player2Type: {
+      $ref: "matchDefinitionsSchema#/definitions/playerType"
     },
     date: {
       $ref: "commonDefinitionsSchema#/definitions/datetime",
@@ -98,6 +109,12 @@ export const createMatchSchema = {
     player2Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
       description: "The nickname of player 2"
+    },
+    player1Type: {
+      $ref: "matchDefinitionsSchema#/definitions/playerType"
+    },
+    player2Type: {
+      $ref: "matchDefinitionsSchema#/definitions/playerType"
     },
     player1Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
