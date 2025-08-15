@@ -14,7 +14,6 @@ export class AIPlayer {
 
   private reactionInterval: number;
   private predictionError: number;
-  maxPaddleSpeed: number;
   private tolerance: number;
 
   constructor(
@@ -22,7 +21,6 @@ export class AIPlayer {
     options: {
       reactionInterval?: number;
       predictionError?: number;
-      maxPaddleSpeed?: number;
       tolerance?: number;
       smoothingFactor?: number;
     } = {}
@@ -31,7 +29,6 @@ export class AIPlayer {
 
     this.reactionInterval = options.reactionInterval ?? 1000;
     this.predictionError = options.predictionError ?? 80;
-    this.maxPaddleSpeed = options.maxPaddleSpeed ?? 300;
     this.tolerance = options.tolerance ?? 10;
   }
 
