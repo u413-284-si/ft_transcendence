@@ -229,6 +229,71 @@ const dashboardTournamentsResponseSchema = {
   additionalProperties: false
 };
 
+const dashboardFriendsMatchStatsSchema = {
+  $id: "dashboardFriendsMatchStatsSchema",
+  type: "object",
+  properties: {
+    name: { $ref: "commonDefinitionsSchema#/definitions/username" },
+    data: { type: "array", items: { type: "integer" } }
+  },
+  required: ["name", "data"],
+  additionalProperties: false
+};
+
+const dashboardFriendsWinRateSchema = {
+  $id: "dashboardFriendsWinRateSchema",
+  type: "object",
+  properties: {
+    name: { $ref: "commonDefinitionsSchema#/definitions/username" },
+    data: { type: "array", items: { type: "number" } }
+  },
+  required: ["name", "data"],
+  additionalProperties: false
+};
+
+const dashboardFriendsWinStreakSchema = {
+  $id: "dashboardFriendsWinStreakSchema",
+  type: "object",
+  properties: {
+    name: { $ref: "commonDefinitionsSchema#/definitions/username" },
+    data: { type: "array", items: { type: "integer" } }
+  },
+  required: ["name", "data"],
+  additionalProperties: false
+};
+
+const dashboardFriendsSchema = {
+  $id: "dashboardFriendsSchema",
+  type: "object",
+  properties: {
+    matchStats: {
+      type: "array",
+      items: { $ref: "dashboardFriendsMatchStatsSchema" }
+    },
+    winRate: {
+      type: "array",
+      items: { $ref: "dashboardFriendsWinRateSchema" }
+    },
+    winStreak: {
+      type: "array",
+      items: { $ref: "dashboardFriendsWinStreakSchema" }
+    }
+  },
+  required: ["matchStats", "winRate", "winStreak"],
+  additionalProperties: false
+};
+
+const dashboardFriendsResponseSchema = {
+  $id: "dashboardFriendsResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: { $ref: "dashboardFriendsSchema" }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
 export const dashboardSchemas = [
   dashboardMatchesWinrateSchema,
   dashboardMatchesScoreDiffSchema,
@@ -242,5 +307,10 @@ export const dashboardSchemas = [
   dashboardTournamentsLastTenDaysOutcomeGroupSchema,
   dashboardTournamentsLastTenDaysSchema,
   dashboardTournamentsSchema,
-  dashboardTournamentsResponseSchema
+  dashboardTournamentsResponseSchema,
+  dashboardFriendsMatchStatsSchema,
+  dashboardFriendsWinRateSchema,
+  dashboardFriendsWinStreakSchema,
+  dashboardFriendsSchema,
+  dashboardFriendsResponseSchema
 ];

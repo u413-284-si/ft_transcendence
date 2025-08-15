@@ -236,6 +236,8 @@ const de: TranslationShape = {
       avatarUploadFailed:
         "Avatar konnte nicht hochgeladen werden. Bitte versuche es erneut.",
       avatarUploadedSuccess: "Avatar erfolgreich hochgeladen!",
+      chartCannotRemoveYourself: "Du kannst dich selbst nicht entfernen.",
+      chartCompareMaxThree: "Du kannst höchstens 3 Freunde vergleichen.",
       chartError: "Ein Diagramm konnte nicht initialisiert werden",
       connectionLost:
         "Verbindung verloren - erneuter Versuch in {{delay}} Sekunden... (Versuch {{attempt}} von {{maxAttempts}})",
@@ -291,6 +293,7 @@ const de: TranslationShape = {
       reachedThisStage: "Diese Stufe erreicht",
       scoreDiff: "Punktedifferenz{{range}}",
       scores: "Punkte{{range}}",
+      selectUpTo: "Wähle bis zu 3 Freunde aus",
       summary: "Übersicht",
       win: "Sieg",
       winLoss: "Siege vs Niederlagen{{range}}"

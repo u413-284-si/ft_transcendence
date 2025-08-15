@@ -21,6 +21,7 @@ import { TextBox } from "../components/TextBox.js";
 import { TabButton } from "../components/TabButton.js";
 import { MatchesTab } from "./tabs/MatchesTab.js";
 import { TournamentsTab } from "./tabs/TournamentsTab.js";
+import { FriendsTab } from "./tabs/FriendsTab.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -101,6 +102,8 @@ export default class StatsView extends AbstractView {
     this.tabs["tournaments"] = new TournamentsTab(this.username);
     await this.showTab("matches");
     this.addListeners();
+    if (this.viewType !== "self") return;
+    this.tabs["friends"] = new FriendsTab(this.username);
   }
 
   getName(): string {
@@ -172,6 +175,12 @@ export default class StatsView extends AbstractView {
           text: i18next.t("statsView.tournaments"),
           tabId: "tournaments"
         })}
+        ${this.viewType === "self"
+          ? TabButton({
+              text: i18next.t("statsView.friends"),
+              tabId: "friends"
+            })
+          : ""}
       </div>
       <div id="tab-content"></div>
     `;

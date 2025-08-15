@@ -228,6 +228,8 @@ const pi: TranslationShape = {
       acceptedFriendRequest: "Parley accepted by ",
       avatarUploadFailed: "Couldn’t hoist yer flag – try again!",
       avatarUploadedSuccess: "Yer colors be flyin’ high now!",
+      chartCannotRemoveYourself: "Ye can't be tossin' yerself.",
+      chartCompareMaxThree: "Ye can weigh up no more than 3 mateys.",
       chartError: "Thar be a chart that refused t' hoist its sails",
       connectionLost:
         "Connection to the crow's nest lost – tryin’ again in {{delay}} seconds... (Try {{attempt}} o’ {{maxAttempts}})",
@@ -280,6 +282,7 @@ const pi: TranslationShape = {
       reachedThisStage: "Landed 'ere",
       scoreDiff: "Score Gap{{range}}",
       scores: "Booty Count{{range}}",
+      selectUpTo: "Pick ye up to 3 mateys, arrr!",
       summary: "Battle Recap",
       win: "Victory",
       winLoss: "Plunder vs Defeats{{range}}"

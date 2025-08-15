@@ -1,7 +1,11 @@
 import { apiFetch } from "./api.js";
 import { UserStats } from "../types/IUserStats.js";
 import { ApiResponse } from "../types/IApiResponse.js";
-import { DashboardMatches, DashboardTournaments } from "../types/DataSeries.js";
+import {
+  DashboardFriends,
+  DashboardMatches,
+  DashboardTournaments
+} from "../types/DataSeries.js";
 
 export async function getUserStats(): Promise<ApiResponse<UserStats>> {
   const url = `/api/users/me/user-stats`;
@@ -43,6 +47,17 @@ export async function getUserDashboardTournamentsByUsername(
   const url = `/api/user-stats/${encoded}/dashboard-tournaments`;
 
   return apiFetch<DashboardTournaments>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+}
+
+export async function getUserDashboardFriends(): Promise<
+  ApiResponse<DashboardFriends>
+> {
+  const url = "/api/user-stats/me/dashboard-friends";
+
+  return apiFetch<DashboardFriends>(url, {
     method: "GET",
     credentials: "same-origin"
   });
