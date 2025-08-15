@@ -59,15 +59,6 @@ const optionsDeleteAllUserStats = {
   }
 };
 
-const optionsGetDashboardFriends = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      ...errorResponses
-    }
-  }
-};
-
 const optionsGetDashboardMatchesByUsername = {
   onRequest: [authorizeUserAccess],
   schema: {

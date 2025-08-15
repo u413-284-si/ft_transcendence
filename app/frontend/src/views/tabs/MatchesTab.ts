@@ -7,11 +7,9 @@ import { Header1 } from "../../components/Header1.js";
 import { MatchRow, NoMatchesRow } from "../../components/MatchRow.js";
 import { PaginationControls } from "../../components/PaginationControls.js";
 import { Table } from "../../components/Table.js";
-import { Paginator } from "../../Paginator.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserPlayedMatchesByUsername } from "../../services/userServices.js";
 import { getUserDashboardMatchesByUsername } from "../../services/userStatsServices.js";
-import { toaster } from "../../Toaster.js";
 import { DashboardMatches } from "../../types/DataSeries.js";
 import { Match } from "../../types/IMatch.js";
 import { UserStats } from "../../types/IUserStats.js";
@@ -68,10 +66,9 @@ export class MatchesTab extends PaginatedTab<Match> {
         })}
         ${Chart({
           title: i18next.t("chart.progression", { range: rangeMatches }),
-          chartId: "winrate-chart"
+          chartId: "win-rate-chart"
         })}
       </div>
-
       <div class="grid grid-cols-2 gap-8">
         ${Chart({
           title: i18next.t("chart.scoreDiff", { range: rangeMatches }),
@@ -79,7 +76,7 @@ export class MatchesTab extends PaginatedTab<Match> {
         })}
         ${Chart({
           title: i18next.t("chart.scores", { range: rangeDays }),
-          chartId: "scores-last-ten"
+          chartId: "scores-last-ten-chart"
         })}
       </div>
     </div>`;
@@ -115,12 +112,6 @@ export class MatchesTab extends PaginatedTab<Match> {
     );
   }
 
-  override async onShow(): Promise<void> {
-    await super.onShow();
-    await this.loadPage(this.paginator.getCurrentPage());
-    this.addListeners();
-  }
-
   async init(): Promise<void> {
     this.dashboard = getDataOrThrow(
       await getUserDashboardMatchesByUsername(this.username)
@@ -138,7 +129,7 @@ export class MatchesTab extends PaginatedTab<Match> {
         this.userStats.matchesLost,
         this.userStats.winRate
       ),
-      "winrate-chart": buildMatchesWinRateOptions(
+      "win-rate-chart": buildMatchesWinRateOptions(
         i18next.t("statsView.winRate"),
         this.dashboard.winrate,
         this.userStats.matchesPlayed
@@ -148,82 +139,10 @@ export class MatchesTab extends PaginatedTab<Match> {
         this.dashboard.scoreDiff,
         this.userStats.matchesPlayed
       ),
-      "scores-last-ten": buildMatchesScoresLastTenDaysOptions(
+      "scores-last-ten-chart": buildMatchesScoresLastTenDaysOptions(
         i18next.t("chart.scores", { range: "" }),
         this.dashboard.scores
       )
     };
-  }
-
-  private async loadPage(page: number) {
-    const cached = this.paginator.getCachedPage(page);
-    if (cached) {
-      this.updateMatchesTable(cached);
-      this.updatePaginationControls();
-      return;
-    }
-
-    const limit = this.paginator.getPageSize();
-    const offset = page * limit;
-
-    try {
-      const response = getDataOrThrow(
-        await getUserPlayedMatchesByUsername(this.username, limit, offset)
-      );
-
-      this.paginator.setTotalItems(response.total);
-      this.paginator.cachePage(page, response.items);
-      this.updateMatchesTable(response.items);
-      this.updatePaginationControls();
-    } catch (error) {
-      console.error("Failed to load matches page:", error);
-      toaster.error("Failed to fetch");
-    }
-  }
-
-  private updatePaginationControls() {
-    const prevBtn = document.getElementById(
-      "matches-prev-btn"
-    ) as HTMLButtonElement;
-    const nextBtn = document.getElementById(
-      "matches-next-btn"
-    ) as HTMLButtonElement;
-
-    prevBtn.disabled = !this.paginator.canGoPrev();
-    nextBtn.disabled = !this.paginator.canGoNext();
-
-    this.updatePageIndicator();
-  }
-
-  private updatePageIndicator() {
-    const pageIndicator = document.getElementById("matches-page-indicator");
-    if (!pageIndicator) return;
-
-    const currentPage = this.paginator.getCurrentPage() + 1;
-    const totalPages = this.paginator.getTotalPages();
-
-    pageIndicator.textContent = `${currentPage} / ${totalPages}`;
-  }
-
-  public async goPrevPage() {
-    if (this.paginator.canGoPrev()) {
-      this.paginator.goPrev();
-      await this.loadPage(this.paginator.getCurrentPage());
-    }
-  }
-
-  public async goNextPage() {
-    if (this.paginator.canGoNext()) {
-      this.paginator.goNext();
-      await this.loadPage(this.paginator.getCurrentPage());
-    }
-  }
-
-  addListeners() {
-    const prevBtn = document.getElementById("matches-prev-btn");
-    const nextBtn = document.getElementById("matches-next-btn");
-
-    prevBtn?.addEventListener("click", () => this.goPrevPage());
-    nextBtn?.addEventListener("click", () => this.goNextPage());
   }
 }
