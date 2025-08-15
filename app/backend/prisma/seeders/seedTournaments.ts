@@ -6,7 +6,7 @@ import {
   randRecentDate,
   randUserName
 } from "@ngneat/falso";
-import { Tournament } from "/workspaces/ft_transcendence/app/frontend/src/Tournament.ts";
+import { Tournament } from "../../../frontend/src/Tournament.ts";
 import {
   createTournament,
   updateTournament
