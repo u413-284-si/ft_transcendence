@@ -14,7 +14,8 @@ import {
   createUserAvatarHandler,
   deleteUserAvatarHandler,
   getUserMatchesByUsernameHandler,
-  updateUserPasswordHandler
+  updateUserPasswordHandler,
+  getUserTournamentsByUsernameHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseConnectionHandler } from "../controllers/sse.controllers.js";
@@ -57,6 +58,12 @@ export default async function userRoutes(fastify) {
     "/me/tournaments",
     optionsGetUserTournaments,
     getUserTournamentsHandler
+  );
+
+  fastify.get(
+    "/:username/tournaments",
+    optionsGetUserTournamentsByUsername,
+    getUserTournamentsByUsernameHandler
   );
 
   fastify.get(
@@ -192,6 +199,25 @@ const optionsGetUserStats = {
 const optionsGetUserTournaments = {
   onRequest: [authorizeUserAccess],
   schema: {
+    querystring: { $ref: "querystringTournamentSchema" },
+    response: {
+      200: { $ref: "tournamentArrayResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsGetUserTournamentsByUsername = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    querystring: { $ref: "querystringTournamentSchema" },
+    params: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: ["username"]
+    },
     response: {
       200: { $ref: "tournamentArrayResponseSchema" },
       ...errorResponses
