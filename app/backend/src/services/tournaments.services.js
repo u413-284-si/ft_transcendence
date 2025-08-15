@@ -111,3 +111,17 @@ export async function getUserActiveTournament(userId) {
   });
   return tournament;
 }
+
+export async function getUserTournamentsCount(userId, filter = {}) {
+  const total = await prisma.tournament.count({
+    where: {
+      userId: userId,
+      ...(filter.isFinished !== undefined
+        ? { isFinished: filter.isFinished }
+        : {}),
+      ...(filter.updatedAt ? { updatedAt: filter.updatedAt } : {}),
+      ...(filter.name ? { name: filter.name } : {})
+    }
+  });
+  return total;
+}
