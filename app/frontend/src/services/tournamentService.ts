@@ -2,6 +2,7 @@ import { Tournament } from "../Tournament.js";
 import { TournamentDTO } from "../types/ITournament.js";
 import { apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
+import { FetchPageResult } from "../types/FetchPageResult.js";
 
 export async function createTournament(
   tournament: Tournament
@@ -46,6 +47,27 @@ export async function getUserTournaments(): Promise<
   const url = "/api/users/me/tournaments";
 
   return apiFetch<TournamentDTO[]>(url, {
+    method: "GET",
+    credentials: "same-origin"
+  });
+}
+
+export async function getUserTournamentsByUsername(
+  username: string,
+  limit = 10,
+  offset = 0,
+  sort: "asc" | "desc" = "desc"
+): Promise<ApiResponse<FetchPageResult<TournamentDTO>>> {
+  const encoded = encodeURIComponent(username);
+  const params = new URLSearchParams({
+    limit: limit.toString(),
+    offset: offset.toString(),
+    sort
+  });
+
+  const url = `/api/users/${encoded}/tournaments?${params.toString()}`;
+
+  return apiFetch<FetchPageResult<TournamentDTO>>(url, {
     method: "GET",
     credentials: "same-origin"
   });
