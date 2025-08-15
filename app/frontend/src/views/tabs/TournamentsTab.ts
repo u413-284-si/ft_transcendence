@@ -7,20 +7,33 @@ import { Header1 } from "../../components/Header1.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserDashboardTournamentsByUsername } from "../../services/userStatsServices.js";
 import { DashboardTournaments } from "../../types/DataSeries.js";
-import { AbstractTab } from "./AbstractTab.js";
+import { PaginatedTab } from "./PaginatedTab.js";
+import { TournamentDTO } from "../../types/ITournament.js";
+import { PaginationControls } from "../../components/PaginationControls.js";
+import {
+  NoTournamentsRow,
+  TournamentRow
+} from "../../components/TournamentRow.js";
+import { Table } from "../../components/Table.js";
+import { getUserTournamentsByUsername } from "../../services/tournamentService.js";
 
-export class TournamentsTab extends AbstractTab {
+export class TournamentsTab extends PaginatedTab<TournamentDTO> {
   private dashboard: DashboardTournaments | null = null;
   private username: string;
 
   constructor(username: string) {
-    super();
+    super(
+      10,
+      "tournaments-prev-btn",
+      "tournaments-next-btn",
+      "tournaments-page-indicator"
+    );
     this.username = username;
   }
 
   getHTML(): string {
     return /* HTML */ ` <div id="tab-tournaments">
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
           id: "tournament-dashboard-header",
@@ -28,11 +41,19 @@ export class TournamentsTab extends AbstractTab {
         })}
         ${this.getDashboardHTML()}
       </div>
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
         ${Header1({
           text: i18next.t("statsView.details"),
           id: "tournament-details-header",
           variant: "default"
+        })}
+        <div id="tournament-history-table" class="p-6"></div>
+        ${PaginationControls({
+          prevId: "matches-prev-btn",
+          nextId: "matches-next-btn",
+          indicatorId: "matches-page-indicator",
+          prevLabel: "<",
+          nextLabel: ">"
         })}
       </div>
     </div>`;
@@ -83,6 +104,32 @@ export class TournamentsTab extends AbstractTab {
         })}
       </div>
     </div>`;
+  }
+
+  protected updateTable(tournaments: TournamentDTO[]): void {
+    const table = document.getElementById("tournament-history-table");
+    if (!table) return;
+
+    const tournamentsRows =
+      tournaments.length === 0
+        ? [NoTournamentsRow()]
+        : tournaments.map((tournament: TournamentDTO) =>
+            TournamentRow(tournament)
+          );
+
+    table.innerHTML = Table({
+      id: "tournament-history-table",
+      headers: [
+        ///
+      ],
+      rows: tournamentsRows
+    });
+  }
+
+  protected async fetchPage(limit: number, offset: number) {
+    return getDataOrThrow(
+      await getUserTournamentsByUsername(this.username, limit, offset)
+    );
   }
 
   async init(): Promise<void> {
