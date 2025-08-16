@@ -1,6 +1,6 @@
 export type TextBoxOptions = {
   id?: string;
-  text: string[];
+  text: readonly string[];
   variant?: "info" | "warning" | "error";
   size?: "sm" | "md" | "lg";
   className?: string;

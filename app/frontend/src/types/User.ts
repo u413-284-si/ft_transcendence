@@ -6,6 +6,7 @@ export type User = {
   language: Language;
   dateJoined: string;
   authProvider?: string;
+  hasTwoFA: boolean;
 };
 
 export type Language = "en" | "fr" | "de" | "pi" | "tr";
