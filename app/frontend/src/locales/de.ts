@@ -225,6 +225,8 @@ const de: TranslationShape = {
       settings: "Lege hier deine Einstellungen und Präferenzen fest.",
       preferredLanguage: "Wähle dein bevorzugte Sprache aus.",
       saveLanguage: "Sprache speichern",
+      displayTwoFASetup: "2FA Einstellungen anzeigen",
+      deactivateTwoFASetup: "2FA deaktivieren",
       editTwoFASetup: "2‑Faktor-Authentifizierung (2FA) bearbeiten",
       twoFASetup: "2FA Einstellungen",
       twoFAInfo: [

@@ -219,6 +219,8 @@ const en = {
       settings: "Set your preferences and settings here.",
       preferredLanguage: "Select your preferred language.",
       saveLanguage: "Save Language",
+      displayTwoFASetup: "Display 2FA Setup",
+      deactivateTwoFASetup: "Deactivate 2FA",
       editTwoFASetup: "Edit your 2FA setup",
       twoFASetup: "2FA Setup",
       twoFAInfo: [

@@ -58,6 +58,10 @@ export default class SettingsView extends AbstractView {
     return auth.getUser().hasTwoFA;
   }
 
+  private getPasswordFormAction(): string {
+    return this.passwordFormAction;
+  }
+
   private getTwoFASetupHTML(): string {
     return /* HTML */ `
       <div>
@@ -151,15 +155,25 @@ export default class SettingsView extends AbstractView {
           Form({
             id: "two-fa-password-form",
             children: [
-              Input({
-                id: "two-fa-password-input",
-                label: i18next.t("global.password"),
-                name: "two-fa-password-input",
-                placeholder: i18next.t("global.password"),
-                type: "password",
-                errorId: "two-fa-password-input-error",
-                hasToggle: true
-              }),
+              this.hasTwoFA() && this.getPasswordFormAction() === "remove"
+                ? Input({
+                    id: "two-fa-password-input",
+                    label: i18next.t("settingsView.deactivateTwoFASetup"),
+                    name: "two-fa-password-input",
+                    placeholder: i18next.t("global.password"),
+                    type: "password",
+                    errorId: "two-fa-password-input-error",
+                    hasToggle: true
+                  })
+                : Input({
+                    id: "two-fa-password-input",
+                    label: i18next.t("settingsView.displayTwoFASetup"),
+                    name: "two-fa-password-input",
+                    placeholder: i18next.t("global.password"),
+                    type: "password",
+                    errorId: "two-fa-password-input-error",
+                    hasToggle: true
+                  }),
               Button({
                 id: "two-fa-submit-password",
                 text: i18next.t("settingsView.confirmPassword"),
@@ -564,11 +578,12 @@ export default class SettingsView extends AbstractView {
     modal.showModal();
   }
 
-  private displayTwoFAPasswordModal(
+  private async displayTwoFAPasswordModal(
     action: "setup" | "remove" | "backupCodes"
   ) {
-    this.displayModal("two-fa-password-modal");
     this.passwordFormAction = action;
+    await router.refresh();
+    this.displayModal("two-fa-password-modal");
   }
 
   private hideBackupCodesModal() {

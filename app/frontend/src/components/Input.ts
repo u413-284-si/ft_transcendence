@@ -61,7 +61,9 @@ export function Input({
 
 function renderLabel(id: string, label: string): string {
   return /* HTML */ `
-    <label for="${id}" class="text-sm font-medium text-white"> ${label} </label>
+    <label for="${id}" class="text-sm font-medium text-white text-left">
+      ${label}
+    </label>
   `;
 }
 

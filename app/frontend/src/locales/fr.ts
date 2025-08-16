@@ -209,6 +209,9 @@ const fr: TranslationShape = {
       settings: "Configurez vos préférences et paramètres ici.",
       preferredLanguage: "Choisissez votre langue préférée.",
       saveLanguage: "Enregistrer la langue",
+      displayTwoFASetup:
+        "Afficher la configuration de l’authentification à deux facteurs",
+      deactivateTwoFASetup: "Désactiver l’authentification à deux facteurs",
       editTwoFASetup:
         "Modifier la configuration de l’authentification à deux facteurs",
       twoFASetup: "Paramètres de l’authentification à deux facteurs",
