@@ -17,7 +17,10 @@ import { getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
 import TwoFAVerifyView from "./views/TwoFAVerifyView.js";
 
-type AuthChangeCallback = (authenticated: boolean, token: Token | null) => void;
+type AuthChangeCallback = (
+  authenticated: boolean,
+  token: Token | null
+) => Promise<void>;
 
 export class AuthManager {
   private static instance: AuthManager;
@@ -40,7 +43,7 @@ export class AuthManager {
     return AuthManager.instance;
   }
 
-  private updateAuthState(token: Token | null): void {
+  private async updateAuthState(token: Token | null): Promise<void> {
     this.token = token;
     if (token) {
       this.authenticated = true;
@@ -53,7 +56,7 @@ export class AuthManager {
       this.removeActivityListeners();
       closeSSEConnection();
     }
-    this.notify();
+    await this.notify();
   }
 
   public async initialize(): Promise<void> {
@@ -63,14 +66,14 @@ export class AuthManager {
         toaster.error(i18next.t("toast.emailExists"));
         document.cookie =
           "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
-        this.notify();
+        await this.notify();
         return;
       }
       const apiResponse = await authAndDecodeAccessToken();
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
           console.log("JWT validation failed or no token found.");
-          this.notify();
+          await this.notify();
           return;
         } else {
           throw new ApiError(apiResponse);
@@ -80,7 +83,7 @@ export class AuthManager {
       this.user = getDataOrThrow(await getUserProfile());
       this.updateAuthState(token);
     } catch (error) {
-      this.notify();
+      await this.notify();
       router.handleError("Error in AuthManager.initialize():", error);
     }
   }
@@ -191,36 +194,33 @@ export class AuthManager {
     this.listeners.push(callback);
   }
 
-  public updateUser(
-    update: Partial<User>,
-    options: { notify?: boolean } = { notify: true }
-  ): void {
-    if (!this.authenticated) {
+  public async updateUser(update: Partial<User>): Promise<void> {
+    if (!this.user) {
       console.log("User not authenticated. Cannot update user.");
       return;
     }
-    if (!update) {
+    if (Object.keys(update).length === 0) {
       console.log("No update data provided.");
       return;
     }
 
     this.user = {
-      ...this.user!,
+      ...this.user,
       ...update
     };
-    if (options.notify) this.notify();
+    await this.notify();
   }
 
   public async updateLanguage(lang: Language): Promise<void> {
     await i18next.changeLanguage(lang);
     console.info(`Language switched to ${lang}`);
     localStorage.setItem("preferredLanguage", lang);
-    this.notify();
+    await this.notify();
   }
 
-  private notify(): void {
+  private async notify(): Promise<void> {
     for (const callback of this.listeners) {
-      callback(this.authenticated, this.token);
+      await callback(this.authenticated, this.token);
     }
   }
 

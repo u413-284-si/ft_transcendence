@@ -1,12 +1,14 @@
 import {
   incrementalDate,
   rand,
+  randChanceBoolean,
+  randFloat,
   randNoun,
   randNumber,
   randRecentDate,
   randUserName
 } from "@ngneat/falso";
-import { Tournament } from "/workspaces/ft_transcendence/app/frontend/src/Tournament.ts";
+import { Tournament } from "../../../frontend/src/Tournament.ts";
 import {
   createTournament,
   updateTournament
@@ -18,12 +20,22 @@ import type { BracketMatch } from "../../../frontend/src/types/IMatch.ts";
 import type { Tournament as TournamentType, User } from "@prisma/client";
 type PublicTournament = Omit<TournamentType, "isPrivate">;
 
-export async function seedTournamentsPerUser(users: User[], min = 1, max = 10) {
+export async function seedTournamentsPerUser(
+  users: User[],
+  min = 1,
+  max = 10,
+  winRateMin = 0,
+  winRateMax = 1
+) {
   const allTournaments: PublicTournament[] = [];
 
   for (const user of users) {
     const tournamentCount = randNumber({ min, max });
-    const tournaments = await seedTournaments(user.id, tournamentCount);
+    const tournaments = await seedTournaments(
+      user.id,
+      tournamentCount,
+      randFloat({ min: winRateMin, max: winRateMax })
+    );
     allTournaments.push(...tournaments);
   }
 
@@ -31,18 +43,22 @@ export async function seedTournamentsPerUser(users: User[], min = 1, max = 10) {
   return allTournaments;
 }
 
-export async function seedTournaments(userId: number, count = 10) {
+export async function seedTournaments(
+  userId: number,
+  count = 10,
+  winRate = 0.5
+) {
   const tournaments: PublicTournament[] = [];
 
   for (let i = 0; i < count; i++) {
-    const tournament = await seedSingleTournament(userId);
+    const tournament = await seedSingleTournament(userId, winRate);
     tournaments.push(tournament);
   }
   console.log(`Seeded ${tournaments.length} tournaments for userId ${userId}`);
   return tournaments;
 }
 
-export async function seedSingleTournament(userId: number) {
+export async function seedSingleTournament(userId: number, winRate = 0.5) {
   const tournamentName = randNoun();
   const numberOfPlayers = rand([4, 8, 16]);
   const playerNicknames = Array.from({ length: numberOfPlayers }, () =>
@@ -84,12 +100,31 @@ export async function seedSingleTournament(userId: number) {
         : userNickname === nextMatch.player2!
           ? "PLAYERTWO"
           : "NONE";
-    const { player1Score, player2Score } = generateNonTiedScores(0, 10);
+
+    const userInMatch = playedAs !== "NONE";
+    const userWins = userInMatch
+      ? randChanceBoolean({ chanceTrue: winRate })
+      : null;
+
+    const { player1Score, player2Score } = generateNonTiedScores(0, 10, {
+      winner:
+        userInMatch && userWins !== null
+          ? playedAs === "PLAYERONE"
+            ? userWins
+              ? "PLAYERONE"
+              : "PLAYERTWO"
+            : userWins
+              ? "PLAYERTWO"
+              : "PLAYERONE"
+          : undefined
+    });
+
     const winner =
       player1Score > player2Score ? nextMatch.player1! : nextMatch.player2!;
     const date = dateFactory();
 
     tournamentClass.updateBracketWithResult(nextMatch.matchId, winner);
+
     await transactionMatch(
       userId,
       playedAs,
@@ -104,6 +139,7 @@ export async function seedSingleTournament(userId: number) {
       date
     );
   }
+
   const tournament = await updateTournament(tournamentClass.getId(), userId, {
     bracket: tournamentClass.getBracket(),
     isFinished: true,

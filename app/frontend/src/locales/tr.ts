@@ -244,9 +244,13 @@ const tr: TranslationShape = {
     },
 
     statsView: {
+      dashboard: "Core",
       date: "Cycle Date",
+      details: "Data",
       friendOnly: "Link established required to access complete logs.",
+      friends: "Connections",
       joined: "Node integrated: {{date}}",
+      matches: "Sessions",
       matchHistory: "Session Log",
       played: "Engaged",
       player1: "Agent 1",
@@ -256,6 +260,7 @@ const tr: TranslationShape = {
       result: "Session Outcome",
       title: "Performance Stats",
       tournament: "Tournament Grid",
+      tournaments: "Tournaments",
       winRate: "Victory Ratio",
       winstreakCur: "Sequence",
       winstreakMax: "Max Sequence"
@@ -265,6 +270,9 @@ const tr: TranslationShape = {
       acceptedFriendRequest: "Link request accepted by ",
       avatarUploadFailed: "Avatar upload interrupted. Reattempt required.",
       avatarUploadedSuccess: "Avatar successfully embedded!",
+      chartCannotRemoveYourself: "Self-removal not permitted.",
+      chartCompareMaxThree: "Data limit: 3 nodes.",
+      chartError: "Chart failed to initialize",
       connectionLost:
         "Signal lost — attempting reconnection in {{delay}} cycles... (Attempt {{attempt}} of {{maxAttempts}})",
       connectionReestablished: "Signal reestablished",
@@ -302,6 +310,25 @@ const tr: TranslationShape = {
       userVerificationError:
         "An error occurred while verifying the user:<br>Redirecting to login.",
       validateTournamentNameError: "Error verifying tournament ID."
+    },
+
+    chart: {
+      activity: "Log",
+      current: "Active",
+      loss: "Loss",
+      numPlayers: "({{num}}) Operatives",
+      played: "Tournament Log{{range}}",
+      progress: "Progress {{num}}%",
+      progression: "Winrate Change{{range}}",
+      rangeLastDays: " (Last {{count}} Days)",
+      rangeLastMatches: " (Last {{count}} Matches)",
+      reachedThisStage: "Stage Reached",
+      scoreDiff: "Score Change{{range}}",
+      scores: "Score Log{{range}}",
+      selectUpTo: "Select ≤ 3 nodes",
+      summary: "System Summary",
+      win: "Win",
+      winLoss: "Win/Loss Log{{range}}"
     }
   }
 };

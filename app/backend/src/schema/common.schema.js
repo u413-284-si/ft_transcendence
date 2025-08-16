@@ -65,8 +65,14 @@ const commonDefinitionsSchema = {
     },
     date: {
       type: "string",
+      format: "date",
+      description: "A date in format YYYY-MM-DD (ISO 8601)."
+    },
+    datetime: {
+      type: "string",
       format: "date-time",
-      description: "A date in ISO 8601 format."
+      description:
+        "A date-time string in format YYYY-MM-DDThh:mm:ss.sTZD (ISO 8601)."
     }
   }
 };

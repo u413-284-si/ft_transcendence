@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.info("Layout listener initialized.");
     if (isAuth) layout.update("auth");
     else layout.update("guest");
-    router.reload();
+    await router.refresh();
   });
 
   router.start();

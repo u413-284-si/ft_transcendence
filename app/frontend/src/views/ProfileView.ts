@@ -294,7 +294,7 @@ export default class ProfileView extends AbstractView {
         }
       }
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
-      auth.updateUser(updatedUser);
+      await auth.updateUser(updatedUser);
     } catch (err) {
       console.error("Failed to update profile:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
@@ -317,7 +317,7 @@ export default class ProfileView extends AbstractView {
       const updatedUser: Partial<User> = {
         ...(avatar ? { avatar } : {})
       };
-      auth.updateUser(updatedUser);
+      await auth.updateUser(updatedUser);
     } catch (err) {
       console.error("Failed to upload avatar:", err);
       toaster.error(i18next.t("toast.avatarUploadFailed"));
