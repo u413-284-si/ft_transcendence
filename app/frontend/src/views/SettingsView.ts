@@ -444,7 +444,7 @@ export default class SettingsView extends AbstractView {
 
       this.twoFAQRCodeEl.src = qrcode;
 
-      this.hideOverlay();
+      this.hideModal("two-fa-password-modal");
       this.displayModal("two-fa-modal");
     } catch (error) {
       router.handleError("Error in displayTwoFASetup()", error);
@@ -547,28 +547,18 @@ export default class SettingsView extends AbstractView {
   private hideTwoFASetupModal() {
     this.twoFAQRCodeEl.src = "";
     this.hideModal("two-fa-modal");
-    this.hideOverlay();
-  }
-
-  private displayOverlay(): void {
-    const overlay = document.getElementById("overlay-root");
-    overlay?.classList.remove("hidden");
   }
 
   private displayModal(modalId: string) {
-    this.hideAllModals();
-    this.displayOverlay();
-    const modal = getEl(modalId);
-    modal.classList.remove("hidden");
+    const modal = getEl(modalId) as HTMLDialogElement;
+    modal.showModal();
   }
 
   private displayTwoFAPasswordModal(
     action: "setup" | "remove" | "backupCodes"
   ) {
-    this.hideAllModals();
     this.displayModal("two-fa-password-modal");
     this.passwordFormAction = action;
-    this.displayOverlay();
   }
 
   private hideBackupCodesModal() {
@@ -576,20 +566,8 @@ export default class SettingsView extends AbstractView {
     this.hideModal("two-fa-backup-codes-modal");
   }
 
-  private hideOverlay(): void {
-    const overlay = document.getElementById("overlay-root");
-    overlay?.classList.add("hidden");
-  }
-
   private hideModal(modalId: string) {
-    this.hideOverlay();
-    const modal = getEl(modalId);
-    modal.classList.add("hidden");
-  }
-  private hideAllModals() {
-    const allModals = document.querySelectorAll("[id$='-modal']");
-    allModals.forEach((modal) => {
-      this.hideModal(modal.id);
-    });
+    const modal = getEl(modalId) as HTMLDialogElement;
+    modal.close();
   }
 }
