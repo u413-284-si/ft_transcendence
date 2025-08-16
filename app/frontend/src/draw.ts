@@ -78,6 +78,6 @@ function drawWinningScreen(
   ctx.fillText(
     i18next.t("global.continue"),
     canvasCenterX - 100,
-    canvasCenterY / 2 + 40
+    canvasCenterY + 40
   );
 }
