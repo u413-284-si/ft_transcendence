@@ -58,10 +58,6 @@ export default class SettingsView extends AbstractView {
     return auth.getUser().hasTwoFA;
   }
 
-  private getPasswordFormAction(): string {
-    return this.passwordFormAction;
-  }
-
   private getTwoFASetupHTML(): string {
     return /* HTML */ `
       <div>
@@ -155,7 +151,7 @@ export default class SettingsView extends AbstractView {
           Form({
             id: "two-fa-password-form",
             children: [
-              this.hasTwoFA() && this.getPasswordFormAction() === "remove"
+              this.passwordFormAction === "remove"
                 ? Input({
                     id: "two-fa-password-input",
                     label: i18next.t("settingsView.deactivateTwoFASetup"),
@@ -165,15 +161,29 @@ export default class SettingsView extends AbstractView {
                     errorId: "two-fa-password-input-error",
                     hasToggle: true
                   })
-                : Input({
-                    id: "two-fa-password-input",
-                    label: i18next.t("settingsView.displayTwoFASetup"),
-                    name: "two-fa-password-input",
-                    placeholder: i18next.t("global.password"),
-                    type: "password",
-                    errorId: "two-fa-password-input-error",
-                    hasToggle: true
-                  }),
+                : this.passwordFormAction === "setup"
+                  ? Input({
+                      id: "two-fa-password-input",
+                      label: i18next.t("settingsView.displayTwoFASetup"),
+                      name: "two-fa-password-input",
+                      placeholder: i18next.t("global.password"),
+                      type: "password",
+                      errorId: "two-fa-password-input-error",
+                      hasToggle: true
+                    })
+                  : this.passwordFormAction === "backupCodes"
+                    ? Input({
+                        id: "two-fa-password-input",
+                        label: i18next.t(
+                          "settingsView.twoFAGenerateBackupCodes"
+                        ),
+                        name: "two-fa-password-input",
+                        placeholder: i18next.t("global.password"),
+                        type: "password",
+                        errorId: "two-fa-password-input-error",
+                        hasToggle: true
+                      })
+                    : "",
               Button({
                 id: "two-fa-submit-password",
                 text: i18next.t("settingsView.confirmPassword"),
