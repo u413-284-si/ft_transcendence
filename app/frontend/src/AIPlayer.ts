@@ -27,7 +27,7 @@ export class AIPlayer {
     this.side = side;
 
     this.reactionInterval = options.reactionInterval ?? 1000;
-    this.predictionError = options.predictionError ?? 80;
+    this.predictionError = options.predictionError ?? 65;
     this.tolerance = options.tolerance ?? 10;
   }
 
