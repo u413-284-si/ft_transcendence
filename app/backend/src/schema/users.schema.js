@@ -21,7 +21,8 @@ const userSchema = {
     dateJoined: { $ref: "commonDefinitionsSchema#/definitions/date" },
     authProvider: {
       $ref: "commonDefinitionsSchema#/definitions/authProvider"
-    }
+    },
+    hasTwoFA: { type: "boolean" }
   },
   required: ["id", "username"],
   additionalProperties: false
