@@ -65,13 +65,21 @@ export default class SettingsView extends AbstractView {
           id: "two-fa-intro",
           text: i18next.t("settingsView.editTwoFASetup")
         })}
-        ${Button({
-          id: "setup-two-fa-button",
-          text: i18next.t("settingsView.twoFASetup"),
-          variant: "default",
-          size: "md",
-          type: "button"
-        })}
+        ${!this.hasTwoFA()
+          ? Button({
+              id: "setup-two-fa-button",
+              text: i18next.t("settingsView.twoFASetup"),
+              variant: "default",
+              size: "md",
+              type: "button"
+            })
+          : Button({
+              id: "setup-two-fa-button",
+              text: i18next.t("settingsView.twoFASetup"),
+              variant: "active",
+              size: "md",
+              type: "button"
+            })}
       </div>
       ${Modal({
         id: "two-fa-modal",
