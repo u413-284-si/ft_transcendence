@@ -391,8 +391,7 @@ export default class SettingsView extends AbstractView {
         const updatedUser: Partial<User> = {
           hasTwoFA: true
         };
-        auth.updateUser(updatedUser, { notify: false });
-        this.render();
+        auth.updateUser(updatedUser);
 
         toaster.success(i18next.t("toast.twoFASetupSuccess"));
         this.fillBackupCodesTable(backupCodes);
@@ -476,8 +475,7 @@ export default class SettingsView extends AbstractView {
       const updatedUser: Partial<User> = {
         hasTwoFA: false
       };
-      auth.updateUser(updatedUser, { notify: false });
-      this.render();
+      auth.updateUser(updatedUser);
 
       this.twoFAPasswordInputEl.value = "";
       this.hideModal("two-fa-password-modal");
