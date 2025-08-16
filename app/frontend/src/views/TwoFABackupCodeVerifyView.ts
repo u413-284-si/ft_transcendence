@@ -75,6 +75,7 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
     }
 
     const apiResponse = await verifyBackupCode(twoFABackupCodeInput.value);
+    twoFABackupCodeInput.value = "";
     if (!apiResponse.success) {
       if (apiResponse.status === 401) {
         markInvalid(

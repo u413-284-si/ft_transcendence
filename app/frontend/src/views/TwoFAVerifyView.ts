@@ -81,6 +81,7 @@ export default class TwoFAVerifyView extends AbstractView {
     }
 
     const apiResponse = await verifyLoginTwoFACode(twoFAQRCodeInput.value);
+    twoFAQRCodeInput.value = "";
     if (!apiResponse.success) {
       if (apiResponse.status === 401) {
         markInvalid(

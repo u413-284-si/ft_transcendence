@@ -149,6 +149,9 @@ export default class Register extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
+      emailEL.value = "";
+      userEl.value = "";
+      passwordEl.value = "";
       const username = escapeHTML(apiResponse.data.username);
       toaster.success(
         i18next.t("toast.registrationSuccess", {

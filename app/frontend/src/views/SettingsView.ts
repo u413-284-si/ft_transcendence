@@ -374,6 +374,7 @@ export default class SettingsView extends AbstractView {
         const apiResponse = await verifyTwoFACodeAndGetBackupCodes(
           this.twoFACodeInputEl.value
         );
+        this.twoFACodeInputEl.value = "";
         if (!apiResponse.success) {
           if (apiResponse.status === 401) {
             markInvalid(
@@ -428,6 +429,7 @@ export default class SettingsView extends AbstractView {
       const apiResponse = await generateTwoFAQRcode(
         this.twoFAPasswordInputEl.value
       );
+      this.twoFAPasswordInputEl.value = "";
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
           markInvalid(
@@ -440,7 +442,6 @@ export default class SettingsView extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
-      this.twoFAPasswordInputEl.value = "";
       const { qrcode } = apiResponse.data;
 
       this.twoFAQRCodeEl.src = qrcode;
@@ -460,6 +461,7 @@ export default class SettingsView extends AbstractView {
       // if (!validatePassword(twoFAPasswordInputEl, twoFAPasswordInputErrorEl))
       //   return;
       const apiResponse = await removeTwoFA(this.twoFAPasswordInputEl.value);
+      this.twoFAPasswordInputEl.value = "";
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
           markInvalid(
@@ -478,7 +480,6 @@ export default class SettingsView extends AbstractView {
       };
       auth.updateUser(updatedUser);
 
-      this.twoFAPasswordInputEl.value = "";
       this.hideModal("two-fa-password-modal");
       this.passwordFormAction = "setup";
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
@@ -497,6 +498,7 @@ export default class SettingsView extends AbstractView {
       const apiResponse = await generateBackupCodes(
         this.twoFAPasswordInputEl.value
       );
+      this.twoFAPasswordInputEl.value = "";
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
           markInvalid(
@@ -509,7 +511,6 @@ export default class SettingsView extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
-      this.twoFAPasswordInputEl.value = "";
       this.fillBackupCodesTable(apiResponse.data.backupCodes);
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
       this.displayModal("two-fa-backup-codes-modal");

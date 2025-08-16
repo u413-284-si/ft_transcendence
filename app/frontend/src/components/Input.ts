@@ -106,6 +106,7 @@ function renderStandardInput(
         name="${name}"
         placeholder="${placeholder}"
         class="${classes}"
+        value=""
       />
       ${toggleButton}
     </div>
