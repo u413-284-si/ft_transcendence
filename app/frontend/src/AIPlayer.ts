@@ -32,7 +32,7 @@ export class AIPlayer {
   }
 
   updatePerception(gameState: GameState) {
-    const now = performance.now();
+    const now: number = performance.now();
     if (now - this.lastUpdate < this.reactionInterval) {
       return;
     }
