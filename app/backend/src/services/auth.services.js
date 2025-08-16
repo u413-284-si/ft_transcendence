@@ -19,6 +19,7 @@ export async function createHash(value) {
 }
 
 export async function verifyHash(hash, value) {
+  if (hash === null) return false;
   return await pkg.verify(hash, value);
 }
 
