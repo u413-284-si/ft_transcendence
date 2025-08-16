@@ -22,7 +22,6 @@ export class AIPlayer {
       reactionInterval?: number;
       predictionError?: number;
       tolerance?: number;
-      smoothingFactor?: number;
     } = {}
   ) {
     this.side = side;
