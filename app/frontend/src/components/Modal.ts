@@ -22,7 +22,7 @@ export function Modal({
   size = "md"
 }: ModalOptions): string {
   const classes = [
-    "flex flex-col items-center justify-center fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 border border-neon-cyan rounded-md bg-emerald-dark hidden",
+    "m-auto border border-neon-cyan rounded-md bg-emerald-dark",
     modalSizes[size],
     className
   ].join(" ");
@@ -36,6 +36,6 @@ export function Modal({
     ...children
   ].join("\n");
   return /* HTML */ `
-    <div ${id ? `id="${id}"` : ""} class="${classes}">${content}</div>
+    <dialog ${id ? `id="${id}"` : ""} class="${classes}">${content}</dialog>
   `;
 }
