@@ -177,4 +177,9 @@
     animation: glow-cyan 2.5s infinite ease-in-out;
     font-weight: 600;
   }
+
+  dialog::backdrop {
+    background-color: oklch(0 0 0);
+    opacity: 0.3;
+  }
 }
