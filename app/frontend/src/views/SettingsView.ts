@@ -3,7 +3,7 @@ import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Modal } from "../components/Modal.js";
 import { TextBox } from "../components/TextBox.js";
-import { Input } from "../components/Input.js";
+import { Input, addTogglePasswordListener } from "../components/Input.js";
 import { Image } from "../components/Image.js";
 import {
   generateBackupCodes,
@@ -245,6 +245,7 @@ export default class SettingsView extends AbstractView {
       this.twoFAPasswordFormEl.addEventListener("submit", (event) =>
         this.callPasswordFormAction(event)
       );
+      addTogglePasswordListener(this.twoFAPasswordInputEl.id);
       this.twoFACloseTwoFAModalButtonEl.addEventListener("click", () =>
         this.hideTwoFASetupModal()
       );
