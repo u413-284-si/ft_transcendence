@@ -1,10 +1,10 @@
+import { getButtonEl, getEl } from "../utility.js";
 import { Button } from "./Button.js";
 
 export type ModalOptions = {
   children: string[];
   className?: string;
   id?: string;
-  idCloseButton?: string;
   size?: "sm" | "md" | "lg";
 };
 
@@ -18,7 +18,6 @@ export function Modal({
   children,
   className = "",
   id = "",
-  idCloseButton = "",
   size = "md"
 }: ModalOptions): string {
   const classes = [
@@ -29,7 +28,7 @@ export function Modal({
   const content = [
     `<div class="flex justify-end mb-4 w-full">
     ${Button({
-      id: idCloseButton,
+      id: `${id}-close-button`,
       text: "&times;"
     })}
   </div>`,
@@ -38,4 +37,23 @@ export function Modal({
   return /* HTML */ `
     <dialog ${id ? `id="${id}"` : ""} class="${classes}">${content}</dialog>
   `;
+}
+
+export function addCloseModalListener(id: string) {
+  const modalEl = getEl(id) as HTMLDialogElement;
+  const modalCloseButtonEl = getButtonEl(`${id}-close-button`);
+
+  modalEl.addEventListener("click", (e) => {
+    const dialogDimensions = modalEl.getBoundingClientRect();
+    if (
+      e.clientX < dialogDimensions.left ||
+      e.clientX > dialogDimensions.right ||
+      e.clientY < dialogDimensions.top ||
+      e.clientY > dialogDimensions.bottom
+    ) {
+      modalEl.close();
+    }
+  });
+
+  modalCloseButtonEl.addEventListener("click", () => modalEl.close());
 }
