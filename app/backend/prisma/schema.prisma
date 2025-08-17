@@ -96,15 +96,17 @@ model FriendRequest {
 }
 
 model Match {
-    id              Int      @id @default(autoincrement())
+    id              Int        @id @default(autoincrement())
     userId          Int
-    playedAs        PlayedAs @default(PLAYERONE)
+    playedAs        PlayedAs   @default(PLAYERONE)
     player1Nickname String
     player2Nickname String
     player1Score    Int
     player2Score    Int
+    player1Type     PlayerType @default(HUMAN)
+    player2Type     PlayerType @default(HUMAN)
     tournamentId    Int?
-    date            DateTime @default(now())
+    date            DateTime   @default(now())
 
     user       User        @relation("UserPlayed", fields: [userId], references: [id], onDelete: Cascade)
     tournament Tournament? @relation(fields: [tournamentId], references: [id])
@@ -152,4 +154,9 @@ enum Language {
     de
     pi
     tr
+}
+
+enum PlayerType {
+    HUMAN
+    AI
 }

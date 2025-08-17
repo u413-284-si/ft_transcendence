@@ -6,6 +6,8 @@ const matchSelect = {
   player2Nickname: true,
   player1Score: true,
   player2Score: true,
+  player1Type: true,
+  player2Type: true,
   date: true,
   tournament: {
     select: {
@@ -23,6 +25,8 @@ export async function createMatchTx(
   player2Nickname,
   player1Score,
   player2Score,
+  player1Type,
+  player2Type,
   tournament,
   date
 ) {
@@ -34,6 +38,8 @@ export async function createMatchTx(
       player2Nickname,
       player1Score,
       player2Score,
+      player1Type,
+      player2Type,
       tournamentId: tournament?.id || null,
       date: date
     },

@@ -5,7 +5,7 @@ import MatchAnnouncement from "./MatchAnnouncementView.js";
 import ResultsView from "./ResultsView.js";
 import NewGameView from "./NewGameView.js";
 import { Tournament } from "../Tournament.js";
-import { playedAs } from "../types/IMatch.js";
+import { playedAs, PlayerType } from "../types/IMatch.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -26,6 +26,8 @@ export class GameView extends AbstractView {
   constructor(
     private nickname1: string,
     private nickname2: string,
+    private type1: PlayerType,
+    private type2: PlayerType,
     private userRole: playedAs,
     private gameType: GameType,
     private tournament: Tournament | null
@@ -60,16 +62,29 @@ export class GameView extends AbstractView {
     });
   }
 
+  private isKeyAllowedForPlayer(key: GameKey): boolean {
+    const keysPlayerOne: GameKey[] = ["w", "s"];
+    const keysPlayerTwo: GameKey[] = ["ArrowUp", "ArrowDown"];
+
+    if (this.type1 !== "HUMAN" && keysPlayerOne.includes(key)) {
+      return false;
+    }
+    if (this.type2 !== "HUMAN" && keysPlayerTwo.includes(key)) {
+      return false;
+    }
+    return true;
+  }
+
   private onKeyDown = (event: KeyboardEvent): void => {
     const key = event.key as GameKey;
-    if (key in this.keys) {
+    if (key in this.keys && this.isKeyAllowedForPlayer(key)) {
       this.keys[key] = true;
     }
   };
 
   private onKeyUp = (event: KeyboardEvent): void => {
     const key = event.key as GameKey;
-    if (key in this.keys) {
+    if (key in this.keys && this.isKeyAllowedForPlayer(key)) {
       this.keys[key] = false;
     }
   };
@@ -85,8 +100,9 @@ export class GameView extends AbstractView {
       await startGame(
         this.nickname1,
         this.nickname2,
+        this.type1,
+        this.type2,
         this.userRole,
-        this.gameType,
         this.tournament,
         this.keys
       );
