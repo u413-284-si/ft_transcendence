@@ -19,7 +19,6 @@ import {
 } from "../services/matches.services.js";
 import {
   getUserTournaments,
-  getUserActiveTournament,
   getUserTournamentsCount
 } from "../services/tournaments.services.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
@@ -233,7 +232,7 @@ export async function getUserTournamentsHandler(request, reply) {
       offset: request.query.offset,
       sort: request.query.sort
     };
-    const data = await getUserTournaments(userId, filter);
+    const data = await getUserTournaments(userId, undefined, filter);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: { items: data }
@@ -281,23 +280,6 @@ export async function getUserTournamentsByUsernameHandler(request, reply) {
     request.log.error(
       { err, body: request.body },
       `getUserTournamentsByUsernameHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function getUserActiveTournamentHandler(request, reply) {
-  const action = "Get user active tournament";
-  try {
-    const userId = parseInt(request.user.id, 10);
-    const data = await getUserActiveTournament(userId);
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), data: data });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getUserActiveTournamentHandler: ${createResponseMessage(action, false)}`
     );
     return handlePrismaError(reply, action, err);
   }

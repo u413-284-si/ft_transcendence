@@ -101,17 +101,6 @@ export async function getUserTournaments(
   return tournaments;
 }
 
-export async function getUserActiveTournament(userId) {
-  const tournament = await prisma.tournament.findFirst({
-    where: {
-      userId,
-      isFinished: false
-    },
-    select: tournamentSelect
-  });
-  return tournament;
-}
-
 export async function getUserTournamentsCount(userId, filter = {}) {
   const total = await prisma.tournament.count({
     where: {

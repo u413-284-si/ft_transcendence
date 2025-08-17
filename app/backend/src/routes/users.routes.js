@@ -8,7 +8,6 @@ import {
   patchUserHandler,
   getUserStatsHandler,
   getUserTournamentsHandler,
-  getUserActiveTournamentHandler,
   getAllUserFriendRequestsHandler,
   searchUserHandler,
   createUserAvatarHandler,
@@ -64,12 +63,6 @@ export default async function userRoutes(fastify) {
     "/:username/tournaments",
     optionsGetUserTournamentsByUsername,
     getUserTournamentsByUsernameHandler
-  );
-
-  fastify.get(
-    "/me/tournaments/active",
-    optionsGetUserActiveTournament,
-    getUserActiveTournamentHandler
   );
 
   fastify.get(
@@ -220,16 +213,6 @@ const optionsGetUserTournamentsByUsername = {
     },
     response: {
       200: { $ref: "tournamentArrayResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetUserActiveTournament = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      200: { $ref: "tournamentResponseSchema" },
       ...errorResponses
     }
   }
