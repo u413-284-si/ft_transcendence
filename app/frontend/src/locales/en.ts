@@ -238,7 +238,7 @@ const en = {
       confirmPassword: "Confirm",
       twoFABackupCodeInfo: [
         "Those are your backup codes.",
-        "Copy or download them",
+        "Copy or download them.",
         "",
         "They will not be shown again."
       ],

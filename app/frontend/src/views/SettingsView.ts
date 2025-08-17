@@ -201,12 +201,9 @@ export default class SettingsView extends AbstractView {
         children: [
           TextBox({
             id: "two-fa-backup-codes-info",
-            text: [
-              i18next.t("settingsView.twoFABackupCodeInfo.0"),
-              i18next.t("settingsView.twoFABackupCodeInfo.1"),
-              i18next.t("settingsView.twoFABackupCodeInfo.2"),
-              i18next.t("settingsView.twoFABackupCodeInfo.3")
-            ],
+            text: i18next.t("settingsView.twoFABackupCodeInfo", {
+              returnObjects: true
+            }),
             variant: "warning"
           }),
           Table({
