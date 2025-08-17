@@ -1,5 +1,5 @@
 import { router } from "../routing/Router.js";
-import { getActiveTournament } from "../services/tournamentService.js";
+import { getUserTournaments } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
@@ -89,14 +89,17 @@ export default class NewTournamentView extends AbstractView {
   }
 
   async render() {
-    const activeTournament = getDataOrThrow(await getActiveTournament());
-    if (!activeTournament) {
+    const tournamentsPage = getDataOrThrow(
+      await getUserTournaments({ isFinished: false })
+    );
+    if (tournamentsPage.items.length === 0) {
       console.log("No active tournament found");
       this.updateHTML();
       this.formEl = document.querySelector("#tournament-form")!;
       this.addListeners();
       return;
     }
+    const activeTournament = tournamentsPage.items[0];
     const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
     const tournament = new Tournament(
       activeTournament.name,

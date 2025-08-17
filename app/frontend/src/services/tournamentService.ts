@@ -1,6 +1,6 @@
 import { Tournament } from "../Tournament.js";
 import { TournamentDTO } from "../types/ITournament.js";
-import { apiFetch } from "./api.js";
+import { ApiError, apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 import { FetchPageResult } from "../types/FetchPageResult.js";
 
@@ -41,45 +41,35 @@ export async function updateTournamentBracket(
   });
 }
 
-export async function getUserTournaments(): Promise<
-  ApiResponse<TournamentDTO[]>
-> {
-  const url = "/api/users/me/tournaments";
-
-  return apiFetch<TournamentDTO[]>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
-export async function getUserTournamentsByUsername(
-  username: string,
-  limit = 10,
-  offset = 0,
-  sort: "asc" | "desc" = "desc"
+export async function getUserTournaments(
+  options: {
+    username?: string;
+    name?: string;
+    isFinished?: boolean;
+    limit?: number;
+    offset?: number;
+    sort?: "asc" | "desc";
+  } = {}
 ): Promise<ApiResponse<FetchPageResult<TournamentDTO>>> {
-  const encoded = encodeURIComponent(username);
-  const params = new URLSearchParams({
-    limit: limit.toString(),
-    offset: offset.toString(),
-    sort
-  });
+  const { username, name, isFinished, limit, offset, sort = "desc" } = options;
 
-  const url = `/api/users/${encoded}/tournaments?${params.toString()}`;
+  let url = `/api/users/${username ?? "me"}/tournaments`;
 
-  return apiFetch<FetchPageResult<TournamentDTO>>(url, {
+  const params = new URLSearchParams();
+
+  if (name) params.set("name", name);
+  if (isFinished !== undefined) params.set("isFinished", String(isFinished));
+  if (limit !== undefined) params.set("limit", limit.toString());
+  if (offset !== undefined) params.set("offset", offset.toString());
+  if (sort) params.set("sort", sort);
+
+  if ([...params].length > 0) {
+    url += `?${params.toString()}`;
+  }
+
+  return apiFetch(url, {
     method: "GET",
     credentials: "same-origin"
-  });
-}
-
-export async function getActiveTournament(): Promise<
-  ApiResponse<TournamentDTO | null>
-> {
-  const url = `/api/users/me/tournaments/active`;
-
-  return apiFetch<TournamentDTO | null>(url, {
-    method: "GET"
   });
 }
 

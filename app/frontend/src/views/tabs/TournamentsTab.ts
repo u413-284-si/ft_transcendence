@@ -15,7 +15,7 @@ import {
   TournamentRow
 } from "../../components/TournamentRow.js";
 import { Table } from "../../components/Table.js";
-import { getUserTournamentsByUsername } from "../../services/tournamentService.js";
+import { getUserTournaments } from "../../services/tournamentService.js";
 
 export class TournamentsTab extends PaginatedTab<TournamentDTO> {
   private dashboard: DashboardTournaments | null = null;
@@ -131,7 +131,7 @@ export class TournamentsTab extends PaginatedTab<TournamentDTO> {
 
   protected async fetchPage(limit: number, offset: number) {
     return getDataOrThrow(
-      await getUserTournamentsByUsername(this.username, limit, offset)
+      await getUserTournaments({ username: this.username, limit, offset })
     );
   }
 

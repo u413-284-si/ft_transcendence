@@ -105,20 +105,19 @@ export async function isTournamentNameAvailable(
   errorEl: HTMLElement
 ): Promise<boolean> {
   try {
-    const tournaments = getDataOrThrow(await getUserTournaments());
-    if (tournaments.length === 0) {
+    const tournamentsPage = getDataOrThrow(
+      await getUserTournaments({ name: inputEl.value })
+    );
+    if (tournamentsPage.items.length === 0) {
       return true;
     }
 
-    const tournamentNames = tournaments.map((tournament) => tournament.name);
-    if (tournamentNames.includes(inputEl.value)) {
-      markInvalid(
-        i18next.t("invalid.tournamentNameUniqueness"),
-        inputEl,
-        errorEl
-      );
-      return false;
-    }
+    markInvalid(
+      i18next.t("invalid.tournamentNameUniqueness"),
+      inputEl,
+      errorEl
+    );
+    return false;
   } catch (error) {
     console.error("Error fetching tournaments:", error);
     toaster.error(i18next.t("toast.validateTournamentNameError"));
