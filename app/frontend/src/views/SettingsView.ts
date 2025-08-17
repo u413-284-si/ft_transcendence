@@ -475,7 +475,6 @@ export default class SettingsView extends AbstractView {
 
       this.twoFAQRCodeEl.src = qrcode;
 
-      this.hideModal("two-fa-password-modal");
       this.displayModal("two-fa-modal");
     } catch (error) {
       router.handleError("Error in displayTwoFASetup()", error);
@@ -509,7 +508,6 @@ export default class SettingsView extends AbstractView {
       };
       auth.updateUser(updatedUser);
 
-      this.hideModal("two-fa-password-modal");
       this.passwordFormAction = "setup";
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
     } catch (error) {
@@ -580,7 +578,15 @@ export default class SettingsView extends AbstractView {
     this.hideModal("two-fa-modal");
   }
 
+  private hideAllModals(): void {
+    const allModals = document.querySelectorAll("[id$='-modal']");
+    allModals.forEach((modal) => {
+      this.hideModal(modal.id);
+    });
+  }
+
   private displayModal(modalId: string) {
+    this.hideAllModals();
     const modal = getEl(modalId) as HTMLDialogElement;
     modal.showModal();
   }
