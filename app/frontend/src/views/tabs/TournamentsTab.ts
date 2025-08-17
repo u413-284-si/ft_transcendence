@@ -49,9 +49,9 @@ export class TournamentsTab extends PaginatedTab<TournamentDTO> {
         })}
         <div id="tournament-history-table" class="p-6"></div>
         ${PaginationControls({
-          prevId: "matches-prev-btn",
-          nextId: "matches-next-btn",
-          indicatorId: "matches-page-indicator",
+          prevId: "tournaments-prev-btn",
+          nextId: "tournaments-next-btn",
+          indicatorId: "tournaments-page-indicator",
           prevLabel: "<",
           nextLabel: ">"
         })}
