@@ -19,6 +19,24 @@ const loginUserResponseSchema = {
     data: {
       type: "object",
       properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" },
+        hasTwoFA: { type: "boolean" }
+      },
+      required: ["username", "hasTwoFA"]
+    }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
+const logoutUserResponseSchema = {
+  $id: "logoutUserResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: {
+      type: "object",
+      properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" }
       },
       required: ["username"]
@@ -28,4 +46,41 @@ const loginUserResponseSchema = {
   additionalProperties: false
 };
 
-export const authSchemas = [loginUserSchema, loginUserResponseSchema];
+const twoFACodeSchema = {
+  $id: "twoFACodeSchema",
+  type: "object",
+  properties: {
+    code: { $ref: "commonDefinitionsSchema#/definitions/twoFACode" }
+  },
+  required: ["code"],
+  additionalProperties: false
+};
+
+const twoFABackupCodeSchema = {
+  $id: "twoFABackupCodeSchema",
+  type: "object",
+  properties: {
+    backupCode: { $ref: "commonDefinitionsSchema#/definitions/twoFABackupCode" }
+  },
+  required: ["backupCode"],
+  additionalProperties: false
+};
+
+const twoFAPasswordSchema = {
+  $id: "twoFAPasswordSchema",
+  type: "object",
+  properties: {
+    password: { $ref: "commonDefinitionsSchema#/definitions/password" }
+  },
+  required: ["password"],
+  additionalProperties: false
+};
+
+export const authSchemas = [
+  loginUserSchema,
+  loginUserResponseSchema,
+  logoutUserResponseSchema,
+  twoFACodeSchema,
+  twoFABackupCodeSchema,
+  twoFAPasswordSchema
+];

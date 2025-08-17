@@ -15,6 +15,7 @@ import { Token } from "./types/Token.js";
 import { User, Language } from "./types/User.js";
 import { getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
+import TwoFAVerifyView from "./views/TwoFAVerifyView.js";
 
 type AuthChangeCallback = (
   authenticated: boolean,
@@ -87,24 +88,50 @@ export class AuthManager {
     }
   }
 
+  private async fetchUserDataAndSetLanguage(): Promise<Token> {
+    const token = getDataOrThrow(await authAndDecodeAccessToken());
+    this.user = getDataOrThrow(await getUserProfile());
+    await i18next.changeLanguage(this.user.language);
+    localStorage.setItem("preferredLanguage", this.user!.language);
+    console.info(`Language switched to ${this.user!.language}`);
+    return token;
+  }
+
   public async login(username: string, password: string): Promise<boolean> {
     try {
-      const apiResponse = await userLogin(username, password);
-      if (!apiResponse.success) {
-        if (apiResponse.status === 401) {
+      const apiResponseUserLogin = await userLogin(username, password);
+      if (!apiResponseUserLogin.success) {
+        if (apiResponseUserLogin.status === 401) {
           toaster.error(i18next.t("toast.invalidUsernameOrPW"));
           return false;
         } else {
-          throw new ApiError(apiResponse);
+          throw new ApiError(apiResponseUserLogin);
         }
       }
-      const token = getDataOrThrow(await authAndDecodeAccessToken());
-      this.user = getDataOrThrow(await getUserProfile());
-      await i18next.changeLanguage(this.user.language);
-      localStorage.setItem("preferredLanguage", this.user!.language);
-      console.info(`Language switched to ${this.user!.language}`);
-      console.log("User logged in");
+
+      const hasTwoFA = apiResponseUserLogin.data.hasTwoFA;
+      if (hasTwoFA) {
+        router.switchView(new TwoFAVerifyView());
+        return false;
+      }
+
+      const token = await this.fetchUserDataAndSetLanguage();
       this.updateAuthState(token);
+      return true;
+    } catch (error) {
+      router.handleError("Login error", error);
+      return false;
+    }
+  }
+
+  public async loginAfterTwoFA() {
+    try {
+      const token = await this.fetchUserDataAndSetLanguage();
+      this.updateAuthState(token);
+      const updatedUser: Partial<User> = {
+        hasTwoFA: true
+      };
+      auth.updateUser(updatedUser);
       return true;
     } catch (error) {
       router.handleError("Login error", error);

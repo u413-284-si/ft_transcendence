@@ -97,6 +97,8 @@ export default class LoginView extends AbstractView {
     // if (!validatePassword(passwordEl, passwordErrorEl)) return;
 
     const isAllowed = await auth.login(userEl.value, passwordEl.value);
+    userEl.value = "";
+    passwordEl.value = "";
     if (!isAllowed) return;
     router.navigate("/home", false);
   }

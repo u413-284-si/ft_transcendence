@@ -60,6 +60,7 @@ const pi: TranslationShape = {
 
     global: {
       avatar: "Jolly Roger",
+      submit: "Hoist it!",
       confirmNewPassword: "Confirm yer new secret code",
       continue: "Hit ENTER to sail onward",
       editProfile: "Polish yer pirate profile",
@@ -71,6 +72,7 @@ const pi: TranslationShape = {
       offline: "Adrift",
       online: "Ahoy!",
       password: "Secret Code",
+      twoFACode: "Secret Digits Code",
       pongGame: "High-Seas Paddle Fight",
       player: "Pirate",
       playerWins: "{{player}} plunders the win!",
@@ -107,6 +109,15 @@ const pi: TranslationShape = {
         "Yer code needs numbers, big letters, little letters, and pirate symbols @$!%*?&",
       passwordConfirmationEmpty: "Confirm yer code, or walk the plank!",
       passwordConfirmation: "Codes don't match! Ye fool!",
+      twoFACode: "Yer secret digits be wrong, savvy!",
+      twoFACodeEmpty: "Don’t leave yer secret digits chest all empty, matey!",
+      twoFACodeFormat:
+        "That secret chest be needin’ six shiny numbers, no more, no less!",
+      twoFABackupCode: "Yer spare secret digits be wrong, ye scallywag!",
+      twoFABackupCodeEmpty:
+        "Don’t be leavin’ yer spare digits chest all empty, matey!",
+      twoFABackupCodeFormat:
+        "That spare chest be needin’ eight shiny numbers, not a digit more or less!",
       playerSelection: "Pick yer fighters, landlubber!",
       tournamentNameEmpty: "No name, no fame!",
       tournamentNameFormat: "Needs 3–20 marks like -!?_$.",
@@ -119,6 +130,18 @@ const pi: TranslationShape = {
     loginView: {
       title: "Board the Ship",
       usernameOrEmail: "Pirate name or message bottle address:"
+    },
+
+    twoFAVerifyView: {
+      title: "Verify yer secret digits code",
+      enterTwoFACode: "Enter yer secret digits:",
+      useBackupCode: "Use yer spare code"
+    },
+
+    twoFABackupCodeVerifyView: {
+      title: "Verify yer spare secret digits",
+      twoFABackupCode: "Spare secret digits:",
+      enterTwoFABackupCode: "Enter yer spare secret digits:"
     },
 
     matchAnnouncementView: {
@@ -194,10 +217,34 @@ const pi: TranslationShape = {
     },
 
     settingsView: {
+      title: "Captain’s Preferences",
+      settings: "Change yer sails and adjust the wind here.",
       preferredLanguage: "Choose yer tongue, matey.",
       saveLanguage: "Stash yer tongue",
-      settings: "Change yer sails and adjust the wind here.",
-      title: "Captain’s Preferences"
+      displayTwoFASetup: "Scuttle the Secret Digits",
+      deactivateTwoFASetup: "2FA deaktivieren",
+      editTwoFASetup: "Tweak yer secret digits riggin’",
+      twoFASetup: "Riggin’ the Secret Digits",
+      twoFAInfo: [
+        "Rigg the Secret Digits:",
+        "",
+        "Use a trusty Authenticator App,",
+        "to scan the QR treasure map below."
+      ],
+      twoFAActivated: ["Flyin’ high"],
+      twoFABackupCode: "Spare secret digits",
+      enterTwoFACode: "Enter yer secret digits:",
+      activateTwoFA: "Hoist the Flag",
+      deactivateTwoFA: "Lower the Colors",
+      twoFAGenerateBackupCodes: "Forge new spare secret digits",
+      confirmPassword: "Confirm yer secret code",
+      twoFABackupCodeInfo: [
+        "Here be yer spare secret digits.",
+        "Copy ‘em down or save ‘em to yer chest,",
+        "",
+        "They won’t be shown again, savvy?"
+      ],
+      twoFADownloadBackupCodes: "Download Yer Treasure"
     },
 
     statsView: {
@@ -247,6 +294,8 @@ const pi: TranslationShape = {
       passwordUpdateFailed:
         "Couldn’t set yer new passphrase. Try again or be cursed!",
       passwordUpdatedSuccess: "Secret code changed! Keep it close!",
+      twoFASetupSuccess: "Secret digits be rigged ‘n ready!",
+      twoFARemoveSuccess: "Secret digits be scuttled! Ye be sailin’ free!",
       profileUpdateFailed: "Profile be cursed – try again later!",
       profileUpdatedSuccess: "Profile polished like a cutlass!",
       registrationSuccess: "You be aboard, sailor {{username}}!",

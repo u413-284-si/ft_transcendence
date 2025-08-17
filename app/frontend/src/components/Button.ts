@@ -1,7 +1,7 @@
 export type ButtonOptions = {
   id?: string;
   text: string;
-  variant?: "default" | "outline" | "danger" | "google";
+  variant?: "default" | "active" | "danger" | "google";
   size?: "sm" | "md" | "lg" | "empty";
   type?: "button" | "submit";
   className?: string;
@@ -10,6 +10,8 @@ export type ButtonOptions = {
 const buttonVariants: Record<string, string> = {
   default:
     "border border-neon-cyan text-white hover:shadow-neon-cyan hover:bg-neon-cyan transition-all duration-500 ease-in-out",
+  active:
+    "border border-neon-green text-white hover:shadow-neon-green hover:bg-neon-green transition-all duration-500 ease-in-out",
   danger:
     "border border-neon-red text-white hover:shadow-neon-red hover:bg-neon-red transition-all duration-500 ease-in-out",
   google:
@@ -42,7 +44,7 @@ export function Button({
     className
   ].join(" ");
   const idAttr = id ? ` id="${id}"` : "";
-  return `<button${idAttr} type="${type}" class="${classes}">${text}</button>`;
+  return /* HTML */ `<button${idAttr} type="${type}" class="${classes}">${text}</button>`;
 }
 
 function googleSVG(): string {

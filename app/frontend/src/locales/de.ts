@@ -60,6 +60,7 @@ const de: TranslationShape = {
 
     global: {
       avatar: "Avatar",
+      submit: "Bestätigen",
       confirmNewPassword: "Neues Passwort bestätigen",
       continue: "ENTER drücken, um fortzufahren",
       editProfile: "Profil bearbeiten",
@@ -71,6 +72,7 @@ const de: TranslationShape = {
       offline: "Offline",
       online: "Online",
       password: "Passwort",
+      twoFACode: "2FA-Code",
       pongGame: "Pong-Spiel",
       player: "Spieler",
       playerWins: "{{player}} gewinnt",
@@ -109,6 +111,12 @@ const de: TranslationShape = {
         "Passwort muss 10 bis 64 Zeichen enthalten und mindestens eine Zahl, einen Groß- und Kleinbuchstaben sowie ein Sonderzeichen: @$!%*?&",
       passwordConfirmationEmpty: "Bitte wiederhole dein Passwort",
       passwordConfirmation: "Passwörter stimmen nicht überein.",
+      twoFACode: "2FA-Code ist falsch.",
+      twoFACodeEmpty: "2FA-Code darf nicht leer sein.",
+      twoFACodeFormat: "2FA-Code muss eine sechsstellige Zahl sein.",
+      twoFABackupCode: "Backup-Code ist falsch.",
+      twoFABackupCodeEmpty: "Backup-Code darf nicht leer sein.",
+      twoFABackupCodeFormat: "Backup-Code muss eine achtstellige Zahl sein.",
       playerSelection: "Bitte Anzahl der Spieler auswählen.",
       tournamentNameEmpty: "Turniername darf nicht leer sein.",
       tournamentNameFormat:
@@ -123,6 +131,18 @@ const de: TranslationShape = {
     loginView: {
       title: "Anmelden",
       usernameOrEmail: "Benutzername oder E-Mail-Adresse"
+    },
+
+    twoFAVerifyView: {
+      title: "2FA-Code Verifizierung",
+      enterTwoFACode: "Gib den 2FA-Code ein:",
+      useBackupCode: "Backup-Code verwenden"
+    },
+
+    twoFABackupCodeVerifyView: {
+      title: "Backup-Code Verifizierung",
+      twoFABackupCode: "Backup-Code",
+      enterTwoFABackupCode: "Gib den Backup-Code ein:"
     },
 
     matchAnnouncementView: {
@@ -201,10 +221,34 @@ const de: TranslationShape = {
     },
 
     settingsView: {
+      title: "Einstellungen",
+      settings: "Lege hier deine Einstellungen und Präferenzen fest.",
       preferredLanguage: "Wähle dein bevorzugte Sprache aus.",
       saveLanguage: "Sprache speichern",
-      settings: "Lege hier deine Einstellungen und Präferenzen fest.",
-      title: "Einstellungen"
+      displayTwoFASetup: "2FA Einstellungen anzeigen",
+      deactivateTwoFASetup: "2FA deaktivieren",
+      editTwoFASetup: "2‑Faktor-Authentifizierung (2FA) bearbeiten",
+      twoFASetup: "2FA Einstellungen",
+      twoFAInfo: [
+        "Aktiviere 2FA:",
+        "",
+        "Bitte verwende eine Authentifizierungs App",
+        "um den QR-Code unten zu scannen."
+      ],
+      twoFAActivated: ["2FA aktiviert"],
+      twoFABackupCode: "2FA Backup-Code",
+      enterTwoFACode: "Gib den 2FA-Code ein:",
+      activateTwoFA: "Aktivieren",
+      deactivateTwoFA: "Deaktivieren",
+      twoFAGenerateBackupCodes: "Backup-Codes generieren",
+      confirmPassword: "Bestätigen",
+      twoFABackupCodeInfo: [
+        "Das sind deine Backup-Codes.",
+        "Kopiere diese oder lade sie herunter",
+        "",
+        "Sie werden nicht nochmal angezeigt"
+      ],
+      twoFADownloadBackupCodes: "Herunterladen"
     },
 
     statsView: {
@@ -256,6 +300,8 @@ const de: TranslationShape = {
       passwordUpdateFailed:
         "Passwort konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       passwordUpdatedSuccess: "Passwort erfolgreich aktualisiert!",
+      twoFASetupSuccess: "2FA erfolgreich aktiviert!",
+      twoFARemoveSuccess: "2FA erfolgreich deaktiviert!",
       profileUpdateFailed:
         "Profil konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       profileUpdatedSuccess: "Profil erfolgreich aktualisiert!",

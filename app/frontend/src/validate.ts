@@ -263,3 +263,43 @@ export function validateImageFile(
   }
   return true;
 }
+
+export async function validateTwoFACode(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): Promise<boolean> {
+  const twoFACodeRegex: RegExp = /^\d{6}$/;
+  const twoFACode = inputEl.value;
+
+  clearInvalid(inputEl, errorEl);
+  if (isEmptyString(twoFACode)) {
+    markInvalid(i18next.t("invalid.twoFACodeEmpty"), inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(twoFACode, twoFACodeRegex)) {
+    markInvalid(i18next.t("invalid.twoFACodeFormat"), inputEl, errorEl);
+    return false;
+  }
+  return true;
+}
+
+export async function validatTwoFABackupCode(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLElement
+): Promise<boolean> {
+  const twoFABackupCodeRegex: RegExp = /^\d{8}$/;
+  const twoFABackupCode = inputEl.value;
+
+  clearInvalid(inputEl, errorEl);
+  if (isEmptyString(twoFABackupCode)) {
+    markInvalid(i18next.t("invalid.twoFABackupCodeEmpty"), inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(twoFABackupCode, twoFABackupCodeRegex)) {
+    markInvalid(i18next.t("invalid.twoFABackupCodeFormat"), inputEl, errorEl);
+    return false;
+  }
+  return true;
+}
