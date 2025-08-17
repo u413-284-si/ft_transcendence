@@ -117,10 +117,6 @@ export class AuthManager {
 
       const token = await this.fetchUserDataAndSetLanguage();
       this.updateAuthState(token);
-      const updatedUser: Partial<User> = {
-        hasTwoFA: false
-      };
-      auth.updateUser(updatedUser);
       return true;
     } catch (error) {
       router.handleError("Login error", error);
