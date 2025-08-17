@@ -204,6 +204,7 @@ const pi: TranslationShape = {
       dashboard: "Cap`n`s Log",
       date: "Chart Date",
       details: "Secrets",
+      eliminatedInRound: "Keelhauled in round {{round}}, arr!",
       friendOnly:
         "Ye must be true mates to lay eyes on these secret scrolls o' stats!",
       friends: "Mates",
@@ -219,6 +220,7 @@ const pi: TranslationShape = {
       title: "Ship Logs",
       tournament: "Skull & Crossbones Cup",
       tournaments: "Skull & Crossbones Cups",
+      usedNickname: "Name ye used",
       winRate: "Victory Percentage",
       winstreakCur: "Plunder Trail",
       winstreakMax: "Mighty Streak"

@@ -120,7 +120,10 @@ export class TournamentsTab extends PaginatedTab<TournamentDTO> {
     table.innerHTML = Table({
       id: "tournament-history-table",
       headers: [
-        ///
+        i18next.t("newTournamentView.tournamentName"),
+        i18next.t("newTournamentView.numberOfPlayers"),
+        i18next.t("statsView.usedNickname"),
+        i18next.t("statsView.result")
       ],
       rows: tournamentsRows
     });

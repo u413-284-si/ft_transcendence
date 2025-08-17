@@ -211,6 +211,7 @@ const de: TranslationShape = {
       dashboard: "Übersicht",
       date: "Datum",
       details: "Details",
+      eliminatedInRound: "Ausgeschieden in Runde {{round}}",
       friends: "Freunde",
       friendOnly:
         "Du musst befreundet sein, um detaillierte Statistiken zu sehen.",
@@ -226,6 +227,7 @@ const de: TranslationShape = {
       title: "Statistiken",
       tournament: "Turnier",
       tournaments: "Turniere",
+      usedNickname: "Verwendeter Spitzname",
       winRate: "Siegquote",
       winstreakCur: "Siegesserie",
       winstreakMax: "Max-Serie"
