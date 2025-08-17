@@ -1,6 +1,6 @@
 import { Tournament } from "../Tournament.js";
 import { TournamentDTO } from "../types/ITournament.js";
-import { ApiError, apiFetch } from "./api.js";
+import { apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 import { FetchPageResult } from "../types/FetchPageResult.js";
 
