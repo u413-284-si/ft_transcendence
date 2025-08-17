@@ -151,39 +151,15 @@ export default class SettingsView extends AbstractView {
           Form({
             id: "two-fa-password-form",
             children: [
-              this.passwordFormAction === "remove"
-                ? Input({
-                    id: "two-fa-password-input",
-                    label: i18next.t("settingsView.deactivateTwoFASetup"),
-                    name: "two-fa-password-input",
-                    placeholder: i18next.t("global.password"),
-                    type: "password",
-                    errorId: "two-fa-password-input-error",
-                    hasToggle: true
-                  })
-                : this.passwordFormAction === "setup"
-                  ? Input({
-                      id: "two-fa-password-input",
-                      label: i18next.t("settingsView.displayTwoFASetup"),
-                      name: "two-fa-password-input",
-                      placeholder: i18next.t("global.password"),
-                      type: "password",
-                      errorId: "two-fa-password-input-error",
-                      hasToggle: true
-                    })
-                  : this.passwordFormAction === "backupCodes"
-                    ? Input({
-                        id: "two-fa-password-input",
-                        label: i18next.t(
-                          "settingsView.twoFAGenerateBackupCodes"
-                        ),
-                        name: "two-fa-password-input",
-                        placeholder: i18next.t("global.password"),
-                        type: "password",
-                        errorId: "two-fa-password-input-error",
-                        hasToggle: true
-                      })
-                    : "",
+              Input({
+                id: "two-fa-password-input",
+                label: i18next.t("settingsView.displayTwoFASetup"),
+                name: "two-fa-password-input",
+                placeholder: i18next.t("global.password"),
+                type: "password",
+                errorId: "two-fa-password-input-error",
+                hasToggle: true
+              }),
               Button({
                 id: "two-fa-submit-password",
                 text: i18next.t("settingsView.confirmPassword"),
@@ -508,7 +484,6 @@ export default class SettingsView extends AbstractView {
       };
       auth.updateUser(updatedUser);
 
-      this.passwordFormAction = "setup";
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
     } catch (error) {
       router.handleError("Error in removeTwoFA()", error);
@@ -595,7 +570,25 @@ export default class SettingsView extends AbstractView {
     action: "setup" | "remove" | "backupCodes"
   ) {
     this.passwordFormAction = action;
-    await router.refresh();
+    const labelEl = document.querySelector<HTMLLabelElement>(
+      `label[for="two-fa-password-input"]`
+    );
+    if (!labelEl) throw new Error("Modal labelEl not found");
+
+    switch (action) {
+      case "setup":
+        labelEl.textContent = i18next.t("settingsView.displayTwoFASetup");
+        break;
+      case "remove":
+        labelEl.textContent = i18next.t("settingsView.deactivateTwoFASetup");
+        break;
+      case "backupCodes":
+        labelEl.textContent = i18next.t(
+          "settingsView.twoFAGenerateBackupCodes"
+        );
+        break;
+    }
+
     this.displayModal("two-fa-password-modal");
   }
 
