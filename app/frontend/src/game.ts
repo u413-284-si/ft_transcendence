@@ -109,8 +109,6 @@ function gameLoop(
 function update(gameState: GameState) {
   if (gameState.gameOver) return;
 
-  updatePaddlePositions(gameState);
-
   if (gameState.aiPlayer1) {
     gameState.aiPlayer1.updatePerception(gameState);
 
@@ -134,6 +132,8 @@ function update(gameState: GameState) {
     gameState.keys["ArrowUp"] = move === "up";
     gameState.keys["ArrowDown"] = move === "down";
   }
+
+  updatePaddlePositions(gameState);
 
   // Move the ball
   gameState.ballX += gameState.ballSpeedX;
