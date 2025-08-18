@@ -100,7 +100,6 @@ function initGameState(
 
 function gameLoop(timestamp: DOMHighResTimeStamp) {
   if (gameState.gameOver) {
-    resolve();
     return;
   }
 
@@ -141,6 +140,7 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   }
 
   updatePaddlePositions(gameState, deltaTime);
+  updateBallPosition(gameState, deltaTime);
 
   handlePaddleCollision(gameState, 1);
   handlePaddleCollision(gameState, 2);
@@ -268,4 +268,12 @@ function handleOutOfBounds(gameState: GameState) {
 
   checkScore(ballX - ballRadius <= 0, 2);
   checkScore(ballX + ballRadius >= canvasWidth, 1);
+}
+
+function updateBallPosition(
+  gameState: GameState,
+  deltaTime: DOMHighResTimeStamp
+) {
+  gameState.ballX += gameState.ballSpeedX * deltaTime;
+  gameState.ballY += gameState.ballSpeedY * deltaTime;
 }
