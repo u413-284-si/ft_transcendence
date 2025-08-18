@@ -10,6 +10,8 @@ import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
 
 let isAborted: boolean = false;
+let gameState: GameState;
+let lastTime: DOMHighResTimeStamp;
 
 export function getIsAborted(): boolean {
   return isAborted;
@@ -40,7 +42,7 @@ export async function startGame(
   if (type2 === "AI") {
     aiPlayer2 = new AIPlayer("right");
   }
-  const gameState = initGameState(
+  gameState = initGameState(
     canvas,
     ctx,
     nickname1,
@@ -49,9 +51,10 @@ export async function startGame(
     aiPlayer1,
     aiPlayer2
   );
-  await new Promise<void>((resolve) => {
-    gameLoop(ctx, gameState, resolve);
-  });
+  lastTime = performance.now();
+
+  requestAnimationFrame(gameLoop);
+
   if (getIsAborted()) {
     return;
   }
@@ -79,15 +82,15 @@ function initGameState(
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
     ballRadius: 10,
-    ballSpeedX: 7,
-    ballSpeedY: 7,
+    ballSpeedX: 400,
+    ballSpeedY: 400,
     paddle1X: 10,
     paddle1Y: canvas.height / 2 - 40,
     paddle2X: canvas.width - 20,
     paddle2Y: canvas.height / 2 - 40,
     paddleHeight: 80,
     paddleWidth: 10,
-    paddleSpeed: 6,
+    paddleSpeed: 300,
     gameOver: false,
     keys: keys,
     aiPlayer1: aiPlayer1,
@@ -95,21 +98,22 @@ function initGameState(
   };
 }
 
-function gameLoop(
-  ctx: CanvasRenderingContext2D,
-  gameState: GameState,
-  resolve: () => void
-) {
+function gameLoop(timestamp: DOMHighResTimeStamp) {
   if (gameState.gameOver) {
     resolve();
     return;
   }
-  update(gameState);
-  draw(ctx, gameState);
-  requestAnimationFrame(() => gameLoop(ctx, gameState, resolve));
+
+  const deltaTime = (timestamp - lastTime) / 1000;
+
+  update(gameState, deltaTime);
+  draw(gameState);
+  lastTime = timestamp;
+
+  requestAnimationFrame(gameLoop);
 }
 
-function update(gameState: GameState) {
+function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   if (gameState.gameOver) return;
 
   if (gameState.aiPlayer1) {
