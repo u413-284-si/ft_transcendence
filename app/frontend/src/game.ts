@@ -9,16 +9,14 @@ import { playedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
 
-let isAborted: boolean = false;
 let gameState: GameState;
-let lastTime: DOMHighResTimeStamp;
 
 export function getIsAborted(): boolean {
-  return isAborted;
+  return gameState.isAborted;
 }
 
 export function setIsAborted(value: boolean) {
-  isAborted = value;
+  gameState.isAborted = value;
 }
 
 export async function startGame(
@@ -33,7 +31,6 @@ export async function startGame(
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
 
-  setIsAborted(false);
   let aiPlayer1: AIPlayer | null = null;
   let aiPlayer2: AIPlayer | null = null;
   if (type1 === "AI") {
@@ -51,13 +48,13 @@ export async function startGame(
     aiPlayer1,
     aiPlayer2
   );
-  lastTime = performance.now();
 
   requestAnimationFrame(gameLoop);
 
-  if (getIsAborted()) {
+  if (gameState.isAborted) {
     return;
   }
+
   await endGame(gameState, tournament, userRole);
 }
 
@@ -92,9 +89,11 @@ function initGameState(
     paddleWidth: 10,
     paddleSpeed: 300,
     gameOver: false,
+    isAborted: false,
     keys: keys,
     aiPlayer1: aiPlayer1,
-    aiPlayer2: aiPlayer2
+    aiPlayer2: aiPlayer2,
+    lastTimestamp: performance.now()
   };
 }
 
