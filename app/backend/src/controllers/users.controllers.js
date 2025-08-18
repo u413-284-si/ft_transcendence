@@ -232,10 +232,16 @@ export async function getUserTournamentsHandler(request, reply) {
       offset: request.query.offset,
       sort: request.query.sort
     };
-    const data = await getUserTournaments(userId, undefined, filter);
+    const [tournaments, total] = await Promise.all([
+      getUserTournaments(userId, undefined, filter),
+      getUserTournamentsCount(userId, filter)
+    ]);
     return reply.code(200).send({
       message: createResponseMessage(action, true),
-      data: { items: data }
+      data: {
+        items: tournaments,
+        total
+      }
     });
   } catch (err) {
     request.log.error(
