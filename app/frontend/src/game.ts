@@ -217,7 +217,7 @@ function waitForEnterKey(): Promise<void> {
   });
 }
 
-export function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
+function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
   const { ballX, ballY, ballRadius, paddleHeight, paddleWidth } = gameState;
 
   const paddleX = paddle === 1 ? gameState.paddle1X : gameState.paddle2X;
@@ -242,7 +242,7 @@ export function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
       : paddleX - ballRadius;
 }
 
-export function handleWallCollision(gameState: GameState) {
+function handleWallCollision(gameState: GameState) {
   const { ballY, ballRadius, canvasHeight } = gameState;
 
   if (ballY - ballRadius <= 0) {
