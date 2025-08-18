@@ -177,7 +177,12 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
     if (username !== request.user.username) {
       const friendId = await getFriendId(userId, username);
       if (!friendId) {
-        return httpError(reply, 401, "You need to be friends");
+        return httpError(
+          reply,
+          401,
+          createResponseMessage(action, false),
+          "You need to be friends"
+        );
       }
       userId = friendId;
     }
@@ -260,7 +265,12 @@ export async function getUserTournamentsByUsernameHandler(request, reply) {
     if (username !== request.user.username) {
       const friendId = await getFriendId(userId, username);
       if (!friendId) {
-        return httpError(reply, 401, "You need to be friends");
+        return httpError(
+          reply,
+          401,
+          createResponseMessage(action, false),
+          "You need to be friends"
+        );
       }
       userId = friendId;
     }
