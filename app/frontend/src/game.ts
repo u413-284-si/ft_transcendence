@@ -140,11 +140,7 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
     gameState.keys["ArrowDown"] = move === "down";
   }
 
-  updatePaddlePositions(gameState);
-
-  // Move the ball
-  gameState.ballX += gameState.ballSpeedX;
-  gameState.ballY += gameState.ballSpeedY;
+  updatePaddlePositions(gameState, deltaTime);
 
   handlePaddleCollision(gameState, 1);
   handlePaddleCollision(gameState, 2);
