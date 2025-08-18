@@ -19,7 +19,8 @@ const userSelect = {
   dateJoined: true,
   authentication: {
     select: {
-      authProvider: true
+      authProvider: true,
+      hasTwoFA: true
     }
   }
 };
@@ -181,6 +182,7 @@ export function flattenUser(user) {
   const { authentication, ...rest } = user;
   return {
     ...rest,
-    authProvider: authentication.authProvider
+    authProvider: authentication.authProvider,
+    hasTwoFA: authentication.hasTwoFA
   };
 }

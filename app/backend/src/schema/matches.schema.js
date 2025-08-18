@@ -5,6 +5,11 @@ const matchDefinitionsSchema = {
       type: "string",
       enum: ["NONE", "PLAYERONE", "PLAYERTWO"],
       description: "The player assignment for the logged-in user"
+    },
+    playerType: {
+      type: "string",
+      enum: ["HUMAN", "AI"],
+      description: "Type of the player."
     }
   }
 };
@@ -29,6 +34,12 @@ const matchSchema = {
     player2Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
       description: "The score of player 2 in the match"
+    },
+    player1Type: {
+      $ref: "matchDefinitionsSchema#/definitions/playerType"
+    },
+    player2Type: {
+      $ref: "matchDefinitionsSchema#/definitions/playerType"
     },
     date: {
       $ref: "commonDefinitionsSchema#/definitions/datetime",
@@ -76,13 +87,19 @@ const matchArrayResponseSchema = {
   type: "object",
   properties: {
     message: { type: "string" },
-    count: { type: "integer" },
     data: {
-      type: "array",
-      items: { $ref: "matchSchema" }
+      type: "object",
+      properties: {
+        items: {
+          type: "array",
+          items: { $ref: "matchSchema" }
+        },
+        total: { type: "integer" }
+      },
+      required: ["items", "total"]
     }
   },
-  required: ["message", "count", "data"],
+  required: ["message", "data"],
   additionalProperties: false
 };
 
@@ -98,6 +115,12 @@ export const createMatchSchema = {
     player2Nickname: {
       $ref: "commonDefinitionsSchema#/definitions/username",
       description: "The nickname of player 2"
+    },
+    player1Type: {
+      $ref: "matchDefinitionsSchema#/definitions/playerType"
+    },
+    player2Type: {
+      $ref: "matchDefinitionsSchema#/definitions/playerType"
     },
     player1Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
@@ -149,8 +172,12 @@ export const querystringMatchSchema = {
       type: "array",
       items: { $ref: "matchDefinitionsSchema#/definitions/playedAs" },
       description: "Filter roles (array of values)"
-    }
+    },
+    limit: { type: "integer", minimum: 1, maximum: 50, default: 10 },
+    offset: { type: "integer", minimum: 0 },
+    sort: { type: "string", enum: ["asc", "desc"], default: "desc" }
   },
+  required: [],
   additionalProperties: false
 };
 

@@ -1,11 +1,21 @@
 import {
   getPasswordHash,
-  verifyRefreshToken,
   verifyHash,
   createAuthTokens,
   getTokenHash,
   deleteUserRefreshToken,
-  setCookies
+  updateTwoFASecret,
+  generateTwoFA,
+  generateTwoFAQRCode,
+  generateTwoFASecret,
+  verifyTwoFACode,
+  getTwoFASecret,
+  updateTwoFAStatus,
+  getTwoFAStatus,
+  createTwoFAToken,
+  deleteBackupCodes,
+  verifyBackupCode,
+  updateBackupCodes
 } from "../services/auth.services.js";
 import {
   getTokenData,
@@ -49,15 +59,29 @@ export async function loginUserHandler(request, reply) {
       );
     }
 
+    const hasTwoFA = await getTwoFAStatus(payload.id);
+    if (hasTwoFA) {
+      const twoFALoginToken = await createTwoFAToken(reply, payload);
+      return reply
+        .setTwoFACookie(twoFALoginToken)
+        .code(200)
+        .send({
+          message: createResponseMessage(action, true),
+          data: { username: payload.username, hasTwoFA: hasTwoFA }
+        });
+    }
+
     const { accessToken, refreshToken } = await createAuthTokens(
       reply,
       payload
     );
-    return setCookies(reply, accessToken, refreshToken)
+
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: payload.username }
+        data: { username: payload.username, hasTwoFA: hasTwoFA }
       });
   } catch (err) {
     request.log.error(
@@ -124,9 +148,9 @@ export async function googleOauth2LoginHandler(request, reply) {
       payload
     );
 
-    reply = setCookies(reply, accessToken, refreshToken);
-
-    return reply.redirect("http://localhost:4000/home");
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
+      .redirect("http://localhost:4000/home");
   } catch (err) {
     request.log.error(
       { err, body: request.body },
@@ -165,7 +189,7 @@ export async function authRefreshHandler(request, reply) {
       );
     }
 
-    const userDataRefreshToken = await verifyRefreshToken(request);
+    const userDataRefreshToken = await request.refreshTokenVerify();
     const userId = userDataRefreshToken.id;
 
     const hashedRefreshToken = await getTokenHash(userId);
@@ -184,7 +208,256 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    return setCookies(reply, accessToken, refreshToken)
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
+      .code(200)
+      .send({ message: createResponseMessage(action, true) });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `RefreshHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFAQRCodeHandler(request, reply) {
+  const action = "Generate 2FA QR Code";
+  try {
+    const userId = request.user.id;
+
+    const { password } = request.body;
+    const hashedPassword = await getPasswordHash(userId);
+
+    if (!(await verifyHash(hashedPassword, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
+
+    const username = request.user.username;
+    let secret = "";
+    if (await getTwoFAStatus(userId)) {
+      secret = await getTwoFASecret(request.user.id);
+    } else {
+      secret = generateTwoFASecret();
+      await updateTwoFASecret(userId, secret);
+    }
+
+    const twoFA = generateTwoFA(username, secret);
+    const qrcode = await generateTwoFAQRCode(twoFA);
+    const data = { qrcode: qrcode };
+
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `twoFAQRCodeHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function enableTwoFAHandler(request, reply) {
+  const action = "Enable 2FA";
+  try {
+    const userId = request.user.id;
+
+    const { code } = request.body;
+    const secret = await getTwoFASecret(userId);
+    const twoFA = generateTwoFA(request.user.username, secret);
+    if (!verifyTwoFACode(twoFA, code)) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid 2FA code"
+      );
+    }
+
+    await updateTwoFAStatus(userId, true);
+
+    const newBackupCodes = await updateBackupCodes(userId);
+    const data = { backupCodes: newBackupCodes };
+
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `enableTwoFAHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFABackupCodesHandler(request, reply) {
+  const action = "Generate backup codes";
+  try {
+    const userId = request.user.id;
+
+    const { password } = request.body;
+    const hashedPassword = await getPasswordHash(userId);
+
+    if (!(await verifyHash(hashedPassword, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
+
+    const newBackupCodes = await updateBackupCodes(userId);
+    const data = { backupCodes: newBackupCodes };
+
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (error) {
+    request.log.error(
+      { error, body: request.body },
+      `twoFABackupCodesHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, error);
+  }
+}
+
+export async function twoFABackupCodeVerifyHandler(request, reply) {
+  const action = "Verify backup codes";
+  try {
+    const userId = request.user.id;
+    const username = request.user.username;
+
+    const { backupCode } = request.body;
+
+    if (!(await verifyBackupCode(userId, backupCode))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid backup code"
+      );
+    }
+
+    const payload = { id: userId, username: username };
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+    reply.clearCookie("twoFALoginToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth/2fa/login/"
+    });
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
+      .code(200)
+      .send({
+        message: createResponseMessage(action, true),
+        data: { username: username }
+      });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `twoFABackupCodeVerifyHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFALoginVerifyHandler(request, reply) {
+  const action = "Verify 2FA Code during login";
+  try {
+    const userId = request.user.id;
+    const username = request.user.username;
+
+    const { code } = request.body;
+    const secret = await getTwoFASecret(userId);
+    const twoFA = generateTwoFA(request.user.username, secret);
+    if (!verifyTwoFACode(twoFA, code)) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Invalid 2FA code"
+      );
+    }
+
+    const payload = { id: userId, username: username };
+    const { accessToken, refreshToken } = await createAuthTokens(
+      reply,
+      payload
+    );
+    reply.clearCookie("twoFALoginToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/api/auth/2fa/login/"
+    });
+    return reply
+      .setAuthCookies(accessToken, refreshToken)
+      .code(200)
+      .send({
+        message: createResponseMessage(action, true),
+        data: { username: username }
+      });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `twoFALoginVerifyHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFAStatusHandler(request, reply) {
+  const action = "Get 2FA status";
+  try {
+    const userId = request.user.id;
+
+    const hasTwoFA = await getTwoFAStatus(userId);
+    const data = { hasTwoFA: hasTwoFA };
+    return reply
+      .code(200)
+      .send({ message: createResponseMessage(action, true), data });
+  } catch (err) {
+    request.log.error(
+      { err, body: request.body },
+      `twoFAStatusHandler: ${createResponseMessage(action, false)}`
+    );
+    handlePrismaError(reply, action, err);
+  }
+}
+
+export async function twoFARemoveHandler(request, reply) {
+  const action = "Remove 2FA";
+  try {
+    const userId = request.user.id;
+
+    const { password } = request.body;
+    const hashedPassword = await getPasswordHash(userId);
+
+    if (!(await verifyHash(hashedPassword, password))) {
+      return httpError(
+        reply,
+        401,
+        createResponseMessage(action, false),
+        "Wrong credentials"
+      );
+    }
+
+    await updateTwoFAStatus(userId, false);
+    await updateTwoFASecret(userId, null);
+    await deleteBackupCodes(userId);
+    return reply
       .code(200)
       .send({ message: createResponseMessage(action, true) });
   } catch (err) {

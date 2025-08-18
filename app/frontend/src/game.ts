@@ -5,8 +5,7 @@ import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { GameType } from "./views/GameView.js";
-import { playedAs } from "./types/IMatch.js";
+import { playedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
 
@@ -26,17 +25,34 @@ export function setIsAborted(value: boolean) {
 export async function startGame(
   nickname1: string,
   nickname2: string,
+  type1: PlayerType,
+  type2: PlayerType,
   userRole: playedAs,
-  gameType: GameType,
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
 ) {
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
-  const ai = new AIPlayer();
 
   setIsAborted(false);
-  gameState = initGameState(canvas, ctx, nickname1, nickname2, keys, ai);
+
+  let aiPlayer1: AIPlayer | null = null;
+  let aiPlayer2: AIPlayer | null = null;
+  if (type1 === "AI") {
+    aiPlayer1 = new AIPlayer("left");
+  }
+  if (type2 === "AI") {
+    aiPlayer2 = new AIPlayer("right");
+  }
+  gameState = initGameState(
+    canvas,
+    ctx,
+    nickname1,
+    nickname2,
+    keys,
+    aiPlayer1,
+    aiPlayer2
+  );
   lastTime = performance.now();
   resetBall(gameState);
   gameState.ballSpeedX *= Math.random() < 0.5 ? -1 : 1;
@@ -55,45 +71,48 @@ function initGameState(
   player1: string,
   player2: string,
   keys: Record<GameKey, boolean>,
-  ai: AIPlayer
+  aiPlayer1: AIPlayer | null,
+  aiPlayer2: AIPlayer | null
 ): GameState {
   return {
-    canvas: canvas,
     ctx: ctx,
     player1: player1,
     player2: player2,
     player1Score: 0,
     player2Score: 0,
     winningScore: 5, // FIXME: needs to be a higher value
+    canvasHeight: canvas.height,
+    canvasWidth: canvas.width,
     ballRadius: 10,
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
     ballSpeedX: 200,
     ballSpeedY: 200,
     initialBallSpeed: 400,
-    paddleLeftX: 10,
-    paddleLeftY: canvas.height / 2 - 40,
-    paddleRightX: canvas.width - 20,
-    paddleRightY: canvas.height / 2 - 40,
+    paddle1X: 10,
+    paddle1Y: canvas.height / 2 - 40,
+    paddle2X: canvas.width - 20,
+    paddle2Y: canvas.height / 2 - 40,
     paddleHeight: 80,
     paddleWidth: 10,
     paddleSpeed: 300,
     gameOver: false,
     keys: keys,
-    ai: ai
+    aiPlayer1: aiPlayer1,
+    aiPlayer2: aiPlayer2
   };
 }
 
-function gameLoop(time: DOMHighResTimeStamp) {
+function gameLoop(timestamp: DOMHighResTimeStamp) {
   if (gameState.gameOver) {
     return;
   }
 
-  const deltaTime = (time - lastTime) / 1000;
+  const deltaTime = (timestamp - lastTime) / 1000;
 
   update(gameState, deltaTime);
   draw(gameState);
-  lastTime = time;
+  lastTime = timestamp;
 
   requestAnimationFrame(gameLoop);
 }
@@ -101,11 +120,23 @@ function gameLoop(time: DOMHighResTimeStamp) {
 function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   if (gameState.gameOver) return;
 
-  if (gameState.ai) {
-    gameState.ai.updatePerception(gameState);
+  if (gameState.aiPlayer1) {
+    gameState.aiPlayer1.updatePerception(gameState);
 
-    const move = gameState.ai.decideMove(
-      gameState.paddleRightY,
+    const move = gameState.aiPlayer1.decideMove(
+      gameState.paddle1Y,
+      gameState.paddleHeight
+    );
+
+    gameState.keys["w"] = move === "up";
+    gameState.keys["s"] = move === "down";
+  }
+
+  if (gameState.aiPlayer2) {
+    gameState.aiPlayer2.updatePerception(gameState);
+
+    const move = gameState.aiPlayer2.decideMove(
+      gameState.paddle2Y,
       gameState.paddleHeight
     );
 
@@ -123,8 +154,8 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
     gameState.ballX,
     gameState.ballY,
     gameState.ballRadius,
-    gameState.paddleLeftX,
-    gameState.paddleLeftY,
+    gameState.paddle1X,
+    gameState.paddle1Y,
     gameState.paddleWidth,
     gameState.paddleHeight,
     gameState.ballSpeedX,
@@ -143,8 +174,8 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
     gameState.ballX,
     gameState.ballY,
     gameState.ballRadius,
-    gameState.paddleRightX,
-    gameState.paddleRightY,
+    gameState.paddle2X,
+    gameState.paddle2Y,
     gameState.paddleWidth,
     gameState.paddleHeight,
     gameState.ballSpeedX,
@@ -159,7 +190,7 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   }
 
   // Ball collision with top & bottom
-  if (gameState.ballY <= 0 || gameState.ballY >= gameState.canvas.height)
+  if (gameState.ballY <= 0 || gameState.ballY >= gameState.canvasHeight)
     gameState.ballSpeedY *= -1;
 
   // Ball out of bounds (scoring)
@@ -167,20 +198,30 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
     gameState.player2Score++;
     checkWinner(gameState);
     resetBall(gameState);
-    gameState.ai.reset();
+    if (gameState.aiPlayer1) {
+      gameState.aiPlayer1.reset();
+    }
+    if (gameState.aiPlayer2) {
+      gameState.aiPlayer2.reset();
+    }
   }
 
-  if (gameState.ballX >= gameState.canvas.width) {
+  if (gameState.ballX >= gameState.canvasWidth) {
     gameState.player1Score++;
     checkWinner(gameState);
     resetBall(gameState);
-    gameState.ai.reset();
+    if (gameState.aiPlayer1) {
+      gameState.aiPlayer1.reset();
+    }
+    if (gameState.aiPlayer2) {
+      gameState.aiPlayer2.reset();
+    }
   }
 }
 
 function resetBall(gameState: GameState) {
-  gameState.ballX = gameState.canvas.width / 2;
-  gameState.ballY = gameState.canvas.height / 2;
+  gameState.ballX = gameState.canvasWidth / 2;
+  gameState.ballY = gameState.canvasHeight / 2;
 
   const angle = (Math.random() * Math.PI) / 4 - Math.PI / 8; // -22.5° to +22.5°
 
@@ -223,6 +264,8 @@ async function endGame(
       player2Nickname: gameState.player2,
       player1Score: gameState.player1Score,
       player2Score: gameState.player2Score,
+      player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
+      player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN",
       tournament: tournament
         ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
         : null

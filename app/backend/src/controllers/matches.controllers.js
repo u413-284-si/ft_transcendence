@@ -15,6 +15,8 @@ export async function createMatchHandler(request, reply) {
       playedAs,
       player1Nickname,
       player2Nickname,
+      player1Type,
+      player2Type,
       player1Score,
       player2Score,
       tournament
@@ -28,6 +30,8 @@ export async function createMatchHandler(request, reply) {
       player2Nickname,
       player1Score,
       player2Score,
+      player1Type,
+      player2Type,
       tournament,
       date
     );

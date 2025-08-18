@@ -1,16 +1,8 @@
 import { apiFetch } from "./api.js";
-import { Match } from "../types/IMatch.js";
 import { User } from "../types/User.js";
 import { ApiResponse } from "../types/IApiResponse.js";
-
-export async function getUserPlayedMatches(): Promise<ApiResponse<Match[]>> {
-  const url = "/api/users/me/matches?playedAs=PLAYERONE&playedAs=PLAYERTWO";
-
-  return apiFetch<Match[]>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
+import { FetchPageResult } from "../types/FetchPageResult.js";
+import { Match } from "../types/IMatch.js";
 
 export async function getUserProfile(): Promise<ApiResponse<User>> {
   const url = "/api/users/me";
@@ -90,12 +82,22 @@ export async function getUserByEmail(
 }
 
 export async function getUserPlayedMatchesByUsername(
-  username: string
-): Promise<ApiResponse<Match[]>> {
+  username: string,
+  limit = 10,
+  offset = 0,
+  sort: "asc" | "desc" = "desc"
+): Promise<ApiResponse<FetchPageResult<Match>>> {
   const encoded = encodeURIComponent(username);
-  const url = `/api/users/${encoded}/matches?playedAs=PLAYERONE&playedAs=PLAYERTWO`;
+  const params = new URLSearchParams();
+  params.set("limit", limit.toString());
+  params.set("offset", offset.toString());
+  params.set("sort", sort);
+  params.append("playedAs", "PLAYERONE");
+  params.append("playedAs", "PLAYERTWO");
 
-  return apiFetch<Match[]>(url, {
+  const url = `/api/users/${encoded}/matches?${params.toString()}`;
+
+  return apiFetch<FetchPageResult<Match>>(url, {
     method: "GET",
     credentials: "same-origin"
   });

@@ -1,24 +1,20 @@
 import { GameState } from "./types/IGameState.js";
 
 export function draw(gameState: GameState) {
-  const canvas = gameState.canvas;
-  const ctx = gameState.ctx;
+  const { ctx } = gameState;
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, gameState.canvasWidth, gameState.canvasHeight);
 
-  gameState.ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  drawScores(canvas, ctx, gameState);
+  drawScores(ctx, gameState);
   if (gameState.gameOver) {
-    drawWinningScreen(canvas, ctx, gameState);
+    drawWinningScreen(ctx, gameState);
     return;
   }
-  drawBall(gameState);
-  drawPaddles(gameState);
+  drawBall(ctx, gameState);
+  drawPaddles(ctx, gameState);
 }
 
-function drawBall(gameState: GameState) {
-  const ctx = gameState.ctx;
-
+function drawBall(ctx: CanvasRenderingContext2D, gameState: GameState) {
   ctx.fillStyle = "white";
   ctx.beginPath();
   ctx.arc(
@@ -31,29 +27,23 @@ function drawBall(gameState: GameState) {
   ctx.fill();
 }
 
-function drawPaddles(gameState: GameState) {
-  const ctx = gameState.ctx;
-
+function drawPaddles(ctx: CanvasRenderingContext2D, gameState: GameState) {
   ctx.fillStyle = "white";
   ctx.fillRect(
-    gameState.paddleLeftX,
-    gameState.paddleLeftY,
+    gameState.paddle1X,
+    gameState.paddle1Y,
     gameState.paddleWidth,
     gameState.paddleHeight
   );
   ctx.fillRect(
-    gameState.paddleRightX,
-    gameState.paddleRightY,
+    gameState.paddle2X,
+    gameState.paddle2Y,
     gameState.paddleWidth,
     gameState.paddleHeight
   );
 }
 
-function drawScores(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  gameState: GameState
-) {
+function drawScores(ctx: CanvasRenderingContext2D, gameState: GameState) {
   ctx.fillStyle = "white";
   ctx.font = "30px Arial";
 
@@ -63,7 +53,7 @@ function drawScores(
     ":" +
     " " +
     gameState.player1Score.toString();
-  ctx.fillText(player1Text, canvas.width / 4 - 80, 50);
+  ctx.fillText(player1Text, gameState.canvasWidth / 4 - 80, 50);
 
   // Player 2 name and score
   const player2Text =
@@ -71,7 +61,7 @@ function drawScores(
     ":" +
     " " +
     gameState.player2Score.toString();
-  ctx.fillText(player2Text, (canvas.width * 3) / 4 - 80, 50);
+  ctx.fillText(player2Text, (gameState.canvasWidth * 3) / 4 - 80, 50);
 }
 
 function shortenName(name: string, maxLength: number = 10): string {
@@ -79,21 +69,22 @@ function shortenName(name: string, maxLength: number = 10): string {
 }
 
 function drawWinningScreen(
-  canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
   gameState: GameState
 ) {
   ctx.fillStyle = "yellow";
   ctx.font = "40px Arial";
+  const canvasCenterX = gameState.canvasWidth / 2;
+  const canvasCenterY = gameState.canvasHeight / 2;
   const winnerText =
     gameState.player1Score >= gameState.winningScore
       ? i18next.t("global.playerWins", { player: gameState.player1 })
       : i18next.t("global.playerWins", { player: gameState.player2 });
-  ctx.fillText(winnerText, canvas.width / 2 - 100, canvas.height / 2);
+  ctx.fillText(winnerText, canvasCenterX - 100, canvasCenterY);
   ctx.font = "20px Arial";
   ctx.fillText(
     i18next.t("global.continue"),
-    canvas.width / 2 - 100,
-    canvas.height / 2 + 40
+    canvasCenterX - 100,
+    canvasCenterY + 40
   );
 }

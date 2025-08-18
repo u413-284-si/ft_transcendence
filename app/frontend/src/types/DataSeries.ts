@@ -58,3 +58,16 @@ export type DashboardTournaments = {
   progress: TournamentProgressData;
   lastTenDays: TournamentDayData;
 };
+
+type FriendStatsPoint = {
+  name: string;
+  data: number[];
+};
+
+export type FriendStatsSeries = FriendStatsPoint[];
+
+export type DashboardFriends = {
+  matchStats: FriendStatsSeries;
+  winRate: FriendStatsSeries;
+  winStreak: FriendStatsSeries;
+};

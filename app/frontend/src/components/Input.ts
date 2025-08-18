@@ -61,7 +61,9 @@ export function Input({
 
 function renderLabel(id: string, label: string): string {
   return /* HTML */ `
-    <label for="${id}" class="text-sm font-medium text-white"> ${label} </label>
+    <label for="${id}" class="text-sm font-medium text-white text-left">
+      ${label}
+    </label>
   `;
 }
 
@@ -106,6 +108,7 @@ function renderStandardInput(
         name="${name}"
         placeholder="${placeholder}"
         class="${classes}"
+        value=""
       />
       ${toggleButton}
     </div>
@@ -185,8 +188,8 @@ function togglePasswordVisibility(
 ): void {
   const isHidden = passwordEl.type === "password";
   passwordEl.type = isHidden ? "text" : "password";
-  showEyeEl.classList.toggle("hidden", !isHidden);
-  hideEyeEl.classList.toggle("hidden", isHidden);
+  showEyeEl.classList.toggle("hidden", isHidden);
+  hideEyeEl.classList.toggle("hidden", !isHidden);
 }
 
 export function addTogglePasswordListener(id: string) {

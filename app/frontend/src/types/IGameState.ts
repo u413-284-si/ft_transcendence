@@ -2,27 +2,29 @@ import { AIPlayer } from "../AIPlayer.js";
 import { GameKey } from "../views/GameView.js";
 
 export interface GameState {
-  canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   player1: string;
   player2: string;
   player1Score: number;
   player2Score: number;
   winningScore: number;
+  canvasHeight: number;
+  canvasWidth: number;
   ballRadius: number;
   ballX: number;
   ballY: number;
   ballSpeedX: number;
   ballSpeedY: number;
   initialBallSpeed: number;
-  paddleLeftX: number;
-  paddleLeftY: number;
-  paddleRightX: number;
-  paddleRightY: number;
+  paddle1X: number;
+  paddle1Y: number;
+  paddle2X: number;
+  paddle2Y: number;
   paddleHeight: number;
   paddleWidth: number;
   paddleSpeed: number;
   gameOver: boolean;
   keys: Record<GameKey, boolean>;
-  ai: AIPlayer;
+  aiPlayer1: AIPlayer | null;
+  aiPlayer2: AIPlayer | null;
 }
