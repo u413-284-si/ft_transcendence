@@ -1,6 +1,7 @@
 import { GameState } from "./types/IGameState.js";
 
-export function draw(ctx: CanvasRenderingContext2D, gameState: GameState) {
+export function draw(gameState: GameState) {
+  const { ctx } = gameState;
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, gameState.canvasWidth, gameState.canvasHeight);
 
