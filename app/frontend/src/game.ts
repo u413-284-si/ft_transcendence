@@ -143,17 +143,8 @@ function update(gameState: GameState) {
   if (gameState.ballY <= 0 || gameState.ballY >= gameState.canvasHeight)
     gameState.ballSpeedY *= -1;
 
-  // Ball collision with paddles
-  if (
-    (gameState.ballX <= gameState.paddle1X &&
-      gameState.ballY >= gameState.paddle1Y &&
-      gameState.ballY <= gameState.paddle1Y + gameState.paddleHeight) ||
-    (gameState.ballX >= gameState.paddle2X &&
-      gameState.ballY >= gameState.paddle2Y &&
-      gameState.ballY <= gameState.paddle2Y + gameState.paddleHeight)
-  ) {
-    gameState.ballSpeedX *= -1; // Reverse ball direction
-  }
+  handlePaddleCollision(gameState, 1);
+  handlePaddleCollision(gameState, 2);
 
   // Ball out of bounds (scoring)
   if (gameState.ballX <= 0) {
@@ -227,4 +218,43 @@ function waitForEnterKey(): Promise<void> {
     }
     document.addEventListener("keydown", onKeyDown);
   });
+}
+
+export function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
+  const { ballX, ballY, ballRadius, ballSpeedX, paddleHeight, paddleWidth } =
+    gameState;
+
+  const paddleX = paddle === 1 ? gameState.paddle1X : gameState.paddle2X;
+  const paddleY = paddle === 1 ? gameState.paddle1Y : gameState.paddle2Y;
+
+  // Axis-Aligned Bounding Box check with radius
+  const collided =
+    ballX + ballRadius > paddleX &&
+    ballX - ballRadius < paddleX + paddleWidth &&
+    ballY + ballRadius > paddleY &&
+    ballY - ballRadius < paddleY + paddleHeight;
+
+  if (!collided) {
+    return;
+  }
+
+  // Compute offset: -1 (top edge) to +1 (bottom edge)
+  const paddleCenter = paddleY + paddleHeight / 2;
+  const offset = (ballY - paddleCenter) / (paddleHeight / 2);
+
+  // Max bounce angle (in radians)
+  const maxBounceAngle = Math.PI / 4;
+  const bounceAngle = offset * maxBounceAngle;
+
+  // Determine direction: ball always bounces *away* from paddle
+  const newDirection = ballSpeedX > 0 ? -1 : 1;
+
+  gameState.ballSpeedX = newDirection * Math.cos(bounceAngle);
+  gameState.ballSpeedY = Math.sin(bounceAngle);
+
+  // Re-position: put the ball just outside the paddle edge to avoid sticking
+  gameState.ballX =
+    gameState.ballSpeedX > 0
+      ? paddleX + paddleWidth + ballRadius
+      : paddleX - ballRadius;
 }
