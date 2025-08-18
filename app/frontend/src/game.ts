@@ -225,7 +225,6 @@ function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
   const paddleX = paddle === 1 ? gameState.paddle1X : gameState.paddle2X;
   const paddleY = paddle === 1 ? gameState.paddle1Y : gameState.paddle2Y;
 
-  // Axis-Aligned Bounding Box check with radius
   const collided =
     ballX + ballRadius > paddleX &&
     ballX - ballRadius < paddleX + paddleWidth &&
