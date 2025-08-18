@@ -148,12 +148,14 @@ function update(gameState: GameState) {
     gameState.player2Score++;
     checkWinner(gameState);
     resetBall(gameState);
+    resetAI(gameState);
   }
 
   if (gameState.ballX >= gameState.canvasWidth) {
     gameState.player1Score++;
     checkWinner(gameState);
     resetBall(gameState);
+    resetAI(gameState);
   }
 }
 
@@ -254,4 +256,9 @@ function handleWallCollision(gameState: GameState) {
     gameState.ballY = canvasHeight - ballRadius;
     gameState.ballSpeedY *= -1;
   }
+}
+
+function resetAI(gameState: GameState) {
+  if (gameState.aiPlayer1) gameState.aiPlayer1.reset();
+  if (gameState.aiPlayer2) gameState.aiPlayer2.reset();
 }
