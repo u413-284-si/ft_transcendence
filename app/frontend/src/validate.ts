@@ -101,12 +101,13 @@ export function validateTournamentName(
 }
 
 export async function isTournamentNameAvailable(
+  username: string,
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): Promise<boolean> {
   try {
     const tournamentsPage = getDataOrThrow(
-      await getUserTournaments({ name: inputEl.value })
+      await getUserTournaments({ username: username, name: inputEl.value })
     );
     if (tournamentsPage.items.length === 0) {
       return true;
@@ -123,7 +124,6 @@ export async function isTournamentNameAvailable(
     toaster.error(i18next.t("toast.validateTournamentNameError"));
     return false;
   }
-  return true;
 }
 
 export function validatePlayersSelection(

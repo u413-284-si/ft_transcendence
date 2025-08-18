@@ -226,37 +226,6 @@ export async function getUserStatsHandler(request, reply) {
   }
 }
 
-export async function getUserTournamentsHandler(request, reply) {
-  const action = "Get user tournaments";
-  try {
-    const userId = parseInt(request.user.id, 10);
-    const filter = {
-      name: request.query.name,
-      isFinished: request.query.isFinished,
-      limit: request.query.limit,
-      offset: request.query.offset,
-      sort: request.query.sort
-    };
-    const [tournaments, total] = await Promise.all([
-      getUserTournaments(userId, undefined, filter),
-      getUserTournamentsCount(userId, filter)
-    ]);
-    return reply.code(200).send({
-      message: createResponseMessage(action, true),
-      data: {
-        items: tournaments,
-        total
-      }
-    });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `getUserTournamentsHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
 export async function getUserTournamentsByUsernameHandler(request, reply) {
   const action = "Get user tournaments by username";
   try {

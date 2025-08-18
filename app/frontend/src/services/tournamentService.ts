@@ -41,19 +41,17 @@ export async function updateTournamentBracket(
   });
 }
 
-export async function getUserTournaments(
-  options: {
-    username?: string;
-    name?: string;
-    isFinished?: boolean;
-    limit?: number;
-    offset?: number;
-    sort?: "asc" | "desc";
-  } = {}
-): Promise<ApiResponse<FetchPageResult<TournamentDTO>>> {
+export async function getUserTournaments(options: {
+  username: string;
+  name?: string;
+  isFinished?: boolean;
+  limit?: number;
+  offset?: number;
+  sort?: "asc" | "desc";
+}): Promise<ApiResponse<FetchPageResult<TournamentDTO>>> {
   const { username, name, isFinished, limit, offset, sort = "desc" } = options;
-
-  let url = `/api/users/${username ?? "me"}/tournaments`;
+  const encoded = encodeURIComponent(username);
+  let url = `/api/users/${encoded}/tournaments`;
 
   const params = new URLSearchParams();
 

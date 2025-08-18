@@ -18,6 +18,7 @@ import { Button } from "../components/Button.js";
 import { RadioGroup } from "../components/RadioGroup.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
+import { auth } from "../AuthManager.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -90,7 +91,10 @@ export default class NewTournamentView extends AbstractView {
 
   async render() {
     const tournamentsPage = getDataOrThrow(
-      await getUserTournaments({ isFinished: false })
+      await getUserTournaments({
+        username: auth.getUser().username,
+        isFinished: false
+      })
     );
     if (tournamentsPage.items.length === 0) {
       console.log("No active tournament found");
@@ -139,7 +143,11 @@ export default class NewTournamentView extends AbstractView {
 
     if (
       !validateTournamentName(tournamentNameEl, tournamentErrorEl) ||
-      !(await isTournamentNameAvailable(tournamentNameEl, tournamentErrorEl))
+      !(await isTournamentNameAvailable(
+        auth.getUser().username,
+        tournamentNameEl,
+        tournamentErrorEl
+      ))
     ) {
       isValid = false;
     }
