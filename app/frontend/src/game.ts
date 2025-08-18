@@ -221,8 +221,7 @@ function waitForEnterKey(): Promise<void> {
 }
 
 export function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
-  const { ballX, ballY, ballRadius, ballSpeedX, paddleHeight, paddleWidth } =
-    gameState;
+  const { ballX, ballY, ballRadius, paddleHeight, paddleWidth } = gameState;
 
   const paddleX = paddle === 1 ? gameState.paddle1X : gameState.paddle2X;
   const paddleY = paddle === 1 ? gameState.paddle1Y : gameState.paddle2Y;
@@ -238,21 +237,8 @@ export function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
     return;
   }
 
-  // Compute offset: -1 (top edge) to +1 (bottom edge)
-  const paddleCenter = paddleY + paddleHeight / 2;
-  const offset = (ballY - paddleCenter) / (paddleHeight / 2);
+  gameState.ballSpeedX *= -1;
 
-  // Max bounce angle (in radians)
-  const maxBounceAngle = Math.PI / 4;
-  const bounceAngle = offset * maxBounceAngle;
-
-  // Determine direction: ball always bounces *away* from paddle
-  const newDirection = ballSpeedX > 0 ? -1 : 1;
-
-  gameState.ballSpeedX = newDirection * Math.cos(bounceAngle);
-  gameState.ballSpeedY = Math.sin(bounceAngle);
-
-  // Re-position: put the ball just outside the paddle edge to avoid sticking
   gameState.ballX =
     gameState.ballSpeedX > 0
       ? paddleX + paddleWidth + ballRadius
