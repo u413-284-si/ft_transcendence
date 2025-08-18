@@ -46,27 +46,42 @@ services:
     networks:
       - pong-network
   vault:
-    build:
-      context: .
-      dockerfile: ./vault/Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: ./vault/Dockerfile
+    image: hashicorp/vault:1.20.1
     container_name: vault
     init: true
-    security_opt:
-      - no-new-privileges:true
-    deploy:
-      restart_policy:
-        condition: always
-        window: 120s
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_ADDR=http://0.0.0.0:8200
+    cap_add:
+      - IPC_LOCK
+    restart: always
+    volumes:
+      - vault-data:/vault/data
+      - ./vault/config:/vault/config
+    command: vault server -config=/vault/config/vault.hcl
     depends_on:
       - app
+      - mysql
     networks:
       - pong-network
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3306:3306"
 
 networks:
   pong-network:
 
 volumes:
   db-data:
+  vault-data:
 
 secrets:
   site_key:
