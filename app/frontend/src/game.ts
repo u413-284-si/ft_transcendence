@@ -49,7 +49,7 @@ export async function startGame(
     aiPlayer2
   );
 
-  requestAnimationFrame(gameLoop);
+  await runGameLoop(gameState);
 
   if (gameState.isAborted) {
     return;
@@ -97,18 +97,25 @@ function initGameState(
   };
 }
 
-function gameLoop(timestamp: DOMHighResTimeStamp) {
-  if (gameState.gameOver) {
-    return;
-  }
+function runGameLoop(gameState: GameState): Promise<GameState> {
+  return new Promise((resolve) => {
+    function gameLoop(timestamp: number) {
+      if (gameState.isAborted || gameState.gameOver) {
+        resolve(gameState);
+        return;
+      }
 
-  const deltaTime = (timestamp - lastTime) / 1000;
+      const deltaTime = (timestamp - gameState.lastTimestamp) / 1000;
 
-  update(gameState, deltaTime);
-  draw(gameState);
-  lastTime = timestamp;
+      update(gameState, deltaTime);
+      draw(gameState);
+      gameState.lastTimestamp = timestamp;
 
-  requestAnimationFrame(gameLoop);
+      requestAnimationFrame(gameLoop);
+    }
+
+    requestAnimationFrame(gameLoop);
+  });
 }
 
 function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
