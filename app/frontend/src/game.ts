@@ -75,6 +75,7 @@ function initGameState(
     canvasWidth: canvas.width,
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
+    ballRadius: 10,
     ballSpeedX: 7,
     ballSpeedY: 7,
     paddle1X: 10,
