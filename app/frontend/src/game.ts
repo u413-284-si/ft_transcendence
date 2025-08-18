@@ -139,24 +139,11 @@ function update(gameState: GameState) {
   gameState.ballX += gameState.ballSpeedX;
   gameState.ballY += gameState.ballSpeedY;
 
-  handleWallCollision(gameState);
   handlePaddleCollision(gameState, 1);
   handlePaddleCollision(gameState, 2);
 
-  // Ball out of bounds (scoring)
-  if (gameState.ballX <= 0) {
-    gameState.player2Score++;
-    checkWinner(gameState);
-    resetBall(gameState);
-    resetAI(gameState);
-  }
-
-  if (gameState.ballX >= gameState.canvasWidth) {
-    gameState.player1Score++;
-    checkWinner(gameState);
-    resetBall(gameState);
-    resetAI(gameState);
-  }
+  handleWallCollision(gameState);
+  handleOutOfBounds(gameState);
 }
 
 function resetBall(gameState: GameState) {
@@ -260,4 +247,22 @@ function handleWallCollision(gameState: GameState) {
 function resetAI(gameState: GameState) {
   if (gameState.aiPlayer1) gameState.aiPlayer1.reset();
   if (gameState.aiPlayer2) gameState.aiPlayer2.reset();
+}
+
+function handleOutOfBounds(gameState: GameState) {
+  const { ballX, ballRadius, canvasWidth } = gameState;
+
+  const checkScore = (condition: boolean, scoringPlayer: 1 | 2) => {
+    if (!condition) return;
+
+    if (scoringPlayer === 1) gameState.player1Score++;
+    else gameState.player2Score++;
+
+    checkWinner(gameState);
+    resetBall(gameState);
+    resetAI(gameState);
+  };
+
+  checkScore(ballX - ballRadius <= 0, 2);
+  checkScore(ballX + ballRadius >= canvasWidth, 1);
 }
