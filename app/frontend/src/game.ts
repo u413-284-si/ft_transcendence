@@ -139,10 +139,7 @@ function update(gameState: GameState) {
   gameState.ballX += gameState.ballSpeedX;
   gameState.ballY += gameState.ballSpeedY;
 
-  // Ball collision with top & bottom
-  if (gameState.ballY <= 0 || gameState.ballY >= gameState.canvasHeight)
-    gameState.ballSpeedY *= -1;
-
+  handleWallCollision(gameState);
   handlePaddleCollision(gameState, 1);
   handlePaddleCollision(gameState, 2);
 
@@ -243,4 +240,18 @@ export function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
     gameState.ballSpeedX > 0
       ? paddleX + paddleWidth + ballRadius
       : paddleX - ballRadius;
+}
+
+export function handleWallCollision(gameState: GameState) {
+  const { ballY, ballRadius, canvasHeight } = gameState;
+
+  if (ballY - ballRadius <= 0) {
+    gameState.ballY = ballRadius;
+    gameState.ballSpeedY *= -1;
+  }
+
+  if (ballY + ballRadius >= canvasHeight) {
+    gameState.ballY = canvasHeight - ballRadius;
+    gameState.ballSpeedY *= -1;
+  }
 }
