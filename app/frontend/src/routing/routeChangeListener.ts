@@ -1,4 +1,5 @@
 import { RouteChangeListener } from "../types/Route";
+import { getAllBySelector } from "../utility.js";
 
 export const logRouteChange: RouteChangeListener = (info) => {
   if (info.event === "nav") {
@@ -12,7 +13,7 @@ export const logRouteChange: RouteChangeListener = (info) => {
 };
 
 export const updateUI: RouteChangeListener = (info) => {
-  const navItems = document.querySelectorAll("[data-link]");
+  const navItems = getAllBySelector<HTMLAnchorElement>("[data-link]");
   navItems.forEach((item) => {
     const href = item.getAttribute("href");
     if (href === info.to) {

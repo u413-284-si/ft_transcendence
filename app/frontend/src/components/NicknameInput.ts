@@ -1,3 +1,4 @@
+import { getAllBySelector } from "../utility.js";
 import { Checkbox } from "./Checkbox.js";
 import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
@@ -39,10 +40,8 @@ export function NicknameInput(players: number): string {
 }
 
 export function initNicknameInputListeners(): void {
-  const radios = document.querySelectorAll<HTMLInputElement>(
-    'input[name="userChoice"]'
-  );
-  const checkboxes = document.querySelectorAll<HTMLInputElement>(
+  const radios = getAllBySelector<HTMLInputElement>('input[name="userChoice"]');
+  const checkboxes = getAllBySelector<HTMLInputElement>(
     'input[type="checkbox"][id^="ai-"]'
   );
 

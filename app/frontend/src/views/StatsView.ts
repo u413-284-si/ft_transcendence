@@ -4,7 +4,7 @@ import {
   getUserStatsByUsername
 } from "../services/userStatsServices.js";
 import { getUserByUsername } from "../services/userServices.js";
-import { escapeHTML, getById } from "../utility.js";
+import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
 import { router } from "../routing/Router.js";
@@ -187,7 +187,7 @@ export default class StatsView extends AbstractView {
   }
 
   protected addListeners(): void {
-    const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-button");
+    const buttons = getAllBySelector<HTMLButtonElement>(".tab-button");
 
     buttons.forEach((button) => {
       button.addEventListener("click", async () => {

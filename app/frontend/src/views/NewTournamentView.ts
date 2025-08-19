@@ -19,7 +19,7 @@ import { RadioGroup } from "../components/RadioGroup.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
 import { auth } from "../AuthManager.js";
-import { getById } from "../utility.js";
+import { getById, getBySelector } from "../utility.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -129,9 +129,9 @@ export default class NewTournamentView extends AbstractView {
       'input[name="players"]:checked'
     ) as HTMLInputElement;
     const tournamentNameEl = getById<HTMLInputElement>("tournament-name-input");
-    const selectionEl = document.querySelector(
+    const selectionEl = getBySelector<HTMLInputElement>(
       'input[name="players"]'
-    ) as HTMLInputElement;
+    );
     const tournamentErrorEl = getById<HTMLElement>("tournament-name-error");
     const playerErrorEl = getById<HTMLElement>("player-error");
     let isValid = true;

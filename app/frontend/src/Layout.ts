@@ -4,7 +4,7 @@ import { Link } from "./components/Link.js";
 import { Drawer } from "./Drawer.js";
 import { LanguageSwitcher } from "./components/LanguageSwitcher.js";
 import { Language } from "./types/User.js";
-import { getById } from "./utility.js";
+import { getAllBySelector, getById } from "./utility.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -181,15 +181,15 @@ export class Layout {
       this.languageSwitcherOptionsEl.classList.toggle("hidden");
     });
 
-    this.languageSwitcherOptionsEl
-      .querySelectorAll("button[data-lang]")
-      .forEach((btn) => {
-        btn.addEventListener("click", async (e) => {
-          const lang = (e.currentTarget as HTMLElement).dataset
-            .lang as Language;
-          await auth.updateLanguage(lang);
-        });
+    const buttons = getAllBySelector<HTMLButtonElement>("button[data-lang]", {
+      root: this.languageSwitcherOptionsEl
+    });
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const lang = (e.currentTarget as HTMLElement).dataset.lang as Language;
+        await auth.updateLanguage(lang);
       });
+    });
 
     document.addEventListener("click", this.onDocumentClick);
   }

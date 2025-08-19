@@ -8,7 +8,7 @@ import { getDataOrThrow } from "../../services/api.js";
 import { getUserDashboardFriends } from "../../services/userStatsServices.js";
 import { toaster } from "../../Toaster.js";
 import { DashboardFriends, FriendStatsSeries } from "../../types/DataSeries.js";
-import { getById } from "../../utility.js";
+import { getAllBySelector, getById } from "../../utility.js";
 import { AbstractTab } from "./AbstractTab.js";
 
 export class FriendsTab extends AbstractTab {
@@ -148,7 +148,10 @@ export class FriendsTab extends AbstractTab {
       button.dataset.selected = "false";
     }
     const container = getById<HTMLDivElement>("friend-selector");
-    const buttons = container.querySelectorAll("button");
+    const buttons = getAllBySelector<HTMLButtonElement>("button", {
+      root: container,
+      strict: false
+    });
     buttons.forEach((btn) => {
       const selected = btn.dataset.selected === "true";
       if (!selected) {

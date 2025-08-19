@@ -1,4 +1,5 @@
 import { Toast, ToastVariant } from "./components/Toast.js";
+import { getBySelector } from "./utility.js";
 
 interface ToastData {
   timeoutId: number;
@@ -44,10 +45,8 @@ export class Toaster {
     template.innerHTML = html.trim();
     const toast = template.content.firstElementChild as HTMLElement;
 
-    // Click close button
-    toast
-      .querySelector("button")!
-      .addEventListener("click", () => this.removeToast(toast));
+    const closeBtn = getBySelector("button", toast);
+    closeBtn.addEventListener("click", () => this.removeToast(toast));
 
     // Hover handlers: pause/resume
     toast.addEventListener("mouseenter", () => this.pauseToast(toast));

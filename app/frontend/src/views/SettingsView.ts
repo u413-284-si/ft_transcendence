@@ -23,7 +23,7 @@ import { patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { User, Language } from "../types/User.js";
-import { getById } from "../utility.js";
+import { getAllBySelector, getById, getBySelector } from "../utility.js";
 
 export default class SettingsView extends AbstractView {
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
@@ -278,15 +278,15 @@ export default class SettingsView extends AbstractView {
       this.preferredLanguageOptionsEl.classList.toggle("hidden");
     });
 
-    this.preferredLanguageOptionsEl
-      .querySelectorAll("button[data-lang]")
-      .forEach((btn) => {
-        btn.addEventListener("click", async (e) => {
-          const lang = (e.currentTarget as HTMLElement).dataset
-            .lang as Language;
-          await auth.updateLanguage(lang);
-        });
+    const buttons = getAllBySelector<HTMLButtonElement>("button[data-lang]", {
+      root: this.preferredLanguageOptionsEl
+    });
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const lang = (e.currentTarget as HTMLElement).dataset.lang as Language;
+        await auth.updateLanguage(lang);
       });
+    });
 
     document.addEventListener("click", this.onDocumentClick);
   }
@@ -581,10 +581,9 @@ export default class SettingsView extends AbstractView {
     action: "setup" | "remove" | "backupCodes"
   ): Promise<void> {
     this.passwordFormAction = action;
-    const labelEl = document.querySelector<HTMLLabelElement>(
+    const labelEl = getBySelector<HTMLLabelElement>(
       `label[for="two-fa-password-input"]`
     );
-    if (!labelEl) throw new Error("Modal labelEl not found");
 
     switch (action) {
       case "setup":

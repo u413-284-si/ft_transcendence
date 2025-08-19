@@ -14,7 +14,12 @@ import {
   FriendRequestEvent,
   FriendStatusChangeEvent
 } from "../types/ServerSentEvents.js";
-import { escapeHTML, getById } from "../utility.js";
+import {
+  escapeHTML,
+  getAllBySelector,
+  getById,
+  getBySelector
+} from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
 import { Button } from "../components/Button.js";
@@ -220,7 +225,8 @@ export default class FriendsView extends AbstractView {
     toastMessage: string,
     toastIcon?: string
   ): void => {
-    document.querySelectorAll(selector).forEach((btn) => {
+    const buttons = getAllBySelector(selector, { strict: false });
+    buttons.forEach((btn) => {
       btn.addEventListener(
         "click",
         async (event) => {
@@ -318,14 +324,17 @@ export default class FriendsView extends AbstractView {
   private handleFriendStatusChange = (event: Event) => {
     const customEvent = event as FriendStatusChangeEvent;
     const { requestId, isOnline } = customEvent.detail;
-    const container = document.querySelector<HTMLElement>(
+    const container = getBySelector<HTMLLIElement>(
       `li[data-request-id="${requestId}"]`
     );
     if (!container) {
       console.warn("Tried to update status, but container not found");
       return;
     }
-    const statusSpan = container.querySelector(".online-status")!;
+    const statusSpan = getBySelector<HTMLSpanElement>(
+      ".online-status",
+      container
+    );
 
     statusSpan.textContent = isOnline
       ? i18next.t("global.online")
