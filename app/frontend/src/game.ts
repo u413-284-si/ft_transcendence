@@ -106,6 +106,8 @@ function runGameLoop(gameState: GameState): Promise<GameState> {
       }
 
       const deltaTime = (timestamp - gameState.lastTimestamp) / 1000;
+      const fps = calculateFPS(deltaTime);
+      console.log(`FPS: ${fps}`);
 
       update(gameState, deltaTime);
       draw(gameState);
@@ -287,4 +289,9 @@ function updateBallPosition(
 ) {
   gameState.ballX += gameState.ballSpeedX * deltaTime;
   gameState.ballY += gameState.ballSpeedY * deltaTime;
+}
+
+function calculateFPS(deltaTime: number): number {
+  if (deltaTime <= 0) return 0;
+  return Math.round(1 / deltaTime);
 }
