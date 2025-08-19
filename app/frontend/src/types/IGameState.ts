@@ -12,19 +12,19 @@ export interface GameState {
   canvasWidth: number;
   ballX: number;
   ballY: number;
-  ballRadius: number;
-  ballSpeedX: number;
-  ballSpeedY: number;
+  ballRadius: number; // pixel
+  ballSpeedX: number; // pixel/second
+  ballSpeedY: number; // pixel/second
   paddle1X: number;
   paddle1Y: number;
   paddle2X: number;
   paddle2Y: number;
   paddleHeight: number;
   paddleWidth: number;
-  paddleSpeed: number;
+  paddleSpeed: number; // pixel/second
   gameOver: boolean;
   keys: Record<GameKey, boolean>;
   aiPlayer1: AIPlayer | null;
   aiPlayer2: AIPlayer | null;
-  lastTimestamp: DOMHighResTimeStamp;
+  lastTimestamp: DOMHighResTimeStamp; // ms
 }
