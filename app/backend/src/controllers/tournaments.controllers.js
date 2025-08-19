@@ -54,8 +54,8 @@ export async function getAllTournamentsHandler(request, reply) {
 export async function getTournamentHandler(request, reply) {
   const action = "Get tournament";
   try {
-    const id = parseInt(request.params.id, 10);
-    const data = await getTournament(id);
+    const tournamentId = parseInt(request.params.id, 10);
+    const data = await getTournament(tournamentId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -71,9 +71,9 @@ export async function getTournamentHandler(request, reply) {
 export async function patchTournamentHandler(request, reply) {
   const action = "Patch tournament";
   try {
-    const id = parseInt(request.params.id, 10);
+    const tournamentId = parseInt(request.params.id, 10);
     const userId = request.user.id;
-    const data = await updateTournament(id, userId, request.body);
+    const data = await updateTournament(tournamentId, userId, request.body);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -105,9 +105,9 @@ export async function deleteAllTournamentsHandler(request, reply) {
 export async function deleteTournamentHandler(request, reply) {
   const action = "Delete Tournament";
   try {
-    const id = parseInt(request.params.id, 10);
+    const tournamentId = parseInt(request.params.id, 10);
     const userId = request.user.id;
-    const data = await deleteTournament(id, userId);
+    const data = await deleteTournament(tournamentId, userId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });

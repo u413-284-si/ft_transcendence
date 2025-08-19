@@ -103,8 +103,8 @@ export async function getAllUsersHandler(request, reply) {
 export async function updateUserHandler(request, reply) {
   const action = "Update user";
   try {
-    const id = parseInt(request.params.id, 10);
-    const data = await updateUser(id, request.body);
+    const userId = parseInt(request.params.id, 10);
+    const data = await updateUser(userId, request.body);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -155,8 +155,8 @@ export async function patchUserHandler(request, reply) {
 export async function deleteUserHandler(request, reply) {
   const action = "Delete user";
   try {
-    const id = parseInt(request.params.id, 10);
-    const data = await deleteUser(id);
+    const userId = parseInt(request.params.id, 10);
+    const data = await deleteUser(userId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
