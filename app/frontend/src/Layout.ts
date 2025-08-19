@@ -4,7 +4,7 @@ import { Link } from "./components/Link.js";
 import { Drawer } from "./Drawer.js";
 import { LanguageSwitcher } from "./components/LanguageSwitcher.js";
 import { Language } from "./types/User.js";
-import { getButtonEl, getEl } from "./utility.js";
+import { getById, getEl } from "./utility.js";
 
 export type LayoutMode = "auth" | "guest";
 
@@ -45,7 +45,9 @@ export class Layout {
     this.rootEl.innerHTML = cleanHTML;
 
     this.attachAvatarDrawerHandler();
-    this.languageSwitcherButtonEl = getButtonEl("lang-switcher-button")!;
+    this.languageSwitcherButtonEl = getById<HTMLButtonElement>(
+      "lang-switcher-button"
+    )!;
     this.languageSwitcherOptionsEl = getEl("lang-switcher-options")!;
     this.attachLanguageSwitcherHandler();
   }

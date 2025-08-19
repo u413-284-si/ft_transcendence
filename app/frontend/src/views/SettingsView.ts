@@ -23,7 +23,7 @@ import { patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { User, Language } from "../types/User.js";
-import { getButtonEl, getById, getEl } from "../utility.js";
+import { getById, getEl } from "../utility.js";
 
 export default class SettingsView extends AbstractView {
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
@@ -292,7 +292,7 @@ export default class SettingsView extends AbstractView {
   }
 
   private initTwoFAElements(): void {
-    this.twoFASetupButtonEl = getButtonEl("setup-two-fa-button");
+    this.twoFASetupButtonEl = getById<HTMLButtonElement>("setup-two-fa-button");
     this.twoFAModalEl = getEl("two-fa-modal") as HTMLDialogElement;
     this.twoFAFormEl = getEl("two-fa-form") as HTMLFormElement;
     this.twoFAPasswordModalEl = getEl(
@@ -309,7 +309,7 @@ export default class SettingsView extends AbstractView {
       this.twoFACodeInputEl = getById<HTMLInputElement>("two-fa-code-input");
       this.twoFACodeInputErrorEl = getEl("two-fa-code-input-error");
     } else {
-      this.twoFAGenerateBackupCodesButtonEl = getButtonEl(
+      this.twoFAGenerateBackupCodesButtonEl = getById<HTMLButtonElement>(
         "two-fa-generate-backup-codes"
       );
       this.twoFABackupCodesTableEl = getEl(
@@ -329,7 +329,9 @@ export default class SettingsView extends AbstractView {
     this.preferredLanguageFormEl = document.querySelector<HTMLFormElement>(
       "#preferred-language-form"
     )!;
-    this.preferredLanguageButtonEl = getButtonEl("preferred-language-button");
+    this.preferredLanguageButtonEl = getById<HTMLButtonElement>(
+      "preferred-language-button"
+    );
     this.preferredLanguageOptionsEl = getEl("preferred-language-options");
     if (this.hasLocalAuth) this.initTwoFAElements();
     this.addListeners();

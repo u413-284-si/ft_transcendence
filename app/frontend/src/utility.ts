@@ -12,10 +12,6 @@ export function getEl(elId: string): HTMLElement {
   return document.getElementById(elId) as HTMLElement;
 }
 
-export function getButtonEl(buttonId: string): HTMLButtonElement {
-  return document.getElementById(buttonId) as HTMLButtonElement;
-}
-
 export function getCookieValueByName(cookieName: string): string {
   const match = document.cookie.match(
     new RegExp("(^|; )" + cookieName + "=([^;]+)")
