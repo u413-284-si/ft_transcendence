@@ -213,9 +213,9 @@ export default class ProfileView extends AbstractView {
 
   async render(): Promise<void> {
     this.updateHTML();
-    this.avatarFormEl = document.querySelector("#avatar-upload-form")!;
-    this.profileFormEl = document.querySelector("#profile-form")!;
-    this.passwordFormEl = document.querySelector("#password-form")!;
+    this.avatarFormEl = getById<HTMLFormElement>("avatar-upload-form");
+    this.profileFormEl = getById<HTMLFormElement>("profile-form");
+    this.passwordFormEl = getById<HTMLFormElement>("password-form");
     this.avatarInputEl = getById<HTMLInputElement>("avatar-input");
     this.fileLabelEl = getById<HTMLInputElement>("avatar-input-file-label");
     this.addListeners();

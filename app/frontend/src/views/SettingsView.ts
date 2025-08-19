@@ -326,9 +326,9 @@ export default class SettingsView extends AbstractView {
 
   async render(): Promise<void> {
     this.updateHTML();
-    this.preferredLanguageFormEl = document.querySelector<HTMLFormElement>(
-      "#preferred-language-form"
-    )!;
+    this.preferredLanguageFormEl = getById<HTMLFormElement>(
+      "preferred-language-form"
+    );
     this.preferredLanguageButtonEl = getById<HTMLButtonElement>(
       "preferred-language-button"
     );

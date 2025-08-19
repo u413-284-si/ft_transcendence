@@ -4,7 +4,7 @@ import {
   getUserStatsByUsername
 } from "../services/userStatsServices.js";
 import { getUserByUsername } from "../services/userServices.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getById } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
 import { router } from "../routing/Router.js";
@@ -151,7 +151,7 @@ export default class StatsView extends AbstractView {
     }
     this.currentTabId = tabId;
 
-    const container = document.getElementById("tab-content")!;
+    const container = getById<HTMLDivElement>("tab-content");
     container.innerHTML = this.tabs[tabId].getHTML();
 
     await this.tabs[tabId].onShow();

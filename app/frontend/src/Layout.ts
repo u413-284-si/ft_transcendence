@@ -11,12 +11,12 @@ export type LayoutMode = "auth" | "guest";
 export class Layout {
   private static instance: Layout;
   private mode: LayoutMode = "guest";
-  private rootEl: HTMLElement;
-  private languageSwitcherButtonEl!: HTMLElement;
-  private languageSwitcherOptionsEl!: HTMLElement;
+  private rootEl: HTMLDivElement;
+  private languageSwitcherButtonEl!: HTMLButtonElement;
+  private languageSwitcherOptionsEl!: HTMLDivElement;
 
   constructor() {
-    this.rootEl = document.getElementById("app")!;
+    this.rootEl = getById<HTMLDivElement>("app");
     this.styleRootElement();
   }
 

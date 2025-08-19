@@ -5,7 +5,7 @@ import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getById } from "../utility.js";
 import { NicknameInput } from "../components/NicknameInput.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
@@ -63,13 +63,13 @@ export default class PlayerNicknamesView extends AbstractView {
 
   async render() {
     this.updateHTML();
-    this.formEl = document.querySelector("#nicknames-form")!;
+    this.formEl = getById("nicknames-form");
     this.addListeners();
   }
 
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
-    const form = document.getElementById("nicknames-form") as HTMLFormElement;
+    const form = getById<HTMLFormElement>("nicknames-form");
     const formData = new FormData(form);
     const userNumber = formData.get("userChoice");
     const inputElements: HTMLInputElement[] = Array.from(
