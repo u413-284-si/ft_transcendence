@@ -9,14 +9,14 @@ import { playedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
 
-let gameState: GameState;
+let isAborted: boolean = false;
 
 export function getIsAborted(): boolean {
-  return gameState.isAborted;
+  return isAborted;
 }
 
 export function setIsAborted(value: boolean) {
-  gameState.isAborted = value;
+  isAborted = value;
 }
 
 export async function startGame(
@@ -31,6 +31,7 @@ export async function startGame(
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d")!;
 
+  setIsAborted(false);
   let aiPlayer1: AIPlayer | null = null;
   let aiPlayer2: AIPlayer | null = null;
   if (type1 === "AI") {
@@ -39,7 +40,7 @@ export async function startGame(
   if (type2 === "AI") {
     aiPlayer2 = new AIPlayer("right");
   }
-  gameState = initGameState(
+  const gameState = initGameState(
     canvas,
     ctx,
     nickname1,
@@ -51,7 +52,7 @@ export async function startGame(
 
   await runGameLoop(gameState);
 
-  if (gameState.isAborted) {
+  if (getIsAborted()) {
     return;
   }
 
@@ -89,7 +90,6 @@ function initGameState(
     paddleWidth: 10,
     paddleSpeed: 300,
     gameOver: false,
-    isAborted: false,
     keys: keys,
     aiPlayer1: aiPlayer1,
     aiPlayer2: aiPlayer2,
@@ -100,7 +100,7 @@ function initGameState(
 function runGameLoop(gameState: GameState): Promise<GameState> {
   return new Promise((resolve) => {
     function gameLoop(timestamp: number) {
-      if (gameState.isAborted || gameState.gameOver) {
+      if (getIsAborted() || gameState.gameOver) {
         resolve(gameState);
         return;
       }

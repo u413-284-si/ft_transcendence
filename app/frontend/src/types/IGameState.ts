@@ -23,7 +23,6 @@ export interface GameState {
   paddleWidth: number;
   paddleSpeed: number;
   gameOver: boolean;
-  isAborted: boolean;
   keys: Record<GameKey, boolean>;
   aiPlayer1: AIPlayer | null;
   aiPlayer2: AIPlayer | null;
