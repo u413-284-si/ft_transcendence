@@ -23,7 +23,7 @@ import { patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { User, Language } from "../types/User.js";
-import { getById, getEl } from "../utility.js";
+import { getById } from "../utility.js";
 
 export default class SettingsView extends AbstractView {
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
@@ -293,34 +293,34 @@ export default class SettingsView extends AbstractView {
 
   private initTwoFAElements(): void {
     this.twoFASetupButtonEl = getById<HTMLButtonElement>("setup-two-fa-button");
-    this.twoFAModalEl = getEl("two-fa-modal") as HTMLDialogElement;
-    this.twoFAFormEl = getEl("two-fa-form") as HTMLFormElement;
-    this.twoFAPasswordModalEl = getEl(
+    this.twoFAModalEl = getById<HTMLDialogElement>("two-fa-modal");
+    this.twoFAFormEl = getById<HTMLFormElement>("two-fa-form");
+    this.twoFAPasswordModalEl = getById<HTMLDialogElement>(
       "two-fa-password-modal"
-    ) as HTMLDialogElement;
-    this.twoFAPasswordFormEl = getEl("two-fa-password-form") as HTMLFormElement;
+    );
+    this.twoFAPasswordFormEl = getById<HTMLFormElement>("two-fa-password-form");
     this.twoFAPasswordInputEl = getById<HTMLInputElement>(
       "two-fa-password-input"
     );
-    this.twoFAPasswordInputErrorEl = getEl("two-fa-password-input-error");
-    this.twoFAQRCodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
+    this.twoFAPasswordInputErrorEl = getById("two-fa-password-input-error");
+    this.twoFAQRCodeEl = getById<HTMLImageElement>("two-fa-qr-code");
 
     if (!this.hasTwoFA()) {
       this.twoFACodeInputEl = getById<HTMLInputElement>("two-fa-code-input");
-      this.twoFACodeInputErrorEl = getEl("two-fa-code-input-error");
+      this.twoFACodeInputErrorEl = getById("two-fa-code-input-error");
     } else {
       this.twoFAGenerateBackupCodesButtonEl = getById<HTMLButtonElement>(
         "two-fa-generate-backup-codes"
       );
-      this.twoFABackupCodesTableEl = getEl(
+      this.twoFABackupCodesTableEl = getById<HTMLTableElement>(
         "two-fa-backup-codes-table"
-      ) as HTMLTableElement;
-      this.twoFADownloadBackupCodesLinkEl = getEl(
+      );
+      this.twoFADownloadBackupCodesLinkEl = getById<HTMLAnchorElement>(
         "two-fa-download-backup-codes-link"
-      ) as HTMLAnchorElement;
-      this.twoFABackupCodesModalEl = getEl(
+      );
+      this.twoFABackupCodesModalEl = getById<HTMLDialogElement>(
         "two-fa-backup-codes-modal"
-      ) as HTMLDialogElement;
+      );
     }
   }
 
@@ -332,7 +332,7 @@ export default class SettingsView extends AbstractView {
     this.preferredLanguageButtonEl = getById<HTMLButtonElement>(
       "preferred-language-button"
     );
-    this.preferredLanguageOptionsEl = getEl("preferred-language-options");
+    this.preferredLanguageOptionsEl = getById("preferred-language-options");
     if (this.hasLocalAuth) this.initTwoFAElements();
     this.addListeners();
   }
@@ -573,7 +573,7 @@ export default class SettingsView extends AbstractView {
   }
 
   private displayModal(modalId: string): void {
-    const modal = getEl(modalId) as HTMLDialogElement;
+    const modal = getById<HTMLDialogElement>(modalId);
     modal.showModal();
   }
 
@@ -605,7 +605,7 @@ export default class SettingsView extends AbstractView {
   }
 
   private hideModal(modalId: string): void {
-    const modal = getEl(modalId) as HTMLDialogElement;
+    const modal = getById<HTMLDialogElement>(modalId);
     modal.close();
   }
 }

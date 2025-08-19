@@ -16,7 +16,6 @@ import {
   clearInvalid,
   isEmptyString
 } from "../validate.js";
-import { getEl } from "../utility.js";
 import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
@@ -228,7 +227,7 @@ export default class ProfileView extends AbstractView {
     let valid = true;
 
     const usernameEl = getById<HTMLInputElement>("username-input");
-    const usernameErrorEl = getEl("username-error");
+    const usernameErrorEl = getById("username-error");
     const username = usernameEl.value;
     const hasUsername = !isEmptyString(username);
 
@@ -242,7 +241,7 @@ export default class ProfileView extends AbstractView {
     let email = "";
     if (this.hasLocalAuth) {
       emailEl = getById<HTMLInputElement>("email-input");
-      const emailErrorEl = getEl("email-error");
+      const emailErrorEl = getById("email-error");
       email = emailEl.value;
       const hasEmail = !isEmptyString(email);
 
@@ -304,7 +303,7 @@ export default class ProfileView extends AbstractView {
   private async uploadAvatar(event: Event) {
     event.preventDefault();
     const fileInputEl = getById<HTMLInputElement>("avatar-input");
-    const errorEl = getEl("avatar-upload-error-message");
+    const errorEl = getById("avatar-upload-error-message");
 
     if (!validateImageFile(fileInputEl, errorEl)) return;
 
@@ -348,7 +347,7 @@ export default class ProfileView extends AbstractView {
     const confirmPasswordEl = getById<HTMLInputElement>(
       "confirm-new-password-input"
     );
-    const confirmPasswordErrorEl = getEl("confirm-error");
+    const confirmPasswordErrorEl = getById("confirm-error");
 
     if (
       !validateConfirmPassword(
