@@ -23,7 +23,7 @@ import { patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { User, Language } from "../types/User.js";
-import { getButtonEl, getEl, getInputEl } from "../utility.js";
+import { getButtonEl, getById, getEl } from "../utility.js";
 
 export default class SettingsView extends AbstractView {
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
@@ -299,12 +299,14 @@ export default class SettingsView extends AbstractView {
       "two-fa-password-modal"
     ) as HTMLDialogElement;
     this.twoFAPasswordFormEl = getEl("two-fa-password-form") as HTMLFormElement;
-    this.twoFAPasswordInputEl = getInputEl("two-fa-password-input");
+    this.twoFAPasswordInputEl = getById<HTMLInputElement>(
+      "two-fa-password-input"
+    );
     this.twoFAPasswordInputErrorEl = getEl("two-fa-password-input-error");
     this.twoFAQRCodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
 
     if (!this.hasTwoFA()) {
-      this.twoFACodeInputEl = getInputEl("two-fa-code-input");
+      this.twoFACodeInputEl = getById<HTMLInputElement>("two-fa-code-input");
       this.twoFACodeInputErrorEl = getEl("two-fa-code-input-error");
     } else {
       this.twoFAGenerateBackupCodesButtonEl = getButtonEl(

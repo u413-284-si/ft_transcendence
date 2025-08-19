@@ -14,7 +14,7 @@ import {
   FriendRequestEvent,
   FriendStatusChangeEvent
 } from "../types/ServerSentEvents.js";
-import { escapeHTML, getEl, getInputEl } from "../utility.js";
+import { escapeHTML, getById, getEl } from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
 import { Button } from "../components/Button.js";
@@ -334,7 +334,7 @@ export default class FriendsView extends AbstractView {
 
   private handleSendRequestButton = async (event: Event): Promise<void> => {
     event.preventDefault();
-    const inputEl = getInputEl("username-input");
+    const inputEl = getById<HTMLInputElement>("username-input");
     const errorEl = getEl("username-error");
 
     clearInvalid(inputEl, errorEl);

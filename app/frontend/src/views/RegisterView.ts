@@ -8,7 +8,7 @@ import {
 import { registerUser } from "../services/userServices.js";
 import { router } from "../routing/Router.js";
 import { ApiError } from "../services/api.js";
-import { escapeHTML, getEl, getInputEl } from "../utility.js";
+import { escapeHTML, getById, getEl } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { Input, addTogglePasswordListener } from "../components/Input.js";
 import { Button } from "../components/Button.js";
@@ -105,16 +105,16 @@ export default class Register extends AbstractView {
 
   private async validateAndRegisterUser(event: Event): Promise<void> {
     event.preventDefault();
-    const emailEL = getInputEl("email");
+    const emailEL = getById<HTMLInputElement>("email");
     const emailErrorEl = getEl("email-error");
 
-    const userEl = getInputEl("username");
+    const userEl = getById<HTMLInputElement>("username");
     const userErrorEl = getEl("username-error");
 
-    const passwordEl = getInputEl("password");
+    const passwordEl = getById<HTMLInputElement>("password");
     const passwordErrorEl = getEl("password-error");
 
-    const confirmPasswordEl = getInputEl("confirm");
+    const confirmPasswordEl = getById<HTMLInputElement>("confirm");
     const confirmPasswordErrorEl = getEl("confirm-error");
 
     const isEmailValid = validateEmail(emailEL, emailErrorEl);
