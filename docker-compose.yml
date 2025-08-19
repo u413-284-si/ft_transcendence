@@ -75,6 +75,8 @@ services:
       MYSQL_ROOT_PASSWORD: rootpass
     ports:
       - "3306:3306"
+    networks:
+      - pong-network
 
 networks:
   pong-network:
