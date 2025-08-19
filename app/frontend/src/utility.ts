@@ -26,3 +26,15 @@ export function getCookieValueByName(cookieName: string): string {
   );
   return match ? match[2] : "";
 }
+
+export function getBySelector<T extends HTMLElement>(
+  selector: string,
+  root: ParentNode = document
+): T {
+  const el = root.querySelector<T>(selector);
+  if (!el) {
+    console.error(`Element "${selector}" not found`);
+    throw new Error(i18next.t("error.unexpected"));
+  }
+  return el;
+}
