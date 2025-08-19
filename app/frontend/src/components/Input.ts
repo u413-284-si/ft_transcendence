@@ -183,8 +183,8 @@ function getEyeIconHTML(type: "show" | "hide"): string {
 
 function togglePasswordVisibility(
   passwordEl: HTMLInputElement,
-  showEyeEl: HTMLElement,
-  hideEyeEl: HTMLElement
+  showEyeEl: HTMLSpanElement,
+  hideEyeEl: HTMLSpanElement
 ): void {
   const isHidden = passwordEl.type === "password";
   passwordEl.type = isHidden ? "text" : "password";
