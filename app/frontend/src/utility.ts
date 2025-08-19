@@ -38,3 +38,16 @@ export function getBySelector<T extends HTMLElement>(
   }
   return el;
 }
+
+export function getAllBySelector<T extends HTMLElement>(
+  selector: string,
+  root: ParentNode = document,
+  { strict = true } = {}
+): T[] {
+  const elements = root.querySelectorAll<T>(selector);
+  if (elements.length === 0 && strict) {
+    console.error(`No elements match selector "${selector}"`);
+    throw new Error(i18next.t("error.unexpected"));
+  }
+  return Array.from(elements);
+}
