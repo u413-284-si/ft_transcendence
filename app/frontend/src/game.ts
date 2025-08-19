@@ -105,7 +105,14 @@ function runGameLoop(gameState: GameState): Promise<GameState> {
         return;
       }
 
-      const deltaTime = (timestamp - gameState.lastTimestamp) / 1000;
+      let deltaTime = (timestamp - gameState.lastTimestamp) / 1000;
+
+      if (deltaTime <= 0) {
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+
+      deltaTime = Math.min(deltaTime, 0.1);
       const fps = calculateFPS(deltaTime);
       console.log(`FPS: ${fps}`);
 
