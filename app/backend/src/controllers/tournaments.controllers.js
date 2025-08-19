@@ -72,7 +72,7 @@ export async function patchTournamentHandler(request, reply) {
   const action = "Patch tournament";
   try {
     const id = parseInt(request.params.id, 10);
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const data = await updateTournament(id, userId, request.body);
     return reply
       .code(200)
@@ -106,7 +106,7 @@ export async function deleteTournamentHandler(request, reply) {
   const action = "Delete Tournament";
   try {
     const id = parseInt(request.params.id, 10);
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const data = await deleteTournament(id, userId);
     return reply
       .code(200)

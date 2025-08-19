@@ -10,7 +10,7 @@ import { transactionMatch } from "../services/transactions.services.js";
 export async function createMatchHandler(request, reply) {
   const action = "Create match";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const {
       playedAs,
       player1Nickname,
