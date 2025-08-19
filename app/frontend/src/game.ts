@@ -166,7 +166,12 @@ function resetBall(gameState: GameState) {
   gameState.ballX = gameState.canvasWidth / 2;
   gameState.ballY = gameState.canvasHeight / 2;
 
-  const angle = (Math.random() * Math.PI) / 4 - Math.PI / 8;
+  const minAngle = Math.PI / 18; // 10°
+  const maxAngle = Math.PI / 8; // 22.5°
+
+  const sign = Math.random() < 0.5 ? -1 : 1;
+
+  const angle = sign * (minAngle + Math.random() * (maxAngle - minAngle));
   const speed = gameState.initialBallSpeed;
   const direction = Math.sign(gameState.ballSpeedX) * -1;
 
