@@ -7,14 +7,13 @@ import {
   deleteUserHandler,
   patchUserHandler,
   getUserStatsHandler,
-  getUserTournamentsHandler,
-  getUserActiveTournamentHandler,
   getAllUserFriendRequestsHandler,
   searchUserHandler,
   createUserAvatarHandler,
   deleteUserAvatarHandler,
   getUserMatchesByUsernameHandler,
-  updateUserPasswordHandler
+  updateUserPasswordHandler,
+  getUserTournamentsByUsernameHandler
 } from "../controllers/users.controllers.js";
 import { errorResponses } from "../utils/error.js";
 import { sseConnectionHandler } from "../controllers/sse.controllers.js";
@@ -54,15 +53,9 @@ export default async function userRoutes(fastify) {
   );
 
   fastify.get(
-    "/me/tournaments",
-    optionsGetUserTournaments,
-    getUserTournamentsHandler
-  );
-
-  fastify.get(
-    "/me/tournaments/active",
-    optionsGetUserActiveTournament,
-    getUserActiveTournamentHandler
+    "/:username/tournaments",
+    optionsGetUserTournamentsByUsername,
+    getUserTournamentsByUsernameHandler
   );
 
   fastify.get(
@@ -189,21 +182,19 @@ const optionsGetUserStats = {
   }
 };
 
-const optionsGetUserTournaments = {
+const optionsGetUserTournamentsByUsername = {
   onRequest: [authorizeUserAccess],
   schema: {
+    querystring: { $ref: "querystringTournamentSchema" },
+    params: {
+      type: "object",
+      properties: {
+        username: { $ref: "commonDefinitionsSchema#/definitions/username" }
+      },
+      required: ["username"]
+    },
     response: {
       200: { $ref: "tournamentArrayResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetUserActiveTournament = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      200: { $ref: "tournamentResponseSchema" },
       ...errorResponses
     }
   }

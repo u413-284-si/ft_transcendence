@@ -148,8 +148,8 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   updatePaddlePositions(gameState, deltaTime);
   updateBallPosition(gameState, deltaTime);
 
-  handlePaddleCollision(gameState, 1);
-  handlePaddleCollision(gameState, 2);
+  handlePaddleCollision(gameState, "paddle1");
+  handlePaddleCollision(gameState, "paddle2");
 
   handleWallCollision(gameState);
   handleOutOfBounds(gameState);
@@ -215,11 +215,16 @@ function waitForEnterKey(): Promise<void> {
   });
 }
 
-function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
+function handlePaddleCollision(
+  gameState: GameState,
+  paddle: "paddle1" | "paddle2"
+) {
   const { ballX, ballY, ballRadius, paddleHeight, paddleWidth } = gameState;
 
-  const paddleX = paddle === 1 ? gameState.paddle1X : gameState.paddle2X;
-  const paddleY = paddle === 1 ? gameState.paddle1Y : gameState.paddle2Y;
+  const paddleX =
+    paddle === "paddle1" ? gameState.paddle1X : gameState.paddle2X;
+  const paddleY =
+    paddle === "paddle1" ? gameState.paddle1Y : gameState.paddle2Y;
 
   const collided =
     ballX + ballRadius > paddleX &&

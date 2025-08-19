@@ -240,6 +240,7 @@ const fr: TranslationShape = {
       dashboard: "Tableau",
       date: "Date",
       details: "Détails",
+      eliminatedInRound: "Éliminé au tour {{round}}",
       friendOnly:
         "Vous devez être amis avec ce joueur pour voir les statistiques détaillées.",
       friends: "Amis",
@@ -255,6 +256,7 @@ const fr: TranslationShape = {
       title: "Statistiques",
       tournament: "Tournoi",
       tournaments: "Tournois",
+      usedNickname: "Pseudonyme utilisé",
       winRate: "Taux de victoire",
       winstreakCur: "Série de victoires",
       winstreakMax: "Max-Série"
