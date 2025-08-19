@@ -68,7 +68,8 @@ function initGameState(
   aiPlayer1: AIPlayer | null,
   aiPlayer2: AIPlayer | null
 ): GameState {
-  return {
+  const initialBallDirection = Math.random() * 2 - 1;
+  const gameState: GameState = {
     ctx: ctx,
     player1: player1,
     player2: player2,
@@ -77,11 +78,12 @@ function initGameState(
     winningScore: 1, // FIXME: needs to be a higher value
     canvasHeight: canvas.height,
     canvasWidth: canvas.width,
-    ballX: canvas.width / 2,
-    ballY: canvas.height / 2,
+    ballX: 0,
+    ballY: 0,
     ballRadius: 10,
-    ballSpeedX: 400,
-    ballSpeedY: 400,
+    initialBallSpeed: 400,
+    ballSpeedX: initialBallDirection,
+    ballSpeedY: 0,
     paddle1X: 10,
     paddle1Y: canvas.height / 2 - 40,
     paddle2X: canvas.width - 20,
@@ -97,6 +99,9 @@ function initGameState(
     speedUpFactor: 1.05,
     maxBounceAngle: Math.PI / 4
   };
+  resetBall(gameState);
+
+  return gameState;
 }
 
 function runGameLoop(gameState: GameState): Promise<GameState> {
@@ -160,7 +165,13 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
 function resetBall(gameState: GameState) {
   gameState.ballX = gameState.canvasWidth / 2;
   gameState.ballY = gameState.canvasHeight / 2;
-  gameState.ballSpeedX *= -1; // Change direction after scoring
+
+  const angle = (Math.random() * Math.PI) / 4 - Math.PI / 8;
+  const speed = gameState.initialBallSpeed;
+  const direction = Math.sign(gameState.ballSpeedX) * -1;
+
+  gameState.ballSpeedX = direction * speed * Math.cos(angle);
+  gameState.ballSpeedY = speed * Math.sin(angle);
 }
 
 function checkWinner(gameState: GameState) {

@@ -13,6 +13,7 @@ export interface GameState {
   ballX: number;
   ballY: number;
   ballRadius: number;
+  initialBallSpeed: number;
   ballSpeedX: number;
   ballSpeedY: number;
   paddle1X: number;
