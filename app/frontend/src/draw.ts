@@ -16,7 +16,13 @@ export function draw(ctx: CanvasRenderingContext2D, gameState: GameState) {
 function drawBall(ctx: CanvasRenderingContext2D, gameState: GameState) {
   ctx.fillStyle = "white";
   ctx.beginPath();
-  ctx.arc(gameState.ballX, gameState.ballY, 10, 0, Math.PI * 2);
+  ctx.arc(
+    gameState.ballX,
+    gameState.ballY,
+    gameState.ballRadius,
+    0,
+    Math.PI * 2
+  );
   ctx.fill();
 }
 

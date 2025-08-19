@@ -11,6 +11,7 @@ export interface GameState {
   canvasWidth: number;
   ballX: number;
   ballY: number;
+  ballRadius: number;
   ballSpeedX: number;
   ballSpeedY: number;
   paddle1X: number;

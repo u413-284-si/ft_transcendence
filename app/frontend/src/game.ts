@@ -75,6 +75,7 @@ function initGameState(
     canvasWidth: canvas.width,
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
+    ballRadius: 10,
     ballSpeedX: 7,
     ballSpeedY: 7,
     paddle1X: 10,
@@ -108,8 +109,6 @@ function gameLoop(
 function update(gameState: GameState) {
   if (gameState.gameOver) return;
 
-  updatePaddlePositions(gameState);
-
   if (gameState.aiPlayer1) {
     gameState.aiPlayer1.updatePerception(gameState);
 
@@ -134,38 +133,17 @@ function update(gameState: GameState) {
     gameState.keys["ArrowDown"] = move === "down";
   }
 
+  updatePaddlePositions(gameState);
+
   // Move the ball
   gameState.ballX += gameState.ballSpeedX;
   gameState.ballY += gameState.ballSpeedY;
 
-  // Ball collision with top & bottom
-  if (gameState.ballY <= 0 || gameState.ballY >= gameState.canvasHeight)
-    gameState.ballSpeedY *= -1;
+  handlePaddleCollision(gameState, "paddle1");
+  handlePaddleCollision(gameState, "paddle2");
 
-  // Ball collision with paddles
-  if (
-    (gameState.ballX <= gameState.paddle1X &&
-      gameState.ballY >= gameState.paddle1Y &&
-      gameState.ballY <= gameState.paddle1Y + gameState.paddleHeight) ||
-    (gameState.ballX >= gameState.paddle2X &&
-      gameState.ballY >= gameState.paddle2Y &&
-      gameState.ballY <= gameState.paddle2Y + gameState.paddleHeight)
-  ) {
-    gameState.ballSpeedX *= -1; // Reverse ball direction
-  }
-
-  // Ball out of bounds (scoring)
-  if (gameState.ballX <= 0) {
-    gameState.player2Score++;
-    checkWinner(gameState);
-    resetBall(gameState);
-  }
-
-  if (gameState.ballX >= gameState.canvasWidth) {
-    gameState.player1Score++;
-    checkWinner(gameState);
-    resetBall(gameState);
-  }
+  handleWallCollision(gameState);
+  handleOutOfBounds(gameState);
 }
 
 function resetBall(gameState: GameState) {
@@ -226,4 +204,70 @@ function waitForEnterKey(): Promise<void> {
     }
     document.addEventListener("keydown", onKeyDown);
   });
+}
+
+function handlePaddleCollision(
+  gameState: GameState,
+  paddle: "paddle1" | "paddle2"
+) {
+  const { ballX, ballY, ballRadius, paddleHeight, paddleWidth } = gameState;
+
+  const paddleX =
+    paddle === "paddle1" ? gameState.paddle1X : gameState.paddle2X;
+  const paddleY =
+    paddle === "paddle1" ? gameState.paddle1Y : gameState.paddle2Y;
+
+  const collided =
+    ballX + ballRadius > paddleX &&
+    ballX - ballRadius < paddleX + paddleWidth &&
+    ballY + ballRadius > paddleY &&
+    ballY - ballRadius < paddleY + paddleHeight;
+
+  if (!collided) {
+    return;
+  }
+
+  gameState.ballSpeedX *= -1;
+
+  gameState.ballX =
+    gameState.ballSpeedX > 0
+      ? paddleX + paddleWidth + ballRadius
+      : paddleX - ballRadius;
+}
+
+function handleWallCollision(gameState: GameState) {
+  const { ballY, ballRadius, canvasHeight } = gameState;
+
+  if (ballY - ballRadius <= 0) {
+    gameState.ballY = ballRadius;
+    gameState.ballSpeedY *= -1;
+  }
+
+  if (ballY + ballRadius >= canvasHeight) {
+    gameState.ballY = canvasHeight - ballRadius;
+    gameState.ballSpeedY *= -1;
+  }
+}
+
+function resetAI(gameState: GameState) {
+  if (gameState.aiPlayer1) gameState.aiPlayer1.reset();
+  if (gameState.aiPlayer2) gameState.aiPlayer2.reset();
+}
+
+function handleOutOfBounds(gameState: GameState) {
+  const { ballX, ballRadius, canvasWidth } = gameState;
+
+  const checkScore = (condition: boolean, scoringPlayer: 1 | 2) => {
+    if (!condition) return;
+
+    if (scoringPlayer === 1) gameState.player1Score++;
+    else gameState.player2Score++;
+
+    checkWinner(gameState);
+    resetBall(gameState);
+    resetAI(gameState);
+  };
+
+  checkScore(ballX - ballRadius <= 0, 2);
+  checkScore(ballX + ballRadius >= canvasWidth, 1);
 }
