@@ -27,4 +27,6 @@ export interface GameState {
   aiPlayer1: AIPlayer | null;
   aiPlayer2: AIPlayer | null;
   lastTimestamp: DOMHighResTimeStamp;
+  speedUpFactor: number;
+  maxBounceAngle: number;
 }

@@ -93,7 +93,9 @@ function initGameState(
     keys: keys,
     aiPlayer1: aiPlayer1,
     aiPlayer2: aiPlayer2,
-    lastTimestamp: performance.now()
+    lastTimestamp: performance.now(),
+    speedUpFactor: 1.05,
+    maxBounceAngle: Math.PI / 4
   };
 }
 
@@ -216,7 +218,17 @@ function waitForEnterKey(): Promise<void> {
 }
 
 function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
-  const { ballX, ballY, ballRadius, paddleHeight, paddleWidth } = gameState;
+  const {
+    ballX,
+    ballY,
+    ballRadius,
+    ballSpeedX,
+    ballSpeedY,
+    paddleHeight,
+    paddleWidth,
+    speedUpFactor,
+    maxBounceAngle
+  } = gameState;
 
   const paddleX = paddle === 1 ? gameState.paddle1X : gameState.paddle2X;
   const paddleY = paddle === 1 ? gameState.paddle1Y : gameState.paddle2Y;
@@ -231,7 +243,18 @@ function handlePaddleCollision(gameState: GameState, paddle: 1 | 2) {
     return;
   }
 
-  gameState.ballSpeedX *= -1;
+  const halfPaddle = paddleHeight / 2;
+  const paddleCenter = paddleY + halfPaddle;
+  const offset = (ballY - paddleCenter) / halfPaddle;
+  const bounceAngle = offset * maxBounceAngle;
+
+  const originalSpeed = Math.hypot(ballSpeedX, ballSpeedY);
+  const newSpeed = originalSpeed * speedUpFactor;
+
+  const newDirection = ballSpeedX > 0 ? -1 : 1;
+
+  gameState.ballSpeedX = newDirection * newSpeed * Math.cos(bounceAngle);
+  gameState.ballSpeedY = newSpeed * Math.sin(bounceAngle);
 
   gameState.ballX =
     gameState.ballSpeedX > 0
