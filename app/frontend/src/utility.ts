@@ -39,6 +39,10 @@ export function getBySelector<T extends HTMLElement>(
   return el;
 }
 
+export function getById<T extends HTMLElement>(id: string): T {
+  return getBySelector<T>(`#${id}`);
+}
+
 export function getAllBySelector<T extends HTMLElement>(
   selector: string,
   root: ParentNode = document,
