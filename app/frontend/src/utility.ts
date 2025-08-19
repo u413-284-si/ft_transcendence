@@ -33,8 +33,10 @@ export function getById<T extends HTMLElement>(id: string): T {
 
 export function getAllBySelector<T extends HTMLElement>(
   selector: string,
-  root: ParentNode = document,
-  { strict = true } = {}
+  {
+    root = document,
+    strict = true
+  }: { root?: ParentNode; strict?: boolean } = {}
 ): T[] {
   const elements = root.querySelectorAll<T>(selector);
   if (elements.length === 0 && strict) {
