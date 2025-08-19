@@ -249,6 +249,7 @@ const en = {
       dashboard: "Dashboard",
       date: "Date",
       details: "Details",
+      eliminatedInRound: "Eliminated in round {{round}}",
       friendOnly: "You must be friends to view detailed stats.",
       friends: "Friends",
       joined: "Joined on {{date}}",
@@ -263,6 +264,7 @@ const en = {
       title: "Statistics",
       tournament: "Tournament",
       tournaments: "Tournaments",
+      usedNickname: "Used nickname",
       winRate: "Win Rate",
       winstreakCur: "Winstreak",
       winstreakMax: "Max Streak"

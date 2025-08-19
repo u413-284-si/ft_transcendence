@@ -101,30 +101,29 @@ export function validateTournamentName(
 }
 
 export async function isTournamentNameAvailable(
+  username: string,
   inputEl: HTMLInputElement,
   errorEl: HTMLElement
 ): Promise<boolean> {
   try {
-    const tournaments = getDataOrThrow(await getUserTournaments());
-    if (tournaments.length === 0) {
+    const tournamentsPage = getDataOrThrow(
+      await getUserTournaments({ username: username, name: inputEl.value })
+    );
+    if (tournamentsPage.items.length === 0) {
       return true;
     }
 
-    const tournamentNames = tournaments.map((tournament) => tournament.name);
-    if (tournamentNames.includes(inputEl.value)) {
-      markInvalid(
-        i18next.t("invalid.tournamentNameUniqueness"),
-        inputEl,
-        errorEl
-      );
-      return false;
-    }
+    markInvalid(
+      i18next.t("invalid.tournamentNameUniqueness"),
+      inputEl,
+      errorEl
+    );
+    return false;
   } catch (error) {
     console.error("Error fetching tournaments:", error);
     toaster.error(i18next.t("toast.validateTournamentNameError"));
     return false;
   }
-  return true;
 }
 
 export function validatePlayersSelection(

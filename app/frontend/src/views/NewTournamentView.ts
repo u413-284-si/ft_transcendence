@@ -1,5 +1,5 @@
 import { router } from "../routing/Router.js";
-import { getActiveTournament } from "../services/tournamentService.js";
+import { getUserTournaments } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
@@ -18,6 +18,7 @@ import { Button } from "../components/Button.js";
 import { RadioGroup } from "../components/RadioGroup.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
+import { auth } from "../AuthManager.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -89,14 +90,20 @@ export default class NewTournamentView extends AbstractView {
   }
 
   async render() {
-    const activeTournament = getDataOrThrow(await getActiveTournament());
-    if (!activeTournament) {
+    const tournamentsPage = getDataOrThrow(
+      await getUserTournaments({
+        username: auth.getUser().username,
+        isFinished: false
+      })
+    );
+    if (tournamentsPage.items.length === 0) {
       console.log("No active tournament found");
       this.updateHTML();
       this.formEl = document.querySelector("#tournament-form")!;
       this.addListeners();
       return;
     }
+    const activeTournament = tournamentsPage.items[0];
     const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
     const tournament = new Tournament(
       activeTournament.name,
@@ -136,7 +143,11 @@ export default class NewTournamentView extends AbstractView {
 
     if (
       !validateTournamentName(tournamentNameEl, tournamentErrorEl) ||
-      !(await isTournamentNameAvailable(tournamentNameEl, tournamentErrorEl))
+      !(await isTournamentNameAvailable(
+        auth.getUser().username,
+        tournamentNameEl,
+        tournamentErrorEl
+      ))
     ) {
       isValid = false;
     }
