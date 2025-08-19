@@ -276,7 +276,8 @@ export class AuthManager {
         }
       }
       const newToken = getDataOrThrow(await authAndDecodeAccessToken());
-      this.updateAuthState(newToken);
+      this.token = newToken;
+      this.scheduleTokenValidation(newToken);
     } catch (error) {
       console.warn("Token refresh failed", error);
       this.clearTokenOnError();
