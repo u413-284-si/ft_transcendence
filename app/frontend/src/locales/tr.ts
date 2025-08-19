@@ -249,6 +249,7 @@ const tr: TranslationShape = {
       dashboard: "Core",
       date: "Cycle Date",
       details: "Data",
+      eliminatedInRound: "User derezzed in cycle {{round}}",
       friendOnly: "Link established required to access complete logs.",
       friends: "Connections",
       joined: "Node integrated: {{date}}",
@@ -263,6 +264,7 @@ const tr: TranslationShape = {
       title: "Performance Stats",
       tournament: "Tournament Grid",
       tournaments: "Tournaments",
+      usedNickname: "Node alias",
       winRate: "Victory Ratio",
       winstreakCur: "Sequence",
       winstreakMax: "Max Sequence"

@@ -45,9 +45,9 @@ export class AuthManager {
 
   private async updateAuthState(token: Token | null): Promise<void> {
     this.token = token;
-    if (token) {
+    if (this.token) {
       this.authenticated = true;
-      this.scheduleTokenValidation(token);
+      this.scheduleTokenValidation();
       this.registerActivityListeners();
       openSSEConnection();
     } else {
@@ -247,10 +247,10 @@ export class AuthManager {
     window.removeEventListener("keydown", this.startInactivityTimer);
   }
 
-  private scheduleTokenValidation(token: Token): void {
-    if (!token.exp) return;
+  private scheduleTokenValidation(): void {
+    if (!this.token!.exp) return;
 
-    const expiresAtMs = token.exp * 1000;
+    const expiresAtMs = this.token!.exp * 1000;
     const now = Date.now();
     const refreshAtMs = expiresAtMs - 60_000;
     const delay = Math.max(refreshAtMs - now, 1000);
@@ -275,8 +275,8 @@ export class AuthManager {
           throw new ApiError(apiResponse);
         }
       }
-      const newToken = getDataOrThrow(await authAndDecodeAccessToken());
-      this.updateAuthState(newToken);
+      this.token = getDataOrThrow(await authAndDecodeAccessToken());
+      this.scheduleTokenValidation();
     } catch (error) {
       console.warn("Token refresh failed", error);
       this.clearTokenOnError();
