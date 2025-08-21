@@ -1,4 +1,5 @@
 import { Toast, ToastVariant } from "./components/Toast.js";
+import { getBySelector } from "./utility.js";
 
 interface ToastData {
   timeoutId: number;
@@ -7,21 +8,18 @@ interface ToastData {
 }
 
 export class Toaster {
-  private notifications: HTMLElement;
+  private notifications: HTMLUListElement;
   private toastTimeouts = new Map<HTMLElement, ToastData>();
   private defaultTimer: number;
 
   constructor(
-    containerSelector: string = ".notifications",
+    containerId: string = "toaster-notifications",
     defaultTimer: number = 5000
   ) {
-    let container = document.querySelector(containerSelector);
-    if (!container) {
-      container = document.createElement("ul");
-      container.className = "notifications fixed top-26 right-6 space-y-2 z-50";
-      document.body.appendChild(container);
-    }
-    this.notifications = container as HTMLElement;
+    this.notifications = document.createElement("ul");
+    this.notifications.id = containerId;
+    this.notifications.className = "fixed top-26 right-6 space-y-2 z-50";
+    document.body.appendChild(this.notifications);
     this.defaultTimer = defaultTimer;
   }
 
@@ -44,10 +42,8 @@ export class Toaster {
     template.innerHTML = html.trim();
     const toast = template.content.firstElementChild as HTMLElement;
 
-    // Click close button
-    toast
-      .querySelector("button")!
-      .addEventListener("click", () => this.removeToast(toast));
+    const closeBtn = getBySelector<HTMLButtonElement>("button", toast);
+    closeBtn.addEventListener("click", () => this.removeToast(toast));
 
     // Hover handlers: pause/resume
     toast.addEventListener("mouseenter", () => this.pauseToast(toast));

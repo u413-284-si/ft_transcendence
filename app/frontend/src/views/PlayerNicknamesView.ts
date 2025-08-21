@@ -5,7 +5,7 @@ import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { NicknameInput } from "../components/NicknameInput.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
@@ -63,20 +63,21 @@ export default class PlayerNicknamesView extends AbstractView {
 
   async render() {
     this.updateHTML();
-    this.formEl = document.querySelector("#nicknames-form")!;
+    this.formEl = getById("nicknames-form");
     this.addListeners();
   }
 
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
-    const form = document.getElementById("nicknames-form") as HTMLFormElement;
-    const formData = new FormData(form);
+    const formData = new FormData(this.formEl);
     const userNumber = formData.get("userChoice");
-    const inputElements: HTMLInputElement[] = Array.from(
-      this.formEl.querySelectorAll("input[type='text']")
+    const inputElements = getAllBySelector<HTMLInputElement>(
+      "input[type='text']",
+      { root: this.formEl }
     );
-    const errorElements: HTMLElement[] = Array.from(
-      this.formEl.querySelectorAll('[id^="player-error-"]')
+    const errorElements = getAllBySelector<HTMLElement>(
+      '[id^="player-error-"]',
+      { root: this.formEl }
     );
     const nicknames = inputElements.map((input) => input.value);
 

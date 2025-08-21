@@ -19,6 +19,7 @@ import { RadioGroup } from "../components/RadioGroup.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
 import { auth } from "../AuthManager.js";
+import { getById, getBySelector } from "../utility.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -99,7 +100,7 @@ export default class NewTournamentView extends AbstractView {
     if (tournamentsPage.items.length === 0) {
       console.log("No active tournament found");
       this.updateHTML();
-      this.formEl = document.querySelector("#tournament-form")!;
+      this.formEl = getById("tournament-form");
       this.addListeners();
       return;
     }
@@ -127,18 +128,12 @@ export default class NewTournamentView extends AbstractView {
     const playersSelected = this.formEl.querySelector(
       'input[name="players"]:checked'
     ) as HTMLInputElement;
-    const tournamentNameEl = document.getElementById(
-      "tournament-name-input"
-    ) as HTMLInputElement;
-    const selectionEl = document.querySelector(
+    const tournamentNameEl = getById<HTMLInputElement>("tournament-name-input");
+    const selectionEl = getBySelector<HTMLInputElement>(
       'input[name="players"]'
-    ) as HTMLInputElement;
-    const tournamentErrorEl = document.getElementById(
-      "tournament-name-error"
-    ) as HTMLElement;
-    const playerErrorEl = document.getElementById(
-      "player-error"
-    ) as HTMLElement;
+    );
+    const tournamentErrorEl = getById<HTMLElement>("tournament-name-error");
+    const playerErrorEl = getById<HTMLElement>("player-error");
     let isValid = true;
 
     if (
