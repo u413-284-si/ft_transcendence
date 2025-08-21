@@ -109,9 +109,8 @@ model Match {
     bracketMatchNumber Int?
     date               DateTime   @default(now())
 
-    user         User          @relation("UserPlayed", fields: [userId], references: [id], onDelete: Cascade)
-    tournament   Tournament?   @relation(fields: [tournamentId], references: [id])
-    bracketMatch BracketMatch? @relation
+    user       User        @relation("UserPlayed", fields: [userId], references: [id], onDelete: Cascade)
+    tournament Tournament? @relation(fields: [tournamentId], references: [id])
 
     @@unique([tournamentId, bracketMatchNumber])
     @@map("matches")
@@ -141,14 +140,13 @@ model BracketMatch {
     round           Int
     player1Nickname String?
     player2Nickname String?
-    player1Type     PlayerType @default(HUMAN)
-    player2Type     PlayerType @default(HUMAN)
+    player1Type     PlayerType?
+    player2Type     PlayerType?
     winner          String?
     nextMatchNumber Int?
     winnerSlot      Int?
 
     tournament Tournament @relation(fields: [tournamentId], references: [id])
-    match      Match?     @relation(fields: [tournamentId, matchNumber], references: [tournamentId, bracketMatchNumber])
 
     @@id([tournamentId, matchNumber])
     @@map("bracket_matches")
