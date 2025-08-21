@@ -64,7 +64,9 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
     const twoFABackupCodeInput = getById<HTMLInputElement>(
       "two-fa-backup-code-input"
     );
-    const twoFABackupCodeErrorEl = getById("two-fa-backup-code-input-error");
+    const twoFABackupCodeErrorEl = getById<HTMLSpanElement>(
+      "two-fa-backup-code-input-error"
+    );
 
     const isBackupCodeValid = await validateTwoFABackupCode(
       twoFABackupCodeInput,

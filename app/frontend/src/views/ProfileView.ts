@@ -227,7 +227,7 @@ export default class ProfileView extends AbstractView {
     let valid = true;
 
     const usernameEl = getById<HTMLInputElement>("username-input");
-    const usernameErrorEl = getById("username-error");
+    const usernameErrorEl = getById<HTMLSpanElement>("username-error");
     const username = usernameEl.value;
     const hasUsername = !isEmptyString(username);
 
@@ -241,7 +241,7 @@ export default class ProfileView extends AbstractView {
     let email = "";
     if (this.hasLocalAuth) {
       emailEl = getById<HTMLInputElement>("email-input");
-      const emailErrorEl = getById("email-error");
+      const emailErrorEl = getById<HTMLSpanElement>("email-error");
       email = emailEl.value;
       const hasEmail = !isEmptyString(email);
 
@@ -303,7 +303,7 @@ export default class ProfileView extends AbstractView {
   private async uploadAvatar(event: Event) {
     event.preventDefault();
     const fileInputEl = getById<HTMLInputElement>("avatar-input");
-    const errorEl = getById("avatar-upload-error-message");
+    const errorEl = getById<HTMLSpanElement>("avatar-upload-error-message");
 
     if (!validateImageFile(fileInputEl, errorEl)) return;
 
@@ -340,14 +340,14 @@ export default class ProfileView extends AbstractView {
       "current-password-input"
     );
     // FIXME: activate when pw policy active
-    // const currentPasswordErrorEl = getById("current-password-error");
+    // const currentPasswordErrorEl = getById<HTMLSpanElement>("current-password-error");
     const newPasswordEl = getById<HTMLInputElement>("new-password-input");
     // FIXME: activate when pw policy active
-    // const newPasswordErrorEl = getById("new-password-error");
+    // const newPasswordErrorEl = getById<HTMLSpanElement>("new-password-error");
     const confirmPasswordEl = getById<HTMLInputElement>(
       "confirm-new-password-input"
     );
-    const confirmPasswordErrorEl = getById("confirm-error");
+    const confirmPasswordErrorEl = getById<HTMLSpanElement>("confirm-error");
 
     if (
       !validateConfirmPassword(

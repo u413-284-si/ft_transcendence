@@ -106,16 +106,16 @@ export default class Register extends AbstractView {
   private async validateAndRegisterUser(event: Event): Promise<void> {
     event.preventDefault();
     const emailEL = getById<HTMLInputElement>("email");
-    const emailErrorEl = getById("email-error");
+    const emailErrorEl = getById<HTMLSpanElement>("email-error");
 
     const userEl = getById<HTMLInputElement>("username");
-    const userErrorEl = getById("username-error");
+    const userErrorEl = getById<HTMLSpanElement>("username-error");
 
     const passwordEl = getById<HTMLInputElement>("password");
-    const passwordErrorEl = getById("password-error");
+    const passwordErrorEl = getById<HTMLSpanElement>("password-error");
 
     const confirmPasswordEl = getById<HTMLInputElement>("confirm");
-    const confirmPasswordErrorEl = getById("confirm-error");
+    const confirmPasswordErrorEl = getById<HTMLSpanElement>("confirm-error");
 
     const isEmailValid = validateEmail(emailEL, emailErrorEl);
     const isUsernameValid = validateUsername(userEl, userErrorEl);

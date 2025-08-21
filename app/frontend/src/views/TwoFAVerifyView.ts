@@ -70,7 +70,9 @@ export default class TwoFAVerifyView extends AbstractView {
   private async verifyTwoFA(event: Event) {
     event.preventDefault();
     const twoFAQRCodeInput = getById<HTMLInputElement>("two-fa-qr-code-input");
-    const twoFAQRCodeErrorEl = getById("two-fa-qr-code-input-error");
+    const twoFAQRCodeErrorEl = getById<HTMLSpanElement>(
+      "two-fa-qr-code-input-error"
+    );
 
     const isTwoFACodeValid = await validateTwoFACode(
       twoFAQRCodeInput,

@@ -346,7 +346,7 @@ export default class FriendsView extends AbstractView {
   private handleSendRequestButton = async (event: Event): Promise<void> => {
     event.preventDefault();
     const inputEl = getById<HTMLInputElement>("username-input");
-    const errorEl = getById("username-error");
+    const errorEl = getById<HTMLSpanElement>("username-error");
 
     clearInvalid(inputEl, errorEl);
 
