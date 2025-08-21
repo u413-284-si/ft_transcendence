@@ -74,7 +74,9 @@ export default class StatsView extends AbstractView {
             {
               value: `${this.userStats.matchesLost}`,
               text: i18next.t("global.lost")
-            },
+            }
+          ])}
+          ${StatFieldGroup([
             {
               value: `${this.userStats.winRate.toFixed(2)} %`,
               text: i18next.t("statsView.winRate")
