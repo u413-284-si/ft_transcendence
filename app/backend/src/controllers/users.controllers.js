@@ -66,8 +66,8 @@ export async function createUserHandler(request, reply) {
 export async function getUserHandler(request, reply) {
   const action = "Get user";
   try {
-    const id = parseInt(request.user.id, 10);
-    const user = await getUser(id);
+    const userId = request.user.id;
+    const user = await getUser(userId);
     const data = flattenUser(user);
     return reply
       .code(200)
@@ -103,8 +103,8 @@ export async function getAllUsersHandler(request, reply) {
 export async function updateUserHandler(request, reply) {
   const action = "Update user";
   try {
-    const id = parseInt(request.params.id, 10);
-    const data = await updateUser(id, request.body);
+    const userId = request.params.id;
+    const data = await updateUser(userId, request.body);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -120,9 +120,9 @@ export async function updateUserHandler(request, reply) {
 export async function patchUserHandler(request, reply) {
   const action = "Patch user";
   try {
-    const id = parseInt(request.user.id, 10);
+    const userId = request.user.id;
 
-    if (request.body.email && (await getUserAuthProvider(id)) !== "LOCAL") {
+    if (request.body.email && (await getUserAuthProvider(userId)) !== "LOCAL") {
       return httpError(
         reply,
         403,
@@ -131,7 +131,7 @@ export async function patchUserHandler(request, reply) {
       );
     }
 
-    const data = await updateUser(id, request.body);
+    const data = await updateUser(userId, request.body);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -155,8 +155,8 @@ export async function patchUserHandler(request, reply) {
 export async function deleteUserHandler(request, reply) {
   const action = "Delete user";
   try {
-    const id = parseInt(request.params.id, 10);
-    const data = await deleteUser(id);
+    const userId = request.params.id;
+    const data = await deleteUser(userId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
@@ -172,7 +172,7 @@ export async function deleteUserHandler(request, reply) {
 export async function getUserMatchesByUsernameHandler(request, reply) {
   const action = "Get user matches by username";
   try {
-    let userId = parseInt(request.user.id, 10);
+    let userId = request.user.id;
     const { username } = request.params;
     if (username !== request.user.username) {
       const friendId = await getFriendId(userId, username);
@@ -212,7 +212,7 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
 export async function getUserStatsHandler(request, reply) {
   const action = "Get user stats";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const data = await getUserStats(userId);
     return reply
       .code(200)
@@ -229,7 +229,7 @@ export async function getUserStatsHandler(request, reply) {
 export async function getUserTournamentsByUsernameHandler(request, reply) {
   const action = "Get user tournaments by username";
   try {
-    let userId = parseInt(request.user.id, 10);
+    let userId = request.user.id;
     const { username } = request.params;
     if (username !== request.user.username) {
       const friendId = await getFriendId(userId, username);
@@ -273,7 +273,7 @@ export async function getUserTournamentsByUsernameHandler(request, reply) {
 export async function getAllUserFriendRequestsHandler(request, reply) {
   const action = "Get all user friend requests";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const { username } = request.query;
     const data = await getAllUserFriendRequests(userId, username);
     const count = data.length;
@@ -294,7 +294,7 @@ export async function getAllUserFriendRequestsHandler(request, reply) {
 export async function createUserAvatarHandler(request, reply) {
   const action = "Create user avatar";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const parts = request.parts();
     for await (const part of parts) {
       if (part.fieldname === "avatar") {
@@ -359,7 +359,7 @@ async function validateImageFile(buffer) {
 export async function deleteUserAvatarHandler(request, reply) {
   const action = "Delete user avatar";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const currentAvatarUrl = await getUserAvatar(userId);
     if (!currentAvatarUrl) {
       return httpError(
@@ -413,7 +413,7 @@ export async function searchUserHandler(request, reply) {
 export async function updateUserPasswordHandler(request, reply) {
   const action = "Update user password";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
 
     if ((await getUserAuthProvider(userId)) !== "LOCAL") {
       return httpError(

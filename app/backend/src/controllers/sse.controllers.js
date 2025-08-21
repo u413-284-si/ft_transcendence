@@ -5,7 +5,7 @@ import { createResponseMessage } from "../utils/response.js";
 export async function sseConnectionHandler(request, reply) {
   const action = "SSE Connection";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
 
     // Setup SSE headers
     reply.raw.setHeader("Content-Type", "text/event-stream");

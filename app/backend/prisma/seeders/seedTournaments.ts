@@ -132,6 +132,8 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
       nextMatch.player2,
       player1Score,
       player2Score,
+      "HUMAN",
+      "HUMAN",
       {
         id: tournamentClass!.getId(),
         name: tournamentClass!.getTournamentName()
