@@ -54,7 +54,7 @@ export async function getAllTournamentsHandler(request, reply) {
 export async function getTournamentHandler(request, reply) {
   const action = "Get tournament";
   try {
-    const tournamentId = parseInt(request.params.id, 10);
+    const tournamentId = request.params.id;
     const data = await getTournament(tournamentId);
     return reply
       .code(200)
@@ -71,7 +71,7 @@ export async function getTournamentHandler(request, reply) {
 export async function patchTournamentHandler(request, reply) {
   const action = "Patch tournament";
   try {
-    const tournamentId = parseInt(request.params.id, 10);
+    const tournamentId = request.params.id;
     const userId = request.user.id;
     const data = await updateTournament(tournamentId, userId, request.body);
     return reply
@@ -105,7 +105,7 @@ export async function deleteAllTournamentsHandler(request, reply) {
 export async function deleteTournamentHandler(request, reply) {
   const action = "Delete Tournament";
   try {
-    const tournamentId = parseInt(request.params.id, 10);
+    const tournamentId = request.params.id;
     const userId = request.user.id;
     const data = await deleteTournament(tournamentId, userId);
     return reply

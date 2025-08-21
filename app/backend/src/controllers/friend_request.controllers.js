@@ -87,7 +87,7 @@ export async function updateFriendRequestHandler(request, reply) {
   const action = "Update friend request";
   try {
     const userId = request.user.id;
-    const requestId = parseInt(request.params.id, 10);
+    const requestId = request.params.id;
     const { status } = request.body;
 
     const friendRequest = await getFriendRequest(requestId, userId);
@@ -135,7 +135,7 @@ export async function deleteFriendRequestHandler(request, reply) {
   const action = "Delete friend request";
   try {
     const userId = request.user.id;
-    const requestId = parseInt(request.params.id, 10);
+    const requestId = request.params.id;
     const data = await deleteFriendRequest(requestId, userId);
     notifyFriendRequestEvent(
       data.friendId,

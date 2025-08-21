@@ -70,7 +70,7 @@ export async function getAllMatchesHandler(request, reply) {
 export async function getMatchHandler(request, reply) {
   const action = "Get match";
   try {
-    const matchId = parseInt(request.params.id, 10);
+    const matchId = request.params.id;
     const data = await getMatch(matchId);
     return reply
       .code(200)
