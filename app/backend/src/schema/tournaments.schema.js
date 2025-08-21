@@ -23,12 +23,61 @@ const tournamentDefinitionsSchema = {
       minimum: 1,
       description:
         "The round reached by player. Tournament was won if roundReached === log2(maxPlayers) + 1."
-    },
-    tournamentBracket: {
-      type: "string",
-      description: "Serialized match brackets"
     }
   }
+};
+
+const bracketMatchSchema = {
+  $id: "bracketMatchSchema",
+  type: "object",
+  properties: {
+    matchNumber: { type: "integer" },
+    round: { type: "integer" },
+    player1Nickname: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/username" },
+        { type: "null" }
+      ]
+    },
+    player2Nickname: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/username" },
+        { type: "null" }
+      ]
+    },
+    player1Type: {
+      oneOf: [
+        { $ref: "matchDefinitionsSchema#/definitions/playerType" },
+        { type: "null" }
+      ]
+    },
+    player2Type: {
+      oneOf: [
+        { $ref: "matchDefinitionsSchema#/definitions/playerType" },
+        { type: "null" }
+      ]
+    },
+    winner: {
+      oneOf: [
+        { $ref: "commonDefinitionsSchema#/definitions/username" },
+        { type: "null" }
+      ]
+    },
+    nextMatchNumber: { type: ["integer", "null"] },
+    winnerSlot: { type: ["integer", "null"] }
+  },
+  required: [
+    "matchNumber",
+    "round",
+    "player1Nickname",
+    "player2Nickname",
+    "player1Type",
+    "player2Type",
+    "winner",
+    "nextMatchNumber",
+    "winnerSlot"
+  ],
+  additionalProperties: false
 };
 
 export const tournamentSchema = {
@@ -40,18 +89,17 @@ export const tournamentSchema = {
     maxPlayers: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentMaxPlayers"
     },
+    isPrivate: { type: "boolean" },
     isFinished: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentIsFinished"
     },
     userId: { $ref: "commonDefinitionsSchema#/definitions/id" },
     userNickname: { $ref: "commonDefinitionsSchema#/definitions/username" },
-    bracket: {
-      $ref: "tournamentDefinitionsSchema#/definitions/tournamentBracket"
-    },
     roundReached: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentRoundReached"
     },
-    updatedAt: { type: "string", format: "date-time" }
+    updatedAt: { type: "string", format: "date-time" },
+    bracket: { type: "array", items: { $ref: "bracketMatchSchema" } }
   },
   required: [
     "id",
@@ -60,7 +108,6 @@ export const tournamentSchema = {
     "isFinished",
     "userId",
     "userNickname",
-    "bracket",
     "roundReached"
   ],
   additionalProperties: false
@@ -109,11 +156,16 @@ const createTournamentSchema = {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentMaxPlayers"
     },
     userNickname: { $ref: "commonDefinitionsSchema#/definitions/username" },
-    bracket: {
-      $ref: "tournamentDefinitionsSchema#/definitions/tournamentBracket"
+    nicknames: {
+      type: "array",
+      items: { $ref: "commonDefinitionsSchema#/definitions/username" }
+    },
+    playerTypes: {
+      type: "array",
+      items: { $ref: "matchDefinitionsSchema#/definitions/playerType" }
     }
   },
-  required: ["name", "maxPlayers", "userNickname", "bracket"],
+  required: ["name", "maxPlayers", "userNickname", "nicknames", "playerTypes"],
   additionalProperties: false
 };
 
@@ -132,14 +184,11 @@ const patchTournamentSchema = {
     },
     {
       properties: {
-        bracket: {
-          $ref: "tournamentDefinitionsSchema#/definitions/tournamentBracket"
-        },
         roundReached: {
           $ref: "tournamentDefinitionsSchema#/definitions/tournamentRoundReached"
         }
       },
-      required: ["bracket", "roundReached"],
+      required: ["roundReached"],
       additionalProperties: false
     }
   ]
@@ -161,6 +210,7 @@ const querystringTournamentSchema = {
 
 export const tournamentSchemas = [
   tournamentDefinitionsSchema,
+  bracketMatchSchema,
   tournamentSchema,
   tournamentResponseSchema,
   tournamentArrayResponseSchema,
