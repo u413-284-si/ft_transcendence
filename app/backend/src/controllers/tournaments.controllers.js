@@ -7,20 +7,48 @@ import {
   deleteTournament
 } from "../services/tournaments.services.js";
 import { createResponseMessage } from "../utils/response.js";
-import { handlePrismaError } from "../utils/error.js";
+import { handlePrismaError, httpError } from "../utils/error.js";
+import { transactionTournament } from "../services/transactions.services.js";
 
 export async function createTournamentHandler(request, reply) {
   const action = "Create tournament";
   try {
     const userId = request.user.id;
-    const { name, maxPlayers, userNickname, bracket } = request.body;
+    const { name, maxPlayers, userNickname, nicknames, playerTypes } =
+      request.body;
 
-    const data = await createTournament(
+    if (nicknames.length !== maxPlayers || playerTypes.length !== maxPlayers) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Nicknames and playertypes must match maxPlayers"
+      );
+    }
+    if (!nicknames.includes(userNickname)) {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Nicknames must contain userNickname."
+      );
+    }
+    if (playerTypes[nicknames.indexOf(userNickname)] !== "HUMAN") {
+      return httpError(
+        reply,
+        400,
+        createResponseMessage(action, false),
+        "Player type for user must be HUMAN."
+      );
+    }
+
+    const data = await transactionTournament(
       name,
       maxPlayers,
       userId,
       userNickname,
-      bracket
+      nicknames,
+      playerTypes
     );
     return reply
       .code(201)
