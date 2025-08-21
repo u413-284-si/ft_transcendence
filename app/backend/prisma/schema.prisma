@@ -96,21 +96,24 @@ model FriendRequest {
 }
 
 model Match {
-    id              Int        @id @default(autoincrement())
-    userId          Int
-    playedAs        PlayedAs   @default(PLAYERONE)
-    player1Nickname String
-    player2Nickname String
-    player1Score    Int
-    player2Score    Int
-    player1Type     PlayerType @default(HUMAN)
-    player2Type     PlayerType @default(HUMAN)
-    tournamentId    Int?
-    date            DateTime   @default(now())
+    id                 Int        @id @default(autoincrement())
+    userId             Int
+    playedAs           PlayedAs   @default(PLAYERONE)
+    player1Nickname    String
+    player2Nickname    String
+    player1Score       Int
+    player2Score       Int
+    player1Type        PlayerType @default(HUMAN)
+    player2Type        PlayerType @default(HUMAN)
+    tournamentId       Int?
+    bracketMatchNumber Int?
+    date               DateTime   @default(now())
 
-    user       User        @relation("UserPlayed", fields: [userId], references: [id], onDelete: Cascade)
-    tournament Tournament? @relation(fields: [tournamentId], references: [id])
+    user         User          @relation("UserPlayed", fields: [userId], references: [id], onDelete: Cascade)
+    tournament   Tournament?   @relation(fields: [tournamentId], references: [id])
+    bracketMatch BracketMatch? @relation
 
+    @@unique([tournamentId, bracketMatchNumber])
     @@map("matches")
 }
 
@@ -122,14 +125,33 @@ model Tournament {
     isFinished   Boolean  @default(false)
     userId       Int
     userNickname String   @default("Mister Bombastic")
-    bracket      Json
     roundReached Int      @default(1)
     updatedAt    DateTime @updatedAt
 
-    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    matches Match[]
+    user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    matches        Match[]
+    bracketMatches BracketMatch[]
 
     @@map("tournaments")
+}
+
+model BracketMatch {
+    tournamentId    Int
+    matchNumber     Int
+    round           Int
+    player1Nickname String?
+    player2Nickname String?
+    player1Type     PlayerType @default(HUMAN)
+    player2Type     PlayerType @default(HUMAN)
+    winner          String?
+    nextMatchNumber Int?
+    winnerSlot      Int?
+
+    tournament Tournament @relation(fields: [tournamentId], references: [id])
+    match      Match?     @relation(fields: [tournamentId, matchNumber], references: [tournamentId, bracketMatchNumber])
+
+    @@id([tournamentId, matchNumber])
+    @@map("bracket_matches")
 }
 
 enum PlayedAs {
