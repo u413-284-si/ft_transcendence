@@ -8,21 +8,18 @@ interface ToastData {
 }
 
 export class Toaster {
-  private notifications: HTMLElement;
+  private notifications: HTMLUListElement;
   private toastTimeouts = new Map<HTMLElement, ToastData>();
   private defaultTimer: number;
 
   constructor(
-    containerSelector: string = ".notifications",
+    containerId: string = "toaster-notifications",
     defaultTimer: number = 5000
   ) {
-    let container = document.querySelector(containerSelector);
-    if (!container) {
-      container = document.createElement("ul");
-      container.className = "notifications fixed top-26 right-6 space-y-2 z-50";
-      document.body.appendChild(container);
-    }
-    this.notifications = container as HTMLElement;
+    this.notifications = document.createElement("ul");
+    this.notifications.id = containerId;
+    this.notifications.className = "fixed top-26 right-6 space-y-2 z-50";
+    document.body.appendChild(this.notifications);
     this.defaultTimer = defaultTimer;
   }
 
