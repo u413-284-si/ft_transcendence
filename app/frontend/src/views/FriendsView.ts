@@ -324,13 +324,9 @@ export default class FriendsView extends AbstractView {
   private handleFriendStatusChange = (event: Event) => {
     const customEvent = event as FriendStatusChangeEvent;
     const { requestId, isOnline } = customEvent.detail;
-    const container = document.querySelector<HTMLLIElement>(
+    const container = getBySelector<HTMLLIElement>(
       `li[data-request-id="${requestId}"]`
     );
-    if (!container) {
-      console.warn("Tried to update status, but container not found");
-      return;
-    }
     const statusSpan = getBySelector<HTMLSpanElement>(
       ".online-status",
       container
