@@ -194,6 +194,21 @@ const patchTournamentSchema = {
   ]
 };
 
+const patchTournamentMatchSchema = {
+  $id: "patchTournamentMatchSchema",
+  type: "object",
+  properties: {
+    player1Score: {
+      $ref: "commonDefinitionsSchema#/definitions/score"
+    },
+    player2Score: {
+      $ref: "commonDefinitionsSchema#/definitions/score"
+    }
+  },
+  required: ["player1Score", "player2Score"],
+  additionalProperties: false
+};
+
 const querystringTournamentSchema = {
   $id: "querystringTournamentSchema",
   type: "object",
@@ -216,5 +231,6 @@ export const tournamentSchemas = [
   tournamentArrayResponseSchema,
   createTournamentSchema,
   patchTournamentSchema,
+  patchTournamentMatchSchema,
   querystringTournamentSchema
 ];
