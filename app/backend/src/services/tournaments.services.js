@@ -24,14 +24,15 @@ const tournamentSelect = {
   }
 };
 
-export async function createTournament(
+export async function createTournamentTx(
+  tx,
   name,
   maxPlayers,
   userId,
   userNickname,
   bracket
 ) {
-  const tournament = await prisma.tournament.create({
+  const tournament = await tx.tournament.create({
     data: {
       name,
       maxPlayers,
