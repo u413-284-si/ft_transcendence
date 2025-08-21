@@ -8,7 +8,20 @@ const tournamentSelect = {
   userId: true,
   userNickname: true,
   roundReached: true,
-  updatedAt: true
+  updatedAt: true,
+  bracket: {
+    select: {
+      matchNumber: true,
+      round: true,
+      player1Nickname: true,
+      player2Nickname: true,
+      player1Type: true,
+      player2Type: true,
+      winner: true,
+      nextMatchNumber: true,
+      winnerSlot: true
+    }
+  }
 };
 
 export async function createTournament(
