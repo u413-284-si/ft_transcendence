@@ -52,14 +52,13 @@ export default class NewGameView extends AbstractView {
 
   async render() {
     this.updateHTML();
-    this.formEl = getById<HTMLFormElement>("register-form");
+    this.formEl = getById("register-form");
     this.addListeners();
   }
 
   validateAndStartGame(event: Event) {
     event.preventDefault();
-    const form = getById<HTMLFormElement>("register-form");
-    const formData = new FormData(form);
+    const formData = new FormData(this.formEl);
     const inputElements = getAllBySelector<HTMLInputElement>(
       "input[type='text']",
       { root: this.formEl }

@@ -16,7 +16,7 @@ export class Layout {
   private languageSwitcherOptionsEl!: HTMLDivElement;
 
   constructor() {
-    this.rootEl = getById<HTMLDivElement>("app");
+    this.rootEl = getById("app");
     this.styleRootElement();
   }
 
@@ -45,10 +45,8 @@ export class Layout {
     this.rootEl.innerHTML = cleanHTML;
 
     this.attachAvatarDrawerHandler();
-    this.languageSwitcherButtonEl = getById<HTMLButtonElement>(
-      "lang-switcher-button"
-    )!;
-    this.languageSwitcherOptionsEl = getById("lang-switcher-options")!;
+    this.languageSwitcherButtonEl = getById("lang-switcher-button");
+    this.languageSwitcherOptionsEl = getById("lang-switcher-options");
     this.attachLanguageSwitcherHandler();
   }
 

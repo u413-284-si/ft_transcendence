@@ -100,7 +100,7 @@ export default class NewTournamentView extends AbstractView {
     if (tournamentsPage.items.length === 0) {
       console.log("No active tournament found");
       this.updateHTML();
-      this.formEl = getById<HTMLFormElement>("tournament-form");
+      this.formEl = getById("tournament-form");
       this.addListeners();
       return;
     }

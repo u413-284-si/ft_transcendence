@@ -45,7 +45,7 @@ export class Toaster {
     template.innerHTML = html.trim();
     const toast = template.content.firstElementChild as HTMLElement;
 
-    const closeBtn = getBySelector("button", toast);
+    const closeBtn = getBySelector<HTMLButtonElement>("button", toast);
     closeBtn.addEventListener("click", () => this.removeToast(toast));
 
     // Hover handlers: pause/resume

@@ -69,8 +69,7 @@ export default class PlayerNicknamesView extends AbstractView {
 
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
-    const form = getById<HTMLFormElement>("nicknames-form");
-    const formData = new FormData(form);
+    const formData = new FormData(this.formEl);
     const userNumber = formData.get("userChoice");
     const inputElements = getAllBySelector<HTMLInputElement>(
       "input[type='text']",

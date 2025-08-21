@@ -213,11 +213,11 @@ export default class ProfileView extends AbstractView {
 
   async render(): Promise<void> {
     this.updateHTML();
-    this.avatarFormEl = getById<HTMLFormElement>("avatar-upload-form");
-    this.profileFormEl = getById<HTMLFormElement>("profile-form");
-    this.passwordFormEl = getById<HTMLFormElement>("password-form");
-    this.avatarInputEl = getById<HTMLInputElement>("avatar-input");
-    this.fileLabelEl = getById<HTMLInputElement>("avatar-input-file-label");
+    this.avatarFormEl = getById("avatar-upload-form");
+    this.profileFormEl = getById("profile-form");
+    this.passwordFormEl = getById("password-form");
+    this.avatarInputEl = getById("avatar-input");
+    this.fileLabelEl = getById("avatar-input-file-label");
     this.addListeners();
   }
 
@@ -340,10 +340,10 @@ export default class ProfileView extends AbstractView {
       "current-password-input"
     );
     // FIXME: activate when pw policy active
-    // const currentPasswordErrorEl = getEl("current-password-error");
+    // const currentPasswordErrorEl = getById("current-password-error");
     const newPasswordEl = getById<HTMLInputElement>("new-password-input");
     // FIXME: activate when pw policy active
-    // const newPasswordErrorEl = getEl("new-password-error");
+    // const newPasswordErrorEl = getById("new-password-error");
     const confirmPasswordEl = getById<HTMLInputElement>(
       "confirm-new-password-input"
     );

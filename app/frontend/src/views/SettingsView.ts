@@ -292,46 +292,34 @@ export default class SettingsView extends AbstractView {
   }
 
   private initTwoFAElements(): void {
-    this.twoFASetupButtonEl = getById<HTMLButtonElement>("setup-two-fa-button");
-    this.twoFAModalEl = getById<HTMLDialogElement>("two-fa-modal");
-    this.twoFAFormEl = getById<HTMLFormElement>("two-fa-form");
-    this.twoFAPasswordModalEl = getById<HTMLDialogElement>(
-      "two-fa-password-modal"
-    );
-    this.twoFAPasswordFormEl = getById<HTMLFormElement>("two-fa-password-form");
-    this.twoFAPasswordInputEl = getById<HTMLInputElement>(
-      "two-fa-password-input"
-    );
+    this.twoFASetupButtonEl = getById("setup-two-fa-button");
+    this.twoFAModalEl = getById("two-fa-modal");
+    this.twoFAFormEl = getById("two-fa-form");
+    this.twoFAPasswordModalEl = getById("two-fa-password-modal");
+    this.twoFAPasswordFormEl = getById("two-fa-password-form");
+    this.twoFAPasswordInputEl = getById("two-fa-password-input");
     this.twoFAPasswordInputErrorEl = getById("two-fa-password-input-error");
-    this.twoFAQRCodeEl = getById<HTMLImageElement>("two-fa-qr-code");
+    this.twoFAQRCodeEl = getById("two-fa-qr-code");
 
     if (!this.hasTwoFA()) {
-      this.twoFACodeInputEl = getById<HTMLInputElement>("two-fa-code-input");
+      this.twoFACodeInputEl = getById("two-fa-code-input");
       this.twoFACodeInputErrorEl = getById("two-fa-code-input-error");
     } else {
-      this.twoFAGenerateBackupCodesButtonEl = getById<HTMLButtonElement>(
+      this.twoFAGenerateBackupCodesButtonEl = getById(
         "two-fa-generate-backup-codes"
       );
-      this.twoFABackupCodesTableEl = getById<HTMLTableElement>(
-        "two-fa-backup-codes-table"
-      );
-      this.twoFADownloadBackupCodesLinkEl = getById<HTMLAnchorElement>(
+      this.twoFABackupCodesTableEl = getById("two-fa-backup-codes-table");
+      this.twoFADownloadBackupCodesLinkEl = getById(
         "two-fa-download-backup-codes-link"
       );
-      this.twoFABackupCodesModalEl = getById<HTMLDialogElement>(
-        "two-fa-backup-codes-modal"
-      );
+      this.twoFABackupCodesModalEl = getById("two-fa-backup-codes-modal");
     }
   }
 
   async render(): Promise<void> {
     this.updateHTML();
-    this.preferredLanguageFormEl = getById<HTMLFormElement>(
-      "preferred-language-form"
-    );
-    this.preferredLanguageButtonEl = getById<HTMLButtonElement>(
-      "preferred-language-button"
-    );
+    this.preferredLanguageFormEl = getById("preferred-language-form");
+    this.preferredLanguageButtonEl = getById("preferred-language-button");
     this.preferredLanguageOptionsEl = getById("preferred-language-options");
     if (this.hasLocalAuth) this.initTwoFAElements();
     this.addListeners();
