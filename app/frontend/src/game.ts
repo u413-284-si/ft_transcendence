@@ -167,7 +167,7 @@ async function endGame(
   userRole: playedAs
 ) {
   if (tournament) {
-    const matchId = tournament.getNextMatchToPlay()!.matchId;
+    const matchId = tournament.getNextMatchToPlay()!.matchNumber;
     const winner =
       gameState.player1Score > gameState.player2Score
         ? gameState.player1

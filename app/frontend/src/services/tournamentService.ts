@@ -1,17 +1,17 @@
 import { Tournament } from "../Tournament.js";
-import { TournamentDTO } from "../types/ITournament.js";
+import { CreateTournamentParams, TournamentDTO } from "../types/ITournament.js";
 import { apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 import { FetchPageResult } from "../types/FetchPageResult.js";
 
 export async function createTournament(
-  tournament: Tournament
+  tournament: CreateTournamentParams
 ): Promise<ApiResponse<TournamentDTO>> {
   const url = "/api/tournaments";
 
   return apiFetch<TournamentDTO>(url, {
     method: "POST",
-    body: JSON.stringify(tournament) // uses toJSON()
+    body: JSON.stringify(tournament)
   });
 }
 

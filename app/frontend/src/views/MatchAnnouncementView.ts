@@ -25,9 +25,9 @@ export default class MatchAnnouncementView extends AbstractView {
     if (!match) {
       throw new Error(i18next.t("error.undefinedMatch"));
     }
-    this.player1 = match.player1!;
-    this.player2 = match.player2!;
-    this.matchNumber = match.matchId;
+    this.player1 = match.player1Nickname!;
+    this.player2 = match.player2Nickname!;
+    this.matchNumber = match.matchNumber;
     this.roundNumber = match.round;
     const userNickname = tournament.getUserNickname();
     this.userRole =

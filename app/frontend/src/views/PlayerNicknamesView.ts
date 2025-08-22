@@ -12,6 +12,7 @@ import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
+import { TournamentSize } from "../types/ITournament.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -85,22 +86,17 @@ export default class PlayerNicknamesView extends AbstractView {
     console.log(userNickname);
 
     try {
-      const userId = auth.getToken().id;
-      const tournament = Tournament.fromUsernames(
-        nicknames,
-        this.tournamentName,
-        this.numberOfPlayers,
-        userNickname,
-        userId
-      );
-
       const createdTournament = getDataOrThrow(
-        await createTournament(tournament)
+        await createTournament({
+          name: this.tournamentName,
+          maxPlayers: this.numberOfPlayers as TournamentSize,
+          userNickname: userNickname,
+          nicknames: nicknames,
+          playerTypes: Array(this.numberOfPlayers).fill("HUMAN")
+        })
       );
-      const { id } = createdTournament;
-      if (id) {
-        tournament.setId(id);
-      }
+      const tournament = new Tournament(createdTournament);
+
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.switchView(matchAnnouncementView);
     } catch (error) {
