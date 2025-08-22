@@ -40,6 +40,10 @@ export class Tournament {
     match.winner = winner;
 
     if (match.nextMatchNumber && match.winnerSlot) {
+      const playerType =
+        winner === match.player1Nickname
+          ? match.player1Type
+          : match.player2Type;
       const nextMatch = updated.find(
         (m) => m.matchNumber === match.nextMatchNumber
       );
@@ -47,8 +51,10 @@ export class Tournament {
 
       if (match.winnerSlot === 1) {
         nextMatch.player1Nickname = winner;
+        nextMatch.player1Type = playerType;
       } else {
         nextMatch.player2Nickname = winner;
+        nextMatch.player2Type = playerType;
       }
     }
 
