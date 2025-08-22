@@ -6,7 +6,7 @@ import {
 import { apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 import { FetchPageResult } from "../types/FetchPageResult.js";
-import { Match } from "../types/IMatch.js";
+import { MatchRead } from "../types/IMatch.js";
 
 export async function createTournament(
   tournament: CreateTournamentParams
@@ -35,10 +35,10 @@ export async function updateTournamentBracket(
   matchNumber: number,
   player1Score: number,
   player2Score: number
-): Promise<ApiResponse<{ match: Match; bracketMatch: BracketMatch }>> {
+): Promise<ApiResponse<{ match: MatchRead; bracketMatch: BracketMatch }>> {
   const url = `/api/tournaments/${tournamentId}/matches/${matchNumber}`;
 
-  return apiFetch<{ match: Match; bracketMatch: BracketMatch }>(url, {
+  return apiFetch<{ match: MatchRead; bracketMatch: BracketMatch }>(url, {
     method: "PATCH",
     body: JSON.stringify({ player1Score, player2Score })
   });

@@ -1,8 +1,8 @@
-import { Match, playedAs } from "../types/IMatch.js";
+import { MatchRead, PlayedAs } from "../types/IMatch.js";
 import { escapeHTML } from "../utility.js";
 
-export function MatchRow(match: Match, user: string): string {
-  const isPlayerOne = match.playedAs === playedAs.PLAYERONE;
+export function MatchRow(match: MatchRead, user: string): string {
+  const isPlayerOne = match.playedAs === PlayedAs.PLAYERONE;
 
   const result = isPlayerOne
     ? match.player1Score > match.player2Score
@@ -20,9 +20,9 @@ export function MatchRow(match: Match, user: string): string {
     ? match.player2Nickname
     : `${match.player2Nickname} (${user})`;
 
-  const tournamentDisplay = match.tournament?.name
+  const tournamentDisplay = match.tournamentName
     ? i18next.t("global.tournament", {
-        tournamentName: match.tournament.name
+        tournamentName: match.tournamentName
       })
     : "N/A";
 

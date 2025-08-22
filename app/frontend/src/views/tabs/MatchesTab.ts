@@ -11,11 +11,11 @@ import { getDataOrThrow } from "../../services/api.js";
 import { getUserPlayedMatchesByUsername } from "../../services/userServices.js";
 import { getUserDashboardMatchesByUsername } from "../../services/userStatsServices.js";
 import { DashboardMatches } from "../../types/DataSeries.js";
-import { Match } from "../../types/IMatch.js";
+import { MatchRead } from "../../types/IMatch.js";
 import { UserStats } from "../../types/IUserStats.js";
 import { PaginatedTab } from "./PaginatedTab.js";
 
-export class MatchesTab extends PaginatedTab<Match> {
+export class MatchesTab extends PaginatedTab<MatchRead> {
   private dashboard: DashboardMatches | null = null;
   private userStats: UserStats;
   private username: string;
@@ -82,14 +82,16 @@ export class MatchesTab extends PaginatedTab<Match> {
     </div>`;
   }
 
-  protected updateTable(matches: Match[]): void {
+  protected updateTable(matches: MatchRead[]): void {
     const table = document.getElementById("match-history-table");
     if (!table) return;
 
     const matchesRows =
       matches.length === 0
         ? [NoMatchesRow()]
-        : matches.map((matchRaw: Match) => MatchRow(matchRaw, this.username));
+        : matches.map((matchRaw: MatchRead) =>
+            MatchRow(matchRaw, this.username)
+          );
 
     table.innerHTML = Table({
       id: "match-history-table",

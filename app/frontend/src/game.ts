@@ -5,7 +5,7 @@ import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { playedAs, PlayerType } from "./types/IMatch.js";
+import { PlayedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
 
@@ -24,7 +24,7 @@ export async function startGame(
   nickname2: string,
   type1: PlayerType,
   type2: PlayerType,
-  userRole: playedAs,
+  userRole: PlayedAs,
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
 ) {
@@ -164,7 +164,7 @@ function checkWinner(gameState: GameState) {
 async function endGame(
   gameState: GameState,
   tournament: Tournament | null,
-  userRole: playedAs
+  userRole: PlayedAs
 ) {
   if (tournament) {
     const matchNumber = tournament.getNextMatchToPlay()!.matchNumber;
@@ -191,7 +191,7 @@ async function endGame(
         player2Score: gameState.player2Score,
         player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
         player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN",
-        tournament: null
+        tournamentId: null
       })
     );
   }
