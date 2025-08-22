@@ -8,7 +8,7 @@ import { getDataOrThrow } from "../../services/api.js";
 import { getUserDashboardTournamentsByUsername } from "../../services/userStatsServices.js";
 import { DashboardTournaments } from "../../types/DataSeries.js";
 import { PaginatedTab } from "./PaginatedTab.js";
-import { TournamentDTO } from "../../types/ITournament.js";
+import { TournamentRead } from "../../types/ITournament.js";
 import { PaginationControls } from "../../components/PaginationControls.js";
 import {
   NoTournamentsRow,
@@ -17,7 +17,7 @@ import {
 import { Table } from "../../components/Table.js";
 import { getUserTournaments } from "../../services/tournamentService.js";
 
-export class TournamentsTab extends PaginatedTab<TournamentDTO> {
+export class TournamentsTab extends PaginatedTab<TournamentRead> {
   private dashboard: DashboardTournaments | null = null;
   private username: string;
 
@@ -106,14 +106,14 @@ export class TournamentsTab extends PaginatedTab<TournamentDTO> {
     </div>`;
   }
 
-  protected updateTable(tournaments: TournamentDTO[]): void {
+  protected updateTable(tournaments: TournamentRead[]): void {
     const table = document.getElementById("tournament-history-table");
     if (!table) return;
 
     const tournamentsRows =
       tournaments.length === 0
         ? [NoTournamentsRow()]
-        : tournaments.map((tournament: TournamentDTO) =>
+        : tournaments.map((tournament: TournamentRead) =>
             TournamentRow(tournament)
           );
 

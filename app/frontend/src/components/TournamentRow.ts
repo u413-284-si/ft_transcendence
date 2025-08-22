@@ -1,7 +1,7 @@
-import { TournamentDTO } from "../types/ITournament.js";
+import { TournamentRead } from "../types/ITournament.js";
 import { escapeHTML } from "../utility.js";
 
-export function TournamentRow(tournament: TournamentDTO): string {
+export function TournamentRow(tournament: TournamentRead): string {
   const result = didWinTournament(
     tournament.maxPlayers,
     tournament.roundReached

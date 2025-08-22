@@ -1,8 +1,8 @@
-import { MatchRead, PlayedAs } from "../types/IMatch.js";
+import { MatchRead } from "../types/IMatch.js";
 import { escapeHTML } from "../utility.js";
 
 export function MatchRow(match: MatchRead, user: string): string {
-  const isPlayerOne = match.playedAs === PlayedAs.PLAYERONE;
+  const isPlayerOne = match.playedAs === "PLAYERONE";
 
   const result = isPlayerOne
     ? match.player1Score > match.player2Score

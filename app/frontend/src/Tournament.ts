@@ -1,33 +1,30 @@
-import type { TournamentDTO } from "./types/ITournament.ts";
-import type { BracketMatch } from "./types/ITournament.ts";
+import type { TournamentRead } from "./types/ITournament.ts";
 import type { BracketLayout } from "./types/BracketLayout.ts";
+import { BracketMatchRead } from "./types/BracketMatch.js";
 
 export class Tournament {
   private matchSlotMap: Record<
     number,
-    { slot1?: BracketMatch; slot2?: BracketMatch }
+    { slot1?: BracketMatchRead; slot2?: BracketMatchRead }
   > = {};
   private tournamentId: number;
   private tournamentName: string;
   private numberOfPlayers: number;
-  private userId: number;
   private userNickname: string;
   private roundReached: number;
-  private bracket: BracketMatch[];
+  private bracket: BracketMatchRead[];
 
   constructor({
     id,
     name,
     maxPlayers,
-    userId,
     userNickname,
     roundReached,
     bracket
-  }: TournamentDTO) {
+  }: TournamentRead) {
     this.tournamentId = id;
     this.tournamentName = name;
     this.numberOfPlayers = maxPlayers;
-    this.userId = userId;
     this.userNickname = userNickname;
     this.roundReached = roundReached;
     this.bracket = bracket;
@@ -63,7 +60,7 @@ export class Tournament {
     }
   }
 
-  public getNextMatchToPlay(): BracketMatch | null {
+  public getNextMatchToPlay(): BracketMatchRead | null {
     return (
       this.bracket
         .filter(
@@ -80,7 +77,7 @@ export class Tournament {
     );
   }
 
-  public getBracket(): BracketMatch[] {
+  public getBracket(): BracketMatchRead[] {
     return this.bracket;
   }
 
@@ -94,18 +91,6 @@ export class Tournament {
 
   public getRoundReached(): number {
     return this.roundReached;
-  }
-
-  public toJSON(): TournamentDTO {
-    return {
-      id: this.tournamentId,
-      name: this.tournamentName,
-      maxPlayers: this.numberOfPlayers,
-      userId: this.userId,
-      userNickname: this.userNickname,
-      roundReached: this.roundReached,
-      bracket: this.bracket
-    };
   }
 
   public static shuffle(array: string[], inPlace: boolean = true): string[] {

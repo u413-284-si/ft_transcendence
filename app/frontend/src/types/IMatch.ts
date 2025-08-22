@@ -1,4 +1,4 @@
-import { Match as MatchDB, PlayedAs, PlayerType } from "@prisma/client";
+import type { Match as MatchDB, PlayedAs, PlayerType } from "@prisma/client";
 import { Simplify } from "./Simplify";
 
 export { PlayedAs, PlayerType };

@@ -32,10 +32,10 @@ export default class MatchAnnouncementView extends AbstractView {
     const userNickname = tournament.getUserNickname();
     this.userRole =
       this.player1 === userNickname
-        ? PlayedAs.PLAYERONE
+        ? "PLAYERONE"
         : this.player2 === userNickname
-          ? PlayedAs.PLAYERTWO
-          : PlayedAs.NONE;
+          ? "PLAYERTWO"
+          : "NONE";
   }
 
   createHTML() {

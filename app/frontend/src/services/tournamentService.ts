@@ -1,19 +1,16 @@
-import {
-  BracketMatch,
-  CreateTournamentParams,
-  TournamentDTO
-} from "../types/ITournament.js";
+import { TournamentCreate, TournamentRead } from "../types/ITournament.js";
 import { apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 import { FetchPageResult } from "../types/FetchPageResult.js";
 import { MatchRead } from "../types/IMatch.js";
+import { BracketMatchRead } from "../types/BracketMatch.js";
 
 export async function createTournament(
-  tournament: CreateTournamentParams
-): Promise<ApiResponse<TournamentDTO>> {
+  tournament: TournamentCreate
+): Promise<ApiResponse<TournamentRead>> {
   const url = "/api/tournaments";
 
-  return apiFetch<TournamentDTO>(url, {
+  return apiFetch<TournamentRead>(url, {
     method: "POST",
     body: JSON.stringify(tournament)
   });
@@ -21,10 +18,10 @@ export async function createTournament(
 
 export async function setTournamentFinished(
   tournamentId: number
-): Promise<ApiResponse<TournamentDTO>> {
+): Promise<ApiResponse<TournamentRead>> {
   const url = `/api/tournaments/${tournamentId}`;
 
-  return apiFetch<TournamentDTO>(url, {
+  return apiFetch<TournamentRead>(url, {
     method: "PATCH",
     body: JSON.stringify({ isFinished: true })
   });
@@ -35,10 +32,10 @@ export async function updateTournamentBracket(
   matchNumber: number,
   player1Score: number,
   player2Score: number
-): Promise<ApiResponse<{ match: MatchRead; bracketMatch: BracketMatch }>> {
+): Promise<ApiResponse<{ match: MatchRead; bracketMatch: BracketMatchRead }>> {
   const url = `/api/tournaments/${tournamentId}/matches/${matchNumber}`;
 
-  return apiFetch<{ match: MatchRead; bracketMatch: BracketMatch }>(url, {
+  return apiFetch<{ match: MatchRead; bracketMatch: BracketMatchRead }>(url, {
     method: "PATCH",
     body: JSON.stringify({ player1Score, player2Score })
   });
@@ -51,7 +48,7 @@ export async function getUserTournaments(options: {
   limit?: number;
   offset?: number;
   sort?: "asc" | "desc";
-}): Promise<ApiResponse<FetchPageResult<TournamentDTO>>> {
+}): Promise<ApiResponse<FetchPageResult<TournamentRead>>> {
   const { username, name, isFinished, limit, offset, sort = "desc" } = options;
   const encoded = encodeURIComponent(username);
   let url = `/api/users/${encoded}/tournaments`;
@@ -76,10 +73,10 @@ export async function getUserTournaments(options: {
 
 export async function deleteTournament(
   id: number
-): Promise<ApiResponse<TournamentDTO>> {
+): Promise<ApiResponse<TournamentRead>> {
   const url = `/api/tournaments/${id}`;
 
-  return apiFetch<TournamentDTO>(url, {
+  return apiFetch<TournamentRead>(url, {
     method: "DELETE"
   });
 }
