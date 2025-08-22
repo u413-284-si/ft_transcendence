@@ -176,9 +176,12 @@ export async function patchTournamentMatchHandler(request, reply) {
       date
     );
 
-    await updateTournament(tournamentId, userId, {
-      roundReached: { increment: 1 }
-    });
+    const hasUserWon = bracketMatch.winner === tournament.userNickname;
+    if (hasUserWon) {
+      await updateTournament(tournamentId, userId, {
+        roundReached: { increment: 1 }
+      });
+    }
 
     return reply
       .code(200)
