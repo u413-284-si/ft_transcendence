@@ -167,29 +167,34 @@ async function endGame(
   userRole: playedAs
 ) {
   if (tournament) {
-    const matchId = tournament.getNextMatchToPlay()!.matchNumber;
+    const matchNumber = tournament.getNextMatchToPlay()!.matchNumber;
     const winner =
       gameState.player1Score > gameState.player2Score
         ? gameState.player1
         : gameState.player2;
-    tournament.updateBracketWithResult(matchId, winner);
-    getDataOrThrow(await updateTournamentBracket(tournament));
+    tournament.updateBracketWithResult(matchNumber, winner);
+    getDataOrThrow(
+      await updateTournamentBracket(
+        tournament.getId(),
+        matchNumber,
+        gameState.player1Score,
+        gameState.player2Score
+      )
+    );
+  } else {
+    getDataOrThrow(
+      await createMatch({
+        playedAs: userRole,
+        player1Nickname: gameState.player1,
+        player2Nickname: gameState.player2,
+        player1Score: gameState.player1Score,
+        player2Score: gameState.player2Score,
+        player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
+        player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN",
+        tournament: null
+      })
+    );
   }
-
-  getDataOrThrow(
-    await createMatch({
-      playedAs: userRole,
-      player1Nickname: gameState.player1,
-      player2Nickname: gameState.player2,
-      player1Score: gameState.player1Score,
-      player2Score: gameState.player2Score,
-      player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
-      player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN",
-      tournament: tournament
-        ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
-        : null
-    })
-  );
 
   await waitForEnterKey();
 }
