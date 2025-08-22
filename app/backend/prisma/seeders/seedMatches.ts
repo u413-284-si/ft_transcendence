@@ -13,8 +13,8 @@ import {
   randomIncrementalDateFactory
 } from "./utils.ts";
 
-import type { Match } from "../../../frontend/src/types/IMatch.ts";
 import type { User } from "@prisma/client";
+import { MatchRead } from "../../../frontend/src/types/IMatch.ts";
 
 export async function seedMatchesPerUser(
   users: User[],
@@ -23,7 +23,7 @@ export async function seedMatchesPerUser(
   winRateMin = 0,
   winRateMax = 1
 ) {
-  const allMatches: Match[] = [];
+  const allMatches: MatchRead[] = [];
 
   for (const user of users) {
     const matchCount = randNumber({ min, max });
@@ -40,7 +40,7 @@ export async function seedMatchesPerUser(
 }
 
 export async function seedMatches(userId: number, count = 10, winRate = 0.5) {
-  const matches: Match[] = [];
+  const matches: MatchRead[] = [];
   const nextDate = randomIncrementalDateFactory({
     from: randRecentDate({ days: 10 }),
     minStepMinutes: 1,
