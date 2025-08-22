@@ -14,7 +14,7 @@ import {
 } from "./utils.ts";
 
 import type { User } from "@prisma/client";
-import { MatchRead } from "../../../frontend/src/types/IMatch.ts";
+import type { MatchRead } from "../../../frontend/src/types/IMatch.ts";
 
 export async function seedMatchesPerUser(
   users: User[],
