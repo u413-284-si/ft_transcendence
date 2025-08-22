@@ -8,12 +8,14 @@ import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
-import { PlayedAs } from "../types/IMatch.js";
+import { PlayedAs, PlayerType } from "../types/IMatch.js";
 import { getDataOrThrow } from "../services/api.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
   private player2: string;
+  private player1type: PlayerType;
+  private player2type: PlayerType;
   private matchNumber: number;
   private roundNumber: number;
   private userRole: PlayedAs;
@@ -27,6 +29,8 @@ export default class MatchAnnouncementView extends AbstractView {
     }
     this.player1 = match.player1Nickname!;
     this.player2 = match.player2Nickname!;
+    this.player1type = match.player1Type!;
+    this.player2type = match.player2Type!;
     this.matchNumber = match.matchNumber;
     this.roundNumber = match.round;
     const userNickname = tournament.getUserNickname();
@@ -112,8 +116,8 @@ export default class MatchAnnouncementView extends AbstractView {
     const gameView = new GameView(
       this.player1,
       this.player2,
-      "HUMAN",
-      "HUMAN",
+      this.player1type,
+      this.player2type,
       this.userRole,
       GameType.tournament,
       this.tournament

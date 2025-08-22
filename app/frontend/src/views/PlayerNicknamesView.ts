@@ -13,6 +13,7 @@ import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
 import { TournamentSize } from "../types/ITournament.js";
+import { PlayerType } from "@prisma/client";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -85,6 +86,12 @@ export default class PlayerNicknamesView extends AbstractView {
     const userNickname = formData.get(`player-${userNumber}`) as string;
     console.log(userNickname);
 
+    const playerTypes: PlayerType[] = [];
+    for (let i = 1; i <= this.numberOfPlayers; i++) {
+      const isAi = formData.has(`ai-player-${i}`);
+      playerTypes.push(isAi ? "AI" : "HUMAN");
+    }
+
     try {
       const createdTournament = getDataOrThrow(
         await createTournament({
@@ -92,7 +99,7 @@ export default class PlayerNicknamesView extends AbstractView {
           maxPlayers: this.numberOfPlayers as TournamentSize,
           userNickname: userNickname,
           nicknames: nicknames,
-          playerTypes: Array(this.numberOfPlayers).fill("HUMAN")
+          playerTypes: playerTypes
         })
       );
       const tournament = new Tournament(createdTournament);
