@@ -27,7 +27,7 @@ export async function createMatchTx(
   player2Score,
   player1Type,
   player2Type,
-  tournament,
+  tournamentId,
   date
 ) {
   const match = await tx.match.create({
@@ -40,17 +40,17 @@ export async function createMatchTx(
       player2Score,
       player1Type,
       player2Type,
-      tournamentId: tournament?.id || null,
-      date: date
+      tournamentId,
+      date
     },
     select: matchSelect
   });
-  return match;
+  return flattenMatch(match);
 }
 
 export async function getAllMatches() {
   const matches = await prisma.match.findMany({ select: matchSelect });
-  return matches;
+  return matches.map(flattenMatch);
 }
 
 export async function getMatch(id) {
@@ -60,7 +60,7 @@ export async function getMatch(id) {
     },
     select: matchSelect
   });
-  return match;
+  return flattenMatch(match);
 }
 
 export async function getUserMatches(
@@ -79,7 +79,7 @@ export async function getUserMatches(
     skip: filter.offset,
     orderBy: { date: filter.sort || "desc" }
   });
-  return matches;
+  return matches.map(flattenMatch);
 }
 
 export async function deleteAllMatches() {
@@ -96,4 +96,12 @@ export async function getUserMatchesCount(userId, filter = {}) {
     }
   });
   return total;
+}
+
+function flattenMatch(rawMatch) {
+  const { tournament, ...rest } = rawMatch;
+  return {
+    ...rest,
+    tournamentName: tournament ? tournament.name : null
+  };
 }
