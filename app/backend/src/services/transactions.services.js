@@ -86,6 +86,8 @@ export async function transactionTournament(
   nicknames,
   playertypes
 ) {
+  const bracket = generateBracket(nicknames, playertypes, maxPlayers);
+
   return prisma.$transaction(async (tx) => {
     const tournament = await createTournamentTx(
       tx,
@@ -94,8 +96,6 @@ export async function transactionTournament(
       userId,
       userNickname
     );
-
-    const bracket = generateBracket(nicknames, playertypes, maxPlayers);
 
     await createBracketTx(tx, tournament.id, bracket);
 
