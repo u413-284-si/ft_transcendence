@@ -135,8 +135,6 @@ export async function transactionUpdateBracket(
       { id: tournamentId },
       new Date()
     );
-    console.error(tournamentId);
-    console.dir(match);
 
     const currentBracketMatch = await updateBracketMatchTx(
       tx,
@@ -148,11 +146,16 @@ export async function transactionUpdateBracket(
     if (currentBracketMatch.nextMatchNumber && currentBracketMatch.winnerSlot) {
       const nextMatchNumber = currentBracketMatch.nextMatchNumber;
       const winnerSlot = currentBracketMatch.winnerSlot;
+      const winner = currentBracketMatch.winner;
+      const winnerPlayerType =
+        winner === currentBracketMatch.player1Nickname
+          ? currentBracketMatch.player1Type
+          : currentBracketMatch.player2Type;
 
       const updateData =
         winnerSlot === 1
-          ? { player1Nickname: bracketMatch.winner }
-          : { player2Nickname: bracketMatch.winner };
+          ? { player1Nickname: winner, player1Type: winnerPlayerType }
+          : { player2Nickname: winner, player2Type: winnerPlayerType };
 
       await updateBracketMatchTx(tx, tournamentId, nextMatchNumber, updateData);
     }
