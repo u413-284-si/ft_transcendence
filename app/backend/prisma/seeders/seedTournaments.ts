@@ -65,7 +65,7 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
   const tournamentName = randNoun();
   const numberOfPlayers = rand([4, 8, 16]);
   const playerNicknames = Array.from({ length: numberOfPlayers }, () =>
-    randUserName({ withAccents: false })
+    randUserName({ withAccents: false }).slice(0, 20)
   );
   const userNickname = rand(playerNicknames);
   const playerTypes = new Array(numberOfPlayers).fill("HUMAN");
