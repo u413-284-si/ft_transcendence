@@ -2,7 +2,6 @@ import { AIPlayer } from "../AIPlayer.js";
 import { GameKey } from "../views/GameView.js";
 
 export interface GameState {
-  ctx: CanvasRenderingContext2D;
   player1: string;
   player2: string;
   player1Score: number;

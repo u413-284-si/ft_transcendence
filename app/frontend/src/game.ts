@@ -42,7 +42,6 @@ export async function startGame(
   }
   const gameState = initGameState(
     canvas,
-    ctx,
     nickname1,
     nickname2,
     keys,
@@ -50,7 +49,7 @@ export async function startGame(
     aiPlayer2
   );
 
-  await runGameLoop(gameState);
+  await runGameLoop(gameState, ctx);
 
   if (getIsAborted()) {
     return;
@@ -61,7 +60,6 @@ export async function startGame(
 
 function initGameState(
   canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
   player1: string,
   player2: string,
   keys: Record<GameKey, boolean>,
@@ -69,7 +67,6 @@ function initGameState(
   aiPlayer2: AIPlayer | null
 ): GameState {
   return {
-    ctx: ctx,
     player1: player1,
     player2: player2,
     player1Score: 0,
@@ -97,7 +94,10 @@ function initGameState(
   };
 }
 
-function runGameLoop(gameState: GameState): Promise<GameState> {
+function runGameLoop(
+  gameState: GameState,
+  ctx: CanvasRenderingContext2D
+): Promise<GameState> {
   return new Promise((resolve) => {
     function gameLoop(timestamp: number) {
       if (getIsAborted() || gameState.gameOver) {
