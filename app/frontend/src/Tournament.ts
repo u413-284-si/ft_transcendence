@@ -34,10 +34,10 @@ export class Tournament {
     this.buildMatchSlotMap();
   }
 
-  public updateBracketWithResult(matchId: number, winner: string): void {
+  public updateBracketWithResult(matchNumber: number, winner: string): void {
     const updated = this.bracket.map((m) => ({ ...m })); // clone
 
-    const match = updated.find((m) => m.matchNumber === matchId);
+    const match = updated.find((m) => m.matchNumber === matchNumber);
     if (!match) throw new Error(i18next.t("error.matchNotFound"));
 
     match.winner = winner;
@@ -282,10 +282,6 @@ export class Tournament {
     this.matchSlotMap = {};
 
     for (const match of this.bracket) {
-      console.log("Building slot map");
-      console.log(
-        `Next match Id: ${match.nextMatchNumber} , Winner Slot: ${match.winnerSlot}`
-      );
       if (!match.nextMatchNumber || !match.winnerSlot) {
         continue;
       }
