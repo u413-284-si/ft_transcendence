@@ -1,8 +1,12 @@
-import { Tournament } from "../Tournament.js";
-import { CreateTournamentParams, TournamentDTO } from "../types/ITournament.js";
+import {
+  BracketMatch,
+  CreateTournamentParams,
+  TournamentDTO
+} from "../types/ITournament.js";
 import { apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 import { FetchPageResult } from "../types/FetchPageResult.js";
+import { Match } from "../types/IMatch.js";
 
 export async function createTournament(
   tournament: CreateTournamentParams
@@ -27,17 +31,16 @@ export async function setTournamentFinished(
 }
 
 export async function updateTournamentBracket(
-  tournament: Tournament
-): Promise<ApiResponse<TournamentDTO>> {
-  const tournamentId = tournament.getId();
-  const url = `/api/tournaments/${tournamentId}`;
+  tournamentId: number,
+  matchNumber: number,
+  player1Score: number,
+  player2Score: number
+): Promise<ApiResponse<{ match: Match; bracketMatch: BracketMatch }>> {
+  const url = `/api/tournaments/${tournamentId}/matches/${matchNumber}`;
 
-  return apiFetch<TournamentDTO>(url, {
+  return apiFetch<{ match: Match; bracketMatch: BracketMatch }>(url, {
     method: "PATCH",
-    body: JSON.stringify({
-      bracket: JSON.stringify(tournament.getBracket()),
-      roundReached: tournament.getRoundReached()
-    })
+    body: JSON.stringify({ player1Score, player2Score })
   });
 }
 
