@@ -172,6 +172,11 @@ export async function patchTournamentMatchHandler(request, reply) {
       playedAs,
       bracketMatch
     );
+
+    await updateTournament(tournamentId, userId, {
+      roundReached: { increment: 1 }
+    });
+
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });
