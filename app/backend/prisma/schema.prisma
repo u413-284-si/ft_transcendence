@@ -146,7 +146,7 @@ model BracketMatch {
     nextMatchNumber Int?
     winnerSlot      Int?
 
-    tournament Tournament @relation(fields: [tournamentId], references: [id])
+    tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
 
     @@id([tournamentId, matchNumber])
     @@map("bracket_matches")
