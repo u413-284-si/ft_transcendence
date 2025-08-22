@@ -9,16 +9,19 @@ import {
   randUserName
 } from "@ngneat/falso";
 import { Tournament } from "../../../frontend/src/Tournament.ts";
+import { updateTournament } from "../../src/services/tournaments.services.js";
 import {
-  createTournament,
-  updateTournament
-} from "../../src/services/tournaments.services.js";
-import { transactionMatch } from "../../src/services/transactions.services.js";
+  transactionTournament,
+  transactionUpdateBracket
+} from "../../src/services/transactions.services.js";
 import { generateNonTiedScores } from "./utils.ts";
 
-import type { BracketMatch } from "../../../frontend/src/types/IMatch.ts";
-import type { Tournament as TournamentType, User } from "@prisma/client";
-type PublicTournament = Omit<TournamentType, "isPrivate">;
+import type { User } from "@prisma/client";
+import type { TournamentRead } from "../../../frontend/src/types/ITournament.ts";
+import type { BracketMatchRead } from "../../../frontend/src/types/BracketMatch.ts";
+type BracketMatchReadWithTournamentId = BracketMatchRead & {
+  tournamentId: number;
+};
 
 export async function seedTournamentsPerUser(
   users: User[],
@@ -27,7 +30,7 @@ export async function seedTournamentsPerUser(
   winRateMin = 0,
   winRateMax = 1
 ) {
-  const allTournaments: PublicTournament[] = [];
+  const allTournaments: TournamentRead[] = [];
 
   for (const user of users) {
     const tournamentCount = randNumber({ min, max });
@@ -48,7 +51,7 @@ export async function seedTournaments(
   count = 10,
   winRate = 0.5
 ) {
-  const tournaments: PublicTournament[] = [];
+  const tournaments: TournamentRead[] = [];
 
   for (let i = 0; i < count; i++) {
     const tournament = await seedSingleTournament(userId, winRate);
@@ -65,26 +68,17 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
     randUserName({ withAccents: false })
   );
   const userNickname = rand(playerNicknames);
+  const playerTypes = new Array(numberOfPlayers).fill("HUMAN");
 
-  const tournamentClass = Tournament.fromUsernames(
-    playerNicknames,
-    tournamentName,
-    numberOfPlayers,
-    userNickname,
-    userId
-  );
-
-  const bracket = JSON.stringify(tournamentClass.getBracket());
-
-  const { id } = await createTournament(
+  const tournamentDTO: TournamentRead = await transactionTournament(
     tournamentName,
     numberOfPlayers,
     userId,
     userNickname,
-    bracket
+    playerNicknames,
+    playerTypes
   );
-
-  tournamentClass.setId(id);
+  const tournamentClass = new Tournament(tournamentDTO);
 
   const randomStartDate = randRecentDate({ days: 10 });
   const dateFactory = incrementalDate({
@@ -92,16 +86,11 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
     step: 1 * 60 * 1000 // 1 minute in milliseconds
   });
 
-  let nextMatch: BracketMatch | null;
+  let nextMatch: BracketMatchRead | null;
   while ((nextMatch = tournamentClass.getNextMatchToPlay()) != null) {
-    const playedAs =
-      userNickname === nextMatch.player1!
-        ? "PLAYERONE"
-        : userNickname === nextMatch.player2!
-          ? "PLAYERTWO"
-          : "NONE";
-
-    const userInMatch = playedAs !== "NONE";
+    const userInMatch =
+      userNickname === nextMatch.player1Nickname ||
+      userNickname === nextMatch.player2Nickname;
     const userWins = userInMatch
       ? randChanceBoolean({ chanceTrue: winRate })
       : null;
@@ -109,7 +98,7 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
     const { player1Score, player2Score } = generateNonTiedScores(0, 10, {
       winner:
         userInMatch && userWins !== null
-          ? playedAs === "PLAYERONE"
+          ? userNickname === nextMatch.player1Nickname
             ? userWins
               ? "PLAYERONE"
               : "PLAYERTWO"
@@ -120,30 +109,36 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
     });
 
     const winner =
-      player1Score > player2Score ? nextMatch.player1! : nextMatch.player2!;
+      player1Score > player2Score
+        ? nextMatch.player1Nickname!
+        : nextMatch.player2Nickname!;
+    nextMatch.winner = winner;
+
+    const matchWithTid = nextMatch as BracketMatchReadWithTournamentId;
+    matchWithTid.tournamentId = tournamentDTO.id;
+
     const date = dateFactory();
 
-    tournamentClass.updateBracketWithResult(nextMatch.matchId, winner);
+    tournamentClass.updateBracketWithResult(nextMatch.matchNumber, winner);
 
-    await transactionMatch(
+    const playedAs =
+      tournamentDTO.userNickname === nextMatch.player1Nickname
+        ? "PLAYERONE"
+        : tournamentDTO.userNickname === nextMatch.player2Nickname
+          ? "PLAYERTWO"
+          : "NONE";
+
+    await transactionUpdateBracket(
       userId,
-      playedAs,
-      nextMatch.player1,
-      nextMatch.player2,
       player1Score,
       player2Score,
-      "HUMAN",
-      "HUMAN",
-      {
-        id: tournamentClass!.getId(),
-        name: tournamentClass!.getTournamentName()
-      },
+      playedAs,
+      matchWithTid,
       date
     );
   }
 
-  const tournament = await updateTournament(tournamentClass.getId(), userId, {
-    bracket: tournamentClass.getBracket(),
+  const tournament = await updateTournament(tournamentDTO.id, userId, {
     isFinished: true,
     roundReached: tournamentClass.getRoundReached(),
     updatedAt: dateFactory()
