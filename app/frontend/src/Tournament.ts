@@ -1,6 +1,6 @@
 import type { TournamentRead } from "./types/ITournament.ts";
 import type { BracketLayout } from "./types/BracketLayout.ts";
-import { BracketMatchRead } from "./types/BracketMatch.js";
+import type { BracketMatchRead } from "./types/BracketMatch.ts";
 
 export class Tournament {
   private matchSlotMap: Record<
