@@ -105,6 +105,26 @@ export async function transactionTournament(
   });
 }
 
+function buildBracketUpdates(bracketMatch) {
+  const {
+    nextMatchNumber,
+    winnerSlot,
+    player1Nickname,
+    player1Type,
+    player2Type,
+    winner
+  } = bracketMatch;
+
+  if (!nextMatchNumber || !winnerSlot) return null;
+
+  const winnerPlayerType =
+    winner === player1Nickname ? player1Type : player2Type;
+
+  return winnerSlot === 1
+    ? { player1Nickname: winner, player1Type: winnerPlayerType }
+    : { player2Nickname: winner, player2Type: winnerPlayerType };
+}
+
 export async function transactionUpdateBracket(
   userId,
   player1Score,
@@ -112,6 +132,8 @@ export async function transactionUpdateBracket(
   playedAs,
   bracketMatch
 ) {
+  const nextUpdate = buildBracketUpdates(bracketMatch);
+
   return prisma.$transaction(async (tx) => {
     const {
       player1Nickname,
@@ -120,7 +142,8 @@ export async function transactionUpdateBracket(
       player2Type,
       tournamentId,
       matchNumber,
-      winner
+      winner,
+      nextMatchNumber
     } = bracketMatch;
     const { match } = await createMatchAndUpdateStatsTx(
       tx,
@@ -143,21 +166,8 @@ export async function transactionUpdateBracket(
       { winner: winner }
     );
 
-    if (currentBracketMatch.nextMatchNumber && currentBracketMatch.winnerSlot) {
-      const nextMatchNumber = currentBracketMatch.nextMatchNumber;
-      const winnerSlot = currentBracketMatch.winnerSlot;
-      const winner = currentBracketMatch.winner;
-      const winnerPlayerType =
-        winner === currentBracketMatch.player1Nickname
-          ? currentBracketMatch.player1Type
-          : currentBracketMatch.player2Type;
-
-      const updateData =
-        winnerSlot === 1
-          ? { player1Nickname: winner, player1Type: winnerPlayerType }
-          : { player2Nickname: winner, player2Type: winnerPlayerType };
-
-      await updateBracketMatchTx(tx, tournamentId, nextMatchNumber, updateData);
+    if (nextUpdate) {
+      await updateBracketMatchTx(tx, tournamentId, nextMatchNumber, nextUpdate);
     }
 
     return {
