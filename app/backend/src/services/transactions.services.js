@@ -130,7 +130,8 @@ export async function transactionUpdateBracket(
   player1Score,
   player2Score,
   playedAs,
-  bracketMatch
+  bracketMatch,
+  date
 ) {
   const nextUpdate = buildBracketUpdates(bracketMatch);
 
@@ -156,7 +157,7 @@ export async function transactionUpdateBracket(
       player1Type,
       player2Type,
       tournamentId,
-      new Date()
+      date
     );
 
     const currentBracketMatch = await updateBracketMatchTx(

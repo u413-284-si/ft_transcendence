@@ -145,13 +145,6 @@ export async function patchTournamentMatchHandler(request, reply) {
       );
     }
 
-    const playedAs =
-      tournament.userNickname === bracketMatch.player1Nickname
-        ? "PLAYERONE"
-        : tournament.userNickname === bracketMatch.player2Nickname
-          ? "PLAYERTWO"
-          : "NONE";
-
     if (player1Score > player2Score) {
       bracketMatch.winner = bracketMatch.player1Nickname;
     } else if (player2Score > player1Score) {
@@ -165,12 +158,22 @@ export async function patchTournamentMatchHandler(request, reply) {
       );
     }
 
+    const playedAs =
+      tournament.userNickname === bracketMatch.player1Nickname
+        ? "PLAYERONE"
+        : tournament.userNickname === bracketMatch.player2Nickname
+          ? "PLAYERTWO"
+          : "NONE";
+
+    const date = new Date();
+
     const data = await transactionUpdateBracket(
       userId,
       player1Score,
       player2Score,
       playedAs,
-      bracketMatch
+      bracketMatch,
+      date
     );
 
     await updateTournament(tournamentId, userId, {
