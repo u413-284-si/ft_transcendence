@@ -1,6 +1,6 @@
 import { updatePaddlePositions } from "./input.js";
-import { draw } from "./draw.js";
-import { GameState } from "./types/IGameState.js";
+import { render } from "./draw.js";
+import { GameState, Snapshot } from "./types/IGameState.js";
 import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
@@ -89,8 +89,7 @@ function initGameState(
     gameOver: false,
     keys: keys,
     aiPlayer1: aiPlayer1,
-    aiPlayer2: aiPlayer2,
-    lastTimestamp: performance.now()
+    aiPlayer2: aiPlayer2
   };
 }
 
@@ -99,26 +98,41 @@ function runGameLoop(
   ctx: CanvasRenderingContext2D
 ): Promise<GameState> {
   return new Promise((resolve) => {
-    function gameLoop(timestamp: number) {
+    const step = 1 / 60; // fixed step in seconds ~0.016s
+    let lastTimestamp = performance.now();
+    let accumulator = 0;
+    let snapshot: Snapshot = makeSnapshot(gameState);
+
+    function gameLoop(currentTimestamp: number) {
       if (getIsAborted() || gameState.gameOver) {
         resolve(gameState);
         return;
       }
 
-      let deltaTime = (timestamp - gameState.lastTimestamp) / 1000;
-
-      if (deltaTime <= 0) {
+      let frameTime = (currentTimestamp - lastTimestamp) / 1000;
+      if (frameTime <= 0) {
+        console.log("Frametime is 0 - skipping");
         requestAnimationFrame(gameLoop);
         return;
       }
+      if (frameTime > 0.25) {
+        console.log("Frametime too high - clamp to 0.25");
+        frameTime = 0.25;
+      }
+      lastTimestamp = currentTimestamp;
+      accumulator += frameTime;
 
-      deltaTime = Math.min(deltaTime, 0.1);
-      const fps = calculateFPS(deltaTime);
+      const fps = calculateFPS(frameTime);
       console.log(`FPS: ${fps}`);
 
-      update(gameState, deltaTime);
-      draw(gameState);
-      gameState.lastTimestamp = timestamp;
+      while (accumulator >= step) {
+        snapshot = makeSnapshot(gameState);
+        update(gameState, step);
+        accumulator -= step;
+      }
+      const alpha = accumulator / step;
+
+      render(gameState, snapshot, alpha, ctx);
 
       requestAnimationFrame(gameLoop);
     }
@@ -301,4 +315,9 @@ function updateBallPosition(
 function calculateFPS(deltaTime: number): number {
   if (deltaTime <= 0) return 0;
   return Math.round(1 / deltaTime);
+}
+
+function makeSnapshot(state: GameState): Snapshot {
+  const { ballX, ballY, paddle1Y, paddle2Y } = state;
+  return { ballX, ballY, paddle1Y, paddle2Y };
 }

@@ -25,5 +25,9 @@ export interface GameState {
   keys: Record<GameKey, boolean>;
   aiPlayer1: AIPlayer | null;
   aiPlayer2: AIPlayer | null;
-  lastTimestamp: DOMHighResTimeStamp; // ms
 }
+
+export type Snapshot = Pick<
+  GameState,
+  "ballX" | "ballY" | "paddle1Y" | "paddle2Y"
+>;
