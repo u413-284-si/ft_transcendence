@@ -17,7 +17,11 @@ export default async function staticModule(fastify) {
   const __dirname = import.meta.dirname;
 
   await fastify.register(fastifyStatic, {
-    root: path.join(__dirname, "..", "..", "..", "frontend", "public")
+    root: path.join(__dirname, "..", "..", "..", "frontend", "public"),
+    cacheControl: false,
+    setHeaders: (res) => {
+      res.setHeader("Cache-Control", "no-store");
+    }
   });
 
   fastify.setNotFoundHandler(function (request, reply) {

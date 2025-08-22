@@ -8,7 +8,7 @@ import {
   NicknameInput
 } from "../components/NicknameInput.js";
 import { Paragraph } from "../components/Paragraph.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 
@@ -51,19 +51,20 @@ export default class NewGameView extends AbstractView {
 
   async render() {
     this.updateHTML();
-    this.formEl = document.querySelector("#register-form")!;
+    this.formEl = getById("register-form");
     this.addListeners();
   }
 
   validateAndStartGame(event: Event) {
     event.preventDefault();
-    const form = document.getElementById("register-form") as HTMLFormElement;
-    const formData = new FormData(form);
-    const inputElements: HTMLInputElement[] = Array.from(
-      this.formEl.querySelectorAll("input[type='text']")
+    const formData = new FormData(this.formEl);
+    const inputElements = getAllBySelector<HTMLInputElement>(
+      "input[type='text']",
+      { root: this.formEl }
     );
-    const errorElements: HTMLElement[] = Array.from(
-      this.formEl.querySelectorAll('[id^="player-error-"]')
+    const errorElements = getAllBySelector<HTMLElement>(
+      '[id^="player-error-"]',
+      { root: this.formEl }
     );
     const nicknames = inputElements.map((input) => input.value);
 

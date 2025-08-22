@@ -10,7 +10,7 @@ import { router } from "../routing/Router.js";
 import { Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
-import { getEl } from "../utility.js";
+import { getById } from "../utility.js";
 import { verifyBackupCode } from "../services/authServices.js";
 import { ApiError } from "../services/api.js";
 
@@ -61,10 +61,12 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
 
   private async verifTwoFABackupCode(event: Event) {
     event.preventDefault();
-    const twoFABackupCodeInput = getEl(
+    const twoFABackupCodeInput = getById<HTMLInputElement>(
       "two-fa-backup-code-input"
-    ) as HTMLInputElement;
-    const twoFABackupCodeErrorEl = getEl("two-fa-backup-code-input-error");
+    );
+    const twoFABackupCodeErrorEl = getById<HTMLSpanElement>(
+      "two-fa-backup-code-input-error"
+    );
 
     const isBackupCodeValid = await validateTwoFABackupCode(
       twoFABackupCodeInput,

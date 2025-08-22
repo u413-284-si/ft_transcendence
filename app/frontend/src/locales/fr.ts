@@ -268,7 +268,7 @@ const fr: TranslationShape = {
       avatarUploadedSuccess: "Avatar téléchargé avec succès !",
       chartCannotRemoveYourself: "Vous ne pouvez pas vous supprimer.",
       chartCompareMaxThree: "Vous pouvez comparer un maximum de 3 amis.",
-      chartError: "Un graphique n'a pas pu être initialisé",
+      chartError: "Un diagramme n'a pas pu être initialisé",
       connectionUnavailable:
         "Impossible de se reconnecter. Tentatives arrêtées jusqu’à l’actualisation.",
       connectionLost:

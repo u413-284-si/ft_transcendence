@@ -16,6 +16,7 @@ import {
 } from "../../components/TournamentRow.js";
 import { Table } from "../../components/Table.js";
 import { getUserTournaments } from "../../services/tournamentService.js";
+import { getById } from "../../utility.js";
 
 export class TournamentsTab extends PaginatedTab<TournamentRead> {
   private dashboard: DashboardTournaments | null = null;
@@ -107,8 +108,7 @@ export class TournamentsTab extends PaginatedTab<TournamentRead> {
   }
 
   protected updateTable(tournaments: TournamentRead[]): void {
-    const table = document.getElementById("tournament-history-table");
-    if (!table) return;
+    const table = getById<HTMLTableElement>("tournament-history-table");
 
     const tournamentsRows =
       tournaments.length === 0

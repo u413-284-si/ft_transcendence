@@ -13,6 +13,7 @@ import { getUserDashboardMatchesByUsername } from "../../services/userStatsServi
 import { DashboardMatches } from "../../types/DataSeries.js";
 import { MatchRead } from "../../types/IMatch.js";
 import { UserStats } from "../../types/IUserStats.js";
+import { getById } from "../../utility.js";
 import { PaginatedTab } from "./PaginatedTab.js";
 
 export class MatchesTab extends PaginatedTab<MatchRead> {
@@ -83,8 +84,7 @@ export class MatchesTab extends PaginatedTab<MatchRead> {
   }
 
   protected updateTable(matches: MatchRead[]): void {
-    const table = document.getElementById("match-history-table");
-    if (!table) return;
+    const table = getById<HTMLTableElement>("match-history-table");
 
     const matchesRows =
       matches.length === 0

@@ -7,7 +7,7 @@ import { router } from "../routing/Router.js";
 import { Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
-import { getEl } from "../utility.js";
+import { getById } from "../utility.js";
 import { verifyLoginTwoFACode } from "../services/authServices.js";
 import { ApiError } from "../services/api.js";
 import { Link } from "../components/Link.js";
@@ -69,8 +69,10 @@ export default class TwoFAVerifyView extends AbstractView {
 
   private async verifyTwoFA(event: Event) {
     event.preventDefault();
-    const twoFAQRCodeInput = getEl("two-fa-qr-code-input") as HTMLInputElement;
-    const twoFAQRCodeErrorEl = getEl("two-fa-qr-code-input-error");
+    const twoFAQRCodeInput = getById<HTMLInputElement>("two-fa-qr-code-input");
+    const twoFAQRCodeErrorEl = getById<HTMLSpanElement>(
+      "two-fa-qr-code-input-error"
+    );
 
     const isTwoFACodeValid = await validateTwoFACode(
       twoFAQRCodeInput,
