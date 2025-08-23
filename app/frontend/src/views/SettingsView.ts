@@ -249,11 +249,17 @@ export default class SettingsView extends AbstractView {
       );
       addTogglePasswordListener(this.twoFAPasswordInputEl.id);
       addCloseModalListener(this.twoFAModalEl.id);
-      this.twoFAModalEl.addEventListener("close", this.clearQRCode);
-      this.twoFAModalEl.addEventListener("cancel", this.clearQRCode);
+      this.twoFAModalEl.addEventListener("close", () => this.clearQRCode);
+      this.twoFAModalEl.addEventListener("cancel", () => this.clearQRCode);
       addCloseModalListener(this.twoFAPasswordModalEl.id);
-      this.twoFAPasswordModalEl.addEventListener("close", this.clearPassword);
-      this.twoFAPasswordModalEl.addEventListener("cancel", this.clearPassword);
+      this.twoFAPasswordModalEl.addEventListener(
+        "close",
+        () => this.clearPassword
+      );
+      this.twoFAPasswordModalEl.addEventListener(
+        "cancel",
+        () => this.clearPassword
+      );
       if (this.hasTwoFA()) {
         this.twoFAGenerateBackupCodesButtonEl.addEventListener("click", () =>
           this.displayTwoFAPasswordModal("backupCodes")
@@ -261,11 +267,11 @@ export default class SettingsView extends AbstractView {
         addCloseModalListener(this.twoFABackupCodesModalEl.id);
         this.twoFABackupCodesModalEl.addEventListener(
           "close",
-          this.clearBackupCodesTable
+          () => this.clearBackupCodesTable
         );
         this.twoFABackupCodesModalEl.addEventListener(
           "cancel",
-          this.clearBackupCodesTable
+          () => this.clearBackupCodesTable
         );
       }
     }
