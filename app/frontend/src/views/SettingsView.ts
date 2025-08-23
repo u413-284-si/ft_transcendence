@@ -407,7 +407,7 @@ export default class SettingsView extends AbstractView {
         this.fillBackupCodesTable(backupCodes);
         this.setupBackupCodesLink(backupCodes);
         this.twoFAModalEl.close();
-        this.displayModal(this.twoFABackupCodesModalEl.id);
+        this.twoFABackupCodesModalEl.showModal();
       } else {
         this.twoFAModalEl.close();
         this.displayTwoFAPasswordModal("remove");
@@ -456,7 +456,7 @@ export default class SettingsView extends AbstractView {
       this.twoFAQRCodeEl.src = qrcode;
 
       this.twoFAPasswordModalEl.close();
-      this.displayModal(this.twoFAModalEl.id);
+      this.twoFAModalEl.showModal();
     } catch (error) {
       router.handleError("Error in displayTwoFASetup()", error);
     }
@@ -521,7 +521,7 @@ export default class SettingsView extends AbstractView {
       this.fillBackupCodesTable(apiResponse.data.backupCodes);
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
       this.twoFABackupCodesModalEl.close();
-      this.displayModal(this.twoFABackupCodesModalEl.id);
+      this.twoFABackupCodesModalEl.showModal();
     } catch (error) {
       router.handleError("Error in generateAndDisplayBackupCodes()", error);
     }
@@ -566,11 +566,6 @@ export default class SettingsView extends AbstractView {
     this.twoFAPasswordInputEl.value = "";
   }
 
-  private displayModal(modalId: string): void {
-    const modal = getById<HTMLDialogElement>(modalId);
-    modal.showModal();
-  }
-
   private async displayTwoFAPasswordModal(
     action: "setup" | "remove" | "backupCodes"
   ): Promise<void> {
@@ -594,6 +589,6 @@ export default class SettingsView extends AbstractView {
     }
 
     this.twoFAModalEl.close();
-    this.displayModal(this.twoFAPasswordModalEl.id);
+    this.twoFAPasswordModalEl.showModal();
   }
 }
