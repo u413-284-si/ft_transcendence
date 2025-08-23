@@ -406,10 +406,10 @@ export default class SettingsView extends AbstractView {
         toaster.success(i18next.t("toast.twoFASetupSuccess"));
         this.fillBackupCodesTable(backupCodes);
         this.setupBackupCodesLink(backupCodes);
-        this.hideModal(this.twoFAModalEl.id);
+        this.twoFAModalEl.close();
         this.displayModal(this.twoFABackupCodesModalEl.id);
       } else {
-        this.hideModal(this.twoFAModalEl.id);
+        this.twoFAModalEl.close();
         this.displayTwoFAPasswordModal("remove");
       }
     } catch (error) {
@@ -455,7 +455,7 @@ export default class SettingsView extends AbstractView {
 
       this.twoFAQRCodeEl.src = qrcode;
 
-      this.hideModal(this.twoFAPasswordModalEl.id);
+      this.twoFAPasswordModalEl.close();
       this.displayModal(this.twoFAModalEl.id);
     } catch (error) {
       router.handleError("Error in displayTwoFASetup()", error);
@@ -520,7 +520,7 @@ export default class SettingsView extends AbstractView {
       }
       this.fillBackupCodesTable(apiResponse.data.backupCodes);
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
-      this.hideModal(this.twoFAPasswordModalEl.id);
+      this.twoFABackupCodesModalEl.close();
       this.displayModal(this.twoFABackupCodesModalEl.id);
     } catch (error) {
       router.handleError("Error in generateAndDisplayBackupCodes()", error);
@@ -593,12 +593,7 @@ export default class SettingsView extends AbstractView {
         break;
     }
 
-    this.hideModal(this.twoFAModalEl.id);
+    this.twoFAModalEl.close();
     this.displayModal(this.twoFAPasswordModalEl.id);
-  }
-
-  private hideModal(modalId: string): void {
-    const modal = getById<HTMLDialogElement>(modalId);
-    modal.close();
   }
 }
