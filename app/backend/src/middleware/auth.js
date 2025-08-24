@@ -2,12 +2,12 @@ import { createResponseMessage } from "../utils/response.js";
 import { httpError } from "../utils/error.js";
 import { getUserAuthProvider } from "../services/users.services.js";
 
-export async function authorizeUserAccess(request, reply) {
+export async function authorizeUserAccess(request) {
   request.action = "Authorize user's access token";
   await request.accessTokenVerify();
 }
 
-export async function authorizeUserTwoFALogin(request, reply) {
+export async function authorizeUserTwoFALogin(request) {
   request.action = "Authorize user's twoFA login token";
   await request.twoFALoginTokenVerify();
 }
