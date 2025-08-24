@@ -90,13 +90,13 @@ fi
 # -- Store secrets -- #
 #########################
 
-# Run generate-ssl-certs.sh
-echo "➡️ Running core certificate generation script..."
-/usr/local/bin/generate-ssl-certs.sh || {
-  echo "❌ Failed to generate SSL core certs"
+# Run setup-ssl-ca.sh
+echo "➡️ Running certificate authority setup script..."
+/usr/local/bin/setup-ssl-ca.sh || {
+  echo "❌ Failed to generate certificate authority"
   kill $VAULT_PID
   exit 1
 }
-echo "✅ SSL core certificates generated and stored in Vault"
+echo "✅ SSL certificate authority set up"
 
 wait $VAULT_PID
