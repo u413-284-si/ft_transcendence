@@ -3,7 +3,7 @@ import { Form } from "../components/Form.js";
 import { Input, addTogglePasswordListener } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Paragraph } from "../components/Paragraph.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getById } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { uploadAvatar } from "../services/userServices.js";
 import {
@@ -16,7 +16,6 @@ import {
   clearInvalid,
   isEmptyString
 } from "../validate.js";
-import { getInputEl, getEl } from "../utility.js";
 import { patchUser, updateUserPassword } from "../services/userServices.js";
 import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
@@ -214,11 +213,11 @@ export default class ProfileView extends AbstractView {
 
   async render(): Promise<void> {
     this.updateHTML();
-    this.avatarFormEl = document.querySelector("#avatar-upload-form")!;
-    this.profileFormEl = document.querySelector("#profile-form")!;
-    this.passwordFormEl = document.querySelector("#password-form")!;
-    this.avatarInputEl = getInputEl("avatar-input");
-    this.fileLabelEl = getInputEl("avatar-input-file-label");
+    this.avatarFormEl = getById("avatar-upload-form");
+    this.profileFormEl = getById("profile-form");
+    this.passwordFormEl = getById("password-form");
+    this.avatarInputEl = getById("avatar-input");
+    this.fileLabelEl = getById("avatar-input-file-label");
     this.addListeners();
   }
 
@@ -227,8 +226,8 @@ export default class ProfileView extends AbstractView {
 
     let valid = true;
 
-    const usernameEl = getInputEl("username-input");
-    const usernameErrorEl = getEl("username-error");
+    const usernameEl = getById<HTMLInputElement>("username-input");
+    const usernameErrorEl = getById<HTMLSpanElement>("username-error");
     const username = usernameEl.value;
     const hasUsername = !isEmptyString(username);
 
@@ -241,8 +240,8 @@ export default class ProfileView extends AbstractView {
     let emailEl: HTMLInputElement | null = null;
     let email = "";
     if (this.hasLocalAuth) {
-      emailEl = getInputEl("email-input");
-      const emailErrorEl = getEl("email-error");
+      emailEl = getById<HTMLInputElement>("email-input");
+      const emailErrorEl = getById<HTMLSpanElement>("email-error");
       email = emailEl.value;
       const hasEmail = !isEmptyString(email);
 
@@ -303,8 +302,8 @@ export default class ProfileView extends AbstractView {
 
   private async uploadAvatar(event: Event) {
     event.preventDefault();
-    const fileInputEl = getInputEl("avatar-input");
-    const errorEl = getEl("avatar-upload-error-message");
+    const fileInputEl = getById<HTMLInputElement>("avatar-input");
+    const errorEl = getById<HTMLSpanElement>("avatar-upload-error-message");
 
     if (!validateImageFile(fileInputEl, errorEl)) return;
 
@@ -337,14 +336,18 @@ export default class ProfileView extends AbstractView {
   private async handlePasswordChange(event: Event) {
     event.preventDefault();
 
-    const currentPasswordEl = getInputEl("current-password-input");
+    const currentPasswordEl = getById<HTMLInputElement>(
+      "current-password-input"
+    );
     // FIXME: activate when pw policy active
-    // const currentPasswordErrorEl = getEl("current-password-error");
-    const newPasswordEl = getInputEl("new-password-input");
+    // const currentPasswordErrorEl = getById<HTMLSpanElement>("current-password-error");
+    const newPasswordEl = getById<HTMLInputElement>("new-password-input");
     // FIXME: activate when pw policy active
-    // const newPasswordErrorEl = getEl("new-password-error");
-    const confirmPasswordEl = getInputEl("confirm-new-password-input");
-    const confirmPasswordErrorEl = getEl("confirm-error");
+    // const newPasswordErrorEl = getById<HTMLSpanElement>("new-password-error");
+    const confirmPasswordEl = getById<HTMLInputElement>(
+      "confirm-new-password-input"
+    );
+    const confirmPasswordErrorEl = getById<HTMLSpanElement>("confirm-error");
 
     if (
       !validateConfirmPassword(

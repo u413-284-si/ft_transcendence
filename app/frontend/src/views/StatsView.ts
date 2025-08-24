@@ -4,7 +4,7 @@ import {
   getUserStatsByUsername
 } from "../services/userStatsServices.js";
 import { getUserByUsername } from "../services/userServices.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { auth } from "../AuthManager.js";
 import { Header1 } from "../components/Header1.js";
 import { router } from "../routing/Router.js";
@@ -74,7 +74,9 @@ export default class StatsView extends AbstractView {
             {
               value: `${this.userStats.matchesLost}`,
               text: i18next.t("global.lost")
-            },
+            }
+          ])}
+          ${StatFieldGroup([
             {
               value: `${this.userStats.winRate.toFixed(2)} %`,
               text: i18next.t("statsView.winRate")
@@ -151,7 +153,7 @@ export default class StatsView extends AbstractView {
     }
     this.currentTabId = tabId;
 
-    const container = document.getElementById("tab-content")!;
+    const container = getById<HTMLDivElement>("tab-content");
     container.innerHTML = this.tabs[tabId].getHTML();
 
     await this.tabs[tabId].onShow();
@@ -187,7 +189,7 @@ export default class StatsView extends AbstractView {
   }
 
   protected addListeners(): void {
-    const buttons = document.querySelectorAll<HTMLButtonElement>(".tab-button");
+    const buttons = getAllBySelector<HTMLButtonElement>(".tab-button");
 
     buttons.forEach((button) => {
       button.addEventListener("click", async () => {

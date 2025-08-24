@@ -472,7 +472,7 @@ export async function twoFARemoveHandler(request, reply) {
 export async function logoutUserHandler(request, reply) {
   const action = "Logout user";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const username = request.user.username;
     reply.clearCookie("accessToken", {
       httpOnly: true,

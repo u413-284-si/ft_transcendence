@@ -3,6 +3,7 @@ import { Sidebar } from "./components/Sidebar.js";
 import { Overlay } from "./components/Overlay.js";
 import { sanitizeHTML } from "./sanitize.js";
 import { router } from "./routing/Router.js";
+import { getById } from "./utility.js";
 
 export type DrawerItem = {
   label: string;
@@ -111,8 +112,8 @@ export class Drawer {
         });
       });
 
-    const closeBtn = this.drawerEl.querySelector("#drawer-close");
-    closeBtn?.addEventListener("click", () => this.close());
+    const closeBtn = getById<HTMLButtonElement>("drawer-close");
+    closeBtn.addEventListener("click", () => this.close());
 
     this.overlayEl.addEventListener("click", () => this.close());
   }

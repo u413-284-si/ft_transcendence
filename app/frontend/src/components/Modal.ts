@@ -1,4 +1,4 @@
-import { getButtonEl, getEl } from "../utility.js";
+import { getById } from "../utility.js";
 import { Button } from "./Button.js";
 
 export type ModalOptions = {
@@ -40,8 +40,8 @@ export function Modal({
 }
 
 export function addCloseModalListener(id: string) {
-  const modalEl = getEl(id) as HTMLDialogElement;
-  const modalCloseButtonEl = getButtonEl(`${id}-close-button`);
+  const modalEl = getById<HTMLDialogElement>(id);
+  const modalCloseButtonEl = getById<HTMLButtonElement>(`${id}-close-button`);
 
   modalEl.addEventListener("click", (e) => {
     const dialogDimensions = modalEl.getBoundingClientRect();

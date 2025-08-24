@@ -1,7 +1,10 @@
-import { GameState } from "./types/IGameState.js";
+import { GameState, Snapshot } from "./types/IGameState.js";
 
-export function draw(gameState: GameState) {
-  const { ctx } = gameState;
+export function draw(
+  ctx: CanvasRenderingContext2D,
+  gameState: GameState,
+  interpolated: Snapshot
+) {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, gameState.canvasWidth, gameState.canvasHeight);
 
@@ -10,34 +13,36 @@ export function draw(gameState: GameState) {
     drawWinningScreen(ctx, gameState);
     return;
   }
-  drawBall(ctx, gameState);
-  drawPaddles(ctx, gameState);
+  drawBall(ctx, gameState, interpolated);
+  drawPaddles(ctx, gameState, interpolated);
 }
 
-function drawBall(ctx: CanvasRenderingContext2D, gameState: GameState) {
+function drawBall(
+  ctx: CanvasRenderingContext2D,
+  gameState: GameState,
+  interp: Snapshot
+) {
   ctx.fillStyle = "white";
   ctx.beginPath();
-  ctx.arc(
-    gameState.ballX,
-    gameState.ballY,
-    gameState.ballRadius,
-    0,
-    Math.PI * 2
-  );
+  ctx.arc(interp.ballX, interp.ballY, gameState.ballRadius, 0, Math.PI * 2);
   ctx.fill();
 }
 
-function drawPaddles(ctx: CanvasRenderingContext2D, gameState: GameState) {
+function drawPaddles(
+  ctx: CanvasRenderingContext2D,
+  gameState: GameState,
+  interp: Snapshot
+) {
   ctx.fillStyle = "white";
   ctx.fillRect(
     gameState.paddle1X,
-    gameState.paddle1Y,
+    interp.paddle1Y,
     gameState.paddleWidth,
     gameState.paddleHeight
   );
   ctx.fillRect(
     gameState.paddle2X,
-    gameState.paddle2Y,
+    interp.paddle2Y,
     gameState.paddleWidth,
     gameState.paddleHeight
   );
@@ -87,4 +92,27 @@ function drawWinningScreen(
     canvasCenterX - 100,
     canvasCenterY + 40
   );
+}
+
+function interpolateSnapshot(
+  from: Snapshot,
+  to: GameState,
+  alpha: number
+): Snapshot {
+  return {
+    ballX: from.ballX * (1 - alpha) + to.ballX * alpha,
+    ballY: from.ballY * (1 - alpha) + to.ballY * alpha,
+    paddle1Y: from.paddle1Y * (1 - alpha) + to.paddle1Y * alpha,
+    paddle2Y: from.paddle2Y * (1 - alpha) + to.paddle2Y * alpha
+  };
+}
+
+export function render(
+  gameState: GameState,
+  snapshot: Snapshot,
+  alpha: number,
+  ctx: CanvasRenderingContext2D
+) {
+  const interpolated = interpolateSnapshot(snapshot, gameState, alpha);
+  draw(ctx, gameState, interpolated);
 }

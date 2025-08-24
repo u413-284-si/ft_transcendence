@@ -23,7 +23,7 @@ import { patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { User, Language } from "../types/User.js";
-import { getButtonEl, getEl, getInputEl } from "../utility.js";
+import { getAllBySelector, getById, getBySelector } from "../utility.js";
 
 export default class SettingsView extends AbstractView {
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
@@ -249,11 +249,17 @@ export default class SettingsView extends AbstractView {
       );
       addTogglePasswordListener(this.twoFAPasswordInputEl.id);
       addCloseModalListener(this.twoFAModalEl.id);
-      this.twoFAModalEl.addEventListener("close", this.clearQRCode);
-      this.twoFAModalEl.addEventListener("cancel", this.clearQRCode);
+      this.twoFAModalEl.addEventListener("close", () => this.clearQRCode);
+      this.twoFAModalEl.addEventListener("cancel", () => this.clearQRCode);
       addCloseModalListener(this.twoFAPasswordModalEl.id);
-      this.twoFAPasswordModalEl.addEventListener("close", this.clearPassword);
-      this.twoFAPasswordModalEl.addEventListener("cancel", this.clearPassword);
+      this.twoFAPasswordModalEl.addEventListener(
+        "close",
+        () => this.clearPassword
+      );
+      this.twoFAPasswordModalEl.addEventListener(
+        "cancel",
+        () => this.clearPassword
+      );
       if (this.hasTwoFA()) {
         this.twoFAGenerateBackupCodesButtonEl.addEventListener("click", () =>
           this.displayTwoFAPasswordModal("backupCodes")
@@ -261,11 +267,11 @@ export default class SettingsView extends AbstractView {
         addCloseModalListener(this.twoFABackupCodesModalEl.id);
         this.twoFABackupCodesModalEl.addEventListener(
           "close",
-          this.clearBackupCodesTable
+          () => this.clearBackupCodesTable
         );
         this.twoFABackupCodesModalEl.addEventListener(
           "cancel",
-          this.clearBackupCodesTable
+          () => this.clearBackupCodesTable
         );
       }
     }
@@ -278,57 +284,49 @@ export default class SettingsView extends AbstractView {
       this.preferredLanguageOptionsEl.classList.toggle("hidden");
     });
 
-    this.preferredLanguageOptionsEl
-      .querySelectorAll("button[data-lang]")
-      .forEach((btn) => {
-        btn.addEventListener("click", async (e) => {
-          const lang = (e.currentTarget as HTMLElement).dataset
-            .lang as Language;
-          await auth.updateLanguage(lang);
-        });
+    const buttons = getAllBySelector<HTMLButtonElement>("button[data-lang]", {
+      root: this.preferredLanguageOptionsEl
+    });
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const lang = (e.currentTarget as HTMLElement).dataset.lang as Language;
+        await auth.updateLanguage(lang);
       });
+    });
 
     document.addEventListener("click", this.onDocumentClick);
   }
 
   private initTwoFAElements(): void {
-    this.twoFASetupButtonEl = getButtonEl("setup-two-fa-button");
-    this.twoFAModalEl = getEl("two-fa-modal") as HTMLDialogElement;
-    this.twoFAFormEl = getEl("two-fa-form") as HTMLFormElement;
-    this.twoFAPasswordModalEl = getEl(
-      "two-fa-password-modal"
-    ) as HTMLDialogElement;
-    this.twoFAPasswordFormEl = getEl("two-fa-password-form") as HTMLFormElement;
-    this.twoFAPasswordInputEl = getInputEl("two-fa-password-input");
-    this.twoFAPasswordInputErrorEl = getEl("two-fa-password-input-error");
-    this.twoFAQRCodeEl = getEl("two-fa-qr-code") as HTMLImageElement;
+    this.twoFASetupButtonEl = getById("setup-two-fa-button");
+    this.twoFAModalEl = getById("two-fa-modal");
+    this.twoFAFormEl = getById("two-fa-form");
+    this.twoFAPasswordModalEl = getById("two-fa-password-modal");
+    this.twoFAPasswordFormEl = getById("two-fa-password-form");
+    this.twoFAPasswordInputEl = getById("two-fa-password-input");
+    this.twoFAPasswordInputErrorEl = getById("two-fa-password-input-error");
+    this.twoFAQRCodeEl = getById("two-fa-qr-code");
 
     if (!this.hasTwoFA()) {
-      this.twoFACodeInputEl = getInputEl("two-fa-code-input");
-      this.twoFACodeInputErrorEl = getEl("two-fa-code-input-error");
+      this.twoFACodeInputEl = getById("two-fa-code-input");
+      this.twoFACodeInputErrorEl = getById("two-fa-code-input-error");
     } else {
-      this.twoFAGenerateBackupCodesButtonEl = getButtonEl(
+      this.twoFAGenerateBackupCodesButtonEl = getById(
         "two-fa-generate-backup-codes"
       );
-      this.twoFABackupCodesTableEl = getEl(
-        "two-fa-backup-codes-table"
-      ) as HTMLTableElement;
-      this.twoFADownloadBackupCodesLinkEl = getEl(
+      this.twoFABackupCodesTableEl = getById("two-fa-backup-codes-table");
+      this.twoFADownloadBackupCodesLinkEl = getById(
         "two-fa-download-backup-codes-link"
-      ) as HTMLAnchorElement;
-      this.twoFABackupCodesModalEl = getEl(
-        "two-fa-backup-codes-modal"
-      ) as HTMLDialogElement;
+      );
+      this.twoFABackupCodesModalEl = getById("two-fa-backup-codes-modal");
     }
   }
 
   async render(): Promise<void> {
     this.updateHTML();
-    this.preferredLanguageFormEl = document.querySelector<HTMLFormElement>(
-      "#preferred-language-form"
-    )!;
-    this.preferredLanguageButtonEl = getButtonEl("preferred-language-button");
-    this.preferredLanguageOptionsEl = getEl("preferred-language-options");
+    this.preferredLanguageFormEl = getById("preferred-language-form");
+    this.preferredLanguageButtonEl = getById("preferred-language-button");
+    this.preferredLanguageOptionsEl = getById("preferred-language-options");
     if (this.hasLocalAuth) this.initTwoFAElements();
     this.addListeners();
   }
@@ -408,10 +406,10 @@ export default class SettingsView extends AbstractView {
         toaster.success(i18next.t("toast.twoFASetupSuccess"));
         this.fillBackupCodesTable(backupCodes);
         this.setupBackupCodesLink(backupCodes);
-        this.hideModal(this.twoFAModalEl.id);
-        this.displayModal(this.twoFABackupCodesModalEl.id);
+        this.twoFAModalEl.close();
+        this.twoFABackupCodesModalEl.showModal();
       } else {
-        this.hideModal(this.twoFAModalEl.id);
+        this.twoFAModalEl.close();
         this.displayTwoFAPasswordModal("remove");
       }
     } catch (error) {
@@ -457,8 +455,8 @@ export default class SettingsView extends AbstractView {
 
       this.twoFAQRCodeEl.src = qrcode;
 
-      this.hideModal(this.twoFAPasswordModalEl.id);
-      this.displayModal(this.twoFAModalEl.id);
+      this.twoFAPasswordModalEl.close();
+      this.twoFAModalEl.showModal();
     } catch (error) {
       router.handleError("Error in displayTwoFASetup()", error);
     }
@@ -522,8 +520,8 @@ export default class SettingsView extends AbstractView {
       }
       this.fillBackupCodesTable(apiResponse.data.backupCodes);
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
-      this.hideModal(this.twoFAPasswordModalEl.id);
-      this.displayModal(this.twoFABackupCodesModalEl.id);
+      this.twoFABackupCodesModalEl.close();
+      this.twoFABackupCodesModalEl.showModal();
     } catch (error) {
       router.handleError("Error in generateAndDisplayBackupCodes()", error);
     }
@@ -568,19 +566,13 @@ export default class SettingsView extends AbstractView {
     this.twoFAPasswordInputEl.value = "";
   }
 
-  private displayModal(modalId: string): void {
-    const modal = getEl(modalId) as HTMLDialogElement;
-    modal.showModal();
-  }
-
   private async displayTwoFAPasswordModal(
     action: "setup" | "remove" | "backupCodes"
   ): Promise<void> {
     this.passwordFormAction = action;
-    const labelEl = document.querySelector<HTMLLabelElement>(
+    const labelEl = getBySelector<HTMLLabelElement>(
       `label[for="two-fa-password-input"]`
     );
-    if (!labelEl) throw new Error("Modal labelEl not found");
 
     switch (action) {
       case "setup":
@@ -596,12 +588,7 @@ export default class SettingsView extends AbstractView {
         break;
     }
 
-    this.hideModal(this.twoFAModalEl.id);
-    this.displayModal(this.twoFAPasswordModalEl.id);
-  }
-
-  private hideModal(modalId: string): void {
-    const modal = getEl(modalId) as HTMLDialogElement;
-    modal.close();
+    this.twoFAModalEl.close();
+    this.twoFAPasswordModalEl.showModal();
   }
 }

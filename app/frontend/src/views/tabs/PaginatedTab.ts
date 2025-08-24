@@ -2,6 +2,7 @@ import { AbstractTab } from "./AbstractTab.js";
 import { Paginator } from "../../Paginator.js";
 import { FetchPageResult } from "../../types/FetchPageResult.js";
 import { toaster } from "../../Toaster.js";
+import { getById } from "../../utility.js";
 
 export abstract class PaginatedTab<T> extends AbstractTab {
   protected paginator: Paginator<T>;
@@ -29,15 +30,9 @@ export abstract class PaginatedTab<T> extends AbstractTab {
   ): Promise<FetchPageResult<T>>;
 
   protected updatePaginationControls() {
-    const prevBtn = document.querySelector<HTMLButtonElement>(
-      `#${this.prevBtnId}`
-    );
-    const nextBtn = document.querySelector<HTMLButtonElement>(
-      `#${this.nextBtnId}`
-    );
-    const pageIndicator = document.querySelector<HTMLSpanElement>(
-      `#${this.indicatorId}`
-    );
+    const prevBtn = getById<HTMLButtonElement>(`${this.prevBtnId}`);
+    const nextBtn = getById<HTMLButtonElement>(`${this.nextBtnId}`);
+    const pageIndicator = getById<HTMLSpanElement>(`${this.indicatorId}`);
     if (!prevBtn || !nextBtn || !pageIndicator) return;
 
     prevBtn.disabled = !this.paginator.canGoPrev();
@@ -72,12 +67,8 @@ export abstract class PaginatedTab<T> extends AbstractTab {
   }
 
   protected addPaginationListeners() {
-    const prevBtn = document.querySelector<HTMLButtonElement>(
-      `#${this.prevBtnId}`
-    );
-    const nextBtn = document.querySelector<HTMLButtonElement>(
-      `#${this.nextBtnId}`
-    );
+    const prevBtn = getById<HTMLButtonElement>(`${this.prevBtnId}`);
+    const nextBtn = getById<HTMLButtonElement>(`${this.nextBtnId}`);
     if (!prevBtn || !nextBtn) return;
 
     prevBtn.addEventListener("click", async () => {

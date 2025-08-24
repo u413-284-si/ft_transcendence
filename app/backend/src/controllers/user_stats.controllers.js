@@ -54,7 +54,7 @@ export async function deleteAllUserStatsHandler(request, reply) {
 export async function getDashboardMatchesByUsernameHandler(request, reply) {
   const action = "Get dashboard matches by username";
   try {
-    let userId = parseInt(request.user.id, 10);
+    let userId = request.user.id;
     const { username } = request.params;
     if (username !== request.user.username) {
       const friendId = await getFriendId(userId, username);
@@ -87,7 +87,7 @@ export async function getDashboardMatchesByUsernameHandler(request, reply) {
 export async function getDashboardTournamentsByUsernameHandler(request, reply) {
   const action = "Get dashboard tournaments by username";
   try {
-    let userId = parseInt(request.user.id, 10);
+    let userId = request.user.id;
     const { username } = request.params;
     if (username !== request.user.username) {
       const friendId = await getFriendId(userId, username);
@@ -120,7 +120,7 @@ export async function getDashboardTournamentsByUsernameHandler(request, reply) {
 export async function getDashboardFriendsHandler(request, reply) {
   const action = "Get dashboard friends";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const username = request.user.username;
 
     const data = await getDashboardFriendsData(userId, username);

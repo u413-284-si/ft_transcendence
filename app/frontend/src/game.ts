@@ -1,6 +1,6 @@
 import { updatePaddlePositions } from "./input.js";
-import { draw } from "./draw.js";
-import { GameState } from "./types/IGameState.js";
+import { render } from "./draw.js";
+import { GameState, Snapshot } from "./types/IGameState.js";
 import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
@@ -8,6 +8,7 @@ import { createMatch } from "./services/matchServices.js";
 import { playedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
+import { getById } from "./utility.js";
 
 let isAborted: boolean = false;
 
@@ -28,7 +29,7 @@ export async function startGame(
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
 ) {
-  const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+  const canvas = getById<HTMLCanvasElement>("gameCanvas");
   const ctx = canvas.getContext("2d")!;
 
   setIsAborted(false);
@@ -42,7 +43,6 @@ export async function startGame(
   }
   const gameState = initGameState(
     canvas,
-    ctx,
     nickname1,
     nickname2,
     keys,
@@ -50,7 +50,7 @@ export async function startGame(
     aiPlayer2
   );
 
-  await runGameLoop(gameState);
+  await runGameLoop(gameState, ctx);
 
   if (getIsAborted()) {
     return;
@@ -61,7 +61,6 @@ export async function startGame(
 
 function initGameState(
   canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
   player1: string,
   player2: string,
   keys: Record<GameKey, boolean>,
@@ -70,7 +69,6 @@ function initGameState(
 ): GameState {
   const initialBallDirection = Math.random() * 2 - 1;
   const gameState: GameState = {
-    ctx: ctx,
     player1: player1,
     player2: player2,
     player1Score: 0,
@@ -95,7 +93,6 @@ function initGameState(
     keys: keys,
     aiPlayer1: aiPlayer1,
     aiPlayer2: aiPlayer2,
-    lastTimestamp: performance.now(),
     speedUpFactor: 1.05,
     maxBounceAngle: Math.PI / 4
   };
@@ -104,19 +101,46 @@ function initGameState(
   return gameState;
 }
 
-function runGameLoop(gameState: GameState): Promise<GameState> {
+function runGameLoop(
+  gameState: GameState,
+  ctx: CanvasRenderingContext2D
+): Promise<GameState> {
   return new Promise((resolve) => {
-    function gameLoop(timestamp: number) {
+    const step = 1 / 60; // fixed step in seconds ~0.016s
+    let lastTimestamp = performance.now();
+    let accumulator = 0;
+    let snapshot: Snapshot = makeSnapshot(gameState);
+
+    function gameLoop(currentTimestamp: number) {
       if (getIsAborted() || gameState.gameOver) {
         resolve(gameState);
         return;
       }
 
-      const deltaTime = (timestamp - gameState.lastTimestamp) / 1000;
+      let frameTime = (currentTimestamp - lastTimestamp) / 1000;
+      if (frameTime <= 0) {
+        console.log("Frametime is 0 - skipping");
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      if (frameTime > 0.25) {
+        console.log("Frametime too high - clamp to 0.25");
+        frameTime = 0.25;
+      }
+      lastTimestamp = currentTimestamp;
+      accumulator += frameTime;
 
-      update(gameState, deltaTime);
-      draw(gameState);
-      gameState.lastTimestamp = timestamp;
+      const fps = calculateFPS(frameTime);
+      console.log(`FPS: ${fps}`);
+
+      while (accumulator >= step) {
+        snapshot = makeSnapshot(gameState);
+        update(gameState, step);
+        accumulator -= step;
+      }
+      const alpha = accumulator / step;
+
+      render(gameState, snapshot, alpha, ctx);
 
       requestAnimationFrame(gameLoop);
     }
@@ -326,4 +350,14 @@ function updateBallPosition(
 ) {
   gameState.ballX += gameState.ballSpeedX * deltaTime;
   gameState.ballY += gameState.ballSpeedY * deltaTime;
+}
+
+function calculateFPS(deltaTime: number): number {
+  if (deltaTime <= 0) return 0;
+  return Math.round(1 / deltaTime);
+}
+
+function makeSnapshot(state: GameState): Snapshot {
+  const { ballX, ballY, paddle1Y, paddle2Y } = state;
+  return { ballX, ballY, paddle1Y, paddle2Y };
 }
