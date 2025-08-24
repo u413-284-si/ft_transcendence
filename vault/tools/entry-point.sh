@@ -23,7 +23,7 @@ done
 echo "✅ Vault API is up"
 
 # Check if Vault is initialized
-if ! vault status 2>/dev/null | grep -q "Initialized.*true"; then
+if ! jq -e '.initialized' >/dev/null < <(vault status --format=json); then
   echo "🔐 Vault not initialized, running vault operator init..."
   vault operator init -key-shares=5 -key-threshold=3 > /tmp/generated_keys.txt
 
