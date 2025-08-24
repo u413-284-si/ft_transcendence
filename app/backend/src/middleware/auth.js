@@ -21,7 +21,7 @@ export async function ensureLocalAuthProvider(request, reply) {
     return httpError(
       reply,
       403,
-      createResponseMessage(action, false),
+      createResponseMessage(request.action, false),
       `2FA operation can not be performed. User uses ${provider} auth provider`
     );
   }

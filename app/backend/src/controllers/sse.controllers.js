@@ -1,6 +1,4 @@
 import { registerSSEConnection } from "../services/events/sse.services.js";
-import { handleError } from "../utils/error.js";
-import { createResponseMessage } from "../utils/response.js";
 
 export async function sseConnectionHandler(request, reply) {
   request.action = "SSE Connection";

@@ -24,7 +24,6 @@ import { authSchemas } from "./schema/auth.schema.js";
 import { userStatsSchemas } from "./schema/user_stats.schema.js";
 import { friendRequestSchemas } from "./schema/friend_request.schema.js";
 import { dashboardSchemas } from "./schema/dashboard.schema.js";
-import { handleError } from "./utils/error.js";
 
 const fastify = Fastify({
   exposeHeadRoutes: false,

@@ -21,7 +21,7 @@ import {
   getUserTournaments,
   getUserTournamentsCount
 } from "../services/tournaments.services.js";
-import { handleError, httpError } from "../utils/error.js";
+import { httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import {
   createHash,
