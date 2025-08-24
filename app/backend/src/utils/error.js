@@ -14,12 +14,20 @@ export const errorResponses = {
   500: httpErrorSchema
 };
 
-export function handlePrismaError(reply, action, err) {
+export function handleError(reply, request, err) {
   let code = 500;
   let cause = "Internal Server Error";
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     code = convertPrismaError(err.code);
     cause = err.meta.cause;
+  } else if (err.code.startsWith("FST_JWT")) {
+    code = err.statusCode;
+    cause = err.message;
   }
-  return httpError(reply, code, createResponseMessage(action, false), cause);
+  return httpError(
+    reply,
+    code,
+    createResponseMessage(request.action, false),
+    cause
+  );
 }
