@@ -79,7 +79,7 @@ function initGameState(
     ballX: 0,
     ballY: 0,
     ballRadius: 10,
-    initialBallSpeed: 400,
+    initialBallSpeed: 380,
     ballSpeedX: initialBallDirection,
     ballSpeedY: 0,
     paddle1X: 10,
