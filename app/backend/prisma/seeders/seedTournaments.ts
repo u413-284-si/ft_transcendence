@@ -93,19 +93,14 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
       userNickname === nextMatch.player2Nickname;
     const userWins = userInMatch
       ? randChanceBoolean({ chanceTrue: winRate })
-      : null;
+      : false;
 
     const { player1Score, player2Score } = generateNonTiedScores(0, 10, {
-      winner:
-        userInMatch && userWins !== null
-          ? userNickname === nextMatch.player1Nickname
-            ? userWins
-              ? "PLAYERONE"
-              : "PLAYERTWO"
-            : userWins
-              ? "PLAYERTWO"
-              : "PLAYERONE"
-          : undefined
+      winner: userWins
+        ? userNickname === nextMatch.player1Nickname
+          ? "PLAYERONE"
+          : "PLAYERTWO"
+        : undefined
     });
 
     const winner =
@@ -119,8 +114,6 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
 
     const date = dateFactory();
 
-    tournamentClass.updateBracketWithResult(nextMatch.matchNumber, winner);
-
     const playedAs =
       tournamentDTO.userNickname === nextMatch.player1Nickname
         ? "PLAYERONE"
@@ -128,11 +121,15 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
           ? "PLAYERTWO"
           : "NONE";
 
+    const hasUserWon = nextMatch.winner === tournamentDTO.userNickname;
+
+    tournamentClass.updateBracketWithResult(nextMatch.matchNumber, winner);
     await transactionUpdateBracket(
       userId,
       player1Score,
       player2Score,
       playedAs,
+      hasUserWon,
       matchWithTid,
       date
     );
@@ -140,7 +137,6 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
 
   const tournament = await updateTournament(tournamentDTO.id, userId, {
     isFinished: true,
-    roundReached: tournamentClass.getRoundReached(),
     updatedAt: dateFactory()
   });
   console.log(
