@@ -1,4 +1,5 @@
 import prisma from "../prisma/prismaClient.js";
+import { shuffle, unzip, zip } from "../utils/array.js";
 
 const tournamentSelect = {
   id: true,
@@ -129,6 +130,9 @@ export async function getUserTournamentsCount(userId, filter = {}) {
 }
 
 export function generateBracket(nicknames, playerTypes, numberOfPlayers) {
+  let combined = zip(nicknames, playerTypes);
+  combined = shuffle(combined);
+  const [shuffledNames, shuffledTypes] = unzip(combined);
   const totalRounds = Math.log2(numberOfPlayers);
   const bracket = [];
   let currentMatchId = 1;
@@ -156,23 +160,25 @@ export function generateBracket(nicknames, playerTypes, numberOfPlayers) {
     matchCount /= 2;
   }
 
+  const bracketMap = Object.fromEntries(bracket.map((m) => [m.matchNumber, m]));
+
   for (let r = 0; r < roundMatches.length - 1; r++) {
     const current = roundMatches[r];
     const next = roundMatches[r + 1];
     for (let i = 0; i < current.length; i++) {
-      const match = bracket.find((m) => m.matchNumber === current[i]);
+      const match = bracketMap[current[i]];
       match.nextMatchNumber = next[Math.floor(i / 2)];
       match.winnerSlot = i % 2 === 0 ? 1 : 2;
     }
   }
 
   const firstRound = roundMatches[0];
-  for (let i = 0; i < nicknames.length; i += 2) {
-    const match = bracket.find((m) => m.matchNumber === firstRound[i / 2]);
-    match.player1Nickname = nicknames[i];
-    match.player2Nickname = nicknames[i + 1];
-    match.player1Type = playerTypes[i] || "HUMAN";
-    match.player2Type = playerTypes[i + 1] || "HUMAN";
+  for (let i = 0; i < numberOfPlayers; i += 2) {
+    const match = bracketMap[firstRound[i / 2]];
+    match.player1Nickname = shuffledNames[i];
+    match.player2Nickname = shuffledNames[i + 1];
+    match.player1Type = shuffledTypes[i];
+    match.player2Type = shuffledTypes[i + 1];
   }
 
   return bracket;
