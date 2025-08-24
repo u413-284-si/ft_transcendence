@@ -14,12 +14,34 @@ export const errorResponses = {
   500: httpErrorSchema
 };
 
-export function handlePrismaError(reply, action, err) {
+export function handleError(err, request, reply) {
+  request.log.error({
+    method: request.method,
+    url: request.url,
+    params: request.params,
+    query: request.query,
+    error: err
+  });
   let code = 500;
   let cause = "Internal Server Error";
-  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+  if (reply.raw.headersSent) {
+    reply.raw.end();
+    return;
+  } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     code = convertPrismaError(err.code);
     cause = err.meta.cause;
+  } else if (err.code.startsWith("FST_JWT")) {
+    code = err.statusCode;
+    cause = err.message;
+  } else if (err.validation) {
+    request.action = `Validation error in context ${err.validationContext}`;
+    code = err.statusCode;
+    cause = err.message;
   }
-  return httpError(reply, code, createResponseMessage(action, false), cause);
+  return httpError(
+    reply,
+    code,
+    createResponseMessage(request.action, false),
+    cause
+  );
 }
