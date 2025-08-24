@@ -23,7 +23,18 @@ export function handleError(err, request, reply) {
   } else if (err.code.startsWith("FST_JWT")) {
     code = err.statusCode;
     cause = err.message;
+  } else if (err.validation) {
+    request.action = `Validation error in context ${err.validationContext}`;
+    code = err.statusCode;
+    cause = err.message;
   }
+  request.log.error({
+    method: request.method,
+    url: request.url,
+    params: request.params,
+    query: request.query,
+    error: err
+  });
   return httpError(
     reply,
     code,
