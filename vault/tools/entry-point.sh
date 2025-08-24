@@ -91,12 +91,12 @@ fi
 #########################
 
 # Run generate-ssl-certs.sh
-echo "➡️ Running certificate generation script..."
+echo "➡️ Running core certificate generation script..."
 /usr/local/bin/generate-ssl-certs.sh || {
-  echo "❌ Failed to generate SSL certs"
+  echo "❌ Failed to generate SSL core certs"
   kill $VAULT_PID
   exit 1
 }
-echo "✅ SSL certificates generated and stored in Vault"
+echo "✅ SSL core certificates generated and stored in Vault"
 
 wait $VAULT_PID
