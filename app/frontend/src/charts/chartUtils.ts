@@ -1,12 +1,12 @@
 import type { ApexOptions } from "apexcharts";
-import { getEl } from "../utility.js";
+import { getById } from "../utility.js";
 import { TournamentSize } from "../types/ITournament.js";
 
 export async function renderChart(
   id: string,
   options: ApexOptions
 ): Promise<ApexCharts> {
-  const chartEl = getEl(id);
+  const chartEl = getById<HTMLDivElement>(id);
 
   const chart = new ApexCharts(chartEl, options);
   await chart.render();

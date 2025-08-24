@@ -4,6 +4,7 @@ import { router } from "../routing/Router.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
+import { getById } from "../utility.js";
 
 export default class ErrorView extends AbstractView {
   private message: string = i18next.t("error.unexpected");
@@ -52,7 +53,8 @@ export default class ErrorView extends AbstractView {
   }
 
   protected addListeners(): void {
-    document.getElementById("reload-btn")!.addEventListener("click", () => {
+    const reloadBtn = getById<HTMLButtonElement>("reload-btn");
+    reloadBtn.addEventListener("click", () => {
       router.reload();
     });
   }

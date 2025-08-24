@@ -10,7 +10,7 @@ import { transactionMatch } from "../services/transactions.services.js";
 export async function createMatchHandler(request, reply) {
   const action = "Create match";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const {
       playedAs,
       player1Nickname,
@@ -70,8 +70,8 @@ export async function getAllMatchesHandler(request, reply) {
 export async function getMatchHandler(request, reply) {
   const action = "Get match";
   try {
-    const id = parseInt(request.params.id, 10);
-    const data = await getMatch(id);
+    const matchId = request.params.id;
+    const data = await getMatch(matchId);
     return reply
       .code(200)
       .send({ message: createResponseMessage(action, true), data: data });

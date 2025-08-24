@@ -13,7 +13,7 @@ import { createResponseMessage } from "../utils/response.js";
 export async function createFriendRequestHandler(request, reply) {
   const action = "Create friend request";
   try {
-    const userId = parseInt(request.user.id, 10);
+    const userId = request.user.id;
     const friendId = request.body.id;
 
     if (userId === friendId) {
@@ -86,8 +86,8 @@ export async function createFriendRequestHandler(request, reply) {
 export async function updateFriendRequestHandler(request, reply) {
   const action = "Update friend request";
   try {
-    const userId = parseInt(request.user.id, 10);
-    const requestId = parseInt(request.params.id, 10);
+    const userId = request.user.id;
+    const requestId = request.params.id;
     const { status } = request.body;
 
     const friendRequest = await getFriendRequest(requestId, userId);
@@ -134,8 +134,8 @@ export async function updateFriendRequestHandler(request, reply) {
 export async function deleteFriendRequestHandler(request, reply) {
   const action = "Delete friend request";
   try {
-    const userId = parseInt(request.user.id, 10);
-    const requestId = parseInt(request.params.id, 10);
+    const userId = request.user.id;
+    const requestId = request.params.id;
     const data = await deleteFriendRequest(requestId, userId);
     notifyFriendRequestEvent(
       data.friendId,

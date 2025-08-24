@@ -1,4 +1,4 @@
-import { getButtonEl, getEl, getInputEl } from "../utility.js";
+import { getById } from "../utility.js";
 import { Span } from "./Span.js";
 
 export type InputOptions = {
@@ -183,8 +183,8 @@ function getEyeIconHTML(type: "show" | "hide"): string {
 
 function togglePasswordVisibility(
   passwordEl: HTMLInputElement,
-  showEyeEl: HTMLElement,
-  hideEyeEl: HTMLElement
+  showEyeEl: HTMLSpanElement,
+  hideEyeEl: HTMLSpanElement
 ): void {
   const isHidden = passwordEl.type === "password";
   passwordEl.type = isHidden ? "text" : "password";
@@ -193,10 +193,10 @@ function togglePasswordVisibility(
 }
 
 export function addTogglePasswordListener(id: string) {
-  const passwordEl = getInputEl(id);
-  const showEyeEl = getEl(`${id}-show-eye`);
-  const hideEyeEl = getEl(`${id}-hide-eye`);
-  const buttonEl = getButtonEl(`${id}-toggle`);
+  const passwordEl = getById<HTMLInputElement>(id);
+  const showEyeEl = getById<HTMLSpanElement>(`${id}-show-eye`);
+  const hideEyeEl = getById<HTMLSpanElement>(`${id}-hide-eye`);
+  const buttonEl = getById<HTMLButtonElement>(`${id}-toggle`);
 
   buttonEl.addEventListener("click", () =>
     togglePasswordVisibility(passwordEl, showEyeEl, hideEyeEl)

@@ -4,19 +4,19 @@ import { Link } from "./components/Link.js";
 import { Drawer } from "./Drawer.js";
 import { LanguageSwitcher } from "./components/LanguageSwitcher.js";
 import { Language } from "./types/User.js";
-import { getButtonEl, getEl } from "./utility.js";
+import { getAllBySelector, getById } from "./utility.js";
 
 export type LayoutMode = "auth" | "guest";
 
 export class Layout {
   private static instance: Layout;
   private mode: LayoutMode = "guest";
-  private rootEl: HTMLElement;
-  private languageSwitcherButtonEl!: HTMLElement;
-  private languageSwitcherOptionsEl!: HTMLElement;
+  private rootEl: HTMLDivElement;
+  private languageSwitcherButtonEl!: HTMLButtonElement;
+  private languageSwitcherOptionsEl!: HTMLDivElement;
 
   constructor() {
-    this.rootEl = document.getElementById("app")!;
+    this.rootEl = getById("app");
     this.styleRootElement();
   }
 
@@ -45,8 +45,8 @@ export class Layout {
     this.rootEl.innerHTML = cleanHTML;
 
     this.attachAvatarDrawerHandler();
-    this.languageSwitcherButtonEl = getButtonEl("lang-switcher-button")!;
-    this.languageSwitcherOptionsEl = getEl("lang-switcher-options")!;
+    this.languageSwitcherButtonEl = getById("lang-switcher-button");
+    this.languageSwitcherOptionsEl = getById("lang-switcher-options");
     this.attachLanguageSwitcherHandler();
   }
 
@@ -179,15 +179,15 @@ export class Layout {
       this.languageSwitcherOptionsEl.classList.toggle("hidden");
     });
 
-    this.languageSwitcherOptionsEl
-      .querySelectorAll("button[data-lang]")
-      .forEach((btn) => {
-        btn.addEventListener("click", async (e) => {
-          const lang = (e.currentTarget as HTMLElement).dataset
-            .lang as Language;
-          await auth.updateLanguage(lang);
-        });
+    const buttons = getAllBySelector<HTMLButtonElement>("button[data-lang]", {
+      root: this.languageSwitcherOptionsEl
+    });
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const lang = (e.currentTarget as HTMLElement).dataset.lang as Language;
+        await auth.updateLanguage(lang);
       });
+    });
 
     document.addEventListener("click", this.onDocumentClick);
   }

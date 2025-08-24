@@ -8,6 +8,7 @@ import { createMatch } from "./services/matchServices.js";
 import { playedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
+import { getById } from "./utility.js";
 
 let isAborted: boolean = false;
 
@@ -28,7 +29,7 @@ export async function startGame(
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
 ) {
-  const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+  const canvas = getById<HTMLCanvasElement>("gameCanvas");
   const ctx = canvas.getContext("2d")!;
 
   setIsAborted(false);
