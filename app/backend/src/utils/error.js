@@ -15,9 +15,19 @@ export const errorResponses = {
 };
 
 export function handleError(err, request, reply) {
+  request.log.error({
+    method: request.method,
+    url: request.url,
+    params: request.params,
+    query: request.query,
+    error: err
+  });
   let code = 500;
   let cause = "Internal Server Error";
-  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+  if (reply.raw.headersSent) {
+    reply.raw.end();
+    return;
+  } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     code = convertPrismaError(err.code);
     cause = err.meta.cause;
   } else if (err.code.startsWith("FST_JWT")) {
@@ -28,13 +38,6 @@ export function handleError(err, request, reply) {
     code = err.statusCode;
     cause = err.message;
   }
-  request.log.error({
-    method: request.method,
-    url: request.url,
-    params: request.params,
-    query: request.query,
-    error: err
-  });
   return httpError(
     reply,
     code,
