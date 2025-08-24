@@ -170,26 +170,13 @@ const createTournamentSchema = {
 const patchTournamentSchema = {
   $id: "patchTournamentSchema",
   type: "object",
-  anyOf: [
-    {
-      properties: {
-        isFinished: {
-          $ref: "tournamentDefinitionsSchema#/definitions/tournamentIsFinished"
-        }
-      },
-      required: ["isFinished"],
-      additionalProperties: false
-    },
-    {
-      properties: {
-        roundReached: {
-          $ref: "tournamentDefinitionsSchema#/definitions/tournamentRoundReached"
-        }
-      },
-      required: ["roundReached"],
-      additionalProperties: false
+  properties: {
+    isFinished: {
+      $ref: "tournamentDefinitionsSchema#/definitions/tournamentIsFinished"
     }
-  ]
+  },
+  required: ["isFinished"],
+  additionalProperties: false
 };
 
 const patchTournamentMatchSchema = {
