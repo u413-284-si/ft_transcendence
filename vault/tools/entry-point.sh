@@ -5,7 +5,7 @@ set -euo pipefail
 # -- Initial permission setup -- #
 ##################################
 
-SECRETS_DIR="/run/secrets"
+export SECRETS_DIR="/run/secrets"
 
 echo "➡️ Running initial setup..."
 
@@ -19,8 +19,7 @@ chown -R vault:vault /vault/data
 ########################################
 
 # Export values
-VAULT_ADDR="http://127.0.0.1:8200"
-export VAULT_ADDR
+export VAULT_ADDR="http://127.0.0.1:8200"
 export VAULT_SKIP_VERIFY="true"
 
 # Start vault
