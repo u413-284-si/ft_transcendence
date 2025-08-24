@@ -14,7 +14,7 @@ export const errorResponses = {
   500: httpErrorSchema
 };
 
-export function handleError(reply, request, err) {
+export function handleError(err, request, reply) {
   let code = 500;
   let cause = "Internal Server Error";
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
