@@ -1,32 +1,15 @@
-export enum playedAs {
-  NONE = "NONE",
-  PLAYERONE = "PLAYERONE",
-  PLAYERTWO = "PLAYERTWO"
-}
+import type { Match as MatchDB, PlayedAs, PlayerType } from "@prisma/client";
+import { Simplify } from "./Simplify";
 
-export type PlayerType = "HUMAN" | "AI";
+export { PlayedAs, PlayerType };
 
-export interface Match {
-  playedAs: playedAs;
-  player1Nickname: string;
-  player2Nickname: string;
-  player1Score: number;
-  player2Score: number;
-  player1Type: PlayerType;
-  player2Type: PlayerType;
-  tournament?: {
-    id: number;
-    name: string;
-  } | null;
-  date?: string;
-}
+export type MatchCreate = Omit<
+  MatchDB,
+  "id" | "userId" | "date" | "bracketMatchNumber" | "tournamentId"
+>;
 
-export type BracketMatch = {
-  matchId: number;
-  round: number;
-  player1: string | null;
-  player2: string | null;
-  winner: string | null;
-  nextMatchId?: number;
-  winnerSlot?: 1 | 2;
-};
+export type MatchRead = Simplify<
+  Omit<MatchDB, "id" | "userId" | "tournamentId" | "bracketMatchNumber"> & {
+    tournamentName: string | null;
+  }
+>;

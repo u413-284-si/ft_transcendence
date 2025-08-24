@@ -1,7 +1,6 @@
 import { router } from "../routing/Router.js";
 import { getUserTournaments } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
-import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
 import MatchAnnouncement from "./MatchAnnouncementView.js";
 import PlayerNicknames from "./PlayerNicknamesView.js";
@@ -105,16 +104,7 @@ export default class NewTournamentView extends AbstractView {
       return;
     }
     const activeTournament = tournamentsPage.items[0];
-    const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
-    const tournament = new Tournament(
-      activeTournament.name,
-      activeTournament.maxPlayers,
-      activeTournament.userId,
-      activeTournament.userNickname,
-      activeTournament.roundReached,
-      bracket,
-      activeTournament.id
-    );
+    const tournament = new Tournament(activeTournament);
     if (tournament.getNextMatchToPlay()) {
       router.switchView(new MatchAnnouncement(tournament));
     } else {

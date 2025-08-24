@@ -12,6 +12,8 @@ import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
+import { TournamentSize } from "../types/ITournament.js";
+import { PlayerType } from "@prisma/client";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -85,23 +87,24 @@ export default class PlayerNicknamesView extends AbstractView {
     const userNickname = formData.get(`player-${userNumber}`) as string;
     console.log(userNickname);
 
-    try {
-      const userId = auth.getToken().id;
-      const tournament = Tournament.fromUsernames(
-        nicknames,
-        this.tournamentName,
-        this.numberOfPlayers,
-        userNickname,
-        userId
-      );
+    const playerTypes: PlayerType[] = [];
+    for (let i = 1; i <= this.numberOfPlayers; i++) {
+      const isAi = formData.has(`ai-player-${i}`);
+      playerTypes.push(isAi ? "AI" : "HUMAN");
+    }
 
+    try {
       const createdTournament = getDataOrThrow(
-        await createTournament(tournament)
+        await createTournament({
+          name: this.tournamentName,
+          maxPlayers: this.numberOfPlayers as TournamentSize,
+          userNickname: userNickname,
+          nicknames: nicknames,
+          playerTypes: playerTypes
+        })
       );
-      const { id } = createdTournament;
-      if (id) {
-        tournament.setId(id);
-      }
+      const tournament = new Tournament(createdTournament);
+
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.switchView(matchAnnouncementView);
     } catch (error) {

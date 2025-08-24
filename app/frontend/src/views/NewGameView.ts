@@ -11,7 +11,6 @@ import { Paragraph } from "../components/Paragraph.js";
 import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
-import { playedAs } from "../types/IMatch.js";
 
 export default class NewGameView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -80,7 +79,7 @@ export default class NewGameView extends AbstractView {
       nicknames[1],
       player1type,
       player2type,
-      userNumber == "1" ? playedAs.PLAYERONE : playedAs.PLAYERTWO,
+      userNumber == "1" ? "PLAYERONE" : "PLAYERTWO",
       GameType.single,
       null
     );
