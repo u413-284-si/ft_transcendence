@@ -165,6 +165,8 @@ export async function patchTournamentMatchHandler(request, reply) {
           ? "PLAYERTWO"
           : "NONE";
 
+    const hasUserWon = bracketMatch.winner === tournament.userNickname;
+
     const date = new Date();
 
     const data = await transactionUpdateBracket(
@@ -172,16 +174,10 @@ export async function patchTournamentMatchHandler(request, reply) {
       player1Score,
       player2Score,
       playedAs,
+      hasUserWon,
       bracketMatch,
       date
     );
-
-    const hasUserWon = bracketMatch.winner === tournament.userNickname;
-    if (hasUserWon) {
-      await updateTournament(tournamentId, userId, {
-        roundReached: { increment: 1 }
-      });
-    }
 
     return reply
       .code(200)

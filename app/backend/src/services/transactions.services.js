@@ -105,7 +105,7 @@ export async function transactionTournament(
   });
 }
 
-function buildBracketUpdates(bracketMatch) {
+function buildBracketUpdates(hasUserWon, bracketMatch) {
   const {
     nextMatchNumber,
     winnerSlot,
@@ -115,14 +115,29 @@ function buildBracketUpdates(bracketMatch) {
     winner
   } = bracketMatch;
 
-  if (!nextMatchNumber || !winnerSlot) return null;
+  const currentUpdate = {
+    winner,
+    ...(hasUserWon && {
+      tournament: {
+        update: {
+          roundReached: { increment: 1 }
+        }
+      }
+    })
+  };
 
-  const winnerPlayerType =
-    winner === player1Nickname ? player1Type : player2Type;
+  let nextUpdate = null;
+  if (nextMatchNumber && winnerSlot) {
+    const winnerPlayerType =
+      winner === player1Nickname ? player1Type : player2Type;
 
-  return winnerSlot === 1
-    ? { player1Nickname: winner, player1Type: winnerPlayerType }
-    : { player2Nickname: winner, player2Type: winnerPlayerType };
+    nextUpdate =
+      winnerSlot === 1
+        ? { player1Nickname: winner, player1Type: winnerPlayerType }
+        : { player2Nickname: winner, player2Type: winnerPlayerType };
+  }
+
+  return { currentUpdate, nextUpdate };
 }
 
 export async function transactionUpdateBracket(
@@ -130,10 +145,14 @@ export async function transactionUpdateBracket(
   player1Score,
   player2Score,
   playedAs,
+  hasUserWon,
   bracketMatch,
   date
 ) {
-  const nextUpdate = buildBracketUpdates(bracketMatch);
+  const { currentUpdate, nextUpdate } = buildBracketUpdates(
+    hasUserWon,
+    bracketMatch
+  );
 
   return prisma.$transaction(async (tx) => {
     const {
@@ -143,7 +162,6 @@ export async function transactionUpdateBracket(
       player2Type,
       tournamentId,
       matchNumber,
-      winner,
       nextMatchNumber
     } = bracketMatch;
     const { match } = await createMatchAndUpdateStatsTx(
@@ -164,7 +182,7 @@ export async function transactionUpdateBracket(
       tx,
       tournamentId,
       matchNumber,
-      { winner: winner }
+      currentUpdate
     );
 
     if (nextUpdate) {
