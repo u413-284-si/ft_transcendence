@@ -87,6 +87,8 @@ export async function googleOauth2LoginHandler(request, reply) {
     .clearCookie("oauth2-code-verifier")
     .clearCookie("oauth2-redirect-state");
 
+  const { token } =
+    await fastify.googleOauth2.getAccessTokenFromAuthorizationCodeFlow(request);
   const googleUser = await fastify.googleOauth2.userinfo(token.access_token);
   const dbUser = await getUserByEmail(googleUser.email);
   if (!dbUser) {
@@ -127,6 +129,7 @@ export async function authAndDecodeAccessHandler(request, reply) {
 
 export async function authRefreshHandler(request, reply) {
   request.action = "Auth refresh token";
+  const token = request.cookies.refreshToken;
 
   const userDataRefreshToken = await request.refreshTokenVerify();
   const userId = userDataRefreshToken.id;
