@@ -50,9 +50,6 @@ const fastify = Fastify({
   }
 });
 
-fastify.decorateRequest("action", null);
-fastify.setErrorHandler(handleError);
-
 await fastify.register(FastifyOverview, { addSource: true, hideEmpty: true });
 await fastify.register(fastifyOverviewUi);
 

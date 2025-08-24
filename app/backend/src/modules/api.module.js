@@ -5,6 +5,7 @@ import tournamentRoutes from "../routes/tournaments.routes.js";
 import userstatsRoutes from "../routes/user_stats.routes.js";
 import userRoutes from "../routes/users.routes.js";
 import env from "../config/env.js";
+import { handleError } from "../utils/error.js";
 
 export default async function apiModule(fastify) {
   await fastify.register(fastifyRateLimit, {
@@ -27,6 +28,8 @@ export default async function apiModule(fastify) {
     }
   });
 
+  fastify.decorateRequest("action", null);
+  fastify.setErrorHandler(handleError);
   await fastify.register(authModule);
 
   await fastify.register(userRoutes, { prefix: "/users" });
