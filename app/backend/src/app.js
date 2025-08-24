@@ -24,6 +24,7 @@ import { authSchemas } from "./schema/auth.schema.js";
 import { userStatsSchemas } from "./schema/user_stats.schema.js";
 import { friendRequestSchemas } from "./schema/friend_request.schema.js";
 import { dashboardSchemas } from "./schema/dashboard.schema.js";
+import { handleError } from "./utils/error.js";
 
 const fastify = Fastify({
   exposeHeadRoutes: false,
@@ -48,6 +49,9 @@ const fastify = Fastify({
     }
   }
 });
+
+fastify.decorateRequest("action", null);
+fastify.setErrorHandler(handleError);
 
 await fastify.register(FastifyOverview, { addSource: true, hideEmpty: true });
 await fastify.register(fastifyOverviewUi);
