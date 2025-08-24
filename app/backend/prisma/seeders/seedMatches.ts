@@ -75,7 +75,6 @@ export async function seedMatches(userId: number, count = 10, winRate = 0.5) {
       player2Score,
       "HUMAN",
       "HUMAN",
-      null,
       date
     );
 

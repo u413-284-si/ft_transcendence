@@ -18,6 +18,7 @@ async function createMatchAndUpdateStatsTx(
   player1Type,
   player2Type,
   tournamentId,
+  bracketMatchNumber,
   date
 ) {
   const match = await createMatchTx(
@@ -31,6 +32,7 @@ async function createMatchAndUpdateStatsTx(
     player1Type,
     player2Type,
     tournamentId,
+    bracketMatchNumber,
     date
   );
 
@@ -56,7 +58,6 @@ export async function transactionMatch(
   player2Score,
   player1Type,
   player2Type,
-  tournamentId,
   date
 ) {
   return prisma.$transaction(async (tx) => {
@@ -70,7 +71,8 @@ export async function transactionMatch(
       player2Score,
       player1Type,
       player2Type,
-      tournamentId,
+      null,
+      null,
       date
     );
 
@@ -175,6 +177,7 @@ export async function transactionUpdateBracket(
       player1Type,
       player2Type,
       tournamentId,
+      matchNumber,
       date
     );
 

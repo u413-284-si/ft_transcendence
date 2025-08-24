@@ -191,8 +191,7 @@ async function endGame(
         player1Score: gameState.player1Score,
         player2Score: gameState.player2Score,
         player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
-        player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN",
-        tournamentId: null
+        player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN"
       })
     );
   }

@@ -124,13 +124,6 @@ export const createMatchSchema = {
     player2Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
       description: "The score of player 2 in the match"
-    },
-    tournamentId: {
-      oneOf: [
-        { $ref: "commonDefinitionsSchema#/definitions/id" },
-        { type: "null" }
-      ],
-      description: "The tournament id if this match belongs to one"
     }
   },
   required: [

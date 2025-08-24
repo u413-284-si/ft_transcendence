@@ -28,6 +28,7 @@ export async function createMatchTx(
   player1Type,
   player2Type,
   tournamentId,
+  bracketMatchNumber,
   date
 ) {
   const match = await tx.match.create({
@@ -41,6 +42,7 @@ export async function createMatchTx(
       player1Type,
       player2Type,
       tournamentId,
+      bracketMatchNumber,
       date
     },
     select: matchSelect

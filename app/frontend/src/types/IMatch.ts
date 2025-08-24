@@ -5,7 +5,7 @@ export { PlayedAs, PlayerType };
 
 export type MatchCreate = Omit<
   MatchDB,
-  "id" | "userId" | "date" | "bracketMatchNumber"
+  "id" | "userId" | "date" | "bracketMatchNumber" | "tournamentId"
 >;
 
 export type MatchRead = Simplify<
