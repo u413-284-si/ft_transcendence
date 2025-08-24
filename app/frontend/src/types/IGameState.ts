@@ -12,6 +12,7 @@ export interface GameState {
   ballX: number;
   ballY: number;
   ballRadius: number; // pixel
+  initialBallSpeed: number; // pixel/second
   ballSpeedX: number; // pixel/second
   ballSpeedY: number; // pixel/second
   paddle1X: number;
@@ -25,6 +26,8 @@ export interface GameState {
   keys: Record<GameKey, boolean>;
   aiPlayer1: AIPlayer | null;
   aiPlayer2: AIPlayer | null;
+  speedUpFactor: number;
+  maxBounceAngle: number;
 }
 
 export type Snapshot = Pick<
