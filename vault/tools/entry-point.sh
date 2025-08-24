@@ -46,7 +46,7 @@ if ! jq -e '.initialized' >/dev/null < <(vault status --format=json); then
   # Get root token
   ROOT_TOKEN=$(grep "Initial Root Token: " < /tmp/generated_keys.txt | cut -c21-)
 
-  # Save as Docker secrets (plain files)
+  # Save as Docker secrets
   for i in "${!keyArray[@]}"; do
     echo "${keyArray[$i]}" > "$SECRETS_DIR/unseal_key_$((i+1))"
   done
@@ -54,6 +54,7 @@ if ! jq -e '.initialized' >/dev/null < <(vault status --format=json); then
 
   chmod 600 "$SECRETS_DIR"/*
   echo "✅ Keys written to $SECRETS_DIR"
+  rm -f /tmp/generated_keys.txt
 else
   echo "ℹ️ Vault already initialized"
 fi
