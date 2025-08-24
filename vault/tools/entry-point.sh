@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+##################################
+# -- Initial permission setup -- #
+##################################
+
 SECRETS_DIR="/run/secrets"
 
-# Root-only setup
-if [ "$(id -u)" -eq 0 ]; then
-  echo "➡️ Running initial setup as root..."
+echo "➡️ Running initial setup..."
 
-  mkdir -p "$SECRETS_DIR"
-  chmod 700 "$SECRETS_DIR"
-  chown vault:vault "$SECRETS_DIR"
-  chown -R vault:vault /vault/data
+mkdir -p "$SECRETS_DIR"
+chmod 700 "$SECRETS_DIR"
+chown vault:vault "$SECRETS_DIR"
+chown -R vault:vault /vault/data
 
-  # Re-exec this script as vault user
-  exec su-exec vault:vault "$0" "$@"
-fi
-
-echo "➡️ Now running as: $(id -un)"
+########################################
+# -- Startup and unsealing of Vault -- #
+########################################
 
 # Export values
 VAULT_ADDR="http://127.0.0.1:8200"
@@ -25,7 +25,7 @@ export VAULT_SKIP_VERIFY="true"
 
 # Start vault
 echo "➡️ Starting Vault server..."
-vault "$@" &
+su-exec vault:vault vault "$@" &
 VAULT_PID=$!
 
 # Wait for Vault API to respond
@@ -70,6 +70,10 @@ done
 
 echo "🚀 Vault is unsealed."
 
+#########################
+# -- Configure Vault -- #
+#########################
+
 # Export root token into VAULT_TOKEN
 if [ -f "$SECRETS_DIR/root_token" ]; then
   export VAULT_TOKEN=$(cat "$SECRETS_DIR/root_token")
@@ -77,11 +81,23 @@ if [ -f "$SECRETS_DIR/root_token" ]; then
 fi
 
 # Enable kv
-if ! vault secrets list | grep -q '^kv/'; then
-  vault secrets enable -version=1 kv
+if ! vault secrets list -format=json | jq -e '."secret/"' >/dev/null; then
+  vault secrets enable -path=secret kv-v2
+else
+  echo "ℹ️ KV already enabled at secret/"
 fi
 
-# Add test value to my-secret
-vault kv put kv/my-secret my-value=s3cr3t || true
+#########################
+# -- Store secrets -- #
+#########################
+
+# Run generate-ssl-certs.sh
+echo "➡️ Running certificate generation script..."
+/usr/local/bin/generate-ssl-certs.sh || {
+  echo "❌ Failed to generate SSL certs"
+  kill $VAULT_PID
+  exit 1
+}
+echo "✅ SSL certificates generated and stored in Vault"
 
 wait $VAULT_PID
