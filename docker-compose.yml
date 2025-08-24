@@ -50,13 +50,13 @@ services:
       dockerfile: ./vault/Dockerfile
     container_name: vault
     init: true
+    security_opt:
+      - no-new-privileges:true
     ports:
       - "8200:8200"
     environment:
       - VAULT_ADDR=http://0.0.0.0:8200
-    cap_add:
-      - IPC_LOCK
-    # restart: always
+    restart: always
     volumes:
       - vault-data:/vault/data
       - vault-secrets:/run/secrets

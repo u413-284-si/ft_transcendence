@@ -6,7 +6,8 @@ RUN apk add --no-cache \
     bash \
     curl \
     jq \
-    coreutils
+    coreutils \
+    su-exec
 
 COPY ./vault/tools/entry-point.sh /usr/local/bin/
 

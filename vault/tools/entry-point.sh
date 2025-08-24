@@ -1,13 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SECRETS_DIR="/run/secrets"
+
+# Root-only setup
+if [ "$(id -u)" -eq 0 ]; then
+  echo "➡️ Running initial setup as root..."
+
+  mkdir -p "$SECRETS_DIR"
+  chmod 700 "$SECRETS_DIR"
+  chown vault:vault "$SECRETS_DIR"
+  chown -R vault:vault /vault/data
+
+  # Re-exec this script as vault user
+  exec su-exec vault:vault "$0" "$@"
+fi
+
+echo "➡️ Now running as: $(id -un)"
+
 # Export values
 VAULT_ADDR="http://127.0.0.1:8200"
 export VAULT_ADDR
 export VAULT_SKIP_VERIFY="true"
-
-SECRETS_DIR="/run/secrets"
-mkdir -p "$SECRETS_DIR"
 
 # Start vault
 echo "➡️ Starting Vault server..."
