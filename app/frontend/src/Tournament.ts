@@ -99,21 +99,6 @@ export class Tournament {
     return this.roundReached;
   }
 
-  public static shuffle(array: string[], inPlace: boolean = true): string[] {
-    // If we don't want to modify the original, copy it
-    const result = inPlace ? array : [...array];
-
-    for (let i = result.length - 1; i > 0; i--) {
-      // Pick a random index from 0 to i
-      const j = Math.floor(Math.random() * (i + 1));
-
-      // Swap elements result[i] and result[j]
-      [result[i], result[j]] = [result[j], result[i]];
-    }
-
-    return result;
-  }
-
   public getTournamentWinner(): string | null {
     const finalMatch = this.bracket.find((match) => !match.nextMatchNumber);
     return finalMatch?.winner ?? null;
