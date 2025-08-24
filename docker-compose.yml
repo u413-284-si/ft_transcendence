@@ -63,18 +63,18 @@ services:
       - ./vault/config:/vault/config
     depends_on:
       - app
-      - mysql
+      # - mysql
     networks:
       - pong-network
-  mysql:
-    image: mysql:8
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpass
-    ports:
-      - "3306:3306"
-    networks:
-      - pong-network
+  # mysql:
+  #   image: mysql:8
+  #   container_name: mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: rootpass
+  #   ports:
+  #     - "3306:3306"
+  #   networks:
+  #     - pong-network
 
 networks:
   pong-network:
