@@ -175,12 +175,12 @@ async function endGame(
         : gameState.player2;
     tournament.updateBracketWithResult(matchNumber, winner);
     getDataOrThrow(
-      await updateTournamentBracket(
-        tournament.getId(),
+      await updateTournamentBracket({
+        tournamentId: tournament.getId(),
         matchNumber,
-        gameState.player1Score,
-        gameState.player2Score
-      )
+        player1Score: gameState.player1Score,
+        player2Score: gameState.player2Score
+      })
     );
   } else {
     getDataOrThrow(

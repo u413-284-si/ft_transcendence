@@ -3,7 +3,7 @@ import { apiFetch } from "./api.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 import { FetchPageResult } from "../types/FetchPageResult.js";
 import { MatchRead } from "../types/IMatch.js";
-import { BracketMatchRead } from "../types/BracketMatch.js";
+import { BracketMatchRead, BracketMatchUpdate } from "../types/BracketMatch.js";
 
 export async function createTournament(
   tournament: TournamentCreate
@@ -28,11 +28,11 @@ export async function setTournamentFinished(
 }
 
 export async function updateTournamentBracket(
-  tournamentId: number,
-  matchNumber: number,
-  player1Score: number,
-  player2Score: number
+  bracketMatchUpdate: BracketMatchUpdate
 ): Promise<ApiResponse<{ match: MatchRead; bracketMatch: BracketMatchRead }>> {
+  const { tournamentId, matchNumber, player1Score, player2Score } =
+    bracketMatchUpdate;
+
   const url = `/api/tournaments/${tournamentId}/matches/${matchNumber}`;
 
   return apiFetch<{ match: MatchRead; bracketMatch: BracketMatchRead }>(url, {
