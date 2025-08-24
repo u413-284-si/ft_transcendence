@@ -1,6 +1,6 @@
 import { updatePaddlePositions } from "./input.js";
-import { draw } from "./draw.js";
-import { GameState } from "./types/IGameState.js";
+import { render } from "./draw.js";
+import { GameState, Snapshot } from "./types/IGameState.js";
 import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
@@ -49,12 +49,13 @@ export async function startGame(
     aiPlayer1,
     aiPlayer2
   );
-  await new Promise<void>((resolve) => {
-    gameLoop(ctx, gameState, resolve);
-  });
+
+  await runGameLoop(gameState, ctx);
+
   if (getIsAborted()) {
     return;
   }
+
   await endGame(gameState, tournament, userRole);
 }
 
@@ -77,15 +78,15 @@ function initGameState(
     ballX: canvas.width / 2,
     ballY: canvas.height / 2,
     ballRadius: 10,
-    ballSpeedX: 7,
-    ballSpeedY: 7,
+    ballSpeedX: 380,
+    ballSpeedY: 380,
     paddle1X: 10,
     paddle1Y: canvas.height / 2 - 40,
     paddle2X: canvas.width - 20,
     paddle2Y: canvas.height / 2 - 40,
     paddleHeight: 80,
     paddleWidth: 10,
-    paddleSpeed: 6,
+    paddleSpeed: 300,
     gameOver: false,
     keys: keys,
     aiPlayer1: aiPlayer1,
@@ -93,21 +94,55 @@ function initGameState(
   };
 }
 
-function gameLoop(
-  ctx: CanvasRenderingContext2D,
+function runGameLoop(
   gameState: GameState,
-  resolve: () => void
-) {
-  if (gameState.gameOver) {
-    resolve();
-    return;
-  }
-  update(gameState);
-  draw(ctx, gameState);
-  requestAnimationFrame(() => gameLoop(ctx, gameState, resolve));
+  ctx: CanvasRenderingContext2D
+): Promise<GameState> {
+  return new Promise((resolve) => {
+    const step = 1 / 60; // fixed step in seconds ~0.016s
+    let lastTimestamp = performance.now();
+    let accumulator = 0;
+    let snapshot: Snapshot = makeSnapshot(gameState);
+
+    function gameLoop(currentTimestamp: number) {
+      if (getIsAborted() || gameState.gameOver) {
+        resolve(gameState);
+        return;
+      }
+
+      let frameTime = (currentTimestamp - lastTimestamp) / 1000;
+      if (frameTime <= 0) {
+        console.log("Frametime is 0 - skipping");
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      if (frameTime > 0.25) {
+        console.log("Frametime too high - clamp to 0.25");
+        frameTime = 0.25;
+      }
+      lastTimestamp = currentTimestamp;
+      accumulator += frameTime;
+
+      const fps = calculateFPS(frameTime);
+      console.log(`FPS: ${fps}`);
+
+      while (accumulator >= step) {
+        snapshot = makeSnapshot(gameState);
+        update(gameState, step);
+        accumulator -= step;
+      }
+      const alpha = accumulator / step;
+
+      render(gameState, snapshot, alpha, ctx);
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    requestAnimationFrame(gameLoop);
+  });
 }
 
-function update(gameState: GameState) {
+function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   if (gameState.gameOver) return;
 
   if (gameState.aiPlayer1) {
@@ -134,11 +169,8 @@ function update(gameState: GameState) {
     gameState.keys["ArrowDown"] = move === "down";
   }
 
-  updatePaddlePositions(gameState);
-
-  // Move the ball
-  gameState.ballX += gameState.ballSpeedX;
-  gameState.ballY += gameState.ballSpeedY;
+  updatePaddlePositions(gameState, deltaTime);
+  updateBallPosition(gameState, deltaTime);
 
   handlePaddleCollision(gameState, "paddle1");
   handlePaddleCollision(gameState, "paddle2");
@@ -271,4 +303,22 @@ function handleOutOfBounds(gameState: GameState) {
 
   checkScore(ballX - ballRadius <= 0, 2);
   checkScore(ballX + ballRadius >= canvasWidth, 1);
+}
+
+function updateBallPosition(
+  gameState: GameState,
+  deltaTime: DOMHighResTimeStamp
+) {
+  gameState.ballX += gameState.ballSpeedX * deltaTime;
+  gameState.ballY += gameState.ballSpeedY * deltaTime;
+}
+
+function calculateFPS(deltaTime: number): number {
+  if (deltaTime <= 0) return 0;
+  return Math.round(1 / deltaTime);
+}
+
+function makeSnapshot(state: GameState): Snapshot {
+  const { ballX, ballY, paddle1Y, paddle2Y } = state;
+  return { ballX, ballY, paddle1Y, paddle2Y };
 }
