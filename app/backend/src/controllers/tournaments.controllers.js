@@ -3,7 +3,8 @@ import {
   getTournament,
   updateTournament,
   deleteAllTournaments,
-  deleteTournament
+  deleteTournament,
+  getUserTournaments
 } from "../services/tournaments.services.js";
 import { createResponseMessage } from "../utils/response.js";
 import { handlePrismaError, httpError } from "../utils/error.js";
@@ -125,13 +126,15 @@ export async function patchTournamentMatchHandler(request, reply) {
     const userId = request.user.id;
     const { player1Score, player2Score } = request.body;
 
-    const tournament = await getTournament(tournamentId);
-    if (tournament.userId !== userId) {
+    const tournament = await getUserTournaments(userId, undefined, {
+      tournamentId
+    });
+    if (tournament.length === 0) {
       return httpError(
         reply,
-        403,
+        404,
         createResponseMessage(action, false),
-        "You are not allowed to update match of this tournament"
+        "No record was found for an update."
       );
     }
 

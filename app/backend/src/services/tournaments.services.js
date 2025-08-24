@@ -6,7 +6,6 @@ const tournamentSelect = {
   name: true,
   maxPlayers: true,
   isFinished: true,
-  userId: true,
   userNickname: true,
   roundReached: true,
   updatedAt: true,
@@ -99,6 +98,7 @@ export async function getUserTournaments(
   const tournaments = await prisma.tournament.findMany({
     where: {
       userId: userId,
+      ...(filter.tournamentId ? { id: filter.tournamentId } : {}),
       ...(filter.isFinished !== undefined
         ? { isFinished: filter.isFinished }
         : {}),

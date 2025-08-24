@@ -93,7 +93,6 @@ export const tournamentSchema = {
     isFinished: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentIsFinished"
     },
-    userId: { $ref: "commonDefinitionsSchema#/definitions/id" },
     userNickname: { $ref: "commonDefinitionsSchema#/definitions/username" },
     roundReached: {
       $ref: "tournamentDefinitionsSchema#/definitions/tournamentRoundReached"
@@ -106,7 +105,6 @@ export const tournamentSchema = {
     "name",
     "maxPlayers",
     "isFinished",
-    "userId",
     "userNickname",
     "roundReached"
   ],
