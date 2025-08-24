@@ -39,5 +39,5 @@ export function NoTournamentsRow(): string {
 
 function didWinTournament(maxPlayers: number, roundReached: number): boolean {
   const totalRounds = Math.log2(maxPlayers);
-  return roundReached === totalRounds;
+  return roundReached === totalRounds + 1;
 }
