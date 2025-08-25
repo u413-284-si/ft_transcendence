@@ -45,3 +45,14 @@ export function getAllBySelector<T extends HTMLElement>(
   }
   return Array.from(elements);
 }
+
+export function getCSSVar(name: string): string {
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+}
+
+export function getCSSColorWithAlpha(varName: string, alpha: number) {
+  const color = getCSSVar(varName);
+  return color.includes("/") ? color : color.replace(")", ` / ${alpha})`);
+}

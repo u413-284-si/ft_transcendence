@@ -1,4 +1,8 @@
 import { GameState, Snapshot } from "./types/IGameState.js";
+import { getCSSColorWithAlpha, getCSSVar } from "./utility.js";
+import type { Point } from "./types/IGameState.js";
+
+const trail: Point[] = [];
 
 export function draw(
   ctx: CanvasRenderingContext2D,
@@ -13,19 +17,40 @@ export function draw(
     drawWinningScreen(ctx, gameState);
     return;
   }
-  drawBall(ctx, gameState, interpolated);
+  drawBallWithTrail(ctx, gameState, interpolated);
   drawPaddles(ctx, gameState, interpolated);
 }
 
-function drawBall(
+function drawBallWithTrail(
   ctx: CanvasRenderingContext2D,
   gameState: GameState,
   interp: Snapshot
 ) {
-  ctx.fillStyle = "white";
-  ctx.beginPath();
-  ctx.arc(interp.ballX, interp.ballY, gameState.ballRadius, 0, Math.PI * 2);
-  ctx.fill();
+  const maxTrailLength = 15;
+
+  if (!gameState.ballJustReset) {
+    trail.push({ x: interp.ballX, y: interp.ballY });
+    if (trail.length > maxTrailLength) trail.shift();
+  } else {
+    gameState.ballJustReset = false;
+  }
+
+  ctx.save();
+  ctx.shadowBlur = 20;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  const baseColor =
+    gameState.ballSpeedX <= 0 ? "--color-neon-yellow" : "--color-neon-cyan";
+
+  trail.forEach((pos, i) => {
+    ctx.fillStyle = getCSSColorWithAlpha(baseColor, i / trail.length / 2);
+    ctx.shadowColor = getCSSColorWithAlpha(baseColor, i / trail.length / 2);
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, gameState.ballRadius, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.restore();
 }
 
 function drawPaddles(
@@ -33,19 +58,29 @@ function drawPaddles(
   gameState: GameState,
   interp: Snapshot
 ) {
-  ctx.fillStyle = "white";
+  ctx.save();
+  ctx.shadowBlur = 20;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  ctx.fillStyle = getCSSVar("--color-neon-cyan");
+  ctx.shadowColor = getCSSVar("--color-neon-cyan");
   ctx.fillRect(
     gameState.paddle1X,
     interp.paddle1Y,
     gameState.paddleWidth,
     gameState.paddleHeight
   );
+
+  ctx.fillStyle = getCSSVar("--color-neon-yellow");
+  ctx.shadowColor = getCSSVar("--color-neon-yellow");
   ctx.fillRect(
     gameState.paddle2X,
     interp.paddle2Y,
     gameState.paddleWidth,
     gameState.paddleHeight
   );
+  ctx.restore();
 }
 
 function drawScores(ctx: CanvasRenderingContext2D, gameState: GameState) {
@@ -92,8 +127,13 @@ function drawWinningScreen(
   ctx: CanvasRenderingContext2D,
   gameState: GameState
 ) {
-  ctx.fillStyle = "yellow";
-  ctx.font = "40px Arial";
+  ctx.fillStyle = getCSSVar("--color-neon-yellow");
+  ctx.shadowColor = getCSSVar("--color-neon-yellow");
+  ctx.shadowBlur = 20;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  ctx.font = "40px Orbitron";
+
   const canvasCenterX = gameState.canvasWidth / 2;
   const canvasCenterY = gameState.canvasHeight / 2;
   const winnerText =
@@ -130,4 +170,8 @@ export function render(
 ) {
   const interpolated = interpolateSnapshot(snapshot, gameState, alpha);
   draw(ctx, gameState, interpolated);
+}
+
+export function clearBallTrail() {
+  trail.length = 0;
 }
