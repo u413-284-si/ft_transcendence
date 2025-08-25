@@ -127,26 +127,33 @@ function drawWinningScreen(
   ctx: CanvasRenderingContext2D,
   gameState: GameState
 ) {
-  ctx.fillStyle = getCSSVar("--color-neon-yellow");
-  ctx.shadowColor = getCSSVar("--color-neon-yellow");
+  const canvasCenterX = gameState.canvasWidth / 2;
+  const canvasCenterY = gameState.canvasHeight / 2;
+  const didP1Win = gameState.player1Score >= gameState.winningScore;
+  const winnerText = didP1Win
+    ? i18next.t("global.playerWins", { player: gameState.player1 })
+    : i18next.t("global.playerWins", { player: gameState.player2 });
+  const winningColor = didP1Win ? "--color-neon-cyan" : "--color-neon-yellow";
+
+  ctx.save();
+  ctx.fillStyle = getCSSVar(winningColor);
+  ctx.shadowColor = getCSSVar(winningColor);
   ctx.shadowBlur = 20;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
   ctx.font = "40px Orbitron";
 
-  const canvasCenterX = gameState.canvasWidth / 2;
-  const canvasCenterY = gameState.canvasHeight / 2;
-  const winnerText =
-    gameState.player1Score >= gameState.winningScore
-      ? i18next.t("global.playerWins", { player: gameState.player1 })
-      : i18next.t("global.playerWins", { player: gameState.player2 });
-  ctx.fillText(winnerText, canvasCenterX - 100, canvasCenterY);
-  ctx.font = "20px Arial";
+  const winningTextWidth = ctx.measureText(winnerText).width;
+  ctx.fillText(winnerText, canvasCenterX - winningTextWidth / 2, canvasCenterY);
+
+  ctx.font = "20px Orbitron";
+  const continueTextWidth = ctx.measureText(i18next.t("global.continue")).width;
   ctx.fillText(
     i18next.t("global.continue"),
-    canvasCenterX - 100,
+    canvasCenterX - continueTextWidth / 2,
     canvasCenterY + 40
   );
+  ctx.restore();
 }
 
 function interpolateSnapshot(
