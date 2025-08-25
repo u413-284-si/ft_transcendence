@@ -50,23 +50,38 @@ function drawPaddles(
 
 function drawScores(ctx: CanvasRenderingContext2D, gameState: GameState) {
   ctx.fillStyle = "white";
-  ctx.font = "30px Arial";
+  ctx.font = "30px Orbitron";
 
-  // Player 1 name and score
-  const player1Text =
-    shortenName(gameState.player1 || i18next.t("global.player") + "1") +
-    ":" +
-    " " +
-    gameState.player1Score.toString();
-  ctx.fillText(player1Text, gameState.canvasWidth / 4 - 80, 50);
+  const marginNames = 100;
+  const marginScores = 30;
+  const verticalOffset = 50;
+  const centerX = gameState.canvasWidth / 2;
 
-  // Player 2 name and score
-  const player2Text =
-    shortenName(gameState.player2 || i18next.t("global.player") + "2") +
-    ":" +
-    " " +
-    gameState.player2Score.toString();
-  ctx.fillText(player2Text, (gameState.canvasWidth * 3) / 4 - 80, 50);
+  const player1Text = shortenName(
+    gameState.player1 || i18next.t("global.player") + "1"
+  );
+  ctx.fillText(player1Text, marginNames, verticalOffset);
+
+  const player2Text = shortenName(
+    gameState.player2 || i18next.t("global.player") + "2"
+  );
+  const p2Width = ctx.measureText(player2Text).width;
+  ctx.fillText(
+    player2Text,
+    gameState.canvasWidth - marginNames - p2Width,
+    verticalOffset
+  );
+
+  const p1score = gameState.player1Score.toString();
+  const p1ScoreWidth = ctx.measureText(p1score).width;
+  ctx.fillText(p1score, centerX - marginScores - p1ScoreWidth, verticalOffset);
+
+  const scoreSeparator = "|";
+  const separatorWidth = ctx.measureText(scoreSeparator).width;
+  ctx.fillText(scoreSeparator, centerX - separatorWidth / 2, verticalOffset);
+
+  const p2score = gameState.player2Score.toString();
+  ctx.fillText(p2score, centerX + marginScores, verticalOffset);
 }
 
 function shortenName(name: string, maxLength: number = 10): string {
