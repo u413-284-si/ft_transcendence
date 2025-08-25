@@ -121,14 +121,14 @@
     }
   }
 
-  --animate-glow-border-cyan: glow-border-cyan 2.5s infinite ease-in-out;
-  @keyframes glow-border-cyan {
+  --animate-glow-border-white: glow-border-white 2.5s infinite ease-in-out;
+  @keyframes glow-border-white {
     0% {
       box-shadow:
-        0 0 5px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 55%, transparent),
-        0 0 10px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 65%, transparent),
-        0 0 15px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 75%, transparent),
-        0 0 20px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 85%, transparent);
+        0 0 5px color-mix(in oklch, oklch(1 0 0) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(1 0 0) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(1 0 0) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(1 0 0) 85%, transparent);
     }
 
     50% {
@@ -140,10 +140,10 @@
 
     100% {
       box-shadow:
-        0 0 5px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 55%, transparent),
-        0 0 10px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 65%, transparent),
-        0 0 15px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 75%, transparent),
-        0 0 20px color-mix(in oklch, oklch(0.9054 0.1446 193.77) 85%, transparent);
+        0 0 5px color-mix(in oklch, oklch(1 0 0) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(1 0 0) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(1 0 0) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(1 0 0) 85%, transparent);
     }
   }
 
