@@ -40,9 +40,9 @@ export class GameView extends AbstractView {
     return /* HTML */ `
       <canvas
         id="gameCanvas"
-        width="800"
-        height="400"
-        class="border-4 border-white"
+        width="1000"
+        height="588"
+        class="border-4 border-neon-cyan animate-glow-border-cyan rounded-xl shadow-neon-cyan mt-10"
       ></canvas>
     `;
   }
