@@ -6,6 +6,7 @@ export async function sseConnectionHandler(request, reply) {
   const action = "SSE Connection";
   try {
     const userId = request.user.id;
+    const username = request.user.username;
 
     // Setup SSE headers
     reply.raw.setHeader("Content-Type", "text/event-stream");
@@ -13,7 +14,7 @@ export async function sseConnectionHandler(request, reply) {
     reply.raw.setHeader("Connection", "keep-alive");
     reply.raw.flushHeaders();
 
-    await registerSSEConnection(userId, reply);
+    await registerSSEConnection(userId, username, reply);
   } catch (err) {
     request.log.error(
       { err, body: request.body },
