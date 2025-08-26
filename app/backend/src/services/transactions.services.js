@@ -188,13 +188,20 @@ export async function transactionUpdateBracket(
       currentUpdate
     );
 
+    let nextBracketMatch = null;
     if (nextUpdate) {
-      await updateBracketMatchTx(tx, tournamentId, nextMatchNumber, nextUpdate);
+      nextBracketMatch = await updateBracketMatchTx(
+        tx,
+        tournamentId,
+        nextMatchNumber,
+        nextUpdate
+      );
     }
 
     return {
       match,
-      bracketMatch: currentBracketMatch
+      currentBracketMatch,
+      nextBracketMatch
     };
   });
 }
