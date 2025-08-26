@@ -183,7 +183,7 @@ export async function patchTournamentMatchHandler(request, reply) {
     );
 
     return reply
-      .code(200)
+      .code(201)
       .send({ message: createResponseMessage(action, true), data: data });
   } catch (err) {
     request.log.error(

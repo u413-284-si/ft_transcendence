@@ -75,7 +75,7 @@ const optionsPatchTournamentMatch = {
     },
     body: { $ref: "patchTournamentMatchSchema" },
     response: {
-      //200: { $ref: "tournamentResponseSchema" },
+      201: { $ref: "patchTournamentMatchResponseSchema" },
       ...errorResponses
     }
   }
