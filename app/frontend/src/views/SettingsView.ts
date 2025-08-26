@@ -11,7 +11,7 @@ import {
   removeTwoFA,
   verifyTwoFACodeAndGetBackupCodes
 } from "../services/authServices.js";
-import { markInvalid, validateTwoFACode } from "../validate.js";
+import { clearInvalid, markInvalid, validateTwoFACode } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { router } from "../routing/Router.js";
 import { Link } from "../components/Link.js";
@@ -560,6 +560,7 @@ export default class SettingsView extends AbstractView {
 
   private clearPassword(): void {
     this.twoFAPasswordInputEl.value = "";
+    clearInvalid(this.twoFAPasswordInputEl, this.twoFAPasswordInputErrorEl);
   }
 
   private async displayTwoFAPasswordModal(
