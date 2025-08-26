@@ -194,6 +194,23 @@ const patchTournamentMatchSchema = {
   additionalProperties: false
 };
 
+const patchTournamentMatchResponseSchema = {
+  $id: "patchTournamentMatchResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: {
+      match: { $ref: "matchSchema" },
+      currentBracketMatch: { $ref: "bracketMatchSchema" },
+      nextBracketMatch: {
+        oneOf: [{ $ref: "bracketMatchSchema" }, { type: "null" }]
+      }
+    }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
 const querystringTournamentSchema = {
   $id: "querystringTournamentSchema",
   type: "object",
@@ -217,5 +234,6 @@ export const tournamentSchemas = [
   createTournamentSchema,
   patchTournamentSchema,
   patchTournamentMatchSchema,
+  patchTournamentMatchResponseSchema,
   querystringTournamentSchema
 ];
