@@ -28,7 +28,7 @@ export function Checkbox({
         ${disabled ? "disabled" : ""}
         class="accent-neon-cyan focus:outline-none focus-visible:ring-2 focus-visible:ring-teal"
       />
-      <label for="${id}" class="text-white text-sm">${label}</label>
+      <label for="${id}" class="text-white text-md">${label}</label>
     </div>
   `;
 }
