@@ -87,8 +87,28 @@ const pi: TranslationShape = {
     },
 
     homeView: {
-      helloUser: "Ahoy {{username}}!<br />Ye've landed on the home deck",
-      title: "Captain's Quarters"
+      helloUser: "Ahoy {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Captain's Quarters",
+
+      faqTitle: "Parley FAQ",
+      faqGameModesTitle: "Modes o' Battle",
+      faqGameModesSingle: "Single Duel: Quick bout against the AI or a matey.",
+      faqGameModesTournament:
+        "Tournament: Fight through many rounds 'til one pirate claims the booty.",
+
+      faqControlsTitle: "Ship Controls",
+      faqControlsRightPaddle: "Arrow Keys ↑ ↓ : Steer right paddle",
+      faqControlsLeftPaddle: "W / S : Steer left paddle",
+
+      faqTipsTitle: "Seafarin' Tips",
+      faqTips1: "Predict the ball's course instead o' chasin' it.",
+      faqTips2: "Use the edges o' yer paddle to change the trajectory.",
+      faqTips3: "Beware! Each hit makes the ball fly faster, arrr!",
+
+      faqExtrasTitle: "Lore o' the Sea",
+      faqExtrasText:
+        "Pong be sailin' into the neon seas, matey! One o' th' first battles ever fought in code, now reborn on a glowing grid. Welcome aboard the Light Cycle of Pong, where only the sharpest pirates claim the treasure!"
     },
 
     invalid: {

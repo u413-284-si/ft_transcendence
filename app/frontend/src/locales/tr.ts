@@ -85,9 +85,29 @@ const tr: TranslationShape = {
     },
 
     homeView: {
-      helloUser:
-        "⚡ Greetings, User {{username}}!<br />Entering the Mainframe Hub",
-      title: "MAINFRAME"
+      helloUser: "⚡ Greetings, User {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "MAINFRAME",
+
+      faqTitle: "SYSTEM MANUAL",
+      faqGameModesTitle: "OPERATIVE MODES",
+      faqGameModesSingle:
+        "Single Session: Quick match vs AI or another operative.",
+      faqGameModesTournament:
+        "Tournament: Compete in multiple cycles until one master node remains.",
+
+      faqControlsTitle: "CONTROLS",
+      faqControlsRightPaddle: "Arrow Keys ↑ ↓: Move right paddle",
+      faqControlsLeftPaddle: "W / S: Move left paddle",
+
+      faqTipsTitle: "TACTICAL ADVICE",
+      faqTips1: "Predict the balls trajectory instead of chasing it.",
+      faqTips2: "Use paddle edges to alter the ball trajectory.",
+      faqTips3: "⚠️ Caution! Each paddle hit accelerates the ball.",
+
+      faqExtrasTitle: "BACKGROUND DATA",
+      faqExtrasText:
+        "Pong is a retro digital construct: timeless, addictive, and inspired by TRON's neon grid. Engage in the neon battle of wits."
     },
 
     invalid: {

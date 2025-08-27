@@ -80,10 +80,35 @@ const fr: TranslationShape = {
       winnerMatch: "Match gagnant {{matchId}}",
       won: "Gagné"
     },
+
     homeView: {
-      helloUser: "Bonjour {{username}} !<br />Ceci est la page d’accueil",
-      title: "Accueil"
+      helloUser: "Bonjour {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Accueil",
+
+      faqTitle: "FAQ",
+      faqGameModesTitle: "Modes de jeu",
+      faqGameModesSingle:
+        "Partie simple : un match rapide contre l'IA ou un ami.",
+      faqGameModesTournament:
+        "Tournoi : affrontez plusieurs manches jusqu'à ce qu'il ne reste qu'un champion.",
+
+      faqControlsTitle: "Contrôles",
+      faqControlsRightPaddle: "Flèches ↑ ↓ : Déplacer la raquette droite",
+      faqControlsLeftPaddle: "W / S : Déplacer la raquette gauche",
+
+      faqTipsTitle: "Conseils",
+      faqTips1: "Anticipez le trajet de la balle au lieu de courir après.",
+      faqTips2:
+        "Utilisez les bords de la raquette pour changer l'angle de la balle.",
+      faqTips3:
+        "Attention ! Chaque coup de raquette augmente la vitesse de la balle.",
+
+      faqExtrasTitle: "Infos complémentaires",
+      faqExtrasText:
+        "Pong est l'un des premiers jeux vidéo jamais créés : simple, intemporel et addictif. Inspiré par TRON, cette version réinvente le classique dans un style néon."
     },
+
     invalid: {
       emailEmpty: "L’adresse e‑mail ne peut pas être vide.",
       emailFormat:

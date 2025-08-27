@@ -84,8 +84,27 @@ const en = {
     },
 
     homeView: {
-      helloUser: "Hello {{username}}!<br />This is the homepage",
-      title: "Home"
+      helloUser: "Hello {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Home",
+      faqTitle: "FAQ",
+      faqGameModesTitle: "Game Modes",
+      faqGameModesSingle: "Single Game: Quick match against AI or a friend.",
+      faqGameModesTournament:
+        "Tournament: Compete in multiple rounds until one champion remains.",
+
+      faqControlsTitle: "Controls",
+      faqControlsRightPaddle: "Arrow Keys ↑ ↓: Move right paddle",
+      faqControlsLeftPaddle: "W / S: Move left paddle",
+
+      faqTipsTitle: "Tips",
+      faqTips1: "Predict the ball's path instead of chasing it.",
+      faqTips2: "Hit with paddle edges to change the angle strategically.",
+      faqTips3: "Be careful! Each paddle hit increases the speed of the ball.",
+
+      faqExtrasTitle: "Background infos",
+      faqExtrasText:
+        "Pong is one of the first video games ever created—simple, timeless, and addictive. Inspired by TRON's digital grid, this version reimagines the classic in a neon-lit style."
     },
 
     invalid: {

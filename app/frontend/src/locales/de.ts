@@ -87,8 +87,32 @@ const de: TranslationShape = {
     },
 
     homeView: {
-      helloUser: "Hallo {{username}}!<br />Das ist die Startseite",
-      title: "Startseite"
+      helloUser: "Hallo {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Startseite",
+
+      faqTitle: "FAQ",
+      faqGameModesTitle: "Spielmodi",
+      faqGameModesSingle:
+        "Einzelspiel: Ein schnelles Match gegen die KI oder einen Freund.",
+      faqGameModesTournament:
+        "Turnier: Spiele mehrere Runden, bis ein Champion übrig bleibt.",
+
+      faqControlsTitle: "Steuerung",
+      faqControlsRightPaddle: "Pfeiltasten ↑ ↓: Rechten Schläger bewegen",
+      faqControlsLeftPaddle: "W / S: Linken Schläger bewegen",
+
+      faqTipsTitle: "Tipps",
+      faqTips1:
+        "Antizipiere den Pfad des Balls voraus, statt ihm hinterherzulaufen.",
+      faqTips2:
+        "Treffe den Ball mit den Kanten des Schlägers, um den Winkel zu verändern.",
+      faqTips3:
+        "Sei vorsichtig! Jeder Schlägerkontakt erhöht die Geschwindigkeit des Balls.",
+
+      faqExtrasTitle: "Hintergrundinfos",
+      faqExtrasText:
+        "Pong ist eines der ersten Videospiele überhaupt: einfach, zeitlos und süchtig machend. Inspiriert vom Blockbuster TRON, wird hier der Klassiker in einem neonbeleuchteten Stil neu interpretiert."
     },
 
     invalid: {

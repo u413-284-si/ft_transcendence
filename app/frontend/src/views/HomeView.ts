@@ -3,7 +3,7 @@ import { auth } from "../AuthManager.js";
 import { escapeHTML } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
-import { toaster } from "../Toaster.js";
+import { Header2 } from "../components/Header2.js";
 
 export default class HomeView extends AbstractView {
   constructor() {
@@ -19,51 +19,101 @@ export default class HomeView extends AbstractView {
           id: "home-header",
           variant: "default"
         })}
-        ${Paragraph({
+        ${Header2({
           text: i18next.t("homeView.helloUser", {
             username: escapeHTML(auth.getUser().username)
-          })
+          }),
+          variant: "default"
         })}
-      </div>
+        ${Paragraph({
+          text: i18next.t("homeView.tagline")
+        })}
 
-      <div>
-        <h1 class="mt-12">Test Buttons for toast</h1>
-        <button id="button1" class="px-6 py-3 bg-green-500 text-white rounded">
-          Success
-        </button>
-        <button id="button2" class="px-6 py-3 bg-red-500 text-white rounded">
-          Error
-        </button>
-        <button id="button3" class="px-6 py-3 bg-yellow-500 text-white rounded">
-          Warning
-        </button>
-        <button id="button4" class="px-6 py-3 bg-blue-500 text-white rounded">
-          Info
-        </button>
+        <section
+          class="w-4xl bg-emerald-dark/80 border border-neon-cyan rounded-lg shadow-neon-cyan p-6 space-y-4 mt-8"
+        >
+          ${Header2({
+            text: i18next.t("homeView.faqTitle"),
+            variant: "default"
+          })}
+
+          <!-- Accordion with details/summary -->
+          <details class="group border-b border-grey pb-2">
+            <summary
+              class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan"
+            >
+              ${i18next.t("homeView.faqGameModesTitle")}
+              <span
+                class="transition-transform group-open:rotate-45 text-neon-cyan"
+                >+</span
+              >
+            </summary>
+            <div class="mt-2 text-grey">
+              <ul class="list-disc list-inside space-y-1">
+                <li>${i18next.t("homeView.faqGameModesSingle")}</li>
+                <li>${i18next.t("homeView.faqGameModesTournament")}</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="group border-b border-grey pb-2">
+            <summary
+              class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan"
+            >
+              ${i18next.t("homeView.faqControlsTitle")}
+              <span
+                class="transition-transform group-open:rotate-45 text-neon-cyan"
+                >+</span
+              >
+            </summary>
+            <div class="mt-2 text-grey">
+              <ul class="list-disc list-inside space-y-1">
+                <li>${i18next.t("homeView.faqControlsRightPaddle")}</li>
+                <li>${i18next.t("homeView.faqControlsLeftPaddle")}</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="group border-b border-grey pb-2">
+            <summary
+              class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan"
+            >
+              ${i18next.t("homeView.faqTipsTitle")}
+              <span
+                class="transition-transform group-open:rotate-45 text-neon-cyan"
+                >+</span
+              >
+            </summary>
+            <div class="mt-2 text-grey">
+              <ul class="list-disc list-inside space-y-1">
+                <li>${i18next.t("homeView.faqTips1")}</li>
+                <li>${i18next.t("homeView.faqTips2")}</li>
+                <li>${i18next.t("homeView.faqTips3")}</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="group">
+            <summary
+              class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan"
+            >
+              ${i18next.t("homeView.faqExtrasTitle")}
+              <span
+                class="transition-transform group-open:rotate-45 text-neon-cyan"
+                >+</span
+              >
+            </summary>
+            <div class="mt-2 text-grey">
+              ${i18next.t("homeView.faqExtrasText")}
+            </div>
+          </details>
+        </section>
       </div>
     `;
   }
 
-  protected addListeners() {
-    document.getElementById("button1")!.addEventListener("click", () => {
-      toaster.success("This is a succesful toast");
-    });
-    document.getElementById("button2")!.addEventListener("click", () => {
-      toaster.error("This is an error toast");
-    });
-    document.getElementById("button3")!.addEventListener("click", () => {
-      toaster.warn(
-        "A warning toast which is very long text so it will have a text break"
-      );
-    });
-    document.getElementById("button4")!.addEventListener("click", () => {
-      toaster.info("A info toast to show that something happened");
-    });
-  }
-
   async render() {
     this.updateHTML();
-    this.addListeners();
   }
 
   getName(): string {
