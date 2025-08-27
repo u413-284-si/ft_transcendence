@@ -6,13 +6,16 @@ export type CardOptions = {
 
 export function Card({
   children,
-  className = "bg-emerald-dark/60 border border-neon-cyan rounded-lg p-4 flex flex-col space-y-4",
+  className = "",
   id = ""
 }: CardOptions): string {
   const idAttr = id ? `id="${id}"` : "";
+  const baseStyles =
+    "bg-emerald-dark/60 border border-neon-cyan rounded-lg p-4 flex flex-col space-y-4";
+  const classes = `${baseStyles} ${className}`.trim();
 
   return `
-    <div ${idAttr} class="${className}">
+    <div ${idAttr} class="${classes}">
       ${children.join("\n")}
     </div>
   `;
