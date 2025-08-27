@@ -1,4 +1,5 @@
 import { getAllBySelector } from "../utility.js";
+import { Card } from "./Card.js";
 import { Checkbox } from "./Checkbox.js";
 import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
@@ -9,34 +10,34 @@ export function NicknameInput(players: number, username: string): string {
     const isChecked = i === 1 ? true : false;
 
     nicknameInputs += /* HTML */ `
-      <div
-        class="bg-emerald-dark/60 border border-neon-cyan rounded-lg p-4 flex flex-col space-y-4"
-      >
-        ${Input({
-          id: `nickname${i}`,
-          label: i18next.t("nicknameInput.playerNickname", { i: i }),
-          name: `player-${i}`,
-          placeholder: i18next.t("nicknameInput.enterYourNickname"),
-          type: "text",
-          errorId: `player-error-${i}`
-        })}
-        ${Radio({
-          id: `choice-${i}`,
-          name: "userChoice",
-          value: `${i}`,
-          label: i18next.t("nicknameInput.playerChoice", {
-            username: username,
-            i: i
+      ${Card({
+        children: [
+          Input({
+            id: `nickname${i}`,
+            label: i18next.t("nicknameInput.playerNickname", { i: i }),
+            name: `player-${i}`,
+            placeholder: i18next.t("nicknameInput.enterYourNickname"),
+            type: "text",
+            errorId: `player-error-${i}`
           }),
-          checked: isChecked
-        })}
-        ${Checkbox({
-          id: `ai-${i}`,
-          name: `ai-player-${i}`,
-          label: "AI Player",
-          disabled: isChecked
-        })}
-      </div>
+          Radio({
+            id: `choice-${i}`,
+            name: "userChoice",
+            value: `${i}`,
+            label: i18next.t("nicknameInput.playerChoice", {
+              username: username,
+              i: i
+            }),
+            checked: isChecked
+          }),
+          Checkbox({
+            id: `ai-${i}`,
+            name: `ai-player-${i}`,
+            label: "AI Player",
+            disabled: isChecked
+          })
+        ]
+      })}
     `;
   }
   return nicknameInputs;
