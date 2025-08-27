@@ -7,7 +7,7 @@ import {
   getUserTournaments
 } from "../services/tournaments.services.js";
 import { createResponseMessage } from "../utils/response.js";
-import { handlePrismaError, httpError } from "../utils/error.js";
+import { httpError } from "../utils/error.js";
 import {
   transactionTournament,
   transactionUpdateBracket
@@ -89,83 +89,8 @@ export async function patchTournamentHandler(request, reply) {
 }
 
 export async function patchTournamentMatchHandler(request, reply) {
-  const action = "Patch tournament match";
-  try {
-    const tournamentId = request.params.id;
-    const matchNumber = request.params.matchNumber;
-    const userId = request.user.id;
-    const { player1Score, player2Score } = request.body;
-
-    const tournament = await getUserTournaments(userId, undefined, {
-      tournamentId
-    });
-    if (tournament.length === 0) {
-      return httpError(
-        reply,
-        404,
-        createResponseMessage(action, false),
-        "No record was found for an update."
-      );
-    }
-
-    const bracketMatch = await getBracketMatch(tournamentId, matchNumber);
-    if (bracketMatch.winner) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "This bracket match already has a winner."
-      );
-    }
-
-    if (player1Score > player2Score) {
-      bracketMatch.winner = bracketMatch.player1Nickname;
-    } else if (player2Score > player1Score) {
-      bracketMatch.winner = bracketMatch.player2Nickname;
-    } else {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(action, false),
-        "Match cannot end in a draw"
-      );
-    }
-
-    const playedAs =
-      tournament.userNickname === bracketMatch.player1Nickname
-        ? "PLAYERONE"
-        : tournament.userNickname === bracketMatch.player2Nickname
-          ? "PLAYERTWO"
-          : "NONE";
-
-    const hasUserWon = bracketMatch.winner === tournament.userNickname;
-
-    const date = new Date();
-
-    const data = await transactionUpdateBracket(
-      userId,
-      player1Score,
-      player2Score,
-      playedAs,
-      hasUserWon,
-      bracketMatch,
-      date
-    );
-
-    return reply
-      .code(201)
-      .send({ message: createResponseMessage(action, true), data: data });
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `patchTournamentHandler: ${createResponseMessage(action, false)}`
-    );
-    return handlePrismaError(reply, action, err);
-  }
-}
-
-export async function patchTournamentMatchHandler(request, reply) {
   request.action = "Patch tournament match";
+
   const tournamentId = request.params.id;
   const matchNumber = request.params.matchNumber;
   const userId = request.user.id;
