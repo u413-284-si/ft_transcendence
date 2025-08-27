@@ -3,13 +3,14 @@ import { deleteTournament } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getById } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
-import { Form } from "../components/Form.js";
 import { PlayedAs, PlayerType } from "../types/IMatch.js";
 import { getDataOrThrow } from "../services/api.js";
+import { Header2 } from "../components/Header2.js";
+import { Card } from "../components/Card.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -45,13 +46,18 @@ export default class MatchAnnouncementView extends AbstractView {
   createHTML() {
     return /* HTML */ `
       <!-- Match Announcement -->
-      <section>
-        ${Form({
+      <section class="flex flex-col justify-center items-center gap-4">
+        ${Header1({
+          text: i18next.t("global.tournament", {
+            tournamentName: escapeHTML(this.tournament.getTournamentName())
+          })
+        })}
+        ${Header2({
+          text: i18next.t("matchAnnouncementView.nextMatch"),
+          variant: "default"
+        })}
+        ${Card({
           children: [
-            Header1({
-              text: i18next.t("matchAnnouncementView.nextMatch"),
-              variant: "default"
-            }),
             Paragraph({
               text: i18next.t("matchAnnouncementView.roundMatch", {
                 round: this.roundNumber,
@@ -60,22 +66,17 @@ export default class MatchAnnouncementView extends AbstractView {
             }),
             Paragraph({
               text: `<b>${escapeHTML(this.player1)}</b>
-              vs <b>${escapeHTML(this.player2)}</b>`
-            }),
-            Button({
-              text: i18next.t("matchAnnouncementView.startMatch"),
-              variant: "default",
-              type: "submit"
+                  vs <b>${escapeHTML(this.player2)}</b>`
             })
           ],
-          id: "match-form"
+          className: "min-w-md justify-center items-center"
         })}
       </section>
 
       <!-- Tournament Status -->
       <section>
         <div class="pt-18 p-6 text-center space-y-6">
-          ${Header1({
+          ${Header2({
             text: i18next.t("matchAnnouncementView.tournamentStatus"),
             variant: "default"
           })}
@@ -83,7 +84,13 @@ export default class MatchAnnouncementView extends AbstractView {
           <div class="mb-6">${this.tournament.getBracketAsHTML()}</div>
 
           ${Button({
-            id: "abort-tournament",
+            text: i18next.t("matchAnnouncementView.startMatch"),
+            variant: "default",
+            type: "submit",
+            id: "start-match-btn"
+          })}
+          ${Button({
+            id: "abort-tournament-btn",
             text: i18next.t("matchAnnouncementView.abortTournament"),
             variant: "danger",
             type: "button"
@@ -94,12 +101,10 @@ export default class MatchAnnouncementView extends AbstractView {
   }
 
   protected addListeners() {
-    document
-      .getElementById("match-form")
-      ?.addEventListener("submit", (event) => this.callGameView(event));
-    document
-      .getElementById("abort-tournament")
-      ?.addEventListener("click", () => this.abortTournament());
+    const startMatchBtn = getById("start-match-btn");
+    startMatchBtn.addEventListener("click", () => this.callGameView());
+    const abortTournamentBtn = getById("abort-tournament-btn");
+    abortTournamentBtn.addEventListener("click", () => this.abortTournament());
   }
 
   async render() {
@@ -107,8 +112,7 @@ export default class MatchAnnouncementView extends AbstractView {
     this.addListeners();
   }
 
-  private callGameView(event: Event) {
-    event.preventDefault();
+  private callGameView() {
     console.log(
       `Match ${this.matchNumber} started: ${this.player1} vs ${this.player2}`
     );
