@@ -4,7 +4,8 @@ import {
   getTournamentHandler,
   patchTournamentHandler,
   deleteAllTournamentsHandler,
-  deleteTournamentHandler
+  deleteTournamentHandler,
+  patchTournamentMatchHandler
 } from "../controllers/tournaments.controllers.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
 import { errorResponses } from "../utils/error.js";
@@ -17,6 +18,12 @@ export default async function tournamentRoutes(fastify) {
   fastify.get("/:id", optionsGetTournament, getTournamentHandler);
 
   fastify.patch("/:id", optionsPatchTournament, patchTournamentHandler);
+
+  fastify.patch(
+    "/:id/matches/:matchNumber",
+    optionsPatchTournamentMatch,
+    patchTournamentMatchHandler
+  );
 
   fastify.delete("/", optionsDeleteAllTournaments, deleteAllTournamentsHandler);
 
@@ -51,6 +58,24 @@ const optionsPatchTournament = {
     body: { $ref: "patchTournamentSchema" },
     response: {
       200: { $ref: "tournamentResponseSchema" },
+      ...errorResponses
+    }
+  }
+};
+
+const optionsPatchTournamentMatch = {
+  onRequest: [authorizeUserAccess],
+  schema: {
+    params: {
+      type: "object",
+      properties: {
+        id: { $ref: "commonDefinitionsSchema#/definitions/id" },
+        matchNumber: { $ref: "commonDefinitionsSchema#/definitions/id" }
+      }
+    },
+    body: { $ref: "patchTournamentMatchSchema" },
+    response: {
+      201: { $ref: "patchTournamentMatchResponseSchema" },
       ...errorResponses
     }
   }

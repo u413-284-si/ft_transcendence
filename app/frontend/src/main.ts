@@ -61,20 +61,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   auth.onChange(async (isAuth) => {
-    console.info("Layout listener initialized.");
-    if (isAuth) layout.update("auth");
-    else layout.update("guest");
-    await router.refresh();
+    console.info("Auth change listener: layout update.");
+    if (isAuth) {
+      layout.update("auth");
+      await router.refresh();
+    } else {
+      layout.update("guest");
+      await router.reload();
+    }
   });
 
   router.start();
-  auth.initialize().then(() => {
-    auth.onChange(async (isAuth) => {
-      const path = window.location.pathname;
-      if (!isAuth && path !== "/login") {
-        console.log("Redirecting to login");
-        await router.navigate("/login", false);
-      }
-    });
-  });
+  auth.initialize();
 });
