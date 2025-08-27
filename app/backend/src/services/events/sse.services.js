@@ -6,7 +6,7 @@ import {
 } from "./emitter.services.js";
 import { addOnlineUser, removeOnlineUser } from "./presence.services.js";
 
-export async function registerSSEConnection(userId, reply) {
+export async function registerSSEConnection(userId, username, reply) {
   const isFirstConnection = addOnlineUser(userId, reply);
   const emitter = getOrCreateEmitter(userId);
 
@@ -30,22 +30,22 @@ export async function registerSSEConnection(userId, reply) {
     const isOffline = removeOnlineUser(userId, reply);
     if (isOffline) {
       deleteEmitterIfUnused(userId);
-      await notifyFriends(userId, "offline");
+      await notifyFriendStatusChangeEvent(userId, username, "offline");
     }
   });
 
   if (isFirstConnection) {
-    await notifyFriends(userId, "online");
+    await notifyFriendStatusChangeEvent(userId, username, "online");
   }
 }
 
-async function notifyFriends(userId, status) {
+async function notifyFriendStatusChangeEvent(userId, username, status) {
   const friends = await getUserFriends(userId);
 
   for (const friend of friends) {
     emitToUser(friend.friendId, "FriendStatusChangeEvent", {
       requestId: friend.requestId,
-      username: friend.friendUsername,
+      username: username,
       status: status
     });
   }
