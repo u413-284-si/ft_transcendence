@@ -34,7 +34,7 @@ export class Layout {
 
   private styleRootElement(): void {
     this.rootEl.className =
-      "bg-tron-grid text-white min-h-screen min-w-screen flex flex-col font-cyber tracking-widest uppercase";
+      "bg-tron-grid text-white min-h-screen min-w-screen flex flex-col font-cyber tracking-widest";
   }
 
   private renderShell(): void {
