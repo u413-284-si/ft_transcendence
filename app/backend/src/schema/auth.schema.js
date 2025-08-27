@@ -76,11 +76,31 @@ const twoFAPasswordSchema = {
   additionalProperties: false
 };
 
+const statusCheckResponseSchema = {
+  $id: "statusCheckResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: {
+      type: "object",
+      properties: {
+        status: { $ref: "commonDefinitionsSchema#/definitions/tokenStatus" },
+        exp: { type: "integer" }
+      },
+      required: ["status"],
+      additionalProperties: false
+    }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
 export const authSchemas = [
   loginUserSchema,
   loginUserResponseSchema,
   logoutUserResponseSchema,
   twoFACodeSchema,
   twoFABackupCodeSchema,
-  twoFAPasswordSchema
+  twoFAPasswordSchema,
+  statusCheckResponseSchema
 ];
