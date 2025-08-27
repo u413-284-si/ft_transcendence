@@ -23,13 +23,13 @@ export default class NewGameView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
-      ${Header1({
-        text: `${i18next.t("newGameView.title")}`,
-        id: "home-header",
-        variant: "default"
-      })}
       ${Form({
         children: [
+          Header1({
+            text: `${i18next.t("newGameView.title")}`,
+            id: "home-header",
+            variant: "default"
+          }),
           OrderedList({
             children: [
               i18next.t("newGameView.enterNickname"),
