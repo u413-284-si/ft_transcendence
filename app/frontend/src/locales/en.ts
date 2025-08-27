@@ -198,8 +198,7 @@ const en = {
     playerNicknamesView: {
       enterPlayerNicknames: "Enter the players' nicknames",
       title: "Player Nicknames",
-      selectControlledPlayer:
-        "Select which player will be controlled by {{username}}",
+      aiOptions: "Optionally, enable AI to play as the other player(s).",
       submitNicknames: "Submit Nicknames"
     },
 

@@ -168,9 +168,9 @@ const pi: TranslationShape = {
       abortTournament: "Scuttle the Tournament!",
       nextMatch: "Next skirmish to set sail:",
       title: "Upcoming Duel!",
-      roundMatch: "Round {{round}} – Clash {{match}}",
+      roundMatch: "Round {{round}} - Clash {{match}}",
       startMatch: "Hoist the Colors!",
-      tournamentStatus: "State o’ the Tourney"
+      tournamentStatus: "State o' the Tourney"
     },
 
     newGameView: {
@@ -203,7 +203,7 @@ const pi: TranslationShape = {
     playerNicknamesView: {
       enterPlayerNicknames: "Give each swabbie their name",
       title: "Name Yer Crew",
-      selectControlledPlayer: "Choose which deckhand {{username}} will command",
+      aiOptions: "Optional: let the cursed AI take a deckhand!",
       submitNicknames: "Let 'em be known!"
     },
 

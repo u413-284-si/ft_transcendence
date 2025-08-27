@@ -197,13 +197,13 @@ const fr: TranslationShape = {
     playerNicknamesView: {
       enterPlayerNicknames: "Entrez les pseudonymes des joueurs",
       title: "Pseudonymes des joueurs",
-      selectControlledPlayer:
-        "Sélectionnez quel joueur sera contrôlé par {{username}}",
+      aiOptions:
+        "Optionnel : activez l'IA pour contrôler un ou plusieurs d'autres joueurs.",
       submitNicknames: "Valider les pseudonymes"
     },
     profileView: {
       cannotChangeEmailOrPW:
-        "Vous ne pouvez pas changer votre adresse e‑mail ou votre mot de passe.",
+        "Vous ne pouvez pas changer votre adresse e-mail ou votre mot de passe.",
       changeAvatar: "Modifiez votre avatar ci-dessous.",
       changePasswordButton: "Modifier le mot de passe",
       changePassword: "Modifiez votre mot de passe ci-dessous.",

@@ -200,7 +200,7 @@ const tr: TranslationShape = {
     playerNicknamesView: {
       enterPlayerNicknames: "Input operative aliases",
       title: "OPERATIVE ALIASES",
-      selectControlledPlayer: "Select operative controlled by {{username}}",
+      aiOptions: "Optional: let the system AI control one or multiple nodes.",
       submitNicknames: "TRANSMIT ALIASES"
     },
 

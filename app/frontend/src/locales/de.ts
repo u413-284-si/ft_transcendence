@@ -208,8 +208,8 @@ const de: TranslationShape = {
     playerNicknamesView: {
       enterPlayerNicknames: "Gib die Spitznamen der Spieler ein",
       title: "Spieler-Spitznamen",
-      selectControlledPlayer:
-        "Wähle aus, welcher Spieler von {{username}} gesteuert wird",
+      aiOptions:
+        "Optional: KI aktivieren, um einen oder mehrere Spieler steuern zu lassen.",
       submitNicknames: "Spitznamen bestätigen"
     },
 
