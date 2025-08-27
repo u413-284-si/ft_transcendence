@@ -207,7 +207,7 @@ const de: TranslationShape = {
     },
 
     registerView: {
-      register: "Hier registrieren",
+      register: "Registrieren",
       title: "Registrieren"
     },
 

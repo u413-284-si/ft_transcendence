@@ -201,7 +201,7 @@ const en = {
     },
 
     registerView: {
-      register: "Register here",
+      register: "Register",
       title: "Register"
     },
 

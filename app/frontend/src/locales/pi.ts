@@ -204,7 +204,7 @@ const pi: TranslationShape = {
 
     registerView: {
       register: "Join the Crew",
-      title: "Sign the Ship’s Ledger"
+      title: "Sign the Ship's Ledger"
     },
 
     resultsView: {

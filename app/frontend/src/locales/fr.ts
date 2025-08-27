@@ -193,8 +193,8 @@ const fr: TranslationShape = {
       title: "Votre profil"
     },
     registerView: {
-      register: "Inscrivez-vous ici",
-      title: "S’inscrire"
+      register: "Inscrivez-vous",
+      title: "S'inscrire"
     },
     resultsView: {
       bracket: "Arbre du tournoi",
