@@ -19,6 +19,8 @@ import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
 import { auth } from "../AuthManager.js";
 import { getById, getBySelector } from "../utility.js";
+import { OrderedList } from "../components/OrderedList.js";
+import { Card } from "../components/Card.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -36,40 +38,47 @@ export default class NewTournamentView extends AbstractView {
             text: i18next.t("newTournamentView.title"),
             variant: "default"
           }),
-          Paragraph({
-            text: i18next.t("newTournamentView.newTournamentDescription")
+          OrderedList({
+            children: [
+              i18next.t("newTournamentView.enterTournamentName"),
+              i18next.t("newTournamentView.selectNumberPlayers")
+            ]
           }),
-          Input({
-            id: "tournament-name-input",
-            label: i18next.t("newTournamentView.tournamentName"),
-            name: "tournament-name",
-            placeholder: i18next.t("newTournamentView.enterTournamentName"),
-            type: "text",
-            errorId: "tournament-name-error"
-          }),
-          RadioGroup({
-            name: "players",
-            label: i18next.t("newTournamentView.numberOfPlayers"),
-            options: [
-              {
-                id: "players-4",
-                value: "4",
-                label: i18next.t("newTournamentView.players4")
-              },
-              {
-                id: "players-8",
-                value: "8",
-                label: i18next.t("newTournamentView.players8")
-              },
-              {
-                id: "players-16",
-                value: "16",
-                label: i18next.t("newTournamentView.players16")
-              }
-            ],
-            selectedValue: "4",
-            errorId: "player-error",
-            layout: "vertical"
+          Card({
+            children: [
+              Input({
+                id: "tournament-name-input",
+                label: i18next.t("newTournamentView.tournamentName"),
+                name: "tournament-name",
+                placeholder: i18next.t("newTournamentView.enterTournamentName"),
+                type: "text",
+                errorId: "tournament-name-error"
+              }),
+              RadioGroup({
+                name: "players",
+                label: i18next.t("newTournamentView.numberOfPlayers"),
+                options: [
+                  {
+                    id: "players-4",
+                    value: "4",
+                    label: i18next.t("newTournamentView.players4")
+                  },
+                  {
+                    id: "players-8",
+                    value: "8",
+                    label: i18next.t("newTournamentView.players8")
+                  },
+                  {
+                    id: "players-16",
+                    value: "16",
+                    label: i18next.t("newTournamentView.players16")
+                  }
+                ],
+                selectedValue: "4",
+                errorId: "player-error",
+                layout: "vertical"
+              })
+            ]
           }),
           Button({
             text: i18next.t("newTournamentView.startTournament"),

@@ -181,8 +181,7 @@ const tr: TranslationShape = {
     newTournamentView: {
       confirmAbortTournament: "Confirm cancellation of tournament sequence?",
       enterTournamentName: "Input tournament designation",
-      newTournamentDescription:
-        "Set tournament designation and assign operative count",
+      selectNumberPlayers: "Assign operative count",
       title: "NEW TOURNAMENT SEQUENCE",
       numberOfPlayers: "Operatives count",
       players4: "4 operatives",

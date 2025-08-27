@@ -189,8 +189,7 @@ const de: TranslationShape = {
     newTournamentView: {
       confirmAbortTournament: "Möchtest du das Turnier wirklich abbrechen?",
       enterTournamentName: "Gib den Turniernamen ein",
-      newTournamentDescription:
-        "Gib den Turniernamen ein und wähle die Anzahl der Spieler",
+      selectNumberPlayers: "Wähle die Anzahl der Spieler",
       title: "Neues Turnier",
       numberOfPlayers: "Anzahl der Spieler",
       players4: "4 Spieler",

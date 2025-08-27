@@ -178,10 +178,9 @@ const fr: TranslationShape = {
       startGame: "Démarrer le jeu"
     },
     newTournamentView: {
-      confirmAbortTournament: "Voulez-vous vraiment annuler le tournoi ?",
+      confirmAbortTournament: "Voulez-vous vraiment annuler le tournoi ?",
       enterTournamentName: "Entrez le nom du tournoi",
-      newTournamentDescription:
-        "Entrez le nom du tournoi et sélectionnez le nombre de joueurs",
+      selectNumberPlayers: "Sélectionnez le nombre de joueurs",
       title: "Nouveau tournoi",
       numberOfPlayers: "Nombre de joueurs",
       players4: "4 joueurs",

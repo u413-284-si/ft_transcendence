@@ -184,8 +184,7 @@ const pi: TranslationShape = {
     newTournamentView: {
       confirmAbortTournament: "Be ye sure ye want to abandon the tourney?",
       enterTournamentName: "Name this noble contest",
-      newTournamentDescription:
-        "Name yer tournament and choose how many will duel",
+      selectNumberPlayers: "Choose how many will duel",
       title: "Forge a New Tournament",
       numberOfPlayers: "Number o' Buccaneers",
       players4: "4 Scallywags",

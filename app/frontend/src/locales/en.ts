@@ -179,8 +179,7 @@ const en = {
     newTournamentView: {
       confirmAbortTournament: "Do you really want to cancel the tournament?",
       enterTournamentName: "Enter the tournament name",
-      newTournamentDescription:
-        "Enter the tournament name and select the number of players",
+      selectNumberPlayers: "Select the number of players",
       title: "New Tournament",
       numberOfPlayers: "Number of players",
       players4: "4 players",
