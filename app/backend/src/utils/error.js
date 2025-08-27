@@ -28,7 +28,9 @@ export function handleError(err, request, reply) {
   if (reply.raw.headersSent) {
     reply.raw.end();
     return;
-  } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
+  }
+
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
     code = convertPrismaError(err.code);
     cause = err.meta.cause;
   } else if (err.code.startsWith("FST_JWT")) {
