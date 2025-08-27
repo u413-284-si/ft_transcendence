@@ -134,10 +134,14 @@ export class Router {
 
   async refresh() {
     if (!this.currentView) {
-      await this.navigate(window.location.pathname, false);
+      this.handleError("No currentView to render", null);
       return;
     }
-    await this.currentView.render();
+    try {
+      await this.currentView.render();
+    } catch (error) {
+      this.handleError("Error in refresh()", error);
+    }
   }
 
   async handleError(message: string, error: unknown) {
