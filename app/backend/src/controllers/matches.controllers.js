@@ -8,6 +8,7 @@ import { transactionMatch } from "../services/transactions.services.js";
 
 export async function createMatchHandler(request, reply) {
   request.action = "Create match";
+
   const userId = request.user.id;
   const {
     playedAs,
@@ -16,8 +17,7 @@ export async function createMatchHandler(request, reply) {
     player1Type,
     player2Type,
     player1Score,
-    player2Score,
-    tournament
+    player2Score
   } = request.body;
   const date = new Date();
 
@@ -30,7 +30,6 @@ export async function createMatchHandler(request, reply) {
     player2Score,
     player1Type,
     player2Type,
-    tournament,
     date
   );
 

@@ -5,7 +5,7 @@ import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { playedAs, PlayerType } from "./types/IMatch.js";
+import { PlayedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
 import { getById } from "./utility.js";
@@ -25,7 +25,7 @@ export async function startGame(
   nickname2: string,
   type1: PlayerType,
   type2: PlayerType,
-  userRole: playedAs,
+  userRole: PlayedAs,
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
 ) {
@@ -215,32 +215,36 @@ function checkWinner(gameState: GameState) {
 async function endGame(
   gameState: GameState,
   tournament: Tournament | null,
-  userRole: playedAs
+  userRole: PlayedAs
 ) {
   if (tournament) {
-    const matchId = tournament.getNextMatchToPlay()!.matchId;
+    const matchNumber = tournament.getNextMatchToPlay()!.matchNumber;
     const winner =
       gameState.player1Score > gameState.player2Score
         ? gameState.player1
         : gameState.player2;
-    tournament.updateBracketWithResult(matchId, winner);
-    getDataOrThrow(await updateTournamentBracket(tournament));
+    tournament.updateBracketWithResult(matchNumber, winner);
+    getDataOrThrow(
+      await updateTournamentBracket({
+        tournamentId: tournament.getId(),
+        matchNumber,
+        player1Score: gameState.player1Score,
+        player2Score: gameState.player2Score
+      })
+    );
+  } else {
+    getDataOrThrow(
+      await createMatch({
+        playedAs: userRole,
+        player1Nickname: gameState.player1,
+        player2Nickname: gameState.player2,
+        player1Score: gameState.player1Score,
+        player2Score: gameState.player2Score,
+        player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
+        player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN"
+      })
+    );
   }
-
-  getDataOrThrow(
-    await createMatch({
-      playedAs: userRole,
-      player1Nickname: gameState.player1,
-      player2Nickname: gameState.player2,
-      player1Score: gameState.player1Score,
-      player2Score: gameState.player2Score,
-      player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
-      player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN",
-      tournament: tournament
-        ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
-        : null
-    })
-  );
 
   await waitForEnterKey();
 }
