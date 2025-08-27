@@ -249,8 +249,12 @@ export default class SettingsView extends AbstractView {
       );
       addTogglePasswordListener(this.twoFAPasswordInputEl.id);
       addCloseModalListener(this.twoFAModalEl.id);
-      this.twoFAModalEl.addEventListener("close", () => this.clearQRCode());
-      this.twoFAModalEl.addEventListener("cancel", () => this.clearQRCode());
+      this.twoFAModalEl.addEventListener("close", () =>
+        this.clearTwoFASetupData()
+      );
+      this.twoFAModalEl.addEventListener("cancel", () =>
+        this.clearTwoFASetupData()
+      );
       addCloseModalListener(this.twoFAPasswordModalEl.id);
       this.twoFAPasswordModalEl.addEventListener("close", () =>
         this.clearPassword()
@@ -561,6 +565,16 @@ export default class SettingsView extends AbstractView {
   private clearPassword(): void {
     this.twoFAPasswordInputEl.value = "";
     clearInvalid(this.twoFAPasswordInputEl, this.twoFAPasswordInputErrorEl);
+  }
+
+  private clearTwoFACode(): void {
+    this.twoFACodeInputEl.value = "";
+    clearInvalid(this.twoFACodeInputEl, this.twoFACodeInputErrorEl);
+  }
+
+  private clearTwoFASetupData(): void {
+    this.clearQRCode();
+    this.clearTwoFACode();
   }
 
   private async displayTwoFAPasswordModal(
