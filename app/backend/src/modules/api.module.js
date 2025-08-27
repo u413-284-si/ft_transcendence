@@ -28,7 +28,7 @@ export default async function apiModule(fastify) {
     }
   });
 
-  fastify.decorateRequest("action", null);
+  fastify.decorateRequest("action", "Unknown action");
   fastify.setErrorHandler(handleError);
   await fastify.register(authModule);
 
