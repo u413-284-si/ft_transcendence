@@ -129,7 +129,7 @@ const pi: TranslationShape = {
 
     loginView: {
       title: "Board the Ship",
-      usernameOrEmail: "Pirate name or message bottle address:"
+      usernameOrEmail: "Pirate name or message bottle address"
     },
 
     twoFAVerifyView: {
