@@ -3,6 +3,7 @@ import { getCSSColorWithAlpha, getCSSVar } from "./utility.js";
 import type { Point } from "./types/IGameState.js";
 
 const trail: Point[] = [];
+let ballJustReset: boolean = false;
 
 export function draw(
   ctx: CanvasRenderingContext2D,
@@ -28,11 +29,11 @@ function drawBallWithTrail(
 ) {
   const maxTrailLength = 15;
 
-  if (!gameState.ballJustReset) {
+  if (!ballJustReset) {
     trail.push({ x: interp.ballX, y: interp.ballY });
     if (trail.length > maxTrailLength) trail.shift();
   } else {
-    gameState.ballJustReset = false;
+    ballJustReset = false;
   }
 
   ctx.save();
@@ -181,4 +182,5 @@ export function render(
 
 export function clearBallTrail() {
   trail.length = 0;
+  ballJustReset = false;
 }

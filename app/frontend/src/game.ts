@@ -73,7 +73,7 @@ function initGameState(
     player2: player2,
     player1Score: 0,
     player2Score: 0,
-    winningScore: 1, // FIXME: needs to be a higher value
+    winningScore: 10, // FIXME: needs to be a higher value
     canvasHeight: canvas.height,
     canvasWidth: canvas.width,
     ballX: 0,
@@ -82,7 +82,6 @@ function initGameState(
     initialBallSpeed: 380,
     ballSpeedX: initialBallDirection,
     ballSpeedY: 0,
-    ballJustReset: false,
     paddle1X: 10,
     paddle1Y: canvas.height / 2 - 40,
     paddle2X: canvas.width - 20,
@@ -202,7 +201,7 @@ function resetBall(gameState: GameState) {
 
   gameState.ballSpeedX = direction * speed * Math.cos(angle);
   gameState.ballSpeedY = speed * Math.sin(angle);
-  gameState.ballJustReset = true;
+
   clearBallTrail();
 }
 

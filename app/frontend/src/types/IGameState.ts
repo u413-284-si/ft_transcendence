@@ -15,7 +15,6 @@ export interface GameState {
   initialBallSpeed: number; // pixel/second
   ballSpeedX: number; // pixel/second
   ballSpeedY: number; // pixel/second
-  ballJustReset: boolean;
   paddle1X: number;
   paddle1Y: number;
   paddle2X: number;
