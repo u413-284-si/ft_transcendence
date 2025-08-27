@@ -1,5 +1,5 @@
 import {
-  authAndDecodeAccessHandler,
+  checkTokenStatusHandler,
   authRefreshHandler,
   loginUserHandler,
   logoutUserHandler,
@@ -22,7 +22,7 @@ import env from "../config/env.js";
 export default async function authRoutes(fastify) {
   fastify.post("/login", optionsloginUser, loginUserHandler);
 
-  fastify.get("/token", optionsAuthUserAccess, authAndDecodeAccessHandler);
+  fastify.get("/status", optionsCheckTokenStatus, checkTokenStatusHandler);
 
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
 
@@ -65,10 +65,10 @@ const optionsloginUser = {
   }
 };
 
-const optionsAuthUserAccess = {
-  onRequest: [authorizeUserAccess],
+const optionsCheckTokenStatus = {
   schema: {
     response: {
+      200: { $ref: "statusCheckResponseSchema" },
       ...errorResponses
     }
   }
