@@ -160,19 +160,33 @@ export async function googleOauth2LoginHandler(request, reply) {
   }
 }
 
-export async function authAndDecodeAccessHandler(request, reply) {
-  const action = "Auth and decode access token";
+export async function checkTokenStatusHandler(request, reply) {
+  const action = "Check token status";
   try {
-    const data = request.user;
-    return reply
-      .code(200)
-      .send({ message: createResponseMessage(action, true), data });
+    const payload = await request.accessTokenVerify();
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: { status: "valid", exp: payload.exp }
+    });
   } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `authAndDecodeAccessHandler: ${createResponseMessage(action, false)}`
-    );
-    handlePrismaError(reply, action, err);
+    let status = "undefined";
+    if (err.code === "FST_JWT_NO_AUTHORIZATION_IN_COOKIE") {
+      status = "none";
+    } else if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
+      status = "expired";
+    } else if (
+      err.code === "FST_JWT_AUTHORIZATION_TOKEN_INVALID" ||
+      err.code === "FST_JWT_AUTHORIZATION_TOKEN_UNTRUSTED" ||
+      err.code === "FAST_JWT_MISSING_SIGNATURE"
+    ) {
+      status = "invalid";
+    } else {
+      throw err;
+    }
+    return reply.code(200).send({
+      message: createResponseMessage(action, true),
+      data: { status }
+    });
   }
 }
 
