@@ -11,7 +11,6 @@ import {
 } from "../validate.js";
 import ResultsView from "./ResultsView.js";
 import { Header1 } from "../components/Header1.js";
-import { Paragraph } from "../components/Paragraph.js";
 import { Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { RadioGroup } from "../components/RadioGroup.js";
