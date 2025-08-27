@@ -180,8 +180,9 @@ const de: TranslationShape = {
 
     newGameView: {
       title: "Neues Spiel",
-      selectPlayer:
-        "Wähle aus, welcher Spieler von {{username}} gesteuert wird",
+      enterNickname: "Gib für jeden Spieler einen Spitznamen ein.",
+      selectPlayer: "Wähle, welcher Spieler von {{username}} gesteuert wird.",
+      aiOption: "Optional: KI aktivieren, um den anderen Spieler zu steuern.",
       startGame: "Spiel starten"
     },
 

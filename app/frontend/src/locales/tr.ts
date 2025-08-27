@@ -172,7 +172,9 @@ const tr: TranslationShape = {
 
     newGameView: {
       title: "NEW SESSION",
-      selectPlayer: "Assign control to operative {{username}}",
+      enterNickname: "Enter your operative alias code.",
+      selectPlayer: "Assign control to operative {{username}}.",
+      aiOption: "Optional: let the system AI control the other node.",
       startGame: "BEGIN SESSION"
     },
 

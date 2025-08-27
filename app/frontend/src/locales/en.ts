@@ -170,7 +170,9 @@ const en = {
 
     newGameView: {
       title: "New Game",
-      selectPlayer: "Select which player will be controlled by {{username}}",
+      enterNickname: "Enter a nickname for each player.",
+      selectPlayer: "Select which player will be controlled by {{username}}.",
+      aiOption: "Optionally, enable AI to play as the other player.",
       startGame: "Start Game"
     },
 

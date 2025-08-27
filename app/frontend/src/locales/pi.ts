@@ -175,7 +175,9 @@ const pi: TranslationShape = {
 
     newGameView: {
       title: "Raise the Jolly Roger!",
-      selectPlayer: "Choose which salty dog {{username}} will command",
+      enterNickname: "Give each swabbie a name, ye scallywag!",
+      selectPlayer: "Choose which salty dog {{username}} will command!",
+      aiOption: "Optional: let the cursed AI take the other deckhand!",
       startGame: "Set Sail!"
     },
 

@@ -7,10 +7,11 @@ import {
   initNicknameInputListeners,
   NicknameInput
 } from "../components/NicknameInput.js";
-import { Paragraph } from "../components/Paragraph.js";
 import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
+import { Header1 } from "../components/Header1.js";
+import { OrderedList } from "../components/OrderedList.js";
 
 export default class NewGameView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -22,12 +23,21 @@ export default class NewGameView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
+      ${Header1({
+        text: `${i18next.t("newGameView.title")}`,
+        id: "home-header",
+        variant: "default"
+      })}
       ${Form({
         children: [
-          Paragraph({
-            text: i18next.t("newGameView.selectPlayer", {
-              username: escapeHTML(auth.getUser().username)
-            })
+          OrderedList({
+            children: [
+              i18next.t("newGameView.enterNickname"),
+              i18next.t("newGameView.selectPlayer", {
+                username: escapeHTML(auth.getUser().username)
+              }),
+              i18next.t("newGameView.aiOption")
+            ]
           }),
           NicknameInput(2, auth.getUser().username),
           Button({

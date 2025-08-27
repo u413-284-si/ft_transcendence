@@ -172,7 +172,9 @@ const fr: TranslationShape = {
     },
     newGameView: {
       title: "Nouveau jeu",
-      selectPlayer: "Sélectionnez quel joueur sera contrôlé par {{username}}",
+      enterNickname: "Entrez un pseudonyme pour chaque joueur.",
+      selectPlayer: "Sélectionnez quel joueur sera contrôlé par {{username}}.",
+      aiOption: "Optionnel : activez l'IA pour contrôler l'autre joueur.",
       startGame: "Démarrer le jeu"
     },
     newTournamentView: {
