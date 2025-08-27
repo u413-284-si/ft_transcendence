@@ -8,8 +8,8 @@ export type Header1Options = {
 };
 
 const headerVariants: Record<HeaderVariant, string> = {
-  default: "text-4xl font-bold text-white",
-  error: "text-4xl font-bold text-neon-red",
+  default: "text-4xl font-bold text-white uppercase mb-8",
+  error: "text-4xl font-bold text-neon-red uppercase mb-8",
   username: "text-3xl font-bold text-neon-cyan normal-case"
 };
 

@@ -23,12 +23,12 @@ export default class Register extends AbstractView {
 
   createHTML(): string {
     return /* HTML */ `
+      ${Header1({
+        text: i18next.t("registerView.register"),
+        variant: "default"
+      })}
       ${Form({
         children: [
-          Header1({
-            text: i18next.t("registerView.register"),
-            variant: "default"
-          }),
           Input({
             id: "email",
             label: i18next.t("global.label", {
