@@ -134,7 +134,7 @@ export class Router {
 
   async refresh() {
     if (!this.currentView) {
-      this.handleError("No currentView to render", null);
+      this.reload();
       return;
     }
     try {
