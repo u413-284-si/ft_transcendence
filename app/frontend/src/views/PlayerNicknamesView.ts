@@ -8,7 +8,6 @@ import { auth } from "../AuthManager.js";
 import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { NicknameInput } from "../components/NicknameInput.js";
 import { Header1 } from "../components/Header1.js";
-import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
