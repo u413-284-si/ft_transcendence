@@ -190,7 +190,7 @@ const en = {
 
     nicknameInput: {
       enterYourNickname: "Enter your nickname",
-      playerChoice: "I am playing as player {{i}}",
+      playerChoice: "{{username}} is playing as player {{i}}",
       playerNickname: "Player {{i}}'s nickname"
     },
 

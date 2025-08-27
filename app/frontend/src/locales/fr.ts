@@ -190,7 +190,7 @@ const fr: TranslationShape = {
     },
     nicknameInput: {
       enterYourNickname: "Entrez votre pseudonyme",
-      playerChoice: "Je joue en tant que joueur {{i}}",
+      playerChoice: "{{username}} joue en tant que joueur {{i}}",
       playerNickname: "Pseudonyme du joueur {{i}}"
     },
     playerNicknamesView: {

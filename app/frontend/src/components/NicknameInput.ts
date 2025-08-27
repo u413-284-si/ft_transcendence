@@ -3,14 +3,14 @@ import { Checkbox } from "./Checkbox.js";
 import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
 
-export function NicknameInput(players: number): string {
+export function NicknameInput(players: number, username: string): string {
   let nicknameInputs = "";
   for (let i = 1; i <= players; i++) {
     const isChecked = i === 1 ? true : false;
 
     nicknameInputs += /* HTML */ `
       <div
-        class="border border-teal p-4 rounded shadow-sm flex flex-col space-y-4"
+        class="bg-emerald-dark/60 border border-neon-cyan rounded-lg p-4 flex flex-col space-y-4"
       >
         ${Input({
           id: `nickname${i}`,
@@ -24,7 +24,10 @@ export function NicknameInput(players: number): string {
           id: `choice-${i}`,
           name: "userChoice",
           value: `${i}`,
-          label: i18next.t("nicknameInput.playerChoice", { i: i }),
+          label: i18next.t("nicknameInput.playerChoice", {
+            username: username,
+            i: i
+          }),
           checked: isChecked
         })}
         ${Checkbox({

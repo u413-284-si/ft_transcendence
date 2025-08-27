@@ -29,7 +29,7 @@ export default class NewGameView extends AbstractView {
               username: escapeHTML(auth.getUser().username)
             })
           }),
-          NicknameInput(2),
+          NicknameInput(2, auth.getUser().username),
           Button({
             text: i18next.t("newGameView.startGame"),
             variant: "default",

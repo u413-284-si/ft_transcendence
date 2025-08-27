@@ -201,7 +201,7 @@ const de: TranslationShape = {
 
     nicknameInput: {
       enterYourNickname: "Gib deinen Spitznamen ein",
-      playerChoice: "Ich spiele als Spieler {{i}}",
+      playerChoice: "{{username}} spielt als Spieler {{i}}",
       playerNickname: "Spitzname von Spieler {{i}}"
     },
 

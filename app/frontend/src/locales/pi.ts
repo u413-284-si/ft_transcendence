@@ -195,7 +195,7 @@ const pi: TranslationShape = {
 
     nicknameInput: {
       enterYourNickname: "Give us yer pirate alias",
-      playerChoice: "I be playin’ as buccaneer {{i}}",
+      playerChoice: "{{username}} be playin' as buccaneer {{i}}",
       playerNickname: "Name fer pirate {{i}}"
     },
 

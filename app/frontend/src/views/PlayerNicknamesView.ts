@@ -44,7 +44,7 @@ export default class PlayerNicknamesView extends AbstractView {
               username: escapeHTML(auth.getUser().username)
             })
           }),
-          NicknameInput(this.numberOfPlayers),
+          NicknameInput(this.numberOfPlayers, auth.getUser().username),
           Button({
             text: i18next.t("playerNicknamesView.submitNicknames"),
             variant: "default",

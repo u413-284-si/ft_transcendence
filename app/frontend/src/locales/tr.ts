@@ -192,7 +192,7 @@ const tr: TranslationShape = {
 
     nicknameInput: {
       enterYourNickname: "Enter your operative alias",
-      playerChoice: "Operating as agent {{i}}",
+      playerChoice: "{{username}} operates as agent {{i}}",
       playerNickname: "Agent {{i}} alias"
     },
 
