@@ -16,6 +16,7 @@ export const errorResponses = {
 
 export function handleError(err, request, reply) {
   request.log.error({
+    action: request.action,
     method: request.method,
     url: request.url,
     params: request.params,
