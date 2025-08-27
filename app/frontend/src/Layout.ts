@@ -116,7 +116,7 @@ export class Layout {
     return /* HTML */ ` <div
       class="container mx-auto flex justify-center space-x-8"
     >
-      <p class="text-sm">${i18next.t("global.pongGame")} &copy; 2025</p>
+      <p class="text-md">${i18next.t("global.pongGame")} &copy; 2025</p>
     </div>`;
   }
 
