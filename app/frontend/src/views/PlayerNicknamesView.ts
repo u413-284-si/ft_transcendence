@@ -86,13 +86,13 @@ export default class PlayerNicknamesView extends AbstractView {
     console.log(userNickname);
 
     try {
-      const userId = auth.getToken().id;
+      //const userId = auth.getToken().id;
       const tournament = Tournament.fromUsernames(
         nicknames,
         this.tournamentName,
         this.numberOfPlayers,
         userNickname,
-        userId
+        1
       );
 
       const createdTournament = getDataOrThrow(
