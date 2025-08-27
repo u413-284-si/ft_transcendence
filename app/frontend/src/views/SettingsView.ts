@@ -11,7 +11,7 @@ import {
   removeTwoFA,
   verifyTwoFACodeAndGetBackupCodes
 } from "../services/authServices.js";
-import { markInvalid, validateTwoFACode } from "../validate.js";
+import { clearInvalid, markInvalid, validateTwoFACode } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { router } from "../routing/Router.js";
 import { Link } from "../components/Link.js";
@@ -249,29 +249,29 @@ export default class SettingsView extends AbstractView {
       );
       addTogglePasswordListener(this.twoFAPasswordInputEl.id);
       addCloseModalListener(this.twoFAModalEl.id);
-      this.twoFAModalEl.addEventListener("close", () => this.clearQRCode);
-      this.twoFAModalEl.addEventListener("cancel", () => this.clearQRCode);
-      addCloseModalListener(this.twoFAPasswordModalEl.id);
-      this.twoFAPasswordModalEl.addEventListener(
-        "close",
-        () => this.clearPassword
+      this.twoFAModalEl.addEventListener("close", () =>
+        this.clearTwoFASetupData()
       );
-      this.twoFAPasswordModalEl.addEventListener(
-        "cancel",
-        () => this.clearPassword
+      this.twoFAModalEl.addEventListener("cancel", () =>
+        this.clearTwoFASetupData()
+      );
+      addCloseModalListener(this.twoFAPasswordModalEl.id);
+      this.twoFAPasswordModalEl.addEventListener("close", () =>
+        this.clearPassword()
+      );
+      this.twoFAPasswordModalEl.addEventListener("cancel", () =>
+        this.clearPassword()
       );
       if (this.hasTwoFA()) {
         this.twoFAGenerateBackupCodesButtonEl.addEventListener("click", () =>
           this.displayTwoFAPasswordModal("backupCodes")
         );
         addCloseModalListener(this.twoFABackupCodesModalEl.id);
-        this.twoFABackupCodesModalEl.addEventListener(
-          "close",
-          () => this.clearBackupCodesTable
+        this.twoFABackupCodesModalEl.addEventListener("close", () =>
+          this.clearBackupCodesTable()
         );
-        this.twoFABackupCodesModalEl.addEventListener(
-          "cancel",
-          () => this.clearBackupCodesTable
+        this.twoFABackupCodesModalEl.addEventListener("cancel", () =>
+          this.clearBackupCodesTable()
         );
       }
     }
@@ -564,6 +564,17 @@ export default class SettingsView extends AbstractView {
 
   private clearPassword(): void {
     this.twoFAPasswordInputEl.value = "";
+    clearInvalid(this.twoFAPasswordInputEl, this.twoFAPasswordInputErrorEl);
+  }
+
+  private clearTwoFACode(): void {
+    this.twoFACodeInputEl.value = "";
+    clearInvalid(this.twoFACodeInputEl, this.twoFACodeInputErrorEl);
+  }
+
+  private clearTwoFASetupData(): void {
+    this.clearQRCode();
+    this.clearTwoFACode();
   }
 
   private async displayTwoFAPasswordModal(
