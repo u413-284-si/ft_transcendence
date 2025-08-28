@@ -75,7 +75,8 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
-    const decodedAccessToken = request.accessTokenDecode(accessToken);
+    request.cookies.accessToken = accessToken;
+    const decodedAccessToken = await request.accessTokenDecode();
 
     return reply
       .setAuthCookies(accessToken, refreshToken)
@@ -231,7 +232,8 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
-    const decodedAccessToken = await request.accessTokenDecode(accessToken);
+    request.cookies.accessToken = accessToken;
+    const decodedAccessToken = await request.accessTokenDecode();
     return reply
       .setAuthCookies(accessToken, refreshToken)
       .code(200)
@@ -382,7 +384,8 @@ export async function twoFABackupCodeVerifyHandler(request, reply) {
       reply,
       payload
     );
-    const decodedAccessToken = request.accessTokenDecode(accessToken);
+    request.cookies.accessToken = accessToken;
+    const decodedAccessToken = await request.accessTokenDecode();
     reply.clearCookie("twoFALoginToken", {
       httpOnly: true,
       secure: true,
@@ -435,7 +438,8 @@ export async function twoFALoginVerifyHandler(request, reply) {
       reply,
       payload
     );
-    const decodedAccessToken = request.accessTokenDecode(accessToken);
+    request.cookies.accessToken = accessToken;
+    const decodedAccessToken = await request.accessTokenDecode();
     reply.clearCookie("twoFALoginToken", {
       httpOnly: true,
       secure: true,
@@ -452,7 +456,7 @@ export async function twoFALoginVerifyHandler(request, reply) {
           token: {
             status: "valid",
             type: decodedAccessToken.type,
-            epx: decodedAccessToken.exp
+            exp: decodedAccessToken.exp
           }
         }
       });
