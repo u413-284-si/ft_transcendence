@@ -222,10 +222,18 @@ export async function authRefreshHandler(request, reply) {
       reply,
       payload
     );
+    const decodedAccessToken = await request.accessTokenDecode(accessToken);
     return reply
       .setAuthCookies(accessToken, refreshToken)
       .code(200)
-      .send({ message: createResponseMessage(action, true) });
+      .send({
+        message: createResponseMessage(action, true),
+        data: {
+          status: "valid",
+          type: decodedAccessToken.type,
+          exp: decodedAccessToken.exp
+        }
+      });
   } catch (err) {
     request.log.error(
       { err, body: request.body },
