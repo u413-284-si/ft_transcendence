@@ -5,7 +5,7 @@ import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { playedAs, PlayerType } from "./types/IMatch.js";
+import { PlayedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { AIPlayer } from "./AIPlayer.js";
 import { getById } from "./utility.js";
@@ -25,7 +25,7 @@ export async function startGame(
   nickname2: string,
   type1: PlayerType,
   type2: PlayerType,
-  userRole: playedAs,
+  userRole: PlayedAs,
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
 ) {
@@ -67,7 +67,8 @@ function initGameState(
   aiPlayer1: AIPlayer | null,
   aiPlayer2: AIPlayer | null
 ): GameState {
-  return {
+  const initialBallDirection = Math.random() * 2 - 1;
+  const gameState: GameState = {
     player1: player1,
     player2: player2,
     player1Score: 0,
@@ -75,11 +76,12 @@ function initGameState(
     winningScore: 1, // FIXME: needs to be a higher value
     canvasHeight: canvas.height,
     canvasWidth: canvas.width,
-    ballX: canvas.width / 2,
-    ballY: canvas.height / 2,
+    ballX: 0,
+    ballY: 0,
     ballRadius: 10,
-    ballSpeedX: 380,
-    ballSpeedY: 380,
+    initialBallSpeed: 380,
+    ballSpeedX: initialBallDirection,
+    ballSpeedY: 0,
     paddle1X: 10,
     paddle1Y: canvas.height / 2 - 40,
     paddle2X: canvas.width - 20,
@@ -90,8 +92,13 @@ function initGameState(
     gameOver: false,
     keys: keys,
     aiPlayer1: aiPlayer1,
-    aiPlayer2: aiPlayer2
+    aiPlayer2: aiPlayer2,
+    speedUpFactor: 1.05,
+    maxBounceAngle: Math.PI / 4
   };
+  resetBall(gameState);
+
+  return gameState;
 }
 
 function runGameLoop(
@@ -182,7 +189,18 @@ function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
 function resetBall(gameState: GameState) {
   gameState.ballX = gameState.canvasWidth / 2;
   gameState.ballY = gameState.canvasHeight / 2;
-  gameState.ballSpeedX *= -1; // Change direction after scoring
+
+  const minAngle = Math.PI / 18; // 10°
+  const maxAngle = Math.PI / 8; // 22.5°
+
+  const sign = Math.random() < 0.5 ? -1 : 1;
+
+  const angle = sign * (minAngle + Math.random() * (maxAngle - minAngle));
+  const speed = gameState.initialBallSpeed;
+  const direction = Math.sign(gameState.ballSpeedX) * -1;
+
+  gameState.ballSpeedX = direction * speed * Math.cos(angle);
+  gameState.ballSpeedY = speed * Math.sin(angle);
 }
 
 function checkWinner(gameState: GameState) {
@@ -197,32 +215,36 @@ function checkWinner(gameState: GameState) {
 async function endGame(
   gameState: GameState,
   tournament: Tournament | null,
-  userRole: playedAs
+  userRole: PlayedAs
 ) {
   if (tournament) {
-    const matchId = tournament.getNextMatchToPlay()!.matchId;
+    const matchNumber = tournament.getNextMatchToPlay()!.matchNumber;
     const winner =
       gameState.player1Score > gameState.player2Score
         ? gameState.player1
         : gameState.player2;
-    tournament.updateBracketWithResult(matchId, winner);
-    getDataOrThrow(await updateTournamentBracket(tournament));
+    tournament.updateBracketWithResult(matchNumber, winner);
+    getDataOrThrow(
+      await updateTournamentBracket({
+        tournamentId: tournament.getId(),
+        matchNumber,
+        player1Score: gameState.player1Score,
+        player2Score: gameState.player2Score
+      })
+    );
+  } else {
+    getDataOrThrow(
+      await createMatch({
+        playedAs: userRole,
+        player1Nickname: gameState.player1,
+        player2Nickname: gameState.player2,
+        player1Score: gameState.player1Score,
+        player2Score: gameState.player2Score,
+        player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
+        player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN"
+      })
+    );
   }
-
-  getDataOrThrow(
-    await createMatch({
-      playedAs: userRole,
-      player1Nickname: gameState.player1,
-      player2Nickname: gameState.player2,
-      player1Score: gameState.player1Score,
-      player2Score: gameState.player2Score,
-      player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
-      player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN",
-      tournament: tournament
-        ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
-        : null
-    })
-  );
 
   await waitForEnterKey();
 }
@@ -243,7 +265,17 @@ function handlePaddleCollision(
   gameState: GameState,
   paddle: "paddle1" | "paddle2"
 ) {
-  const { ballX, ballY, ballRadius, paddleHeight, paddleWidth } = gameState;
+  const {
+    ballX,
+    ballY,
+    ballRadius,
+    ballSpeedX,
+    ballSpeedY,
+    paddleHeight,
+    paddleWidth,
+    speedUpFactor,
+    maxBounceAngle
+  } = gameState;
 
   const paddleX =
     paddle === "paddle1" ? gameState.paddle1X : gameState.paddle2X;
@@ -260,7 +292,18 @@ function handlePaddleCollision(
     return;
   }
 
-  gameState.ballSpeedX *= -1;
+  const halfPaddle = paddleHeight / 2;
+  const paddleCenter = paddleY + halfPaddle;
+  const offset = (ballY - paddleCenter) / halfPaddle;
+  const bounceAngle = offset * maxBounceAngle;
+
+  const originalSpeed = Math.hypot(ballSpeedX, ballSpeedY);
+  const newSpeed = originalSpeed * speedUpFactor;
+
+  const newDirection = ballSpeedX > 0 ? -1 : 1;
+
+  gameState.ballSpeedX = newDirection * newSpeed * Math.cos(bounceAngle);
+  gameState.ballSpeedY = newSpeed * Math.sin(bounceAngle);
 
   gameState.ballX =
     gameState.ballSpeedX > 0

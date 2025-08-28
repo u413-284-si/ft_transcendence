@@ -1,132 +1,60 @@
-import type { TournamentDTO } from "./types/ITournament.ts";
-import type { BracketMatch } from "./types/IMatch.ts";
+import type { TournamentRead } from "./types/ITournament.ts";
 import type { BracketLayout } from "./types/BracketLayout.ts";
+import type { BracketMatchRead } from "./types/BracketMatch.ts";
 
 export class Tournament {
   private matchSlotMap: Record<
     number,
-    { slot1?: BracketMatch; slot2?: BracketMatch }
+    { slot1?: BracketMatchRead; slot2?: BracketMatchRead }
   > = {};
+  private tournamentId: number;
   private tournamentName: string;
   private numberOfPlayers: number;
-  private userId: number;
   private userNickname: string;
   private roundReached: number;
-  private bracket: BracketMatch[];
-  private tournamentId?: number;
+  private bracket: BracketMatchRead[];
 
-  constructor(
-    tournamentName: string,
-    numberOfPlayers: number,
-    userId: number,
-    userNickname: string,
-    roundReached: number,
-    bracket: BracketMatch[],
-    tournamentId?: number
-  ) {
-    this.tournamentName = tournamentName;
-    this.numberOfPlayers = numberOfPlayers;
-    this.userId = userId;
+  constructor({
+    id,
+    name,
+    maxPlayers,
+    userNickname,
+    roundReached,
+    bracket
+  }: TournamentRead) {
+    this.tournamentId = id;
+    this.tournamentName = name;
+    this.numberOfPlayers = maxPlayers;
     this.userNickname = userNickname;
     this.roundReached = roundReached;
     this.bracket = bracket;
-    this.tournamentId = tournamentId;
     this.buildMatchSlotMap();
   }
 
-  static fromUsernames(
-    playerNicknames: string[],
-    tournamentName: string,
-    numberOfPlayers: number,
-    userNickname: string,
-    userId: number,
-    roundReached: number = 1
-  ): Tournament {
-    const bracket = Tournament.generateBracket(
-      playerNicknames,
-      numberOfPlayers
-    );
-    return new Tournament(
-      tournamentName,
-      numberOfPlayers,
-      userId,
-      userNickname,
-      roundReached,
-      bracket
-    );
-  }
-
-  private static generateBracket(
-    playerNicknames: string[],
-    numberOfPlayers: number
-  ): BracketMatch[] {
-    const totalRounds = Math.log2(numberOfPlayers);
-    const bracket: BracketMatch[] = [];
-    let currentMatchId = 1;
-
-    const roundMatches: number[][] = [];
-    let matchCount = numberOfPlayers / 2;
-
-    for (let round = 1; round <= totalRounds; round++) {
-      const matchIds: number[] = [];
-      for (let i = 0; i < matchCount; i++) {
-        bracket.push({
-          matchId: currentMatchId,
-          round,
-          player1: null,
-          player2: null,
-          winner: null
-        });
-        matchIds.push(currentMatchId++);
-      }
-      roundMatches.push(matchIds);
-      matchCount = matchCount / 2;
-    }
-
-    // Link nextMatchId and winnerSlot
-    for (let r = 0; r < roundMatches.length - 1; r++) {
-      const current = roundMatches[r];
-      const next = roundMatches[r + 1];
-
-      for (let i = 0; i < current.length; i++) {
-        const match = bracket.find((m) => m.matchId === current[i])!;
-        match.nextMatchId = next[Math.floor(i / 2)];
-        match.winnerSlot = i % 2 === 0 ? 1 : 2;
-      }
-    }
-
-    // Assign usernames to round 1
-    const shuffled = this.shuffle(playerNicknames, false);
-    const firstRound = roundMatches[0];
-
-    for (let i = 0; i < shuffled.length; i += 2) {
-      const match = bracket.find((m) => m.matchId === firstRound[i / 2])!;
-      const nickname1 = shuffled[i];
-      const nickname2 = shuffled[i + 1];
-
-      match.player1 = nickname1;
-      match.player2 = nickname2;
-    }
-
-    return bracket;
-  }
-
-  public updateBracketWithResult(matchId: number, winner: string): void {
+  public updateBracketWithResult(matchNumber: number, winner: string): void {
     const updated = this.bracket.map((m) => ({ ...m })); // clone
 
-    const match = updated.find((m) => m.matchId === matchId);
+    const match = updated.find((m) => m.matchNumber === matchNumber);
     if (!match) throw new Error(i18next.t("error.matchNotFound"));
 
     match.winner = winner;
 
-    if (match.nextMatchId && match.winnerSlot) {
-      const nextMatch = updated.find((m) => m.matchId === match.nextMatchId);
+    if (match.nextMatchNumber && match.winnerSlot) {
+      const playerType =
+        winner === match.player1Nickname
+          ? match.player1Type
+          : match.player2Type;
+      const nextMatch = updated.find(
+        (m) => m.matchNumber === match.nextMatchNumber
+      );
       if (!nextMatch) throw new Error(i18next.t("error.nextMatchNotFound"));
 
       if (match.winnerSlot === 1) {
-        nextMatch.player1 = winner;
+        nextMatch.player1Nickname = winner;
+        nextMatch.player1Type = playerType;
       } else {
-        nextMatch.player2 = winner;
+        nextMatch.player2Nickname = winner;
+        nextMatch.player2Type = playerType;
       }
     }
 
@@ -138,35 +66,28 @@ export class Tournament {
     }
   }
 
-  public getNextMatchToPlay(): BracketMatch | null {
+  public getNextMatchToPlay(): BracketMatchRead | null {
     return (
       this.bracket
         .filter(
           (match) =>
-            match.player1 !== null &&
-            match.player2 !== null &&
+            match.player1Nickname !== null &&
+            match.player2Nickname !== null &&
             match.winner === null
         )
         .sort((a, b) => {
           // Prioritize by round, then matchId
           if (a.round !== b.round) return a.round - b.round;
-          return a.matchId - b.matchId;
+          return a.matchNumber - b.matchNumber;
         })[0] || null
     );
   }
 
-  public getBracket(): BracketMatch[] {
+  public getBracket(): BracketMatchRead[] {
     return this.bracket;
   }
 
-  public setId(Id: number): void {
-    this.tournamentId = Id;
-  }
-
   public getId(): number {
-    if (!this.tournamentId) {
-      throw new Error(i18next.t("error.tournamentIDNotFound"));
-    }
     return this.tournamentId;
   }
 
@@ -178,34 +99,8 @@ export class Tournament {
     return this.roundReached;
   }
 
-  public toJSON(): TournamentDTO {
-    return {
-      name: this.tournamentName,
-      maxPlayers: this.numberOfPlayers,
-      userId: this.userId,
-      userNickname: this.userNickname,
-      roundReached: this.roundReached,
-      bracket: JSON.stringify(this.bracket)
-    };
-  }
-
-  public static shuffle(array: string[], inPlace: boolean = true): string[] {
-    // If we don't want to modify the original, copy it
-    const result = inPlace ? array : [...array];
-
-    for (let i = result.length - 1; i > 0; i--) {
-      // Pick a random index from 0 to i
-      const j = Math.floor(Math.random() * (i + 1));
-
-      // Swap elements result[i] and result[j]
-      [result[i], result[j]] = [result[j], result[i]];
-    }
-
-    return result;
-  }
-
   public getTournamentWinner(): string | null {
-    const finalMatch = this.bracket.find((match) => !match.nextMatchId);
+    const finalMatch = this.bracket.find((match) => !match.nextMatchNumber);
     return finalMatch?.winner ?? null;
   }
 
@@ -223,7 +118,7 @@ export class Tournament {
     const totalRounds = Object.keys(matchesByRound).length;
 
     const nextMatch = this.getNextMatchToPlay();
-    const nextMatchId = nextMatch?.matchId;
+    const nextMatchId = nextMatch?.matchNumber;
 
     const rounds: BracketLayout["rounds"] = [];
 
@@ -232,27 +127,27 @@ export class Tournament {
 
       const matches = roundMatches.map((match) => {
         const isPlayed = !!match.winner;
-        const isNext = match.matchId === nextMatchId;
-        const matchSlots = this.matchSlotMap[match.matchId];
+        const isNext = match.matchNumber === nextMatchId;
+        const matchSlots = this.matchSlotMap[match.matchNumber];
 
         const player1Text =
-          match.player1 ??
+          match.player1Nickname ??
           (matchSlots?.slot1
             ? i18next.t("global.winnerMatch", {
-                matchId: matchSlots.slot1.matchId
+                matchId: matchSlots.slot1.matchNumber
               })
             : i18next.t("global.toBeDefined"));
 
         const player2Text =
-          match.player2 ??
+          match.player2Nickname ??
           (matchSlots?.slot2
             ? i18next.t("global.winnerMatch", {
-                matchId: matchSlots.slot2.matchId
+                matchId: matchSlots.slot2.matchNumber
               })
             : i18next.t("global.toBeDefined"));
 
         return {
-          matchId: match.matchId,
+          matchId: match.matchNumber,
           player1Text,
           player2Text,
           isPlayed,
@@ -363,13 +258,13 @@ export class Tournament {
     this.matchSlotMap = {};
 
     for (const match of this.bracket) {
-      if (!match.nextMatchId || !match.winnerSlot) {
+      if (!match.nextMatchNumber || !match.winnerSlot) {
         continue;
       }
-      this.matchSlotMap[match.nextMatchId] ??= {};
+      this.matchSlotMap[match.nextMatchNumber] ??= {};
 
       const slotKey = match.winnerSlot === 1 ? "slot1" : "slot2";
-      this.matchSlotMap[match.nextMatchId][slotKey] = match;
+      this.matchSlotMap[match.nextMatchNumber][slotKey] = match;
     }
   }
 }

@@ -45,19 +45,12 @@ const matchSchema = {
       $ref: "commonDefinitionsSchema#/definitions/datetime",
       description: "The date-time of the match"
     },
-    tournament: {
+    tournamentName: {
       oneOf: [
-        {
-          type: "object",
-          properties: {
-            id: { $ref: "commonDefinitionsSchema#/definitions/id" },
-            name: { type: "string" }
-          },
-          required: ["id", "name"]
-        },
+        { $ref: "tournamentDefinitionsSchema#/definitions/tournamentName" },
         { type: "null" }
       ],
-      description: "The tournament details if this match belongs to one"
+      description: "The tournament name if this match belongs to one"
     }
   },
   required: [
@@ -66,6 +59,8 @@ const matchSchema = {
     "player2Nickname",
     "player1Score",
     "player2Score",
+    "player1Type",
+    "player2Type",
     "date"
   ],
   additionalProperties: false
@@ -129,10 +124,6 @@ export const createMatchSchema = {
     player2Score: {
       $ref: "commonDefinitionsSchema#/definitions/score",
       description: "The score of player 2 in the match"
-    },
-    tournament: {
-      oneOf: [{ $ref: "idSchema" }, { type: "null" }],
-      description: "The tournament id if this match belongs to one"
     }
   },
   required: [
@@ -140,7 +131,9 @@ export const createMatchSchema = {
     "player1Nickname",
     "player2Nickname",
     "player1Score",
-    "player2Score"
+    "player2Score",
+    "player1Type",
+    "player2Type"
   ],
   additionalProperties: false
 };
