@@ -20,9 +20,10 @@ const loginUserResponseSchema = {
       type: "object",
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-        hasTwoFA: { type: "boolean" }
+        hasTwoFA: { type: "boolean" },
+        token: { oneOf: [{ $ref: "tokenSchema" }, { type: "null" }] }
       },
-      required: ["username", "hasTwoFA"]
+      required: ["username", "token"]
     }
   },
   required: ["message", "data"],
