@@ -63,6 +63,11 @@ const commonDefinitionsSchema = {
       enum: ["valid", "none", "invalid", "expired"],
       description: "Possible values for status check of access token"
     },
+    tokenType: {
+      type: "string",
+      enum: ["access", "refresh", "twoFALogin"],
+      description: "Different types of tokens used"
+    },
     score: {
       type: "integer",
       minimum: 0,

@@ -166,7 +166,7 @@ export async function checkRefreshTokenStatusHandler(request, reply) {
     const payload = await request.refreshTokenVerify();
     return reply.code(200).send({
       message: createResponseMessage(action, true),
-      data: { status: "valid", exp: payload.exp }
+      data: { status: "valid", type: payload.type, exp: payload.exp }
     });
   } catch (err) {
     let status = "undefined";
