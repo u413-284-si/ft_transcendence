@@ -160,10 +160,10 @@ export async function googleOauth2LoginHandler(request, reply) {
   }
 }
 
-export async function checkTokenStatusHandler(request, reply) {
-  const action = "Check token status";
+export async function checkRefreshTokenStatusHandler(request, reply) {
+  const action = "Check refresh token status";
   try {
-    const payload = await request.accessTokenVerify();
+    const payload = await request.refreshTokenVerify();
     return reply.code(200).send({
       message: createResponseMessage(action, true),
       data: { status: "valid", exp: payload.exp }

@@ -1,5 +1,5 @@
 import {
-  checkTokenStatusHandler,
+  checkRefreshTokenStatusHandler,
   authRefreshHandler,
   loginUserHandler,
   logoutUserHandler,
@@ -22,9 +22,13 @@ import env from "../config/env.js";
 export default async function authRoutes(fastify) {
   fastify.post("/login", optionsloginUser, loginUserHandler);
 
-  fastify.get("/status", optionsCheckTokenStatus, checkTokenStatusHandler);
-
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
+
+  fastify.get(
+    "/refresh/status",
+    optionsCheckRefreshTokenStatus,
+    checkRefreshTokenStatusHandler
+  );
 
   fastify.post("/2fa/qrcode", optionsTwoFAQRCode, twoFAQRCodeHandler);
 
@@ -65,7 +69,7 @@ const optionsloginUser = {
   }
 };
 
-const optionsCheckTokenStatus = {
+const optionsCheckRefreshTokenStatus = {
   schema: {
     response: {
       200: { $ref: "statusCheckResponseSchema" },
