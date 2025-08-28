@@ -276,7 +276,7 @@ const pi: TranslationShape = {
       friendOnly:
         "Ye must be true mates to lay eyes on these secret scrolls o' stats!",
       friends: "Mates",
-      joined: "Swore the Oath on {{date}}",
+      joined: "Join'd on {{date}}",
       matches: "Battles",
       matchHistory: "Past Duels",
       played: "Engaged",
