@@ -8,6 +8,8 @@ import { Header2 } from "../components/Header2.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { getDataOrThrow } from "../services/api.js";
+import { Card } from "../components/Card.js";
+import { Header3 } from "../components/Header3.js";
 
 export default class ResultsView extends AbstractView {
   constructor(private tournament: Tournament) {
@@ -25,29 +27,37 @@ export default class ResultsView extends AbstractView {
             id: "tournament-results-header",
             variant: "default"
           })}
-          ${Paragraph({
+          ${Header2({
             text: `${i18next.t("global.tournament", { tournamentName: escapeHTML(this.tournament.getTournamentName()) })}`,
-            id: "tournament-name"
+            id: "tournament-name",
+            className: "mb-4"
           })}
         </div>
 
         <!-- Winner Section -->
-        <div class="p-6 text-center space-y-4">
-          ${Header2({
-            text: i18next.t("resultsView.champion"),
-            id: "tournament-champion-header",
-            variant: "default"
-          })}
-          ${Paragraph({
-            text: `🏆 ${escapeHTML(this.tournament.getTournamentWinner())} 🏆`,
-            id: "tournament-champion"
-          })}
-          ${Paragraph({
-            text: i18next.t("resultsView.congratulations"),
-            id: "congratulations-text"
+        <div
+          class="flex flex-col justify-center items-center p-6 text-center space-y-4"
+        >
+          ${Card({
+            children: [
+              Header2({
+                text: i18next.t("resultsView.champion"),
+                id: "tournament-champion-header",
+                variant: "default"
+              }),
+              Header3({
+                text: `🏆 ${escapeHTML(this.tournament.getTournamentWinner())} 🏆`,
+                id: "tournament-champion",
+                className: "text-white"
+              }),
+              Paragraph({
+                text: i18next.t("resultsView.congratulations"),
+                id: "congratulations-text"
+              })
+            ],
+            className: "border-neon-green px-8 py-4"
           })}
         </div>
-
         <!-- Bracket Section -->
         <div class="rounded-2xl shadow p-6 text-center space-y-2">
           ${Header2({
