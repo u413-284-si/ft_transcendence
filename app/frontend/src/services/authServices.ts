@@ -1,5 +1,5 @@
 import { apiFetch } from "./api.js";
-import { Token } from "../types/Token.js";
+import { Token, ValidToken } from "../types/Token.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 
 export async function checkRefreshTokenStatus(): Promise<ApiResponse<Token>> {
@@ -15,10 +15,10 @@ export async function checkRefreshTokenStatus(): Promise<ApiResponse<Token>> {
   );
 }
 
-export async function refreshAccessToken(): Promise<ApiResponse<null>> {
+export async function refreshAccessToken(): Promise<ApiResponse<ValidToken>> {
   const url = "/api/auth/refresh";
 
-  return apiFetch<null>(
+  return apiFetch<ValidToken>(
     url,
     {
       method: "GET",
@@ -31,10 +31,12 @@ export async function refreshAccessToken(): Promise<ApiResponse<null>> {
 export async function userLogin(
   usernameOrEmail: string,
   password: string
-): Promise<ApiResponse<{ username: string; hasTwoFA: boolean }>> {
+): Promise<
+  ApiResponse<{ username: string; hasTwoFA: boolean; token?: ValidToken }>
+> {
   const url = "/api/auth/login";
 
-  return apiFetch<{ username: string; hasTwoFA: boolean }>(
+  return apiFetch<{ username: string; hasTwoFA: boolean; token?: ValidToken }>(
     url,
     {
       method: "POST",
@@ -108,10 +110,10 @@ export async function generateBackupCodes(
 
 export async function verifyBackupCode(
   backupCode: string
-): Promise<ApiResponse<null>> {
+): Promise<ApiResponse<{ username: string; token: ValidToken }>> {
   const url = "/api/auth/2fa/login/backupCode";
 
-  return apiFetch<null>(
+  return apiFetch<{ username: string; token: ValidToken }>(
     url,
     {
       method: "POST",
@@ -124,10 +126,10 @@ export async function verifyBackupCode(
 
 export async function verifyLoginTwoFACode(
   code: string
-): Promise<ApiResponse<null>> {
+): Promise<ApiResponse<{ username: string; token: ValidToken }>> {
   const url = "/api/auth/2fa/login/";
 
-  return apiFetch<null>(
+  return apiFetch<{ username: string; token: ValidToken }>(
     url,
     {
       method: "POST",
