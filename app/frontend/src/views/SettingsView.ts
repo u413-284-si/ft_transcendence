@@ -244,9 +244,9 @@ export default class SettingsView extends AbstractView {
       this.twoFAFormEl.addEventListener("submit", (event) =>
         this.callTwoFAFormAction(event)
       );
-      this.twoFAPasswordFormEl.addEventListener("submit", (event) => {
-        this.callPasswordFormAction(event);
-      });
+      this.twoFAPasswordFormEl.addEventListener("submit", (event) =>
+        this.callPasswordFormAction(event)
+      );
       addTogglePasswordListener(this.twoFAPasswordInputEl.id);
       addCloseModalListener(this.twoFAModalEl.id);
       this.twoFAModalEl.addEventListener("close", () =>
