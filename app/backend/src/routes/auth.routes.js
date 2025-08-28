@@ -46,7 +46,7 @@ export default async function authRoutes(fastify) {
 
   fastify.post("/2fa/enable", optionsEnableTwoFA, enableTwoFAHandler);
 
-  fastify.post("/2fa/login/", optionsTwoFALoginVerify, twoFALoginVerifyHandler);
+  fastify.post("/2fa/login", optionsTwoFALoginVerify, twoFALoginVerifyHandler);
 
   fastify.post("/2fa/disable", optionsTwoFARemove, twoFARemoveHandler);
 
