@@ -80,67 +80,78 @@ export default class FriendsView extends AbstractView {
 
   createHTML(): string {
     return /* HTML */ `
-      <section>
-        <div class="flex flex-col justify-center items-center gap-4 mb-12">
-          ${Header1({
-            text: i18next.t("friendsView.yourFriends"),
-            id: "friends-header",
-            variant: "default"
-          })}
-          <div id="friend-list">${this.createRequestListHTML("friend")}</div>
-        </div>
-      </section>
-
-      <section>
-        ${Form({
-          children: [
-            Header1({
-              text: i18next.t("friendsView.addFriend"),
-              id: "send-request-header",
-              variant: "default"
-            }),
-            Input({
-              id: "username-input",
-              type: "text",
-              placeholder: i18next.t("friendsView.exactUsername"),
-              label: i18next.t("global.username"),
-              errorId: "username-error"
-            }),
-            Button({
-              id: "send-request-btn",
-              text: i18next.t("friendsView.sendFriendRequest"),
-              variant: "default",
-              size: "md",
-              type: "submit"
-            })
-          ],
-          id: "send-request-form"
-        })}
-      </section>
-
-      <section>
-        <div class="flex flex-col justify-center items-center gap-4">
-          ${Header1({
-            text: i18next.t("friendsView.friendRequests"),
-            id: "friends-request-header",
-            variant: "default"
-          })}
-          <div class="mb-4">
-            ${Header2({
-              text: i18next.t("friendsView.incomingRequests"),
-              variant: "default"
-            })}
-            <div id="request-list-in">
-              ${this.createRequestListHTML("incoming")}
+      <section class="max-w-7xl mx-auto px-4 py-10">
+        <div class="flex flex-col md:flex-row gap-48 items-start">
+          <!-- Left Column: Friends List -->
+          <div class="flex-1">
+            <div class="flex flex-col gap-4 mb-12">
+              ${Header1({
+                text: i18next.t("friendsView.yourFriends"),
+                id: "friends-header",
+                variant: "default"
+              })}
+              <div id="friend-list">
+                ${this.createRequestListHTML("friend")}
+              </div>
             </div>
           </div>
-          <div>
-            ${Header2({
-              text: i18next.t("friendsView.outgoingRequests"),
-              variant: "default"
+
+          <!-- Right Column: Add Friend + Friend Requests -->
+          <div class="flex-1 flex flex-col gap-10">
+            <!-- Add Friend Form -->
+            ${Form({
+              children: [
+                Header1({
+                  text: i18next.t("friendsView.addFriend"),
+                  id: "send-request-header",
+                  variant: "default"
+                }),
+                Input({
+                  id: "username-input",
+                  type: "text",
+                  placeholder: i18next.t("friendsView.exactUsername"),
+                  label: i18next.t("global.username"),
+                  errorId: "username-error"
+                }),
+                Button({
+                  id: "send-request-btn",
+                  text: i18next.t("friendsView.sendFriendRequest"),
+                  variant: "default",
+                  size: "md",
+                  type: "submit"
+                })
+              ],
+              className: "flex flex-col justify-center items-start gap-4 mb-12",
+              id: "send-request-form"
             })}
-            <div id="request-list-out">
-              ${this.createRequestListHTML("outgoing")}
+
+            <!-- Friend Requests -->
+            <div class="flex flex-col gap-4">
+              ${Header1({
+                text: i18next.t("friendsView.friendRequests"),
+                id: "friends-request-header",
+                variant: "default"
+              })}
+
+              <div class="space-y-6 mb-8">
+                ${Header2({
+                  text: i18next.t("friendsView.incomingRequests"),
+                  variant: "default"
+                })}
+                <div id="request-list-in">
+                  ${this.createRequestListHTML("incoming")}
+                </div>
+              </div>
+
+              <div class="space-y-6 mb-8">
+                ${Header2({
+                  text: i18next.t("friendsView.outgoingRequests"),
+                  variant: "default"
+                })}
+                <div id="request-list-out">
+                  ${this.createRequestListHTML("outgoing")}
+                </div>
+              </div>
             </div>
           </div>
         </div>
