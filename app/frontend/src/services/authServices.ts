@@ -127,7 +127,7 @@ export async function verifyBackupCode(
 export async function verifyLoginTwoFACode(
   code: string
 ): Promise<ApiResponse<{ username: string; token: ValidToken }>> {
-  const url = "/api/auth/2fa/login/";
+  const url = "/api/auth/2fa/login";
 
   return apiFetch<{ username: string; token: ValidToken }>(
     url,
