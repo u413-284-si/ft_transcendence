@@ -128,6 +128,7 @@ const optionsTwoFALoginVerify = {
   schema: {
     body: { $ref: "twoFACodeSchema" },
     response: {
+      200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
   }
@@ -158,6 +159,7 @@ const optionsTwoFABackupCodesVerify = {
   schema: {
     body: { $ref: "twoFABackupCodeSchema" },
     response: {
+      200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
   }

@@ -67,7 +67,7 @@ export async function loginUserHandler(request, reply) {
         .code(200)
         .send({
           message: createResponseMessage(action, true),
-          data: { username: payload.username, hasTwoFA: hasTwoFA }
+          data: { username: payload.username, hasTwoFA: hasTwoFA, token: null }
         });
     }
 
@@ -75,13 +75,22 @@ export async function loginUserHandler(request, reply) {
       reply,
       payload
     );
+    const decodedAccessToken = request.accessTokenDecode(accessToken);
 
     return reply
       .setAuthCookies(accessToken, refreshToken)
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: payload.username, hasTwoFA: hasTwoFA }
+        data: {
+          username: payload.username,
+          hasTwoFA: hasTwoFA,
+          token: {
+            status: "valid",
+            type: decodedAccessToken.type,
+            exp: decodedAccessToken.exp
+          }
+        }
       });
   } catch (err) {
     request.log.error(
@@ -373,6 +382,7 @@ export async function twoFABackupCodeVerifyHandler(request, reply) {
       reply,
       payload
     );
+    const decodedAccessToken = request.accessTokenDecode(accessToken);
     reply.clearCookie("twoFALoginToken", {
       httpOnly: true,
       secure: true,
@@ -384,7 +394,14 @@ export async function twoFABackupCodeVerifyHandler(request, reply) {
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: username }
+        data: {
+          username: username,
+          token: {
+            status: "valid",
+            type: decodedAccessToken.type,
+            exp: decodedAccessToken.exp
+          }
+        }
       });
   } catch (err) {
     request.log.error(
@@ -418,6 +435,7 @@ export async function twoFALoginVerifyHandler(request, reply) {
       reply,
       payload
     );
+    const decodedAccessToken = request.accessTokenDecode(accessToken);
     reply.clearCookie("twoFALoginToken", {
       httpOnly: true,
       secure: true,
@@ -429,7 +447,14 @@ export async function twoFALoginVerifyHandler(request, reply) {
       .code(200)
       .send({
         message: createResponseMessage(action, true),
-        data: { username: username }
+        data: {
+          username: username,
+          token: {
+            status: "valid",
+            type: decodedAccessToken.type,
+            epx: decodedAccessToken.exp
+          }
+        }
       });
   } catch (err) {
     request.log.error(
