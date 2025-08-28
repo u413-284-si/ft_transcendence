@@ -150,7 +150,7 @@ const fr: TranslationShape = {
     },
     loginView: {
       title: "Connexion",
-      usernameOrEmail: "Nom d’utilisateur ou adresse e‑mail"
+      usernameOrEmail: "Nom ou adresse mail"
     },
     twoFAVerifyView: {
       title: "Vérification du code 2FA",
@@ -204,17 +204,16 @@ const fr: TranslationShape = {
     profileView: {
       cannotChangeEmailOrPW:
         "Vous ne pouvez pas changer votre adresse e-mail ou votre mot de passe.",
-      changeAvatar: "Modifiez votre avatar ci-dessous.",
+      changeAvatar: "Modifiez votre avatar.",
       changePasswordButton: "Modifier le mot de passe",
-      changePassword: "Modifiez votre mot de passe ci-dessous.",
-      chooseFile: "Choisissez un fichier image pour votre avatar",
+      changePassword: "Modifiez votre mot de passe.",
+      chooseFile: "Choisissez un fichier image",
       currentPassword: "Mot de passe actuel",
       newPassword: "Nouveau mot de passe",
       noFileSelected: "Aucun fichier sélectionné",
-      saveChanges: "Enregistrer les modifications",
+      saveChanges: "Enregistrer",
       signedInWithGoogle: "Connecté avec Google",
-      updateProfile:
-        "Mettez à jour les informations de votre profil ci-dessous.",
+      updateProfile: "Mettez à jour votre profil.",
       uploadYourAvatar: "Téléchargez votre avatar",
       title: "Votre profil"
     },

@@ -205,16 +205,16 @@ const en = {
     profileView: {
       cannotChangeEmailOrPW:
         "You cannot change your email address or password.",
-      changeAvatar: "Change your avatar below.",
+      changeAvatar: "Change your avatar.",
       changePasswordButton: "Change Password",
-      changePassword: "Change your password below.",
+      changePassword: "Change your password.",
       chooseFile: "Choose an image file for your avatar",
       currentPassword: "Current Password",
       newPassword: "New Password",
       noFileSelected: "No file selected",
       saveChanges: "Save Changes",
       signedInWithGoogle: "Signed in with Google",
-      updateProfile: "Update your profile information below.",
+      updateProfile: "Update your profile information.",
       uploadYourAvatar: "Upload your avatar",
       title: "Your Profile"
     },

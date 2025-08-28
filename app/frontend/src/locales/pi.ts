@@ -149,7 +149,7 @@ const pi: TranslationShape = {
 
     loginView: {
       title: "Board the Ship",
-      usernameOrEmail: "Pirate name or message bottle address"
+      usernameOrEmail: "Pirate name or address"
     },
 
     twoFAVerifyView: {
@@ -209,17 +209,17 @@ const pi: TranslationShape = {
 
     profileView: {
       cannotChangeEmailOrPW: "Yer bottle code and secret phrase be fixed!",
-      changeAvatar: "Change yer Jolly Roger below",
+      changeAvatar: "Change yer Jolly Roger.",
       changePasswordButton: "Change Secret Phrase",
-      changePassword: "Swap yer secret below",
+      changePassword: "Swap yer secret.",
       chooseFile: "Pick an image fer yer pirate flag",
       currentPassword: "Old Code",
       newPassword: "New Secret Phrase",
       noFileSelected: "No treasure map selected",
       saveChanges: "Stash Yer Changes",
       signedInWithGoogle: "Boarded via Google raft",
-      updateProfile: "Update yer scroll of records below",
-      uploadYourAvatar: "Raise yer avatar to the crow’s nest!",
+      updateProfile: "Update yer scroll of records.",
+      uploadYourAvatar: "Raise yer avatar!",
       title: "Yer Scroll of Legend"
     },
 

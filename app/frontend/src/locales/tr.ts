@@ -207,16 +207,16 @@ const tr: TranslationShape = {
     profileView: {
       cannotChangeEmailOrPW:
         "Data address and access code alterations are locked.",
-      changeAvatar: "Override avatar below.",
+      changeAvatar: "Override avatar.",
       changePasswordButton: "MODIFY ACCESS CODE",
-      changePassword: "Update your access code below.",
+      changePassword: "Update your access code.",
       chooseFile: "Select image file for avatar override",
       currentPassword: "Current Access Code",
       newPassword: "New Access Code",
       noFileSelected: "No file detected",
       saveChanges: "COMMIT CHANGES",
       signedInWithGoogle: "Connected via Google Network",
-      updateProfile: "Update your profile matrix below.",
+      updateProfile: "Update your profile matrix.",
       uploadYourAvatar: "Upload your avatar data",
       title: "USER PROFILE"
     },

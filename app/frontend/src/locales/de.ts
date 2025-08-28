@@ -154,7 +154,7 @@ const de: TranslationShape = {
 
     loginView: {
       title: "Anmelden",
-      usernameOrEmail: "Benutzername oder E-Mail-Adresse"
+      usernameOrEmail: "Nutzername oder Mail-Adresse"
     },
 
     twoFAVerifyView: {
@@ -216,16 +216,16 @@ const de: TranslationShape = {
     profileView: {
       cannotChangeEmailOrPW:
         "Du kannst deine E-Mail-Adresse oder dein Passwort nicht ändern.",
-      changeAvatar: "Ändere deinen Avatar unten.",
+      changeAvatar: "Ändere deinen Avatar.",
       changePasswordButton: "Passwort ändern",
-      changePassword: "Ändere dein Passwort unten.",
-      chooseFile: "Wähle eine Bilddatei für deinen Avatar",
+      changePassword: "Ändere dein Passwort.",
+      chooseFile: "Wähle ein Bild für deinen Avatar",
       currentPassword: "Aktuelles Passwort",
       newPassword: "Neues Passwort",
       noFileSelected: "Keine Datei ausgewählt",
       saveChanges: "Änderungen speichern",
       signedInWithGoogle: "Mit Google angemeldet",
-      updateProfile: "Aktualisiere unten deine Profilinformationen.",
+      updateProfile: "Aktualisiere dein Profil.",
       uploadYourAvatar: "Lade deinen Avatar hoch",
       title: "Dein Profil"
     },
