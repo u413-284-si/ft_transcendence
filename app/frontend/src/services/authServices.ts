@@ -2,13 +2,17 @@ import { apiFetch } from "./api.js";
 import { Token } from "../types/Token.js";
 import { ApiResponse } from "../types/IApiResponse.js";
 
-export async function authAndDecodeAccessToken(): Promise<ApiResponse<Token>> {
-  const url = "/api/auth/token";
+export async function checkRefreshTokenStatus(): Promise<ApiResponse<Token>> {
+  const url = "/api/auth/refresh/status";
 
-  return apiFetch<Token>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
+  return apiFetch<Token>(
+    url,
+    {
+      method: "GET",
+      credentials: "same-origin"
+    },
+    false
+  );
 }
 
 export async function refreshAccessToken(): Promise<ApiResponse<null>> {
