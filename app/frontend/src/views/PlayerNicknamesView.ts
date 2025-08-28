@@ -29,27 +29,27 @@ export default class PlayerNicknamesView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
+      ${Header1({
+        text: i18next.t("playerNicknamesView.enterPlayerNicknames"),
+        variant: "default"
+      })}
+      ${Header2({
+        text: i18next.t("global.tournament", {
+          tournamentName: escapeHTML(this.tournamentName)
+        }),
+        className: "mb-4"
+      })}
+      ${OrderedList({
+        children: [
+          i18next.t("newGameView.enterNickname"),
+          i18next.t("newGameView.selectPlayer", {
+            username: escapeHTML(auth.getUser().username)
+          }),
+          i18next.t("playerNicknamesView.aiOptions")
+        ]
+      })}
       ${Form({
         children: [
-          Header1({
-            text: i18next.t("playerNicknamesView.enterPlayerNicknames"),
-            variant: "default"
-          }),
-          Header2({
-            text: i18next.t("global.tournament", {
-              tournamentName: escapeHTML(this.tournamentName)
-            }),
-            className: "mb-4"
-          }),
-          OrderedList({
-            children: [
-              i18next.t("newGameView.enterNickname"),
-              i18next.t("newGameView.selectPlayer", {
-                username: escapeHTML(auth.getUser().username)
-              }),
-              i18next.t("playerNicknamesView.aiOptions")
-            ]
-          }),
           NicknameInput(this.numberOfPlayers, auth.getUser().username),
           Button({
             text: i18next.t("playerNicknamesView.submitNicknames"),

@@ -7,7 +7,7 @@ export type OrderedListOptions = {
 
 export function OrderedList({
   children,
-  className = "text-md text-grey list-decimal list-outside space-y-1",
+  className = "text-md text-grey list-decimal list-inside space-y-1 mb-4",
   id = "",
   start
 }: OrderedListOptions): string {

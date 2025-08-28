@@ -11,7 +11,7 @@ export function Card({
 }: CardOptions): string {
   const idAttr = id ? `id="${id}"` : "";
   const baseStyles =
-    "bg-emerald-dark/60 border border-neon-cyan rounded-lg p-4 flex flex-col space-y-4";
+    "bg-emerald-dark/60 border border-neon-cyan rounded-lg px-8 py-6 flex flex-col space-y-4 mb-4";
   const classes = `${baseStyles} ${className}`.trim();
 
   return `
