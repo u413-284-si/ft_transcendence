@@ -100,13 +100,11 @@ export default class ProfileView extends AbstractView {
     const user = auth.getUser();
 
     return /* HTML */ `
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div
-          class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start"
-        >
+      <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="flex flex-col md:flex-row gap-10 items-start">
           <!-- Avatar Section -->
           <div
-            class="md:col-span-7 flex flex-col sm:flex-row gap-8 sm:gap-12 items-center sm:items-start"
+            class="md:w-2/3 flex flex-col sm:flex-row gap-8 sm:gap-12 items-center sm:items-start"
           >
             <!-- Avatar Image -->
             <img
@@ -116,7 +114,7 @@ export default class ProfileView extends AbstractView {
             />
 
             <!-- Avatar Upload Form -->
-            <div class="flex flex-col w-full max-w-xs">
+            <div class="flex flex-col w-full max-w-md">
               ${Form({
                 id: "avatar-upload-form",
                 className: "flex flex-col gap-4",
@@ -146,7 +144,7 @@ export default class ProfileView extends AbstractView {
           </div>
 
           <!-- Profile and Password Forms -->
-          <div class="md:col-span-5 flex flex-col gap-16 sm:gap-24">
+          <div class="md:w-1/3 flex flex-col gap-16 sm:gap-24">
             ${Form({
               id: "profile-form",
               className: "flex flex-col gap-4",
