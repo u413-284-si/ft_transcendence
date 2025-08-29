@@ -6,7 +6,10 @@ import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
 import { escapeHTML, getAllBySelector, getById } from "../utility.js";
-import { NicknameInput } from "../components/NicknameInput.js";
+import {
+  initNicknameInputListeners,
+  NicknameInput
+} from "../components/NicknameInput.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
@@ -61,6 +64,7 @@ export default class PlayerNicknamesView extends AbstractView {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartTournament(event)
     );
+    initNicknameInputListeners();
   }
 
   async render() {
