@@ -191,7 +191,7 @@ export default class FriendsView extends AbstractView {
     }
 
     return `
-    <ul class="space-y-4">
+    <ul class="space-y-4 overflow-scroll h-80 w-xl">
       ${filtered.map((r) => FriendListItem(r, type)).join("")}
     </ul>
   `;
