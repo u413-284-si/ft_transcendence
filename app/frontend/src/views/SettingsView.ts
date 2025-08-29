@@ -457,7 +457,7 @@ export default class SettingsView extends AbstractView {
 
       this.twoFAPasswordModalEl.close();
       this.twoFAModalEl.showModal();
-      this.twoFACodeInputEl.focus();
+      if (!this.hasTwoFA()) this.twoFACodeInputEl.focus();
     } catch (error) {
       router.handleError("Error in displayTwoFASetup()", error);
     }
