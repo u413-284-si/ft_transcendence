@@ -20,10 +20,10 @@ template_config {
 
 template {
   source      = "/vault/templates/cert.ctmpl"
-  destination = "/etc/nginx/certs/fullchain.pem"
+  destination = "/vault/certs/fullchain.pem"
 }
 
 template {
   source      = "/vault/templates/key.ctmpl"
-  destination = "/etc/nginx/certs/key.pem"
+  destination = "/vault/certs/key.pem"
 }

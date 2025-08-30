@@ -80,7 +80,7 @@ services:
       - ./vault-agent/config/agent.hcl:/vault/config/agent.hcl:ro
       - ./vault-agent/templates:/vault/templates:ro
       - vault-secrets:/vault/secrets
-      - certs:/etc/nginx/certs
+      - certs:/vault/certs
     command: agent -config=/vault/config/agent.hcl
     depends_on:
       - vault
