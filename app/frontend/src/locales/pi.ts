@@ -98,8 +98,8 @@ const pi: TranslationShape = {
         "Tournament: Fight through many rounds 'til one pirate claims the booty.",
 
       faqControlsTitle: "Ship Controls",
-      faqControlsRightPaddle: "Arrow Keys ↑ ↓ : Steer right paddle",
-      faqControlsLeftPaddle: "W / S : Steer left paddle",
+      faqControlsRightPaddle: "Steer right paddle: Arrow Keys ↑ ↓",
+      faqControlsLeftPaddle: "Steer left paddle: W / S",
 
       faqTipsTitle: "Seafarin' Tips",
       faqTips1: "Predict the ball's course instead o' chasin' it.",

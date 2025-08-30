@@ -99,8 +99,8 @@ const de: TranslationShape = {
         "Turnier: Spiele mehrere Runden, bis ein Champion übrig bleibt.",
 
       faqControlsTitle: "Steuerung",
-      faqControlsRightPaddle: "Pfeiltasten ↑ ↓: Rechten Schläger bewegen",
-      faqControlsLeftPaddle: "W / S: Linken Schläger bewegen",
+      faqControlsRightPaddle: "Rechten Schläger bewegen: Pfeiltasten ↑ ↓",
+      faqControlsLeftPaddle: "Linken Schläger bewegen: W / S",
 
       faqTipsTitle: "Tipps",
       faqTips1:

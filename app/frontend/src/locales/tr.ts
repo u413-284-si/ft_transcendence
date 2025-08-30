@@ -97,8 +97,8 @@ const tr: TranslationShape = {
         "Tournament: Compete in multiple cycles until one master node remains.",
 
       faqControlsTitle: "CONTROLS",
-      faqControlsRightPaddle: "Arrow Keys ↑ ↓: Move right paddle",
-      faqControlsLeftPaddle: "W / S: Move left paddle",
+      faqControlsRightPaddle: "Move right paddle: Arrow Keys ↑ ↓",
+      faqControlsLeftPaddle: "Move left paddle: W / S",
 
       faqTipsTitle: "TACTICAL ADVICE",
       faqTips1: "Predict the balls trajectory instead of chasing it.",

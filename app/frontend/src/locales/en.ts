@@ -94,8 +94,8 @@ const en = {
         "Tournament: Compete in multiple rounds until one champion remains.",
 
       faqControlsTitle: "Controls",
-      faqControlsRightPaddle: "Arrow Keys ↑ ↓: Move right paddle",
-      faqControlsLeftPaddle: "W / S: Move left paddle",
+      faqControlsRightPaddle: "Move right paddle: Arrow Keys ↑ ↓",
+      faqControlsLeftPaddle: "Move left paddle: W / S",
 
       faqTipsTitle: "Tips",
       faqTips1: "Predict the ball's path instead of chasing it.",

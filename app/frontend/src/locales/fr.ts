@@ -94,8 +94,8 @@ const fr: TranslationShape = {
         "Tournoi : affrontez plusieurs manches jusqu'à ce qu'il ne reste qu'un champion.",
 
       faqControlsTitle: "Contrôles",
-      faqControlsRightPaddle: "Flèches ↑ ↓ : Déplacer la raquette droite",
-      faqControlsLeftPaddle: "W / S : Déplacer la raquette gauche",
+      faqControlsRightPaddle: "Déplacer la raquette droite : Flèches ↑ ↓ ",
+      faqControlsLeftPaddle: "Déplacer la raquette gauche : W / S",
 
       faqTipsTitle: "Conseils",
       faqTips1: "Anticipez le trajet de la balle au lieu de courir après.",
