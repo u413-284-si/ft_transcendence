@@ -86,9 +86,9 @@ else
   echo "ℹ️ KV already enabled at secret/"
 fi
 
-#########################
-# -- Store secrets -- #
-#########################
+########################################
+# -- Set up nginx secret generation -- #
+########################################
 
 # Run setup-ssl-ca.sh
 echo "➡️ Running certificate authority setup script..."
@@ -98,5 +98,42 @@ echo "➡️ Running certificate authority setup script..."
   exit 1
 }
 echo "✅ SSL certificate authority set up"
+
+# Add policy for nginx
+echo "➡️ Adding policy for nginx..."
+vault policy write nginx-policy /vault/policies/nginx-policy.hcl
+
+# Enable AppRole authentication
+echo "➡️ Enabling AppRole authentication..."
+vault auth enable -path=approle approle || true
+
+# Create AppRole for nginx
+echo "➡️ Creating AppRole for nginx..."
+vault write auth/approle/role/nginx-role \
+    secret_id_ttl=0 \
+    token_num_uses=0 \
+    token_ttl=1h \
+    token_max_ttl=4h \
+    policies=nginx-policy
+
+# Create role ID and secret ID
+if [ ! -f "$SECRETS_DIR/nginx_role_id" ]; then
+  echo "➡️ Creating role ID for nginx..."
+  vault read -field=role_id auth/approle/role/nginx-role/role-id > "$SECRETS_DIR/nginx_role_id"
+  chmod 600 "$SECRETS_DIR/nginx_role_id"
+  chown vault:vault "$SECRETS_DIR/nginx_role_id"
+else
+  echo "ℹ️ Role ID for nginx already exists"
+fi
+
+if [ ! -f "$SECRETS_DIR/nginx_secret_id" ]; then
+  echo "➡️ Creating secret ID for nginx..."
+  vault write -field=secret_id -f auth/approle/role/nginx-role/secret-id > "$SECRETS_DIR/nginx_secret_id"
+  chmod 600 "$SECRETS_DIR/nginx_secret_id"
+  chown vault:vault "$SECRETS_DIR/nginx_secret_id"
+else
+  echo "ℹ️ Secret ID for nginx already exists"
+fi
+echo "✅ Role ID and Secret ID created"
 
 wait $VAULT_PID

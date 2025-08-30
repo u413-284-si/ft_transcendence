@@ -1,0 +1,4 @@
+{{ with secret "pki_int/issue/nginx-role" "common_name=localhost" "ttl=24h" }}
+{{ .Data.certificate }}
+{{ .Data.ca_chain }}
+{{ end }}

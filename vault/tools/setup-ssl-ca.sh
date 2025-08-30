@@ -42,7 +42,7 @@ is_issuer_valid() {
 ##########################
 ROOT_CA_FILE="${SECRETS_DIR}/current_root_issuer"
 INT_CA_UUID=$(vault read -field=default pki_int/config/issuers 2>/dev/null || echo "")
-ROLE_NAME="pong-dot-com"
+ROLE_NAME="nginx-role"
 
 ##########################
 # -- Step 1: Root CA --  #
@@ -65,7 +65,7 @@ else
     echo "➡️ Generating new root CA..."
     ROOT_CA_NAME="root-$(date +%Y%m%d%H%M%S)"
     vault write -field=certificate pki/root/generate/internal \
-        common_name="pong.com" \
+        common_name="pong root CA" \
         issuer_name="${ROOT_CA_NAME}" \
         ttl=87600h > "${SECRETS_DIR}/${ROOT_CA_NAME}.crt"
 
@@ -96,7 +96,7 @@ else
     INT_CA_NAME="pong-intermediate-$(date +%Y%m%d%H%M%S)"
 
     vault write -format=json pki_int/intermediate/generate/internal \
-        common_name="pong.com Intermediate Authority" \
+        common_name="pong intermediate CA" \
         issuer_name="${INT_CA_NAME}" \
         | jq -r '.data.csr' > "${SECRETS_DIR}/${INT_CA_NAME}.csr"
 
@@ -121,8 +121,9 @@ vault write pki_int/config/issuers default="${INT_CA_UUID}" default_follows_late
 
 vault write "pki_int/roles/${ROLE_NAME}" \
     issuer_ref="default" \
-    allowed_domains="pong.com" \
-    allow_subdomains=true \
+    allowed_domains="localhost" \
+    allow_subdomains=false \
+    allow_localhost=true \
     max_ttl="720h"
 
 echo "✅ Role ${ROLE_NAME} following latest issuer."

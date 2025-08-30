@@ -34,15 +34,18 @@ services:
       PORT: 8080
       SSL_PORT: 8443
       NGINX_ALWAYS_TLS_REDIRECT: on
-      SSL_CERT: /etc/nginx/conf/self-signed.crt
-      SSL_CERT_KEY: /etc/nginx/conf/self-signed.key
+      SSL_CERT: /etc/nginx/certs/fullchain.pem
+      SSL_CERT_KEY: /etc/nginx/certs/key.pem
       # modsecurity settings
       MODSEC_RULE_ENGINE: On
       MODSEC_DEBUG_LOGLEVEL: 3 # errors, warnings, and notices
       # CRS settings
       BLOCKING_PARANOIA: 2
+    volumes:
+      - certs:/etc/nginx/certs:ro
     depends_on:
       - app
+      - vault-agent
     networks:
       - pong-network
   vault:
@@ -60,12 +63,29 @@ services:
     volumes:
       - vault-data:/vault/data
       - vault-secrets:/run/secrets
-      - ./vault/config:/vault/config
+      - ./vault/config:/vault/config:ro
+      - ./vault/policies:/vault/policies:ro
     depends_on:
       - app
       # - mysql
     networks:
       - pong-network
+  vault-agent:
+    image: hashicorp/vault:1.20.2
+    container_name: vault-agent
+    environment:
+      VAULT_ADDR: "http://vault:8200"
+    restart: always
+    volumes:
+      - ./vault-agent/config/agent.hcl:/vault/config/agent.hcl:ro
+      - ./vault-agent/templates:/vault/templates:ro
+      - vault-secrets:/vault/secrets
+      - certs:/etc/nginx/certs
+    command: agent -config=/vault/config/agent.hcl
+    depends_on:
+      - vault
+    networks:
+    - pong-network
   # mysql:
   #   image: mysql:8
   #   container_name: mysql
@@ -80,6 +100,7 @@ networks:
   pong-network:
 
 volumes:
+  certs:
   db-data:
   vault-data:
   vault-secrets:
