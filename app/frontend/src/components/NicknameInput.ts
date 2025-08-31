@@ -3,6 +3,7 @@ import { Checkbox } from "./Checkbox.js";
 import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
 import { Select } from "./Select.js";
+import type { PlayerType } from "../types/IMatch.js";
 
 export function NicknameInput(players: number): string {
   let nicknameInputs = "";
@@ -40,9 +41,9 @@ export function NicknameInput(players: number): string {
           name: `ai-strength-${i}`,
           label: "AI Strength",
           options: [
-            { value: "easy", label: "Easy" },
-            { value: "normal", label: "Normal" },
-            { value: "hard", label: "Hard" }
+            { value: "AI_EASY", label: "Easy" },
+            { value: "AI_MEDIUM", label: "Normal" },
+            { value: "AI_HARD", label: "Hard" }
           ],
           hidden: true
         })}
@@ -126,4 +127,19 @@ function updateSlotUI(index: number): void {
       nicknameInput.disabled = false;
     }
   }
+}
+
+export function getPlayerType(
+  formData: FormData,
+  playerIndex: number
+): PlayerType {
+  const isAi = formData.has(`ai-player-${playerIndex}`);
+  if (!isAi) return "HUMAN";
+
+  const type = formData.get(`ai-strength-${playerIndex}`);
+  if (type === "AI_EASY" || type === "AI_MEDIUM" || type === "AI_HARD") {
+    return type;
+  }
+
+  return "AI_MEDIUM";
 }
