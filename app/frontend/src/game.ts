@@ -7,7 +7,7 @@ import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
 import { PlayedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
-import { AIPlayer } from "./AIPlayer.js";
+import { AIPlayer, maybeCreateAI } from "./AIPlayer.js";
 import { getById } from "./utility.js";
 
 let isAborted: boolean = false;
@@ -33,14 +33,10 @@ export async function startGame(
   const ctx = canvas.getContext("2d")!;
 
   setIsAborted(false);
-  let aiPlayer1: AIPlayer | null = null;
-  let aiPlayer2: AIPlayer | null = null;
-  if (type1 === "AI") {
-    aiPlayer1 = new AIPlayer("left");
-  }
-  if (type2 === "AI") {
-    aiPlayer2 = new AIPlayer("right");
-  }
+
+  const aiPlayer1 = maybeCreateAI("left", type1);
+  const aiPlayer2 = maybeCreateAI("right", type2);
+
   const gameState = initGameState(
     canvas,
     nickname1,
@@ -56,7 +52,7 @@ export async function startGame(
     return;
   }
 
-  await endGame(gameState, tournament, userRole);
+  await endGame(gameState, tournament, userRole, type1, type2);
 }
 
 function initGameState(
@@ -215,7 +211,9 @@ function checkWinner(gameState: GameState) {
 async function endGame(
   gameState: GameState,
   tournament: Tournament | null,
-  userRole: PlayedAs
+  userRole: PlayedAs,
+  type1: PlayerType,
+  type2: PlayerType
 ) {
   if (tournament) {
     const matchNumber = tournament.getNextMatchToPlay()!.matchNumber;
@@ -240,8 +238,8 @@ async function endGame(
         player2Nickname: gameState.player2,
         player1Score: gameState.player1Score,
         player2Score: gameState.player2Score,
-        player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
-        player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN"
+        player1Type: type1,
+        player2Type: type2
       })
     );
   }

@@ -1,6 +1,13 @@
-import { GameState } from "./types/IGameState";
+import type { PlayerType } from "./types/IMatch";
+import type { GameState } from "./types/IGameState";
 
 type PlayerSide = "left" | "right";
+
+const AI_CONFIG = {
+  AI_EASY: { reactionInterval: 1300, predictionError: 80, tolerance: 0 },
+  AI_MEDIUM: { reactionInterval: 1000, predictionError: 65, tolerance: 10 },
+  AI_HARD: { reactionInterval: 1000, predictionError: 0, tolerance: 15 }
+} as const;
 
 export class AIPlayer {
   private side: PlayerSide;
@@ -95,4 +102,12 @@ export class AIPlayer {
     this.lastUpdate = 0;
     this.predictionY = 0;
   }
+}
+
+export function maybeCreateAI(
+  side: "left" | "right",
+  type: PlayerType
+): AIPlayer | null {
+  if (type === "HUMAN") return null;
+  return new AIPlayer(side, AI_CONFIG[type]);
 }
