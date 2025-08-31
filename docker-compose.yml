@@ -62,7 +62,7 @@ services:
     restart: always
     volumes:
       - vault-data:/vault/data
-      - vault-secrets:/run/secrets
+      - vault-secrets:/vault/secrets
       - ./vault/config:/vault/config:ro
       - ./vault/policies:/vault/policies:ro
     depends_on:

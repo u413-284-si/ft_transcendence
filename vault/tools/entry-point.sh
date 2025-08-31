@@ -5,7 +5,7 @@ set -euo pipefail
 # -- Initial permission setup -- #
 ##################################
 
-export SECRETS_DIR="/run/secrets"
+export SECRETS_DIR="/vault/secrets"
 
 echo "➡️ Running initial setup..."
 
