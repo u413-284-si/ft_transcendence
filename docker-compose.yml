@@ -75,13 +75,17 @@ services:
     container_name: vault-agent
     environment:
       VAULT_ADDR: "http://vault:8200"
-    restart: always
+    # restart: always
     volumes:
       - ./vault-agent/config/agent.hcl:/vault/config/agent.hcl:ro
       - ./vault-agent/templates:/vault/templates:ro
       - vault-secrets:/vault/secrets
       - certs:/vault/certs
-    command: agent -config=/vault/config/agent.hcl
+    command:
+      sh -c "
+        chown -R vault:vault /vault/secrets /vault/certs &&
+        exec su-exec vault:vault vault agent -config=/vault/config/agent.hcl
+      "
     depends_on:
       - vault
     networks:
