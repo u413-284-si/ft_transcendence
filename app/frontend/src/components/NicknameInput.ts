@@ -1,3 +1,5 @@
+import { getAllBySelector } from "../utility.js";
+import { Checkbox } from "./Checkbox.js";
 import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
 
@@ -25,8 +27,34 @@ export function NicknameInput(players: number): string {
           label: i18next.t("nicknameInput.playerChoice", { i: i }),
           checked: isChecked
         })}
+        ${Checkbox({
+          id: `ai-${i}`,
+          name: `ai-player-${i}`,
+          label: "AI Player",
+          disabled: isChecked
+        })}
       </div>
     `;
   }
   return nicknameInputs;
+}
+
+export function initNicknameInputListeners(): void {
+  const radios = getAllBySelector<HTMLInputElement>('input[name="userChoice"]');
+  const checkboxes = getAllBySelector<HTMLInputElement>(
+    'input[type="checkbox"][id^="ai-"]'
+  );
+
+  radios.forEach((radio, index) => {
+    radio.addEventListener("change", () => {
+      checkboxes.forEach((checkbox, cbIndex) => {
+        if (cbIndex === index) {
+          checkbox.checked = false;
+          checkbox.disabled = true;
+        } else {
+          checkbox.disabled = false;
+        }
+      });
+    });
+  });
 }

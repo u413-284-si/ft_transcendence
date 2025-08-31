@@ -1,4 +1,5 @@
 import { sanitizeHTML } from "../sanitize.js";
+import { getById } from "../utility.js";
 
 export default abstract class AbstractView {
   constructor() {}
@@ -12,7 +13,8 @@ export default abstract class AbstractView {
   updateHTML(): void {
     const html = this.createHTML();
     const cleanHTML = sanitizeHTML(html);
-    document.querySelector("#app-content")!.innerHTML = cleanHTML;
+    const container = getById<HTMLDivElement>("app-content");
+    container.innerHTML = cleanHTML;
   }
 
   abstract render(): Promise<void>;

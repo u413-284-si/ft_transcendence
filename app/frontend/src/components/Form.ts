@@ -13,7 +13,8 @@ export function Form({
   className = "",
   id = ""
 }: FormOptions): string {
-  const classes = className || "flex flex-col justify-center items-center gap-4";
+  const classes =
+    className || "flex flex-col justify-center items-center gap-4";
 
   return `
     <form ${id ? `id="${id}"` : ""} action="${action}" method="${method}" class="${classes}">

@@ -13,7 +13,7 @@ function validateAgainstRegex(str: string, regex: RegExp): boolean {
 export function markInvalid(
   message: string,
   inputEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): void {
   inputEl.focus();
   inputEl.classList.add(
@@ -29,7 +29,7 @@ export function markInvalid(
 
 export function clearInvalid(
   inputEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): void {
   inputEl.classList.remove(
     "border-2",
@@ -43,7 +43,7 @@ export function clearInvalid(
 
 export function validateNicknames(
   inputElements: HTMLInputElement[],
-  errorElements: HTMLElement[],
+  errorElements: HTMLSpanElement[],
   nicknames: string[]
 ): boolean {
   const nicknameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
@@ -81,7 +81,7 @@ export function validateNicknames(
 
 export function validateTournamentName(
   inputEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): boolean {
   const tournamentNameRegex = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
   const tournamentName: string = inputEl.value;
@@ -101,36 +101,35 @@ export function validateTournamentName(
 }
 
 export async function isTournamentNameAvailable(
+  username: string,
   inputEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): Promise<boolean> {
   try {
-    const tournaments = getDataOrThrow(await getUserTournaments());
-    if (tournaments.length === 0) {
+    const tournamentsPage = getDataOrThrow(
+      await getUserTournaments({ username: username, name: inputEl.value })
+    );
+    if (tournamentsPage.items.length === 0) {
       return true;
     }
 
-    const tournamentNames = tournaments.map((tournament) => tournament.name);
-    if (tournamentNames.includes(inputEl.value)) {
-      markInvalid(
-        i18next.t("invalid.tournamentNameUniqueness"),
-        inputEl,
-        errorEl
-      );
-      return false;
-    }
+    markInvalid(
+      i18next.t("invalid.tournamentNameUniqueness"),
+      inputEl,
+      errorEl
+    );
+    return false;
   } catch (error) {
     console.error("Error fetching tournaments:", error);
     toaster.error(i18next.t("toast.validateTournamentNameError"));
     return false;
   }
-  return true;
 }
 
 export function validatePlayersSelection(
   playersSelected: HTMLInputElement,
   selectionEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): boolean {
   clearInvalid(selectionEl, errorEl);
 
@@ -143,7 +142,7 @@ export function validatePlayersSelection(
 
 export function validatePassword(
   inputEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): boolean {
   const passwordRegex: RegExp =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$/;
@@ -166,7 +165,7 @@ export function validatePassword(
 export function validateConfirmPassword(
   inputElOne: HTMLInputElement,
   inputElTwo: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): boolean {
   if (isEmptyString(inputElTwo.value)) {
     markInvalid(
@@ -188,7 +187,7 @@ export function validateConfirmPassword(
 
 export function validateUsername(
   inputEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): boolean {
   const usernameRegex: RegExp = /^[a-zA-Z0-9-!?_$.]{3,20}$/;
   const username: string = inputEl.value;
@@ -209,7 +208,7 @@ export function validateUsername(
 
 export function validateEmail(
   inputEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): boolean {
   const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const email: string = inputEl.value;
@@ -230,7 +229,7 @@ export function validateEmail(
 
 export function validateUsernameOrEmail(
   inputEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): boolean {
   clearInvalid(inputEl, errorEl);
   if (isEmptyString(inputEl.value)) {
@@ -247,7 +246,7 @@ export function validateUsernameOrEmail(
 
 export function validateImageFile(
   inputEl: HTMLInputElement,
-  errorEl: HTMLElement
+  errorEl: HTMLSpanElement
 ): boolean {
   clearInvalid(inputEl, errorEl);
 
@@ -259,6 +258,46 @@ export function validateImageFile(
   const file = inputEl.files![0];
   if (!file.type.startsWith("image/")) {
     markInvalid(i18next.t("invalid.imageFileFormat"), inputEl, errorEl);
+    return false;
+  }
+  return true;
+}
+
+export async function validateTwoFACode(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLSpanElement
+): Promise<boolean> {
+  const twoFACodeRegex: RegExp = /^\d{6}$/;
+  const twoFACode = inputEl.value;
+
+  clearInvalid(inputEl, errorEl);
+  if (isEmptyString(twoFACode)) {
+    markInvalid(i18next.t("invalid.twoFACodeEmpty"), inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(twoFACode, twoFACodeRegex)) {
+    markInvalid(i18next.t("invalid.twoFACodeFormat"), inputEl, errorEl);
+    return false;
+  }
+  return true;
+}
+
+export async function validatTwoFABackupCode(
+  inputEl: HTMLInputElement,
+  errorEl: HTMLSpanElement
+): Promise<boolean> {
+  const twoFABackupCodeRegex: RegExp = /^\d{8}$/;
+  const twoFABackupCode = inputEl.value;
+
+  clearInvalid(inputEl, errorEl);
+  if (isEmptyString(twoFABackupCode)) {
+    markInvalid(i18next.t("invalid.twoFABackupCodeEmpty"), inputEl, errorEl);
+    return false;
+  }
+
+  if (!validateAgainstRegex(twoFABackupCode, twoFABackupCodeRegex)) {
+    markInvalid(i18next.t("invalid.twoFABackupCodeFormat"), inputEl, errorEl);
     return false;
   }
   return true;

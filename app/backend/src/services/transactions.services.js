@@ -1,6 +1,53 @@
 import prisma from "../prisma/prismaClient.js";
+import {
+  createBracketTx,
+  updateBracketMatchTx
+} from "./bracket_match.services.js";
 import { createMatchTx } from "./matches.services.js";
+import { createTournamentTx, generateBracket } from "./tournaments.services.js";
 import { updateUserStatsTx } from "./user_stats.services.js";
+
+async function createMatchAndUpdateStatsTx(
+  tx,
+  userId,
+  playedAs,
+  player1Nickname,
+  player2Nickname,
+  player1Score,
+  player2Score,
+  player1Type,
+  player2Type,
+  tournamentId,
+  bracketMatchNumber,
+  date
+) {
+  const match = await createMatchTx(
+    tx,
+    userId,
+    playedAs,
+    player1Nickname,
+    player2Nickname,
+    player1Score,
+    player2Score,
+    player1Type,
+    player2Type,
+    tournamentId,
+    bracketMatchNumber,
+    date
+  );
+
+  let stats = null;
+  if (playedAs !== "NONE") {
+    const isPlayerOne = playedAs === "PLAYERONE";
+    stats = await updateUserStatsTx(
+      tx,
+      userId,
+      (isPlayerOne ? player1Score : player2Score) >
+        (isPlayerOne ? player2Score : player1Score)
+    );
+  }
+  return { match, stats };
+}
 
 export async function transactionMatch(
   userId,
@@ -9,11 +56,12 @@ export async function transactionMatch(
   player2Nickname,
   player1Score,
   player2Score,
-  tournament,
+  player1Type,
+  player2Type,
   date
 ) {
   return prisma.$transaction(async (tx) => {
-    const match = await createMatchTx(
+    const { match, stats } = await createMatchAndUpdateStatsTx(
       tx,
       userId,
       playedAs,
@@ -21,20 +69,139 @@ export async function transactionMatch(
       player2Nickname,
       player1Score,
       player2Score,
-      tournament,
+      player1Type,
+      player2Type,
+      null,
+      null,
       date
     );
 
-    let stats = null;
-    if (playedAs !== "NONE") {
-      const isPlayerOne = playedAs === "PLAYERONE";
-      stats = await updateUserStatsTx(
+    return { match, stats };
+  });
+}
+
+export async function transactionTournament(
+  name,
+  maxPlayers,
+  userId,
+  userNickname,
+  nicknames,
+  playertypes
+) {
+  const bracket = generateBracket(nicknames, playertypes, maxPlayers);
+
+  return prisma.$transaction(async (tx) => {
+    const tournament = await createTournamentTx(
+      tx,
+      name,
+      maxPlayers,
+      userId,
+      userNickname
+    );
+
+    await createBracketTx(tx, tournament.id, bracket);
+
+    tournament.bracket = bracket;
+
+    return tournament;
+  });
+}
+
+function buildBracketUpdates(hasUserWon, bracketMatch) {
+  const {
+    nextMatchNumber,
+    winnerSlot,
+    player1Nickname,
+    player1Type,
+    player2Type,
+    winner
+  } = bracketMatch;
+
+  const currentUpdate = {
+    winner,
+    ...(hasUserWon && {
+      tournament: {
+        update: {
+          roundReached: { increment: 1 }
+        }
+      }
+    })
+  };
+
+  let nextUpdate = null;
+  if (nextMatchNumber && winnerSlot) {
+    const winnerPlayerType =
+      winner === player1Nickname ? player1Type : player2Type;
+
+    nextUpdate =
+      winnerSlot === 1
+        ? { player1Nickname: winner, player1Type: winnerPlayerType }
+        : { player2Nickname: winner, player2Type: winnerPlayerType };
+  }
+
+  return { currentUpdate, nextUpdate };
+}
+
+export async function transactionUpdateBracket(
+  userId,
+  player1Score,
+  player2Score,
+  playedAs,
+  hasUserWon,
+  bracketMatch,
+  date
+) {
+  const { currentUpdate, nextUpdate } = buildBracketUpdates(
+    hasUserWon,
+    bracketMatch
+  );
+
+  return prisma.$transaction(async (tx) => {
+    const {
+      player1Nickname,
+      player2Nickname,
+      player1Type,
+      player2Type,
+      tournamentId,
+      matchNumber,
+      nextMatchNumber
+    } = bracketMatch;
+    const { match } = await createMatchAndUpdateStatsTx(
+      tx,
+      userId,
+      playedAs,
+      player1Nickname,
+      player2Nickname,
+      player1Score,
+      player2Score,
+      player1Type,
+      player2Type,
+      tournamentId,
+      matchNumber,
+      date
+    );
+
+    const currentBracketMatch = await updateBracketMatchTx(
+      tx,
+      tournamentId,
+      matchNumber,
+      currentUpdate
+    );
+
+    let nextBracketMatch = null;
+    if (nextUpdate) {
+      nextBracketMatch = await updateBracketMatchTx(
         tx,
-        userId,
-        (isPlayerOne ? player1Score : player2Score) >
-          (isPlayerOne ? player2Score : player1Score)
+        tournamentId,
+        nextMatchNumber,
+        nextUpdate
       );
     }
-    return { match, stats };
+
+    return {
+      match,
+      currentBracketMatch,
+      nextBracketMatch
+    };
   });
 }

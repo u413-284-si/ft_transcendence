@@ -7,6 +7,7 @@ import { router } from "../routing/Router.js";
 import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
+import { getById } from "../utility.js";
 
 export default class LoginView extends AbstractView {
   constructor() {
@@ -80,15 +81,11 @@ export default class LoginView extends AbstractView {
 
   private async validateAndLoginUser(event: Event) {
     event.preventDefault();
-    const userEl = document.getElementById(
-      "usernameOrEmail"
-    ) as HTMLInputElement;
-    const userErrorEl = document.getElementById(
-      "usernameOrEmail-error"
-    ) as HTMLElement;
-    const passwordEl = document.getElementById("password") as HTMLInputElement;
+    const userEl = getById<HTMLInputElement>("usernameOrEmail");
+    const userErrorEl = getById<HTMLElement>("usernameOrEmail-error");
+    const passwordEl = getById<HTMLInputElement>("password");
     // FIXME: activate when password policy is applied
-    // const passwordErrorEl = document.getElementById(
+    // const passwordErrorEl = getById<HTMLElement>(
     //   "password-error"
     // ) as HTMLElement;
 
@@ -97,6 +94,8 @@ export default class LoginView extends AbstractView {
     // if (!validatePassword(passwordEl, passwordErrorEl)) return;
 
     const isAllowed = await auth.login(userEl.value, passwordEl.value);
+    userEl.value = "";
+    passwordEl.value = "";
     if (!isAllowed) return;
     router.navigate("/home", false);
   }

@@ -1,13 +1,14 @@
 import { updatePaddlePositions } from "./input.js";
-import { draw } from "./draw.js";
-import { GameState } from "./types/IGameState.js";
+import { render } from "./draw.js";
+import { GameState, Snapshot } from "./types/IGameState.js";
 import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
 import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
-import { GameType } from "./views/GameView.js";
-import { playedAs } from "./types/IMatch.js";
+import { PlayedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
+import { AIPlayer } from "./AIPlayer.js";
+import { getById } from "./utility.js";
 
 let isAborted: boolean = false;
 
@@ -22,22 +23,39 @@ export function setIsAborted(value: boolean) {
 export async function startGame(
   nickname1: string,
   nickname2: string,
-  userRole: playedAs,
-  gameType: GameType,
+  type1: PlayerType,
+  type2: PlayerType,
+  userRole: PlayedAs,
   tournament: Tournament | null,
   keys: Record<GameKey, boolean>
 ) {
-  const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+  const canvas = getById<HTMLCanvasElement>("gameCanvas");
   const ctx = canvas.getContext("2d")!;
 
   setIsAborted(false);
-  const gameState = initGameState(canvas, nickname1, nickname2, keys);
-  await new Promise<void>((resolve) => {
-    gameLoop(canvas, ctx, gameState, resolve);
-  });
+  let aiPlayer1: AIPlayer | null = null;
+  let aiPlayer2: AIPlayer | null = null;
+  if (type1 === "AI") {
+    aiPlayer1 = new AIPlayer("left");
+  }
+  if (type2 === "AI") {
+    aiPlayer2 = new AIPlayer("right");
+  }
+  const gameState = initGameState(
+    canvas,
+    nickname1,
+    nickname2,
+    keys,
+    aiPlayer1,
+    aiPlayer2
+  );
+
+  await runGameLoop(gameState, ctx);
+
   if (getIsAborted()) {
     return;
   }
+
   await endGame(gameState, tournament, userRole);
 }
 
@@ -45,86 +63,144 @@ function initGameState(
   canvas: HTMLCanvasElement,
   player1: string,
   player2: string,
-  keys: Record<GameKey, boolean>
+  keys: Record<GameKey, boolean>,
+  aiPlayer1: AIPlayer | null,
+  aiPlayer2: AIPlayer | null
 ): GameState {
-  return {
+  const initialBallDirection = Math.random() * 2 - 1;
+  const gameState: GameState = {
     player1: player1,
     player2: player2,
     player1Score: 0,
     player2Score: 0,
     winningScore: 1, // FIXME: needs to be a higher value
-    ballX: canvas.width / 2,
-    ballY: canvas.height / 2,
-    ballSpeedX: 7,
-    ballSpeedY: 7,
+    canvasHeight: canvas.height,
+    canvasWidth: canvas.width,
+    ballX: 0,
+    ballY: 0,
+    ballRadius: 10,
+    initialBallSpeed: 380,
+    ballSpeedX: initialBallDirection,
+    ballSpeedY: 0,
+    paddle1X: 10,
     paddle1Y: canvas.height / 2 - 40,
+    paddle2X: canvas.width - 20,
     paddle2Y: canvas.height / 2 - 40,
     paddleHeight: 80,
     paddleWidth: 10,
-    paddleSpeed: 6,
+    paddleSpeed: 300,
     gameOver: false,
-    keys: keys
+    keys: keys,
+    aiPlayer1: aiPlayer1,
+    aiPlayer2: aiPlayer2,
+    speedUpFactor: 1.05,
+    maxBounceAngle: Math.PI / 4
   };
+  resetBall(gameState);
+
+  return gameState;
 }
 
-function gameLoop(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
+function runGameLoop(
   gameState: GameState,
-  resolve: () => void
-) {
-  if (gameState.gameOver) {
-    resolve();
-    return;
-  }
-  update(canvas, gameState);
-  draw(canvas, ctx, gameState);
-  requestAnimationFrame(() => gameLoop(canvas, ctx, gameState, resolve));
+  ctx: CanvasRenderingContext2D
+): Promise<GameState> {
+  return new Promise((resolve) => {
+    const step = 1 / 60; // fixed step in seconds ~0.016s
+    let lastTimestamp = performance.now();
+    let accumulator = 0;
+    let snapshot: Snapshot = makeSnapshot(gameState);
+
+    function gameLoop(currentTimestamp: number) {
+      if (getIsAborted() || gameState.gameOver) {
+        resolve(gameState);
+        return;
+      }
+
+      let frameTime = (currentTimestamp - lastTimestamp) / 1000;
+      if (frameTime <= 0) {
+        console.log("Frametime is 0 - skipping");
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      if (frameTime > 0.25) {
+        console.log("Frametime too high - clamp to 0.25");
+        frameTime = 0.25;
+      }
+      lastTimestamp = currentTimestamp;
+      accumulator += frameTime;
+
+      const fps = calculateFPS(frameTime);
+      console.log(`FPS: ${fps}`);
+
+      while (accumulator >= step) {
+        snapshot = makeSnapshot(gameState);
+        update(gameState, step);
+        accumulator -= step;
+      }
+      const alpha = accumulator / step;
+
+      render(gameState, snapshot, alpha, ctx);
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    requestAnimationFrame(gameLoop);
+  });
 }
 
-function update(canvas: HTMLCanvasElement, gameState: GameState) {
+function update(gameState: GameState, deltaTime: DOMHighResTimeStamp) {
   if (gameState.gameOver) return;
 
-  updatePaddlePositions(canvas, gameState);
+  if (gameState.aiPlayer1) {
+    gameState.aiPlayer1.updatePerception(gameState);
 
-  // Move the ball
-  gameState.ballX += gameState.ballSpeedX;
-  gameState.ballY += gameState.ballSpeedY;
+    const move = gameState.aiPlayer1.decideMove(
+      gameState.paddle1Y,
+      gameState.paddleHeight
+    );
 
-  // Ball collision with top & bottom
-  if (gameState.ballY <= 0 || gameState.ballY >= canvas.height)
-    gameState.ballSpeedY *= -1;
-
-  // Ball collision with paddles
-  if (
-    (gameState.ballX <= 20 &&
-      gameState.ballY >= gameState.paddle1Y &&
-      gameState.ballY <= gameState.paddle1Y + gameState.paddleHeight) ||
-    (gameState.ballX >= canvas.width - 20 &&
-      gameState.ballY >= gameState.paddle2Y &&
-      gameState.ballY <= gameState.paddle2Y + gameState.paddleHeight)
-  ) {
-    gameState.ballSpeedX *= -1; // Reverse ball direction
+    gameState.keys["w"] = move === "up";
+    gameState.keys["s"] = move === "down";
   }
 
-  // Ball out of bounds (scoring)
-  if (gameState.ballX <= 0) {
-    gameState.player2Score++;
-    checkWinner(gameState);
-    resetBall(canvas, gameState);
+  if (gameState.aiPlayer2) {
+    gameState.aiPlayer2.updatePerception(gameState);
+
+    const move = gameState.aiPlayer2.decideMove(
+      gameState.paddle2Y,
+      gameState.paddleHeight
+    );
+
+    gameState.keys["ArrowUp"] = move === "up";
+    gameState.keys["ArrowDown"] = move === "down";
   }
 
-  if (gameState.ballX >= canvas.width) {
-    gameState.player1Score++;
-    checkWinner(gameState);
-    resetBall(canvas, gameState);
-  }
+  updatePaddlePositions(gameState, deltaTime);
+  updateBallPosition(gameState, deltaTime);
+
+  handlePaddleCollision(gameState, "paddle1");
+  handlePaddleCollision(gameState, "paddle2");
+
+  handleWallCollision(gameState);
+  handleOutOfBounds(gameState);
 }
 
-function resetBall(canvas: HTMLCanvasElement, gameState: GameState) {
-  gameState.ballX = canvas.width / 2;
-  gameState.ballY = canvas.height / 2;
-  gameState.ballSpeedX *= -1; // Change direction after scoring
+function resetBall(gameState: GameState) {
+  gameState.ballX = gameState.canvasWidth / 2;
+  gameState.ballY = gameState.canvasHeight / 2;
+
+  const minAngle = Math.PI / 18; // 10°
+  const maxAngle = Math.PI / 8; // 22.5°
+
+  const sign = Math.random() < 0.5 ? -1 : 1;
+
+  const angle = sign * (minAngle + Math.random() * (maxAngle - minAngle));
+  const speed = gameState.initialBallSpeed;
+  const direction = Math.sign(gameState.ballSpeedX) * -1;
+
+  gameState.ballSpeedX = direction * speed * Math.cos(angle);
+  gameState.ballSpeedY = speed * Math.sin(angle);
 }
 
 function checkWinner(gameState: GameState) {
@@ -139,30 +215,36 @@ function checkWinner(gameState: GameState) {
 async function endGame(
   gameState: GameState,
   tournament: Tournament | null,
-  userRole: playedAs
+  userRole: PlayedAs
 ) {
   if (tournament) {
-    const matchId = tournament.getNextMatchToPlay()!.matchId;
+    const matchNumber = tournament.getNextMatchToPlay()!.matchNumber;
     const winner =
       gameState.player1Score > gameState.player2Score
         ? gameState.player1
         : gameState.player2;
-    tournament.updateBracketWithResult(matchId, winner);
-    getDataOrThrow(await updateTournamentBracket(tournament));
+    tournament.updateBracketWithResult(matchNumber, winner);
+    getDataOrThrow(
+      await updateTournamentBracket({
+        tournamentId: tournament.getId(),
+        matchNumber,
+        player1Score: gameState.player1Score,
+        player2Score: gameState.player2Score
+      })
+    );
+  } else {
+    getDataOrThrow(
+      await createMatch({
+        playedAs: userRole,
+        player1Nickname: gameState.player1,
+        player2Nickname: gameState.player2,
+        player1Score: gameState.player1Score,
+        player2Score: gameState.player2Score,
+        player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
+        player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN"
+      })
+    );
   }
-
-  getDataOrThrow(
-    await createMatch({
-      playedAs: userRole,
-      player1Nickname: gameState.player1,
-      player2Nickname: gameState.player2,
-      player1Score: gameState.player1Score,
-      player2Score: gameState.player2Score,
-      tournament: tournament
-        ? { id: tournament!.getId(), name: tournament!.getTournamentName() }
-        : null
-    })
-  );
 
   await waitForEnterKey();
 }
@@ -177,4 +259,109 @@ function waitForEnterKey(): Promise<void> {
     }
     document.addEventListener("keydown", onKeyDown);
   });
+}
+
+function handlePaddleCollision(
+  gameState: GameState,
+  paddle: "paddle1" | "paddle2"
+) {
+  const {
+    ballX,
+    ballY,
+    ballRadius,
+    ballSpeedX,
+    ballSpeedY,
+    paddleHeight,
+    paddleWidth,
+    speedUpFactor,
+    maxBounceAngle
+  } = gameState;
+
+  const paddleX =
+    paddle === "paddle1" ? gameState.paddle1X : gameState.paddle2X;
+  const paddleY =
+    paddle === "paddle1" ? gameState.paddle1Y : gameState.paddle2Y;
+
+  const collided =
+    ballX + ballRadius > paddleX &&
+    ballX - ballRadius < paddleX + paddleWidth &&
+    ballY + ballRadius > paddleY &&
+    ballY - ballRadius < paddleY + paddleHeight;
+
+  if (!collided) {
+    return;
+  }
+
+  const halfPaddle = paddleHeight / 2;
+  const paddleCenter = paddleY + halfPaddle;
+  const offset = (ballY - paddleCenter) / halfPaddle;
+  const bounceAngle = offset * maxBounceAngle;
+
+  const originalSpeed = Math.hypot(ballSpeedX, ballSpeedY);
+  const newSpeed = originalSpeed * speedUpFactor;
+
+  const newDirection = ballSpeedX > 0 ? -1 : 1;
+
+  gameState.ballSpeedX = newDirection * newSpeed * Math.cos(bounceAngle);
+  gameState.ballSpeedY = newSpeed * Math.sin(bounceAngle);
+
+  gameState.ballX =
+    gameState.ballSpeedX > 0
+      ? paddleX + paddleWidth + ballRadius
+      : paddleX - ballRadius;
+}
+
+function handleWallCollision(gameState: GameState) {
+  const { ballY, ballRadius, canvasHeight } = gameState;
+
+  if (ballY - ballRadius <= 0) {
+    gameState.ballY = ballRadius;
+    gameState.ballSpeedY *= -1;
+  }
+
+  if (ballY + ballRadius >= canvasHeight) {
+    gameState.ballY = canvasHeight - ballRadius;
+    gameState.ballSpeedY *= -1;
+  }
+}
+
+function resetAI(gameState: GameState) {
+  if (gameState.aiPlayer1) gameState.aiPlayer1.reset();
+  if (gameState.aiPlayer2) gameState.aiPlayer2.reset();
+}
+
+function handleOutOfBounds(gameState: GameState) {
+  const { ballX, ballRadius, canvasWidth } = gameState;
+
+  const checkScore = (condition: boolean, scoringPlayer: 1 | 2) => {
+    if (!condition) return;
+
+    if (scoringPlayer === 1) gameState.player1Score++;
+    else gameState.player2Score++;
+
+    checkWinner(gameState);
+    resetBall(gameState);
+    resetAI(gameState);
+  };
+
+  checkScore(ballX - ballRadius <= 0, 2);
+  checkScore(ballX + ballRadius >= canvasWidth, 1);
+}
+
+function updateBallPosition(
+  gameState: GameState,
+  deltaTime: DOMHighResTimeStamp
+) {
+  gameState.ballX += gameState.ballSpeedX * deltaTime;
+  gameState.ballY += gameState.ballSpeedY * deltaTime;
+}
+
+function calculateFPS(deltaTime: number): number {
+  if (deltaTime <= 0) return 0;
+  return Math.round(1 / deltaTime);
+}
+
+function makeSnapshot(state: GameState): Snapshot {
+  const { ballX, ballY, paddle1Y, paddle2Y } = state;
+  return { ballX, ballY, paddle1Y, paddle2Y };
 }

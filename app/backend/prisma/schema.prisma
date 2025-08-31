@@ -38,8 +38,9 @@ model Authentication {
     password     String?
     refreshToken String?
     authProvider AuthProviderType @default(LOCAL)
-    // has2FA        Boolean @default(false)
-    // totpSecret    String?
+    hasTwoFA     Boolean          @default(false)
+    twoFASecret  String?
+    backupCodes  BackupCode[]     @relation("BackupCodes")
     // oauthProvider String?
     // emailVerificationToken String?
     // emailVerified          Boolean @default(false)
@@ -47,6 +48,14 @@ model Authentication {
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@map("authentications")
+}
+
+model BackupCode {
+    id         Int    @id @default(autoincrement())
+    userId     Int
+    backupCode String
+
+    authentication Authentication @relation("BackupCodes", fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model UserStats {
@@ -87,19 +96,23 @@ model FriendRequest {
 }
 
 model Match {
-    id              Int      @id @default(autoincrement())
-    userId          Int
-    playedAs        PlayedAs @default(PLAYERONE)
-    player1Nickname String
-    player2Nickname String
-    player1Score    Int
-    player2Score    Int
-    tournamentId    Int?
-    date            DateTime @default(now())
+    id                 Int        @id @default(autoincrement())
+    userId             Int
+    playedAs           PlayedAs   @default(PLAYERONE)
+    player1Nickname    String
+    player2Nickname    String
+    player1Score       Int
+    player2Score       Int
+    player1Type        PlayerType @default(HUMAN)
+    player2Type        PlayerType @default(HUMAN)
+    tournamentId       Int?
+    bracketMatchNumber Int?
+    date               DateTime   @default(now())
 
     user       User        @relation("UserPlayed", fields: [userId], references: [id], onDelete: Cascade)
     tournament Tournament? @relation(fields: [tournamentId], references: [id])
 
+    @@unique([tournamentId, bracketMatchNumber])
     @@map("matches")
 }
 
@@ -111,14 +124,32 @@ model Tournament {
     isFinished   Boolean  @default(false)
     userId       Int
     userNickname String   @default("Mister Bombastic")
-    bracket      Json
     roundReached Int      @default(1)
     updatedAt    DateTime @updatedAt
 
-    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
     matches Match[]
+    bracket BracketMatch[]
 
     @@map("tournaments")
+}
+
+model BracketMatch {
+    tournamentId    Int
+    matchNumber     Int
+    round           Int
+    player1Nickname String?
+    player2Nickname String?
+    player1Type     PlayerType?
+    player2Type     PlayerType?
+    winner          String?
+    nextMatchNumber Int?
+    winnerSlot      Int?
+
+    tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+    @@id([tournamentId, matchNumber])
+    @@map("bracket_matches")
 }
 
 enum PlayedAs {
@@ -143,4 +174,9 @@ enum Language {
     de
     pi
     tr
+}
+
+enum PlayerType {
+    HUMAN
+    AI
 }

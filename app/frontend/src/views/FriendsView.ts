@@ -14,7 +14,12 @@ import {
   FriendRequestEvent,
   FriendStatusChangeEvent
 } from "../types/ServerSentEvents.js";
-import { escapeHTML, getEl, getInputEl } from "../utility.js";
+import {
+  escapeHTML,
+  getAllBySelector,
+  getById,
+  getBySelector
+} from "../utility.js";
 import { clearInvalid, markInvalid, validateUsername } from "../validate.js";
 import AbstractView from "./AbstractView.js";
 import { Button } from "../components/Button.js";
@@ -68,7 +73,8 @@ export default class FriendsView extends AbstractView {
         );
     }
 
-    getEl(containerId).innerHTML = cleanHTML;
+    const container = getById<HTMLDivElement>(containerId);
+    container.innerHTML = cleanHTML;
     this.addRequestListListeners(type);
   }
 
@@ -197,7 +203,8 @@ export default class FriendsView extends AbstractView {
       }
     );
 
-    getEl("send-request-form").addEventListener(
+    const requestForm = getById<HTMLFormElement>("send-request-form");
+    requestForm.addEventListener(
       "submit",
       (event) => this.handleSendRequestButton(event),
       {
@@ -218,7 +225,8 @@ export default class FriendsView extends AbstractView {
     toastMessage: string,
     toastIcon?: string
   ): void => {
-    document.querySelectorAll(selector).forEach((btn) => {
+    const buttons = getAllBySelector(selector, { strict: false });
+    buttons.forEach((btn) => {
       btn.addEventListener(
         "click",
         async (event) => {
@@ -316,14 +324,13 @@ export default class FriendsView extends AbstractView {
   private handleFriendStatusChange = (event: Event) => {
     const customEvent = event as FriendStatusChangeEvent;
     const { requestId, isOnline } = customEvent.detail;
-    const container = document.querySelector<HTMLElement>(
+    const container = getBySelector<HTMLLIElement>(
       `li[data-request-id="${requestId}"]`
     );
-    if (!container) {
-      console.warn("Tried to update status, but container not found");
-      return;
-    }
-    const statusSpan = container.querySelector(".online-status")!;
+    const statusSpan = getBySelector<HTMLSpanElement>(
+      ".online-status",
+      container
+    );
 
     statusSpan.textContent = isOnline
       ? i18next.t("global.online")
@@ -334,8 +341,8 @@ export default class FriendsView extends AbstractView {
 
   private handleSendRequestButton = async (event: Event): Promise<void> => {
     event.preventDefault();
-    const inputEl = getInputEl("username-input");
-    const errorEl = getEl("username-error");
+    const inputEl = getById<HTMLInputElement>("username-input");
+    const errorEl = getById<HTMLSpanElement>("username-error");
 
     clearInvalid(inputEl, errorEl);
 

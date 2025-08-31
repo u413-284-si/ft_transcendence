@@ -5,13 +5,18 @@ import { createTournament } from "../services/tournamentService.js";
 import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
-import { escapeHTML } from "../utility.js";
-import { NicknameInput } from "../components/NicknameInput.js";
+import { escapeHTML, getAllBySelector, getById } from "../utility.js";
+import {
+  initNicknameInputListeners,
+  NicknameInput
+} from "../components/NicknameInput.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
+import { TournamentSize } from "../types/ITournament.js";
+import { PlayerType } from "@prisma/client";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -59,24 +64,26 @@ export default class PlayerNicknamesView extends AbstractView {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartTournament(event)
     );
+    initNicknameInputListeners();
   }
 
   async render() {
     this.updateHTML();
-    this.formEl = document.querySelector("#nicknames-form")!;
+    this.formEl = getById("nicknames-form");
     this.addListeners();
   }
 
   private async validateAndStartTournament(event: Event) {
     event.preventDefault();
-    const form = document.getElementById("nicknames-form") as HTMLFormElement;
-    const formData = new FormData(form);
+    const formData = new FormData(this.formEl);
     const userNumber = formData.get("userChoice");
-    const inputElements: HTMLInputElement[] = Array.from(
-      this.formEl.querySelectorAll("input[type='text']")
+    const inputElements = getAllBySelector<HTMLInputElement>(
+      "input[type='text']",
+      { root: this.formEl }
     );
-    const errorElements: HTMLElement[] = Array.from(
-      this.formEl.querySelectorAll('[id^="player-error-"]')
+    const errorElements = getAllBySelector<HTMLElement>(
+      '[id^="player-error-"]',
+      { root: this.formEl }
     );
     const nicknames = inputElements.map((input) => input.value);
 
@@ -84,23 +91,24 @@ export default class PlayerNicknamesView extends AbstractView {
     const userNickname = formData.get(`player-${userNumber}`) as string;
     console.log(userNickname);
 
-    try {
-      const userId = auth.getToken().id;
-      const tournament = Tournament.fromUsernames(
-        nicknames,
-        this.tournamentName,
-        this.numberOfPlayers,
-        userNickname,
-        userId
-      );
+    const playerTypes: PlayerType[] = [];
+    for (let i = 1; i <= this.numberOfPlayers; i++) {
+      const isAi = formData.has(`ai-player-${i}`);
+      playerTypes.push(isAi ? "AI" : "HUMAN");
+    }
 
+    try {
       const createdTournament = getDataOrThrow(
-        await createTournament(tournament)
+        await createTournament({
+          name: this.tournamentName,
+          maxPlayers: this.numberOfPlayers as TournamentSize,
+          userNickname: userNickname,
+          nicknames: nicknames,
+          playerTypes: playerTypes
+        })
       );
-      const { id } = createdTournament;
-      if (id) {
-        tournament.setId(id);
-      }
+      const tournament = new Tournament(createdTournament);
+
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.switchView(matchAnnouncementView);
     } catch (error) {

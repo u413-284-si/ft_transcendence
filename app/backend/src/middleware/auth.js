@@ -1,26 +1,28 @@
-import { verifyAccessToken } from "../services/auth.services.js";
 import { createResponseMessage } from "../utils/response.js";
-import { handlePrismaError, httpError } from "../utils/error.js";
+import { httpError } from "../utils/error.js";
+import { getUserAuthProvider } from "../services/users.services.js";
 
-export async function authorizeUserAccess(request, reply) {
-  const action = "Authorize user's access token";
+export async function authorizeUserAccess(request) {
+  request.action = "Authorize user's access token";
+  await request.accessTokenVerify();
+}
 
-  const token = request.cookies.accessToken;
-  if (!token) {
+export async function authorizeUserTwoFALogin(request) {
+  request.action = "Authorize user's twoFA login token";
+  await request.twoFALoginTokenVerify();
+}
+
+export async function ensureLocalAuthProvider(request, reply) {
+  request.action = "Ensure local auth provider";
+  const userId = request.user.id;
+  const provider = await getUserAuthProvider(userId);
+
+  if (provider !== "LOCAL") {
     return httpError(
       reply,
-      401,
-      createResponseMessage(action, false),
-      "No token provided"
+      403,
+      createResponseMessage(request.action, false),
+      `2FA operation can not be performed. User uses ${provider} auth provider`
     );
-  }
-  try {
-    await verifyAccessToken(request);
-  } catch (err) {
-    request.log.error(
-      { err, body: request.body },
-      `authorizeUserHandler: ${createResponseMessage(action, false)}`
-    );
-    handlePrismaError(reply, action, err);
   }
 }

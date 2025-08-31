@@ -1,7 +1,6 @@
 import { router } from "../routing/Router.js";
-import { getActiveTournament } from "../services/tournamentService.js";
+import { getUserTournaments } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
-import { BracketMatch } from "../types/IMatch.js";
 import AbstractView from "./AbstractView.js";
 import MatchAnnouncement from "./MatchAnnouncementView.js";
 import PlayerNicknames from "./PlayerNicknamesView.js";
@@ -18,6 +17,8 @@ import { Button } from "../components/Button.js";
 import { RadioGroup } from "../components/RadioGroup.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
+import { auth } from "../AuthManager.js";
+import { getById, getBySelector } from "../utility.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -89,24 +90,21 @@ export default class NewTournamentView extends AbstractView {
   }
 
   async render() {
-    const activeTournament = getDataOrThrow(await getActiveTournament());
-    if (!activeTournament) {
+    const tournamentsPage = getDataOrThrow(
+      await getUserTournaments({
+        username: auth.getUser().username,
+        isFinished: false
+      })
+    );
+    if (tournamentsPage.items.length === 0) {
       console.log("No active tournament found");
       this.updateHTML();
-      this.formEl = document.querySelector("#tournament-form")!;
+      this.formEl = getById("tournament-form");
       this.addListeners();
       return;
     }
-    const bracket = JSON.parse(activeTournament.bracket) as BracketMatch[];
-    const tournament = new Tournament(
-      activeTournament.name,
-      activeTournament.maxPlayers,
-      activeTournament.userId,
-      activeTournament.userNickname,
-      activeTournament.roundReached,
-      bracket,
-      activeTournament.id
-    );
+    const activeTournament = tournamentsPage.items[0];
+    const tournament = new Tournament(activeTournament);
     if (tournament.getNextMatchToPlay()) {
       router.switchView(new MatchAnnouncement(tournament));
     } else {
@@ -120,23 +118,21 @@ export default class NewTournamentView extends AbstractView {
     const playersSelected = this.formEl.querySelector(
       'input[name="players"]:checked'
     ) as HTMLInputElement;
-    const tournamentNameEl = document.getElementById(
-      "tournament-name-input"
-    ) as HTMLInputElement;
-    const selectionEl = document.querySelector(
+    const tournamentNameEl = getById<HTMLInputElement>("tournament-name-input");
+    const selectionEl = getBySelector<HTMLInputElement>(
       'input[name="players"]'
-    ) as HTMLInputElement;
-    const tournamentErrorEl = document.getElementById(
-      "tournament-name-error"
-    ) as HTMLElement;
-    const playerErrorEl = document.getElementById(
-      "player-error"
-    ) as HTMLElement;
+    );
+    const tournamentErrorEl = getById<HTMLElement>("tournament-name-error");
+    const playerErrorEl = getById<HTMLElement>("player-error");
     let isValid = true;
 
     if (
       !validateTournamentName(tournamentNameEl, tournamentErrorEl) ||
-      !(await isTournamentNameAvailable(tournamentNameEl, tournamentErrorEl))
+      !(await isTournamentNameAvailable(
+        auth.getUser().username,
+        tournamentNameEl,
+        tournamentErrorEl
+      ))
     ) {
       isValid = false;
     }

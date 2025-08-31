@@ -7,20 +7,34 @@ import { Header1 } from "../../components/Header1.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserDashboardTournamentsByUsername } from "../../services/userStatsServices.js";
 import { DashboardTournaments } from "../../types/DataSeries.js";
-import { AbstractTab } from "./AbstractTab.js";
+import { PaginatedTab } from "./PaginatedTab.js";
+import { TournamentRead } from "../../types/ITournament.js";
+import { PaginationControls } from "../../components/PaginationControls.js";
+import {
+  NoTournamentsRow,
+  TournamentRow
+} from "../../components/TournamentRow.js";
+import { Table } from "../../components/Table.js";
+import { getUserTournaments } from "../../services/tournamentService.js";
+import { getById } from "../../utility.js";
 
-export class TournamentsTab extends AbstractTab {
+export class TournamentsTab extends PaginatedTab<TournamentRead> {
   private dashboard: DashboardTournaments | null = null;
   private username: string;
 
   constructor(username: string) {
-    super();
+    super(
+      10,
+      "tournaments-prev-btn",
+      "tournaments-next-btn",
+      "tournaments-page-indicator"
+    );
     this.username = username;
   }
 
   getHTML(): string {
     return /* HTML */ ` <div id="tab-tournaments">
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
           id: "tournament-dashboard-header",
@@ -28,11 +42,19 @@ export class TournamentsTab extends AbstractTab {
         })}
         ${this.getDashboardHTML()}
       </div>
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
         ${Header1({
           text: i18next.t("statsView.details"),
           id: "tournament-details-header",
           variant: "default"
+        })}
+        <div id="tournament-history-table" class="p-6"></div>
+        ${PaginationControls({
+          prevId: "tournaments-prev-btn",
+          nextId: "tournaments-next-btn",
+          indicatorId: "tournaments-page-indicator",
+          prevLabel: "<",
+          nextLabel: ">"
         })}
       </div>
     </div>`;
@@ -83,6 +105,34 @@ export class TournamentsTab extends AbstractTab {
         })}
       </div>
     </div>`;
+  }
+
+  protected updateTable(tournaments: TournamentRead[]): void {
+    const table = getById<HTMLTableElement>("tournament-history-table");
+
+    const tournamentsRows =
+      tournaments.length === 0
+        ? [NoTournamentsRow()]
+        : tournaments.map((tournament: TournamentRead) =>
+            TournamentRow(tournament)
+          );
+
+    table.innerHTML = Table({
+      id: "tournament-history-table",
+      headers: [
+        i18next.t("newTournamentView.tournamentName"),
+        i18next.t("newTournamentView.numberOfPlayers"),
+        i18next.t("statsView.usedNickname"),
+        i18next.t("statsView.result")
+      ],
+      rows: tournamentsRows
+    });
+  }
+
+  protected async fetchPage(limit: number, offset: number) {
+    return getDataOrThrow(
+      await getUserTournaments({ username: this.username, limit, offset })
+    );
   }
 
   async init(): Promise<void> {
