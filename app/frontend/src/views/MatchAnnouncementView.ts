@@ -161,7 +161,7 @@ export default class MatchAnnouncementView extends AbstractView {
     return "match-announcement";
   }
 
-  private decideAIvsAIWinner(): "player1" | "player2" {
+  private iSAIMatchWinnerP1(): boolean {
     const AI_WEIGHTS: Record<Exclude<PlayerType, "HUMAN">, number> = {
       AI_EASY: 1,
       AI_MEDIUM: 2,
@@ -176,15 +176,16 @@ export default class MatchAnnouncementView extends AbstractView {
     const total = weight1 + weight2;
     const random = Math.random() * total;
 
-    return random < weight1 ? "player1" : "player2";
+    return random < weight1 ? true : false;
   }
 
   private async handleSkipButton() {
     if (!this.isAIvsAI) return;
 
-    const winner = this.decideAIvsAIWinner();
-    const player1Score = winner === "player1" ? 1 : 0;
-    const player2Score = winner === "player2" ? 1 : 0;
+    const isP1Winner = this.iSAIMatchWinnerP1();
+    const winner = isP1Winner ? this.player1 : this.player2;
+    const player1Score = isP1Winner ? 1 : 0;
+    const player2Score = isP1Winner ? 0 : 1;
 
     this.tournament.updateBracketWithResult(this.matchNumber, winner);
     getDataOrThrow(
