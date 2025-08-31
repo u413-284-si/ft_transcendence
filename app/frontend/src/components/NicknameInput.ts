@@ -1,4 +1,4 @@
-import { getAllBySelector } from "../utility.js";
+import { getAllBySelector, getById } from "../utility.js";
 import { Checkbox } from "./Checkbox.js";
 import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
@@ -97,19 +97,13 @@ function makeAIName(strength: string, slot: number): string {
 }
 
 function updateSlotUI(index: number): void {
-  const radio = document.querySelector<HTMLInputElement>(
-    `#choice-${index + 1}`
+  const radio = getById<HTMLInputElement>(`choice-${index + 1}`);
+  const checkbox = getById<HTMLInputElement>(`ai-${index + 1}`);
+  const strengthDiv = getById<HTMLDivElement>(`ai-strength-${index + 1}`);
+  const strengthSelect = getById<HTMLSelectElement>(
+    `select-ai-strength-${index + 1}`
   );
-  const checkbox = document.querySelector<HTMLInputElement>(`#ai-${index + 1}`);
-  const strengthDiv = document.querySelector<HTMLDivElement>(
-    `#ai-strength-${index + 1}`
-  );
-  const strengthSelect = document.querySelector<HTMLSelectElement>(
-    `#select-ai-strength-${index + 1}`
-  );
-  const nicknameInput = document.querySelector<HTMLInputElement>(
-    `#nickname${index + 1}`
-  );
+  const nicknameInput = getById<HTMLInputElement>(`nickname${index + 1}`);
 
   if (!radio || !checkbox || !strengthDiv || !strengthSelect || !nicknameInput)
     return;
