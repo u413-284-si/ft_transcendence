@@ -143,3 +143,9 @@ export function getPlayerType(
 
   return "AI_MEDIUM";
 }
+
+export function formatPlayerName(name: string, type: PlayerType): string {
+  if (type === "HUMAN") return name;
+
+  return `🤖 ${name}`;
+}
