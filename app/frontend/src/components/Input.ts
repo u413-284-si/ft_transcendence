@@ -36,7 +36,7 @@ export function Input({
     inputHtml = renderFileInput(id, name, acceptAttr, noFileText);
   } else {
     const baseStyles =
-      "w-full bg-emerald-dark text-white border border-emerald rounded-md hover:bg-emerald transition px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-cyan";
+      "w-md bg-emerald-dark text-white border border-emerald rounded-md hover:bg-emerald transition px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-cyan";
     const classes = `${baseStyles} ${className}`.trim();
     const toggleButton = hasToggle ? getToggleButtonHTML(id) : "";
     inputHtml = renderStandardInput(
