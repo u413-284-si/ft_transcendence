@@ -14,6 +14,7 @@ import { Form } from "../components/Form.js";
 import { PlayedAs, PlayerType } from "../types/IMatch.js";
 import { getDataOrThrow } from "../services/api.js";
 import ResultsView from "./ResultsView.js";
+import { formatPlayerName } from "../components/NicknameInput.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -67,8 +68,8 @@ export default class MatchAnnouncementView extends AbstractView {
               })
             }),
             Paragraph({
-              text: `<b>${escapeHTML(this.player1)}</b>
-              vs <b>${escapeHTML(this.player2)}</b>`
+              text: `<b>${escapeHTML(formatPlayerName(this.player1, this.player1type))}</b>
+              vs <b>${escapeHTML(formatPlayerName(this.player2, this.player2type))}</b>`
             }),
             Button({
               text: i18next.t("matchAnnouncementView.startMatch"),
