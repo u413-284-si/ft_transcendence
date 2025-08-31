@@ -18,7 +18,7 @@ import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
 import { auth } from "../AuthManager.js";
 import { getById, getBySelector } from "../utility.js";
-import { OrderedList } from "../components/OrderedList.js";
+import { List } from "../components/List.js";
 import { Card } from "../components/Card.js";
 
 export default class NewTournamentView extends AbstractView {
@@ -37,7 +37,7 @@ export default class NewTournamentView extends AbstractView {
             text: i18next.t("newTournamentView.title"),
             variant: "default"
           }),
-          OrderedList({
+          List({
             children: [
               i18next.t("newTournamentView.enterTournamentName"),
               i18next.t("newTournamentView.selectNumberPlayers")

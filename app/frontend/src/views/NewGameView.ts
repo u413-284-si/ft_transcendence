@@ -11,7 +11,7 @@ import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { Header1 } from "../components/Header1.js";
-import { OrderedList } from "../components/OrderedList.js";
+import { List } from "../components/List.js";
 
 export default class NewGameView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -30,7 +30,7 @@ export default class NewGameView extends AbstractView {
             id: "home-header",
             variant: "default"
           }),
-          OrderedList({
+          List({
             children: [
               i18next.t("newGameView.enterNickname"),
               i18next.t("newGameView.selectPlayer", {

@@ -13,7 +13,7 @@ import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
 import { TournamentSize } from "../types/ITournament.js";
 import { PlayerType } from "@prisma/client";
-import { OrderedList } from "../components/OrderedList.js";
+import { List } from "../components/List.js";
 import { Header2 } from "../components/Header2.js";
 
 export default class PlayerNicknamesView extends AbstractView {
@@ -39,7 +39,7 @@ export default class PlayerNicknamesView extends AbstractView {
         }),
         className: "mb-4"
       })}
-      ${OrderedList({
+      ${List({
         children: [
           i18next.t("newGameView.enterNickname"),
           i18next.t("newGameView.selectPlayer", {
