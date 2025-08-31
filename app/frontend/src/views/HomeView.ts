@@ -4,6 +4,8 @@ import { escapeHTML } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Header2 } from "../components/Header2.js";
+import { Details } from "../components/Details.js";
+import { List } from "../components/List.js";
 
 export default class HomeView extends AbstractView {
   constructor() {
@@ -26,7 +28,8 @@ export default class HomeView extends AbstractView {
           variant: "default"
         })}
         ${Paragraph({
-          text: i18next.t("homeView.tagline")
+          text: i18next.t("homeView.tagline"),
+          size: "lg"
         })}
 
         <section
@@ -38,75 +41,43 @@ export default class HomeView extends AbstractView {
           })}
 
           <!-- Accordion with details/summary -->
-          <details class="group border-b border-grey pb-2">
-            <summary
-              class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan"
-            >
-              ${i18next.t("homeView.faqGameModesTitle")}
-              <span
-                class="transition-transform group-open:rotate-45 text-neon-cyan"
-                >+</span
-              >
-            </summary>
-            <div class="mt-2 text-grey">
-              <ul class="list-disc list-inside space-y-1">
-                <li>${i18next.t("homeView.faqGameModesSingle")}</li>
-                <li>${i18next.t("homeView.faqGameModesTournament")}</li>
-              </ul>
-            </div>
-          </details>
-
-          <details class="group border-b border-grey pb-2">
-            <summary
-              class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan"
-            >
-              ${i18next.t("homeView.faqControlsTitle")}
-              <span
-                class="transition-transform group-open:rotate-45 text-neon-cyan"
-                >+</span
-              >
-            </summary>
-            <div class="mt-2 text-grey">
-              <ul class="list-disc list-inside space-y-1">
-                <li>${i18next.t("homeView.faqControlsRightPaddle")}</li>
-                <li>${i18next.t("homeView.faqControlsLeftPaddle")}</li>
-              </ul>
-            </div>
-          </details>
-
-          <details class="group border-b border-grey pb-2">
-            <summary
-              class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan"
-            >
-              ${i18next.t("homeView.faqTipsTitle")}
-              <span
-                class="transition-transform group-open:rotate-45 text-neon-cyan"
-                >+</span
-              >
-            </summary>
-            <div class="mt-2 text-grey">
-              <ul class="list-disc list-inside space-y-1">
-                <li>${i18next.t("homeView.faqTips1")}</li>
-                <li>${i18next.t("homeView.faqTips2")}</li>
-                <li>${i18next.t("homeView.faqTips3")}</li>
-              </ul>
-            </div>
-          </details>
-
-          <details class="group">
-            <summary
-              class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan"
-            >
-              ${i18next.t("homeView.faqExtrasTitle")}
-              <span
-                class="transition-transform group-open:rotate-45 text-neon-cyan"
-                >+</span
-              >
-            </summary>
-            <div class="mt-2 text-grey">
-              ${i18next.t("homeView.faqExtrasText")}
-            </div>
-          </details>
+          ${Details({
+            summary: i18next.t("homeView.faqGameModesTitle"),
+            content: List({
+              type: "unordered",
+              children: [
+                i18next.t("homeView.faqGameModesSingle"),
+                i18next.t("homeView.faqGameModesTournament")
+              ]
+            })
+          })}
+          ${Details({
+            summary: i18next.t("homeView.faqControlsTitle"),
+            content: List({
+              type: "unordered",
+              children: [
+                i18next.t("homeView.faqControlsRightPaddle"),
+                i18next.t("homeView.faqControlsLeftPaddle")
+              ]
+            })
+          })}
+          ${Details({
+            summary: i18next.t("homeView.faqTipsTitle"),
+            content: List({
+              type: "unordered",
+              children: [
+                i18next.t("homeView.faqTips1"),
+                i18next.t("homeView.faqTips2"),
+                i18next.t("homeView.faqTips3")
+              ]
+            })
+          })}
+          ${Details({
+            summary: i18next.t("homeView.faqExtrasTitle"),
+            content: Paragraph({
+              text: i18next.t("homeView.faqExtrasText")
+            })
+          })}
         </section>
       </div>
     `;
