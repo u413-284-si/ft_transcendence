@@ -173,7 +173,12 @@ const tr: TranslationShape = {
     nicknameInput: {
       enterYourNickname: "Enter your operative alias",
       playerChoice: "Operating as agent {{i}}",
-      playerNickname: "Agent {{i}} alias"
+      playerNickname: "Agent {{i}} alias",
+      aiPlayer: "Synthetic Operative",
+      aiStrength: "Processing Power",
+      aiStrengthEasy: "Low Protocol",
+      aiStrengthMedium: "Standard Protocol",
+      aiStrengthHard: "Overclocked Protocol"
     },
 
     playerNicknamesView: {

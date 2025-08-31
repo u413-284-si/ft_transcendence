@@ -172,7 +172,12 @@ const en = {
     nicknameInput: {
       enterYourNickname: "Enter your nickname",
       playerChoice: "I am playing as player {{i}}",
-      playerNickname: "Player {{i}}'s nickname"
+      playerNickname: "Player {{i}}'s nickname",
+      aiPlayer: "AI Player",
+      aiStrength: "AI Strength",
+      aiStrengthEasy: "Easy",
+      aiStrengthMedium: "Medium",
+      aiStrengthHard: "Hard"
     },
 
     playerNicknamesView: {

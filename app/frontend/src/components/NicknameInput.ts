@@ -33,17 +33,26 @@ export function NicknameInput(players: number): string {
         ${Checkbox({
           id: `ai-${i}`,
           name: `ai-player-${i}`,
-          label: "AI Player",
+          label: i18next.t("nicknameInput.aiPlayer"),
           disabled: isChecked
         })}
         ${Select({
           id: `ai-strength-${i}`,
           name: `ai-strength-${i}`,
-          label: "AI Strength",
+          label: i18next.t("nicknameInput.aiStrength"),
           options: [
-            { value: "AI_EASY", label: "Easy" },
-            { value: "AI_MEDIUM", label: "Normal" },
-            { value: "AI_HARD", label: "Hard" }
+            {
+              value: "AI_EASY",
+              label: i18next.t("nicknameInput.aiStrengthEasy")
+            },
+            {
+              value: "AI_MEDIUM",
+              label: i18next.t("nicknameInput.aiStrengthMedium")
+            },
+            {
+              value: "AI_HARD",
+              label: i18next.t("nicknameInput.aiStrengthHard")
+            }
           ],
           hidden: true
         })}
