@@ -103,20 +103,28 @@ echo "✅ SSL certificate authority set up"
 echo "➡️ Adding policy for nginx..."
 vault policy write nginx-policy /vault/policies/nginx-policy.hcl
 
-# Enable AppRole authentication
-echo "➡️ Enabling AppRole authentication..."
-vault auth enable -path=approle approle || true
+# Enable AppRole authentication if not active
+if vault auth list -format=json | jq -e '."approle/"' > /dev/null; then
+  echo "ℹ️ AppRole auth method already enabled, skipping..."
+else
+  echo "➡️ Enabling AppRole authentication..."
+  vault auth enable -path=approle approle
+fi
 
-# Create AppRole for nginx
-echo "➡️ Creating AppRole for nginx..."
-vault write auth/approle/role/nginx-role \
-    secret_id_ttl=0 \
-    token_num_uses=0 \
-    token_ttl=1h \
-    token_max_ttl=4h \
-    policies=nginx-policy
+# Create AppRole for nginx if not existent
+if vault read -format=json auth/approle/role/nginx-role > /dev/null 2>&1; then
+  echo "ℹ️ AppRole nginx-role already exists, skipping..."
+else
+  echo "➡️ Creating AppRole for nginx..."
+  vault write auth/approle/role/nginx-role \
+      secret_id_ttl=0 \
+      token_num_uses=0 \
+      token_ttl=1h \
+      token_max_ttl=4h \
+      policies=nginx-policy
+fi
 
-# Create role ID and secret ID
+# Create role ID and secret ID if not existent
 if [ ! -f "$SECRETS_DIR/nginx_role_id" ]; then
   echo "➡️ Creating role ID for nginx..."
   vault read -field=role_id auth/approle/role/nginx-role/role-id > "$SECRETS_DIR/nginx_role_id"
