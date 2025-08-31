@@ -7,7 +7,7 @@ import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
 import { PlayedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
-import { AIPlayer, maybeCreateAI } from "./AIPlayer.js";
+import { maybeCreateAI } from "./AIPlayer.js";
 import { getById } from "./utility.js";
 
 let isAborted: boolean = false;
@@ -34,16 +34,13 @@ export async function startGame(
 
   setIsAborted(false);
 
-  const aiPlayer1 = maybeCreateAI("left", type1);
-  const aiPlayer2 = maybeCreateAI("right", type2);
-
   const gameState = initGameState(
     canvas,
     nickname1,
     nickname2,
-    keys,
-    aiPlayer1,
-    aiPlayer2
+    type1,
+    type2,
+    keys
   );
 
   await runGameLoop(gameState, ctx);
@@ -52,21 +49,27 @@ export async function startGame(
     return;
   }
 
-  await endGame(gameState, tournament, userRole, type1, type2);
+  await endGame(gameState, tournament, userRole);
 }
 
 function initGameState(
   canvas: HTMLCanvasElement,
   player1: string,
   player2: string,
-  keys: Record<GameKey, boolean>,
-  aiPlayer1: AIPlayer | null,
-  aiPlayer2: AIPlayer | null
+  type1: PlayerType,
+  type2: PlayerType,
+  keys: Record<GameKey, boolean>
 ): GameState {
   const initialBallDirection = Math.random() * 2 - 1;
+
+  const aiPlayer1 = maybeCreateAI("left", type1);
+  const aiPlayer2 = maybeCreateAI("right", type2);
+
   const gameState: GameState = {
     player1: player1,
     player2: player2,
+    type1: type1,
+    type2: type2,
     player1Score: 0,
     player2Score: 0,
     winningScore: 1, // FIXME: needs to be a higher value
@@ -211,9 +214,7 @@ function checkWinner(gameState: GameState) {
 async function endGame(
   gameState: GameState,
   tournament: Tournament | null,
-  userRole: PlayedAs,
-  type1: PlayerType,
-  type2: PlayerType
+  userRole: PlayedAs
 ) {
   if (tournament) {
     const matchNumber = tournament.getNextMatchToPlay()!.matchNumber;
@@ -238,8 +239,8 @@ async function endGame(
         player2Nickname: gameState.player2,
         player1Score: gameState.player1Score,
         player2Score: gameState.player2Score,
-        player1Type: type1,
-        player2Type: type2
+        player1Type: gameState.type1,
+        player2Type: gameState.type2
       })
     );
   }
