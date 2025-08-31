@@ -125,6 +125,7 @@ function updateSlotUI(index: number): void {
     } else {
       strengthDiv.classList.add("hidden");
       nicknameInput.disabled = false;
+      nicknameInput.value = "";
     }
   }
 }
