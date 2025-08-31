@@ -89,9 +89,7 @@ export class MatchesTab extends PaginatedTab<MatchRead> {
     const matchesRows =
       matches.length === 0
         ? [NoMatchesRow()]
-        : matches.map((matchRaw: MatchRead) =>
-            MatchRow(matchRaw, this.username)
-          );
+        : matches.map((matchRaw: MatchRead) => MatchRow(matchRaw));
 
     table.innerHTML = Table({
       id: "match-history-table",
