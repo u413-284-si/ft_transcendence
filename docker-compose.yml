@@ -41,8 +41,10 @@ services:
     volumes:
       - certs:/etc/nginx/certs:ro
     depends_on:
-      - app
-      - vault-agent
+      app:
+        condition: service_started
+      vault-agent:
+        condition: service_healthy
     networks:
       - pong-network
   vault:
@@ -67,6 +69,11 @@ services:
       # - mysql
     networks:
       - pong-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:8200/v1/sys/health"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
   vault-agent:
     image: hashicorp/vault:1.20.2
     container_name: vault-agent
@@ -84,9 +91,15 @@ services:
         exec su-exec vault:vault vault agent -config=/vault/config/agent.hcl
       "
     depends_on:
-      - vault
+      vault:
+        condition: service_healthy
     networks:
     - pong-network
+    healthcheck:
+      test: ["CMD", "test", "-f", "/vault/certs/fullchain.pem"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
   # mysql:
   #   image: mysql:8
   #   container_name: mysql
