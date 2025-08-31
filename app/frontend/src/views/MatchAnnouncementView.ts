@@ -1,15 +1,19 @@
 import { router } from "../routing/Router.js";
-import { deleteTournament } from "../services/tournamentService.js";
+import {
+  deleteTournament,
+  updateTournamentBracket
+} from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
 import { GameView, GameType } from "./GameView.js";
-import { escapeHTML } from "../utility.js";
+import { escapeHTML, getById } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { PlayedAs, PlayerType } from "../types/IMatch.js";
 import { getDataOrThrow } from "../services/api.js";
+import ResultsView from "./ResultsView.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -19,6 +23,7 @@ export default class MatchAnnouncementView extends AbstractView {
   private matchNumber: number;
   private roundNumber: number;
   private userRole: PlayedAs;
+  private isAIvsAI: boolean;
 
   constructor(private tournament: Tournament) {
     super();
@@ -40,6 +45,9 @@ export default class MatchAnnouncementView extends AbstractView {
         : this.player2 === userNickname
           ? "PLAYERTWO"
           : "NONE";
+    const aiTypes: PlayerType[] = ["AI_EASY", "AI_MEDIUM", "AI_HARD"];
+    this.isAIvsAI =
+      aiTypes.includes(this.player1type) && aiTypes.includes(this.player2type);
   }
 
   createHTML() {
@@ -90,6 +98,15 @@ export default class MatchAnnouncementView extends AbstractView {
           })}
         </div>
       </section>
+
+      ${this.isAIvsAI
+        ? Button({
+            id: "skip-match",
+            text: "Skip",
+            variant: "default",
+            type: "button"
+          })
+        : ""}
     `;
   }
 
@@ -100,6 +117,10 @@ export default class MatchAnnouncementView extends AbstractView {
     document
       .getElementById("abort-tournament")
       ?.addEventListener("click", () => this.abortTournament());
+    if (this.isAIvsAI) {
+      const button = getById("skip-match");
+      button.addEventListener("click", () => this.handleSkipButton());
+    }
   }
 
   async render() {
@@ -138,5 +159,49 @@ export default class MatchAnnouncementView extends AbstractView {
 
   getName(): string {
     return "match-announcement";
+  }
+
+  private decideAIvsAIWinner(): "player1" | "player2" {
+    const AI_WEIGHTS: Record<Exclude<PlayerType, "HUMAN">, number> = {
+      AI_EASY: 1,
+      AI_MEDIUM: 2,
+      AI_HARD: 3
+    };
+
+    const weight1 =
+      AI_WEIGHTS[this.player1type as Exclude<PlayerType, "HUMAN">];
+    const weight2 =
+      AI_WEIGHTS[this.player2type as Exclude<PlayerType, "HUMAN">];
+
+    const total = weight1 + weight2;
+    const random = Math.random() * total;
+
+    return random < weight1 ? "player1" : "player2";
+  }
+
+  private async handleSkipButton() {
+    if (!this.isAIvsAI) return;
+
+    const winner = this.decideAIvsAIWinner();
+    const player1Score = winner === "player1" ? 1 : 0;
+    const player2Score = winner === "player2" ? 1 : 0;
+
+    this.tournament.updateBracketWithResult(this.matchNumber, winner);
+    getDataOrThrow(
+      await updateTournamentBracket({
+        tournamentId: this.tournament.getId(),
+        matchNumber: this.matchNumber,
+        player1Score: player1Score,
+        player2Score: player2Score
+      })
+    );
+
+    if (this.tournament.getNextMatchToPlay()) {
+      const view = new MatchAnnouncementView(this.tournament);
+      router.switchView(view);
+    } else {
+      const view = new ResultsView(this.tournament);
+      router.switchView(view);
+    }
   }
 }
