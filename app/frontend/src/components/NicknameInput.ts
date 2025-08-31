@@ -88,12 +88,12 @@ export function initNicknameInputListeners(): void {
 }
 
 function makeAIName(strength: string, slot: number): string {
-  const AI_NAMES: Record<string, string> = {
-    easy: "Norminette",
-    normal: "Moulinette",
-    hard: "Evaluator"
+  const AI_NAMES: Record<Exclude<PlayerType, "HUMAN">, string> = {
+    AI_EASY: "Norminette",
+    AI_MEDIUM: "Moulinette",
+    AI_HARD: "Evaluator"
   };
-  const baseName = AI_NAMES[strength] || "AI";
+  const baseName = AI_NAMES[strength as Exclude<PlayerType, "HUMAN">] ?? "AI";
   return `${baseName}-P${slot}`;
 }
 
