@@ -21,9 +21,6 @@ services:
     init: true
     security_opt:
       - no-new-privileges:true
-    secrets:
-      - site_key
-      - site_cert
     ports:
       - "8080:8080"
       - "8443:8443"
@@ -108,9 +105,3 @@ volumes:
   db-data:
   vault-data:
   vault-secrets:
-
-secrets:
-  site_key:
-    file: secrets/site.key
-  site_cert:
-    file: secrets/site.crt
