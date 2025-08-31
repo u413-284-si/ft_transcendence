@@ -163,11 +163,10 @@ const tr: TranslationShape = {
 
     matchAnnouncementView: {
       abortTournament: "TERMINATE TOURNAMENT",
-      nextMatch: "Next session queued:",
+      nextMatch: "Next session queued",
       title: "UPCOMING SESSION",
       roundMatch: "Cycle {{round}} - Session {{match}}",
-      startMatch: "INITIATE SESSION",
-      tournamentStatus: "TOURNAMENT STATUS"
+      startMatch: "INITIATE SESSION"
     },
 
     newGameView: {

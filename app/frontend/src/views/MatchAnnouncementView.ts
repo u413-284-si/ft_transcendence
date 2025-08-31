@@ -79,13 +79,13 @@ export default class MatchAnnouncementView extends AbstractView {
       <!-- Tournament Status -->
       <section class="flex flex-col justify-center items-center gap-4 mb-8">
         ${Header2({
-          text: i18next.t("matchAnnouncementView.tournamentStatus"),
+          text: i18next.t("resultsView.bracket"),
           variant: "default"
         })}
         ${Card({
           children: [
             Details({
-              summary: "Details",
+              summary: i18next.t("statsView.details"),
               content: this.tournament.getBracketAsHTML()
             })
           ],

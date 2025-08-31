@@ -160,15 +160,14 @@ const fr: TranslationShape = {
     twoFABackupCodeVerifyView: {
       title: "Vérification du code de secours",
       twoFABackupCode: "Code de secours",
-      enterTwoFABackupCode: "Entrez votre code de secours :"
+      enterTwoFABackupCode: "Entrez votre code de secours :"
     },
     matchAnnouncementView: {
       abortTournament: "Annuler le tournoi",
-      nextMatch: "Prochain match à jouer :",
-      title: "Prochain match !",
+      nextMatch: "Prochain match à jouer",
+      title: "Prochain match !",
       roundMatch: "Manche {{round}} - Match {{match}}",
-      startMatch: "Démarrer le match",
-      tournamentStatus: "Statut du tournoi"
+      startMatch: "Démarrer le match"
     },
     newGameView: {
       title: "Nouveau jeu",

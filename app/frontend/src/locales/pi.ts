@@ -166,11 +166,10 @@ const pi: TranslationShape = {
 
     matchAnnouncementView: {
       abortTournament: "Scuttle the Tournament!",
-      nextMatch: "Next skirmish to set sail:",
+      nextMatch: "Next skirmish to set sail",
       title: "Upcoming Duel!",
       roundMatch: "Round {{round}} - Clash {{match}}",
-      startMatch: "Hoist the Colors!",
-      tournamentStatus: "State o' the Tourney"
+      startMatch: "Hoist the Colors!"
     },
 
     newGameView: {

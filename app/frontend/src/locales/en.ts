@@ -161,11 +161,10 @@ const en = {
 
     matchAnnouncementView: {
       abortTournament: "Abort Tournament",
-      nextMatch: "Next match to play:",
+      nextMatch: "Next match to play",
       title: "Next Match!",
       roundMatch: "Round {{round}} - Match {{match}}",
-      startMatch: "Start Match",
-      tournamentStatus: "Tournament Status"
+      startMatch: "Start Match"
     },
 
     newGameView: {

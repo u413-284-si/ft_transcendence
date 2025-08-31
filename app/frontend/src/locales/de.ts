@@ -171,11 +171,10 @@ const de: TranslationShape = {
 
     matchAnnouncementView: {
       abortTournament: "Turnier abbrechen",
-      nextMatch: "Nächstes Spiel:",
+      nextMatch: "Nächstes Spiel",
       title: "Nächstes Spiel!",
-      roundMatch: "Runde {{round}} – Spiel {{match}}",
-      startMatch: "Spiel starten",
-      tournamentStatus: "Turnierstatus"
+      roundMatch: "Runde {{round}} - Spiel {{match}}",
+      startMatch: "Spiel starten"
     },
 
     newGameView: {
