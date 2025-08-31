@@ -2,6 +2,7 @@ import { getAllBySelector } from "../utility.js";
 import { Checkbox } from "./Checkbox.js";
 import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
+import { Select } from "./Select.js";
 
 export function NicknameInput(players: number): string {
   let nicknameInputs = "";
@@ -18,7 +19,8 @@ export function NicknameInput(players: number): string {
           name: `player-${i}`,
           placeholder: i18next.t("nicknameInput.enterYourNickname"),
           type: "text",
-          errorId: `player-error-${i}`
+          errorId: `player-error-${i}`,
+          className: "disabled:bg-teal disabled:text-grey"
         })}
         ${Radio({
           id: `choice-${i}`,
@@ -33,6 +35,17 @@ export function NicknameInput(players: number): string {
           label: "AI Player",
           disabled: isChecked
         })}
+        ${Select({
+          id: `ai-strength-${i}`,
+          name: `ai-strength-${i}`,
+          label: "AI Strength",
+          options: [
+            { value: "easy", label: "Easy" },
+            { value: "normal", label: "Normal" },
+            { value: "hard", label: "Hard" }
+          ],
+          hidden: true
+        })}
       </div>
     `;
   }
@@ -44,17 +57,79 @@ export function initNicknameInputListeners(): void {
   const checkboxes = getAllBySelector<HTMLInputElement>(
     'input[type="checkbox"][id^="ai-"]'
   );
+  const strengthSelects = getAllBySelector<HTMLSelectElement>(
+    'select[id^="select-ai-strength-"]'
+  );
 
-  radios.forEach((radio, index) => {
+  radios.forEach((radio) => {
     radio.addEventListener("change", () => {
-      checkboxes.forEach((checkbox, cbIndex) => {
-        if (cbIndex === index) {
-          checkbox.checked = false;
-          checkbox.disabled = true;
-        } else {
-          checkbox.disabled = false;
-        }
-      });
+      for (let i = 0; i < radios.length; i++) {
+        updateSlotUI(i);
+      }
     });
   });
+
+  checkboxes.forEach((checkbox, index) => {
+    checkbox.addEventListener("change", () => {
+      updateSlotUI(index);
+    });
+  });
+
+  strengthSelects.forEach((select, index) => {
+    select.addEventListener("change", () => {
+      updateSlotUI(index);
+    });
+  });
+
+  for (let i = 0; i < radios.length; i++) {
+    updateSlotUI(i);
+  }
+}
+
+function makeAIName(strength: string, slot: number): string {
+  const AI_NAMES: Record<string, string> = {
+    easy: "Norminette",
+    normal: "Moulinette",
+    hard: "Evaluator"
+  };
+  const baseName = AI_NAMES[strength] || "AI";
+  return `${baseName}-P${slot}`;
+}
+
+function updateSlotUI(index: number): void {
+  const radio = document.querySelector<HTMLInputElement>(
+    `#choice-${index + 1}`
+  );
+  const checkbox = document.querySelector<HTMLInputElement>(`#ai-${index + 1}`);
+  const strengthDiv = document.querySelector<HTMLDivElement>(
+    `#ai-strength-${index + 1}`
+  );
+  const strengthSelect = document.querySelector<HTMLSelectElement>(
+    `#select-ai-strength-${index + 1}`
+  );
+  const nicknameInput = document.querySelector<HTMLInputElement>(
+    `#nickname${index + 1}`
+  );
+
+  if (!radio || !checkbox || !strengthDiv || !strengthSelect || !nicknameInput)
+    return;
+
+  if (radio.checked) {
+    checkbox.checked = false;
+    checkbox.disabled = true;
+    strengthDiv.classList.add("hidden");
+    nicknameInput.disabled = false;
+    nicknameInput.value = "";
+  } else {
+    checkbox.disabled = false;
+
+    if (checkbox.checked) {
+      strengthDiv.classList.remove("hidden");
+      nicknameInput.disabled = true;
+      nicknameInput.value = makeAIName(strengthSelect.value, index + 1);
+    } else {
+      strengthDiv.classList.add("hidden");
+      nicknameInput.disabled = false;
+    }
+  }
 }
