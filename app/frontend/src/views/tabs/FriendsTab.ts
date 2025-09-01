@@ -71,18 +71,19 @@ export class FriendsTab extends AbstractTab {
 
   override async onShow(): Promise<void> {
     await super.onShow();
-    this.renderFriendSelector(this.dashboard!.matchStats);
   }
 
   async initData(): Promise<void> {
     this.dashboard = getDataOrThrow(await getUserDashboardFriends());
     this.populateChartOptions();
+    this.renderFriendSelector(this.dashboard!.matchStats);
   }
 
   override onHide(): void {
     super.onHide();
 
     this.friendManager.deselectAllFriendsExcept(this.username);
+    this.resetFriendSelectorButtons();
   }
 
   private populateChartOptions(): void {
@@ -173,5 +174,30 @@ export class FriendsTab extends AbstractTab {
     this.charts["friends-winrate"].updateSeries(filtered.winRate);
     this.charts["friends-match-stats"].updateSeries(filtered.matchStats);
     this.charts["friends-winstreak"].updateSeries(filtered.winStreak);
+  }
+
+  private resetFriendSelectorButtons() {
+    const container = getById<HTMLDivElement>("friend-selector");
+    if (!container) return;
+
+    const buttons = getAllBySelector<HTMLButtonElement>("button", {
+      root: container,
+      strict: false
+    });
+
+    buttons.forEach((btn) => {
+      const friendName = btn.innerText;
+      const isSelected = this.friendManager
+        .getSelectedFriends()
+        .includes(friendName);
+
+      if (isSelected) {
+        btn.className = this.friendManager.getBtnClassesSelected(friendName);
+        btn.dataset.selected = "true";
+      } else {
+        btn.className = this.friendManager.getBtnClassesNotSelected();
+        btn.dataset.selected = "false";
+      }
+    });
   }
 }
