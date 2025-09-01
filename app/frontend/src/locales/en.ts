@@ -289,6 +289,7 @@ const en = {
       deletedFriendRequest: "Friend request deleted by ",
       friendAdded: "Friend request accepted by {{username}} !",
       friendRequestButtonError: "Error processing friend request",
+      friendRequestSendError: "Error while sending friend request.",
       emailExists: "The email address already exists",
       emailOrUsernameExists: "The email or username already exists",
       invalidUsernameOrPW: "Invalid username or password",

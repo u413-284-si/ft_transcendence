@@ -400,7 +400,8 @@ export default class FriendsView extends AbstractView {
         this.refreshRequestList("friend");
       }
     } catch (error) {
-      router.handleError("handleSendRequestButton()", error);
+      console.error("Failed to send friend request:", error);
+      toaster.error(i18next.t("toast.friendRequestSendError"));
     }
   };
 
