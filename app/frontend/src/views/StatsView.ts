@@ -164,7 +164,7 @@ export default class StatsView extends AbstractView {
       const container = getById<HTMLDivElement>(this.currentTabId);
       container.classList.toggle("hidden");
 
-      await this.tabs[tabId].onShow();
+      this.tabs[tabId].onShow();
     } catch (error) {
       console.error(`Error while showing tab ${this.currentTabId}`, error);
       toaster.error("Something went wrong");
@@ -212,7 +212,7 @@ export default class StatsView extends AbstractView {
     buttons.forEach((button) => {
       button.addEventListener("click", async () => {
         const tabId = button.dataset.tab!;
-        await this.showTab(tabId);
+        this.showTab(tabId);
 
         buttons.forEach((btn) => {
           btn.classList.remove("active-link");
