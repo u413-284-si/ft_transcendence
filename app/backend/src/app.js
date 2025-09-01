@@ -27,7 +27,7 @@ import { userStatsSchemas } from "./schema/user_stats.schema.js";
 import { friendRequestSchemas } from "./schema/friend_request.schema.js";
 import { dashboardSchemas } from "./schema/dashboard.schema.js";
 
-async function initVault(roleId, secretId) {
+async function getJWTSecrets(roleId, secretId) {
   const status = await vault.healthCheck();
   if (status.sealed) throw new Error("Vault is sealed");
 
@@ -36,7 +36,6 @@ async function initVault(roleId, secretId) {
     secretId,
     "auth/approle"
   );
-  console.log("Vault token:", loginResponse.client_token);
 
   return vault.readKVSecret(loginResponse.client_token, "jwt");
 }
@@ -53,7 +52,7 @@ const secretId = fs.readFileSync("/app/secrets/app_secret_id", "utf8").trim();
 
 let jwtSecrets;
 try {
-  jwtSecrets = await initVault(roleId, secretId);
+  jwtSecrets = await getJWTSecrets(roleId, secretId);
   console.log("jwt secrets:", jwtSecrets);
 } catch (err) {
   console.error("❌ Failed to initialize Vault:", err);
