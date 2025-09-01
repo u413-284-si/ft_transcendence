@@ -1,3 +1,4 @@
+import { buildBaseOptions } from "../../charts/chartUtils.js";
 import { FriendManager } from "../../charts/FriendManager.js";
 import { buildFriendsMatchStatsOptions } from "../../charts/friendsMatchStatsOptions.js";
 import { buildFriendsWinRateOptions } from "../../charts/friendsWinRateOptions.js";
@@ -21,6 +22,11 @@ export class FriendsTab extends AbstractTab {
     this.username = username;
     this.friendManager = new FriendManager();
     this.friendManager.selectFriend(this.username);
+    this.chartBaseOptions = {
+      "friends-match-stats": buildBaseOptions("bar", 750, 300),
+      "friends-winrate": buildBaseOptions("bar", 600, 300),
+      "friends-winstreak": buildBaseOptions("bar", 600, 300)
+    };
   }
 
   getHTML(): string {
@@ -68,10 +74,9 @@ export class FriendsTab extends AbstractTab {
     this.renderFriendSelector(this.dashboard!.matchStats);
   }
 
-  async init(): Promise<void> {
+  async initData(): Promise<void> {
     this.dashboard = getDataOrThrow(await getUserDashboardFriends());
     this.populateChartOptions();
-    this.isInit = true;
   }
 
   override onHide(): void {

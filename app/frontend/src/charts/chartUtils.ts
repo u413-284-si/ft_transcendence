@@ -48,7 +48,7 @@ export const friendsColors = [
 ];
 
 export function buildBaseOptions(
-  type: "bar" | "donut" | "line",
+  type: "bar" | "donut" | "line" | "radialBar",
   width: number,
   height: number
 ): ApexOptions {
