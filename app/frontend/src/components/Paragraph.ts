@@ -7,7 +7,7 @@ export type ParagraphOptions = {
 
 const paragraphSizes: Record<string, string> = {
   sm: "text-sm",
-  md: "text-base",
+  md: "text-md",
   lg: "text-lg"
 };
 
