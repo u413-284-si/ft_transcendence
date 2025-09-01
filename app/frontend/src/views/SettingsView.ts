@@ -198,40 +198,38 @@ export default class SettingsView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
-      <div class="text-center space-y-4">
-        ${Header1({
-          text: i18next.t("settingsView.title"),
-          variant: "default"
+      ${Header1({
+        text: i18next.t("settingsView.title"),
+        variant: "default"
+      })}
+      ${Paragraph({
+        text: i18next.t("settingsView.settings"),
+        id: "settings-intro"
+      })}
+      <div class="flex flex-col mt-10 text-center">
+        ${this.hasLocalAuth ? this.getTwoFASetupHTML() : ""}
+        ${Form({
+          id: "preferred-language-form",
+          className: "mt-10",
+          children: [
+            Paragraph({
+              text: i18next.t("settingsView.preferredLanguage")
+            }),
+            LanguageSwitcher({
+              id: "preferred-language",
+              selectedLang: i18next.language as Language,
+              className: "w-64",
+              size: "lg"
+            }),
+            Button({
+              text: i18next.t("settingsView.saveLanguage"),
+              variant: "default",
+              size: "md",
+              type: "submit",
+              className: "mt-2 self-start"
+            })
+          ]
         })}
-        ${Paragraph({
-          text: i18next.t("settingsView.settings"),
-          id: "settings-intro"
-        })}
-        <div class="flex flex-col mt-10">
-          ${this.hasLocalAuth ? this.getTwoFASetupHTML() : ""}
-          ${Form({
-            id: "preferred-language-form",
-            className: "mt-10",
-            children: [
-              Paragraph({
-                text: i18next.t("settingsView.preferredLanguage")
-              }),
-              LanguageSwitcher({
-                id: "preferred-language",
-                selectedLang: i18next.language as Language,
-                className: "w-64",
-                size: "lg"
-              }),
-              Button({
-                text: i18next.t("settingsView.saveLanguage"),
-                variant: "default",
-                size: "md",
-                type: "submit",
-                className: "mt-2 self-start"
-              })
-            ]
-          })}
-        </div>
       </div>
     `;
   }
