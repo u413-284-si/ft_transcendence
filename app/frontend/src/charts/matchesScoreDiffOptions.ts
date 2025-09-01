@@ -26,6 +26,7 @@ export function buildMatchesScoreDiffOptions(
       toolbar: {
         show: false
       },
+      width: 600,
       height: 300
     },
     legend: {
