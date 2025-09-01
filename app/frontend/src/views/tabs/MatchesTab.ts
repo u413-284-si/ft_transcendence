@@ -28,7 +28,7 @@ export class MatchesTab extends PaginatedTab<MatchRead> {
   }
 
   getHTML(): string {
-    return /* HTML */ ` <div id="tab-matches" class="tab-content">
+    return /* HTML */ ` <div id="tab-matches" class="hidden">
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),

@@ -33,7 +33,7 @@ export class TournamentsTab extends PaginatedTab<TournamentRead> {
   }
 
   getHTML(): string {
-    return /* HTML */ ` <div id="tab-tournaments">
+    return /* HTML */ ` <div id="tab-tournaments" class="hidden">
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),

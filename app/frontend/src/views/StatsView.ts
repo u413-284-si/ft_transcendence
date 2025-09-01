@@ -98,14 +98,18 @@ export default class StatsView extends AbstractView {
   async render() {
     await this.setViewType();
     await this.fetchData();
+    this.initTabs();
     this.updateHTML();
-    if (this.viewType === "public") return;
-    this.tabs["matches"] = new MatchesTab(this.userStats!, this.username);
-    this.tabs["tournaments"] = new TournamentsTab(this.username);
-    await this.showTab("matches");
+    await this.showTab("tab-matches");
     this.addListeners();
+  }
+
+  private initTabs() {
+    if (this.viewType === "public") return;
+    this.tabs["tab-matches"] = new MatchesTab(this.userStats!, this.username);
+    this.tabs["tab-tournaments"] = new TournamentsTab(this.username);
     if (this.viewType !== "self") return;
-    this.tabs["friends"] = new FriendsTab(this.username);
+    this.tabs["tab-friends"] = new FriendsTab(this.username);
   }
 
   getName(): string {
@@ -150,11 +154,13 @@ export default class StatsView extends AbstractView {
   async showTab(tabId: string) {
     if (this.currentTabId) {
       this.tabs[this.currentTabId].onHide();
+      const container = getById<HTMLDivElement>(this.currentTabId);
+      container.classList.toggle("hidden");
     }
-    this.currentTabId = tabId;
 
-    const container = getById<HTMLDivElement>("tab-content");
-    container.innerHTML = this.tabs[tabId].getHTML();
+    this.currentTabId = tabId;
+    const container = getById<HTMLDivElement>(this.currentTabId);
+    container.classList.toggle("hidden");
 
     await this.tabs[tabId].onShow();
   }
@@ -166,25 +172,32 @@ export default class StatsView extends AbstractView {
         variant: "info"
       })}`;
     }
+
+    let allTabsHTML = "";
+    for (const tabKey in this.tabs) {
+      if (Object.prototype.hasOwnProperty.call(this.tabs, tabKey)) {
+        allTabsHTML += this.tabs[tabKey].getHTML();
+      }
+    }
     return /* HTML */ `
       <div class="flex space-x-4 border-b border-grey mb-4">
         ${TabButton({
           text: i18next.t("statsView.matches"),
-          tabId: "matches",
+          tabId: "tab-matches",
           isActive: true
         })}
         ${TabButton({
           text: i18next.t("statsView.tournaments"),
-          tabId: "tournaments"
+          tabId: "tab-tournaments"
         })}
         ${this.viewType === "self"
           ? TabButton({
               text: i18next.t("statsView.friends"),
-              tabId: "friends"
+              tabId: "tab-friends"
             })
           : ""}
       </div>
-      <div id="tab-content"></div>
+      <div id="tab-content">${allTabsHTML}</div>
     `;
   }
 
