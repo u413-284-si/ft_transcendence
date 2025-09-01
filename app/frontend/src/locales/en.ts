@@ -95,13 +95,15 @@ const en = {
       emailOrUsernameFormat: "The username or email address must be valid.",
       fillAtLeastOneField: "Please fill in at least one field.",
       fillInUsername: "Please enter a username.",
+      friendNotSelf: "You can't add yourself as a friend.",
+      friendRequestAlreadySent: "You already sent a Friend request.",
+      friendsAlready: "You are already friends.",
       imageFileEmpty: "Please select a file to upload.",
       imageFileFormat: "Please upload a valid image file.",
       nicknameEmpty: "Nickname cannot be empty.",
       nicknameFormat:
         "Nickname must be 3 to 20 characters and can include letters, digits or the following characters: -!?_$.",
       nicknameUniqueness: "Nickname must be unique.",
-      friendNotSelf: "You can't add yourself as a friend.",
       passwordEmpty: "Password cannot be empty.",
       passwordFormat:
         "Password must be 10 to 64 characters and include at least one digit, one uppercase and one lowercase letter, and one special character from the set @$!%*?&",

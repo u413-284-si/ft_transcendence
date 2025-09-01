@@ -98,13 +98,15 @@ const pi: TranslationShape = {
       emailOrUsernameFormat: "That ain't a proper sailor name or address!",
       fillAtLeastOneField: "Fill at least one chest, matey!",
       fillInUsername: "Enter yer name, ye bilge rat!",
+      friendNotSelf: "Ye can't be addin' yerself to yer crew!",
+      friendRequestAlreadySent: "Ye already sent a parley request.",
+      friendsAlready: "Ye be already mates!",
       imageFileEmpty: "Pick a painting, mate!",
       imageFileFormat: "That ain’t a proper lookin’ portrait!",
       nicknameEmpty: "Ye need a pirate name!",
       nicknameFormat:
         "Make it 3–20 letters, and use swashbucklin’ marks like -!?_$.",
       nicknameUniqueness: "That pirate name be taken!",
-      friendNotSelf: "Ye can't be addin' yerself to yer crew!",
       passwordEmpty: "Don’t leave yer treasure chest wide open!",
       passwordFormat:
         "Yer code needs numbers, big letters, little letters, and pirate symbols @$!%*?&",

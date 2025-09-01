@@ -356,6 +356,26 @@ export default class FriendsView extends AbstractView {
       return;
     }
 
+    const existingRequest = this.getFriendRequestByFriendUsername(username);
+    if (existingRequest) {
+      switch (existingRequest.status) {
+        case "ACCEPTED":
+          markInvalid(
+            i18next.t("invalid.friendsAlready", { friend: username }),
+            inputEl,
+            errorEl
+          );
+          return;
+        case "PENDING":
+          markInvalid(
+            i18next.t("invalid.friendRequestAlreadySent"),
+            inputEl,
+            errorEl
+          );
+          return;
+      }
+    }
+
     try {
       const user = getDataOrThrow(await getUserByUsername(username));
 

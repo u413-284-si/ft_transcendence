@@ -97,13 +97,15 @@ const tr: TranslationShape = {
       emailOrUsernameFormat: "User ID or data address format invalid.",
       fillAtLeastOneField: "Fill at least one data field.",
       fillInUsername: "User ID required.",
+      friendNotSelf: "Self-linking not permitted.",
+      friendRequestAlreadySent: "Link request already transmitted.",
+      friendsAlready: "Node already connected.",
       imageFileEmpty: "Select an image file for upload.",
       imageFileFormat: "Upload a valid image data file.",
       nicknameEmpty: "Node alias cannot be empty.",
       nicknameFormat:
         "Node alias must be 3-20 characters, letters, digits, or -!?_$.",
       nicknameUniqueness: "Node alias must be unique.",
-      friendNotSelf: "Self-linking not permitted.",
       passwordEmpty: "Access code cannot be empty.",
       passwordFormat:
         "Access code must be 10-64 chars, include digit, uppercase, lowercase, and special char @$!%*?&",

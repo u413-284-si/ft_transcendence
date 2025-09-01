@@ -100,13 +100,16 @@ const de: TranslationShape = {
         "Der Benutzername oder die E-Mail-Adresse muss gültig sein.",
       fillAtLeastOneField: "Bitte fülle mindestens ein Feld aus.",
       fillInUsername: "Bitte gib einen Benutzernamen ein.",
+      friendNotSelf: "Du kannst dich nicht selbst als Freund hinzufügen.",
+      friendRequestAlreadySent:
+        "Du hast bereits eine Freundschaftsanfrage gesendet.",
+      friendsAlready: "Ihr seid bereits befreundet.",
       imageFileEmpty: "Bitte wähle eine Datei zum Hochladen aus.",
       imageFileFormat: "Bitte lade eine gültige Bilddatei hoch.",
       nicknameEmpty: "Spitzname darf nicht leer sein.",
       nicknameFormat:
         "Spitzname muss 3 bis 20 Zeichen haben und darf Buchstaben, Zahlen oder folgende Sonderzeichen enthalten: -!?_$.",
       nicknameUniqueness: "Spitzname muss eindeutig sein.",
-      friendNotSelf: "Du kannst dich nicht selbst als Freund hinzufügen.",
       passwordEmpty: "Passwort darf nicht leer sein.",
       passwordFormat:
         "Passwort muss 10 bis 64 Zeichen enthalten und mindestens eine Zahl, einen Groß- und Kleinbuchstaben sowie ein Sonderzeichen: @$!%*?&",
