@@ -281,7 +281,9 @@ const fr: TranslationShape = {
       declinedFriendRequest: "Demande d’ami refusée par ",
       deletedFriendRequest: "Demande d’ami supprimée par ",
       friendAdded: "Ami {{username}} ajouté !",
-      friendRequestButtonError: "Erreur lors du traitement de la demande d’ami",
+      friendRequestButtonError: "Erreur lors du traitement de la demande d'ami",
+      friendRequestEventError:
+        "Erreur lors de la réception de l'événement de demande d'ami.",
       friendRequestSendError: "Erreur lors de l'envoi de la demande d'ami.",
       emailExists: "L’adresse e‑mail existe déjà",
       emailOrUsernameExists: "L’e‑mail ou le nom d’utilisateur existe déjà",

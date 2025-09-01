@@ -1,4 +1,3 @@
-import { router } from "../routing/Router.js";
 import { sanitizeHTML } from "../sanitize.js";
 import { getDataOrThrow } from "../services/api.js";
 import {
@@ -479,7 +478,8 @@ export default class FriendsView extends AbstractView {
         }
       }
     } catch (error) {
-      router.handleError("Error in handleFriendRequestEvent()", error);
+      console.error(error);
+      toaster.error(i18next.t("toast.friendRequestEventError"));
     }
   };
 }

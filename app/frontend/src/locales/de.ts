@@ -299,6 +299,8 @@ const de: TranslationShape = {
       friendAdded: "Freund {{username}} hinzugefügt!",
       friendRequestButtonError:
         "Fehler beim Verarbeiten der Freundschaftsanfrage",
+      friendRequestEventError:
+        "Fehler beim Empfang des Freundschaftsanfrage-Ereignisses.",
       friendRequestSendError: "Fehler beim Senden der Freundschaftsanfrage.",
       emailExists: "Diese E-Mail-Adresse ist bereits registriert",
       emailOrUsernameExists: "E-Mail oder Benutzername existiert bereits",
