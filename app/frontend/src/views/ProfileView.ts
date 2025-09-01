@@ -21,6 +21,7 @@ import { User } from "../types/User.js";
 import { toaster } from "../Toaster.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { TextBox } from "../components/TextBox.js";
+import { Header1 } from "../components/Header1.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
@@ -100,6 +101,9 @@ export default class ProfileView extends AbstractView {
     const user = auth.getUser();
 
     return /* HTML */ `
+      ${Header1({
+        text: i18next.t("profileView.title")
+      })}
       <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="flex flex-col md:flex-row gap-10 items-start">
           <!-- Avatar Section -->
