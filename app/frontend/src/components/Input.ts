@@ -36,7 +36,7 @@ export function Input({
     inputHtml = renderFileInput(id, name, acceptAttr, noFileText);
   } else {
     const baseStyles =
-      "w-md bg-emerald-dark text-white border border-emerald rounded-md hover:bg-emerald transition px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-cyan";
+      "w-full bg-emerald-dark text-white border border-emerald rounded-md hover:bg-emerald transition px-3 py-2 focus:outline-none focus:ring-2 focus:ring-neon-cyan";
     const classes = `${baseStyles} ${className}`.trim();
     const toggleButton = hasToggle ? getToggleButtonHTML(id) : "";
     inputHtml = renderStandardInput(
@@ -51,7 +51,7 @@ export function Input({
   }
 
   return /* HTML */ `
-    <div class="w-full min-w-sm flex flex-col gap-1">
+    <div class="w-md flex flex-col gap-1">
       ${labelHtml} ${inputHtml} ${errorSpan}
     </div>
   `;
@@ -82,7 +82,7 @@ function renderFileInput(
       tabindex="0"
       id="${id}-file-label"
       for="${id}"
-      class="w-md text-md inline-block cursor-pointer bg-emerald-dark text-white/50 px-3 py-2 rounded-md hover:bg-emerald transition max-w-full truncate overflow-hidden border border-emerald focus:outline-none focus:ring-2 focus:ring-neon-cyan whitespace-nowrap"
+      class="w-full text-md inline-block cursor-pointer bg-emerald-dark text-white/50 px-3 py-2 rounded-md hover:bg-emerald transition max-w-full truncate overflow-hidden border border-emerald focus:outline-none focus:ring-2 focus:ring-neon-cyan whitespace-nowrap"
     >
       ${noFileText}
     </label>
