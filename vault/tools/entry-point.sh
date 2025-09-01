@@ -10,8 +10,12 @@ export SECRETS_DIR="/vault/secrets"
 echo "➡️ Running initial setup..."
 
 mkdir -p "$SECRETS_DIR"
+mkdir -p "$SECRETS_DIR/nginx"
+mkdir -p "$SECRETS_DIR/app"
 chmod 700 "$SECRETS_DIR"
 chown vault:vault "$SECRETS_DIR"
+chown -R vault:vault "$SECRETS_DIR/nginx"
+chown -R vault:vault "$SECRETS_DIR/app"
 chown -R vault:vault /vault/data
 
 ########################################
@@ -125,23 +129,71 @@ else
 fi
 
 # Create role ID and secret ID if not existent
-if [ ! -f "$SECRETS_DIR/nginx_role_id" ]; then
+if [ ! -f "$SECRETS_DIR/nginx/nginx_role_id" ]; then
   echo "➡️ Creating role ID for nginx..."
-  vault read -field=role_id auth/approle/role/nginx-role/role-id > "$SECRETS_DIR/nginx_role_id"
-  chmod 600 "$SECRETS_DIR/nginx_role_id"
-  chown vault:vault "$SECRETS_DIR/nginx_role_id"
+  vault read -field=role_id auth/approle/role/nginx-role/role-id > "$SECRETS_DIR/nginx/nginx_role_id"
+  chmod 600 "$SECRETS_DIR/nginx/nginx_role_id"
+  chown vault:vault "$SECRETS_DIR/nginx/nginx_role_id"
 else
   echo "ℹ️ Role ID for nginx already exists"
 fi
 
-if [ ! -f "$SECRETS_DIR/nginx_secret_id" ]; then
+if [ ! -f "$SECRETS_DIR/nginx/nginx_secret_id" ]; then
   echo "➡️ Creating secret ID for nginx..."
-  vault write -field=secret_id -f auth/approle/role/nginx-role/secret-id > "$SECRETS_DIR/nginx_secret_id"
-  chmod 600 "$SECRETS_DIR/nginx_secret_id"
-  chown vault:vault "$SECRETS_DIR/nginx_secret_id"
+  vault write -field=secret_id -f auth/approle/role/nginx-role/secret-id > "$SECRETS_DIR/nginx/nginx_secret_id"
+  chmod 600 "$SECRETS_DIR/nginx/nginx_secret_id"
+  chown vault:vault "$SECRETS_DIR/nginx/nginx_secret_id"
 else
   echo "ℹ️ Secret ID for nginx already exists"
 fi
-echo "✅ Role ID and Secret ID created"
+echo "✅ Role ID and Secret ID for nginx created"
+
+######################################
+# -- Set up app secret generation -- #
+######################################
+
+# Add jwt secrets
+echo "➡️ Adding JWT secrets..."
+vault kv put secret/jwt \
+    access_token_secret=$(openssl rand -hex 32) \
+    refresh_token_secret=$(openssl rand -hex 32) \
+    two_fa_login_token_secret=$(openssl rand -hex 32)
+
+# Add policy for app
+echo "➡️ Adding policy for app..."
+vault policy write app-policy /vault/policies/app-policy.hcl
+
+# Create AppRole for app if not existent
+if vault read -format=json auth/approle/role/app-role > /dev/null 2>&1; then
+  echo "ℹ️ AppRole app-role already exists, skipping..."
+else
+  echo "➡️ Creating AppRole for app..."
+  vault write auth/approle/role/app-role \
+      secret_id_ttl=0 \
+      token_num_uses=0 \
+      token_ttl=1h \
+      token_max_ttl=4h \
+      policies=app-policy
+fi
+
+# Create role ID and secret ID if not existent
+if [ ! -f "$SECRETS_DIR/app/app_role_id" ]; then
+  echo "➡️ Creating role ID for app..."
+  vault read -field=role_id auth/approle/role/app-role/role-id > "$SECRETS_DIR/app/app_role_id"
+  chmod 600 "$SECRETS_DIR/app/app_role_id"
+  chown vault:vault "$SECRETS_DIR/app/app_role_id"
+else
+  echo "ℹ️ Role ID for app already exists"
+fi
+
+if [ ! -f "$SECRETS_DIR/app/app_secret_id" ]; then
+  echo "➡️ Creating secret ID for app..."
+  vault write -field=secret_id -f auth/approle/role/app-role/secret-id > "$SECRETS_DIR/app/app_secret_id"
+  chmod 600 "$SECRETS_DIR/app/app_secret_id"
+  chown vault:vault "$SECRETS_DIR/app/app_secret_id"
+else
+  echo "ℹ️ Secret ID for app already exists"
+fi
+echo "✅ Role ID and Secret ID for app created"
 
 wait $VAULT_PID

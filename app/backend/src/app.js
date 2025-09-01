@@ -10,6 +10,8 @@ import fastifyCookie from "@fastify/cookie";
 import jwt from "@fastify/jwt";
 import fastifyMultipart from "@fastify/multipart";
 import oAuth2 from "@fastify/oauth2";
+import fs from "fs";
+import Vault from "hashi-vault-js";
 
 import env from "./config/env.js";
 
@@ -24,6 +26,39 @@ import { authSchemas } from "./schema/auth.schema.js";
 import { userStatsSchemas } from "./schema/user_stats.schema.js";
 import { friendRequestSchemas } from "./schema/friend_request.schema.js";
 import { dashboardSchemas } from "./schema/dashboard.schema.js";
+
+async function initVault(roleId, secretId) {
+  const status = await vault.healthCheck();
+  if (status.sealed) throw new Error("Vault is sealed");
+
+  const loginResponse = await vault.loginWithAppRole(
+    roleId,
+    secretId,
+    "auth/approle"
+  );
+  console.log("Vault token:", loginResponse.client_token);
+
+  return vault.readKVSecret(loginResponse.client_token, "jwt");
+}
+
+const vault = new Vault({
+  https: false,
+  baseUrl: `${env.vaultAddr}/v1`,
+  rootPath: "secret",
+  timeout: 1000,
+  proxy: false
+});
+const roleId = fs.readFileSync("/app/secrets/app_role_id", "utf8").trim();
+const secretId = fs.readFileSync("/app/secrets/app_secret_id", "utf8").trim();
+
+let jwtSecrets;
+try {
+  jwtSecrets = await initVault(roleId, secretId);
+  console.log("jwt secrets:", jwtSecrets);
+} catch (err) {
+  console.error("❌ Failed to initialize Vault:", err);
+  process.exit(1);
+}
 
 const fastify = Fastify({
   exposeHeadRoutes: false,
@@ -74,7 +109,7 @@ await fastify.register(fastifyFormbody);
 await fastify.register(fastifyCookie);
 await fastify.register(jwt, {
   namespace: "accessToken",
-  secret: env.jwtAccessTokenSecret,
+  secret: jwtSecrets.data.access_token_secret,
   jwtVerify: "accessTokenVerify",
   jwtSign: "accessTokenSign",
   sign: { expiresIn: env.accessTokenTimeToExpireInMs },
@@ -85,7 +120,7 @@ await fastify.register(jwt, {
 });
 await fastify.register(jwt, {
   namespace: "refreshToken",
-  secret: env.jwtRefreshTokenSecret,
+  secret: jwtSecrets.data.refresh_token_secret,
   jwtVerify: "refreshTokenVerify",
   jwtSign: "refreshTokenSign",
   sign: { expiresIn: env.refreshTokenTimeToExpireInMS },
@@ -96,7 +131,7 @@ await fastify.register(jwt, {
 });
 await fastify.register(jwt, {
   namespace: "twoFALoginToken",
-  secret: env.jwtTwoFALoginTokenSecret,
+  secret: jwtSecrets.data.two_fa_login_token_secret,
   jwtVerify: "twoFALoginTokenVerify",
   jwtSign: "twoFALoginTokenSign",
   sign: { expiresIn: env.twoFALoginTokenTimeToExpireInMS },

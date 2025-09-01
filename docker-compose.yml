@@ -9,9 +9,13 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4001
-    restart: always
+    # restart: always
     volumes:
       - db-data:/app/db
+      - vault-secrets-app:/app/secrets:ro
+    depends_on:
+      vault:
+        condition: service_healthy
     networks:
       - pong-network
   waf:
@@ -62,15 +66,14 @@ services:
     volumes:
       - vault-data:/vault/data
       - vault-secrets:/vault/secrets
+      - vault-secrets-nginx:/vault/secrets/nginx
+      - vault-secrets-app:/vault/secrets/app
       - ./vault/config:/vault/config:ro
       - ./vault/policies:/vault/policies:ro
-    depends_on:
-      - app
-      # - mysql
     networks:
       - pong-network
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:8200/v1/sys/health"]
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8200/v1/sys/health | grep '\"sealed\":false'"]
       interval: 5s
       timeout: 2s
       retries: 10
@@ -83,7 +86,7 @@ services:
     volumes:
       - ./vault-agent/config/agent.hcl:/vault/config/agent.hcl:ro
       - ./vault-agent/templates:/vault/templates:ro
-      - vault-secrets:/vault/secrets
+      - vault-secrets-nginx:/vault/secrets/nginx
       - certs:/vault/certs
     command:
       sh -c "
@@ -118,3 +121,5 @@ volumes:
   db-data:
   vault-data:
   vault-secrets:
+  vault-secrets-app:
+  vault-secrets-nginx:
