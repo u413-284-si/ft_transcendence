@@ -80,8 +80,10 @@ if [ -f "$SECRETS_DIR/root_token" ]; then
 fi
 
 # Enable kv
+echo "➡️ Enabling KV secrets engine..."
 if ! vault secrets list -format=json | jq -e '."secret/"' >/dev/null; then
   vault secrets enable -path=secret kv-v2
+  echo "✅ KV secrets engine enabled at secret/"
 else
   echo "ℹ️ KV already enabled at secret/"
 fi
@@ -109,6 +111,7 @@ if vault auth list -format=json | jq -e '."approle/"' > /dev/null; then
 else
   echo "➡️ Enabling AppRole authentication..."
   vault auth enable -path=approle approle
+  echo "✅ AppRole authentication enabled"
 fi
 
 # Create AppRole for nginx if not existent
@@ -122,6 +125,7 @@ else
       token_ttl=1h \
       token_max_ttl=4h \
       policies=nginx-policy
+  echo "✅ AppRole nginx-role created"
 fi
 
 # Create role ID and secret ID if not existent
@@ -130,6 +134,7 @@ if [ ! -f "$SECRETS_DIR/nginx_role_id" ]; then
   vault read -field=role_id auth/approle/role/nginx-role/role-id > "$SECRETS_DIR/nginx_role_id"
   chmod 600 "$SECRETS_DIR/nginx_role_id"
   chown vault:vault "$SECRETS_DIR/nginx_role_id"
+  echo "✅ Role ID for nginx created"
 else
   echo "ℹ️ Role ID for nginx already exists"
 fi
@@ -139,10 +144,10 @@ if [ ! -f "$SECRETS_DIR/nginx_secret_id" ]; then
   vault write -field=secret_id -f auth/approle/role/nginx-role/secret-id > "$SECRETS_DIR/nginx_secret_id"
   chmod 600 "$SECRETS_DIR/nginx_secret_id"
   chown vault:vault "$SECRETS_DIR/nginx_secret_id"
+  echo "✅ Secret ID for nginx created"
 else
   echo "ℹ️ Secret ID for nginx already exists"
 fi
-echo "✅ Role ID and Secret ID for nginx created"
 
 ######################################
 # -- Set up app secret generation -- #
@@ -154,6 +159,19 @@ vault kv put secret/jwt \
     access_token_secret=$(openssl rand -hex 32) \
     refresh_token_secret=$(openssl rand -hex 32) \
     two_fa_login_token_secret=$(openssl rand -hex 32)
+echo "✅ JWT secrets added to Vault"
+
+# Add google_secret
+echo "➡️ Adding Google secret..."
+if [ -f "/run/secrets/google_secret" ]; then
+  googleSecret=$(cat "/run/secrets/google_secret")
+
+  vault kv put secret/google \
+      google_oauth2_client_secret="$googleSecret"
+  echo "✅ Google secret added to Vault"
+else
+  echo "ℹ️ Google secret not found, skipping..."
+fi
 
 # Add policy for app
 echo "➡️ Adding policy for app..."
@@ -170,6 +188,7 @@ else
       token_ttl=1h \
       token_max_ttl=4h \
       policies=app-policy
+  echo "✅ AppRole app-role for app created"
 fi
 
 # Create role ID and secret ID if not existent
@@ -178,6 +197,7 @@ if [ ! -f "$SECRETS_DIR/app_role_id" ]; then
   vault read -field=role_id auth/approle/role/app-role/role-id > "$SECRETS_DIR/app_role_id"
   chmod 600 "$SECRETS_DIR/app_role_id"
   chown vault:vault "$SECRETS_DIR/app_role_id"
+  echo "✅ Role ID for app created"
 else
   echo "ℹ️ Role ID for app already exists"
 fi
@@ -187,9 +207,9 @@ if [ ! -f "$SECRETS_DIR/app_secret_id" ]; then
   vault write -field=secret_id -f auth/approle/role/app-role/secret-id > "$SECRETS_DIR/app_secret_id"
   chmod 600 "$SECRETS_DIR/app_secret_id"
   chown vault:vault "$SECRETS_DIR/app_secret_id"
+  echo "✅ Secret ID for app created"
 else
   echo "ℹ️ Secret ID for app already exists"
 fi
-echo "✅ Role ID and Secret ID for app created"
 
 wait $VAULT_PID

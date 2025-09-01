@@ -62,6 +62,8 @@ services:
       - "8200:8200"
     environment:
       - VAULT_ADDR=http://0.0.0.0:8200
+    secrets:
+      - google_secret
     restart: always
     volumes:
       - vault-data:/vault/data
@@ -119,3 +121,7 @@ volumes:
   db-data:
   vault-data:
   vault-secrets:
+
+secrets:
+  google_secret:
+    file: ./secrets/google-secret.txt
