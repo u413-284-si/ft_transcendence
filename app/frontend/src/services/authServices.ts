@@ -32,11 +32,15 @@ export async function userLogin(
   usernameOrEmail: string,
   password: string
 ): Promise<
-  ApiResponse<{ username: string; hasTwoFA: boolean; token?: ValidToken }>
+  ApiResponse<{ username: string; hasTwoFA: boolean; token: ValidToken | null }>
 > {
   const url = "/api/auth/login";
 
-  return apiFetch<{ username: string; hasTwoFA: boolean; token?: ValidToken }>(
+  return apiFetch<{
+    username: string;
+    hasTwoFA: boolean;
+    token: ValidToken | null;
+  }>(
     url,
     {
       method: "POST",
