@@ -56,7 +56,13 @@ export function buildTournamentsProgressOptions(
     ],
     tooltip: {
       theme: "dark"
-    }
+    },
+    xaxis: {
+      labels: { show: false },
+      axisTicks: { show: false },
+      axisBorder: { show: false }
+    },
+    yaxis: { labels: { show: false } }
   };
   return options;
 }
