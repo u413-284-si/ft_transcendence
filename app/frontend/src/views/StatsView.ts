@@ -180,11 +180,10 @@ export default class StatsView extends AbstractView {
     }
 
     let allTabsHTML = "";
-    for (const tabKey in this.tabs) {
-      if (Object.prototype.hasOwnProperty.call(this.tabs, tabKey)) {
-        allTabsHTML += this.tabs[tabKey].getHTML();
-      }
+    for (const tabId in this.tabs) {
+      allTabsHTML += this.tabs[tabId].getHTML();
     }
+
     return /* HTML */ `
       <div class="flex space-x-4 border-b border-grey mb-4">
         ${TabButton({
@@ -222,5 +221,15 @@ export default class StatsView extends AbstractView {
         button.classList.add("active-link");
       });
     });
+  }
+
+  unmount(): void {
+    console.log("Cleaning up StatsView");
+    for (const tabId in this.tabs) {
+      const tab = this.tabs[tabId];
+      if (tab) {
+        tab.destroyCharts();
+      }
+    }
   }
 }

@@ -52,4 +52,19 @@ export abstract class AbstractTab {
       }
     }
   }
+
+  public destroyCharts(): void {
+    for (const chartId in this.charts) {
+      const chart = this.charts[chartId];
+      if (chart) {
+        try {
+          chart.destroy();
+        } catch (error) {
+          console.error(`Chart ${chartId} failed to destroy`, error);
+          toaster.error(i18next.t("toast.chartError"));
+        }
+      }
+    }
+    this.charts = {};
+  }
 }
