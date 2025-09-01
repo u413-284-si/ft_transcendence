@@ -22,6 +22,7 @@ import { TabButton } from "../components/TabButton.js";
 import { MatchesTab } from "./tabs/MatchesTab.js";
 import { TournamentsTab } from "./tabs/TournamentsTab.js";
 import { FriendsTab } from "./tabs/FriendsTab.js";
+import { toaster } from "../Toaster.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -152,17 +153,22 @@ export default class StatsView extends AbstractView {
   }
 
   async showTab(tabId: string) {
-    if (this.currentTabId) {
-      this.tabs[this.currentTabId].onHide();
+    try {
+      if (this.currentTabId) {
+        this.tabs[this.currentTabId].onHide();
+        const container = getById<HTMLDivElement>(this.currentTabId);
+        container.classList.toggle("hidden");
+      }
+
+      this.currentTabId = tabId;
       const container = getById<HTMLDivElement>(this.currentTabId);
       container.classList.toggle("hidden");
+
+      await this.tabs[tabId].onShow();
+    } catch (error) {
+      console.error(`Error while showing tab ${this.currentTabId}`, error);
+      toaster.error("Something went wrong");
     }
-
-    this.currentTabId = tabId;
-    const container = getById<HTMLDivElement>(this.currentTabId);
-    container.classList.toggle("hidden");
-
-    await this.tabs[tabId].onShow();
   }
 
   getTabsHTML(): string {
