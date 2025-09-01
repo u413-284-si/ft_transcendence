@@ -70,7 +70,7 @@ export class MatchesTab extends PaginatedTab<MatchRead> {
           chartId: "win-rate-chart"
         })}
       </div>
-      <div class="grid grid-cols-2 gap-8">
+      <div class="flex flex-cols-2 gap-8">
         ${Chart({
           title: i18next.t("chart.scoreDiff", { range: rangeMatches }),
           chartId: "score-diff-chart"
