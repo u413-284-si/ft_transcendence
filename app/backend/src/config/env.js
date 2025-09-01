@@ -41,18 +41,6 @@ const schema = {
       type: "string",
       default: "http://vault:8200"
     },
-    JWT_ACCESS_TOKEN_SECRET: {
-      type: "string",
-      default: "access_secret"
-    },
-    JWT_REFRESH_TOKEN_SECRET: {
-      type: "string",
-      default: "refresh_secret"
-    },
-    JWT_TWO_FA_LOGIN_TOKEN_SECRET: {
-      type: "string",
-      default: "two_fa_login_secret"
-    },
     ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS: {
       type: "string",
       default: "900000"
@@ -144,9 +132,6 @@ const envConfig = {
   nodeEnv: config.NODE_ENV,
   dbFile: config.DB_FILE,
   vaultAddr: config.VAULT_ADDR,
-  jwtAccessTokenSecret: config.JWT_ACCESS_TOKEN_SECRET,
-  jwtRefreshTokenSecret: config.JWT_REFRESH_TOKEN_SECRET,
-  jwtTwoFALoginTokenSecret: config.JWT_TWO_FA_LOGIN_TOKEN_SECRET,
   accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
   refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
   twoFALoginTokenTimeToExpireInMS:
