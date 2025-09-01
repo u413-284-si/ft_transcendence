@@ -342,41 +342,41 @@ export default class FriendsView extends AbstractView {
 
   private handleSendRequestButton = async (event: Event): Promise<void> => {
     event.preventDefault();
-    const inputEl = getById<HTMLInputElement>("username-input");
-    const errorEl = getById<HTMLSpanElement>("username-error");
-
-    clearInvalid(inputEl, errorEl);
-
-    if (!validateUsername(inputEl, errorEl)) return;
-
-    const username = inputEl.value.trim();
-
-    if (username === auth.getUser().username) {
-      markInvalid(i18next.t("invalid.friendNotSelf"), inputEl, errorEl);
-      return;
-    }
-
-    const existingRequest = this.getFriendRequestByFriendUsername(username);
-    if (existingRequest) {
-      switch (existingRequest.status) {
-        case "ACCEPTED":
-          markInvalid(
-            i18next.t("invalid.friendsAlready", { friend: username }),
-            inputEl,
-            errorEl
-          );
-          return;
-        case "PENDING":
-          markInvalid(
-            i18next.t("invalid.friendRequestAlreadySent"),
-            inputEl,
-            errorEl
-          );
-          return;
-      }
-    }
-
     try {
+      const inputEl = getById<HTMLInputElement>("username-input");
+      const errorEl = getById<HTMLSpanElement>("username-error");
+
+      clearInvalid(inputEl, errorEl);
+
+      if (!validateUsername(inputEl, errorEl)) return;
+
+      const username = inputEl.value.trim();
+
+      if (username === auth.getUser().username) {
+        markInvalid(i18next.t("invalid.friendNotSelf"), inputEl, errorEl);
+        return;
+      }
+
+      const existingRequest = this.getFriendRequestByFriendUsername(username);
+      if (existingRequest) {
+        switch (existingRequest.status) {
+          case "ACCEPTED":
+            markInvalid(
+              i18next.t("invalid.friendsAlready", { friend: username }),
+              inputEl,
+              errorEl
+            );
+            return;
+          case "PENDING":
+            markInvalid(
+              i18next.t("invalid.friendRequestAlreadySent"),
+              inputEl,
+              errorEl
+            );
+            return;
+        }
+      }
+
       const user = getDataOrThrow(await getUserByUsername(username));
 
       if (user === null) {
