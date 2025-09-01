@@ -103,6 +103,7 @@ const tr: TranslationShape = {
       nicknameFormat:
         "Node alias must be 3-20 characters, letters, digits, or -!?_$.",
       nicknameUniqueness: "Node alias must be unique.",
+      friendNotSelf: "Self-linking not permitted.",
       passwordEmpty: "Access code cannot be empty.",
       passwordFormat:
         "Access code must be 10-64 chars, include digit, uppercase, lowercase, and special char @$!%*?&",

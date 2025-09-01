@@ -101,6 +101,7 @@ const en = {
       nicknameFormat:
         "Nickname must be 3 to 20 characters and can include letters, digits or the following characters: -!?_$.",
       nicknameUniqueness: "Nickname must be unique.",
+      friendNotSelf: "You can't add yourself as a friend.",
       passwordEmpty: "Password cannot be empty.",
       passwordFormat:
         "Password must be 10 to 64 characters and include at least one digit, one uppercase and one lowercase letter, and one special character from the set @$!%*?&",

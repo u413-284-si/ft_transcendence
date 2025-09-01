@@ -29,6 +29,7 @@ import { Header1 } from "../components/Header1.js";
 import { FriendListItem } from "../components/FriendListItem.js";
 import { Header2 } from "../components/Header2.js";
 import { toaster } from "../Toaster.js";
+import { auth } from "../AuthManager.js";
 
 type RequestListType = "friend" | "incoming" | "outgoing";
 
@@ -350,6 +351,11 @@ export default class FriendsView extends AbstractView {
 
     const username = inputEl.value.trim();
 
+    if (username === auth.getUser().username) {
+      markInvalid(i18next.t("invalid.friendNotSelf"), inputEl, errorEl);
+      return;
+    }
+
     try {
       const user = getDataOrThrow(await getUserByUsername(username));
 
@@ -357,7 +363,6 @@ export default class FriendsView extends AbstractView {
         markInvalid(i18next.t("global.userNotFound"), inputEl, errorEl);
         return;
       }
-      clearInvalid(inputEl, errorEl);
 
       const request = getDataOrThrow(await createFriendRequest(user.id));
       this.removeFriendRequest(request.id);
@@ -391,10 +396,13 @@ export default class FriendsView extends AbstractView {
     return Number(li.dataset.requestId);
   }
 
-  private getFriendRequest(requestId: number): FriendRequest {
-    const request = this.friendRequests.find((r) => r.id === requestId);
-    if (!request)
-      throw new Error(i18next.t("error.requestNotFound", { id: requestId }));
+  private getFriendRequestByFriendUsername(
+    friendUsername: string
+  ): FriendRequest | null {
+    const request = this.friendRequests.find(
+      (r) => r.friendUsername === friendUsername
+    );
+    if (!request) return null;
     return request;
   }
 

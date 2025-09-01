@@ -100,6 +100,7 @@ const fr: TranslationShape = {
       nicknameFormat:
         "Le pseudonyme doit être composé de 3 à 20 caractères et peut comprendre des lettres, des chiffres ou les caractères spéciaux suivants : -!?_$.",
       nicknameUniqueness: "Le pseudonyme doit être unique.",
+      friendNotSelf: "Vous ne pouvez pas vous ajouter en ami.",
       passwordEmpty: "Le mot de passe ne peut pas être vide.",
       passwordFormat:
         "Le mot de passe doit être composé de 10 à 64 caractères et contenir au moins un chiffre, une lettre majuscule et une lettre minuscule, ainsi que l’un des caractères spéciaux suivants : @$!%*?&",

@@ -104,6 +104,7 @@ const pi: TranslationShape = {
       nicknameFormat:
         "Make it 3–20 letters, and use swashbucklin’ marks like -!?_$.",
       nicknameUniqueness: "That pirate name be taken!",
+      friendNotSelf: "Ye can't be addin' yerself to yer crew!",
       passwordEmpty: "Don’t leave yer treasure chest wide open!",
       passwordFormat:
         "Yer code needs numbers, big letters, little letters, and pirate symbols @$!%*?&",

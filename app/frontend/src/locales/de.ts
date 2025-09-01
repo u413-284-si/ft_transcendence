@@ -106,6 +106,7 @@ const de: TranslationShape = {
       nicknameFormat:
         "Spitzname muss 3 bis 20 Zeichen haben und darf Buchstaben, Zahlen oder folgende Sonderzeichen enthalten: -!?_$.",
       nicknameUniqueness: "Spitzname muss eindeutig sein.",
+      friendNotSelf: "Du kannst dich nicht selbst als Freund hinzufügen.",
       passwordEmpty: "Passwort darf nicht leer sein.",
       passwordFormat:
         "Passwort muss 10 bis 64 Zeichen enthalten und mindestens eine Zahl, einen Groß- und Kleinbuchstaben sowie ein Sonderzeichen: @$!%*?&",
