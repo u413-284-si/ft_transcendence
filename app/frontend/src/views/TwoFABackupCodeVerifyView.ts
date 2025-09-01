@@ -13,6 +13,7 @@ import { Form } from "../components/Form.js";
 import { getById } from "../utility.js";
 import { verifyBackupCode } from "../services/authServices.js";
 import { ApiError } from "../services/api.js";
+import { Header1 } from "../components/Header1.js";
 
 export default class TwoFABackupCodeVerifyView extends AbstractView {
   constructor() {
@@ -22,6 +23,9 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
+      ${Header1({
+        text: i18next.t("twoFABackupCodeVerifyView.title")
+      })}
       ${Form({
         id: "two-fa-verify-backup-code-form",
         children: [
