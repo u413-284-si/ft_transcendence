@@ -6,6 +6,7 @@ import { Paragraph } from "../components/Paragraph.js";
 import { Header2 } from "../components/Header2.js";
 import { Details } from "../components/Details.js";
 import { List } from "../components/List.js";
+import { Card } from "../components/Card.js";
 
 export default class HomeView extends AbstractView {
   constructor() {
@@ -32,51 +33,53 @@ export default class HomeView extends AbstractView {
           size: "lg"
         })}
 
-        <section
-          class="w-4xl bg-emerald-dark/80 border border-neon-cyan rounded-lg shadow-neon-cyan p-6 space-y-4 mt-8"
-        >
-          ${Header2({
-            text: i18next.t("homeView.faqTitle"),
-            variant: "default"
-          })}
+        <section>
+          ${Card({
+            children: [
+              Header2({
+                text: i18next.t("homeView.faqTitle"),
+                variant: "default"
+              }),
 
-          <!-- Accordion with details/summary -->
-          ${Details({
-            summary: i18next.t("homeView.faqGameModesTitle"),
-            content: List({
-              type: "unordered",
-              children: [
-                i18next.t("homeView.faqGameModesSingle"),
-                i18next.t("homeView.faqGameModesTournament")
-              ]
-            })
-          })}
-          ${Details({
-            summary: i18next.t("homeView.faqControlsTitle"),
-            content: List({
-              type: "unordered",
-              children: [
-                i18next.t("homeView.faqControlsRightPaddle"),
-                i18next.t("homeView.faqControlsLeftPaddle")
-              ]
-            })
-          })}
-          ${Details({
-            summary: i18next.t("homeView.faqTipsTitle"),
-            content: List({
-              type: "unordered",
-              children: [
-                i18next.t("homeView.faqTips1"),
-                i18next.t("homeView.faqTips2"),
-                i18next.t("homeView.faqTips3")
-              ]
-            })
-          })}
-          ${Details({
-            summary: i18next.t("homeView.faqExtrasTitle"),
-            content: Paragraph({
-              text: i18next.t("homeView.faqExtrasText")
-            })
+              Details({
+                summary: i18next.t("homeView.faqGameModesTitle"),
+                content: List({
+                  type: "unordered",
+                  children: [
+                    i18next.t("homeView.faqGameModesSingle"),
+                    i18next.t("homeView.faqGameModesTournament")
+                  ]
+                })
+              }),
+              Details({
+                summary: i18next.t("homeView.faqControlsTitle"),
+                content: List({
+                  type: "unordered",
+                  children: [
+                    i18next.t("homeView.faqControlsRightPaddle"),
+                    i18next.t("homeView.faqControlsLeftPaddle")
+                  ]
+                })
+              }),
+              Details({
+                summary: i18next.t("homeView.faqTipsTitle"),
+                content: List({
+                  type: "unordered",
+                  children: [
+                    i18next.t("homeView.faqTips1"),
+                    i18next.t("homeView.faqTips2"),
+                    i18next.t("homeView.faqTips3")
+                  ]
+                })
+              }),
+              Details({
+                summary: i18next.t("homeView.faqExtrasTitle"),
+                content: Paragraph({
+                  text: i18next.t("homeView.faqExtrasText")
+                })
+              })
+            ],
+            className: "w-4xl mt-8"
           })}
         </section>
       </div>
