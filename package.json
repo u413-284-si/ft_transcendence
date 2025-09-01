@@ -55,6 +55,7 @@
     "fastify-overview-ui": "^3.0.0",
     "fastify-plugin": "^5.0.1",
     "file-type": "^21.0.0",
+    "hashi-vault-js": "^0.5.0",
     "i18next": "^25.3.2",
     "install": "^0.13.0",
     "otpauth": "^9.4.0",
