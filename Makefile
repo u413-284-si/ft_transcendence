@@ -45,8 +45,12 @@ help:
 
 # Builds, (re)creates, starts, and attaches to containers for a service.
 .PHONY: up
-up:
+up: vault-certs
 	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d
+
+.PHONY: vault-certs
+vault-certs:
+	$(SILENT)bash $(DIR_SCRIPTS)/generate-vault-certs.sh
 
 # Watches for changes in files and rebuilds containers
 PHONY: watch
