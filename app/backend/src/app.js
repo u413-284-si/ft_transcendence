@@ -51,7 +51,7 @@ async function getSecrets(roleId, secretId) {
 
 const vault = new Vault({
   https: true,
-  cacert: "/app/vault-certs/root-ca.crt",
+  cacert: "/run/secrets/vault_ca",
   baseUrl: `${env.vaultAddr}/v1`,
   rootPath: "secret",
   timeout: 1000,

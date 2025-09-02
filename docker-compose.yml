@@ -9,11 +9,13 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4001
+    secrets:
+      - vault_ca
     # restart: always
     volumes:
       - db-data:/app/db
       - vault-secrets:/app/secrets
-      - ./secrets/vault-certs/root-ca.crt:/app/vault-certs/root-ca.crt:ro
+      # - ./secrets/vault-certs/root-ca.crt:/app/vault-certs/root-ca.crt:ro
     depends_on:
       vault:
         condition: service_healthy
