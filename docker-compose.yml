@@ -20,6 +20,7 @@ services:
         condition: service_healthy
     networks:
       - pong-network
+
   waf:
     build:
       dockerfile: ./waf/Dockerfile
@@ -53,6 +54,7 @@ services:
         condition: service_healthy
     networks:
       - pong-network
+
   vault:
     build:
       dockerfile: ./vault/Dockerfile
@@ -70,12 +72,17 @@ services:
       - vault_cert
       - vault_key
       - vault_ca
+    configs:
+      - source: vault_config
+        target: /vault/config/vault.hcl
+      - source: policy_app
+        target: /vault/policies/app-policy.hcl
+      - source: policy_nginx
+        target: /vault/policies/nginx-policy.hcl
     restart: always
     volumes:
       - vault-data:/vault/data
       - vault-secrets:/vault/secrets
-      - ./vault/config:/vault/config:ro
-      - ./vault/policies:/vault/policies:ro
     networks:
       - pong-network
     healthcheck:
@@ -83,6 +90,7 @@ services:
       interval: 5s
       timeout: 2s
       retries: 10
+
   vault-agent:
     image: hashicorp/vault:1.20.2
     container_name: vault-agent
@@ -90,10 +98,15 @@ services:
       VAULT_ADDR: "https://vault:8200"
     secrets:
       - vault_ca
+    configs:
+      - source: vault_agent_config
+        target: /vault/config/agent.hcl
+      - source: template_cert
+        target: /vault/templates/cert.ctmpl
+      - source: template_key
+        target: /vault/templates/key.ctmpl
     restart: always
     volumes:
-      - ./vault-agent/config/agent.hcl:/vault/config/agent.hcl:ro
-      - ./vault-agent/templates:/vault/templates:ro
       - vault-secrets:/vault/secrets
       - certs:/vault/certs
     command: sh -c "
@@ -129,3 +142,17 @@ secrets:
     file: ./secrets/vault-certs/vault.key
   vault_ca:
     file: ./secrets/vault-certs/root-ca.crt
+
+configs:
+  vault_config:
+    file: ./vault/config/vault.hcl
+  policy_app:
+    file: ./vault/policies/app-policy.hcl
+  policy_nginx:
+    file: ./vault/policies/nginx-policy.hcl
+  vault_agent_config:
+    file: ./vault-agent/config/agent.hcl
+  template_cert:
+    file: ./vault-agent/templates/cert.ctmpl
+  template_key:
+    file: ./vault-agent/templates/key.ctmpl
