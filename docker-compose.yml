@@ -81,11 +81,7 @@ services:
     networks:
       - pong-network
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'curl -s --cacert ./run/secrets/vault_ca https://vault:8200/v1/sys/health | grep ''"sealed":false'''
-        ]
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
       interval: 5s
       timeout: 2s
       retries: 10
