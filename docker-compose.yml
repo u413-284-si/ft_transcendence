@@ -70,6 +70,7 @@ services:
       - vault-secrets:/vault/secrets
       - ./vault/config:/vault/config:ro
       - ./vault/policies:/vault/policies:ro
+      - ./secrets/vault-certs:/vault/certs:ro
     networks:
       - pong-network
     healthcheck:
