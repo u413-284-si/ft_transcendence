@@ -195,7 +195,7 @@ export class Router {
 
   private handleBeforeUnload = () => {
     console.log(`BeforeUnload triggered`);
-    closeSSEConnection();
+    closeSSEConnection(true);
   };
 
   private async evaluateGuard(guard: RouteGuard): Promise<boolean> {

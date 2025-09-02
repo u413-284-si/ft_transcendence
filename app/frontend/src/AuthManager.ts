@@ -54,7 +54,7 @@ export class AuthManager {
       this.authenticated = false;
       this.clearRefreshTimer();
       this.removeActivityListeners();
-      closeSSEConnection();
+      closeSSEConnection(true);
     }
     await this.notify();
   }
