@@ -195,7 +195,7 @@ fi
 if [ ! -f "$SECRETS_DIR/app_role_id" ]; then
   echo "➡️ Creating role ID for app..."
   vault read -field=role_id auth/approle/role/app-role/role-id > "$SECRETS_DIR/app_role_id"
-  chmod 600 "$SECRETS_DIR/app_role_id"
+  chmod 644 "$SECRETS_DIR/app_role_id"
   chown vault:vault "$SECRETS_DIR/app_role_id"
   echo "✅ Role ID for app created"
 else
@@ -205,7 +205,7 @@ fi
 if [ ! -f "$SECRETS_DIR/app_secret_id" ]; then
   echo "➡️ Creating secret ID for app..."
   vault write -field=secret_id -f auth/approle/role/app-role/secret-id > "$SECRETS_DIR/app_secret_id"
-  chmod 600 "$SECRETS_DIR/app_secret_id"
+  chmod 644 "$SECRETS_DIR/app_secret_id"
   chown vault:vault "$SECRETS_DIR/app_secret_id"
   echo "✅ Secret ID for app created"
 else
