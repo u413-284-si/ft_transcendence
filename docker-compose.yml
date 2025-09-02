@@ -74,7 +74,11 @@ services:
     networks:
       - pong-network
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8200/v1/sys/health | grep '\"sealed\":false'"]
+      test:
+        [
+          "CMD-SHELL",
+          'curl -s --cacert ./vault/certs/root-ca.crt https://127.0.0.1:8200/v1/sys/health | grep ''"sealed":false'''
+        ]
       interval: 5s
       timeout: 2s
       retries: 10
