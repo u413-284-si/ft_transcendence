@@ -1,3 +1,8 @@
+vault {
+  address = "https://vault:8200"
+  ca_cert = "/vault/ca/root-ca.crt"
+}
+
 auto_auth {
   method "approle" {
     config = {

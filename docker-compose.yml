@@ -86,23 +86,23 @@ services:
     image: hashicorp/vault:1.20.2
     container_name: vault-agent
     environment:
-      VAULT_ADDR: "http://vault:8200"
+      VAULT_ADDR: "https://vault:8200"
     # restart: always
     volumes:
       - ./vault-agent/config/agent.hcl:/vault/config/agent.hcl:ro
       - ./vault-agent/templates:/vault/templates:ro
       - vault-secrets:/vault/secrets
       - certs:/vault/certs
-    command:
-      sh -c "
-        chown -R vault:vault /vault/secrets /vault/certs &&
-        exec su-exec vault:vault vault agent -config=/vault/config/agent.hcl
+      - ./secrets/vault-certs/root-ca.crt:/vault/ca/root-ca.crt:ro
+    command: sh -c "
+      chown -R vault:vault /vault/secrets /vault/certs &&
+      exec su-exec vault:vault vault agent -config=/vault/config/agent.hcl
       "
     depends_on:
       vault:
         condition: service_healthy
     networks:
-    - pong-network
+      - pong-network
     healthcheck:
       test: ["CMD", "test", "-f", "/vault/certs/fullchain.pem"]
       interval: 5s
