@@ -7,7 +7,7 @@ import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
 import { PlayedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
-import { maybeCreateAI } from "./AIPlayer.js";
+import { tryCreateAIPlayer } from "./AIPlayer.js";
 import { getById } from "./utility.js";
 
 let isAborted: boolean = false;
@@ -62,8 +62,8 @@ function initGameState(
 ): GameState {
   const initialBallDirection = Math.random() * 2 - 1;
 
-  const aiPlayer1 = maybeCreateAI("left", type1);
-  const aiPlayer2 = maybeCreateAI("right", type2);
+  const aiPlayer1 = tryCreateAIPlayer("left", type1);
+  const aiPlayer2 = tryCreateAIPlayer("right", type2);
 
   const gameState: GameState = {
     player1: player1,

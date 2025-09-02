@@ -104,7 +104,7 @@ export class AIPlayer {
   }
 }
 
-export function maybeCreateAI(
+export function tryCreateAIPlayer(
   side: "left" | "right",
   type: PlayerType
 ): AIPlayer | null {
