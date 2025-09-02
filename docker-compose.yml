@@ -13,6 +13,7 @@ services:
     volumes:
       - db-data:/app/db
       - vault-secrets:/app/secrets
+      - ./secrets/vault-certs/root-ca.crt:/app/vault-certs/root-ca.crt:ro
     depends_on:
       vault:
         condition: service_healthy

@@ -37,7 +37,7 @@ const schema = {
     },
     VAULT_ADDR: {
       type: "string",
-      default: "http://vault:8200"
+      default: "https://vault:8200"
     },
     ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS: {
       type: "string",
