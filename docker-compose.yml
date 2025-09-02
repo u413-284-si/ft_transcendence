@@ -63,23 +63,26 @@ services:
       - "8200:8200"
     environment:
       - VAULT_ADDR=https://vault:8200
-      - VAULT_CACERT=/vault/certs/root-ca.crt
+      - VAULT_CACERT=/run/secrets/vault_ca
     secrets:
       - google_secret
+      - vault_cert
+      - vault_key
+      - vault_ca
     restart: always
     volumes:
       - vault-data:/vault/data
       - vault-secrets:/vault/secrets
       - ./vault/config:/vault/config:ro
       - ./vault/policies:/vault/policies:ro
-      - ./secrets/vault-certs:/vault/certs:ro
+      # - ./secrets/vault-certs:/vault/certs:ro
     networks:
       - pong-network
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          'curl -s --cacert ./vault/certs/root-ca.crt https://vault:8200/v1/sys/health | grep ''"sealed":false'''
+          'curl -s --cacert ./run/secrets/vault_ca https://vault:8200/v1/sys/health | grep ''"sealed":false'''
         ]
       interval: 5s
       timeout: 2s
@@ -132,3 +135,9 @@ volumes:
 secrets:
   google_secret:
     file: ./secrets/google-secret.txt
+  vault_cert:
+    file: ./secrets/vault-certs/vault.crt
+  vault_key:
+    file: ./secrets/vault-certs/vault.key
+  vault_ca:
+    file: ./secrets/vault-certs/root-ca.crt
