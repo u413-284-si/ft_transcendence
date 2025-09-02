@@ -19,8 +19,8 @@ chown -R vault:vault /vault/data
 ########################################
 
 # Export values
-export VAULT_ADDR="http://127.0.0.1:8200"
-export VAULT_SKIP_VERIFY="true"
+export VAULT_ADDR="https://127.0.0.1:8200"
+export VAULT_CACERT="/vault/certs/root-ca.crt"
 
 # Start vault
 echo "➡️ Starting Vault server..."
@@ -29,7 +29,7 @@ VAULT_PID=$!
 
 # Wait for Vault API to respond
 echo "⏳ Waiting for Vault to start..."
-until curl -s "$VAULT_ADDR/v1/sys/health" >/dev/null 2>&1; do
+until curl -s  --cacert "$VAULT_CACERT" "$VAULT_ADDR/v1/sys/health" >/dev/null 2>&1; do
   sleep 1
 done
 # sleep 5
