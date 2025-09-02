@@ -198,12 +198,12 @@ export default class MatchAnnouncementView extends AbstractView {
       })
     );
 
+    let view = null;
     if (this.tournament.getNextMatchToPlay()) {
-      const view = new MatchAnnouncementView(this.tournament);
-      router.switchView(view);
+      view = new MatchAnnouncementView(this.tournament);
     } else {
-      const view = new ResultsView(this.tournament);
-      router.switchView(view);
+      view = new ResultsView(this.tournament);
     }
+    router.switchView(view);
   }
 }
