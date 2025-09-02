@@ -18,10 +18,6 @@ chown -R vault:vault /vault/data
 # -- Startup and unsealing of Vault -- #
 ########################################
 
-# Export values
-export VAULT_ADDR="https://127.0.0.1:8200"
-export VAULT_CACERT="/vault/certs/root-ca.crt"
-
 # Start vault
 echo "➡️ Starting Vault server..."
 su-exec vault:vault vault "$@" &
