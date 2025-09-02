@@ -11,11 +11,10 @@ services:
       PORT: 4001
     secrets:
       - vault_ca
-    # restart: always
+    restart: always
     volumes:
       - db-data:/app/db
       - vault-secrets:/app/secrets
-      # - ./secrets/vault-certs/root-ca.crt:/app/vault-certs/root-ca.crt:ro
     depends_on:
       vault:
         condition: service_healthy
@@ -77,7 +76,6 @@ services:
       - vault-secrets:/vault/secrets
       - ./vault/config:/vault/config:ro
       - ./vault/policies:/vault/policies:ro
-      # - ./secrets/vault-certs:/vault/certs:ro
     networks:
       - pong-network
     healthcheck:
@@ -92,13 +90,12 @@ services:
       VAULT_ADDR: "https://vault:8200"
     secrets:
       - vault_ca
-    # restart: always
+    restart: always
     volumes:
       - ./vault-agent/config/agent.hcl:/vault/config/agent.hcl:ro
       - ./vault-agent/templates:/vault/templates:ro
       - vault-secrets:/vault/secrets
       - certs:/vault/certs
-      # - ./secrets/vault-certs/root-ca.crt:/vault/ca/root-ca.crt:ro
     command: sh -c "
       chown -R vault:vault /vault/secrets /vault/certs &&
       exec su-exec vault:vault vault agent -config=/vault/config/agent.hcl
@@ -113,15 +110,6 @@ services:
       interval: 5s
       timeout: 2s
       retries: 10
-  # mysql:
-  #   image: mysql:8
-  #   container_name: mysql
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: rootpass
-  #   ports:
-  #     - "3306:3306"
-  #   networks:
-  #     - pong-network
 
 networks:
   pong-network:
