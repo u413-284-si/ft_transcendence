@@ -95,12 +95,18 @@ function drawScores(ctx: CanvasRenderingContext2D, gameState: GameState) {
   const centerX = gameState.canvasWidth / 2;
 
   const player1Text = shortenName(
-    formatPlayerName(gameState.player1 || i18next.t("global.player") + "1")
+    formatPlayerName(
+      gameState.player1 || i18next.t("global.player") + "1",
+      gameState.type1
+    )
   );
   ctx.fillText(player1Text, marginNames, verticalOffset);
 
   const player2Text = shortenName(
-    formatPlayerName(gameState.player2 || i18next.t("global.player") + "2")
+    formatPlayerName(
+      gameState.player2 || i18next.t("global.player") + "2",
+      gameState.type2
+    )
   );
   const p2Width = ctx.measureText(player2Text).width;
   ctx.fillText(
