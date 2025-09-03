@@ -1,3 +1,4 @@
+import { buildBaseOptions } from "../../charts/chartUtils.js";
 import { buildMatchesScoreDiffOptions } from "../../charts/matchesScoreDiffOptions.js";
 import { buildMatchesScoresLastTenDaysOptions } from "../../charts/matchesScoresLastTenDaysOptions.js";
 import { buildMatchesWinLossOptions } from "../../charts/matchesWinLossOptions.js";
@@ -25,10 +26,16 @@ export class MatchesTab extends PaginatedTab<MatchRead> {
     super(10, "matches-prev-btn", "matches-next-btn", "matches-page-indicator");
     this.userStats = userStats;
     this.username = username;
+    this.chartBaseOptions = {
+      "win-loss-chart": buildBaseOptions("donut", 450, 300),
+      "win-rate-chart": buildBaseOptions("line", 750, 300),
+      "score-diff-chart": buildBaseOptions("bar", 600, 300),
+      "scores-last-ten-chart": buildBaseOptions("bar", 600, 300)
+    };
   }
 
   getHTML(): string {
-    return /* HTML */ ` <div id="tab-matches" class="tab-content">
+    return /* HTML */ ` <div id="tab-matches" class="hidden">
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
@@ -114,12 +121,11 @@ export class MatchesTab extends PaginatedTab<MatchRead> {
     );
   }
 
-  async init(): Promise<void> {
+  async initData(): Promise<void> {
     this.dashboard = getDataOrThrow(
       await getUserDashboardMatchesByUsername(this.username)
     );
     this.populateMatchesCharts();
-    this.isInit = true;
   }
 
   private populateMatchesCharts(): void {

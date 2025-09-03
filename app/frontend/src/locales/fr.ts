@@ -287,6 +287,7 @@ const fr: TranslationShape = {
       passwordUpdatedSuccess: "Mot de passe mis à jour avec succès !",
       profileUpdateFailed:
         "Échec de la mise à jour du profil. Veuillez réessayer.",
+      tabError: "L'onglet n'a pas pu s'initialiser.",
       twoFASetupSuccess:
         "Configuration de l’authentification à deux facteurs réussie !",
       twoFARemoveSuccess:

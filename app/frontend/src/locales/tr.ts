@@ -292,6 +292,7 @@ const tr: TranslationShape = {
       logoutError: "Logout failed. Reattempt required.",
       passwordUpdateFailed: "Access code update failed. Retry advised.",
       passwordUpdatedSuccess: "Access code updated successfully!",
+      tabError: "Tab failed to initialize within the Grid.",
       twoFASetupSuccess: "Cipher activated successfully!",
       twoFARemoveSuccess: "Cipher deactivated successfully!",
       profileUpdateFailed: "Profile update failed. Retry advised.",

@@ -3,7 +3,6 @@ import { TournamentSummaryData } from "../types/DataSeries";
 import { tournamentColors } from "./chartUtils.js";
 
 export function buildTournamentsSummaryOptions(
-  name: string,
   data: TournamentSummaryData
 ): ApexOptions {
   const transformedData = data.data.map((point) => ({
@@ -12,6 +11,10 @@ export function buildTournamentsSummaryOptions(
     played: point.played,
     won: point.won
   }));
+  const series = data.data.map((p) => p.winrate);
+  const labels = data.data.map(
+    (p) => `${i18next.t("chart.numPlayers", { num: p.size })}`
+  );
   const options: ApexOptions = {
     chart: {
       type: "radialBar",
@@ -20,15 +23,8 @@ export function buildTournamentsSummaryOptions(
       height: 300,
       width: 400
     },
-    series: [
-      {
-        data: transformedData,
-        parsing: {
-          x: "label",
-          y: "winrate"
-        }
-      }
-    ],
+    labels: labels,
+    series: series,
     plotOptions: {
       radialBar: {
         offsetY: 0,

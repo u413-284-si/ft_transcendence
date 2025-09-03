@@ -298,6 +298,7 @@ const en = {
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess: "Successfully registered {{username}}!",
       sendSuccess: "Friend request sent to {{username}}",
+      tabError: "The tab failed to initialize.",
       terminatedFriendship: "Friendship terminated with ",
       tokenRefreshFailed: "Token refresh failed. Please try again.",
       userAcceptedFriendRequest:

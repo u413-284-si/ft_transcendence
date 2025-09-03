@@ -1,3 +1,4 @@
+import { buildBaseOptions } from "../../charts/chartUtils.js";
 import { FriendManager } from "../../charts/FriendManager.js";
 import { buildFriendsMatchStatsOptions } from "../../charts/friendsMatchStatsOptions.js";
 import { buildFriendsWinRateOptions } from "../../charts/friendsWinRateOptions.js";
@@ -21,10 +22,15 @@ export class FriendsTab extends AbstractTab {
     this.username = username;
     this.friendManager = new FriendManager();
     this.friendManager.selectFriend(this.username);
+    this.chartBaseOptions = {
+      "friends-match-stats": buildBaseOptions("bar", 750, 300),
+      "friends-winrate": buildBaseOptions("bar", 600, 300),
+      "friends-winstreak": buildBaseOptions("bar", 600, 300)
+    };
   }
 
   getHTML(): string {
-    return /* HTML */ ` <div id="tab-friends">
+    return /* HTML */ ` <div id="tab-friends" class="hidden">
       <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
@@ -65,19 +71,19 @@ export class FriendsTab extends AbstractTab {
 
   override async onShow(): Promise<void> {
     await super.onShow();
-    this.renderFriendSelector(this.dashboard!.matchStats);
   }
 
-  async init(): Promise<void> {
+  async initData(): Promise<void> {
     this.dashboard = getDataOrThrow(await getUserDashboardFriends());
     this.populateChartOptions();
-    this.isInit = true;
+    this.renderFriendSelector(this.dashboard!.matchStats);
   }
 
   override onHide(): void {
     super.onHide();
 
     this.friendManager.deselectAllFriendsExcept(this.username);
+    this.resetFriendSelectorButtons();
   }
 
   private populateChartOptions(): void {
@@ -168,5 +174,30 @@ export class FriendsTab extends AbstractTab {
     this.charts["friends-winrate"].updateSeries(filtered.winRate);
     this.charts["friends-match-stats"].updateSeries(filtered.matchStats);
     this.charts["friends-winstreak"].updateSeries(filtered.winStreak);
+  }
+
+  private resetFriendSelectorButtons() {
+    const container = getById<HTMLDivElement>("friend-selector");
+    if (!container) return;
+
+    const buttons = getAllBySelector<HTMLButtonElement>("button", {
+      root: container,
+      strict: false
+    });
+
+    buttons.forEach((btn) => {
+      const friendName = btn.innerText;
+      const isSelected = this.friendManager
+        .getSelectedFriends()
+        .includes(friendName);
+
+      if (isSelected) {
+        btn.className = this.friendManager.getBtnClassesSelected(friendName);
+        btn.dataset.selected = "true";
+      } else {
+        btn.className = this.friendManager.getBtnClassesNotSelected();
+        btn.dataset.selected = "false";
+      }
+    });
   }
 }
