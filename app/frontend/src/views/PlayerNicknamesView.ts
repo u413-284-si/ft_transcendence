@@ -96,7 +96,6 @@ export default class PlayerNicknamesView extends AbstractView {
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
     const userNickname = formData.get(`player-${userNumber}`) as string;
-    console.log(userNickname);
 
     const playerTypes: PlayerType[] = [];
     for (let i = 1; i <= this.numberOfPlayers; i++) {
