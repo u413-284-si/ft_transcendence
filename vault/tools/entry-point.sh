@@ -52,16 +52,44 @@ else
   echo "ℹ️ Vault already initialized"
 fi
 
-# Load unseal keys from secrets
-mapfile -t keyArray < <(find "$VAULT_KEYS_DIR" -maxdepth 1 -name "unseal_key_*" -print0 | sort -z | xargs -0 cat)
+unseal_vault() {
+    local keys=("$@")
+    if [ ${#keys[@]} -eq 0 ]; then
+        echo "ℹ️ No unseal keys found, Vault will remain sealed"
+        return 1
+    fi
 
-# Unseal Vault using threshold (first 3 keys)
-for i in {0..2}; do
-  echo "➡️  Unsealing with key $((i+1))"
-  vault operator unseal "${keyArray[$i]}"
+    local threshold=3  # Default unseal threshold
+    if [ "${#keys[@]}" -lt "$threshold" ]; then
+        threshold=${#keys[@]}
+    fi
+
+    for i in $(seq 0 $((threshold - 1))); do
+        echo "➡️ Unsealing with key $((i+1))"
+        vault operator unseal "${keys[$i]}"
+    done
+    echo "🚀 Vault unseal attempt complete"
+    return 0
+}
+
+while true; do
+    # Load keys if any exist
+    if [ -d "$VAULT_KEYS_DIR" ]; then
+        mapfile -t keyArray < <(find "$VAULT_KEYS_DIR" -maxdepth 1 -name "unseal_key_*" -print0 | sort -z | xargs -0 cat)
+    else
+        keyArray=()
+    fi
+
+    # Try to unseal
+    if unseal_vault "${keyArray[@]}"; then
+        echo "✅ Vault is unsealed"
+        break
+    else
+        echo "⏳ Vault remains sealed, waiting for unseal keys..."
+        sleep 5  # wait before checking again
+    fi
 done
 
-echo "🚀 Vault is unsealed."
 
 #########################
 # -- Configure Vault -- #
