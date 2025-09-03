@@ -5,7 +5,6 @@ import {
 } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
-import { GameView, GameType } from "./GameView.js";
 import { escapeHTML, getById } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
@@ -17,6 +16,7 @@ import { Card } from "../components/Card.js";
 import { Details } from "../components/Details.js";
 import ResultsView from "./ResultsView.js";
 import { formatPlayerName } from "../components/NicknameInput.js";
+import { GameView } from "./GameView.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -156,7 +156,6 @@ export default class MatchAnnouncementView extends AbstractView {
       this.player1type,
       this.player2type,
       this.userRole,
-      GameType.tournament,
       this.tournament
     );
     router.switchView(gameView);

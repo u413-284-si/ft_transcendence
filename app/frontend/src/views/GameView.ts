@@ -6,13 +6,9 @@ import ResultsView from "./ResultsView.js";
 import NewGameView from "./NewGameView.js";
 import { Tournament } from "../Tournament.js";
 import { PlayedAs, PlayerType } from "../types/IMatch.js";
+import { getById } from "../utility.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
-
-export enum GameType {
-  single,
-  tournament
-}
 
 export class GameView extends AbstractView {
   private keys: Record<GameKey, boolean> = {
@@ -29,7 +25,6 @@ export class GameView extends AbstractView {
     private type1: PlayerType,
     private type2: PlayerType,
     private userRole: PlayedAs,
-    private gameType: GameType,
     private tournament: Tournament | null
   ) {
     super();
@@ -49,6 +44,7 @@ export class GameView extends AbstractView {
 
   async render() {
     this.updateHTML();
+    this.toggleLangSwitcher();
     this.addListeners();
     this.handleGame();
   }
@@ -91,6 +87,7 @@ export class GameView extends AbstractView {
 
   unmount(): void {
     console.log("Cleaning up GameView");
+    this.toggleLangSwitcher();
     setIsAborted(true);
     this.controller.abort();
   }
@@ -108,20 +105,17 @@ export class GameView extends AbstractView {
       );
       if (getIsAborted()) return;
 
-      if (this.gameType == GameType.single) {
-        const view = new NewGameView();
-        await router.switchView(view);
-      } else if (this.gameType == GameType.tournament) {
-        if (this.tournament) {
-          if (this.tournament.getNextMatchToPlay()) {
-            const view = new MatchAnnouncement(this.tournament);
-            router.switchView(view);
-            return;
-          }
-          const view = new ResultsView(this.tournament);
-          router.switchView(view);
+      let view;
+      if (!this.tournament) {
+        view = new NewGameView();
+      } else {
+        if (this.tournament.getNextMatchToPlay()) {
+          view = new MatchAnnouncement(this.tournament);
+        } else {
+          view = new ResultsView(this.tournament);
         }
       }
+      router.switchView(view);
     } catch (error) {
       router.handleError("Error in handleGame()", error);
     }
@@ -129,5 +123,12 @@ export class GameView extends AbstractView {
 
   getName(): string {
     return "game";
+  }
+
+  toggleLangSwitcher() {
+    console.log("Toggled Lang switcher");
+    const button: HTMLButtonElement = getById("lang-switcher-button");
+    button.disabled = !button.disabled;
+    button.classList.toggle("hidden");
   }
 }

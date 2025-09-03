@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { GameType, GameView } from "./GameView.js";
+import { GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
@@ -94,7 +94,6 @@ export default class NewGameView extends AbstractView {
       playerTypes[0],
       playerTypes[1],
       userNumber == "1" ? "PLAYERONE" : "PLAYERTWO",
-      GameType.single,
       null
     );
     router.switchView(gameView);
