@@ -367,7 +367,7 @@ export default class FriendsView extends AbstractView {
             );
             return;
           case "PENDING":
-            if (!existingRequest.sender) {
+            if (existingRequest.sender) {
               markInvalid(
                 i18next.t("invalid.friendRequestAlreadySent"),
                 inputEl,
