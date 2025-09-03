@@ -178,7 +178,12 @@ const de: TranslationShape = {
     nicknameInput: {
       enterYourNickname: "Gib deinen Spitznamen ein",
       playerChoice: "Ich spiele als Spieler {{i}}",
-      playerNickname: "Spitzname von Spieler {{i}}"
+      playerNickname: "Spitzname von Spieler {{i}}",
+      aiPlayer: "KI-Spieler",
+      aiStrength: "KI-Stärke",
+      aiStrengthEasy: "Leicht",
+      aiStrengthMedium: "Mittel",
+      aiStrengthHard: "Schwer"
     },
 
     playerNicknamesView: {

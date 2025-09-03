@@ -1,3 +1,4 @@
+import { formatPlayerName } from "./components/NicknameInput.js";
 import { GameState, Snapshot } from "./types/IGameState.js";
 
 export function draw(
@@ -54,7 +55,10 @@ function drawScores(ctx: CanvasRenderingContext2D, gameState: GameState) {
 
   // Player 1 name and score
   const player1Text =
-    shortenName(gameState.player1 || i18next.t("global.player") + "1") +
+    shortenName(
+      formatPlayerName(gameState.player1, gameState.type1) ||
+        i18next.t("global.player") + "1"
+    ) +
     ":" +
     " " +
     gameState.player1Score.toString();
@@ -62,7 +66,10 @@ function drawScores(ctx: CanvasRenderingContext2D, gameState: GameState) {
 
   // Player 2 name and score
   const player2Text =
-    shortenName(gameState.player2 || i18next.t("global.player") + "2") +
+    shortenName(
+      formatPlayerName(gameState.player2, gameState.type2) ||
+        i18next.t("global.player") + "2"
+    ) +
     ":" +
     " " +
     gameState.player2Score.toString();
@@ -83,8 +90,12 @@ function drawWinningScreen(
   const canvasCenterY = gameState.canvasHeight / 2;
   const winnerText =
     gameState.player1Score >= gameState.winningScore
-      ? i18next.t("global.playerWins", { player: gameState.player1 })
-      : i18next.t("global.playerWins", { player: gameState.player2 });
+      ? i18next.t("global.playerWins", {
+          player: formatPlayerName(gameState.player1, gameState.type1)
+        })
+      : i18next.t("global.playerWins", {
+          player: formatPlayerName(gameState.player2, gameState.type2)
+        });
   ctx.fillText(winnerText, canvasCenterX - 100, canvasCenterY);
   ctx.font = "20px Arial";
   ctx.fillText(

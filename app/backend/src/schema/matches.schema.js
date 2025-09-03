@@ -8,7 +8,7 @@ const matchDefinitionsSchema = {
     },
     playerType: {
       type: "string",
-      enum: ["HUMAN", "AI"],
+      enum: ["HUMAN", "AI_EASY", "AI_MEDIUM", "AI_HARD"],
       description: "Type of the player."
     }
   }

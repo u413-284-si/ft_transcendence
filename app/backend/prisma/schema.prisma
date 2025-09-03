@@ -178,5 +178,7 @@ enum Language {
 
 enum PlayerType {
     HUMAN
-    AI
+    AI_EASY
+    AI_MEDIUM
+    AI_HARD
 }

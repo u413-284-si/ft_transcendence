@@ -175,8 +175,13 @@ const pi: TranslationShape = {
 
     nicknameInput: {
       enterYourNickname: "Give us yer pirate alias",
-      playerChoice: "I be playin’ as buccaneer {{i}}",
-      playerNickname: "Name fer pirate {{i}}"
+      playerChoice: "I be playin' as buccaneer {{i}}",
+      playerNickname: "Name fer pirate {{i}}",
+      aiPlayer: "Ghost o' the Sea (AI)",
+      aiStrength: "Cunning o' the Machine",
+      aiStrengthEasy: "Cabin boy",
+      aiStrengthMedium: "Sailor",
+      aiStrengthHard: "Captain"
     },
 
     playerNicknamesView: {

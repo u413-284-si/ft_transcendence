@@ -7,7 +7,7 @@ import { updateTournamentBracket } from "./services/tournamentService.js";
 import { createMatch } from "./services/matchServices.js";
 import { PlayedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
-import { AIPlayer } from "./AIPlayer.js";
+import { tryCreateAIPlayer } from "./AIPlayer.js";
 import { getById } from "./utility.js";
 
 let isAborted: boolean = false;
@@ -33,21 +33,14 @@ export async function startGame(
   const ctx = canvas.getContext("2d")!;
 
   setIsAborted(false);
-  let aiPlayer1: AIPlayer | null = null;
-  let aiPlayer2: AIPlayer | null = null;
-  if (type1 === "AI") {
-    aiPlayer1 = new AIPlayer("left");
-  }
-  if (type2 === "AI") {
-    aiPlayer2 = new AIPlayer("right");
-  }
+
   const gameState = initGameState(
     canvas,
     nickname1,
     nickname2,
-    keys,
-    aiPlayer1,
-    aiPlayer2
+    type1,
+    type2,
+    keys
   );
 
   await runGameLoop(gameState, ctx);
@@ -63,14 +56,20 @@ function initGameState(
   canvas: HTMLCanvasElement,
   player1: string,
   player2: string,
-  keys: Record<GameKey, boolean>,
-  aiPlayer1: AIPlayer | null,
-  aiPlayer2: AIPlayer | null
+  type1: PlayerType,
+  type2: PlayerType,
+  keys: Record<GameKey, boolean>
 ): GameState {
   const initialBallDirection = Math.random() * 2 - 1;
+
+  const aiPlayer1 = tryCreateAIPlayer("left", type1);
+  const aiPlayer2 = tryCreateAIPlayer("right", type2);
+
   const gameState: GameState = {
     player1: player1,
     player2: player2,
+    type1: type1,
+    type2: type2,
     player1Score: 0,
     player2Score: 0,
     winningScore: 1, // FIXME: needs to be a higher value
@@ -240,8 +239,8 @@ async function endGame(
         player2Nickname: gameState.player2,
         player1Score: gameState.player1Score,
         player2Score: gameState.player2Score,
-        player1Type: gameState.aiPlayer1 ? "AI" : "HUMAN",
-        player2Type: gameState.aiPlayer2 ? "AI" : "HUMAN"
+        player1Type: gameState.type1,
+        player2Type: gameState.type2
       })
     );
   }

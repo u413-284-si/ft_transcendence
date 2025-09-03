@@ -1,7 +1,8 @@
 import { MatchRead } from "../types/IMatch.js";
 import { escapeHTML } from "../utility.js";
+import { formatPlayerName } from "./NicknameInput.js";
 
-export function MatchRow(match: MatchRead, user: string): string {
+export function MatchRow(match: MatchRead): string {
   const isPlayerOne = match.playedAs === "PLAYERONE";
 
   const result = isPlayerOne
@@ -12,13 +13,17 @@ export function MatchRow(match: MatchRead, user: string): string {
       ? i18next.t("global.won")
       : i18next.t("global.lost");
 
-  const player1Display = isPlayerOne
-    ? `${match.player1Nickname} (${user})`
-    : match.player1Nickname;
+  const player1Name = formatPlayerName(
+    match.player1Nickname,
+    match.player1Type
+  );
+  const player2Name = formatPlayerName(
+    match.player2Nickname,
+    match.player2Type
+  );
 
-  const player2Display = isPlayerOne
-    ? match.player2Nickname
-    : `${match.player2Nickname} (${user})`;
+  const player1Display = isPlayerOne ? `${player1Name} (*)` : player1Name;
+  const player2Display = isPlayerOne ? player2Name : `${player2Name} (*)`;
 
   const tournamentDisplay = match.tournamentName
     ? i18next.t("global.tournament", {

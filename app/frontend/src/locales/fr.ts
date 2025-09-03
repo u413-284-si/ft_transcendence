@@ -166,7 +166,12 @@ const fr: TranslationShape = {
     nicknameInput: {
       enterYourNickname: "Entrez votre pseudonyme",
       playerChoice: "Je joue en tant que joueur {{i}}",
-      playerNickname: "Pseudonyme du joueur {{i}}"
+      playerNickname: "Pseudonyme du joueur {{i}}",
+      aiPlayer: "Joueur IA",
+      aiStrength: "Difficulté de l'IA",
+      aiStrengthEasy: "Facile",
+      aiStrengthMedium: "Moyenne",
+      aiStrengthHard: "Difficile"
     },
     playerNicknamesView: {
       enterPlayerNicknames: "Entrez les pseudonymes des joueurs",

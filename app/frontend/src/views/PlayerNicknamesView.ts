@@ -8,6 +8,7 @@ import { auth } from "../AuthManager.js";
 import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import {
   initNicknameInputListeners,
+  getPlayerType,
   NicknameInput
 } from "../components/NicknameInput.js";
 import { Header1 } from "../components/Header1.js";
@@ -16,7 +17,7 @@ import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
 import { TournamentSize } from "../types/ITournament.js";
-import { PlayerType } from "@prisma/client";
+import type { PlayerType } from "../types/IMatch.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -93,8 +94,7 @@ export default class PlayerNicknamesView extends AbstractView {
 
     const playerTypes: PlayerType[] = [];
     for (let i = 1; i <= this.numberOfPlayers; i++) {
-      const isAi = formData.has(`ai-player-${i}`);
-      playerTypes.push(isAi ? "AI" : "HUMAN");
+      playerTypes.push(getPlayerType(formData, i));
     }
 
     try {
