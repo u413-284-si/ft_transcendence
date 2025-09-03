@@ -167,7 +167,7 @@ export default class StatsView extends AbstractView {
       this.tabs[tabId].onShow();
     } catch (error) {
       console.error(`Error while showing tab ${this.currentTabId}`, error);
-      toaster.error("Something went wrong");
+      toaster.error(i18next.t("toast.tabError"));
     }
   }
 
