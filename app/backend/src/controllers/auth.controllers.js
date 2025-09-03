@@ -65,18 +65,28 @@ export async function loginUserHandler(request, reply) {
       .code(200)
       .send({
         message: createResponseMessage(request.action, true),
-        data: { username: payload.username, hasTwoFA: hasTwoFA }
+        data: { username: payload.username, hasTwoFA: hasTwoFA, token: null }
       });
   }
 
   const { accessToken, refreshToken } = await createAuthTokens(reply, payload);
+  request.cookies.accessToken = accessToken;
+  const decodedAccessToken = await request.accessTokenDecode();
 
   return reply
     .setAuthCookies(accessToken, refreshToken)
     .code(200)
     .send({
       message: createResponseMessage(request.action, true),
-      data: { username: payload.username, hasTwoFA: hasTwoFA }
+      data: {
+        username: payload.username,
+        hasTwoFA: hasTwoFA,
+        token: {
+          status: "valid",
+          type: decodedAccessToken.type,
+          exp: decodedAccessToken.exp
+        }
+      }
     });
 }
 
@@ -119,12 +129,34 @@ export async function googleOauth2LoginHandler(request, reply) {
     .redirect("http://localhost:4000/home");
 }
 
-export async function authAndDecodeAccessHandler(request, reply) {
-  request.action = "Auth and decode access token";
-  const data = request.user;
-  return reply
-    .code(200)
-    .send({ message: createResponseMessage(request.action, true), data });
+export async function checkRefreshTokenStatusHandler(request, reply) {
+  request.action = "Check refresh token status";
+  try {
+    const payload = await request.refreshTokenVerify();
+    return reply.code(200).send({
+      message: createResponseMessage(request.action, true),
+      data: { status: "valid", type: payload.type, exp: payload.exp }
+    });
+  } catch (err) {
+    let status = "undefined";
+    if (err.code === "FST_JWT_NO_AUTHORIZATION_IN_COOKIE") {
+      status = "none";
+    } else if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
+      status = "expired";
+    } else if (
+      err.code === "FST_JWT_AUTHORIZATION_TOKEN_INVALID" ||
+      err.code === "FST_JWT_AUTHORIZATION_TOKEN_UNTRUSTED" ||
+      err.code === "FAST_JWT_MISSING_SIGNATURE"
+    ) {
+      status = "invalid";
+    } else {
+      throw err;
+    }
+    return reply.code(200).send({
+      message: createResponseMessage(request.action, true),
+      data: { status }
+    });
+  }
 }
 
 export async function authRefreshHandler(request, reply) {
@@ -147,10 +179,19 @@ export async function authRefreshHandler(request, reply) {
   }
 
   const { accessToken, refreshToken } = await createAuthTokens(reply, payload);
+  request.cookies.accessToken = accessToken;
+  const decodedAccessToken = await request.accessTokenDecode();
   return reply
     .setAuthCookies(accessToken, refreshToken)
     .code(200)
-    .send({ message: createResponseMessage(request.action, true) });
+    .send({
+      message: createResponseMessage(request.action, true),
+      data: {
+        status: "valid",
+        type: decodedAccessToken.type,
+        exp: decodedAccessToken.exp
+      }
+    });
 }
 
 export async function twoFAQRCodeHandler(request, reply) {
@@ -255,18 +296,27 @@ export async function twoFABackupCodeVerifyHandler(request, reply) {
 
   const payload = { id: userId, username: username };
   const { accessToken, refreshToken } = await createAuthTokens(reply, payload);
+  request.cookies.accessToken = accessToken;
+  const decodedAccessToken = await request.accessTokenDecode();
   reply.clearCookie("twoFALoginToken", {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
-    path: "/api/auth/2fa/login/"
+    path: "/api/auth/2fa/login"
   });
   return reply
     .setAuthCookies(accessToken, refreshToken)
     .code(200)
     .send({
       message: createResponseMessage(request.action, true),
-      data: { username: username }
+      data: {
+        username: username,
+        token: {
+          status: "valid",
+          type: decodedAccessToken.type,
+          exp: decodedAccessToken.exp
+        }
+      }
     });
 }
 
@@ -289,18 +339,27 @@ export async function twoFALoginVerifyHandler(request, reply) {
 
   const payload = { id: userId, username: username };
   const { accessToken, refreshToken } = await createAuthTokens(reply, payload);
+  request.cookies.accessToken = accessToken;
+  const decodedAccessToken = await request.accessTokenDecode();
   reply.clearCookie("twoFALoginToken", {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
-    path: "/api/auth/2fa/login/"
+    path: "/api/auth/2fa/login"
   });
   return reply
     .setAuthCookies(accessToken, refreshToken)
     .code(200)
     .send({
       message: createResponseMessage(request.action, true),
-      data: { username: username }
+      data: {
+        username: username,
+        token: {
+          status: "valid",
+          type: decodedAccessToken.type,
+          exp: decodedAccessToken.exp
+        }
+      }
     });
 }
 

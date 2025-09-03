@@ -77,6 +77,7 @@ await fastify.register(jwt, {
   secret: env.jwtAccessTokenSecret,
   jwtVerify: "accessTokenVerify",
   jwtSign: "accessTokenSign",
+  jwtDecode: "accessTokenDecode",
   sign: { expiresIn: env.accessTokenTimeToExpireInMs },
   cookie: {
     cookieName: "accessToken",

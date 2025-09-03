@@ -1,3 +1,4 @@
+import { formatPlayerName } from "./components/NicknameInput.js";
 import { GameState, Snapshot } from "./types/IGameState.js";
 import { getCSSColorWithAlpha, getCSSVar } from "./utility.js";
 import type { Point } from "./types/IGameState.js";
@@ -94,12 +95,12 @@ function drawScores(ctx: CanvasRenderingContext2D, gameState: GameState) {
   const centerX = gameState.canvasWidth / 2;
 
   const player1Text = shortenName(
-    gameState.player1 || i18next.t("global.player") + "1"
+    formatPlayerName(gameState.player1 || i18next.t("global.player") + "1")
   );
   ctx.fillText(player1Text, marginNames, verticalOffset);
 
   const player2Text = shortenName(
-    gameState.player2 || i18next.t("global.player") + "2"
+    formatPlayerName(gameState.player2 || i18next.t("global.player") + "2")
   );
   const p2Width = ctx.measureText(player2Text).width;
   ctx.fillText(
@@ -132,8 +133,12 @@ function drawWinningScreen(
   const canvasCenterY = gameState.canvasHeight / 2;
   const didP1Win = gameState.player1Score >= gameState.winningScore;
   const winnerText = didP1Win
-    ? i18next.t("global.playerWins", { player: gameState.player1 })
-    : i18next.t("global.playerWins", { player: gameState.player2 });
+    ? i18next.t("global.playerWins", {
+        player: formatPlayerName(gameState.player1, gameState.type1)
+      })
+    : i18next.t("global.playerWins", {
+        player: formatPlayerName(gameState.player2, gameState.type2)
+      });
   const winningColor = didP1Win ? "--color-neon-cyan" : "--color-neon-yellow";
 
   ctx.save();

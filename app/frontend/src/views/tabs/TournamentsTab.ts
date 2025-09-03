@@ -17,6 +17,7 @@ import {
 import { Table } from "../../components/Table.js";
 import { getUserTournaments } from "../../services/tournamentService.js";
 import { getById } from "../../utility.js";
+import { buildBaseOptions } from "../../charts/chartUtils.js";
 
 export class TournamentsTab extends PaginatedTab<TournamentRead> {
   private dashboard: DashboardTournaments | null = null;
@@ -30,10 +31,26 @@ export class TournamentsTab extends PaginatedTab<TournamentRead> {
       "tournaments-page-indicator"
     );
     this.username = username;
+    this.chartBaseOptions = {
+      "tournament-summary": buildTournamentsSummaryOptions({
+        data: [
+          { size: 4, winrate: 0, played: 0, won: 0 },
+          { size: 8, winrate: 0, played: 0, won: 0 },
+          { size: 16, winrate: 0, played: 0, won: 0 }
+        ]
+      }),
+      "tournament-played": buildBaseOptions("bar", 800, 300),
+      "tournament-last-10-days-4": buildBaseOptions("bar", 800, 300),
+      "tournament-progress-4": buildBaseOptions("bar", 400, 350),
+      "tournament-last-10-days-8": buildBaseOptions("bar", 800, 300),
+      "tournament-progress-8": buildBaseOptions("bar", 400, 350),
+      "tournament-last-10-days-16": buildBaseOptions("bar", 800, 300),
+      "tournament-progress-16": buildBaseOptions("bar", 400, 350)
+    };
   }
 
   getHTML(): string {
-    return /* HTML */ ` <div id="tab-tournaments">
+    return /* HTML */ ` <div id="tab-tournaments" class="hidden">
       <div class="w-full max-w-screen-2xl mx-auto p-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
@@ -135,12 +152,11 @@ export class TournamentsTab extends PaginatedTab<TournamentRead> {
     );
   }
 
-  async init(): Promise<void> {
+  async initData(): Promise<void> {
     this.dashboard = getDataOrThrow(
       await getUserDashboardTournamentsByUsername(this.username)
     );
     this.populateChartOptions();
-    this.isInit = true;
   }
 
   private populateChartOptions(): void {
@@ -148,7 +164,6 @@ export class TournamentsTab extends PaginatedTab<TournamentRead> {
 
     this.chartOptions = {
       "tournament-summary": buildTournamentsSummaryOptions(
-        i18next.t("chart.summary"),
         this.dashboard.summary
       ),
       "tournament-played": buildTournamentsPlayedOptions(

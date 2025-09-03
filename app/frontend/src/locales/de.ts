@@ -201,7 +201,12 @@ const de: TranslationShape = {
     nicknameInput: {
       enterYourNickname: "Gib deinen Spitznamen ein",
       playerChoice: "{{username}} spielt als Spieler {{i}}",
-      playerNickname: "Spitzname von Spieler {{i}}"
+      playerNickname: "Spitzname von Spieler {{i}}",
+      aiPlayer: "KI-Spieler",
+      aiStrength: "KI-Stärke",
+      aiStrengthEasy: "Leicht",
+      aiStrengthMedium: "Mittel",
+      aiStrengthHard: "Schwer"
     },
 
     playerNicknamesView: {
@@ -325,6 +330,7 @@ const de: TranslationShape = {
       passwordUpdateFailed:
         "Passwort konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       passwordUpdatedSuccess: "Passwort erfolgreich aktualisiert!",
+      tabError: "Der Tab konnte nicht initialisiert werden.",
       twoFASetupSuccess: "2FA erfolgreich aktiviert!",
       twoFARemoveSuccess: "2FA erfolgreich deaktiviert!",
       profileUpdateFailed:

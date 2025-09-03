@@ -101,7 +101,8 @@ export default class TwoFAVerifyView extends AbstractView {
       }
     }
 
-    const isAllowed = await auth.loginAfterTwoFA();
+    const token = apiResponse.data.token;
+    const isAllowed = await auth.loginAfterTwoFA(token);
     if (!isAllowed) return;
     router.navigate("/home", false);
   }

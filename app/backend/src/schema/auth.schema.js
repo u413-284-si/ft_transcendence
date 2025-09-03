@@ -20,9 +20,10 @@ const loginUserResponseSchema = {
       type: "object",
       properties: {
         username: { $ref: "commonDefinitionsSchema#/definitions/username" },
-        hasTwoFA: { type: "boolean" }
+        hasTwoFA: { type: "boolean" },
+        token: { oneOf: [{ $ref: "tokenSchema" }, { type: "null" }] }
       },
-      required: ["username", "hasTwoFA"]
+      required: ["username", "token"]
     }
   },
   required: ["message", "data"],
@@ -76,11 +77,36 @@ const twoFAPasswordSchema = {
   additionalProperties: false
 };
 
+const tokenSchema = {
+  $id: "tokenSchema",
+  type: "object",
+  properties: {
+    status: { $ref: "commonDefinitionsSchema#/definitions/tokenStatus" },
+    type: { $ref: "commonDefinitionsSchema#/definitions/tokenType" },
+    exp: { type: "integer" }
+  },
+  required: ["status"],
+  additionalProperties: false
+};
+
+const statusCheckResponseSchema = {
+  $id: "statusCheckResponseSchema",
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    data: { $ref: "tokenSchema" }
+  },
+  required: ["message", "data"],
+  additionalProperties: false
+};
+
 export const authSchemas = [
   loginUserSchema,
   loginUserResponseSchema,
   logoutUserResponseSchema,
   twoFACodeSchema,
   twoFABackupCodeSchema,
-  twoFAPasswordSchema
+  twoFAPasswordSchema,
+  tokenSchema,
+  statusCheckResponseSchema
 ];

@@ -46,3 +46,28 @@ export const friendsColors = [
   chartColors.green,
   chartColors.white
 ];
+
+export function buildBaseOptions(
+  type: "bar" | "donut" | "line" | "radialBar",
+  width: number,
+  height: number
+): ApexOptions {
+  const options: ApexOptions = {
+    chart: {
+      type: type,
+      fontFamily: "inherit",
+      background: "transparent",
+      toolbar: {
+        show: false
+      },
+      width: width,
+      height: height
+    },
+    noData: {
+      text: "Loading..."
+    },
+    series: []
+  };
+
+  return options;
+}

@@ -1,9 +1,12 @@
+import type { PlayerType } from "../types/IMatch";
 import { AIPlayer } from "../AIPlayer.js";
 import { GameKey } from "../views/GameView.js";
 
 export interface GameState {
   player1: string;
   player2: string;
+  type1: PlayerType;
+  type2: PlayerType;
   player1Score: number;
   player2Score: number;
   winningScore: number;

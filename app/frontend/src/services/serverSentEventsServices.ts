@@ -128,7 +128,7 @@ export function openSSEConnection() {
   };
 }
 
-export function closeSSEConnection() {
+export function closeSSEConnection(resetFirstConnection = false) {
   if (eventSource) {
     eventSource.close();
     eventSource = null;
@@ -137,5 +137,9 @@ export function closeSSEConnection() {
   if (reconnectTimeoutID) {
     clearTimeout(reconnectTimeoutID);
     reconnectTimeoutID = null;
+  }
+  if (resetFirstConnection) {
+    isFirstConnection = true;
+    console.log("isFirstConnection has been reset");
   }
 }

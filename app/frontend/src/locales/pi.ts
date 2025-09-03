@@ -196,7 +196,12 @@ const pi: TranslationShape = {
     nicknameInput: {
       enterYourNickname: "Give us yer pirate alias",
       playerChoice: "{{username}} be playin' as buccaneer {{i}}",
-      playerNickname: "Name fer pirate {{i}}"
+      playerNickname: "Name fer pirate {{i}}",
+      aiPlayer: "Ghost o' the Sea (AI)",
+      aiStrength: "Cunning o' the Machine",
+      aiStrengthEasy: "Cabin boy",
+      aiStrengthMedium: "Sailor",
+      aiStrengthHard: "Captain"
     },
 
     playerNicknamesView: {
@@ -316,6 +321,7 @@ const pi: TranslationShape = {
       passwordUpdateFailed:
         "Couldn’t set yer new passphrase. Try again or be cursed!",
       passwordUpdatedSuccess: "Secret code changed! Keep it close!",
+      tabError: "Arrr! This here tab be refusin' to set sail!",
       twoFASetupSuccess: "Secret digits be rigged ‘n ready!",
       twoFARemoveSuccess: "Secret digits be scuttled! Ye be sailin’ free!",
       profileUpdateFailed: "Profile be cursed – try again later!",

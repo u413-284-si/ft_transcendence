@@ -1,6 +1,7 @@
 import type { TournamentRead } from "./types/ITournament.ts";
 import type { BracketLayout } from "./types/BracketLayout.ts";
 import type { BracketMatchRead } from "./types/BracketMatch.ts";
+import { formatPlayerName } from "./components/NicknameInput.js";
 
 export class Tournament {
   private matchSlotMap: Record<
@@ -130,7 +131,7 @@ export class Tournament {
         const isNext = match.matchNumber === nextMatchId;
         const matchSlots = this.matchSlotMap[match.matchNumber];
 
-        const player1Text =
+        let player1Text =
           match.player1Nickname ??
           (matchSlots?.slot1
             ? i18next.t("global.winnerMatch", {
@@ -138,13 +139,20 @@ export class Tournament {
               })
             : i18next.t("global.toBeDefined"));
 
-        const player2Text =
+        let player2Text =
           match.player2Nickname ??
           (matchSlots?.slot2
             ? i18next.t("global.winnerMatch", {
                 matchId: matchSlots.slot2.matchNumber
               })
             : i18next.t("global.toBeDefined"));
+
+        if (match.player1Type) {
+          player1Text = formatPlayerName(player1Text, match.player1Type);
+        }
+        if (match.player2Type) {
+          player2Text = formatPlayerName(player2Text, match.player2Type);
+        }
 
         return {
           matchId: match.matchNumber,

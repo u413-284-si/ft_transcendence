@@ -43,7 +43,7 @@ export function addCloseModalListener(id: string) {
   const modalEl = getById<HTMLDialogElement>(id);
   const modalCloseButtonEl = getById<HTMLButtonElement>(`${id}-close-button`);
 
-  modalEl.addEventListener("click", (e) => {
+  modalEl.addEventListener("mousedown", (e) => {
     const dialogDimensions = modalEl.getBoundingClientRect();
     if (
       e.clientX < dialogDimensions.left ||

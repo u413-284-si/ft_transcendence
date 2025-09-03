@@ -51,7 +51,7 @@ export async function apiFetch<T>(
       if (response.status === 401 && retryWithRefresh) {
         const retryResponse = await refreshAndRetry<T>(url, options);
         if (!retryResponse.success) {
-          handleRefreshFailure(retryResponse);
+          await handleRefreshFailure(retryResponse);
         }
         return retryResponse;
       }
@@ -72,9 +72,9 @@ export async function apiFetch<T>(
   }
 }
 
-function handleRefreshFailure(response: ApiFail) {
+async function handleRefreshFailure(response: ApiFail) {
   if (response.status === 401) {
-    auth.clearTokenOnError();
+    await auth.clearTokenOnError();
   }
 }
 

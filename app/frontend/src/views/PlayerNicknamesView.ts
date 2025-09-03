@@ -6,13 +6,17 @@ import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
 import { escapeHTML, getAllBySelector, getById } from "../utility.js";
-import { NicknameInput } from "../components/NicknameInput.js";
+import {
+  initNicknameInputListeners,
+  getPlayerType,
+  NicknameInput
+} from "../components/NicknameInput.js";
 import { Header1 } from "../components/Header1.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
 import { TournamentSize } from "../types/ITournament.js";
-import { PlayerType } from "@prisma/client";
+import type { PlayerType } from "../types/IMatch.js";
 import { List } from "../components/List.js";
 import { Header2 } from "../components/Header2.js";
 
@@ -67,6 +71,7 @@ export default class PlayerNicknamesView extends AbstractView {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartTournament(event)
     );
+    initNicknameInputListeners();
   }
 
   async render() {
@@ -95,8 +100,7 @@ export default class PlayerNicknamesView extends AbstractView {
 
     const playerTypes: PlayerType[] = [];
     for (let i = 1; i <= this.numberOfPlayers; i++) {
-      const isAi = formData.has(`ai-player-${i}`);
-      playerTypes.push(isAi ? "AI" : "HUMAN");
+      playerTypes.push(getPlayerType(formData, i));
     }
 
     try {

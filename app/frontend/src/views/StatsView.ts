@@ -22,6 +22,7 @@ import { TabButton } from "../components/TabButton.js";
 import { MatchesTab } from "./tabs/MatchesTab.js";
 import { TournamentsTab } from "./tabs/TournamentsTab.js";
 import { FriendsTab } from "./tabs/FriendsTab.js";
+import { toaster } from "../Toaster.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -101,14 +102,18 @@ export default class StatsView extends AbstractView {
   async render() {
     await this.setViewType();
     await this.fetchData();
+    this.initTabs();
     this.updateHTML();
-    if (this.viewType === "public") return;
-    this.tabs["matches"] = new MatchesTab(this.userStats!, this.username);
-    this.tabs["tournaments"] = new TournamentsTab(this.username);
-    await this.showTab("matches");
+    await this.showTab("tab-matches");
     this.addListeners();
+  }
+
+  private initTabs() {
+    if (this.viewType === "public") return;
+    this.tabs["tab-matches"] = new MatchesTab(this.userStats!, this.username);
+    this.tabs["tab-tournaments"] = new TournamentsTab(this.username);
     if (this.viewType !== "self") return;
-    this.tabs["friends"] = new FriendsTab(this.username);
+    this.tabs["tab-friends"] = new FriendsTab(this.username);
   }
 
   getName(): string {
@@ -151,15 +156,22 @@ export default class StatsView extends AbstractView {
   }
 
   async showTab(tabId: string) {
-    if (this.currentTabId) {
-      this.tabs[this.currentTabId].onHide();
+    try {
+      if (this.currentTabId) {
+        this.tabs[this.currentTabId].onHide();
+        const container = getById<HTMLDivElement>(this.currentTabId);
+        container.classList.toggle("hidden");
+      }
+
+      this.currentTabId = tabId;
+      const container = getById<HTMLDivElement>(this.currentTabId);
+      container.classList.toggle("hidden");
+
+      await this.tabs[tabId].onShow();
+    } catch (error) {
+      console.error(`Error while showing tab ${this.currentTabId}`, error);
+      toaster.error(i18next.t("toast.tabError"));
     }
-    this.currentTabId = tabId;
-
-    const container = getById<HTMLDivElement>("tab-content");
-    container.innerHTML = this.tabs[tabId].getHTML();
-
-    await this.tabs[tabId].onShow();
   }
 
   getTabsHTML(): string {
@@ -169,25 +181,31 @@ export default class StatsView extends AbstractView {
         variant: "info"
       })}`;
     }
+
+    let allTabsHTML = "";
+    for (const tabId in this.tabs) {
+      allTabsHTML += this.tabs[tabId].getHTML();
+    }
+
     return /* HTML */ `
       <div class="flex space-x-4 border-b border-grey mb-4">
         ${TabButton({
           text: i18next.t("statsView.matches"),
-          tabId: "matches",
+          tabId: "tab-matches",
           isActive: true
         })}
         ${TabButton({
           text: i18next.t("statsView.tournaments"),
-          tabId: "tournaments"
+          tabId: "tab-tournaments"
         })}
         ${this.viewType === "self"
           ? TabButton({
               text: i18next.t("statsView.friends"),
-              tabId: "friends"
+              tabId: "tab-friends"
             })
           : ""}
       </div>
-      <div id="tab-content"></div>
+      <div id="tab-content">${allTabsHTML}</div>
     `;
   }
 
@@ -206,5 +224,15 @@ export default class StatsView extends AbstractView {
         button.classList.add("active-link");
       });
     });
+  }
+
+  unmount(): void {
+    console.log("Cleaning up StatsView");
+    for (const tabId in this.tabs) {
+      const tab = this.tabs[tabId];
+      if (tab) {
+        tab.destroyCharts();
+      }
+    }
   }
 }

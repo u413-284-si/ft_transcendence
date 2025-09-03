@@ -193,7 +193,12 @@ const tr: TranslationShape = {
     nicknameInput: {
       enterYourNickname: "Enter your operative alias",
       playerChoice: "{{username}} operates as agent {{i}}",
-      playerNickname: "Agent {{i}} alias"
+      playerNickname: "Agent {{i}} alias",
+      aiPlayer: "Synthetic Operative",
+      aiStrength: "Processing Power",
+      aiStrengthEasy: "Low Protocol",
+      aiStrengthMedium: "Standard Protocol",
+      aiStrengthHard: "Overclocked Protocol"
     },
 
     playerNicknamesView: {
@@ -312,6 +317,7 @@ const tr: TranslationShape = {
       logoutError: "Logout failed. Reattempt required.",
       passwordUpdateFailed: "Access code update failed. Retry advised.",
       passwordUpdatedSuccess: "Access code updated successfully!",
+      tabError: "Tab failed to initialize within the Grid.",
       twoFASetupSuccess: "Cipher activated successfully!",
       twoFARemoveSuccess: "Cipher deactivated successfully!",
       profileUpdateFailed: "Profile update failed. Retry advised.",

@@ -4,12 +4,14 @@ import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
 import {
+  getPlayerType,
   initNicknameInputListeners,
   NicknameInput
 } from "../components/NicknameInput.js";
 import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
+import type { PlayerType } from "../types/IMatch.js";
 import { Header1 } from "../components/Header1.js";
 import { List } from "../components/List.js";
 
@@ -81,14 +83,16 @@ export default class NewGameView extends AbstractView {
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
 
     const userNumber = formData.get("userChoice");
-    const player1type = formData.has("ai-player-1") ? "AI" : "HUMAN";
-    const player2type = formData.has("ai-player-2") ? "AI" : "HUMAN";
+    const playerTypes: PlayerType[] = [];
+    for (let i = 1; i <= 2; i++) {
+      playerTypes.push(getPlayerType(formData, i));
+    }
 
     const gameView = new GameView(
       nicknames[0],
       nicknames[1],
-      player1type,
-      player2type,
+      playerTypes[0],
+      playerTypes[1],
       userNumber == "1" ? "PLAYERONE" : "PLAYERTWO",
       GameType.single,
       null

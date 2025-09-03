@@ -191,7 +191,12 @@ const fr: TranslationShape = {
     nicknameInput: {
       enterYourNickname: "Entrez votre pseudonyme",
       playerChoice: "{{username}} joue en tant que joueur {{i}}",
-      playerNickname: "Pseudonyme du joueur {{i}}"
+      playerNickname: "Pseudonyme du joueur {{i}}",
+      aiPlayer: "Joueur IA",
+      aiStrength: "Difficulté de l'IA",
+      aiStrengthEasy: "Facile",
+      aiStrengthMedium: "Moyenne",
+      aiStrengthHard: "Difficile"
     },
     playerNicknamesView: {
       enterPlayerNicknames: "Entrez les pseudonymes des joueurs",
@@ -311,6 +316,7 @@ const fr: TranslationShape = {
       passwordUpdatedSuccess: "Mot de passe mis à jour avec succès !",
       profileUpdateFailed:
         "Échec de la mise à jour du profil. Veuillez réessayer.",
+      tabError: "L'onglet n'a pas pu s'initialiser.",
       twoFASetupSuccess:
         "Configuration de l’authentification à deux facteurs réussie !",
       twoFARemoveSuccess:
