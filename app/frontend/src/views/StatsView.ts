@@ -205,7 +205,7 @@ export default class StatsView extends AbstractView {
             })
           : ""}
       </div>
-      <div id="tab-content">${allTabsHTML}</div>
+      <div id="tab-content" class="w-[1500px]">${allTabsHTML}</div>
     `;
   }
 
