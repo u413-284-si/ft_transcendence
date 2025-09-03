@@ -212,7 +212,7 @@ export default class StatsView extends AbstractView {
     buttons.forEach((button) => {
       button.addEventListener("click", async () => {
         const tabId = button.dataset.tab!;
-        this.showTab(tabId);
+        await this.showTab(tabId);
 
         buttons.forEach((btn) => {
           btn.classList.remove("active-link");
