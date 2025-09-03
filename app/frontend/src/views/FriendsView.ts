@@ -1,4 +1,3 @@
-import { router } from "../routing/Router.js";
 import { sanitizeHTML } from "../sanitize.js";
 import { getDataOrThrow } from "../services/api.js";
 import {
@@ -29,6 +28,7 @@ import { Header1 } from "../components/Header1.js";
 import { FriendListItem } from "../components/FriendListItem.js";
 import { Header2 } from "../components/Header2.js";
 import { toaster } from "../Toaster.js";
+import { auth } from "../AuthManager.js";
 
 type RequestListType = "friend" | "incoming" | "outgoing";
 
@@ -341,23 +341,49 @@ export default class FriendsView extends AbstractView {
 
   private handleSendRequestButton = async (event: Event): Promise<void> => {
     event.preventDefault();
-    const inputEl = getById<HTMLInputElement>("username-input");
-    const errorEl = getById<HTMLSpanElement>("username-error");
-
-    clearInvalid(inputEl, errorEl);
-
-    if (!validateUsername(inputEl, errorEl)) return;
-
-    const username = inputEl.value.trim();
-
     try {
+      const inputEl = getById<HTMLInputElement>("username-input");
+      const errorEl = getById<HTMLSpanElement>("username-error");
+
+      clearInvalid(inputEl, errorEl);
+
+      if (!validateUsername(inputEl, errorEl)) return;
+
+      const username = inputEl.value.trim();
+
+      if (username === auth.getUser().username) {
+        markInvalid(i18next.t("invalid.friendNotSelf"), inputEl, errorEl);
+        return;
+      }
+
+      const existingRequest = this.getFriendRequestByFriendUsername(username);
+      if (existingRequest) {
+        switch (existingRequest.status) {
+          case "ACCEPTED":
+            markInvalid(
+              i18next.t("invalid.friendsAlready", { friend: username }),
+              inputEl,
+              errorEl
+            );
+            return;
+          case "PENDING":
+            if (existingRequest.sender) {
+              markInvalid(
+                i18next.t("invalid.friendRequestAlreadySent"),
+                inputEl,
+                errorEl
+              );
+              return;
+            }
+        }
+      }
+
       const user = getDataOrThrow(await getUserByUsername(username));
 
       if (user === null) {
         markInvalid(i18next.t("global.userNotFound"), inputEl, errorEl);
         return;
       }
-      clearInvalid(inputEl, errorEl);
 
       const request = getDataOrThrow(await createFriendRequest(user.id));
       this.removeFriendRequest(request.id);
@@ -375,7 +401,8 @@ export default class FriendsView extends AbstractView {
         this.refreshRequestList("friend");
       }
     } catch (error) {
-      router.handleError("handleSendRequestButton()", error);
+      console.error("Failed to send friend request:", error);
+      toaster.error(i18next.t("toast.friendRequestSendError"));
     }
   };
 
@@ -391,10 +418,13 @@ export default class FriendsView extends AbstractView {
     return Number(li.dataset.requestId);
   }
 
-  private getFriendRequest(requestId: number): FriendRequest {
-    const request = this.friendRequests.find((r) => r.id === requestId);
-    if (!request)
-      throw new Error(i18next.t("error.requestNotFound", { id: requestId }));
+  private getFriendRequestByFriendUsername(
+    friendUsername: string
+  ): FriendRequest | null {
+    const request = this.friendRequests.find(
+      (r) => r.friendUsername === friendUsername
+    );
+    if (!request) return null;
     return request;
   }
 
@@ -450,7 +480,8 @@ export default class FriendsView extends AbstractView {
         }
       }
     } catch (error) {
-      router.handleError("Error in handleFriendRequestEvent()", error);
+      console.error(error);
+      toaster.error(i18next.t("toast.friendRequestEventError"));
     }
   };
 }

@@ -100,6 +100,10 @@ const de: TranslationShape = {
         "Der Benutzername oder die E-Mail-Adresse muss gültig sein.",
       fillAtLeastOneField: "Bitte fülle mindestens ein Feld aus.",
       fillInUsername: "Bitte gib einen Benutzernamen ein.",
+      friendNotSelf: "Du kannst dich nicht selbst als Freund hinzufügen.",
+      friendRequestAlreadySent:
+        "Du hast bereits eine Freundschaftsanfrage gesendet.",
+      friendsAlready: "Ihr seid bereits befreundet.",
       imageFileEmpty: "Bitte wähle eine Datei zum Hochladen aus.",
       imageFileFormat: "Bitte lade eine gültige Bilddatei hoch.",
       nicknameEmpty: "Spitzname darf nicht leer sein.",
@@ -300,6 +304,9 @@ const de: TranslationShape = {
       friendAdded: "Freund {{username}} hinzugefügt!",
       friendRequestButtonError:
         "Fehler beim Verarbeiten der Freundschaftsanfrage",
+      friendRequestEventError:
+        "Fehler beim Empfang der Freundschaftsanfrage.",
+      friendRequestSendError: "Fehler beim Senden der Freundschaftsanfrage.",
       emailExists: "Diese E-Mail-Adresse ist bereits registriert",
       emailOrUsernameExists: "E-Mail oder Benutzername existiert bereits",
       invalidUsernameOrPW: "Ungültiger Benutzername oder Passwort",
