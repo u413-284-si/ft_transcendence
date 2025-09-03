@@ -38,28 +38,28 @@ export function NicknameInput(players: number, username: string): string {
             name: `ai-player-${i}`,
             label: i18next.t("nicknameInput.aiPlayer"),
             disabled: isChecked
+          }),
+          Select({
+            id: `ai-strength-${i}`,
+            name: `ai-strength-${i}`,
+            label: i18next.t("nicknameInput.aiStrength"),
+            options: [
+              {
+                value: "AI_EASY",
+                label: i18next.t("nicknameInput.aiStrengthEasy")
+              },
+              {
+                value: "AI_MEDIUM",
+                label: i18next.t("nicknameInput.aiStrengthMedium")
+              },
+              {
+                value: "AI_HARD",
+                label: i18next.t("nicknameInput.aiStrengthHard")
+              }
+            ],
+            hidden: true
           })
         ]
-      })}
-      ${Select({
-        id: `ai-strength-${i}`,
-        name: `ai-strength-${i}`,
-        label: i18next.t("nicknameInput.aiStrength"),
-        options: [
-          {
-            value: "AI_EASY",
-            label: i18next.t("nicknameInput.aiStrengthEasy")
-          },
-          {
-            value: "AI_MEDIUM",
-            label: i18next.t("nicknameInput.aiStrengthMedium")
-          },
-          {
-            value: "AI_HARD",
-            label: i18next.t("nicknameInput.aiStrengthHard")
-          }
-        ],
-        hidden: true
       })}
     `;
   }
