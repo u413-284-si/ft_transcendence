@@ -291,7 +291,7 @@ const tr: TranslationShape = {
       emailOrUsernameExists: "Data address or User ID already exists",
       friendAdded: "Link established with {{username}}!",
       friendRequestButtonError: "Error processing link request",
-      friendRequestEventError: "Error receiving link request event.",
+      friendRequestEventError: "Error receiving link request.",
       friendRequestSendError: "Error transmitting link request.",
       invalidUsernameOrPW: "Invalid User ID or access code",
       logoutError: "Logout failed. Reattempt required.",
