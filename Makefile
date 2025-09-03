@@ -45,8 +45,13 @@ help:
 
 # Builds, (re)creates, starts, and attaches to containers for a service.
 .PHONY: up
-up: vault-certs
+up: .env vault-certs
 	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d
+
+# Ensure .env exists
+.env: .env.example
+	$(SILENT)cp $< $@
+	@echo "📝 Created .env from .env.example"
 
 .PHONY: vault-certs
 vault-certs:
