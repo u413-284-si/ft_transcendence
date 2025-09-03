@@ -104,11 +104,21 @@ export default class MatchAnnouncementView extends AbstractView {
 
       <section class="flex gap-4">
         ${Button({
-          text: i18next.t("matchAnnouncementView.startMatch"),
+          text: this.isAIvsAI
+            ? i18next.t("matchAnnouncementView.spectateMatch")
+            : i18next.t("matchAnnouncementView.startMatch"),
           variant: "default",
           type: "submit",
           id: "start-match-btn"
         })}
+        ${this.isAIvsAI
+          ? Button({
+              id: "skip-match",
+              text: i18next.t("matchAnnouncementView.skipMatch"),
+              variant: "default",
+              type: "button"
+            })
+          : ""}
         ${Button({
           id: "abort-tournament-btn",
           text: i18next.t("matchAnnouncementView.abortTournament"),
@@ -116,15 +126,6 @@ export default class MatchAnnouncementView extends AbstractView {
           type: "button"
         })}
       </section>
-
-      ${this.isAIvsAI
-        ? Button({
-            id: "skip-match",
-            text: "Skip",
-            variant: "default",
-            type: "button"
-          })
-        : ""}
     `;
   }
 

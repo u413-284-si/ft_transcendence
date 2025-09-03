@@ -169,7 +169,9 @@ const pi: TranslationShape = {
       nextMatch: "Next skirmish to set sail",
       title: "Upcoming Duel!",
       roundMatch: "Round {{round}} - Clash {{match}}",
-      startMatch: "Hoist the Colors!"
+      startMatch: "Hoist the Colors!",
+      skipMatch: "Skip this skirmish",
+      spectateMatch: "Spy on the duel"
     },
 
     newGameView: {

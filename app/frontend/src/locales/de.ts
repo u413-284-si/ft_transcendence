@@ -174,7 +174,9 @@ const de: TranslationShape = {
       nextMatch: "Nächstes Spiel",
       title: "Nächstes Spiel!",
       roundMatch: "Runde {{round}} - Spiel {{match}}",
-      startMatch: "Spiel starten"
+      startMatch: "Spiel starten",
+      skipMatch: "Spiel überspringen",
+      spectateMatch: "Spiel beobachten"
     },
 
     newGameView: {

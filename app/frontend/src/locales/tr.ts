@@ -162,11 +162,13 @@ const tr: TranslationShape = {
     },
 
     matchAnnouncementView: {
-      abortTournament: "TERMINATE TOURNAMENT",
+      abortTournament: "Terminate tournament",
       nextMatch: "Next session queued",
       title: "UPCOMING SESSION",
       roundMatch: "Cycle {{round}} - Session {{match}}",
-      startMatch: "INITIATE SESSION"
+      startMatch: "Initiate session",
+      skipMatch: "Bypass session",
+      spectateMatch: "Monitor session"
     },
 
     newGameView: {

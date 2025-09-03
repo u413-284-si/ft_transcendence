@@ -1,3 +1,5 @@
+import { skip } from "@prisma/client/runtime/library";
+
 const en = {
   translation: {
     error: {
@@ -164,7 +166,9 @@ const en = {
       nextMatch: "Next match to play",
       title: "Next Match!",
       roundMatch: "Round {{round}} - Match {{match}}",
-      startMatch: "Start Match"
+      startMatch: "Start Match",
+      skipMatch: "Skip Match",
+      spectateMatch: "Spectate Match"
     },
 
     newGameView: {
