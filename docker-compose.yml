@@ -86,6 +86,8 @@ services:
         target: /vault/policies/app-policy.hcl
       - source: policy_nginx
         target: /vault/policies/nginx-policy.hcl
+      - source: policy_healthcheck
+        target: /vault/policies/healthcheck-policy.hcl
     restart: always
     volumes:
       - vault-data:/vault/data
@@ -162,6 +164,8 @@ configs:
     file: ./vault/policies/app-policy.hcl
   policy_nginx:
     file: ./vault/policies/nginx-policy.hcl
+  policy_healthcheck:
+    file: ./vault/policies/healthcheck-policy.hcl
   vault_agent_config:
     file: ./vault-agent/config/agent.hcl
   template_cert:

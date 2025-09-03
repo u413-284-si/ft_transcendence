@@ -170,6 +170,54 @@ else
   echo "ℹ️ KV already enabled at secret/"
 fi
 
+##############################################
+# -- Set up healthcheck secret generation -- #
+##############################################
+
+# Add policy for healthcheck
+echo "➡️ Adding policy for app..."
+vault policy write healthcheck-policy /vault/policies/healthcheck-policy.hcl
+
+vault write auth/approle/role/healthcheck-role \
+    secret_id_ttl=0 \
+    token_ttl=5m \
+    token_max_ttl=30m \
+    token_policies=healthcheck-policy
+
+# Create AppRole for healthcheck if not existent
+if vault read -format=json auth/approle/role/healthcheck-role > /dev/null 2>&1; then
+  echo "ℹ️ AppRole healthcheck-role already exists, skipping..."
+else
+  echo "➡️ Creating AppRole for healthcheck..."
+  vault write auth/approle/role/healthcheck-role \
+      secret_id_ttl=0 \
+      token_ttl=5m \
+      token_max_ttl=30m \
+      token_policies=healthcheck-policy
+  echo "✅ AppRole healthcheck-role for healthcheck created"
+fi
+
+# Create role ID and secret ID if not existent
+if [ ! -f "$VAULT_KEYS_DIR/healthcheck_role_id" ]; then
+  echo "➡️ Creating role ID for healthcheck..."
+  vault read -field=role_id auth/approle/role/healthcheck-role/role-id > $VAULT_KEYS_DIR/healthcheck_role_id
+  chmod 600 "$VAULT_KEYS_DIR/healthcheck_role_id"
+  chown vault:vault "$VAULT_KEYS_DIR/healthcheck_role_id"
+  echo "✅ Role ID for healthcheck created"
+else
+  echo "ℹ️ Role ID for healthcheck already exists"
+fi
+
+if [ ! -f "$VAULT_KEYS_DIR/healthcheck_secret_id" ]; then
+  echo "➡️ Creating secret ID for healthcheck..."
+  vault write -field=secret_id -f auth/approle/role/healthcheck-role/secret-id > "$VAULT_KEYS_DIR/healthcheck_secret_id"
+  chmod 600 "$VAULT_KEYS_DIR/healthcheck_secret_id"
+  chown vault:vault "$VAULT_KEYS_DIR/healthcheck_secret_id"
+  echo "✅ Secret ID for healthcheck created"
+else
+  echo "ℹ️ Secret ID for healthcheck already exists"
+fi
+
 ########################################
 # -- Set up nginx secret generation -- #
 ########################################

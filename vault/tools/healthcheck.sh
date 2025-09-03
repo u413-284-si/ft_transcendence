@@ -1,7 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VAULT_TOKEN=$(cat $VAULT_KEYS_DIR/root_token 2>/dev/null || echo "")
+ROLE_FILE="$VAULT_KEYS_DIR/healthcheck_role_id"
+SECRET_FILE="$VAULT_KEYS_DIR/healthcheck_secret_id"
+
+if [[ ! -s "$ROLE_FILE" || ! -s "$SECRET_FILE" ]]; then
+    echo "⚠️ Healthcheck AppRole not ready yet."
+    exit 1
+fi
+
+HEALTH_TOKEN=$(vault write -format=json auth/approle/login \
+    role_id="$(cat $VAULT_KEYS_DIR/healthcheck_role_id)" \
+    secret_id="$(cat $VAULT_KEYS_DIR/healthcheck_secret_id)" \
+    | jq -r '.auth.client_token')
+
+VAULT_TOKEN="$HEALTH_TOKEN"
 
 # 1. Check Vault is unsealed and healthy
 if ! curl -s --cacert "$VAULT_CACERT" "$VAULT_ADDR/v1/sys/health" | jq -e '.sealed == false'; then
