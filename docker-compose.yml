@@ -7,8 +7,8 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      NODE_ENV: production
-      PORT: 4001
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${APP_PORT}
     secrets:
       - vault_ca
     restart: always
@@ -34,17 +34,17 @@ services:
     restart: always
     environment:
       # nginx settings
-      BACKEND: http://app:4001
-      PORT: 8080
-      SSL_PORT: 8443
-      NGINX_ALWAYS_TLS_REDIRECT: on
-      SSL_CERT: /etc/nginx/certs/fullchain.pem
-      SSL_CERT_KEY: /etc/nginx/certs/key.pem
+      - BACKEND=${APP_ADDR}
+      - PORT=${NGINX_PORT}
+      - SSL_PORT=${NGINX_SSL_PORT}
+      - NGINX_ALWAYS_TLS_REDIRECT=${NGINX_ALWAYS_TLS_REDIRECT}
+      - SSL_CERT=${NGINX_SSL_CERT}
+      - SSL_CERT_KEY=${NGINX_SSL_CERT_KEY}
       # modsecurity settings
-      MODSEC_RULE_ENGINE: On
-      MODSEC_DEBUG_LOGLEVEL: 3 # errors, warnings, and notices
+      - MODSEC_RULE_ENGINE=${MODSEC_RULE_ENGINE}
+      - MODSEC_DEBUG_LOGLEVEL=${MODSEC_DEBUG_LOGLEVEL} # errors, warnings, and notices
       # CRS settings
-      BLOCKING_PARANOIA: 2
+      - BLOCKING_PARANOIA=${BLOCKING_PARANOIA}
     volumes:
       - certs:/etc/nginx/certs:ro
     depends_on:
@@ -65,8 +65,13 @@ services:
     ports:
       - "8200:8200"
     environment:
-      - VAULT_ADDR=https://vault:8200
-      - VAULT_CACERT=/run/secrets/vault_ca
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_CACERT=${VAULT_CACERT}
+      - SECRETS_DIR=${SECRETS_DIR}
+      - VAULT_KEYS_DIR=${VAULT_KEYS_DIR}
+      - NGINX_KEYS_DIR=${NGINX_KEYS_DIR}
+      - APP_KEYS_DIR=${APP_KEYS_DIR}
+      - PKI_DIR=${PKI_DIR}
     secrets:
       - google_secret
       - vault_cert
@@ -95,7 +100,7 @@ services:
     image: hashicorp/vault:1.20.2
     container_name: vault-agent
     environment:
-      VAULT_ADDR: "https://vault:8200"
+      - VAULT_ADDR=${VAULT_ADDR}
     secrets:
       - vault_ca
     configs:
