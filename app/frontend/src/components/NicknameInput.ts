@@ -81,24 +81,23 @@ export function initNicknameInputListeners(): void {
       for (let i = 0; i < radios.length; i++) {
         updateSlotUI(i);
       }
+      clearInvalidInputs();
     });
   });
 
   checkboxes.forEach((checkbox, index) => {
     checkbox.addEventListener("change", () => {
       updateSlotUI(index);
+      clearInvalidInputs();
     });
   });
 
   strengthSelects.forEach((select, index) => {
     select.addEventListener("change", () => {
       updateSlotUI(index);
+      clearInvalidInputs();
     });
   });
-
-  for (let i = 0; i < radios.length; i++) {
-    updateSlotUI(i);
-  }
 }
 
 function makeAIName(strength: string, slot: number): string {
@@ -119,12 +118,6 @@ function updateSlotUI(index: number): void {
     `select-ai-strength-${index + 1}`
   );
   const nicknameInput = getById<HTMLInputElement>(`nickname${index + 1}`);
-  const inputElements = getAllBySelector<HTMLInputElement>('[id^="nickname"]');
-  const errorElements = getAllBySelector<HTMLElement>('[id^="player-error-"]');
-
-  inputElements.forEach((inputEl, i) => {
-    clearInvalid(inputEl, errorElements[i]);
-  });
 
   if (radio.checked) {
     checkbox.checked = false;
@@ -145,6 +138,15 @@ function updateSlotUI(index: number): void {
       nicknameInput.value = "";
     }
   }
+}
+
+function clearInvalidInputs() {
+  const inputElements = getAllBySelector<HTMLInputElement>('[id^="nickname"]');
+  const errorElements = getAllBySelector<HTMLElement>('[id^="player-error-"]');
+
+  inputElements.forEach((inputEl, i) => {
+    clearInvalid(inputEl, errorElements[i]);
+  });
 }
 
 export function getPlayerType(
