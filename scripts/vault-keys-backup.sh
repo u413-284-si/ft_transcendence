@@ -39,11 +39,9 @@ restore_keys() {
     echo "➡️ Restoring Vault unseal keys and root token into container..."
 
     docker exec "$CONTAINER_NAME" mkdir -p "$VAULT_KEYS_DIR"
-    docker cp "$BACKUP_DIR/." "$CONTAINER_NAME:$VAULT_KEYS_DIR/"
 
-    # Fix permissions inside the container
-    docker exec "$CONTAINER_NAME" chown -R vault:vault "$VAULT_KEYS_DIR"
-    docker exec "$CONTAINER_NAME" chmod 600 "$VAULT_KEYS_DIR"/*
+    # Copy files safely into rootless container
+    tar -C $BACKUP_DIR -cf - . | docker exec -i "$CONTAINER_NAME" tar -C $VAULT_KEYS_DIR -xf - --no-same-owner
 
     echo "✅ Restore complete."
 }
