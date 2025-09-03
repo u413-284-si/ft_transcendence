@@ -1,6 +1,6 @@
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
-  authAndDecodeAccessToken,
+  checkRefreshTokenStatus,
   refreshAccessToken,
   userLogin,
   userLogout
@@ -11,21 +11,18 @@ import {
 } from "./services/serverSentEventsServices.js";
 import { getUserProfile } from "./services/userServices.js";
 import { toaster } from "./Toaster.js";
-import { Token } from "./types/Token.js";
+import { ValidToken } from "./types/Token.js";
 import { User, Language } from "./types/User.js";
 import { getById, getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
 import TwoFAVerifyView from "./views/TwoFAVerifyView.js";
 
-type AuthChangeCallback = (
-  authenticated: boolean,
-  token: Token | null
-) => Promise<void>;
+type AuthChangeCallback = (authenticated: boolean) => Promise<void>;
 
 export class AuthManager {
   private static instance: AuthManager;
   private authenticated = false;
-  private token: Token | null = null;
+  private token: ValidToken | null = null;
   private listeners: AuthChangeCallback[] = [];
   private user: User | null = null;
 
@@ -43,15 +40,20 @@ export class AuthManager {
     return AuthManager.instance;
   }
 
-  private async updateAuthState(token: Token | null): Promise<void> {
+  private async updateAuthState(
+    token: ValidToken | null,
+    user: User | null
+  ): Promise<void> {
     this.token = token;
     if (this.token) {
       this.authenticated = true;
+      this.user = user;
       this.scheduleTokenValidation();
       this.registerActivityListeners();
       openSSEConnection();
     } else {
       this.authenticated = false;
+      this.user = null;
       this.clearRefreshTimer();
       this.removeActivityListeners();
       closeSSEConnection(true);
@@ -60,41 +62,43 @@ export class AuthManager {
   }
 
   public async initialize(): Promise<void> {
-    console.log("Checking for existing auth token");
+    console.info("Initializing auth manager");
     try {
       if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
+        console.info("Found authProviderConfilct cookie");
         toaster.error(i18next.t("toast.emailExists"));
         document.cookie =
           "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
         await this.notify();
         return;
       }
-      const apiResponse = await authAndDecodeAccessToken();
-      if (!apiResponse.success) {
-        if (apiResponse.status === 401) {
-          console.log("JWT validation failed or no token found.");
-          await this.notify();
-          return;
-        } else {
-          throw new ApiError(apiResponse);
-        }
+      const refreshToken = getDataOrThrow(await checkRefreshTokenStatus());
+      if (refreshToken.status === "none" || refreshToken.status === "expired") {
+        console.info("No valid refresh token found.");
+        await this.notify();
+        return;
+      } else if (refreshToken.status === "invalid") {
+        console.warn("Invalid refresh token found. Removing it");
+        document.cookie =
+          "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/api/auth/refresh;";
+        await this.notify();
+        return;
       }
-      const token = apiResponse.data;
-      this.user = getDataOrThrow(await getUserProfile());
-      this.updateAuthState(token);
+      const accessToken = getDataOrThrow(await refreshAccessToken());
+      const user = await this.fetchUserDataAndSetLanguage();
+      await this.updateAuthState(accessToken, user);
     } catch (error) {
       await this.notify();
       router.handleError("Error in AuthManager.initialize():", error);
     }
   }
 
-  private async fetchUserDataAndSetLanguage(): Promise<Token> {
-    const token = getDataOrThrow(await authAndDecodeAccessToken());
-    this.user = getDataOrThrow(await getUserProfile());
-    await i18next.changeLanguage(this.user.language);
-    localStorage.setItem("preferredLanguage", this.user!.language);
-    console.info(`Language switched to ${this.user!.language}`);
-    return token;
+  private async fetchUserDataAndSetLanguage(): Promise<User> {
+    const user = getDataOrThrow(await getUserProfile());
+    await i18next.changeLanguage(user.language);
+    localStorage.setItem("preferredLanguage", user.language);
+    console.info(`Language switched to ${user.language}`);
+    return user;
   }
 
   public async login(username: string, password: string): Promise<boolean> {
@@ -115,8 +119,13 @@ export class AuthManager {
         return false;
       }
 
-      const token = await this.fetchUserDataAndSetLanguage();
-      this.updateAuthState(token);
+      const token = apiResponseUserLogin.data.token;
+      if (!token) {
+        console.error("No token received");
+        return false;
+      }
+      const user = await this.fetchUserDataAndSetLanguage();
+      await this.updateAuthState(token, user);
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -124,14 +133,10 @@ export class AuthManager {
     }
   }
 
-  public async loginAfterTwoFA() {
+  public async loginAfterTwoFA(token: ValidToken) {
     try {
-      const token = await this.fetchUserDataAndSetLanguage();
-      this.updateAuthState(token);
-      const updatedUser: Partial<User> = {
-        hasTwoFA: true
-      };
-      auth.updateUser(updatedUser);
+      const user = await this.fetchUserDataAndSetLanguage();
+      await this.updateAuthState(token, user);
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -157,18 +162,18 @@ export class AuthManager {
       const sidebar = getById("drawer-sidebar");
       sidebar.remove();
 
-      this.updateAuthState(null);
+      await this.updateAuthState(null, null);
     } catch (error) {
       console.error("Error while logout()", error);
       toaster.error(i18next.t("toast.logoutError"));
     }
   }
 
-  public clearTokenOnError(): void {
+  public async clearTokenOnError(): Promise<void> {
     if (this.authenticated) {
       console.error("Could not verify user");
       toaster.error(i18next.t("toast.userVerificationError"));
-      this.updateAuthState(null);
+      await this.updateAuthState(null, null);
     }
   }
 
@@ -176,7 +181,7 @@ export class AuthManager {
     return this.authenticated;
   }
 
-  public getToken(): Token {
+  public getToken(): ValidToken {
     if (!this.token) throw new Error(i18next.t("error.noActiveToken"));
     return this.token;
   }
@@ -216,7 +221,7 @@ export class AuthManager {
 
   private async notify(): Promise<void> {
     for (const callback of this.listeners) {
-      await callback(this.authenticated, this.token);
+      await callback(this.authenticated);
     }
   }
 
@@ -248,9 +253,7 @@ export class AuthManager {
   }
 
   private scheduleTokenValidation(): void {
-    if (!this.token!.exp) return;
-
-    const expiresAtMs = this.token!.exp * 1000;
+    const expiresAtMs = this.getToken().exp * 1000;
     const now = Date.now();
     const refreshAtMs = expiresAtMs - 60_000;
     const delay = Math.max(refreshAtMs - now, 1000);
@@ -275,7 +278,7 @@ export class AuthManager {
           throw new ApiError(apiResponse);
         }
       }
-      this.token = getDataOrThrow(await authAndDecodeAccessToken());
+      this.token = apiResponse.data;
       this.scheduleTokenValidation();
     } catch (error) {
       console.warn("Token refresh failed", error);

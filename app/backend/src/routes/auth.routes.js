@@ -1,5 +1,5 @@
 import {
-  authAndDecodeAccessHandler,
+  checkRefreshTokenStatusHandler,
   authRefreshHandler,
   loginUserHandler,
   logoutUserHandler,
@@ -22,9 +22,13 @@ import env from "../config/env.js";
 export default async function authRoutes(fastify) {
   fastify.post("/login", optionsloginUser, loginUserHandler);
 
-  fastify.get("/token", optionsAuthUserAccess, authAndDecodeAccessHandler);
-
   fastify.get("/refresh", optionsAuthUserRefresh, authRefreshHandler);
+
+  fastify.get(
+    "/refresh/status",
+    optionsCheckRefreshTokenStatus,
+    checkRefreshTokenStatusHandler
+  );
 
   fastify.post("/2fa/qrcode", optionsTwoFAQRCode, twoFAQRCodeHandler);
 
@@ -42,7 +46,7 @@ export default async function authRoutes(fastify) {
 
   fastify.post("/2fa/enable", optionsEnableTwoFA, enableTwoFAHandler);
 
-  fastify.post("/2fa/login/", optionsTwoFALoginVerify, twoFALoginVerifyHandler);
+  fastify.post("/2fa/login", optionsTwoFALoginVerify, twoFALoginVerifyHandler);
 
   fastify.post("/2fa/disable", optionsTwoFARemove, twoFARemoveHandler);
 
@@ -65,10 +69,10 @@ const optionsloginUser = {
   }
 };
 
-const optionsAuthUserAccess = {
-  onRequest: [authorizeUserAccess],
+const optionsCheckRefreshTokenStatus = {
   schema: {
     response: {
+      200: { $ref: "statusCheckResponseSchema" },
       ...errorResponses
     }
   }
@@ -124,6 +128,7 @@ const optionsTwoFALoginVerify = {
   schema: {
     body: { $ref: "twoFACodeSchema" },
     response: {
+      200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
   }
@@ -154,6 +159,7 @@ const optionsTwoFABackupCodesVerify = {
   schema: {
     body: { $ref: "twoFABackupCodeSchema" },
     response: {
+      200: { $ref: "loginUserResponseSchema" },
       ...errorResponses
     }
   }

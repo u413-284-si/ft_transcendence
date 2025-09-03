@@ -141,7 +141,7 @@ export function setTwoFACookie(twoFALoginToken) {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
-    path: "/api/auth/2fa/login/",
+    path: "/api/auth/2fa/login",
     expires: twoFALoginTokenTimeToExpire
   });
 }

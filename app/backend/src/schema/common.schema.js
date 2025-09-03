@@ -58,6 +58,16 @@ const commonDefinitionsSchema = {
       enum: ["LOCAL", "GOOGLE"],
       description: "Authentication provider which can be either LOCAL or GOOGLE"
     },
+    tokenStatus: {
+      type: "string",
+      enum: ["valid", "none", "invalid", "expired"],
+      description: "Possible values for status check of access token"
+    },
+    tokenType: {
+      type: "string",
+      enum: ["access", "refresh", "twoFALogin"],
+      description: "Different types of tokens used"
+    },
     score: {
       type: "integer",
       minimum: 0,
