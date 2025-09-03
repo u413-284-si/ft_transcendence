@@ -127,7 +127,7 @@ function drawScores(ctx: CanvasRenderingContext2D, gameState: GameState) {
   ctx.fillText(p2score, centerX + marginScores, verticalOffset);
 }
 
-function shortenName(name: string, maxLength: number = 10): string {
+function shortenName(name: string, maxLength: number = 15): string {
   return name.length > maxLength ? name.slice(0, maxLength) + "." : name;
 }
 
