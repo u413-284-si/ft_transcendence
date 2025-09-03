@@ -5,6 +5,7 @@ import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
 import { Select } from "./Select.js";
 import type { PlayerType } from "../types/IMatch.js";
+import { clearInvalid } from "../validate.js";
 
 export function NicknameInput(players: number, username: string): string {
   let nicknameInputs = "";
@@ -118,9 +119,12 @@ function updateSlotUI(index: number): void {
     `select-ai-strength-${index + 1}`
   );
   const nicknameInput = getById<HTMLInputElement>(`nickname${index + 1}`);
+  const inputElements = getAllBySelector<HTMLInputElement>('[id^="nickname"]');
+  const errorElements = getAllBySelector<HTMLElement>('[id^="player-error-"]');
 
-  if (!radio || !checkbox || !strengthDiv || !strengthSelect || !nicknameInput)
-    return;
+  inputElements.forEach((inputEl, i) => {
+    clearInvalid(inputEl, errorElements[i]);
+  });
 
   if (radio.checked) {
     checkbox.checked = false;
