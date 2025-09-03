@@ -10,6 +10,7 @@ import { Button } from "../components/Button.js";
 import { getDataOrThrow } from "../services/api.js";
 import { Card } from "../components/Card.js";
 import { Header3 } from "../components/Header3.js";
+import { formatPlayerName } from "../components/NicknameInput.js";
 
 export default class ResultsView extends AbstractView {
   constructor(private tournament: Tournament) {
@@ -46,7 +47,7 @@ export default class ResultsView extends AbstractView {
                 variant: "default"
               }),
               Header3({
-                text: `🏆 ${escapeHTML(this.tournament.getTournamentWinner())} 🏆`,
+                text: `🏆 ${escapeHTML(formatPlayerName(this.tournament.getTournamentWinner().name, this.tournament.getTournamentWinner().type))} 🏆`,
                 id: "tournament-champion",
                 className: "text-white"
               }),

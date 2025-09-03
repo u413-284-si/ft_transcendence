@@ -2,6 +2,7 @@ import type { TournamentRead } from "./types/ITournament.ts";
 import type { BracketLayout } from "./types/BracketLayout.ts";
 import type { BracketMatchRead } from "./types/BracketMatch.ts";
 import { formatPlayerName } from "./components/NicknameInput.js";
+import { PlayerType } from "@prisma/client";
 
 export class Tournament {
   private matchSlotMap: Record<
@@ -100,9 +101,14 @@ export class Tournament {
     return this.roundReached;
   }
 
-  public getTournamentWinner(): string | null {
+  public getTournamentWinner(): { name: string; type: PlayerType } {
     const finalMatch = this.bracket.find((match) => !match.nextMatchNumber);
-    return finalMatch?.winner ?? null;
+    if (!finalMatch) throw new Error(i18next.t("error.matchNotFound"));
+    const winnerType =
+      finalMatch.winner === finalMatch.player1Nickname
+        ? finalMatch.player1Type
+        : finalMatch.player2Type;
+    return { name: finalMatch.winner!, type: winnerType! };
   }
 
   public getTournamentName(): string {
