@@ -119,12 +119,16 @@ const fr: TranslationShape = {
         "Le nom d’utilisateur ou l’adresse e‑mail doit être valide.",
       fillAtLeastOneField: "Veuillez remplir au moins un champ.",
       fillInUsername: "Veuillez donner un nom d’utilisateur.",
+      friendNotSelf: "Vous ne pouvez pas vous ajouter en ami.",
+      friendRequestAlreadySent: "Vous avez déjà envoyé une demande d'ami.",
+      friendsAlready: "Vous êtes déjà amis.",
       imageFileEmpty: "Veuillez sélectionner un fichier à télécharger.",
       imageFileFormat: "Veuillez télécharger un fichier image valide.",
       nicknameEmpty: "Le pseudonyme ne peut pas être vide.",
       nicknameFormat:
         "Le pseudonyme doit être composé de 3 à 20 caractères et peut comprendre des lettres, des chiffres ou les caractères spéciaux suivants : -!?_$.",
       nicknameUniqueness: "Le pseudonyme doit être unique.",
+
       passwordEmpty: "Le mot de passe ne peut pas être vide.",
       passwordFormat:
         "Le mot de passe doit être composé de 10 à 64 caractères et contenir au moins un chiffre, une lettre majuscule et une lettre minuscule, ainsi que l’un des caractères spéciaux suivants : @$!%*?&",
@@ -308,7 +312,10 @@ const fr: TranslationShape = {
       declinedFriendRequest: "Demande d’ami refusée par ",
       deletedFriendRequest: "Demande d’ami supprimée par ",
       friendAdded: "Ami {{username}} ajouté !",
-      friendRequestButtonError: "Erreur lors du traitement de la demande d’ami",
+      friendRequestButtonError: "Erreur lors du traitement de la demande d'ami",
+      friendRequestEventError:
+        "Erreur lors de la réception d'une demande d'ami.",
+      friendRequestSendError: "Erreur lors de l'envoi de la demande d'ami.",
       emailExists: "L’adresse e‑mail existe déjà",
       emailOrUsernameExists: "L’e‑mail ou le nom d’utilisateur existe déjà",
       invalidUsernameOrPW: "Nom d’utilisateur ou mot de passe invalide",
