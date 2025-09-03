@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VAULT_TOKEN=$(cat /vault/secrets/root_token 2>/dev/null || echo "")
+VAULT_TOKEN=$(cat $VAULT_KEYS_DIR/root_token 2>/dev/null || echo "")
 
 # 1. Check Vault is unsealed and healthy
 if ! curl -s --cacert "$VAULT_CACERT" "$VAULT_ADDR/v1/sys/health" | jq -e '.sealed == false'; then
@@ -22,12 +22,26 @@ if ! VAULT_TOKEN="$VAULT_TOKEN" vault read -format=json auth/approle/role/app-ro
 fi
 
 # 4. Check role_id and secret_id files exist
-for f in nginx_role_id nginx_secret_id app_role_id app_secret_id; do
-  if [ ! -s "/vault/secrets/$f" ]; then
-    echo "❌ Missing $f"
-    exit 1
-  fi
-done
+
+NGINX_FILES="nginx_role_id nginx_secret_id"
+APP_FILES="app_role_id app_secret_id"
+
+# Function to check files in a directory
+check_files() {
+  dir="$1"
+  shift
+  for f in "$@"; do
+    filepath="$dir/$f"
+    if [ ! -s "$filepath" ]; then
+      echo "❌ Missing $filepath"
+      exit 1
+    fi
+  done
+}
+
+# Run checks
+check_files "$NGINX_KEYS_DIR" $NGINX_FILES
+check_files "$APP_KEYS_DIR" $APP_FILES
 
 # 5. Check JWT and Google secrets
 if ! VAULT_TOKEN="$VAULT_TOKEN" vault kv get -mount=secret jwt >/dev/null 2>&1; then

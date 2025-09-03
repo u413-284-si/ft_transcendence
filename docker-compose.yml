@@ -14,7 +14,7 @@ services:
     restart: always
     volumes:
       - db-data:/app/db
-      - vault-secrets:/app/secrets
+      - vault-secrets-app:/app/secrets:ro
     depends_on:
       vault:
         condition: service_healthy
@@ -87,7 +87,9 @@ services:
     restart: always
     volumes:
       - vault-data:/vault/data
-      - vault-secrets:/vault/secrets
+      - vault-secrets-vault:/vault/secrets/vault
+      - vault-secrets-nginx:/vault/secrets/nginx
+      - vault-secrets-app:/vault/secrets/app
     networks:
       - pong-network
     healthcheck:
@@ -112,10 +114,9 @@ services:
         target: /vault/templates/key.ctmpl
     restart: always
     volumes:
-      - vault-secrets:/vault/secrets
+      - vault-secrets-nginx:/vault/secrets/:ro
       - certs:/vault/certs
-    command: sh -c "
-      chown -R vault:vault /vault/secrets /vault/certs &&
+    command: sh -c "chown -R vault:vault /vault/certs &&
       exec su-exec vault:vault vault agent -config=/vault/config/agent.hcl
       "
     depends_on:
@@ -136,7 +137,9 @@ volumes:
   certs:
   db-data:
   vault-data:
-  vault-secrets:
+  vault-secrets-vault:
+  vault-secrets-nginx:
+  vault-secrets-app:
 
 secrets:
   google_secret:

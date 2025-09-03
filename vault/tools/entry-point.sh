@@ -5,13 +5,11 @@ set -euo pipefail
 # -- Initial permission setup -- #
 ##################################
 
-export SECRETS_DIR="/vault/secrets"
-
 echo "➡️ Running initial setup..."
 
-mkdir -p "$SECRETS_DIR"
-chmod 700 "$SECRETS_DIR"
-chown vault:vault "$SECRETS_DIR"
+mkdir -p "$VAULT_KEYS_DIR" "$NGINX_KEYS_DIR" "$APP_KEYS_DIR"
+chmod 750 "$SECRETS_DIR" "$VAULT_KEYS_DIR" "$NGINX_KEYS_DIR" "$APP_KEYS_DIR"
+chown -R vault:vault "$SECRETS_DIR"
 chown -R vault:vault /vault/data
 
 ########################################
@@ -43,19 +41,19 @@ if ! jq -e '.initialized' >/dev/null < <(vault status --format=json); then
 
   # Save as Docker secrets
   for i in "${!keyArray[@]}"; do
-    echo "${keyArray[$i]}" > "$SECRETS_DIR/unseal_key_$((i+1))"
+    echo "${keyArray[$i]}" > "$VAULT_KEYS_DIR/unseal_key_$((i+1))"
   done
-  echo "$ROOT_TOKEN" > "$SECRETS_DIR/root_token"
+  echo "$ROOT_TOKEN" > "$VAULT_KEYS_DIR/root_token"
 
-  chmod 600 "$SECRETS_DIR"/*
-  echo "✅ Keys written to $SECRETS_DIR"
+  chmod 600 "$VAULT_KEYS_DIR"/*
+  echo "✅ Keys written to $VAULT_KEYS_DIR"
   rm -f /tmp/generated_keys.txt
 else
   echo "ℹ️ Vault already initialized"
 fi
 
 # Load unseal keys from secrets
-mapfile -t keyArray < <(find "$SECRETS_DIR" -maxdepth 1 -name "unseal_key_*" -print0 | sort -z | xargs -0 cat)
+mapfile -t keyArray < <(find "$VAULT_KEYS_DIR" -maxdepth 1 -name "unseal_key_*" -print0 | sort -z | xargs -0 cat)
 
 # Unseal Vault using threshold (first 3 keys)
 for i in {0..2}; do
@@ -70,8 +68,8 @@ echo "🚀 Vault is unsealed."
 #########################
 
 # Export root token into VAULT_TOKEN
-if [ -f "$SECRETS_DIR/root_token" ]; then
-  export VAULT_TOKEN=$(cat "$SECRETS_DIR/root_token")
+if [ -f "$VAULT_KEYS_DIR/root_token" ]; then
+  export VAULT_TOKEN=$(cat "$VAULT_KEYS_DIR/root_token")
   echo "ℹ️ Root token exported to VAULT_TOKEN"
 fi
 
@@ -125,21 +123,21 @@ else
 fi
 
 # Create role ID and secret ID if not existent
-if [ ! -f "$SECRETS_DIR/nginx_role_id" ]; then
+if [ ! -f "$NGINX_KEYS_DIR/nginx_role_id" ]; then
   echo "➡️ Creating role ID for nginx..."
-  vault read -field=role_id auth/approle/role/nginx-role/role-id > "$SECRETS_DIR/nginx_role_id"
-  chmod 600 "$SECRETS_DIR/nginx_role_id"
-  chown vault:vault "$SECRETS_DIR/nginx_role_id"
+  vault read -field=role_id auth/approle/role/nginx-role/role-id > "$NGINX_KEYS_DIR/nginx_role_id"
+  chmod 600 "$NGINX_KEYS_DIR/nginx_role_id"
+  chown vault:vault "$NGINX_KEYS_DIR/nginx_role_id"
   echo "✅ Role ID for nginx created"
 else
   echo "ℹ️ Role ID for nginx already exists"
 fi
 
-if [ ! -f "$SECRETS_DIR/nginx_secret_id" ]; then
+if [ ! -f "$NGINX_KEYS_DIR/nginx_secret_id" ]; then
   echo "➡️ Creating secret ID for nginx..."
-  vault write -field=secret_id -f auth/approle/role/nginx-role/secret-id > "$SECRETS_DIR/nginx_secret_id"
-  chmod 600 "$SECRETS_DIR/nginx_secret_id"
-  chown vault:vault "$SECRETS_DIR/nginx_secret_id"
+  vault write -field=secret_id -f auth/approle/role/nginx-role/secret-id > "$NGINX_KEYS_DIR/nginx_secret_id"
+  chmod 600 "$NGINX_KEYS_DIR/nginx_secret_id"
+  chown vault:vault "$NGINX_KEYS_DIR/nginx_secret_id"
   echo "✅ Secret ID for nginx created"
 else
   echo "ℹ️ Secret ID for nginx already exists"
@@ -188,21 +186,21 @@ else
 fi
 
 # Create role ID and secret ID if not existent
-if [ ! -f "$SECRETS_DIR/app_role_id" ]; then
+if [ ! -f "$APP_KEYS_DIR/app_role_id" ]; then
   echo "➡️ Creating role ID for app..."
-  vault read -field=role_id auth/approle/role/app-role/role-id > "$SECRETS_DIR/app_role_id"
-  chmod 600 "$SECRETS_DIR/app_role_id"
-  chown vault:vault "$SECRETS_DIR/app_role_id"
+  vault read -field=role_id auth/approle/role/app-role/role-id > "$APP_KEYS_DIR/app_role_id"
+  chmod 600 "$APP_KEYS_DIR/app_role_id"
+  chown vault:vault "$APP_KEYS_DIR/app_role_id"
   echo "✅ Role ID for app created"
 else
   echo "ℹ️ Role ID for app already exists"
 fi
 
-if [ ! -f "$SECRETS_DIR/app_secret_id" ]; then
+if [ ! -f "$APP_KEYS_DIR/app_secret_id" ]; then
   echo "➡️ Creating secret ID for app..."
-  vault write -field=secret_id -f auth/approle/role/app-role/secret-id > "$SECRETS_DIR/app_secret_id"
-  chmod 600 "$SECRETS_DIR/app_secret_id"
-  chown vault:vault "$SECRETS_DIR/app_secret_id"
+  vault write -field=secret_id -f auth/approle/role/app-role/secret-id > "$APP_KEYS_DIR/app_secret_id"
+  chmod 600 "$APP_KEYS_DIR/app_secret_id"
+  chown vault:vault "$APP_KEYS_DIR/app_secret_id"
   echo "✅ Secret ID for app created"
 else
   echo "ℹ️ Secret ID for app already exists"
