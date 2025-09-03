@@ -15,7 +15,7 @@ fi
 # CONFIGURATION
 # ---------------------------
 CONTAINER_NAME=${CONTAINER_NAME:-vault}
-VAULT_KEYS_DIR=${VAULT_KEYS_DIR:-/vault/keys}
+VAULT_KEYS_DIR=${VAULT_KEYS_DIR:-/vault/secrets/vault}
 BACKUP_DIR=${BACKUP_DIR:-./vault_backup}
 
 # ---------------------------
