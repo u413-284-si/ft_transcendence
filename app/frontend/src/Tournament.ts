@@ -178,7 +178,7 @@ export class Tournament {
 
   public renderBracketHTML(layout: BracketLayout): string {
     let html = `
-    <div class="w-full overflow-x-auto bg-black/90 p-4 rounded-lg">
+    <div class="w-full overflow-x-auto p-4 rounded-lg">
       <div class="flex flex-col md:flex-row justify-start gap-6 flex-wrap text-neon-cyan">
   `;
 
@@ -195,10 +195,11 @@ export class Tournament {
 
       for (const match of matches) {
         // Background and border for card
-        const cardBg =
-          !match.isPlayed && match.isNext
+        const cardBg = match.isPlayed
+          ? "bg-emerald-dark"
+          : match.isNext
             ? "bg-black ring-2 ring-neon-cyan"
-            : "bg-emerald";
+            : "bg-emerald-light";
 
         const borderGlow = match.isNext ? "shadow-neon-cyan" : "shadow-inner";
 
