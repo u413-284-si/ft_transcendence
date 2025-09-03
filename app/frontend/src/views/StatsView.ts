@@ -164,7 +164,7 @@ export default class StatsView extends AbstractView {
       const container = getById<HTMLDivElement>(this.currentTabId);
       container.classList.toggle("hidden");
 
-      this.tabs[tabId].onShow();
+      await this.tabs[tabId].onShow();
     } catch (error) {
       console.error(`Error while showing tab ${this.currentTabId}`, error);
       toaster.error(i18next.t("toast.tabError"));
