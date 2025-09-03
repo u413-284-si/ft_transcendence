@@ -1,5 +1,3 @@
-import { skip } from "@prisma/client/runtime/library";
-
 const en = {
   translation: {
     error: {
