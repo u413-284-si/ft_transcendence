@@ -41,9 +41,9 @@ is_issuer_valid() {
 # -- PKI Setup Paths --  #
 ##########################
 
-mkdir -p "$PKI_DIR"
+mkdir -p "$VAULT_PKI_DIR"
 
-ROOT_CA_FILE="${PKI_DIR}/current_root_issuer"
+ROOT_CA_FILE="${VAULT_PKI_DIR}/current_root_issuer"
 INT_CA_UUID=$(vault read -field=default pki_int/config/issuers 2>/dev/null || echo "")
 ROLE_NAME="nginx-role"
 
@@ -70,7 +70,7 @@ else
     vault write -field=certificate pki/root/generate/internal \
         common_name="pong root CA" \
         issuer_name="${ROOT_CA_NAME}" \
-        ttl=87600h > "${PKI_DIR}/${ROOT_CA_NAME}.crt"
+        ttl=87600h > "${VAULT_PKI_DIR}/${ROOT_CA_NAME}.crt"
 
     echo "${ROOT_CA_NAME}" > "${ROOT_CA_FILE}"
 
@@ -101,15 +101,15 @@ else
     vault write -format=json pki_int/intermediate/generate/internal \
         common_name="pong intermediate CA" \
         issuer_name="${INT_CA_NAME}" \
-        | jq -r '.data.csr' > "${PKI_DIR}/${INT_CA_NAME}.csr"
+        | jq -r '.data.csr' > "${VAULT_PKI_DIR}/${INT_CA_NAME}.csr"
 
     vault write -format=json pki/root/sign-intermediate \
         issuer_ref="${ROOT_CA_NAME}" \
-        csr=@"${PKI_DIR}/${INT_CA_NAME}.csr" \
+        csr=@"${VAULT_PKI_DIR}/${INT_CA_NAME}.csr" \
         format=pem_bundle ttl="87600h" \
-        | jq -r '.data.certificate' > "${PKI_DIR}/${INT_CA_NAME}.pem"
+        | jq -r '.data.certificate' > "${VAULT_PKI_DIR}/${INT_CA_NAME}.pem"
 
-    vault write pki_int/intermediate/set-signed certificate=@"${PKI_DIR}/${INT_CA_NAME}.pem"
+    vault write pki_int/intermediate/set-signed certificate=@"${VAULT_PKI_DIR}/${INT_CA_NAME}.pem"
 
     INT_CA_UUID=$(vault read -field=default pki_int/config/issuers 2>/dev/null || echo "")
 
