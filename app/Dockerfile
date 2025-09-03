@@ -17,7 +17,7 @@ COPY ./scripts ./scripts
 COPY ./app ./app
 
 RUN npm ci --ignore-scripts \
-  && npx prisma generate \
+  && npm run db:init \
   && npm run style \
   && npm run build \
   && npm prune --omit=dev

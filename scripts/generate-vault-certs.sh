@@ -44,7 +44,7 @@ DNS.1 = vault
 DNS.2 = localhost
 IP.1 = 127.0.0.1
 EOF
-  chmod 640 ${VAULT_DIR}/vault.key
+  chmod 644 ${VAULT_DIR}/vault.key
   # Step 4: Sign Vault cert
   openssl x509 -req -in "${VAULT_DIR}/vault.csr" \
     -CA "${CA_DIR}/root-ca.crt" \
