@@ -101,6 +101,66 @@ if [ -f "$VAULT_KEYS_DIR/root_token" ]; then
   echo "ℹ️ Root token exported to VAULT_TOKEN"
 fi
 
+# Add policy for setup
+vault policy write setup-policy /vault/policies/setup-policy.hcl
+
+# Enable AppRole authentication if not active
+if vault auth list -format=json | jq -e '."approle/"' > /dev/null; then
+  echo "ℹ️ AppRole auth method already enabled, skipping..."
+else
+  echo "➡️ Enabling AppRole authentication..."
+  vault auth enable -path=approle approle
+  echo "✅ AppRole authentication enabled"
+fi
+
+# Create AppRole for setup if not existent
+if vault read -format=json auth/approle/role/setup-role > /dev/null 2>&1; then
+  echo "ℹ️ AppRole setup-role already exists, skipping..."
+else
+  echo "➡️ Creating AppRole for setup..."
+  vault write auth/approle/role/setup-role \
+      secret_id_ttl=0 \
+      token_ttl=1h \
+      token_max_ttl=4h \
+      token_policies=setup-policy
+  echo "✅ AppRole setup-role created"
+fi
+
+# Create role ID and secret ID if not existent
+if [ ! -f "$VAULT_KEYS_DIR/setup_role_id" ]; then
+  echo "➡️ Creating role ID for setup..."
+  vault read -field=role_id auth/approle/role/setup-role/role-id > $VAULT_KEYS_DIR/setup_role_id
+  chmod 600 $VAULT_KEYS_DIR/setup_role_id
+  chown vault:vault $VAULT_KEYS_DIR/setup_role_id
+  echo "✅ Role ID for setup created"
+else
+  echo "ℹ️ Role ID for setup already exists"
+fi
+
+if [ ! -f "$VAULT_KEYS_DIR/setup_secret_id" ]; then
+  echo "➡️ Creating secret ID for setup..."
+  vault write -field=secret_id -f auth/approle/role/setup-role/secret-id > $VAULT_KEYS_DIR/setup_secret_id
+  chmod 600 "$VAULT_KEYS_DIR/setup_secret_id"
+  chown vault:vault "$VAULT_KEYS_DIR/setup_secret_id"
+  echo "✅ Secret ID for setup created"
+else
+  echo "ℹ️ Secret ID for setup already exists"
+fi
+
+if [[ -f "$VAULT_KEYS_DIR/setup_role_id" && -f "$VAULT_KEYS_DIR/setup_secret_id" ]]; then
+  echo "➡️ Logging in with setup-approle..."
+  BOOTSTRAP_TOKEN=$(vault write -format=json auth/approle/login \
+      role_id="$(cat $VAULT_KEYS_DIR/setup_role_id)" \
+      secret_id="$(cat $VAULT_KEYS_DIR/setup_secret_id)" \
+      | jq -r '.auth.client_token')
+  export VAULT_TOKEN="$BOOTSTRAP_TOKEN"
+  echo "✅ Bootstrap token acquired via AppRole"
+  vault token lookup
+else
+  echo "❌ No setup-approle credentials found, cannot continue"
+  exit 1
+fi
+
 # Enable kv
 echo "➡️ Enabling KV secrets engine..."
 if ! vault secrets list -format=json | jq -e '."secret/"' >/dev/null; then
@@ -126,15 +186,6 @@ echo "✅ SSL certificate authority set up"
 # Add policy for nginx
 echo "➡️ Adding policy for nginx..."
 vault policy write nginx-policy /vault/policies/nginx-policy.hcl
-
-# Enable AppRole authentication if not active
-if vault auth list -format=json | jq -e '."approle/"' > /dev/null; then
-  echo "ℹ️ AppRole auth method already enabled, skipping..."
-else
-  echo "➡️ Enabling AppRole authentication..."
-  vault auth enable -path=approle approle
-  echo "✅ AppRole authentication enabled"
-fi
 
 # Create AppRole for nginx if not existent
 if vault read -format=json auth/approle/role/nginx-role > /dev/null 2>&1; then
@@ -233,5 +284,9 @@ if [ ! -f "$APP_KEYS_DIR/app_secret_id" ]; then
 else
   echo "ℹ️ Secret ID for app already exists"
 fi
+
+vault token revoke -self
+unset VAULT_TOKEN
+echo "🔒 Bootstrap token revoked"
 
 wait $VAULT_PID

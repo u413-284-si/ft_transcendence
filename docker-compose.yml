@@ -80,6 +80,8 @@ services:
     configs:
       - source: vault_config
         target: /vault/config/vault.hcl
+      - source: policy_setup
+        target: /vault/policies/setup-policy.hcl
       - source: policy_app
         target: /vault/policies/app-policy.hcl
       - source: policy_nginx
@@ -154,6 +156,8 @@ secrets:
 configs:
   vault_config:
     file: ./vault/config/vault.hcl
+  policy_setup:
+    file: ./vault/policies/setup-policy.hcl
   policy_app:
     file: ./vault/policies/app-policy.hcl
   policy_nginx:
