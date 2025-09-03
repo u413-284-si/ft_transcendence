@@ -302,7 +302,7 @@ export async function twoFABackupCodeVerifyHandler(request, reply) {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
-    path: "/api/auth/2fa/login/"
+    path: "/api/auth/2fa/login"
   });
   return reply
     .setAuthCookies(accessToken, refreshToken)
@@ -345,7 +345,7 @@ export async function twoFALoginVerifyHandler(request, reply) {
     httpOnly: true,
     secure: true,
     sameSite: "strict",
-    path: "/api/auth/2fa/login/"
+    path: "/api/auth/2fa/login"
   });
   return reply
     .setAuthCookies(accessToken, refreshToken)
