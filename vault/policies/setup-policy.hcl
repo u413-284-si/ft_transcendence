@@ -1,33 +1,29 @@
-# Allow managing mounts (enable/disable secrets engines)
-path "sys/mounts/*" {
-  capabilities = ["create", "read", "update", "delete", "list"]
-}
-path "sys/mounts" {
-  capabilities = ["read", "list"]
-}
-
-# Allow managing policies
-path "sys/policies/acl/*" {
-  capabilities = ["create", "read", "update", "delete", "list"]
-}
-
 # Allow AppRole auth method enable + role management
-path "sys/auth/*" {
-  capabilities = ["create", "read", "update", "delete", "list"]
-}
 path "sys/auth" {
   capabilities = ["read", "list"]
 }
+
+# Allow enabling/disabling the AppRole auth method
+path "sys/auth/approle" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+# Full control over AppRole roles (create, read, update, delete, list)
 path "auth/approle/role/*" {
   capabilities = ["create", "read", "update", "delete", "list"]
 }
 
-# Allow writing app/nginx secrets
+# Manage the KV secrets mount (enable/disable)
+path "sys/mounts/secret" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+# # Read/write/delete app/nginx secrets
 path "secret/*" {
   capabilities = ["create", "read", "update", "delete", "list"]
 }
 
-# Manage PKI mounts (root and intermediate)
+# Manage PKI mounts (enable/disable)
 path "sys/mounts/pki" {
   capabilities = ["create", "read", "update", "delete", "list"]
 }
@@ -35,24 +31,19 @@ path "sys/mounts/pki_int" {
   capabilities = ["create", "read", "update", "delete", "list"]
 }
 
-# Full access to PKI backend for setup
+# Tune PKI mounts (TTL, description, etc.)
+path "sys/mounts/pki/tune" {
+  capabilities = ["update", "read"]
+}
+path "sys/mounts/pki_int/tune" {
+  capabilities = ["update", "read"]
+}
+
+# Full access to PKI backends for bootstrap setup
 path "pki/*" {
-  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+  capabilities = ["create", "read", "update", "delete", "list"]
 }
 path "pki_int/*" {
-  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
-}
-
-# Manage auth backends (e.g., approle)
-path "sys/auth/*" {
-  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
-}
-path "sys/auth" {
-  capabilities = ["read", "list"]
-}
-
-# Allow managing AppRole roles
-path "auth/approle/role/*" {
   capabilities = ["create", "read", "update", "delete", "list"]
 }
 
