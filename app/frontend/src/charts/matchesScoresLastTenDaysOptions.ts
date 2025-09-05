@@ -22,6 +22,7 @@ export function buildMatchesScoresLastTenDaysOptions(
       toolbar: {
         show: false
       },
+      width: 600,
       height: 300
     },
     colors: [chartColors.cyan],

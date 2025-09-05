@@ -42,9 +42,11 @@ export default class StatsView extends AbstractView {
     if (!this.user) throw new Error(i18next.t("error.somethingWentWrong"));
     if (!this.userStats) throw new Error(i18next.t("error.somethingWentWrong"));
 
-    return /* HTML */ `<div
-        class="flex flex-row items-center gap-y-6 gap-x-8 mb-12 pl-6"
-      >
+    return /* HTML */ `
+      ${Header1({
+        text: i18next.t("statsView.title")
+      })}
+      <div class="flex flex-row items-center gap-y-6 gap-x-8 mb-12 pl-6">
         <img
           src=${this.user.avatar || "/images/default-avatar.png"}
           alt=${i18next.t("global.avatar")}
@@ -93,7 +95,8 @@ export default class StatsView extends AbstractView {
           ])}
         </div>
       </div>
-      ${this.getTabsHTML()} `;
+      ${this.getTabsHTML()}
+    `;
   }
 
   async render() {
@@ -202,7 +205,7 @@ export default class StatsView extends AbstractView {
             })
           : ""}
       </div>
-      <div id="tab-content">${allTabsHTML}</div>
+      <div id="tab-content" class="w-[1500px]">${allTabsHTML}</div>
     `;
   }
 

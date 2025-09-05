@@ -84,8 +84,27 @@ const en = {
     },
 
     homeView: {
-      helloUser: "Hello {{username}}!<br />This is the homepage",
-      title: "Home"
+      helloUser: "Hello {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Home",
+      faqTitle: "FAQ",
+      faqGameModesTitle: "Game Modes",
+      faqGameModesSingle: "Single Game: Quick match against AI or a friend.",
+      faqGameModesTournament:
+        "Tournament: Compete in multiple rounds until one champion remains.",
+
+      faqControlsTitle: "Controls",
+      faqControlsRightPaddle: "Move right paddle: Arrow Keys ↑ ↓",
+      faqControlsLeftPaddle: "Move left paddle: W / S",
+
+      faqTipsTitle: "Tips",
+      faqTips1: "Predict the ball's path instead of chasing it.",
+      faqTips2: "Hit with paddle edges to change the angle strategically.",
+      faqTips3: "Be careful! Each paddle hit increases the speed of the ball.",
+
+      faqExtrasTitle: "Background infos",
+      faqExtrasText:
+        "Pong is one of the first video games ever created—simple, timeless, and addictive. Inspired by TRON's digital grid, this version reimagines the classic in a neon-lit style."
     },
 
     invalid: {
@@ -145,24 +164,26 @@ const en = {
 
     matchAnnouncementView: {
       abortTournament: "Abort Tournament",
-      nextMatch: "Next match to play:",
+      nextMatch: "Next match to play",
       title: "Next Match!",
       roundMatch: "Round {{round}} - Match {{match}}",
       startMatch: "Start Match",
-      tournamentStatus: "Tournament Status"
+      skipMatch: "Skip Match",
+      spectateMatch: "Spectate Match"
     },
 
     newGameView: {
       title: "New Game",
-      selectPlayer: "Select which player will be controlled by {{username}}",
+      enterNickname: "Enter a nickname for each player.",
+      selectPlayer: "Select which player will be controlled by {{username}}.",
+      aiOption: "Optionally, enable AI to play as the other player.",
       startGame: "Start Game"
     },
 
     newTournamentView: {
       confirmAbortTournament: "Do you really want to cancel the tournament?",
       enterTournamentName: "Enter the tournament name",
-      newTournamentDescription:
-        "Enter the tournament name and select the number of players",
+      selectNumberPlayers: "Select the number of players",
       title: "New Tournament",
       numberOfPlayers: "Number of players",
       players4: "4 players",
@@ -174,7 +195,7 @@ const en = {
 
     nicknameInput: {
       enterYourNickname: "Enter your nickname",
-      playerChoice: "I am playing as player {{i}}",
+      playerChoice: "{{username}} is playing as player {{i}}",
       playerNickname: "Player {{i}}'s nickname",
       aiPlayer: "AI Player",
       aiStrength: "AI Strength",
@@ -186,30 +207,29 @@ const en = {
     playerNicknamesView: {
       enterPlayerNicknames: "Enter the players' nicknames",
       title: "Player Nicknames",
-      selectControlledPlayer:
-        "Select which player will be controlled by {{username}}",
+      aiOptions: "Optionally, enable AI to play as the other player(s).",
       submitNicknames: "Submit Nicknames"
     },
 
     profileView: {
       cannotChangeEmailOrPW:
         "You cannot change your email address or password.",
-      changeAvatar: "Change your avatar below.",
+      changeAvatar: "Change your avatar.",
       changePasswordButton: "Change Password",
-      changePassword: "Change your password below.",
+      changePassword: "Change your password.",
       chooseFile: "Choose an image file for your avatar",
       currentPassword: "Current Password",
       newPassword: "New Password",
       noFileSelected: "No file selected",
       saveChanges: "Save Changes",
       signedInWithGoogle: "Signed in with Google",
-      updateProfile: "Update your profile information below.",
+      updateProfile: "Update your profile information.",
       uploadYourAvatar: "Upload your avatar",
       title: "Your Profile"
     },
 
     registerView: {
-      register: "Register here",
+      register: "Register",
       title: "Register"
     },
 

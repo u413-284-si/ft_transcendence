@@ -87,8 +87,28 @@ const pi: TranslationShape = {
     },
 
     homeView: {
-      helloUser: "Ahoy {{username}}!<br />Ye've landed on the home deck",
-      title: "Captain's Quarters"
+      helloUser: "Ahoy {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Captain's Quarters",
+
+      faqTitle: "Parley FAQ",
+      faqGameModesTitle: "Modes o' Battle",
+      faqGameModesSingle: "Single Duel: Quick bout against the AI or a matey.",
+      faqGameModesTournament:
+        "Tournament: Fight through many rounds 'til one pirate claims the booty.",
+
+      faqControlsTitle: "Ship Controls",
+      faqControlsRightPaddle: "Steer right paddle: Arrow Keys ↑ ↓",
+      faqControlsLeftPaddle: "Steer left paddle: W / S",
+
+      faqTipsTitle: "Seafarin' Tips",
+      faqTips1: "Predict the ball's course instead o' chasin' it.",
+      faqTips2: "Use the edges o' yer paddle to change the trajectory.",
+      faqTips3: "Beware! Each hit makes the ball fly faster, arrr!",
+
+      faqExtrasTitle: "Lore o' the Sea",
+      faqExtrasText:
+        "Pong be sailin' into the neon seas, matey! One o' th' first battles ever fought in code, now reborn on a glowing grid. Welcome aboard the Light Cycle of Pong, where only the sharpest pirates claim the treasure!"
     },
 
     invalid: {
@@ -132,7 +152,7 @@ const pi: TranslationShape = {
 
     loginView: {
       title: "Board the Ship",
-      usernameOrEmail: "Pirate name or message bottle address:"
+      usernameOrEmail: "Pirate name or address"
     },
 
     twoFAVerifyView: {
@@ -149,24 +169,26 @@ const pi: TranslationShape = {
 
     matchAnnouncementView: {
       abortTournament: "Scuttle the Tournament!",
-      nextMatch: "Next skirmish to set sail:",
+      nextMatch: "Next skirmish to set sail",
       title: "Upcoming Duel!",
-      roundMatch: "Round {{round}} – Clash {{match}}",
+      roundMatch: "Round {{round}} - Clash {{match}}",
       startMatch: "Hoist the Colors!",
-      tournamentStatus: "State o’ the Tourney"
+      skipMatch: "Skip this skirmish",
+      spectateMatch: "Spy on the duel"
     },
 
     newGameView: {
       title: "Raise the Jolly Roger!",
-      selectPlayer: "Choose which salty dog {{username}} will command",
+      enterNickname: "Give each swabbie a name, ye scallywag!",
+      selectPlayer: "Choose which salty dog {{username}} will command!",
+      aiOption: "Optional: let the cursed AI take the other deckhand!",
       startGame: "Set Sail!"
     },
 
     newTournamentView: {
       confirmAbortTournament: "Be ye sure ye want to abandon the tourney?",
       enterTournamentName: "Name this noble contest",
-      newTournamentDescription:
-        "Name yer tournament and choose how many will duel",
+      selectNumberPlayers: "Choose how many will duel",
       title: "Forge a New Tournament",
       numberOfPlayers: "Number o' Buccaneers",
       players4: "4 Scallywags",
@@ -178,7 +200,7 @@ const pi: TranslationShape = {
 
     nicknameInput: {
       enterYourNickname: "Give us yer pirate alias",
-      playerChoice: "I be playin' as buccaneer {{i}}",
+      playerChoice: "{{username}} be playin' as buccaneer {{i}}",
       playerNickname: "Name fer pirate {{i}}",
       aiPlayer: "Ghost o' the Sea (AI)",
       aiStrength: "Cunning o' the Machine",
@@ -190,29 +212,29 @@ const pi: TranslationShape = {
     playerNicknamesView: {
       enterPlayerNicknames: "Give each swabbie their name",
       title: "Name Yer Crew",
-      selectControlledPlayer: "Choose which deckhand {{username}} will command",
+      aiOptions: "Optional: let the cursed AI take a deckhand!",
       submitNicknames: "Let 'em be known!"
     },
 
     profileView: {
       cannotChangeEmailOrPW: "Yer bottle code and secret phrase be fixed!",
-      changeAvatar: "Change yer Jolly Roger below",
+      changeAvatar: "Change yer Jolly Roger.",
       changePasswordButton: "Change Secret Phrase",
-      changePassword: "Swap yer secret below",
+      changePassword: "Swap yer secret.",
       chooseFile: "Pick an image fer yer pirate flag",
       currentPassword: "Old Code",
       newPassword: "New Secret Phrase",
       noFileSelected: "No treasure map selected",
       saveChanges: "Stash Yer Changes",
       signedInWithGoogle: "Boarded via Google raft",
-      updateProfile: "Update yer scroll of records below",
-      uploadYourAvatar: "Raise yer avatar to the crow’s nest!",
+      updateProfile: "Update yer scroll of records.",
+      uploadYourAvatar: "Raise yer avatar!",
       title: "Yer Scroll of Legend"
     },
 
     registerView: {
       register: "Join the Crew",
-      title: "Sign the Ship’s Ledger"
+      title: "Sign the Ship's Ledger"
     },
 
     resultsView: {
@@ -263,7 +285,7 @@ const pi: TranslationShape = {
       friendOnly:
         "Ye must be true mates to lay eyes on these secret scrolls o' stats!",
       friends: "Mates",
-      joined: "Swore the Oath on {{date}}",
+      joined: "Join'd on {{date}}",
       matches: "Battles",
       matchHistory: "Past Duels",
       played: "Engaged",

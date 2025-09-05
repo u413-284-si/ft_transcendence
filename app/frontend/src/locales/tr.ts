@@ -85,9 +85,29 @@ const tr: TranslationShape = {
     },
 
     homeView: {
-      helloUser:
-        "⚡ Greetings, User {{username}}!<br />Entering the Mainframe Hub",
-      title: "MAINFRAME"
+      helloUser: "⚡ Greetings, User {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "MAINFRAME",
+
+      faqTitle: "SYSTEM MANUAL",
+      faqGameModesTitle: "OPERATIVE MODES",
+      faqGameModesSingle:
+        "Single Session: Quick match vs AI or another operative.",
+      faqGameModesTournament:
+        "Tournament: Compete in multiple cycles until one master node remains.",
+
+      faqControlsTitle: "CONTROLS",
+      faqControlsRightPaddle: "Move right paddle: Arrow Keys ↑ ↓",
+      faqControlsLeftPaddle: "Move left paddle: W / S",
+
+      faqTipsTitle: "TACTICAL ADVICE",
+      faqTips1: "Predict the balls trajectory instead of chasing it.",
+      faqTips2: "Use paddle edges to alter the ball trajectory.",
+      faqTips3: "⚠️ Caution! Each paddle hit accelerates the ball.",
+
+      faqExtrasTitle: "BACKGROUND DATA",
+      faqExtrasText:
+        "Pong is a retro digital construct: timeless, addictive, and inspired by TRON's neon grid. Engage in the neon battle of wits."
     },
 
     invalid: {
@@ -145,25 +165,27 @@ const tr: TranslationShape = {
     },
 
     matchAnnouncementView: {
-      abortTournament: "TERMINATE TOURNAMENT",
-      nextMatch: "Next session queued:",
+      abortTournament: "Terminate tournament",
+      nextMatch: "Next session queued",
       title: "UPCOMING SESSION",
       roundMatch: "Cycle {{round}} - Session {{match}}",
-      startMatch: "INITIATE SESSION",
-      tournamentStatus: "TOURNAMENT STATUS"
+      startMatch: "Initiate session",
+      skipMatch: "Bypass session",
+      spectateMatch: "Monitor session"
     },
 
     newGameView: {
       title: "NEW SESSION",
-      selectPlayer: "Assign control to operative {{username}}",
+      enterNickname: "Enter your operative alias code.",
+      selectPlayer: "Assign control to operative {{username}}.",
+      aiOption: "Optional: let the system AI control the other node.",
       startGame: "BEGIN SESSION"
     },
 
     newTournamentView: {
       confirmAbortTournament: "Confirm cancellation of tournament sequence?",
       enterTournamentName: "Input tournament designation",
-      newTournamentDescription:
-        "Set tournament designation and assign operative count",
+      selectNumberPlayers: "Assign operative count",
       title: "NEW TOURNAMENT SEQUENCE",
       numberOfPlayers: "Operatives count",
       players4: "4 operatives",
@@ -175,7 +197,7 @@ const tr: TranslationShape = {
 
     nicknameInput: {
       enterYourNickname: "Enter your operative alias",
-      playerChoice: "Operating as agent {{i}}",
+      playerChoice: "{{username}} operates as agent {{i}}",
       playerNickname: "Agent {{i}} alias",
       aiPlayer: "Synthetic Operative",
       aiStrength: "Processing Power",
@@ -187,23 +209,23 @@ const tr: TranslationShape = {
     playerNicknamesView: {
       enterPlayerNicknames: "Input operative aliases",
       title: "OPERATIVE ALIASES",
-      selectControlledPlayer: "Select operative controlled by {{username}}",
+      aiOptions: "Optional: let the system AI control one or multiple nodes.",
       submitNicknames: "TRANSMIT ALIASES"
     },
 
     profileView: {
       cannotChangeEmailOrPW:
         "Data address and access code alterations are locked.",
-      changeAvatar: "Override avatar below.",
+      changeAvatar: "Override avatar.",
       changePasswordButton: "MODIFY ACCESS CODE",
-      changePassword: "Update your access code below.",
+      changePassword: "Update your access code.",
       chooseFile: "Select image file for avatar override",
       currentPassword: "Current Access Code",
       newPassword: "New Access Code",
       noFileSelected: "No file detected",
       saveChanges: "COMMIT CHANGES",
       signedInWithGoogle: "Connected via Google Network",
-      updateProfile: "Update your profile matrix below.",
+      updateProfile: "Update your profile matrix.",
       uploadYourAvatar: "Upload your avatar data",
       title: "USER PROFILE"
     },

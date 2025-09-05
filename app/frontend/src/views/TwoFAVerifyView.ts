@@ -12,6 +12,7 @@ import { verifyLoginTwoFACode } from "../services/authServices.js";
 import { ApiError } from "../services/api.js";
 import { Link } from "../components/Link.js";
 import TwoFABackupCodeVerifyView from "./TwoFABackupCodeVerifyView.js";
+import { Header1 } from "../components/Header1.js";
 
 export default class TwoFAVerifyView extends AbstractView {
   constructor() {
@@ -21,6 +22,9 @@ export default class TwoFAVerifyView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
+      ${Header1({
+        text: i18next.t("twoFAVerifyView.title")
+      })}
       ${Form({
         id: "two-fa-verify-form",
         children: [

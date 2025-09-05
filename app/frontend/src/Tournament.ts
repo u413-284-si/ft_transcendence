@@ -2,6 +2,7 @@ import type { TournamentRead } from "./types/ITournament.ts";
 import type { BracketLayout } from "./types/BracketLayout.ts";
 import type { BracketMatchRead } from "./types/BracketMatch.ts";
 import { formatPlayerName } from "./components/NicknameInput.js";
+import type { PlayerType } from "./types/IMatch.js";
 
 export class Tournament {
   private matchSlotMap: Record<
@@ -10,7 +11,6 @@ export class Tournament {
   > = {};
   private tournamentId: number;
   private tournamentName: string;
-  private numberOfPlayers: number;
   private userNickname: string;
   private roundReached: number;
   private bracket: BracketMatchRead[];
@@ -18,14 +18,12 @@ export class Tournament {
   constructor({
     id,
     name,
-    maxPlayers,
     userNickname,
     roundReached,
     bracket
   }: TournamentRead) {
     this.tournamentId = id;
     this.tournamentName = name;
-    this.numberOfPlayers = maxPlayers;
     this.userNickname = userNickname;
     this.roundReached = roundReached;
     this.bracket = bracket;
@@ -100,9 +98,14 @@ export class Tournament {
     return this.roundReached;
   }
 
-  public getTournamentWinner(): string | null {
+  public getTournamentWinner(): { name: string; type: PlayerType } {
     const finalMatch = this.bracket.find((match) => !match.nextMatchNumber);
-    return finalMatch?.winner ?? null;
+    if (!finalMatch) throw new Error(i18next.t("error.matchNotFound"));
+    const winnerType =
+      finalMatch.winner === finalMatch.player1Nickname
+        ? finalMatch.player1Type
+        : finalMatch.player2Type;
+    return { name: finalMatch.winner!, type: winnerType! };
   }
 
   public getTournamentName(): string {
@@ -172,7 +175,7 @@ export class Tournament {
 
   public renderBracketHTML(layout: BracketLayout): string {
     let html = `
-    <div class="w-full overflow-x-auto bg-black/90 p-4 rounded-lg">
+    <div class="w-full overflow-x-auto p-4 rounded-lg">
       <div class="flex flex-col md:flex-row justify-start gap-6 flex-wrap text-neon-cyan">
   `;
 
@@ -189,10 +192,11 @@ export class Tournament {
 
       for (const match of matches) {
         // Background and border for card
-        const cardBg =
-          !match.isPlayed && match.isNext
+        const cardBg = match.isPlayed
+          ? "bg-emerald-dark"
+          : match.isNext
             ? "bg-black ring-2 ring-neon-cyan"
-            : "bg-emerald";
+            : "bg-emerald-light";
 
         const borderGlow = match.isNext ? "shadow-neon-cyan" : "shadow-inner";
 

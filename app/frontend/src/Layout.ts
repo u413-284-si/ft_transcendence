@@ -34,7 +34,7 @@ export class Layout {
 
   private styleRootElement(): void {
     this.rootEl.className =
-      "bg-tron-grid text-white min-h-screen min-w-screen flex flex-col font-cyber tracking-widest uppercase";
+      "bg-tron-grid text-white min-h-screen min-w-screen flex flex-col font-cyber tracking-widest";
   }
 
   private renderShell(): void {
@@ -55,7 +55,7 @@ export class Layout {
       <header class="bg-black text-teal py-8 shadow-lg border-b-1 border-teal/25">
         ${this.getHeaderHTML()}
       </header>
-      <main id="app-content" class="flex-grow px-4 py-8"></main>
+      <main id="app-content" class="flex flex-col flex-grow px-4 py-10 items-center justify-start"></main>
       <footer class="bg-black text-neon-cyan py-4 shadow-lg border-t-1 border-teal/25">
         ${this.getFooterHTML()}
       </footer>
@@ -90,7 +90,7 @@ export class Layout {
             src="${userAvatarUrl}"
             alt="${i18next.t("global.avatar")}"
             tabindex="0"
-            class="w-14 h-14 rounded-full border-3 border-neon-cyan shadow-neon-cyan hover:border-neon-orange hover:animate-glow-border-orange shadow-lg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+            class="w-14 h-14 rounded-full border-3 border-neon-cyan shadow-neon-cyan hover:border-neon-orange hover:animate-glow-border-orange cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
           />
         </div>
       </nav>`;
@@ -116,7 +116,7 @@ export class Layout {
     return /* HTML */ ` <div
       class="container mx-auto flex justify-center space-x-8"
     >
-      <p class="text-sm">${i18next.t("global.pongGame")} &copy; 2025</p>
+      <p class="text-md">${i18next.t("global.pongGame")} &copy; 2025</p>
     </div>`;
   }
 

@@ -80,10 +80,35 @@ const fr: TranslationShape = {
       winnerMatch: "Match gagnant {{matchId}}",
       won: "Gagné"
     },
+
     homeView: {
-      helloUser: "Bonjour {{username}} !<br />Ceci est la page d’accueil",
-      title: "Accueil"
+      helloUser: "Bonjour {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Accueil",
+
+      faqTitle: "FAQ",
+      faqGameModesTitle: "Modes de jeu",
+      faqGameModesSingle:
+        "Partie simple : un match rapide contre l'IA ou un ami.",
+      faqGameModesTournament:
+        "Tournoi : affrontez plusieurs manches jusqu'à ce qu'il ne reste qu'un champion.",
+
+      faqControlsTitle: "Contrôles",
+      faqControlsRightPaddle: "Déplacer la raquette droite : Flèches ↑ ↓ ",
+      faqControlsLeftPaddle: "Déplacer la raquette gauche : W / S",
+
+      faqTipsTitle: "Conseils",
+      faqTips1: "Anticipez le trajet de la balle au lieu de courir après.",
+      faqTips2:
+        "Utilisez les bords de la raquette pour changer l'angle de la balle.",
+      faqTips3:
+        "Attention ! Chaque coup de raquette augmente la vitesse de la balle.",
+
+      faqExtrasTitle: "Infos complémentaires",
+      faqExtrasText:
+        "Pong est l'un des premiers jeux vidéo jamais créés : simple, intemporel et addictif. Inspiré par TRON, cette version réinvente le classique dans un style néon."
     },
+
     invalid: {
       emailEmpty: "L’adresse e‑mail ne peut pas être vide.",
       emailFormat:
@@ -129,7 +154,7 @@ const fr: TranslationShape = {
     },
     loginView: {
       title: "Connexion",
-      usernameOrEmail: "Nom d’utilisateur ou adresse e‑mail"
+      usernameOrEmail: "Nom ou adresse mail"
     },
     twoFAVerifyView: {
       title: "Vérification du code 2FA",
@@ -139,26 +164,28 @@ const fr: TranslationShape = {
     twoFABackupCodeVerifyView: {
       title: "Vérification du code de secours",
       twoFABackupCode: "Code de secours",
-      enterTwoFABackupCode: "Entrez votre code de secours :"
+      enterTwoFABackupCode: "Entrez votre code de secours :"
     },
     matchAnnouncementView: {
       abortTournament: "Annuler le tournoi",
-      nextMatch: "Prochain match à jouer :",
-      title: "Prochain match !",
+      nextMatch: "Prochain match à jouer",
+      title: "Prochain match !",
       roundMatch: "Manche {{round}} - Match {{match}}",
       startMatch: "Démarrer le match",
-      tournamentStatus: "Statut du tournoi"
+      skipMatch: "Sauter le match",
+      spectateMatch: "Observer le match"
     },
     newGameView: {
       title: "Nouveau jeu",
-      selectPlayer: "Sélectionnez quel joueur sera contrôlé par {{username}}",
+      enterNickname: "Entrez un pseudonyme pour chaque joueur.",
+      selectPlayer: "Sélectionnez quel joueur sera contrôlé par {{username}}.",
+      aiOption: "Optionnel : activez l'IA pour contrôler l'autre joueur.",
       startGame: "Démarrer le jeu"
     },
     newTournamentView: {
-      confirmAbortTournament: "Voulez-vous vraiment annuler le tournoi ?",
+      confirmAbortTournament: "Voulez-vous vraiment annuler le tournoi ?",
       enterTournamentName: "Entrez le nom du tournoi",
-      newTournamentDescription:
-        "Entrez le nom du tournoi et sélectionnez le nombre de joueurs",
+      selectNumberPlayers: "Sélectionnez le nombre de joueurs",
       title: "Nouveau tournoi",
       numberOfPlayers: "Nombre de joueurs",
       players4: "4 joueurs",
@@ -169,7 +196,7 @@ const fr: TranslationShape = {
     },
     nicknameInput: {
       enterYourNickname: "Entrez votre pseudonyme",
-      playerChoice: "Je joue en tant que joueur {{i}}",
+      playerChoice: "{{username}} joue en tant que joueur {{i}}",
       playerNickname: "Pseudonyme du joueur {{i}}",
       aiPlayer: "Joueur IA",
       aiStrength: "Difficulté de l'IA",
@@ -180,30 +207,29 @@ const fr: TranslationShape = {
     playerNicknamesView: {
       enterPlayerNicknames: "Entrez les pseudonymes des joueurs",
       title: "Pseudonymes des joueurs",
-      selectControlledPlayer:
-        "Sélectionnez quel joueur sera contrôlé par {{username}}",
+      aiOptions:
+        "Optionnel : activez l'IA pour contrôler un ou plusieurs d'autres joueurs.",
       submitNicknames: "Valider les pseudonymes"
     },
     profileView: {
       cannotChangeEmailOrPW:
-        "Vous ne pouvez pas changer votre adresse e‑mail ou votre mot de passe.",
-      changeAvatar: "Modifiez votre avatar ci-dessous.",
+        "Vous ne pouvez pas changer votre adresse e-mail ou votre mot de passe.",
+      changeAvatar: "Modifiez votre avatar.",
       changePasswordButton: "Modifier le mot de passe",
-      changePassword: "Modifiez votre mot de passe ci-dessous.",
-      chooseFile: "Choisissez un fichier image pour votre avatar",
+      changePassword: "Modifiez votre mot de passe.",
+      chooseFile: "Choisissez un fichier image",
       currentPassword: "Mot de passe actuel",
       newPassword: "Nouveau mot de passe",
       noFileSelected: "Aucun fichier sélectionné",
-      saveChanges: "Enregistrer les modifications",
+      saveChanges: "Enregistrer",
       signedInWithGoogle: "Connecté avec Google",
-      updateProfile:
-        "Mettez à jour les informations de votre profil ci-dessous.",
+      updateProfile: "Mettez à jour votre profil.",
       uploadYourAvatar: "Téléchargez votre avatar",
       title: "Votre profil"
     },
     registerView: {
-      register: "Inscrivez-vous ici",
-      title: "S’inscrire"
+      register: "Inscrivez-vous",
+      title: "S'inscrire"
     },
     resultsView: {
       bracket: "Arbre du tournoi",

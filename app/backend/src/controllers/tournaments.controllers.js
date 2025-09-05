@@ -96,10 +96,10 @@ export async function patchTournamentMatchHandler(request, reply) {
   const userId = request.user.id;
   const { player1Score, player2Score } = request.body;
 
-  const tournament = await getUserTournaments(userId, undefined, {
+  const tournaments = await getUserTournaments(userId, undefined, {
     tournamentId
   });
-  if (tournament.length === 0) {
+  if (tournaments.length === 0) {
     return httpError(
       reply,
       404,
@@ -107,6 +107,7 @@ export async function patchTournamentMatchHandler(request, reply) {
       "No record was found for an update."
     );
   }
+  const tournament = tournaments[0];
 
   const bracketMatch = await getBracketMatch(tournamentId, matchNumber);
   if (bracketMatch.winner) {

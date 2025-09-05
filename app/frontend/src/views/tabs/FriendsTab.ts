@@ -31,7 +31,7 @@ export class FriendsTab extends AbstractTab {
 
   getHTML(): string {
     return /* HTML */ ` <div id="tab-friends" class="hidden">
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-8 space-y-8">
+      <div class="w-full max-w-screen-2xl mx-auto p-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
           id: "friends-dashboard-header",

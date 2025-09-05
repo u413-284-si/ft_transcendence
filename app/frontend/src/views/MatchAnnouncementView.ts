@@ -5,16 +5,18 @@ import {
 } from "../services/tournamentService.js";
 import { Tournament } from "../Tournament.js";
 import AbstractView from "./AbstractView.js";
-import { GameView, GameType } from "./GameView.js";
 import { escapeHTML, getById } from "../utility.js";
 import { Header1 } from "../components/Header1.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
-import { Form } from "../components/Form.js";
 import { PlayedAs, PlayerType } from "../types/IMatch.js";
 import { getDataOrThrow } from "../services/api.js";
+import { Header2 } from "../components/Header2.js";
+import { Card } from "../components/Card.js";
+import { Details } from "../components/Details.js";
 import ResultsView from "./ResultsView.js";
 import { formatPlayerName } from "../components/NicknameInput.js";
+import { GameView } from "./GameView.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -54,70 +56,84 @@ export default class MatchAnnouncementView extends AbstractView {
   createHTML() {
     return /* HTML */ `
       <!-- Match Announcement -->
-      <section>
-        ${Form({
+      <section class="flex flex-col justify-center items-center gap-4 mb-8">
+        ${Header1({
+          text: i18next.t("global.tournament", {
+            tournamentName: escapeHTML(this.tournament.getTournamentName())
+          })
+        })}
+        ${Header2({
+          text: i18next.t("matchAnnouncementView.nextMatch"),
+          variant: "default"
+        })}
+        ${Card({
           children: [
-            Header1({
-              text: i18next.t("matchAnnouncementView.nextMatch"),
-              variant: "default"
-            }),
             Paragraph({
               text: i18next.t("matchAnnouncementView.roundMatch", {
                 round: this.roundNumber,
                 match: this.matchNumber
-              })
+              }),
+              size: "lg"
             }),
             Paragraph({
               text: `<b>${escapeHTML(formatPlayerName(this.player1, this.player1type))}</b>
-              vs <b>${escapeHTML(formatPlayerName(this.player2, this.player2type))}</b>`
-            }),
-            Button({
-              text: i18next.t("matchAnnouncementView.startMatch"),
-              variant: "default",
-              type: "submit"
+                  vs <b>${escapeHTML(formatPlayerName(this.player2, this.player2type))}</b>`,
+              size: "lg"
             })
           ],
-          id: "match-form"
+          className: "min-w-md justify-center items-center"
         })}
       </section>
 
       <!-- Tournament Status -->
-      <section>
-        <div class="pt-18 p-6 text-center space-y-6">
-          ${Header1({
-            text: i18next.t("matchAnnouncementView.tournamentStatus"),
-            variant: "default"
-          })}
-
-          <div class="mb-6">${this.tournament.getBracketAsHTML()}</div>
-
-          ${Button({
-            id: "abort-tournament",
-            text: i18next.t("matchAnnouncementView.abortTournament"),
-            variant: "danger",
-            type: "button"
-          })}
-        </div>
+      <section class="flex flex-col justify-center items-center gap-4 mb-8">
+        ${Header2({
+          text: i18next.t("resultsView.bracket"),
+          variant: "default"
+        })}
+        ${Card({
+          children: [
+            Details({
+              summary: i18next.t("statsView.details"),
+              content: this.tournament.getBracketAsHTML()
+            })
+          ],
+          className: "min-w-md"
+        })}
       </section>
 
-      ${this.isAIvsAI
-        ? Button({
-            id: "skip-match",
-            text: "Skip",
-            variant: "default",
-            type: "button"
-          })
-        : ""}
+      <section class="flex gap-4">
+        ${Button({
+          text: this.isAIvsAI
+            ? i18next.t("matchAnnouncementView.spectateMatch")
+            : i18next.t("matchAnnouncementView.startMatch"),
+          variant: "default",
+          type: "submit",
+          id: "start-match-btn"
+        })}
+        ${this.isAIvsAI
+          ? Button({
+              id: "skip-match",
+              text: i18next.t("matchAnnouncementView.skipMatch"),
+              variant: "default",
+              type: "button"
+            })
+          : ""}
+        ${Button({
+          id: "abort-tournament-btn",
+          text: i18next.t("matchAnnouncementView.abortTournament"),
+          variant: "danger",
+          type: "button"
+        })}
+      </section>
     `;
   }
 
   protected addListeners() {
-    document
-      .getElementById("match-form")
-      ?.addEventListener("submit", (event) => this.callGameView(event));
-    document
-      .getElementById("abort-tournament")
-      ?.addEventListener("click", () => this.abortTournament());
+    const startMatchBtn = getById("start-match-btn");
+    startMatchBtn.addEventListener("click", () => this.callGameView());
+    const abortTournamentBtn = getById("abort-tournament-btn");
+    abortTournamentBtn.addEventListener("click", () => this.abortTournament());
     if (this.isAIvsAI) {
       const button = getById("skip-match");
       button.addEventListener("click", () => this.handleSkipButton());
@@ -129,8 +145,7 @@ export default class MatchAnnouncementView extends AbstractView {
     this.addListeners();
   }
 
-  private callGameView(event: Event) {
-    event.preventDefault();
+  private callGameView() {
     console.log(
       `Match ${this.matchNumber} started: ${this.player1} vs ${this.player2}`
     );
@@ -141,7 +156,6 @@ export default class MatchAnnouncementView extends AbstractView {
       this.player1type,
       this.player2type,
       this.userRole,
-      GameType.tournament,
       this.tournament
     );
     router.switchView(gameView);

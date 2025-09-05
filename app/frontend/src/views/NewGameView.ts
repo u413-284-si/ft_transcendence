@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { GameType, GameView } from "./GameView.js";
+import { GameView } from "./GameView.js";
 import { validateNicknames } from "../validate.js";
 import { router } from "../routing/Router.js";
 import { auth } from "../AuthManager.js";
@@ -8,11 +8,12 @@ import {
   initNicknameInputListeners,
   NicknameInput
 } from "../components/NicknameInput.js";
-import { Paragraph } from "../components/Paragraph.js";
 import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import type { PlayerType } from "../types/IMatch.js";
+import { Header1 } from "../components/Header1.js";
+import { List } from "../components/List.js";
 
 export default class NewGameView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -26,12 +27,21 @@ export default class NewGameView extends AbstractView {
     return /* HTML */ `
       ${Form({
         children: [
-          Paragraph({
-            text: i18next.t("newGameView.selectPlayer", {
-              username: escapeHTML(auth.getUser().username)
-            })
+          Header1({
+            text: `${i18next.t("newGameView.title")}`,
+            id: "home-header",
+            variant: "default"
           }),
-          NicknameInput(2),
+          List({
+            children: [
+              i18next.t("newGameView.enterNickname"),
+              i18next.t("newGameView.selectPlayer", {
+                username: escapeHTML(auth.getUser().username)
+              }),
+              i18next.t("newGameView.aiOption")
+            ]
+          }),
+          NicknameInput(2, auth.getUser().username),
           Button({
             text: i18next.t("newGameView.startGame"),
             variant: "default",
@@ -84,7 +94,6 @@ export default class NewGameView extends AbstractView {
       playerTypes[0],
       playerTypes[1],
       userNumber == "1" ? "PLAYERONE" : "PLAYERTWO",
-      GameType.single,
       null
     );
     router.switchView(gameView);

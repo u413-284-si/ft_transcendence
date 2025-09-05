@@ -36,7 +36,7 @@ export class MatchesTab extends PaginatedTab<MatchRead> {
 
   getHTML(): string {
     return /* HTML */ ` <div id="tab-matches" class="hidden">
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
+      <div class="w-full max-w-screen-2xl mx-auto p-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
           id: "match-dashboard-header",
@@ -44,7 +44,7 @@ export class MatchesTab extends PaginatedTab<MatchRead> {
         })}
         ${this.getDashboardHTML()}
       </div>
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
+      <div class="w-full max-w-screen-2xl mx-auto p-4">
         ${Header1({
           text: i18next.t("statsView.details"),
           id: "match-details-header",
@@ -77,7 +77,7 @@ export class MatchesTab extends PaginatedTab<MatchRead> {
           chartId: "win-rate-chart"
         })}
       </div>
-      <div class="grid grid-cols-2 gap-8">
+      <div class="flex flex-cols-2 gap-8">
         ${Chart({
           title: i18next.t("chart.scoreDiff", { range: rangeMatches }),
           chartId: "score-diff-chart"

@@ -40,7 +40,7 @@ export function RadioGroup({
   return /* HTML */ `
     <div class="flex flex-col gap-1">
       ${label
-        ? `<span class="text-sm font-medium text-white">${label}</span>`
+        ? `<span class="text-md font-medium text-white">${label}</span>`
         : ""}
       <div class="flex ${layoutClass}">${radios}</div>
     </div>

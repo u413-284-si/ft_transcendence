@@ -12,12 +12,13 @@ import {
   NicknameInput
 } from "../components/NicknameInput.js";
 import { Header1 } from "../components/Header1.js";
-import { Paragraph } from "../components/Paragraph.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getDataOrThrow } from "../services/api.js";
 import { TournamentSize } from "../types/ITournament.js";
 import type { PlayerType } from "../types/IMatch.js";
+import { List } from "../components/List.js";
+import { Header2 } from "../components/Header2.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -32,23 +33,28 @@ export default class PlayerNicknamesView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
+      ${Header1({
+        text: i18next.t("playerNicknamesView.enterPlayerNicknames"),
+        variant: "default"
+      })}
+      ${Header2({
+        text: i18next.t("global.tournament", {
+          tournamentName: escapeHTML(this.tournamentName)
+        }),
+        className: "mb-4"
+      })}
+      ${List({
+        children: [
+          i18next.t("newGameView.enterNickname"),
+          i18next.t("newGameView.selectPlayer", {
+            username: escapeHTML(auth.getUser().username)
+          }),
+          i18next.t("playerNicknamesView.aiOptions")
+        ]
+      })}
       ${Form({
         children: [
-          Header1({
-            text: i18next.t("playerNicknamesView.enterPlayerNicknames"),
-            variant: "default"
-          }),
-          Paragraph({
-            text: i18next.t("global.tournament", {
-              tournamentName: escapeHTML(this.tournamentName)
-            })
-          }),
-          Paragraph({
-            text: i18next.t("playerNicknamesView.selectControlledPlayer", {
-              username: escapeHTML(auth.getUser().username)
-            })
-          }),
-          NicknameInput(this.numberOfPlayers),
+          NicknameInput(this.numberOfPlayers, auth.getUser().username),
           Button({
             text: i18next.t("playerNicknamesView.submitNicknames"),
             variant: "default",
@@ -90,7 +96,6 @@ export default class PlayerNicknamesView extends AbstractView {
 
     if (!validateNicknames(inputElements, errorElements, nicknames)) return;
     const userNickname = formData.get(`player-${userNumber}`) as string;
-    console.log(userNickname);
 
     const playerTypes: PlayerType[] = [];
     for (let i = 1; i <= this.numberOfPlayers; i++) {

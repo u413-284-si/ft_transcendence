@@ -51,7 +51,7 @@ export function Input({
   }
 
   return /* HTML */ `
-    <div class="w-full max-w-md flex flex-col gap-1">
+    <div class="w-md flex flex-col gap-1">
       ${labelHtml} ${inputHtml} ${errorSpan}
     </div>
   `;
@@ -61,7 +61,7 @@ export function Input({
 
 function renderLabel(id: string, label: string): string {
   return /* HTML */ `
-    <label for="${id}" class="text-sm font-medium text-white text-left">
+    <label for="${id}" class="text-md font-medium text-white text-left">
       ${label}
     </label>
   `;
@@ -82,7 +82,7 @@ function renderFileInput(
       tabindex="0"
       id="${id}-file-label"
       for="${id}"
-      class="text-sm inline-block cursor-pointer bg-emerald-dark text-white/50 px-4 py-3 rounded hover:bg-emerald transition max-w-full truncate overflow-hidden border border-emerald focus:outline-none focus:ring-2 focus:ring-neon-cyan whitespace-nowrap"
+      class="w-full text-md inline-block cursor-pointer bg-emerald-dark text-white/50 px-3 py-2 rounded-md hover:bg-emerald transition max-w-full truncate overflow-hidden border border-emerald focus:outline-none focus:ring-2 focus:ring-neon-cyan whitespace-nowrap"
     >
       ${noFileText}
     </label>

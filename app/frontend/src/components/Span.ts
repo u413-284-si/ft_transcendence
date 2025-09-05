@@ -11,7 +11,7 @@ export function Span({
   variant = "default",
   className = ""
 }: SpanOptions): string {
-  const baseStyles = "text-sm font-medium";
+  const baseStyles = "text-md font-medium";
   const variantStyles: Record<string, string> = {
     default: "text-white",
     success: "text-neon-green",

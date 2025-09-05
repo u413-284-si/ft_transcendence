@@ -1,62 +1,67 @@
 import { getAllBySelector, getById } from "../utility.js";
+import { Card } from "./Card.js";
 import { Checkbox } from "./Checkbox.js";
 import { Input } from "./Input.js";
 import { Radio } from "./Radio.js";
 import { Select } from "./Select.js";
 import type { PlayerType } from "../types/IMatch.js";
+import { clearInvalid } from "../validate.js";
 
-export function NicknameInput(players: number): string {
+export function NicknameInput(players: number, username: string): string {
   let nicknameInputs = "";
   for (let i = 1; i <= players; i++) {
     const isChecked = i === 1 ? true : false;
 
     nicknameInputs += /* HTML */ `
-      <div
-        class="border border-teal p-4 rounded shadow-sm flex flex-col space-y-4"
-      >
-        ${Input({
-          id: `nickname${i}`,
-          label: i18next.t("nicknameInput.playerNickname", { i: i }),
-          name: `player-${i}`,
-          placeholder: i18next.t("nicknameInput.enterYourNickname"),
-          type: "text",
-          errorId: `player-error-${i}`,
-          className: "disabled:bg-teal disabled:text-grey"
-        })}
-        ${Radio({
-          id: `choice-${i}`,
-          name: "userChoice",
-          value: `${i}`,
-          label: i18next.t("nicknameInput.playerChoice", { i: i }),
-          checked: isChecked
-        })}
-        ${Checkbox({
-          id: `ai-${i}`,
-          name: `ai-player-${i}`,
-          label: i18next.t("nicknameInput.aiPlayer"),
-          disabled: isChecked
-        })}
-        ${Select({
-          id: `ai-strength-${i}`,
-          name: `ai-strength-${i}`,
-          label: i18next.t("nicknameInput.aiStrength"),
-          options: [
-            {
-              value: "AI_EASY",
-              label: i18next.t("nicknameInput.aiStrengthEasy")
-            },
-            {
-              value: "AI_MEDIUM",
-              label: i18next.t("nicknameInput.aiStrengthMedium")
-            },
-            {
-              value: "AI_HARD",
-              label: i18next.t("nicknameInput.aiStrengthHard")
-            }
-          ],
-          hidden: true
-        })}
-      </div>
+      ${Card({
+        children: [
+          Input({
+            id: `nickname${i}`,
+            label: i18next.t("nicknameInput.playerNickname", { i: i }),
+            name: `player-${i}`,
+            placeholder: i18next.t("nicknameInput.enterYourNickname"),
+            type: "text",
+            errorId: `player-error-${i}`,
+            className: "disabled:bg-teal disabled:text-grey"
+          }),
+          Radio({
+            id: `choice-${i}`,
+            name: "userChoice",
+            value: `${i}`,
+            label: i18next.t("nicknameInput.playerChoice", {
+              username: username,
+              i: i
+            }),
+            checked: isChecked
+          }),
+          Checkbox({
+            id: `ai-${i}`,
+            name: `ai-player-${i}`,
+            label: i18next.t("nicknameInput.aiPlayer"),
+            disabled: isChecked
+          }),
+          Select({
+            id: `ai-strength-${i}`,
+            name: `ai-strength-${i}`,
+            label: i18next.t("nicknameInput.aiStrength"),
+            options: [
+              {
+                value: "AI_EASY",
+                label: i18next.t("nicknameInput.aiStrengthEasy")
+              },
+              {
+                value: "AI_MEDIUM",
+                label: i18next.t("nicknameInput.aiStrengthMedium")
+              },
+              {
+                value: "AI_HARD",
+                label: i18next.t("nicknameInput.aiStrengthHard")
+              }
+            ],
+            hidden: true
+          })
+        ]
+      })}
     `;
   }
   return nicknameInputs;
@@ -76,24 +81,23 @@ export function initNicknameInputListeners(): void {
       for (let i = 0; i < radios.length; i++) {
         updateSlotUI(i);
       }
+      clearInvalidInputs();
     });
   });
 
   checkboxes.forEach((checkbox, index) => {
     checkbox.addEventListener("change", () => {
       updateSlotUI(index);
+      clearInvalidInputs();
     });
   });
 
   strengthSelects.forEach((select, index) => {
     select.addEventListener("change", () => {
       updateSlotUI(index);
+      clearInvalidInputs();
     });
   });
-
-  for (let i = 0; i < radios.length; i++) {
-    updateSlotUI(i);
-  }
 }
 
 function makeAIName(strength: string, slot: number): string {
@@ -115,9 +119,6 @@ function updateSlotUI(index: number): void {
   );
   const nicknameInput = getById<HTMLInputElement>(`nickname${index + 1}`);
 
-  if (!radio || !checkbox || !strengthDiv || !strengthSelect || !nicknameInput)
-    return;
-
   if (radio.checked) {
     checkbox.checked = false;
     checkbox.disabled = true;
@@ -137,6 +138,15 @@ function updateSlotUI(index: number): void {
       nicknameInput.value = "";
     }
   }
+}
+
+function clearInvalidInputs() {
+  const inputElements = getAllBySelector<HTMLInputElement>('[id^="nickname"]');
+  const errorElements = getAllBySelector<HTMLElement>('[id^="player-error-"]');
+
+  inputElements.forEach((inputEl, i) => {
+    clearInvalid(inputEl, errorElements[i]);
+  });
 }
 
 export function getPlayerType(

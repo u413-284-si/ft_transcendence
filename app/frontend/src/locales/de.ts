@@ -87,8 +87,32 @@ const de: TranslationShape = {
     },
 
     homeView: {
-      helloUser: "Hallo {{username}}!<br />Das ist die Startseite",
-      title: "Startseite"
+      helloUser: "Hallo {{username}}!",
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Startseite",
+
+      faqTitle: "FAQ",
+      faqGameModesTitle: "Spielmodi",
+      faqGameModesSingle:
+        "Einzelspiel: Ein schnelles Match gegen die KI oder einen Freund.",
+      faqGameModesTournament:
+        "Turnier: Spiele mehrere Runden, bis ein Champion übrig bleibt.",
+
+      faqControlsTitle: "Steuerung",
+      faqControlsRightPaddle: "Rechten Schläger bewegen: Pfeiltasten ↑ ↓",
+      faqControlsLeftPaddle: "Linken Schläger bewegen: W / S",
+
+      faqTipsTitle: "Tipps",
+      faqTips1:
+        "Antizipiere den Pfad des Balls voraus, statt ihm hinterherzulaufen.",
+      faqTips2:
+        "Treffe den Ball mit den Kanten des Schlägers, um den Winkel zu verändern.",
+      faqTips3:
+        "Sei vorsichtig! Jeder Schlägerkontakt erhöht die Geschwindigkeit des Balls.",
+
+      faqExtrasTitle: "Hintergrundinfos",
+      faqExtrasText:
+        "Pong ist eines der ersten Videospiele überhaupt: einfach, zeitlos und süchtig machend. Inspiriert vom Blockbuster TRON, wird hier der Klassiker in einem neonbeleuchteten Stil neu interpretiert."
     },
 
     invalid: {
@@ -134,7 +158,7 @@ const de: TranslationShape = {
 
     loginView: {
       title: "Anmelden",
-      usernameOrEmail: "Benutzername oder E-Mail-Adresse"
+      usernameOrEmail: "Nutzername oder Mail-Adresse"
     },
 
     twoFAVerifyView: {
@@ -151,25 +175,26 @@ const de: TranslationShape = {
 
     matchAnnouncementView: {
       abortTournament: "Turnier abbrechen",
-      nextMatch: "Nächstes Spiel:",
+      nextMatch: "Nächstes Spiel",
       title: "Nächstes Spiel!",
-      roundMatch: "Runde {{round}} – Spiel {{match}}",
+      roundMatch: "Runde {{round}} - Spiel {{match}}",
       startMatch: "Spiel starten",
-      tournamentStatus: "Turnierstatus"
+      skipMatch: "Spiel überspringen",
+      spectateMatch: "Spiel beobachten"
     },
 
     newGameView: {
       title: "Neues Spiel",
-      selectPlayer:
-        "Wähle aus, welcher Spieler von {{username}} gesteuert wird",
+      enterNickname: "Gib für jeden Spieler einen Spitznamen ein.",
+      selectPlayer: "Wähle, welcher Spieler von {{username}} gesteuert wird.",
+      aiOption: "Optional: KI aktivieren, um den anderen Spieler zu steuern.",
       startGame: "Spiel starten"
     },
 
     newTournamentView: {
       confirmAbortTournament: "Möchtest du das Turnier wirklich abbrechen?",
       enterTournamentName: "Gib den Turniernamen ein",
-      newTournamentDescription:
-        "Gib den Turniernamen ein und wähle die Anzahl der Spieler",
+      selectNumberPlayers: "Wähle die Anzahl der Spieler",
       title: "Neues Turnier",
       numberOfPlayers: "Anzahl der Spieler",
       players4: "4 Spieler",
@@ -181,7 +206,7 @@ const de: TranslationShape = {
 
     nicknameInput: {
       enterYourNickname: "Gib deinen Spitznamen ein",
-      playerChoice: "Ich spiele als Spieler {{i}}",
+      playerChoice: "{{username}} spielt als Spieler {{i}}",
       playerNickname: "Spitzname von Spieler {{i}}",
       aiPlayer: "KI-Spieler",
       aiStrength: "KI-Stärke",
@@ -193,30 +218,30 @@ const de: TranslationShape = {
     playerNicknamesView: {
       enterPlayerNicknames: "Gib die Spitznamen der Spieler ein",
       title: "Spieler-Spitznamen",
-      selectControlledPlayer:
-        "Wähle aus, welcher Spieler von {{username}} gesteuert wird",
+      aiOptions:
+        "Optional: KI aktivieren, um einen oder mehrere Spieler steuern zu lassen.",
       submitNicknames: "Spitznamen bestätigen"
     },
 
     profileView: {
       cannotChangeEmailOrPW:
         "Du kannst deine E-Mail-Adresse oder dein Passwort nicht ändern.",
-      changeAvatar: "Ändere deinen Avatar unten.",
+      changeAvatar: "Ändere deinen Avatar.",
       changePasswordButton: "Passwort ändern",
-      changePassword: "Ändere dein Passwort unten.",
-      chooseFile: "Wähle eine Bilddatei für deinen Avatar",
+      changePassword: "Ändere dein Passwort.",
+      chooseFile: "Wähle ein Bild für deinen Avatar",
       currentPassword: "Aktuelles Passwort",
       newPassword: "Neues Passwort",
       noFileSelected: "Keine Datei ausgewählt",
       saveChanges: "Änderungen speichern",
       signedInWithGoogle: "Mit Google angemeldet",
-      updateProfile: "Aktualisiere unten deine Profilinformationen.",
+      updateProfile: "Aktualisiere dein Profil.",
       uploadYourAvatar: "Lade deinen Avatar hoch",
       title: "Dein Profil"
     },
 
     registerView: {
-      register: "Hier registrieren",
+      register: "Registrieren",
       title: "Registrieren"
     },
 
@@ -304,8 +329,7 @@ const de: TranslationShape = {
       friendAdded: "Freund {{username}} hinzugefügt!",
       friendRequestButtonError:
         "Fehler beim Verarbeiten der Freundschaftsanfrage",
-      friendRequestEventError:
-        "Fehler beim Empfang der Freundschaftsanfrage.",
+      friendRequestEventError: "Fehler beim Empfang der Freundschaftsanfrage.",
       friendRequestSendError: "Fehler beim Senden der Freundschaftsanfrage.",
       emailExists: "Diese E-Mail-Adresse ist bereits registriert",
       emailOrUsernameExists: "E-Mail oder Benutzername existiert bereits",

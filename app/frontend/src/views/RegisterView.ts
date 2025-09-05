@@ -23,12 +23,12 @@ export default class Register extends AbstractView {
 
   createHTML(): string {
     return /* HTML */ `
+      ${Header1({
+        text: i18next.t("registerView.register"),
+        variant: "default"
+      })}
       ${Form({
         children: [
-          Header1({
-            text: i18next.t("registerView.register"),
-            variant: "default"
-          }),
           Input({
             id: "email",
             label: i18next.t("global.label", {
@@ -152,12 +152,14 @@ export default class Register extends AbstractView {
       emailEL.value = "";
       userEl.value = "";
       passwordEl.value = "";
+      confirmPasswordEl.value = "";
       const username = escapeHTML(apiResponse.data.username);
       toaster.success(
         i18next.t("toast.registrationSuccess", {
           username: username
         })
       );
+      router.navigate("/login", false);
     } catch (error) {
       router.handleError("validateAndRegisterUser()", error);
     }

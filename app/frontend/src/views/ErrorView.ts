@@ -31,24 +31,23 @@ export default class ErrorView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
-      <div class="flex flex-col justify-center items-center gap-4">
-        ${Header1({
-          text: i18next.t("errorView.errorStatus", { status: this.status }),
-          id: "error-header",
-          variant: "error"
-        })}
-        ${Paragraph({ text: `${this.message}`, id: "error-message" })}
-        ${this.cause
-          ? `${Paragraph({ text: i18next.t("errorView.details", { cause: this.cause }), id: "error-cause" })}`
-          : ""}
-        ${Button({
-          id: "reload-btn",
-          text: i18next.t("errorView.reload"),
-          variant: "default",
-          size: "md",
-          type: "button"
-        })}
-      </div>
+      ${Header1({
+        text: i18next.t("errorView.errorStatus", { status: this.status }),
+        id: "error-header",
+        variant: "error"
+      })}
+      ${Paragraph({ text: `${this.message}`, id: "error-message", size: "lg" })}
+      ${this.cause
+        ? `${Paragraph({ text: i18next.t("errorView.details", { cause: this.cause }), id: "error-cause" })}`
+        : ""}
+      ${Button({
+        id: "reload-btn",
+        text: i18next.t("errorView.reload"),
+        variant: "default",
+        size: "md",
+        type: "button",
+        className: "mt-8"
+      })}
     `;
   }
 

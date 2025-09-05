@@ -8,6 +8,7 @@ import { addTogglePasswordListener, Input } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { getById } from "../utility.js";
+import { Header1 } from "../components/Header1.js";
 
 export default class LoginView extends AbstractView {
   constructor() {
@@ -17,6 +18,10 @@ export default class LoginView extends AbstractView {
 
   createHTML() {
     return /* HTML */ `
+      ${Header1({
+        text: i18next.t("loginView.title"),
+        variant: "default"
+      })}
       ${Form({
         children: [
           Input({

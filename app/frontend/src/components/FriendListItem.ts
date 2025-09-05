@@ -63,7 +63,8 @@ export function FriendListItem(
     >
       <a
         href="/stats/${username}"
-        class="avatar-link inline-block rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+        class="inline-block rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+        data-link
       >
         ${avatar}
       </a>

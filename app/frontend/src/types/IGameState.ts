@@ -37,3 +37,5 @@ export type Snapshot = Pick<
   GameState,
   "ballX" | "ballY" | "paddle1Y" | "paddle2Y"
 >;
+
+export type Point = { x: number; y: number };

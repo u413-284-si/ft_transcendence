@@ -51,7 +51,7 @@ export class TournamentsTab extends PaginatedTab<TournamentRead> {
 
   getHTML(): string {
     return /* HTML */ ` <div id="tab-tournaments" class="hidden">
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
+      <div class="w-full max-w-screen-2xl mx-auto p-4">
         ${Header1({
           text: i18next.t("statsView.dashboard"),
           id: "tournament-dashboard-header",
@@ -59,7 +59,7 @@ export class TournamentsTab extends PaginatedTab<TournamentRead> {
         })}
         ${this.getDashboardHTML()}
       </div>
-      <div class="w-full max-w-screen-2xl mx-auto px-4 py-4">
+      <div class="w-full max-w-screen-2xl mx-auto p-4">
         ${Header1({
           text: i18next.t("statsView.details"),
           id: "tournament-details-header",

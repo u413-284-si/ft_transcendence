@@ -121,6 +121,32 @@
     }
   }
 
+  --animate-glow-border-white: glow-border-white 2.5s infinite ease-in-out;
+  @keyframes glow-border-white {
+    0% {
+      box-shadow:
+        0 0 5px color-mix(in oklch, oklch(1 0 0) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(1 0 0) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(1 0 0) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(1 0 0) 85%, transparent);
+    }
+
+    50% {
+      box-shadow:
+        0 0 7px oklch(0.4666 0.0472 215.33),
+        0 0 14px oklch(0.4666 0.0472 215.33),
+        0 0 21px oklch(0.4666 0.0472 215.33);
+    }
+
+    100% {
+      box-shadow:
+        0 0 5px color-mix(in oklch, oklch(1 0 0) 55%, transparent),
+        0 0 10px color-mix(in oklch, oklch(1 0 0) 65%, transparent),
+        0 0 15px color-mix(in oklch, oklch(1 0 0) 75%, transparent),
+        0 0 20px color-mix(in oklch, oklch(1 0 0) 85%, transparent);
+    }
+  }
+
   --animate-progress: progress 5s linear forwards;
   @keyframes progress {
     100% {

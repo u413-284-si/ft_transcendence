@@ -1,5 +1,5 @@
 import { updatePaddlePositions } from "./input.js";
-import { render } from "./draw.js";
+import { clearBallTrail, render } from "./draw.js";
 import { GameState, Snapshot } from "./types/IGameState.js";
 import { GameKey } from "./views/GameView.js";
 import { Tournament } from "./Tournament.js";
@@ -72,12 +72,12 @@ function initGameState(
     type2: type2,
     player1Score: 0,
     player2Score: 0,
-    winningScore: 1, // FIXME: needs to be a higher value
+    winningScore: 10, // FIXME: needs to be a higher value
     canvasHeight: canvas.height,
     canvasWidth: canvas.width,
     ballX: 0,
     ballY: 0,
-    ballRadius: 10,
+    ballRadius: 12,
     initialBallSpeed: 380,
     ballSpeedX: initialBallDirection,
     ballSpeedY: 0,
@@ -85,9 +85,9 @@ function initGameState(
     paddle1Y: canvas.height / 2 - 40,
     paddle2X: canvas.width - 20,
     paddle2Y: canvas.height / 2 - 40,
-    paddleHeight: 80,
-    paddleWidth: 10,
-    paddleSpeed: 300,
+    paddleHeight: 100,
+    paddleWidth: 12,
+    paddleSpeed: 400,
     gameOver: false,
     keys: keys,
     aiPlayer1: aiPlayer1,
@@ -200,6 +200,8 @@ function resetBall(gameState: GameState) {
 
   gameState.ballSpeedX = direction * speed * Math.cos(angle);
   gameState.ballSpeedY = speed * Math.sin(angle);
+
+  clearBallTrail();
 }
 
 function checkWinner(gameState: GameState) {
