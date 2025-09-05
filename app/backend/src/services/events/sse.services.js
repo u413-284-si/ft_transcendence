@@ -68,6 +68,6 @@ function notifyHeartbeat(userId, msg) {
   emitToUser(userId, "heartbeatEvent", msg);
 }
 
-export function notifyProfileChange(userId, msg) {
-  emitToUser(userId, "profileChangeEvent", msg);
+export function notifyProfileChange(userId, update) {
+  emitToUser(userId, "profileChangeEvent", update);
 }

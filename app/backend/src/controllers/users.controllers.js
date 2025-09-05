@@ -92,7 +92,7 @@ export async function patchUserHandler(request, reply) {
   }
 
   const data = await updateUser(userId, request.body);
-  notifyProfileChange(userId, `user profile changed`);
+  notifyProfileChange(userId, { update: request.body });
   return reply
     .code(200)
     .send({ message: createResponseMessage(request.action, true), data: data });
@@ -226,7 +226,7 @@ export async function createUserAvatarHandler(request, reply) {
       const newFileName = await createUserAvatar(userId, fileBuffer);
       const avatarUrl = `/images/${newFileName}`;
       const updatedUser = await updateUser(userId, { avatar: avatarUrl });
-      notifyProfileChange(userId, `user avatar changed`);
+      notifyProfileChange(userId, { update: { avatar: avatarUrl } });
       return reply.code(201).send({
         message: createResponseMessage(request.action, true),
         data: updatedUser
@@ -270,7 +270,7 @@ export async function deleteUserAvatarHandler(request, reply) {
   await deleteUserAvatar(currentAvatarUrl);
 
   const updatedUser = await updateUser(userId, { avatar: null });
-  notifyProfileChange(userId, `user avatar deleted`);
+  notifyProfileChange(userId, { update: { avatar: null } });
   return reply.code(200).send({
     message: createResponseMessage(request.action, true),
     data: updatedUser

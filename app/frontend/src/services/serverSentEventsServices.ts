@@ -1,7 +1,8 @@
 import { toaster } from "../Toaster.js";
 import {
   FriendRequestEvent,
-  FriendStatusChangeEvent
+  FriendStatusChangeEvent,
+  ProfileChangeEvent
 } from "../types/ServerSentEvents.js";
 
 let eventSource: EventSource | null = null;
@@ -35,8 +36,17 @@ export function openSSEConnection() {
 
   eventSource.addEventListener("profileChangeEvent", (event: MessageEvent) => {
     console.log("SSE message:", event.data);
-
-    window.dispatchEvent(new CustomEvent("app:ProfileChangeEvent"));
+    try {
+      const { update } = JSON.parse(event.data);
+      const detail: ProfileChangeEvent["detail"] = {
+        update
+      };
+      window.dispatchEvent(
+        new CustomEvent("app:ProfileChangeEvent", { detail })
+      );
+    } catch (e) {
+      console.error("Failed to parse SSE message", e);
+    }
   });
 
   eventSource.addEventListener(
