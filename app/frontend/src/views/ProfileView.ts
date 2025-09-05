@@ -283,7 +283,6 @@ export default class ProfileView extends AbstractView {
     };
 
     try {
-      auth.isExpectingUpdate = true;
       const apiResponse = await patchUser(updatedUser);
       if (!apiResponse.success) {
         if (apiResponse.status === 409) {
@@ -293,12 +292,9 @@ export default class ProfileView extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
-      auth.isExpectingUpdate = false;
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
-      await auth.updateUser(updatedUser);
     } catch (err) {
       console.error("Failed to update profile:", err);
-      auth.isExpectingUpdate = false;
       toaster.error(i18next.t("toast.profileUpdateFailed"));
     }
   }
@@ -314,17 +310,10 @@ export default class ProfileView extends AbstractView {
     const file = fileInputEl!.files![0];
     formData.append("avatar", file);
     try {
-      auth.isExpectingUpdate = true;
-      const { avatar } = getDataOrThrow(await uploadAvatar(formData));
+      getDataOrThrow(await uploadAvatar(formData));
       toaster.success(i18next.t("toast.avatarUploadedSuccess"));
-      const updatedUser: Partial<User> = {
-        ...(avatar ? { avatar } : {})
-      };
-      auth.isExpectingUpdate = false;
-      await auth.updateUser(updatedUser);
     } catch (err) {
       console.error("Failed to upload avatar:", err);
-      auth.isExpectingUpdate = false;
       toaster.error(i18next.t("toast.avatarUploadFailed"));
     }
   }

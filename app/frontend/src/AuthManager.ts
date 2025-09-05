@@ -16,6 +16,7 @@ import { User, Language } from "./types/User.js";
 import { getById, getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
 import TwoFAVerifyView from "./views/TwoFAVerifyView.js";
+import { ProfileChangeEvent } from "./types/ServerSentEvents.js";
 
 type AuthChangeCallback = (authenticated: boolean) => Promise<void>;
 
@@ -30,7 +31,6 @@ export class AuthManager {
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
 
   private isProfileChangeListenerActive: boolean = false;
-  public isExpectingUpdate: boolean = false;
 
   private constructor() {}
 
@@ -282,11 +282,16 @@ export class AuthManager {
     });
   }
 
-  private profileChangeListener = async () => {
+  private profileChangeListener = async (event: Event) => {
     console.log("Profile change event");
-    if (this.isExpectingUpdate) return;
-    const user = await this.fetchUserDataAndSetLanguage();
-    await this.updateAuthState(user);
+
+    const { update } = (event as ProfileChangeEvent).detail;
+    if (!this.user) {
+      console.warn("User is not set");
+      return;
+    }
+    console.log("Applying partial profile update:", update);
+    this.updateUser(update);
   };
 
   private registerProfileChangeListener() {
