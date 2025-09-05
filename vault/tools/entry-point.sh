@@ -20,8 +20,8 @@ log() {
 }
 
 create_dirs() {
-    mkdir -p "$VAULT_KEYS_DIR" "$NGINX_KEYS_DIR" "$APP_KEYS_DIR"
-    chmod 750 "$SECRETS_DIR" "$VAULT_KEYS_DIR" "$NGINX_KEYS_DIR" "$APP_KEYS_DIR"
+    mkdir -p "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR""$NGINX_AUTH_DIR" "$APP_AUTH_DIR"
+    chmod 750 "$SECRETS_DIR" "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR" "$NGINX_AUTH_DIR" "$APP_AUTH_DIR"
     chown -R vault:vault "$SECRETS_DIR" /vault/data
     log "➡️" "Directories created and permissions set"
 }
@@ -62,13 +62,13 @@ initialize_vault() {
     root_token="$(jq -r '.root_token' <<<"$init_json")"
 
     for i in "${!keys[@]}"; do
-      printf '%s\n' "${keys[$i]}" > "$VAULT_KEYS_DIR/unseal_key_$((i+1))"
+      printf '%s\n' "${keys[$i]}" > "$VAULT_UNSEAL_DIR/unseal_key_$((i+1))"
     done
-    printf '%s\n' "$root_token" > "$VAULT_KEYS_DIR/root_token"
-    chmod 600 "$VAULT_KEYS_DIR"/*
-    chown vault:vault "$VAULT_KEYS_DIR"/*
+    printf '%s\n' "$root_token" > "$VAULT_UNSEAL_DIR/root_token"
+    chmod 600 "$VAULT_UNSEAL_DIR"/*
+    chown vault:vault "$VAULT_UNSEAL_DIR"/*
 
-    log "✅" "Saved ${#keys[@]} unseal keys and root token to $VAULT_KEYS_DIR"
+    log "✅" "Saved ${#keys[@]} unseal keys and root token to $VAULT_UNSEAL_DIR"
 }
 
 unseal_vault() {
@@ -91,7 +91,7 @@ unseal_vault() {
 wait_for_unseal() {
     while true; do
         keyArray=()
-        for keyfile in "$VAULT_KEYS_DIR"/unseal_key_*; do
+        for keyfile in "$VAULT_UNSEAL_DIR"/unseal_key_*; do
             [ -f "$keyfile" ] && keyArray+=("$(cat "$keyfile")")
         done
 
@@ -158,7 +158,6 @@ login_with_approle() {
         log "✅" "Bootstrap token acquired via AppRole"
     else
         log "❌" "No AppRole credentials found, cannot continue"
-        ls $VAULT_KEYS_DIR
         exit 1
     fi
 }
@@ -224,8 +223,8 @@ wait_for_vault
 initialize_vault
 wait_for_unseal
 
-if [ -f "$VAULT_KEYS_DIR/root_token" ]; then
-    export VAULT_TOKEN=$(cat "$VAULT_KEYS_DIR/root_token")
+if [ -f "$VAULT_UNSEAL_DIR/root_token" ]; then
+    export VAULT_TOKEN=$(cat "$VAULT_UNSEAL_DIR/root_token")
 
     # Write policies
     vault policy write setup-policy /vault/policies/setup-policy.hcl
@@ -242,18 +241,18 @@ if [ -f "$VAULT_KEYS_DIR/root_token" ]; then
       log "ℹ️" "AppRole already enabled."
     fi
 
-    create_approle "setup" "setup-policy" "$VAULT_KEYS_DIR"
+    create_approle "setup" "setup-policy" "$VAULT_AUTH_DIR"
 else
     log "ℹ️ Root token not found, skipping policy writes"
 fi
 
 # Login with setup AppRole to bootstrap
-login_with_approle "$VAULT_KEYS_DIR/setup-role-id" "$VAULT_KEYS_DIR/setup-secret-id"
+login_with_approle "$VAULT_AUTH_DIR/setup-role-id" "$VAULT_AUTH_DIR/setup-secret-id"
 
 # Create all AppRoles
-create_approle "healthcheck" "healthcheck-policy" "$VAULT_KEYS_DIR"
-create_approle "nginx" "nginx-policy" "$NGINX_KEYS_DIR"
-create_approle "app" "app-policy" "$APP_KEYS_DIR"
+create_approle "healthcheck" "healthcheck-policy" "$VAULT_AUTH_DIR"
+create_approle "nginx" "nginx-policy" "$NGINX_AUTH_DIR"
+create_approle "app" "app-policy" "$APP_AUTH_DIR"
 
 # Enable KV secrets
 enable_kv_secrets

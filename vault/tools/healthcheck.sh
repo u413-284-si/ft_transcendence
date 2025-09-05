@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROLE_FILE="$VAULT_KEYS_DIR/healthcheck-role-id"
-SECRET_FILE="$VAULT_KEYS_DIR/healthcheck-secret-id"
+ROLE_FILE="$VAULT_AUTH_DIR/healthcheck-role-id"
+SECRET_FILE="$VAULT_AUTH_DIR/healthcheck-secret-id"
 
 if [[ ! -s "$ROLE_FILE" || ! -s "$SECRET_FILE" ]]; then
     echo "⚠️ Healthcheck AppRole not ready yet."
@@ -10,8 +10,8 @@ if [[ ! -s "$ROLE_FILE" || ! -s "$SECRET_FILE" ]]; then
 fi
 
 HEALTH_TOKEN=$(vault write -format=json auth/approle/login \
-    role_id="$(cat $VAULT_KEYS_DIR/healthcheck-role-id)" \
-    secret_id="$(cat $VAULT_KEYS_DIR/healthcheck-secret-id)" \
+    role_id="$(cat $VAULT_AUTH_DIR/healthcheck-role-id)" \
+    secret_id="$(cat $VAULT_AUTH_DIR/healthcheck-secret-id)" \
     | jq -r '.auth.client_token')
 
 VAULT_TOKEN="$HEALTH_TOKEN"
@@ -52,8 +52,8 @@ check_files() {
 }
 
 # Run checks
-check_files "$NGINX_KEYS_DIR" $NGINX_FILES
-check_files "$APP_KEYS_DIR" $APP_FILES
+check_files "$NGINX_AUTH_DIR" $NGINX_FILES
+check_files "$APP_AUTH_DIR" $APP_FILES
 
 # 5. Check JWT and Google secrets
 if ! VAULT_TOKEN="$VAULT_TOKEN" vault kv get -mount=secret jwt >/dev/null 2>&1; then
