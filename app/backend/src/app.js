@@ -57,8 +57,8 @@ const vault = new Vault({
   timeout: 1000,
   proxy: false
 });
-const roleId = fs.readFileSync("/app/secrets/app_role_id", "utf8").trim();
-const secretId = fs.readFileSync("/app/secrets/app_secret_id", "utf8").trim();
+const roleId = fs.readFileSync("/app/secrets/app-role-id", "utf8").trim();
+const secretId = fs.readFileSync("/app/secrets/app-secret-id", "utf8").trim();
 
 let secrets;
 try {

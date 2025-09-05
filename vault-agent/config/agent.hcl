@@ -6,8 +6,8 @@ vault {
 auto_auth {
   method "approle" {
     config = {
-      role_id_file_path   = "/vault/secrets/nginx_role_id"
-      secret_id_file_path = "/vault/secrets/nginx_secret_id"
+      role_id_file_path   = "/vault/secrets/nginx-role-id"
+      secret_id_file_path = "/vault/secrets/nginx-secret-id"
     }
   }
   sink "file" {

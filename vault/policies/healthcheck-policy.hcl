@@ -1,8 +1,8 @@
 # Allow reading nginx and app approle definitions
-path "auth/approle/role/nginx-role" {
+path "auth/approle/role/nginx" {
   capabilities = ["read"]
 }
-path "auth/approle/role/app-role" {
+path "auth/approle/role/app" {
   capabilities = ["read"]
 }
 

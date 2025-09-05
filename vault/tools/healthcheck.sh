@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROLE_FILE="$VAULT_KEYS_DIR/healthcheck_role_id"
-SECRET_FILE="$VAULT_KEYS_DIR/healthcheck_secret_id"
+ROLE_FILE="$VAULT_KEYS_DIR/healthcheck-role-id"
+SECRET_FILE="$VAULT_KEYS_DIR/healthcheck-secret-id"
 
 if [[ ! -s "$ROLE_FILE" || ! -s "$SECRET_FILE" ]]; then
     echo "⚠️ Healthcheck AppRole not ready yet."
@@ -10,8 +10,8 @@ if [[ ! -s "$ROLE_FILE" || ! -s "$SECRET_FILE" ]]; then
 fi
 
 HEALTH_TOKEN=$(vault write -format=json auth/approle/login \
-    role_id="$(cat $VAULT_KEYS_DIR/healthcheck_role_id)" \
-    secret_id="$(cat $VAULT_KEYS_DIR/healthcheck_secret_id)" \
+    role_id="$(cat $VAULT_KEYS_DIR/healthcheck-role-id)" \
+    secret_id="$(cat $VAULT_KEYS_DIR/healthcheck-secret-id)" \
     | jq -r '.auth.client_token')
 
 VAULT_TOKEN="$HEALTH_TOKEN"
@@ -23,21 +23,20 @@ if ! curl -s --cacert "$VAULT_CACERT" "$VAULT_ADDR/v1/sys/health" | jq -e '.seal
 fi
 
 # 2. Verify nginx AppRole
-if ! VAULT_TOKEN="$VAULT_TOKEN" vault read -format=json auth/approle/role/nginx-role >/dev/null 2>&1; then
+if ! VAULT_TOKEN="$VAULT_TOKEN" vault read -format=json auth/approle/role/nginx >/dev/null 2>&1; then
   echo "❌ nginx-role missing"
   exit 1
 fi
 
 # 3. Verify app AppRole
-if ! VAULT_TOKEN="$VAULT_TOKEN" vault read -format=json auth/approle/role/app-role >/dev/null 2>&1; then
+if ! VAULT_TOKEN="$VAULT_TOKEN" vault read -format=json auth/approle/role/app >/dev/null 2>&1; then
   echo "❌ app-role missing"
   exit 1
 fi
 
-# 4. Check role_id and secret_id files exist
-
-NGINX_FILES="nginx_role_id nginx_secret_id"
-APP_FILES="app_role_id app_secret_id"
+# 4. Check role-id and secret-id files exist
+NGINX_FILES="nginx-role-id nginx-secret-id"
+APP_FILES="app-role-id app-secret-id"
 
 # Function to check files in a directory
 check_files() {

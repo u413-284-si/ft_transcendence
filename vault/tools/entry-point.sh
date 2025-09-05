@@ -1,340 +1,263 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-##################################
-# -- Initial permission setup -- #
-##################################
+#######################################
+# -- Configuration / Constants -- #
+#######################################
 
-echo "➡️ Running initial setup..."
+UNSEAL_SHARES=5
+UNSEAL_THRESHOLD=3
+VAULT_START_TIMEOUT=60  # seconds
 
-mkdir -p "$VAULT_KEYS_DIR" "$NGINX_KEYS_DIR" "$APP_KEYS_DIR"
-chmod 750 "$SECRETS_DIR" "$VAULT_KEYS_DIR" "$NGINX_KEYS_DIR" "$APP_KEYS_DIR"
-chown -R vault:vault "$SECRETS_DIR"
-chown -R vault:vault /vault/data
+#######################################
+# -- Utility Functions -- #
+#######################################
 
-########################################
-# -- Startup and unsealing of Vault -- #
-########################################
+log() {
+    local level="$1"
+    local msg="$2"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') $level $msg"
+}
 
-# Start vault
-echo "➡️ Starting Vault server..."
-su-exec vault:vault vault "$@" &
-VAULT_PID=$!
+create_dirs() {
+    mkdir -p "$VAULT_KEYS_DIR" "$NGINX_KEYS_DIR" "$APP_KEYS_DIR"
+    chmod 750 "$SECRETS_DIR" "$VAULT_KEYS_DIR" "$NGINX_KEYS_DIR" "$APP_KEYS_DIR"
+    chown -R vault:vault "$SECRETS_DIR" /vault/data
+    log "➡️" "Directories created and permissions set"
+}
 
-# Wait for Vault API to respond
-echo "⏳ Waiting for Vault to start..."
-until curl -s  --cacert "$VAULT_CACERT" "$VAULT_ADDR/v1/sys/health" >/dev/null 2>&1; do
-  sleep 1
-done
-# sleep 5
-echo "✅ Vault API is up"
+run_vault() {
+    log "➡️" "Starting Vault server..."
+    su-exec vault:vault vault "$@" &
+    VAULT_PID=$!
+}
 
-# Check if Vault is initialized
-if ! jq -e '.initialized' >/dev/null < <(vault status --format=json); then
-  echo "🔐 Vault not initialized, running vault operator init..."
-  vault operator init -key-shares=5 -key-threshold=3 > /tmp/generated_keys.txt
+wait_for_vault() {
+    log "⏳" "Waiting for Vault API to respond..."
+    for i in $(seq 1 $VAULT_START_TIMEOUT); do
+        if curl -s --cacert "$VAULT_CACERT" "$VAULT_ADDR/v1/sys/health" >/dev/null 2>&1; then
+            log "✅" "Vault API is up"
+            return 0
+        fi
+        sleep 1
+    done
+    log "❌" "Vault did not start within $VAULT_START_TIMEOUT seconds"
+    exit 1
+}
 
-  # Parse unsealed keys
-  mapfile -t keyArray < <( grep "Unseal Key " < /tmp/generated_keys.txt  | cut -c15- )
-  # Get root token
-  ROOT_TOKEN=$(grep "Initial Root Token: " < /tmp/generated_keys.txt | cut -c21-)
+initialize_vault() {
+    if jq -e '.initialized' >/dev/null < <(vault status --format=json); then
+      log "ℹ️" "Vault already initialized"
+      return 0
+    fi
 
-  # Save as Docker secrets
-  for i in "${!keyArray[@]}"; do
-    echo "${keyArray[$i]}" > "$VAULT_KEYS_DIR/unseal_key_$((i+1))"
-  done
-  echo "$ROOT_TOKEN" > "$VAULT_KEYS_DIR/root_token"
+    log "🔐" "Vault not initialized, running vault operator init..."
 
-  chmod 600 "$VAULT_KEYS_DIR"/*
-  echo "✅ Keys written to $VAULT_KEYS_DIR"
-  rm -f /tmp/generated_keys.txt
-else
-  echo "ℹ️ Vault already initialized"
-fi
+    init_json="$(vault operator init \
+        -key-shares="$UNSEAL_SHARES" \
+        -key-threshold="$UNSEAL_THRESHOLD" \
+        -format=json)"
+
+    mapfile -t keys < <(jq -r '.unseal_keys_b64[]' <<<"$init_json")
+    root_token="$(jq -r '.root_token' <<<"$init_json")"
+
+    for i in "${!keys[@]}"; do
+      printf '%s\n' "${keys[$i]}" > "$VAULT_KEYS_DIR/unseal_key_$((i+1))"
+    done
+    printf '%s\n' "$root_token" > "$VAULT_KEYS_DIR/root_token"
+    chmod 600 "$VAULT_KEYS_DIR"/*
+    chown vault:vault "$VAULT_KEYS_DIR"/*
+
+    log "✅" "Saved ${#keys[@]} unseal keys and root token to $VAULT_KEYS_DIR"
+}
 
 unseal_vault() {
     local keys=("$@")
     if [ ${#keys[@]} -eq 0 ]; then
-        echo "ℹ️ No unseal keys found, Vault will remain sealed"
+        log "ℹ️" "No unseal keys found, Vault will remain sealed"
         return 1
     fi
 
-    local threshold=3  # Default unseal threshold
-    if [ "${#keys[@]}" -lt "$threshold" ]; then
-        threshold=${#keys[@]}
-    fi
+    local threshold=$UNSEAL_THRESHOLD
+    (( ${#keys[@]} < threshold )) && threshold=${#keys[@]}
 
     for i in $(seq 0 $((threshold - 1))); do
-        echo "➡️ Unsealing with key $((i+1))"
+        log "➡️" "Unsealing with key $((i+1))"
         vault operator unseal "${keys[$i]}"
     done
-    echo "🚀 Vault unseal attempt complete"
-    return 0
+    log "🚀" "Vault unseal attempt complete"
 }
 
-while true; do
-    # Load keys if any exist
-    if [ -d "$VAULT_KEYS_DIR" ]; then
-        mapfile -t keyArray < <(find "$VAULT_KEYS_DIR" -maxdepth 1 -name "unseal_key_*" -print0 | sort -z | xargs -0 cat)
-    else
+wait_for_unseal() {
+    while true; do
         keyArray=()
-    fi
+        for keyfile in "$VAULT_KEYS_DIR"/unseal_key_*; do
+            [ -f "$keyfile" ] && keyArray+=("$(cat "$keyfile")")
+        done
 
-    # Try to unseal
-    if unseal_vault "${keyArray[@]}"; then
-        echo "✅ Vault is unsealed"
-        break
-    else
-        echo "⏳ Vault remains sealed, waiting for unseal keys..."
-        sleep 5  # wait before checking again
-    fi
-done
-
-
-#########################
-# -- Configure Vault -- #
-#########################
-
-# Export root token into VAULT_TOKEN
-if [ -f "$VAULT_KEYS_DIR/root_token" ]; then
-  export VAULT_TOKEN=$(cat "$VAULT_KEYS_DIR/root_token")
-  echo "ℹ️ Root token exported to VAULT_TOKEN"
-fi
-
-# Add policy for setup
-vault policy write setup-policy /vault/policies/setup-policy.hcl
-
-# Enable AppRole authentication if not active
-if vault auth list -format=json | jq -e '."approle/"' > /dev/null; then
-  echo "ℹ️ AppRole auth method already enabled, skipping..."
-else
-  echo "➡️ Enabling AppRole authentication..."
-  vault auth enable -path=approle approle
-  echo "✅ AppRole authentication enabled"
-fi
-
-# Create AppRole for setup if not existent
-if vault read -format=json auth/approle/role/setup-role > /dev/null 2>&1; then
-  echo "ℹ️ AppRole setup-role already exists, skipping..."
-else
-  echo "➡️ Creating AppRole for setup..."
-  vault write auth/approle/role/setup-role \
-      secret_id_ttl=0 \
-      token_ttl=1h \
-      token_max_ttl=4h \
-      token_policies=setup-policy
-  echo "✅ AppRole setup-role created"
-fi
-
-# Create role ID and secret ID if not existent
-if [ ! -f "$VAULT_KEYS_DIR/setup_role_id" ]; then
-  echo "➡️ Creating role ID for setup..."
-  vault read -field=role_id auth/approle/role/setup-role/role-id > $VAULT_KEYS_DIR/setup_role_id
-  chmod 600 $VAULT_KEYS_DIR/setup_role_id
-  chown vault:vault $VAULT_KEYS_DIR/setup_role_id
-  echo "✅ Role ID for setup created"
-else
-  echo "ℹ️ Role ID for setup already exists"
-fi
-
-if [ ! -f "$VAULT_KEYS_DIR/setup_secret_id" ]; then
-  echo "➡️ Creating secret ID for setup..."
-  vault write -field=secret_id -f auth/approle/role/setup-role/secret-id > $VAULT_KEYS_DIR/setup_secret_id
-  chmod 600 "$VAULT_KEYS_DIR/setup_secret_id"
-  chown vault:vault "$VAULT_KEYS_DIR/setup_secret_id"
-  echo "✅ Secret ID for setup created"
-else
-  echo "ℹ️ Secret ID for setup already exists"
-fi
-
-if [[ -f "$VAULT_KEYS_DIR/setup_role_id" && -f "$VAULT_KEYS_DIR/setup_secret_id" ]]; then
-  echo "➡️ Logging in with setup-approle..."
-  BOOTSTRAP_TOKEN=$(vault write -format=json auth/approle/login \
-      role_id="$(cat $VAULT_KEYS_DIR/setup_role_id)" \
-      secret_id="$(cat $VAULT_KEYS_DIR/setup_secret_id)" \
-      | jq -r '.auth.client_token')
-  export VAULT_TOKEN="$BOOTSTRAP_TOKEN"
-  echo "✅ Bootstrap token acquired via AppRole"
-  vault token lookup
-else
-  echo "❌ No setup-approle credentials found, cannot continue"
-  exit 1
-fi
-
-# Enable kv
-echo "➡️ Enabling KV secrets engine..."
-if ! vault secrets list -format=json | jq -e '."secret/"' >/dev/null; then
-  vault secrets enable -path=secret kv-v2
-  echo "✅ KV secrets engine enabled at secret/"
-else
-  echo "ℹ️ KV already enabled at secret/"
-fi
-
-##############################################
-# -- Set up healthcheck secret generation -- #
-##############################################
-
-# Add policy for healthcheck
-echo "➡️ Adding policy for app..."
-vault policy write healthcheck-policy /vault/policies/healthcheck-policy.hcl
-
-vault write auth/approle/role/healthcheck-role \
-    secret_id_ttl=0 \
-    token_ttl=5m \
-    token_max_ttl=30m \
-    token_policies=healthcheck-policy
-
-# Create AppRole for healthcheck if not existent
-if vault read -format=json auth/approle/role/healthcheck-role > /dev/null 2>&1; then
-  echo "ℹ️ AppRole healthcheck-role already exists, skipping..."
-else
-  echo "➡️ Creating AppRole for healthcheck..."
-  vault write auth/approle/role/healthcheck-role \
-      secret_id_ttl=0 \
-      token_ttl=5m \
-      token_max_ttl=30m \
-      token_policies=healthcheck-policy
-  echo "✅ AppRole healthcheck-role for healthcheck created"
-fi
-
-# Create role ID and secret ID if not existent
-if [ ! -f "$VAULT_KEYS_DIR/healthcheck_role_id" ]; then
-  echo "➡️ Creating role ID for healthcheck..."
-  vault read -field=role_id auth/approle/role/healthcheck-role/role-id > $VAULT_KEYS_DIR/healthcheck_role_id
-  chmod 600 "$VAULT_KEYS_DIR/healthcheck_role_id"
-  chown vault:vault "$VAULT_KEYS_DIR/healthcheck_role_id"
-  echo "✅ Role ID for healthcheck created"
-else
-  echo "ℹ️ Role ID for healthcheck already exists"
-fi
-
-if [ ! -f "$VAULT_KEYS_DIR/healthcheck_secret_id" ]; then
-  echo "➡️ Creating secret ID for healthcheck..."
-  vault write -field=secret_id -f auth/approle/role/healthcheck-role/secret-id > "$VAULT_KEYS_DIR/healthcheck_secret_id"
-  chmod 600 "$VAULT_KEYS_DIR/healthcheck_secret_id"
-  chown vault:vault "$VAULT_KEYS_DIR/healthcheck_secret_id"
-  echo "✅ Secret ID for healthcheck created"
-else
-  echo "ℹ️ Secret ID for healthcheck already exists"
-fi
-
-########################################
-# -- Set up nginx secret generation -- #
-########################################
-
-# Run setup-ssl-ca.sh
-echo "➡️ Running certificate authority setup script..."
-/usr/local/bin/setup-ssl-ca.sh || {
-  echo "❌ Failed to generate certificate authority"
-  kill $VAULT_PID
-  exit 1
+        if unseal_vault "${keyArray[@]}"; then
+            log "✅" "Vault is unsealed"
+            break
+        else
+            log "⏳" "Vault remains sealed, waiting for unseal keys..."
+            sleep 5
+        fi
+    done
 }
-echo "✅ SSL certificate authority set up"
 
-# Add policy for nginx
-echo "➡️ Adding policy for nginx..."
-vault policy write nginx-policy /vault/policies/nginx-policy.hcl
+create_approle() {
+    local role_name="$1"
+    local policy="$2"
+    local dir="$3"
 
-# Create AppRole for nginx if not existent
-if vault read -format=json auth/approle/role/nginx-role > /dev/null 2>&1; then
-  echo "ℹ️ AppRole nginx-role already exists, skipping..."
+    if vault read -format=json "auth/approle/role/$role_name" > /dev/null 2>&1; then
+        log "ℹ️" "AppRole $role_name already exists, skipping..."
+    else
+        log "➡️" "Creating AppRole $role_name..."
+        vault write "auth/approle/role/$role_name" \
+            secret_id_ttl=0 \
+            token_ttl=1h \
+            token_max_ttl=4h \
+            token_policies="$policy"
+        log "✅" "AppRole $role_name created"
+    fi
+
+    # Save role-id and secret-id
+    if [ ! -f "$dir/${role_name}-role-id" ]; then
+      log "➡️" "Creating ${role_name}-role-id..."
+      vault read -field=role_id "auth/approle/role/$role_name/role-id" > "$dir/${role_name}-role-id"
+      chmod 600 "$dir/${role_name}-role-id"
+      chown vault:vault "$dir/${role_name}-role-id"
+      log "✅" "${role_name}-role-id created"
+    else
+      log "ℹ️" "${role_name}-role-id already exists, skipping..."
+    fi
+
+    if [ ! -f "$dir/${role_name}-secret-id" ]; then
+      log "➡️" "Creating ${role_name}-secret-id..."
+      vault write -field=secret_id -f "auth/approle/role/$role_name/secret-id" > "$dir/${role_name}-secret-id"
+      chmod 600 "$dir/${role_name}-secret-id"
+      chown vault:vault "$dir/${role_name}-secret-id"
+      log "✅" "${role_name}-secret-id created"
+    else
+      log "ℹ️" "${role_name}-secret-id already exists, skipping..."
+    fi
+
+}
+
+login_with_approle() {
+    local role_id_file="$1"
+    local secret_id_file="$2"
+
+    if [[ -f "$role_id_file" && -f "$secret_id_file" ]]; then
+        BOOTSTRAP_TOKEN=$(vault write -format=json auth/approle/login \
+            role_id="$(cat "$role_id_file")" \
+            secret_id="$(cat "$secret_id_file")" \
+            | jq -r '.auth.client_token')
+        export VAULT_TOKEN="$BOOTSTRAP_TOKEN"
+        log "✅" "Bootstrap token acquired via AppRole"
+    else
+        log "❌" "No AppRole credentials found, cannot continue"
+        ls $VAULT_KEYS_DIR
+        exit 1
+    fi
+}
+
+enable_kv_secrets() {
+    if ! vault secrets list -format=json | jq -e '."secret/"' >/dev/null; then
+        log "➡️" "Enabling KV secrets engine..."
+        vault secrets enable -path=secret kv-v2
+        log "✅" "KV secrets engine enabled at secret/"
+    else
+        log "ℹ️" "KV already enabled at secret/"
+    fi
+}
+
+populate_jwt_secret() {
+    vault kv put secret/jwt \
+        access_token_secret=$(openssl rand -hex 32) \
+        refresh_token_secret=$(openssl rand -hex 32) \
+        two_fa_login_token_secret=$(openssl rand -hex 32)
+    log "✅" "JWT secrets added to Vault"
+}
+
+populate_google_secret() {
+    if [ -f "/run/secrets/google_secret" ]; then
+        local googleSecret
+        googleSecret=$(cat "/run/secrets/google_secret")
+        vault kv put secret/google google_oauth2_client_secret="$googleSecret"
+        log "✅" "Google secret added to Vault"
+    else
+        log "ℹ️" "Google secret not found, skipping..."
+    fi
+}
+
+setup_ssl_ca() {
+    log "➡️" "Running certificate authority setup script..."
+    /usr/local/bin/setup-ssl-ca.sh || {
+        log "❌" "Failed to generate certificate authority"
+        kill $VAULT_PID
+        exit 1
+    }
+    log "✅" "SSL certificate authority set up"
+}
+
+cleanup_sensitive_vars() {
+    unset ROOT_TOKEN BOOTSTRAP_TOKEN VAULT_TOKEN
+}
+
+#######################################
+# -- Main Script Execution -- #
+#######################################
+
+log "➡️" "Running initial setup..."
+create_dirs
+run_vault "$@"
+wait_for_vault
+initialize_vault
+wait_for_unseal
+
+if [ -f "$VAULT_KEYS_DIR/root_token" ]; then
+    export VAULT_TOKEN=$(cat "$VAULT_KEYS_DIR/root_token")
+
+    # Write policies
+    vault policy write setup-policy /vault/policies/setup-policy.hcl
+    vault policy write healthcheck-policy /vault/policies/healthcheck-policy.hcl
+    vault policy write nginx-policy /vault/policies/nginx-policy.hcl
+    vault policy write app-policy /vault/policies/app-policy.hcl
+
+    # Enable AppRole if not already
+    if ! vault auth list -format=json | jq -e '."approle/"' >/dev/null; then
+    vault auth enable -path=approle approle
+    log "✅" "AppRole authentication enabled"
+    fi
+
+    create_approle "setup" "setup-policy" "$VAULT_KEYS_DIR"
 else
-  echo "➡️ Creating AppRole for nginx..."
-  vault write auth/approle/role/nginx-role \
-      secret_id_ttl=0 \
-      token_num_uses=0 \
-      token_ttl=1h \
-      token_max_ttl=4h \
-      policies=nginx-policy
-  echo "✅ AppRole nginx-role created"
+    log "ℹ️ Root token not found, skipping policy writes"
 fi
 
-# Create role ID and secret ID if not existent
-if [ ! -f "$NGINX_KEYS_DIR/nginx_role_id" ]; then
-  echo "➡️ Creating role ID for nginx..."
-  vault read -field=role_id auth/approle/role/nginx-role/role-id > "$NGINX_KEYS_DIR/nginx_role_id"
-  chmod 600 "$NGINX_KEYS_DIR/nginx_role_id"
-  chown vault:vault "$NGINX_KEYS_DIR/nginx_role_id"
-  echo "✅ Role ID for nginx created"
-else
-  echo "ℹ️ Role ID for nginx already exists"
-fi
+# Login with setup AppRole to bootstrap
+login_with_approle "$VAULT_KEYS_DIR/setup-role-id" "$VAULT_KEYS_DIR/setup-secret-id"
 
-if [ ! -f "$NGINX_KEYS_DIR/nginx_secret_id" ]; then
-  echo "➡️ Creating secret ID for nginx..."
-  vault write -field=secret_id -f auth/approle/role/nginx-role/secret-id > "$NGINX_KEYS_DIR/nginx_secret_id"
-  chmod 600 "$NGINX_KEYS_DIR/nginx_secret_id"
-  chown vault:vault "$NGINX_KEYS_DIR/nginx_secret_id"
-  echo "✅ Secret ID for nginx created"
-else
-  echo "ℹ️ Secret ID for nginx already exists"
-fi
+# Create all AppRoles
+create_approle "healthcheck" "healthcheck-policy" "$VAULT_KEYS_DIR"
+create_approle "nginx" "nginx-policy" "$NGINX_KEYS_DIR"
+create_approle "app" "app-policy" "$APP_KEYS_DIR"
 
-######################################
-# -- Set up app secret generation -- #
-######################################
+# Enable KV secrets
+enable_kv_secrets
 
-# Add jwt secrets
-echo "➡️ Adding JWT secrets..."
-vault kv put secret/jwt \
-    access_token_secret=$(openssl rand -hex 32) \
-    refresh_token_secret=$(openssl rand -hex 32) \
-    two_fa_login_token_secret=$(openssl rand -hex 32)
-echo "✅ JWT secrets added to Vault"
+# Populate secrets
+populate_jwt_secret
+populate_google_secret
 
-# Add google_secret
-echo "➡️ Adding Google secret..."
-if [ -f "/run/secrets/google_secret" ]; then
-  googleSecret=$(cat "/run/secrets/google_secret")
+# SSL setup
+setup_ssl_ca
 
-  vault kv put secret/google \
-      google_oauth2_client_secret="$googleSecret"
-  echo "✅ Google secret added to Vault"
-else
-  echo "ℹ️ Google secret not found, skipping..."
-fi
-
-# Add policy for app
-echo "➡️ Adding policy for app..."
-vault policy write app-policy /vault/policies/app-policy.hcl
-
-# Create AppRole for app if not existent
-if vault read -format=json auth/approle/role/app-role > /dev/null 2>&1; then
-  echo "ℹ️ AppRole app-role already exists, skipping..."
-else
-  echo "➡️ Creating AppRole for app..."
-  vault write auth/approle/role/app-role \
-      secret_id_ttl=0 \
-      token_num_uses=0 \
-      token_ttl=1h \
-      token_max_ttl=4h \
-      policies=app-policy
-  echo "✅ AppRole app-role for app created"
-fi
-
-# Create role ID and secret ID if not existent
-if [ ! -f "$APP_KEYS_DIR/app_role_id" ]; then
-  echo "➡️ Creating role ID for app..."
-  vault read -field=role_id auth/approle/role/app-role/role-id > "$APP_KEYS_DIR/app_role_id"
-  chmod 600 "$APP_KEYS_DIR/app_role_id"
-  chown vault:vault "$APP_KEYS_DIR/app_role_id"
-  echo "✅ Role ID for app created"
-else
-  echo "ℹ️ Role ID for app already exists"
-fi
-
-if [ ! -f "$APP_KEYS_DIR/app_secret_id" ]; then
-  echo "➡️ Creating secret ID for app..."
-  vault write -field=secret_id -f auth/approle/role/app-role/secret-id > "$APP_KEYS_DIR/app_secret_id"
-  chmod 600 "$APP_KEYS_DIR/app_secret_id"
-  chown vault:vault "$APP_KEYS_DIR/app_secret_id"
-  echo "✅ Secret ID for app created"
-else
-  echo "ℹ️ Secret ID for app already exists"
-fi
-
+# Revoke bootstrap token
 vault token revoke -self
-unset VAULT_TOKEN
-echo "🔒 Bootstrap token revoked"
+cleanup_sensitive_vars
+log "🔒" "Bootstrap token revoked"
 
 wait $VAULT_PID
