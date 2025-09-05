@@ -45,15 +45,17 @@ export class AuthManager {
     user: User | null
   ): Promise<void> {
     this.token = token;
-    if (this.token) {
+    if (this.token && user) {
       this.authenticated = true;
       this.user = user;
+      localStorage.setItem("authState", JSON.stringify({ token, user }));
       this.scheduleTokenValidation();
       this.registerActivityListeners();
       openSSEConnection();
     } else {
       this.authenticated = false;
       this.user = null;
+      localStorage.removeItem("authState");
       this.clearRefreshTimer();
       this.removeActivityListeners();
       closeSSEConnection(true);
@@ -64,6 +66,8 @@ export class AuthManager {
   public async initialize(): Promise<void> {
     console.info("Initializing auth manager");
     try {
+      this.registerLocalStorageListener();
+
       if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
         console.info("Found authProviderConfilct cookie");
         toaster.error(i18next.t("toast.emailExists"));
@@ -289,6 +293,29 @@ export class AuthManager {
       clearTimeout(this.refreshTimeout);
       this.refreshTimeout = null;
     }
+  }
+
+  private registerLocalStorageListener(): void {
+    window.addEventListener("storage", async (event) => {
+      console.log("Storage listener fired");
+      if (event.key !== "authState") return;
+
+      const storedAuthState = localStorage.getItem("authState");
+      if (storedAuthState) {
+        try {
+          const { token, user } = JSON.parse(storedAuthState) as {
+            token: ValidToken;
+            user: User;
+          };
+          await this.updateAuthState(token, user);
+        } catch (error) {
+          console.error("Failed to parse auth state", error);
+          await this.updateAuthState(null, null);
+        }
+      } else {
+        await this.updateAuthState(null, null);
+      }
+    });
   }
 }
 
