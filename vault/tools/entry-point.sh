@@ -164,7 +164,7 @@ login_with_approle() {
 }
 
 enable_kv_secrets() {
-    if ! vault secrets list -format=json | jq -e '."secret/"' >/dev/null; then
+    if ! jq -e '."secret/"' >/dev/null < <(vault secrets list -format=json); then
         log "➡️" "Enabling KV secrets engine..."
         vault secrets enable -path=secret kv-v2
         log "✅" "KV secrets engine enabled at secret/"
@@ -227,9 +227,12 @@ if [ -f "$VAULT_KEYS_DIR/root_token" ]; then
     vault policy write app-policy /vault/policies/app-policy.hcl
 
     # Enable AppRole if not already
-    if ! vault auth list -format=json | jq -e '."approle/"' >/dev/null; then
-    vault auth enable -path=approle approle
-    log "✅" "AppRole authentication enabled"
+    if ! jq -e '."approle/"' >/dev/null < <(vault auth list -format=json); then
+      log "➡️" "Enabling AppRole authentication..."
+      vault auth enable -path=approle approle
+      log "✅" "AppRole authentication enabled"
+    else
+      log "ℹ️" "AppRole already enabled."
     fi
 
     create_approle "setup" "setup-policy" "$VAULT_KEYS_DIR"
