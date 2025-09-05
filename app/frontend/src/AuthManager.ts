@@ -1,7 +1,7 @@
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   checkRefreshTokenStatus,
-  refreshAccessToken,
+  //refreshAccessToken,
   userLogin,
   userLogout
 } from "./services/authServices.js";
@@ -22,14 +22,14 @@ type AuthChangeCallback = (authenticated: boolean) => Promise<void>;
 export class AuthManager {
   private static instance: AuthManager;
   private authenticated = false;
-  private token: ValidToken | null = null;
+  //private token: ValidToken | null = null;
   private listeners: AuthChangeCallback[] = [];
   private user: User | null = null;
 
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
 
-  private profileChangeListener?: () => Promise<void>;
+  private isProfileChangeListenerActive: boolean = false;
   public isExpectingUpdate: boolean = false;
 
   private constructor() {}
@@ -42,11 +42,12 @@ export class AuthManager {
   }
 
   private async updateAuthState(
-    token: ValidToken | null,
+    //token: ValidToken | null,
     user: User | null
   ): Promise<void> {
-    this.token = token;
-    if (this.token && user) {
+    //this.token = token;
+    //if (this.token && user) {
+    if (user) {
       console.log("Log in user...");
       this.authenticated = true;
       this.user = user;
@@ -91,9 +92,9 @@ export class AuthManager {
         await this.notify();
         return;
       }
-      const accessToken = getDataOrThrow(await refreshAccessToken());
+      //const accessToken = getDataOrThrow(await refreshAccessToken());
       const user = await this.fetchUserDataAndSetLanguage();
-      await this.updateAuthState(accessToken, user);
+      await this.updateAuthState(user);
     } catch (error) {
       await this.notify();
       router.handleError("Error in AuthManager.initialize():", error);
@@ -132,7 +133,7 @@ export class AuthManager {
         return false;
       }
       const user = await this.fetchUserDataAndSetLanguage();
-      await this.updateAuthState(token, user);
+      await this.updateAuthState(user);
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -142,8 +143,9 @@ export class AuthManager {
 
   public async loginAfterTwoFA(token: ValidToken) {
     try {
+      console.log(token);
       const user = await this.fetchUserDataAndSetLanguage();
-      await this.updateAuthState(token, user);
+      await this.updateAuthState(user);
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -169,7 +171,7 @@ export class AuthManager {
       const sidebar = getById("drawer-sidebar");
       sidebar.remove();
 
-      await this.updateAuthState(null, null);
+      await this.updateAuthState(null);
     } catch (error) {
       console.error("Error while logout()", error);
       toaster.error(i18next.t("toast.logoutError"));
@@ -180,7 +182,7 @@ export class AuthManager {
     if (this.authenticated) {
       console.error("Could not verify user");
       toaster.error(i18next.t("toast.userVerificationError"));
-      await this.updateAuthState(null, null);
+      await this.updateAuthState(null);
     }
   }
 
@@ -188,10 +190,10 @@ export class AuthManager {
     return this.authenticated;
   }
 
-  public getToken(): ValidToken {
-    if (!this.token) throw new Error(i18next.t("error.noActiveToken"));
-    return this.token;
-  }
+  // public getToken(): ValidToken {
+  //   if (!this.token) throw new Error(i18next.t("error.noActiveToken"));
+  //   return this.token;
+  // }
 
   public getUser(): User {
     if (!this.user) throw new Error(i18next.t("error.userNotFound"));
@@ -240,12 +242,12 @@ export class AuthManager {
     }, this.inactivityMs);
   };
 
-  private clearInactivityTimer(): void {
+  private clearInactivityTimer = (): void => {
     if (this.idleTimeout) {
       clearTimeout(this.idleTimeout);
       this.idleTimeout = null;
     }
-  }
+  };
 
   private registerActivityListeners(): void {
     window.addEventListener("mousemove", this.startInactivityTimer);
@@ -266,42 +268,44 @@ export class AuthManager {
 
       if (!event.newValue) {
         console.log("authState cleared");
-        await this.updateAuthState(null, null);
+        await this.updateAuthState(null);
         return;
       }
       try {
-        const { token } = JSON.parse(event.newValue) as {
-          token: ValidToken;
-        };
         const user = await this.fetchUserDataAndSetLanguage();
-        await this.updateAuthState(token, user);
+        await this.updateAuthState(user);
         router.reload();
       } catch (error) {
-        await this.updateAuthState(null, null);
+        await this.updateAuthState(null);
         router.handleError("Failed to update auth state", error);
       }
     });
   }
 
+  private profileChangeListener = async () => {
+    console.log("Profile change event");
+    if (this.isExpectingUpdate) return;
+    const user = await this.fetchUserDataAndSetLanguage();
+    await this.updateAuthState(user);
+  };
+
   private registerProfileChangeListener() {
-    this.profileChangeListener = async () => {
-      if (this.isExpectingUpdate) return;
-      const user = await this.fetchUserDataAndSetLanguage();
-      await this.updateAuthState(this.token, user);
-    };
-    window.addEventListener(
-      "app:ProfileChangeEvent",
-      this.profileChangeListener
-    );
+    if (!this.isProfileChangeListenerActive) {
+      window.addEventListener(
+        "app:ProfileChangeEvent",
+        this.profileChangeListener
+      );
+      this.isProfileChangeListenerActive = true;
+    }
   }
 
   private removeProfileChangeListener() {
-    if (this.profileChangeListener) {
+    if (this.isProfileChangeListenerActive) {
       window.removeEventListener(
         "app:ProfileChangeEvent",
         this.profileChangeListener
       );
-      this.profileChangeListener = undefined;
+      this.isProfileChangeListenerActive = false;
     }
   }
 }
