@@ -13,7 +13,7 @@ import { getUserProfile } from "./services/userServices.js";
 import { toaster } from "./Toaster.js";
 import { ValidToken } from "./types/Token.js";
 import { User, Language } from "./types/User.js";
-import { getById, getCookieValueByName } from "./utility.js";
+import { getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
 import TwoFAVerifyView from "./views/TwoFAVerifyView.js";
 import { ProfileChangeEvent } from "./types/ServerSentEvents.js";
@@ -167,9 +167,6 @@ export class AuthManager {
           throw new ApiError(apiResponse);
         }
       }
-
-      const sidebar = getById("drawer-sidebar");
-      sidebar.remove();
 
       await this.updateAuthState(null);
     } catch (error) {
