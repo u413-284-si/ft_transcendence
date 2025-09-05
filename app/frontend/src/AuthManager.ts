@@ -50,7 +50,7 @@ export class AuthManager {
       console.log("Log in user...");
       this.authenticated = true;
       this.user = user;
-      localStorage.setItem("authState", JSON.stringify({ token }));
+      localStorage.setItem("authState", JSON.stringify({ id: user.id }));
       this.registerActivityListeners();
       this.registerProfileChangeListener();
       openSSEConnection();
