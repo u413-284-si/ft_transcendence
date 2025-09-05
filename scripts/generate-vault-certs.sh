@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-BASE_DIR="./secrets"
+BASE_DIR="./certs"
 CA_DIR="${BASE_DIR}/ca"
 VAULT_DIR="${BASE_DIR}/vault-certs"
 
