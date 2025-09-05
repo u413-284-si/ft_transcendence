@@ -51,7 +51,7 @@ export default class SettingsView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("settingsView.title"));
+    this.setTitle();
   }
 
   private hasTwoFA(): boolean {
@@ -354,7 +354,6 @@ export default class SettingsView extends AbstractView {
     try {
       getDataOrThrow(await patchUser(updatedUser));
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
-      await auth.updateUser(updatedUser);
     } catch (err) {
       console.error("Failed to update preferred language:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
@@ -362,7 +361,7 @@ export default class SettingsView extends AbstractView {
   }
 
   getName(): string {
-    return "settings";
+    return i18next.t("settingsView.title");
   }
 
   private async callTwoFAFormAction(event: Event): Promise<void> {
@@ -380,7 +379,6 @@ export default class SettingsView extends AbstractView {
         const apiResponse = await verifyTwoFACodeAndGetBackupCodes(
           this.twoFACodeInputEl.value
         );
-        this.twoFACodeInputEl.value = "";
         if (!apiResponse.success) {
           if (apiResponse.status === 401) {
             markInvalid(
@@ -395,11 +393,6 @@ export default class SettingsView extends AbstractView {
         }
 
         const backupCodes = apiResponse.data.backupCodes;
-
-        const updatedUser: Partial<User> = {
-          hasTwoFA: true
-        };
-        auth.updateUser(updatedUser);
 
         toaster.success(i18next.t("toast.twoFASetupSuccess"));
         this.fillBackupCodesTable(backupCodes);
@@ -482,11 +475,6 @@ export default class SettingsView extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
-
-      const updatedUser: Partial<User> = {
-        hasTwoFA: false
-      };
-      auth.updateUser(updatedUser);
 
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
     } catch (error) {

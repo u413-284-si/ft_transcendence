@@ -28,6 +28,7 @@ import { createResponseMessage } from "../utils/response.js";
 import { httpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
+import { notifyProfileChange } from "../services/events/sse.services.js";
 
 export async function loginUserHandler(request, reply) {
   request.action = "Login user";
@@ -132,16 +133,33 @@ export async function googleOauth2LoginHandler(request, reply) {
 export async function checkRefreshTokenStatusHandler(request, reply) {
   request.action = "Check refresh token status";
   try {
+    const token = request.cookies.refreshToken;
+    if (!token) {
+      return reply.code(200).send({
+        message: createResponseMessage(request.action, true),
+        data: { status: "none" }
+      });
+    }
+
     const payload = await request.refreshTokenVerify();
+    const hashedRefreshToken = await getTokenHash(payload.id);
+
+    if (!(await verifyHash(hashedRefreshToken, token))) {
+      return reply
+        .clearAuthCookies()
+        .code(200)
+        .send({
+          message: createResponseMessage(request.action, true),
+          data: { status: "invalid" }
+        });
+    }
     return reply.code(200).send({
       message: createResponseMessage(request.action, true),
       data: { status: "valid", type: payload.type, exp: payload.exp }
     });
   } catch (err) {
     let status = "undefined";
-    if (err.code === "FST_JWT_NO_AUTHORIZATION_IN_COOKIE") {
-      status = "none";
-    } else if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
+    if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
       status = "expired";
     } else if (
       err.code === "FST_JWT_AUTHORIZATION_TOKEN_INVALID" ||
@@ -149,6 +167,7 @@ export async function checkRefreshTokenStatusHandler(request, reply) {
       err.code === "FAST_JWT_MISSING_SIGNATURE"
     ) {
       status = "invalid";
+      reply.clearAuthCookies();
     } else {
       throw err;
     }
@@ -245,6 +264,7 @@ export async function enableTwoFAHandler(request, reply) {
   }
 
   await updateTwoFAStatus(userId, true);
+  notifyProfileChange(userId, { update: { hasTwoFA: true } });
 
   const newBackupCodes = await updateBackupCodes(userId);
   const data = { backupCodes: newBackupCodes };
@@ -391,6 +411,7 @@ export async function twoFARemoveHandler(request, reply) {
   }
 
   await updateTwoFAStatus(userId, false);
+  notifyProfileChange(userId, { update: { hasTwoFA: false } });
   await updateTwoFASecret(userId, null);
   await deleteBackupCodes(userId);
   return reply
@@ -402,18 +423,7 @@ export async function logoutUserHandler(request, reply) {
   request.action = "Logout user";
   const userId = request.user.id;
   const username = request.user.username;
-  reply.clearCookie("accessToken", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    path: "/"
-  });
-  reply.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    path: "/api/auth/refresh"
-  });
+  reply.clearAuthCookies();
   await deleteUserRefreshToken(userId);
   return reply.code(200).send({
     message: createResponseMessage(request.action, true),

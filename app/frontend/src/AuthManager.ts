@@ -11,25 +11,24 @@ import {
 } from "./services/serverSentEventsServices.js";
 import { getUserProfile } from "./services/userServices.js";
 import { toaster } from "./Toaster.js";
-import { ValidToken } from "./types/Token.js";
 import { User, Language } from "./types/User.js";
-import { getById, getCookieValueByName } from "./utility.js";
+import { getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
 import TwoFAVerifyView from "./views/TwoFAVerifyView.js";
+import { ProfileChangeEvent } from "./types/ServerSentEvents.js";
 
 type AuthChangeCallback = (authenticated: boolean) => Promise<void>;
 
 export class AuthManager {
   private static instance: AuthManager;
   private authenticated = false;
-  private token: ValidToken | null = null;
   private listeners: AuthChangeCallback[] = [];
   private user: User | null = null;
 
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
 
-  private refreshTimeout: ReturnType<typeof setTimeout> | null = null;
+  private isProfileChangeListenerActive: boolean = false;
 
   private constructor() {}
 
@@ -40,23 +39,25 @@ export class AuthManager {
     return AuthManager.instance;
   }
 
-  private async updateAuthState(
-    token: ValidToken | null,
-    user: User | null
-  ): Promise<void> {
-    this.token = token;
-    if (this.token) {
+  private async updateAuthState(user: User | null): Promise<void> {
+    if (user) {
+      console.log("Log in user...");
       this.authenticated = true;
       this.user = user;
-      this.scheduleTokenValidation();
+      localStorage.setItem("authState", JSON.stringify({ id: user.id }));
       this.registerActivityListeners();
+      this.registerProfileChangeListener();
       openSSEConnection();
+      console.log("User logged in.");
     } else {
+      console.log("Log out user...");
       this.authenticated = false;
       this.user = null;
-      this.clearRefreshTimer();
+      localStorage.removeItem("authState");
       this.removeActivityListeners();
+      this.removeProfileChangeListener();
       closeSSEConnection(true);
+      console.log("User logged out.");
     }
     await this.notify();
   }
@@ -64,6 +65,8 @@ export class AuthManager {
   public async initialize(): Promise<void> {
     console.info("Initializing auth manager");
     try {
+      this.registerLocalStorageListener();
+
       if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
         console.info("Found authProviderConfilct cookie");
         toaster.error(i18next.t("toast.emailExists"));
@@ -78,15 +81,13 @@ export class AuthManager {
         await this.notify();
         return;
       } else if (refreshToken.status === "invalid") {
-        console.warn("Invalid refresh token found. Removing it");
-        document.cookie =
-          "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/api/auth/refresh;";
+        console.warn("Invalid refresh token found.");
         await this.notify();
         return;
       }
-      const accessToken = getDataOrThrow(await refreshAccessToken());
+      getDataOrThrow(await refreshAccessToken());
       const user = await this.fetchUserDataAndSetLanguage();
-      await this.updateAuthState(accessToken, user);
+      await this.updateAuthState(user);
     } catch (error) {
       await this.notify();
       router.handleError("Error in AuthManager.initialize():", error);
@@ -119,13 +120,8 @@ export class AuthManager {
         return false;
       }
 
-      const token = apiResponseUserLogin.data.token;
-      if (!token) {
-        console.error("No token received");
-        return false;
-      }
       const user = await this.fetchUserDataAndSetLanguage();
-      await this.updateAuthState(token, user);
+      await this.updateAuthState(user);
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -133,10 +129,10 @@ export class AuthManager {
     }
   }
 
-  public async loginAfterTwoFA(token: ValidToken) {
+  public async loginAfterTwoFA() {
     try {
       const user = await this.fetchUserDataAndSetLanguage();
-      await this.updateAuthState(token, user);
+      await this.updateAuthState(user);
       return true;
     } catch (error) {
       router.handleError("Login error", error);
@@ -159,10 +155,7 @@ export class AuthManager {
         }
       }
 
-      const sidebar = getById("drawer-sidebar");
-      sidebar.remove();
-
-      await this.updateAuthState(null, null);
+      await this.updateAuthState(null);
     } catch (error) {
       console.error("Error while logout()", error);
       toaster.error(i18next.t("toast.logoutError"));
@@ -173,17 +166,12 @@ export class AuthManager {
     if (this.authenticated) {
       console.error("Could not verify user");
       toaster.error(i18next.t("toast.userVerificationError"));
-      await this.updateAuthState(null, null);
+      await this.updateAuthState(null);
     }
   }
 
   public isAuthenticated(): boolean {
     return this.authenticated;
-  }
-
-  public getToken(): ValidToken {
-    if (!this.token) throw new Error(i18next.t("error.noActiveToken"));
-    return this.token;
   }
 
   public getUser(): User {
@@ -209,7 +197,11 @@ export class AuthManager {
       ...this.user,
       ...update
     };
-    await this.notify();
+    if (Object.keys(update).includes("language")) {
+      await this.updateLanguage(update.language!);
+    } else {
+      await this.notify();
+    }
   }
 
   public async updateLanguage(lang: Language): Promise<void> {
@@ -233,12 +225,12 @@ export class AuthManager {
     }, this.inactivityMs);
   };
 
-  private clearInactivityTimer(): void {
+  private clearInactivityTimer = (): void => {
     if (this.idleTimeout) {
       clearTimeout(this.idleTimeout);
       this.idleTimeout = null;
     }
-  }
+  };
 
   private registerActivityListeners(): void {
     window.addEventListener("mousemove", this.startInactivityTimer);
@@ -252,44 +244,56 @@ export class AuthManager {
     window.removeEventListener("keydown", this.startInactivityTimer);
   }
 
-  private scheduleTokenValidation(): void {
-    const expiresAtMs = this.getToken().exp * 1000;
-    const now = Date.now();
-    const refreshAtMs = expiresAtMs - 60_000;
-    const delay = Math.max(refreshAtMs - now, 1000);
-    console.log("Setting new refresh timer:", delay / 1000);
+  private registerLocalStorageListener(): void {
+    window.addEventListener("storage", async (event) => {
+      if (event.key !== "authState") return;
+      console.warn("Storage listener fired");
 
-    if (this.refreshTimeout) clearTimeout(this.refreshTimeout);
-    this.refreshTimeout = setTimeout(() => {
-      this.refreshToken();
-    }, delay);
+      if (!event.newValue) {
+        console.log("authState cleared");
+        await this.updateAuthState(null);
+        return;
+      }
+      try {
+        const user = await this.fetchUserDataAndSetLanguage();
+        await this.updateAuthState(user);
+        router.reload();
+      } catch (error) {
+        await this.updateAuthState(null);
+        router.handleError("Failed to update auth state", error);
+      }
+    });
   }
 
-  private async refreshToken(): Promise<void> {
-    console.log("Refresh token");
-    try {
-      const apiResponse = await refreshAccessToken();
-      if (!apiResponse.success) {
-        if (apiResponse.status === 401) {
-          toaster.error(i18next.t("toast.tokenRefreshFailed"));
-          this.clearTokenOnError();
-          return;
-        } else {
-          throw new ApiError(apiResponse);
-        }
-      }
-      this.token = apiResponse.data;
-      this.scheduleTokenValidation();
-    } catch (error) {
-      console.warn("Token refresh failed", error);
-      this.clearTokenOnError();
+  private profileChangeListener = async (event: Event) => {
+    console.log("Profile change event");
+
+    const { update } = (event as ProfileChangeEvent).detail;
+    if (!this.user) {
+      console.warn("User is not set");
+      return;
+    }
+    console.log("Applying partial profile update:", update);
+    this.updateUser(update);
+  };
+
+  private registerProfileChangeListener() {
+    if (!this.isProfileChangeListenerActive) {
+      window.addEventListener(
+        "app:ProfileChangeEvent",
+        this.profileChangeListener
+      );
+      this.isProfileChangeListenerActive = true;
     }
   }
 
-  private clearRefreshTimer(): void {
-    if (this.refreshTimeout) {
-      clearTimeout(this.refreshTimeout);
-      this.refreshTimeout = null;
+  private removeProfileChangeListener() {
+    if (this.isProfileChangeListenerActive) {
+      window.removeEventListener(
+        "app:ProfileChangeEvent",
+        this.profileChangeListener
+      );
+      this.isProfileChangeListenerActive = false;
     }
   }
 }

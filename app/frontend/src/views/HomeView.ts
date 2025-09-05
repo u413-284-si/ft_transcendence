@@ -11,7 +11,7 @@ import { Card } from "../components/Card.js";
 export default class HomeView extends AbstractView {
   constructor() {
     super();
-    this.setTitle(i18next.t("homeView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -91,6 +91,6 @@ export default class HomeView extends AbstractView {
   }
 
   getName(): string {
-    return "home";
+    return i18next.t("homeView.title");
   }
 }

@@ -28,7 +28,7 @@ export default class PlayerNicknamesView extends AbstractView {
     private tournamentName: string
   ) {
     super();
-    this.setTitle(i18next.t("playerNicknamesView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -122,6 +122,6 @@ export default class PlayerNicknamesView extends AbstractView {
   }
 
   getName(): string {
-    return "player-nicknames";
+    return i18next.t("playerNicknamesView.title");
   }
 }

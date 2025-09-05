@@ -28,7 +28,7 @@ export class GameView extends AbstractView {
     private tournament: Tournament | null
   ) {
     super();
-    this.setTitle(i18next.t("gameView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -122,7 +122,7 @@ export class GameView extends AbstractView {
   }
 
   getName(): string {
-    return "game";
+    return i18next.t("gameView.title");
   }
 
   toggleLangSwitcher() {
