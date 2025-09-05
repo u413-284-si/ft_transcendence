@@ -11,7 +11,6 @@ import {
 } from "./services/serverSentEventsServices.js";
 import { getUserProfile } from "./services/userServices.js";
 import { toaster } from "./Toaster.js";
-import { ValidToken } from "./types/Token.js";
 import { User, Language } from "./types/User.js";
 import { getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
@@ -23,7 +22,6 @@ type AuthChangeCallback = (authenticated: boolean) => Promise<void>;
 export class AuthManager {
   private static instance: AuthManager;
   private authenticated = false;
-  //private token: ValidToken | null = null;
   private listeners: AuthChangeCallback[] = [];
   private user: User | null = null;
 
@@ -41,12 +39,7 @@ export class AuthManager {
     return AuthManager.instance;
   }
 
-  private async updateAuthState(
-    //token: ValidToken | null,
-    user: User | null
-  ): Promise<void> {
-    //this.token = token;
-    //if (this.token && user) {
+  private async updateAuthState(user: User | null): Promise<void> {
     if (user) {
       console.log("Log in user...");
       this.authenticated = true;
@@ -127,11 +120,6 @@ export class AuthManager {
         return false;
       }
 
-      const token = apiResponseUserLogin.data.token;
-      if (!token) {
-        console.error("No token received");
-        return false;
-      }
       const user = await this.fetchUserDataAndSetLanguage();
       await this.updateAuthState(user);
       return true;
@@ -141,9 +129,8 @@ export class AuthManager {
     }
   }
 
-  public async loginAfterTwoFA(token: ValidToken) {
+  public async loginAfterTwoFA() {
     try {
-      console.log(token);
       const user = await this.fetchUserDataAndSetLanguage();
       await this.updateAuthState(user);
       return true;
@@ -186,11 +173,6 @@ export class AuthManager {
   public isAuthenticated(): boolean {
     return this.authenticated;
   }
-
-  // public getToken(): ValidToken {
-  //   if (!this.token) throw new Error(i18next.t("error.noActiveToken"));
-  //   return this.token;
-  // }
 
   public getUser(): User {
     if (!this.user) throw new Error(i18next.t("error.userNotFound"));
