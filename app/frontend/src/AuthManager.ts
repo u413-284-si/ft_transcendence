@@ -46,19 +46,26 @@ export class AuthManager {
   ): Promise<void> {
     this.token = token;
     if (this.token && user) {
+      console.log("Log in user...");
       this.authenticated = true;
       this.user = user;
-      localStorage.setItem("authState", JSON.stringify({ token, user }));
+      localStorage.setItem(
+        "authState",
+        JSON.stringify({ token, username: user.username })
+      );
       this.scheduleTokenValidation();
       this.registerActivityListeners();
       openSSEConnection();
+      console.log("User logged in.");
     } else {
+      console.log("Log out user...");
       this.authenticated = false;
       this.user = null;
       localStorage.removeItem("authState");
       this.clearRefreshTimer();
       this.removeActivityListeners();
       closeSSEConnection(true);
+      console.log("User logged out.");
     }
     await this.notify();
   }
@@ -294,26 +301,28 @@ export class AuthManager {
       this.refreshTimeout = null;
     }
   }
-
   private registerLocalStorageListener(): void {
     window.addEventListener("storage", async (event) => {
-      console.log("Storage listener fired");
       if (event.key !== "authState") return;
+      console.warn("Storage listener fired");
 
-      const storedAuthState = localStorage.getItem("authState");
-      if (storedAuthState) {
-        try {
-          const { token, user } = JSON.parse(storedAuthState) as {
-            token: ValidToken;
-            user: User;
-          };
-          await this.updateAuthState(token, user);
-        } catch (error) {
-          console.error("Failed to parse auth state", error);
-          await this.updateAuthState(null, null);
-        }
-      } else {
+      if (!event.newValue) {
+        console.log("authState cleared");
         await this.updateAuthState(null, null);
+        return;
+      }
+      try {
+        const { token, username } = JSON.parse(event.newValue) as {
+          token: ValidToken;
+          username: string;
+        };
+        console.log(`authState for ${username}`);
+        const user = await this.fetchUserDataAndSetLanguage();
+        await this.updateAuthState(token, user);
+        router.reload();
+      } catch (error) {
+        await this.updateAuthState(null, null);
+        router.handleError("Failed to update auth state", error);
       }
     });
   }
