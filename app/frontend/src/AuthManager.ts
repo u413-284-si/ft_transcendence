@@ -288,6 +288,10 @@ export class AuthManager {
         }
       }
       this.token = apiResponse.data;
+      localStorage.setItem(
+        "authState",
+        JSON.stringify({ token: this.token, username: this.getUser().username })
+      );
       this.scheduleTokenValidation();
     } catch (error) {
       console.warn("Token refresh failed", error);
