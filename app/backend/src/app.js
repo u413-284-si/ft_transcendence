@@ -109,7 +109,7 @@ await fastify.register(fastifyHelmet, {
       defaultSrc: ["'self'"],
       connectSrc: [
         "'self'",
-        "http://localhost:4000",
+        "https://localhost:8443",
         "https://accounts.google.com"
       ]
     }
