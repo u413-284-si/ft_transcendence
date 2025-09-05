@@ -45,13 +45,31 @@ help:
 
 # Builds, (re)creates, starts, and attaches to containers for a service.
 .PHONY: up
-up: .env vault-certs
+up: check-files vault-certs
 	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d
 
-# Ensure .env exists
-.env: .env.example
-	$(SILENT)cp $< $@
-	@echo "📝 Created .env from .env.example"
+.PHONY: check-files
+check-files:
+	$(SILENT)if [ ! -f .env ]; then \
+		cp .env.example .env; \
+		echo "📝 Created .env from .env.example"; \
+	else \
+		echo "✅ .env already exists, skipping"; \
+	fi
+
+	$(SILENT)if [ ! -f $(DIR_SECRETS)/google-id.txt ]; then \
+		touch $(DIR_SECRETS)/google-id.txt; \
+		echo "📝 Created empty google-id.txt"; \
+	else \
+		echo "✅ google-id.txt already exists, skipping"; \
+	fi
+
+	$(SILENT)if [ ! -f $(DIR_SECRETS)/google-secret.txt ]; then \
+		touch $(DIR_SECRETS)/google-secret.txt; \
+		echo "📝 Created empty google-secret.txt"; \
+	else \
+		echo "✅ google-secret.txt already exists, skipping"; \
+	fi
 
 .PHONY: vault-certs
 vault-certs:

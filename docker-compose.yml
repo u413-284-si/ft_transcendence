@@ -73,6 +73,7 @@ services:
       - NGINX_KEYS_DIR=${NGINX_KEYS_DIR}
       - APP_KEYS_DIR=${APP_KEYS_DIR}
     secrets:
+      - google_id
       - google_secret
       - vault_cert
       - vault_key
@@ -146,6 +147,8 @@ volumes:
   vault-secrets-app:
 
 secrets:
+  google_id:
+    file: ./secrets/google-id.txt
   google_secret:
     file: ./secrets/google-secret.txt
   vault_cert:

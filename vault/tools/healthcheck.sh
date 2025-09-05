@@ -60,7 +60,11 @@ if ! VAULT_TOKEN="$VAULT_TOKEN" vault kv get -mount=secret jwt >/dev/null 2>&1; 
   echo "❌ jwt secret missing"
   exit 1
 fi
-if ! VAULT_TOKEN="$VAULT_TOKEN" vault kv get -mount=secret google >/dev/null 2>&1; then
+if ! VAULT_TOKEN="$VAULT_TOKEN" vault kv get -mount=secret google_id >/dev/null 2>&1; then
+  echo "❌ google id missing"
+  exit 1
+fi
+if ! VAULT_TOKEN="$VAULT_TOKEN" vault kv get -mount=secret google_secret >/dev/null 2>&1; then
   echo "❌ google secret missing"
   exit 1
 fi

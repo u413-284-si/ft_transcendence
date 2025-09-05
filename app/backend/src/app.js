@@ -41,12 +41,16 @@ async function getSecrets(roleId, secretId) {
     loginResponse.client_token,
     "jwt"
   );
+  const googleId = await vault.readKVSecret(
+    loginResponse.client_token,
+    "google_id"
+  );
   const googleSecret = await vault.readKVSecret(
     loginResponse.client_token,
-    "google"
+    "google_secret"
   );
 
-  return { jwtSecrets, googleSecret };
+  return { jwtSecrets, googleId, googleSecret };
 }
 
 const vault = new Vault({
@@ -159,7 +163,7 @@ await fastify.register(oAuth2, {
   scope: ["email", "profile"],
   credentials: {
     client: {
-      id: env.googleOauth2ClientId,
+      id: secrets.googleId.data.google_oauth2_client_id,
       secret: secrets.googleSecret.data.google_oauth2_client_secret
     }
   },

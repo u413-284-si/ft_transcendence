@@ -13,6 +13,10 @@ path "auth/approle/role/*" {
   capabilities = ["create", "read", "update", "delete", "list"]
 }
 
+path "sys/mounts" {
+  capabilities = ["read", "list"]
+}
+
 # Manage the KV secrets mount (enable/disable)
 path "sys/mounts/secret" {
   capabilities = ["create", "read", "update", "delete", "list"]

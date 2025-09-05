@@ -181,11 +181,22 @@ populate_jwt_secret() {
     log "✅" "JWT secrets added to Vault"
 }
 
+populate_google_id() {
+    if [ -f "/run/secrets/google_id" ]; then
+        local googleId
+        googleId=$(cat "/run/secrets/google_id")
+        vault kv put secret/google_id google_oauth2_client_id="$googleId"
+        log "✅" "Google id added to Vault"
+    else
+        log "ℹ️" "Google id not found, skipping..."
+    fi
+}
+
 populate_google_secret() {
     if [ -f "/run/secrets/google_secret" ]; then
         local googleSecret
         googleSecret=$(cat "/run/secrets/google_secret")
-        vault kv put secret/google google_oauth2_client_secret="$googleSecret"
+        vault kv put secret/google_secret google_oauth2_client_secret="$googleSecret"
         log "✅" "Google secret added to Vault"
     else
         log "ℹ️" "Google secret not found, skipping..."
@@ -253,6 +264,7 @@ enable_kv_secrets
 
 # Populate secrets
 populate_jwt_secret
+populate_google_id
 populate_google_secret
 
 # SSL setup
