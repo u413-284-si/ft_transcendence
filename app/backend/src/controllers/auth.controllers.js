@@ -144,10 +144,13 @@ export async function checkRefreshTokenStatusHandler(request, reply) {
     const hashedRefreshToken = await getTokenHash(payload.id);
 
     if (!(await verifyHash(hashedRefreshToken, token))) {
-      return reply.code(200).send({
-        message: createResponseMessage(request.action, true),
-        data: { status: "invalid" }
-      });
+      return reply
+        .clearAuthCookies()
+        .code(200)
+        .send({
+          message: createResponseMessage(request.action, true),
+          data: { status: "invalid" }
+        });
     }
     return reply.code(200).send({
       message: createResponseMessage(request.action, true),
@@ -163,6 +166,7 @@ export async function checkRefreshTokenStatusHandler(request, reply) {
       err.code === "FAST_JWT_MISSING_SIGNATURE"
     ) {
       status = "invalid";
+      reply.clearAuthCookies();
     } else {
       throw err;
     }

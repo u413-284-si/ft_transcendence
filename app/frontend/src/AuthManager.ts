@@ -78,9 +78,7 @@ export class AuthManager {
         await this.notify();
         return;
       } else if (refreshToken.status === "invalid") {
-        console.warn("Invalid refresh token found. Removing it");
-        document.cookie =
-          "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/api/auth/refresh;";
+        console.warn("Invalid refresh token found.");
         await this.notify();
         return;
       }
