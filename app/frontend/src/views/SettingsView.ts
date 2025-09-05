@@ -381,7 +381,6 @@ export default class SettingsView extends AbstractView {
         const apiResponse = await verifyTwoFACodeAndGetBackupCodes(
           this.twoFACodeInputEl.value
         );
-        this.twoFACodeInputEl.value = "";
         if (!apiResponse.success) {
           if (apiResponse.status === 401) {
             markInvalid(
@@ -396,11 +395,6 @@ export default class SettingsView extends AbstractView {
         }
 
         const backupCodes = apiResponse.data.backupCodes;
-
-        const updatedUser: Partial<User> = {
-          hasTwoFA: true
-        };
-        await auth.updateUser(updatedUser);
 
         toaster.success(i18next.t("toast.twoFASetupSuccess"));
         this.fillBackupCodesTable(backupCodes);
@@ -483,11 +477,6 @@ export default class SettingsView extends AbstractView {
           throw new ApiError(apiResponse);
         }
       }
-
-      const updatedUser: Partial<User> = {
-        hasTwoFA: false
-      };
-      await auth.updateUser(updatedUser);
 
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
     } catch (error) {
