@@ -132,6 +132,20 @@ export function setAuthCookies(accessToken, refreshToken) {
   });
 }
 
+export function clearAuthCookies() {
+  return this.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    path: "/"
+  }).clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    path: "/api/auth/refresh"
+  });
+}
+
 export function setTwoFACookie(twoFALoginToken) {
   const twoFALoginTokenTimeToExpire = new Date(
     Date.now() + parseInt(env.twoFALoginTokenTimeToExpireInMS)
