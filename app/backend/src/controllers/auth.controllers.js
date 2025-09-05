@@ -28,6 +28,7 @@ import { createResponseMessage } from "../utils/response.js";
 import { httpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
+import { notifyProfileChange } from "../services/events/sse.services.js";
 
 export async function loginUserHandler(request, reply) {
   request.action = "Login user";
@@ -263,6 +264,7 @@ export async function enableTwoFAHandler(request, reply) {
   }
 
   await updateTwoFAStatus(userId, true);
+  notifyProfileChange(userId, { update: { hasTwoFA: true } });
 
   const newBackupCodes = await updateBackupCodes(userId);
   const data = { backupCodes: newBackupCodes };
@@ -409,6 +411,7 @@ export async function twoFARemoveHandler(request, reply) {
   }
 
   await updateTwoFAStatus(userId, false);
+  notifyProfileChange(userId, { update: { hasTwoFA: false } });
   await updateTwoFASecret(userId, null);
   await deleteBackupCodes(userId);
   return reply
