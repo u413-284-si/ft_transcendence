@@ -285,10 +285,7 @@ export class AuthManager {
 
   private registerProfileChangeListener() {
     this.profileChangeListener = async () => {
-      if (this.isExpectingUpdate) {
-        this.isExpectingUpdate = false;
-        return;
-      }
+      if (this.isExpectingUpdate) return;
       const user = await this.fetchUserDataAndSetLanguage();
       await this.updateAuthState(this.token, user);
     };
