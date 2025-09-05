@@ -29,8 +29,6 @@ export class AuthManager {
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
 
-  private refreshTimeout: ReturnType<typeof setTimeout> | null = null;
-
   private constructor() {}
 
   public static getInstance(): AuthManager {
@@ -53,7 +51,6 @@ export class AuthManager {
         "authState",
         JSON.stringify({ token, username: user.username })
       );
-      this.scheduleTokenValidation();
       this.registerActivityListeners();
       openSSEConnection();
       console.log("User logged in.");
@@ -62,7 +59,6 @@ export class AuthManager {
       this.authenticated = false;
       this.user = null;
       localStorage.removeItem("authState");
-      this.clearRefreshTimer();
       this.removeActivityListeners();
       closeSSEConnection(true);
       console.log("User logged out.");
@@ -261,50 +257,6 @@ export class AuthManager {
     window.removeEventListener("keydown", this.startInactivityTimer);
   }
 
-  private scheduleTokenValidation(): void {
-    const expiresAtMs = this.getToken().exp * 1000;
-    const now = Date.now();
-    const refreshAtMs = expiresAtMs - 60_000;
-    const delay = Math.max(refreshAtMs - now, 1000);
-    console.log("Setting new refresh timer:", delay / 1000);
-
-    if (this.refreshTimeout) clearTimeout(this.refreshTimeout);
-    this.refreshTimeout = setTimeout(() => {
-      this.refreshToken();
-    }, delay);
-  }
-
-  private async refreshToken(): Promise<void> {
-    console.log("Refresh token");
-    try {
-      const apiResponse = await refreshAccessToken();
-      if (!apiResponse.success) {
-        if (apiResponse.status === 401) {
-          toaster.error(i18next.t("toast.tokenRefreshFailed"));
-          this.clearTokenOnError();
-          return;
-        } else {
-          throw new ApiError(apiResponse);
-        }
-      }
-      this.token = apiResponse.data;
-      localStorage.setItem(
-        "authState",
-        JSON.stringify({ token: this.token, username: this.getUser().username })
-      );
-      this.scheduleTokenValidation();
-    } catch (error) {
-      console.warn("Token refresh failed", error);
-      this.clearTokenOnError();
-    }
-  }
-
-  private clearRefreshTimer(): void {
-    if (this.refreshTimeout) {
-      clearTimeout(this.refreshTimeout);
-      this.refreshTimeout = null;
-    }
-  }
   private registerLocalStorageListener(): void {
     window.addEventListener("storage", async (event) => {
       if (event.key !== "authState") return;
