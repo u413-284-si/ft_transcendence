@@ -109,7 +109,8 @@ services:
     restart: always
     volumes:
       - vault-data:/vault/data
-      - vault-secrets-vault:/vault/secrets/vault
+      - vault-secrets-unseal:/vault/secrets/unseal
+      - vault-secrets-auth:/vault/secrets/auth
       - vault-secrets-nginx:/vault/secrets/nginx
       - vault-secrets-app:/vault/secrets/app
     networks:
@@ -159,17 +160,18 @@ volumes:
   certs:
   db-data:
   vault-data:
-  vault-secrets-vault:
+  vault-secrets-unseal:
+  vault-secrets-auth:
   vault-secrets-nginx:
   vault-secrets-app:
 
 secrets:
   vault_cert:
-    file: ./secrets/vault-certs/vault.crt
+    file: ./certs/vault-certs/vault.crt
   vault_key:
-    file: ./secrets/vault-certs/vault.key
+    file: ./certs/vault-certs/vault.key
   vault_ca:
-    file: ./secrets/vault-certs/root-ca.crt
+    file: ./certs/vault-certs/root-ca.crt
 
 configs:
   vault_config:
