@@ -1,7 +1,7 @@
 import { ApiError, getDataOrThrow } from "./services/api.js";
 import {
   checkRefreshTokenStatus,
-  //refreshAccessToken,
+  refreshAccessToken,
   userLogin,
   userLogout
 } from "./services/authServices.js";
@@ -92,7 +92,7 @@ export class AuthManager {
         await this.notify();
         return;
       }
-      //const accessToken = getDataOrThrow(await refreshAccessToken());
+      getDataOrThrow(await refreshAccessToken());
       const user = await this.fetchUserDataAndSetLanguage();
       await this.updateAuthState(user);
     } catch (error) {
