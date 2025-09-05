@@ -67,3 +67,7 @@ export function notifyFriendRequestEvent(
 function notifyHeartbeat(userId, msg) {
   emitToUser(userId, "heartbeatEvent", msg);
 }
+
+export function notifyProfileChange(userId, msg) {
+  emitToUser(userId, "profileChangeEvent", msg);
+}

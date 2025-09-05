@@ -283,6 +283,7 @@ export default class ProfileView extends AbstractView {
     };
 
     try {
+      auth.isExpectingUpdate = true;
       const apiResponse = await patchUser(updatedUser);
       if (!apiResponse.success) {
         if (apiResponse.status === 409) {
@@ -296,6 +297,7 @@ export default class ProfileView extends AbstractView {
       await auth.updateUser(updatedUser);
     } catch (err) {
       console.error("Failed to update profile:", err);
+      auth.isExpectingUpdate = false;
       toaster.error(i18next.t("toast.profileUpdateFailed"));
     }
   }

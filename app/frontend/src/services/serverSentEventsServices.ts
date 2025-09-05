@@ -33,6 +33,12 @@ export function openSSEConnection() {
     console.log("SSE message:", event.data);
   });
 
+  eventSource.addEventListener("profileChangeEvent", (event: MessageEvent) => {
+    console.log("SSE message:", event.data);
+
+    window.dispatchEvent(new CustomEvent("app:ProfileChangeEvent"));
+  });
+
   eventSource.addEventListener(
     "FriendStatusChangeEvent",
     (event: MessageEvent) => {

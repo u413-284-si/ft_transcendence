@@ -34,6 +34,7 @@ import {
   getFriendId
 } from "../services/friends.services.js";
 import { fileTypeFromBuffer } from "file-type";
+import { notifyProfileChange } from "../services/events/sse.services.js";
 
 export async function createUserHandler(request, reply) {
   request.action = "Create User";
@@ -91,6 +92,8 @@ export async function patchUserHandler(request, reply) {
   }
 
   const data = await updateUser(userId, request.body);
+  request.log.error("Profile change");
+  notifyProfileChange(userId, `user profile changed`);
   return reply
     .code(200)
     .send({ message: createResponseMessage(request.action, true), data: data });

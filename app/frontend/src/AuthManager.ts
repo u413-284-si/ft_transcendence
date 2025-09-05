@@ -29,6 +29,9 @@ export class AuthManager {
   private idleTimeout: ReturnType<typeof setTimeout> | null = null;
   private inactivityMs = 30 * 60 * 1000; // 30 minutes
 
+  private profileChangeListener?: () => Promise<void>;
+  public isExpectingUpdate: boolean = false;
+
   private constructor() {}
 
   public static getInstance(): AuthManager {
@@ -49,6 +52,7 @@ export class AuthManager {
       this.user = user;
       localStorage.setItem("authState", JSON.stringify({ token }));
       this.registerActivityListeners();
+      this.registerProfileChangeListener();
       openSSEConnection();
       console.log("User logged in.");
     } else {
@@ -57,6 +61,7 @@ export class AuthManager {
       this.user = null;
       localStorage.removeItem("authState");
       this.removeActivityListeners();
+      this.removeProfileChangeListener();
       closeSSEConnection(true);
       console.log("User logged out.");
     }
@@ -276,6 +281,31 @@ export class AuthManager {
         router.handleError("Failed to update auth state", error);
       }
     });
+  }
+
+  private registerProfileChangeListener() {
+    this.profileChangeListener = async () => {
+      if (this.isExpectingUpdate) {
+        this.isExpectingUpdate = false;
+        return;
+      }
+      const user = await this.fetchUserDataAndSetLanguage();
+      await this.updateAuthState(this.token, user);
+    };
+    window.addEventListener(
+      "app:ProfileChangeEvent",
+      this.profileChangeListener
+    );
+  }
+
+  private removeProfileChangeListener() {
+    if (this.profileChangeListener) {
+      window.removeEventListener(
+        "app:ProfileChangeEvent",
+        this.profileChangeListener
+      );
+      this.profileChangeListener = undefined;
+    }
   }
 }
 
