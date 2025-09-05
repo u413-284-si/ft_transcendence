@@ -400,7 +400,7 @@ export default class SettingsView extends AbstractView {
         const updatedUser: Partial<User> = {
           hasTwoFA: true
         };
-        auth.updateUser(updatedUser);
+        await auth.updateUser(updatedUser);
 
         toaster.success(i18next.t("toast.twoFASetupSuccess"));
         this.fillBackupCodesTable(backupCodes);
@@ -487,7 +487,7 @@ export default class SettingsView extends AbstractView {
       const updatedUser: Partial<User> = {
         hasTwoFA: false
       };
-      auth.updateUser(updatedUser);
+      await auth.updateUser(updatedUser);
 
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
     } catch (error) {
