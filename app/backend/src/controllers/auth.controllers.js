@@ -132,16 +132,30 @@ export async function googleOauth2LoginHandler(request, reply) {
 export async function checkRefreshTokenStatusHandler(request, reply) {
   request.action = "Check refresh token status";
   try {
+    const token = request.cookies.refreshToken;
+    if (!token) {
+      return reply.code(200).send({
+        message: createResponseMessage(request.action, true),
+        data: { status: "none" }
+      });
+    }
+
     const payload = await request.refreshTokenVerify();
+    const hashedRefreshToken = await getTokenHash(payload.id);
+
+    if (!(await verifyHash(hashedRefreshToken, token))) {
+      return reply.code(200).send({
+        message: createResponseMessage(request.action, true),
+        data: { status: "invalid" }
+      });
+    }
     return reply.code(200).send({
       message: createResponseMessage(request.action, true),
       data: { status: "valid", type: payload.type, exp: payload.exp }
     });
   } catch (err) {
     let status = "undefined";
-    if (err.code === "FST_JWT_NO_AUTHORIZATION_IN_COOKIE") {
-      status = "none";
-    } else if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
+    if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
       status = "expired";
     } else if (
       err.code === "FST_JWT_AUTHORIZATION_TOKEN_INVALID" ||
