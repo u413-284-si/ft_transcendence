@@ -88,9 +88,9 @@ services:
       - VAULT_PKI_DIR=${VAULT_PKI_DIR}
       - NGINX_KEYS_DIR=${NGINX_KEYS_DIR}
       - APP_KEYS_DIR=${APP_KEYS_DIR}
+      - GOOGLE_OAUTH2_ID=${GOOGLE_OAUTH2_ID}
+      - GOOGLE_OAUTH2_SECRET=${GOOGLE_OAUTH2_SECRET}
     secrets:
-      - google_id
-      - google_secret
       - vault_cert
       - vault_key
       - vault_ca
@@ -163,10 +163,6 @@ volumes:
   vault-secrets-app:
 
 secrets:
-  google_id:
-    file: ./secrets/google-id.txt
-  google_secret:
-    file: ./secrets/google-secret.txt
   vault_cert:
     file: ./secrets/vault-certs/vault.crt
   vault_key:
