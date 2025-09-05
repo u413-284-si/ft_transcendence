@@ -28,7 +28,7 @@ export default class MatchAnnouncementView extends AbstractView {
 
   constructor(private tournament: Tournament) {
     super();
-    this.setTitle(i18next.t("matchAnnouncementView.title"));
+    this.setTitle();
     const match = this.tournament.getNextMatchToPlay();
     if (!match) {
       throw new Error(i18next.t("error.undefinedMatch"));
@@ -159,7 +159,7 @@ export default class MatchAnnouncementView extends AbstractView {
   }
 
   getName(): string {
-    return "match-announcement";
+    return i18next.t("matchAnnouncementView.title");
   }
 
   private iSAIMatchWinnerP1(): boolean {

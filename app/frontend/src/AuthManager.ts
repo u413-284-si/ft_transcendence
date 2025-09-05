@@ -215,7 +215,11 @@ export class AuthManager {
       ...this.user,
       ...update
     };
-    await this.notify();
+    if (Object.keys(update).includes("language")) {
+      await this.updateLanguage(update.language!);
+    } else {
+      await this.notify();
+    }
   }
 
   public async updateLanguage(lang: Language): Promise<void> {

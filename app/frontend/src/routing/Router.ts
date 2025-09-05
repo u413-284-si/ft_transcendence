@@ -139,6 +139,7 @@ export class Router {
     }
     try {
       await this.currentView.render();
+      this.currentView.setTitle();
     } catch (error) {
       this.handleError("Error in refresh()", error);
     }

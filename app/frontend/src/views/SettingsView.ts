@@ -51,7 +51,7 @@ export default class SettingsView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("settingsView.title"));
+    this.setTitle();
   }
 
   private hasTwoFA(): boolean {
@@ -363,7 +363,7 @@ export default class SettingsView extends AbstractView {
   }
 
   getName(): string {
-    return "settings";
+    return i18next.t("settingsView.title");
   }
 
   private async callTwoFAFormAction(event: Event): Promise<void> {

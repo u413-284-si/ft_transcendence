@@ -32,7 +32,7 @@ export default class ProfileView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("profileView.title"));
+    this.setTitle();
   }
 
   private getPasswordFormHTML(): string {
@@ -376,6 +376,6 @@ export default class ProfileView extends AbstractView {
   }
 
   getName(): string {
-    return "profile";
+    return i18next.t("profileView.title");
   }
 }

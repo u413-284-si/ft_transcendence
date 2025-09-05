@@ -25,7 +25,7 @@ export default class NewTournamentView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("newTournamentView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -159,6 +159,6 @@ export default class NewTournamentView extends AbstractView {
   }
 
   getName(): string {
-    return "new-tournament";
+    return i18next.t("newTournamentView.title");
   }
 }

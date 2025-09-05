@@ -13,7 +13,7 @@ export default class ErrorView extends AbstractView {
 
   constructor(error: unknown) {
     super();
-    this.setTitle(i18next.t("errorView.title"));
+    this.setTitle();
     this.parseError(error);
   }
 
@@ -65,6 +65,6 @@ export default class ErrorView extends AbstractView {
   }
 
   getName(): string {
-    return "error";
+    return i18next.t("errorView.title");
   }
 }

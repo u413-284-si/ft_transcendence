@@ -4,8 +4,8 @@ import { getById } from "../utility.js";
 export default abstract class AbstractView {
   constructor() {}
 
-  setTitle(title: string) {
-    document.title = title;
+  setTitle() {
+    document.title = this.getName();
   }
 
   abstract createHTML(): string;

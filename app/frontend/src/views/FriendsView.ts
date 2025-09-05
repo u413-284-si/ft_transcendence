@@ -38,11 +38,11 @@ export default class FriendsView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("friendsView.title"));
+    this.setTitle();
   }
 
   getName(): string {
-    return "friends";
+    return i18next.t("friendsView.title");
   }
 
   async render(): Promise<void> {
