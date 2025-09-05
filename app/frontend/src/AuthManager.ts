@@ -47,10 +47,7 @@ export class AuthManager {
       console.log("Log in user...");
       this.authenticated = true;
       this.user = user;
-      localStorage.setItem(
-        "authState",
-        JSON.stringify({ token, username: user.username })
-      );
+      localStorage.setItem("authState", JSON.stringify({ token }));
       this.registerActivityListeners();
       openSSEConnection();
       console.log("User logged in.");
@@ -268,11 +265,9 @@ export class AuthManager {
         return;
       }
       try {
-        const { token, username } = JSON.parse(event.newValue) as {
+        const { token } = JSON.parse(event.newValue) as {
           token: ValidToken;
-          username: string;
         };
-        console.log(`authState for ${username}`);
         const user = await this.fetchUserDataAndSetLanguage();
         await this.updateAuthState(token, user);
         router.reload();
