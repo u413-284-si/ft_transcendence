@@ -37,7 +37,7 @@ export function handleError(err, request, reply) {
     cause = err.meta.cause;
   } else if (err.statusCode && err.statusCode === 429) {
     code = 429;
-    cause = err.error;
+    cause = err.message;
   } else if (err.code && err.code.startsWith("FST_JWT")) {
     code = err.statusCode;
     cause = err.message;
