@@ -31,10 +31,6 @@ const schema = {
       default: "development",
       enum: ["development", "production", "testing", "staging"]
     },
-    DB_FILE: {
-      type: "string",
-      default: "pong.db"
-    },
     VAULT_ADDR: {
       type: "string",
       default: "https://vault:8200"
@@ -120,7 +116,6 @@ const envConfig = {
   port: config.PORT,
   logLevel: config.LOG_LEVEL,
   nodeEnv: config.NODE_ENV,
-  dbFile: config.DB_FILE,
   vaultAddr: config.VAULT_ADDR,
   accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
   refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
