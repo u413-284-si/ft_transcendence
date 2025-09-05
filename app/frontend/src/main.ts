@@ -67,6 +67,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       await router.refresh();
     } else {
       layout.update("guest");
+      const sidebar = document.getElementById("drawer-sidebar");
+      if (sidebar) {
+        sidebar.remove();
+      }
       await router.reload();
     }
   });

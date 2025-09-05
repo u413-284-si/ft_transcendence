@@ -16,7 +16,7 @@ import TwoFABackupCodeVerifyView from "./TwoFABackupCodeVerifyView.js";
 export default class TwoFAVerifyView extends AbstractView {
   constructor() {
     super();
-    this.setTitle(i18next.t("twoFAVerifyView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -64,7 +64,7 @@ export default class TwoFAVerifyView extends AbstractView {
   }
 
   getName(): string {
-    return "2fa-verify";
+    return i18next.t("twoFAVerifyView.title");
   }
 
   private async verifyTwoFA(event: Event) {
@@ -97,8 +97,7 @@ export default class TwoFAVerifyView extends AbstractView {
       }
     }
 
-    const token = apiResponse.data.token;
-    const isAllowed = await auth.loginAfterTwoFA(token);
+    const isAllowed = await auth.loginAfterTwoFA();
     if (!isAllowed) return;
     router.navigate("/home", false);
   }

@@ -12,7 +12,7 @@ import { getDataOrThrow } from "../services/api.js";
 export default class ResultsView extends AbstractView {
   constructor(private tournament: Tournament) {
     super();
-    this.setTitle(i18next.t("resultsView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -92,6 +92,6 @@ export default class ResultsView extends AbstractView {
   }
 
   getName(): string {
-    return "results";
+    return i18next.t("resultsView.title");
   }
 }

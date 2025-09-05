@@ -17,7 +17,7 @@ import { ApiError } from "../services/api.js";
 export default class TwoFABackupCodeVerifyView extends AbstractView {
   constructor() {
     super();
-    this.setTitle(i18next.t("twoFABackupCodeVerifyView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -56,7 +56,7 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
   }
 
   getName(): string {
-    return "twoFABackupCodeVerification";
+    return i18next.t("twoFABackupCodeVerifyView.title");
   }
 
   private async verifTwoFABackupCode(event: Event) {
@@ -91,8 +91,7 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
       }
     }
 
-    const token = apiResponse.data.token;
-    const isAllowed = await auth.loginAfterTwoFA(token);
+    const isAllowed = await auth.loginAfterTwoFA();
     if (!isAllowed) return;
     router.navigate("/home", false);
   }

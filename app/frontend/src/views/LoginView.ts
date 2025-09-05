@@ -12,7 +12,7 @@ import { getById } from "../utility.js";
 export default class LoginView extends AbstractView {
   constructor() {
     super();
-    this.setTitle(i18next.t("loginView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -76,7 +76,7 @@ export default class LoginView extends AbstractView {
   }
 
   getName(): string {
-    return "login";
+    return i18next.t("loginView.title");
   }
 
   private async validateAndLoginUser(event: Event) {

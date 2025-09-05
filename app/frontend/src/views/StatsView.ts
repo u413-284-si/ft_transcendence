@@ -35,7 +35,7 @@ export default class StatsView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("statsView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -114,7 +114,7 @@ export default class StatsView extends AbstractView {
   }
 
   getName(): string {
-    return "stats";
+    return i18next.t("statsView.title");
   }
 
   async setViewType() {

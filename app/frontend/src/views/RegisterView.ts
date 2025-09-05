@@ -18,7 +18,7 @@ import { toaster } from "../Toaster.js";
 export default class Register extends AbstractView {
   constructor() {
     super();
-    this.setTitle(i18next.t("registerView.title"));
+    this.setTitle();
   }
 
   createHTML(): string {
@@ -100,7 +100,7 @@ export default class Register extends AbstractView {
   }
 
   getName(): string {
-    return "register";
+    return i18next.t("registerView.title");
   }
 
   private async validateAndRegisterUser(event: Event): Promise<void> {

@@ -35,7 +35,10 @@ export function handleError(err, request, reply) {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     code = convertPrismaError(err.code);
     cause = err.meta.cause;
-  } else if (err.code.startsWith("FST_JWT")) {
+  } else if (err.statusCode && err.statusCode === 429) {
+    code = 429;
+    cause = err.message;
+  } else if (err.code && err.code.startsWith("FST_JWT")) {
     code = err.statusCode;
     cause = err.message;
   } else if (err.validation) {

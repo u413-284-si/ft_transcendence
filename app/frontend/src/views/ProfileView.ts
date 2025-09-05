@@ -32,7 +32,7 @@ export default class ProfileView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("profileView.title"));
+    this.setTitle();
   }
 
   private getPasswordFormHTML(): string {
@@ -293,7 +293,6 @@ export default class ProfileView extends AbstractView {
         }
       }
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
-      await auth.updateUser(updatedUser);
     } catch (err) {
       console.error("Failed to update profile:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
@@ -311,12 +310,8 @@ export default class ProfileView extends AbstractView {
     const file = fileInputEl!.files![0];
     formData.append("avatar", file);
     try {
-      const { avatar } = getDataOrThrow(await uploadAvatar(formData));
+      getDataOrThrow(await uploadAvatar(formData));
       toaster.success(i18next.t("toast.avatarUploadedSuccess"));
-      const updatedUser: Partial<User> = {
-        ...(avatar ? { avatar } : {})
-      };
-      await auth.updateUser(updatedUser);
     } catch (err) {
       console.error("Failed to upload avatar:", err);
       toaster.error(i18next.t("toast.avatarUploadFailed"));
@@ -381,6 +376,6 @@ export default class ProfileView extends AbstractView {
   }
 
   getName(): string {
-    return "profile";
+    return i18next.t("profileView.title");
   }
 }

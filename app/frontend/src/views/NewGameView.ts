@@ -19,7 +19,7 @@ export default class NewGameView extends AbstractView {
 
   constructor() {
     super();
-    this.setTitle(i18next.t("newGameView.title"));
+    this.setTitle();
   }
 
   createHTML() {
@@ -91,6 +91,6 @@ export default class NewGameView extends AbstractView {
   }
 
   getName(): string {
-    return "new-game";
+    return i18next.t("newGameView.title");
   }
 }
