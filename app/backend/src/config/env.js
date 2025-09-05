@@ -10,7 +10,6 @@ const schema = {
     "PORT",
     "LOG_LEVEL",
     "NODE_ENV",
-    "DB_FILE",
     "ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS",
     "REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS",
     "MAX_FILE_SIZE_IN_BYTES",
