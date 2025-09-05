@@ -2,7 +2,7 @@ import type { TournamentRead } from "./types/ITournament.ts";
 import type { BracketLayout } from "./types/BracketLayout.ts";
 import type { BracketMatchRead } from "./types/BracketMatch.ts";
 import { formatPlayerName } from "./components/NicknameInput.js";
-import { PlayerType } from "@prisma/client";
+import type { PlayerType } from "./types/IMatch.js";
 
 export class Tournament {
   private matchSlotMap: Record<
@@ -11,7 +11,6 @@ export class Tournament {
   > = {};
   private tournamentId: number;
   private tournamentName: string;
-  private numberOfPlayers: number;
   private userNickname: string;
   private roundReached: number;
   private bracket: BracketMatchRead[];
@@ -19,14 +18,12 @@ export class Tournament {
   constructor({
     id,
     name,
-    maxPlayers,
     userNickname,
     roundReached,
     bracket
   }: TournamentRead) {
     this.tournamentId = id;
     this.tournamentName = name;
-    this.numberOfPlayers = maxPlayers;
     this.userNickname = userNickname;
     this.roundReached = roundReached;
     this.bracket = bracket;
