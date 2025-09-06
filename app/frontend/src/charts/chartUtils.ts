@@ -63,9 +63,6 @@ export function buildBaseOptions(
       width: width,
       height: height
     },
-    noData: {
-      text: "Loading..."
-    },
     series: []
   };
 
