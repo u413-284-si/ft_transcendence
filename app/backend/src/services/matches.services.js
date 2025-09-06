@@ -50,21 +50,6 @@ export async function createMatchTx(
   return flattenMatch(match);
 }
 
-export async function getAllMatches() {
-  const matches = await prisma.match.findMany({ select: matchSelect });
-  return matches.map(flattenMatch);
-}
-
-export async function getMatch(id) {
-  const match = await prisma.match.findUniqueOrThrow({
-    where: {
-      id
-    },
-    select: matchSelect
-  });
-  return flattenMatch(match);
-}
-
 export async function getUserMatches(
   userId,
   select = matchSelect,
@@ -82,11 +67,6 @@ export async function getUserMatches(
     orderBy: { date: filter.sort || "desc" }
   });
   return matches.map(flattenMatch);
-}
-
-export async function deleteAllMatches() {
-  const matches = await prisma.match.deleteMany();
-  return matches;
 }
 
 export async function getUserMatchesCount(userId, filter = {}) {
