@@ -8,7 +8,6 @@ import {
   randRecentDate,
   randUserName
 } from "@ngneat/falso";
-import { Tournament } from "../../../frontend/src/Tournament.ts";
 import { updateTournament } from "../../src/services/tournaments.services.js";
 import {
   transactionTournament,
@@ -19,9 +18,6 @@ import { generateNonTiedScores } from "./utils.ts";
 import type { User } from "@prisma/client";
 import type { TournamentRead } from "../../../frontend/src/types/ITournament.ts";
 import type { BracketMatchRead } from "../../../frontend/src/types/BracketMatch.ts";
-type BracketMatchReadWithTournamentId = BracketMatchRead & {
-  tournamentId: number;
-};
 
 export async function seedTournamentsPerUser(
   users: User[],
@@ -78,7 +74,6 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
     playerNicknames,
     playerTypes
   );
-  const tournamentClass = new Tournament(tournamentDTO);
 
   const randomStartDate = randRecentDate({ days: 10 });
   const dateFactory = incrementalDate({
@@ -87,10 +82,11 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
   });
 
   let nextMatch: BracketMatchRead | null;
-  while ((nextMatch = tournamentClass.getNextMatchToPlay()) != null) {
+  while ((nextMatch = getNextMatchToPlay(tournamentDTO.bracket)) != null) {
     const userInMatch =
       userNickname === nextMatch.player1Nickname ||
       userNickname === nextMatch.player2Nickname;
+
     const userWins = userInMatch
       ? randChanceBoolean({ chanceTrue: winRate })
       : false;
@@ -107,10 +103,12 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
       player1Score > player2Score
         ? nextMatch.player1Nickname!
         : nextMatch.player2Nickname!;
-    nextMatch.winner = winner;
 
-    const matchWithTid = nextMatch as BracketMatchReadWithTournamentId;
-    matchWithTid.tournamentId = tournamentDTO.id;
+    updateBracketWithResult(
+      tournamentDTO.bracket,
+      nextMatch.matchNumber,
+      winner
+    );
 
     const date = dateFactory();
 
@@ -121,16 +119,15 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
           ? "PLAYERTWO"
           : "NONE";
 
-    const hasUserWon = nextMatch.winner === tournamentDTO.userNickname;
-
-    tournamentClass.updateBracketWithResult(nextMatch.matchNumber, winner);
+    const hasUserWon = winner === tournamentDTO.userNickname;
+    console.dir(nextMatch);
     await transactionUpdateBracket(
       userId,
       player1Score,
       player2Score,
       playedAs,
       hasUserWon,
-      matchWithTid,
+      { ...nextMatch, tournamentId: tournamentDTO.id },
       date
     );
   }
@@ -139,8 +136,44 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
     isFinished: true,
     updatedAt: dateFactory()
   });
-  console.log(
-    `Seeded tournament ${tournamentName} with ${numberOfPlayers} players`
-  );
   return tournament;
+}
+
+function getNextMatchToPlay(
+  bracket: BracketMatchRead[]
+): BracketMatchRead | null {
+  return (
+    bracket.find((m) => m.player1Nickname && m.player2Nickname && !m.winner) ??
+    null
+  );
+}
+
+function updateBracketWithResult(
+  bracket: BracketMatchRead[],
+  matchNumber: number,
+  winner: string
+) {
+  const match = bracket.find((m) => m.matchNumber === matchNumber);
+  if (!match) throw new Error(`Match ${matchNumber} not found`);
+
+  match.winner = winner;
+
+  if (match.nextMatchNumber && match.winnerSlot) {
+    const nextMatch = bracket.find(
+      (m) => m.matchNumber === match.nextMatchNumber
+    );
+    if (!nextMatch)
+      throw new Error(`Next match ${match.nextMatchNumber} not found`);
+
+    const winnerType =
+      winner === match.player1Nickname ? match.player1Type : match.player2Type;
+
+    if (match.winnerSlot === 1) {
+      nextMatch.player1Nickname = winner;
+      nextMatch.player1Type = winnerType;
+    } else if (match.winnerSlot === 2) {
+      nextMatch.player2Nickname = winner;
+      nextMatch.player2Type = winnerType;
+    }
+  }
 }
