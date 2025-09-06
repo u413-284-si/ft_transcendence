@@ -140,6 +140,7 @@ export class Router {
     try {
       await this.currentView.render();
       this.currentView.setTitle();
+      this.notifyRouteChange("view");
     } catch (error) {
       this.handleError("Error in refresh()", error);
     }
