@@ -104,3 +104,12 @@ export async function updateUserPassword(
     credentials: "same-origin"
   });
 }
+
+export async function deleteUser(): Promise<ApiResponse<User>> {
+  const url = "/api/users/me";
+
+  return apiFetch<User>(url, {
+    method: "DELETE",
+    credentials: "same-origin"
+  });
+}

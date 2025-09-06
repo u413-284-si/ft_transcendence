@@ -251,8 +251,11 @@ const tr: TranslationShape = {
       settings: "Configure your system parameters.",
       preferredLanguage: "Select interface language protocol.",
       saveLanguage: "Save language preference",
+      dangerZone: "DEREZZ Zone",
       displayTwoFASetup: "Display cipher configuration",
       deactivateTwoFASetup: "Deactivate cipher configuration",
+      deleteProfile: "Delete node",
+      deleteProfileConfirm: "CONFIRM NODE DELETION",
       editTwoFASetup: "Edit your cipher configuration",
       twoFASetup: "Cipher Configuration",
       twoFAInfo: [
@@ -333,6 +336,8 @@ const tr: TranslationShape = {
       tabError: "Tab failed to initialize within the Grid.",
       twoFASetupSuccess: "Cipher activated successfully!",
       twoFARemoveSuccess: "Cipher deactivated successfully!",
+      profileDeleteFailed: "Profile deletion failed. Retry advised.",
+      profileDeleteSuccess: "Profile deleted successfully!",
       profileUpdateFailed: "Profile update failed. Retry advised.",
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess:

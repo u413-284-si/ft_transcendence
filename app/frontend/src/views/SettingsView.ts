@@ -24,11 +24,12 @@ import { Table } from "../components/Table.js";
 import { Form } from "../components/Form.js";
 import { Button } from "../components/Button.js";
 import { LanguageSwitcher } from "../components/LanguageSwitcher.js";
-import { patchUser } from "../services/userServices.js";
+import { deleteUser, patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { User, Language } from "../types/User.js";
 import { getAllBySelector, getById, getBySelector } from "../utility.js";
+import { Header2 } from "../components/Header2.js";
 
 export default class SettingsView extends AbstractView {
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
@@ -53,6 +54,8 @@ export default class SettingsView extends AbstractView {
   private preferredLanguageFormEl!: HTMLFormElement;
   private preferredLanguageButtonEl!: HTMLElement;
   private preferredLanguageOptionsEl!: HTMLElement;
+
+  private deleteProfileButtonEl!: HTMLButtonElement;
 
   constructor() {
     super();
@@ -235,6 +238,18 @@ export default class SettingsView extends AbstractView {
             })
           ]
         })}
+        ${Header2({
+          text: i18next.t("settingsView.dangerZone"),
+          variant: "error",
+          className: "mt-8 mb-4"
+        })}
+        ${Button({
+          text: i18next.t("settingsView.deleteProfile"),
+          id: "delete-profile",
+          variant: "danger",
+          size: "md",
+          type: "button"
+        })}
       </div>
     `;
   }
@@ -297,6 +312,10 @@ export default class SettingsView extends AbstractView {
       });
     });
 
+    this.deleteProfileButtonEl.addEventListener("click", () => {
+      this.deleteProfile();
+    });
+
     document.addEventListener("click", this.onDocumentClick);
   }
 
@@ -331,6 +350,8 @@ export default class SettingsView extends AbstractView {
     this.preferredLanguageButtonEl = getById("preferred-language-button");
     this.preferredLanguageOptionsEl = getById("preferred-language-options");
     if (this.hasLocalAuth) this.initTwoFAElements();
+    this.deleteProfileButtonEl = getById("delete-profile");
+
     this.addListeners();
   }
 
@@ -606,5 +627,16 @@ export default class SettingsView extends AbstractView {
     this.twoFAModalEl.close();
     this.twoFAPasswordModalEl.showModal();
     this.twoFAPasswordInputEl.focus();
+  }
+
+  private async deleteProfile() {
+    try {
+      if (!confirm(i18next.t("settingsView.deleteProfileConfirm"))) return;
+      getDataOrThrow(await deleteUser());
+      toaster.success(i18next.t("toast.profileDeleteSuccess"));
+    } catch (err) {
+      console.error("Failed to delete profile:", err);
+      toaster.error(i18next.t("toast.profileDeleteFailed"));
+    }
   }
 }

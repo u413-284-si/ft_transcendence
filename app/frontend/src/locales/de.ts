@@ -261,8 +261,11 @@ const de: TranslationShape = {
       settings: "Lege hier deine Einstellungen und Präferenzen fest.",
       preferredLanguage: "Wähle dein bevorzugte Sprache aus.",
       saveLanguage: "Sprache speichern",
+      dangerZone: "Gefahrenbereich",
       displayTwoFASetup: "2FA Einstellungen anzeigen",
       deactivateTwoFASetup: "2FA deaktivieren",
+      deleteProfile: "Lösche dein Profil",
+      deleteProfileConfirm: "Möchtest du dein Profile wirklich löschen?",
       editTwoFASetup: "2‑Faktor-Authentifizierung (2FA) bearbeiten",
       twoFASetup: "2FA Einstellungen",
       twoFAInfo: [
@@ -348,6 +351,9 @@ const de: TranslationShape = {
       tabError: "Der Tab konnte nicht initialisiert werden.",
       twoFASetupSuccess: "2FA erfolgreich aktiviert!",
       twoFARemoveSuccess: "2FA erfolgreich deaktiviert!",
+      profileDeleteFailed:
+        "Profil konnte nicht gelöscht werden. Bitte versuche es erneut.",
+      profileDeleteSuccess: "Profil erfolgreich gelöscht!",
       profileUpdateFailed:
         "Profil konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       profileUpdatedSuccess: "Profil erfolgreich aktualisiert!",
