@@ -1,26 +1,34 @@
 #!/bin/sh
+set -eu
 
-# Logging functions
-log() {
-    echo "[`date +'%Y-%m-%d %H:%M:%S'`] $1"
+CERT_DIR="/etc/nginx/certs"
+CERT_FILES="$CERT_DIR/fullchain.pem $CERT_DIR/key.pem"
+DEBOUNCE_SECONDS=1
+last_reload=0
+
+# Function to watch the cert and reload nginx on change
+watch_certs() {
+  echo "🔍 Starting cert watcher for: $CERT_FILES"
+
+  inotifywait -m -e close_write $CERT_FILES | while read path action file; do
+    now=$(date +%s)
+
+    if [ $(( now - last_reload )) -ge $DEBOUNCE_SECONDS ]; then
+      echo "🔄 Detected cert/key change ($file), reloading nginx..."
+      nginx -s reload
+      last_reload=$now
+    else
+      echo "⏱ Skipping duplicate reload triggered by $file (debounced)"
+    fi
+  done
 }
 
-error() {
-    echo "[`date +'%Y-%m-%d %H:%M:%S'`] ERROR: $1" >&2
-    exit 1
-}
+# Start watcher in background
+watch_certs &
 
-# Create self-signed SSL Key and Certificate
-if [ ! -f /etc/nginx/conf/self-signed.crt ] || [ ! -f /etc/nginx/conf/self-signed.key ]; then
-    log "Creating self-signed SSL Key and Certificate"
-    cp /run/secrets/site_cert /etc/nginx/conf/self-signed.crt
-    cp /run/secrets/site_key /etc/nginx/conf/self-signed.key
-else
-    log "Self-signed SSL Key and Certificate already exist"
-fi
-
-log "Invoking docker-entrypoint.sh for nginx setup"
+# Invoke the original docker-entrypoint.sh
+echo "Invoking docker-entrypoint.sh for nginx setup"
 . /docker-entrypoint.sh "$@"
 
-log "Starting nginx as user 'nginx'"
-exec su-exec nginx "$@"
+# Run nginx in foreground
+exec "$@"

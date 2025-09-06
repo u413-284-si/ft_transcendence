@@ -45,8 +45,21 @@ help:
 
 # Builds, (re)creates, starts, and attaches to containers for a service.
 .PHONY: up
-up: --secrets
+up: check-env vault-certs
 	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d
+
+.PHONY: check-env
+check-env:
+	$(SILENT)if [ ! -f .env ]; then \
+		cp .env.example .env; \
+		echo "📝 Created .env from .env.example"; \
+	else \
+		echo "✅ .env already exists, skipping"; \
+	fi
+
+.PHONY: vault-certs
+vault-certs:
+	$(SILENT)bash $(DIR_SCRIPTS)/generate-vault-certs.sh
 
 # Watches for changes in files and rebuilds containers
 PHONY: watch
@@ -104,17 +117,3 @@ exec:
 	@read -p "Service name: " service; \
 	read -p "Command: " cmd; \
 	docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) exec $$service $$cmd
-
-######### Private targets #########
-
-# Create secrets if there is no appropriate directory or the directory is empty
-.PHONY: --secrets
---secrets:
-	mkdir -p $(DIR_SECRETS);
-	@if [ -z "$$(ls -A $(DIR_SECRETS))" ]; then \
-		echo "$(BOLD)$(BLUE)Creating secrets...$(RESET)"; \
-		cd $(DIR_SECRETS) && \
-		../$(DIR_SCRIPTS)/generate-ssl-certs.sh \
-	else \
-		echo "$(BOLD)$(GREEN)Secrets already exist$(RESET)"; \
-	fi

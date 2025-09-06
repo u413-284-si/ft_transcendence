@@ -10,9 +10,6 @@ const schema = {
     "PORT",
     "LOG_LEVEL",
     "NODE_ENV",
-    "DB_FILE",
-    "JWT_ACCESS_TOKEN_SECRET",
-    "JWT_REFRESH_TOKEN_SECRET",
     "ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS",
     "REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS",
     "MAX_FILE_SIZE_IN_BYTES",
@@ -33,21 +30,9 @@ const schema = {
       default: "development",
       enum: ["development", "production", "testing", "staging"]
     },
-    DB_FILE: {
+    VAULT_ADDR: {
       type: "string",
-      default: "pong.db"
-    },
-    JWT_ACCESS_TOKEN_SECRET: {
-      type: "string",
-      default: "access_secret"
-    },
-    JWT_REFRESH_TOKEN_SECRET: {
-      type: "string",
-      default: "refresh_secret"
-    },
-    JWT_TWO_FA_LOGIN_TOKEN_SECRET: {
-      type: "string",
-      default: "two_fa_login_secret"
+      default: "https://vault:8200"
     },
     ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS: {
       type: "string",
@@ -71,14 +56,6 @@ const schema = {
       default: "app/frontend/public/images/",
       description: "Path to store uploaded images"
     },
-    GOOGLE_OAUTH2_CLIENT_ID: {
-      type: "string",
-      default: "client_id"
-    },
-    GOOGLE_OAUTH2_CLIENT_SECRET: {
-      type: "string",
-      default: "client_secret"
-    },
     GOOGLE_OAUTH2_REDIRECT_PATH: {
       type: "string",
       default: "/login/google"
@@ -89,7 +66,7 @@ const schema = {
     },
     GOOGLE_OAUTH2_CALLBACK_URL: {
       type: "string",
-      default: "http://localhost:4000/api/auth/google/callback"
+      default: "https://localhost:8443/api/auth/google/callback"
     },
     STATIC_RATE_LIMIT_MAX: {
       type: "number",
@@ -138,18 +115,13 @@ const envConfig = {
   port: config.PORT,
   logLevel: config.LOG_LEVEL,
   nodeEnv: config.NODE_ENV,
-  dbFile: config.DB_FILE,
-  jwtAccessTokenSecret: config.JWT_ACCESS_TOKEN_SECRET,
-  jwtRefreshTokenSecret: config.JWT_REFRESH_TOKEN_SECRET,
-  jwtTwoFALoginTokenSecret: config.JWT_TWO_FA_LOGIN_TOKEN_SECRET,
+  vaultAddr: config.VAULT_ADDR,
   accessTokenTimeToExpireInMs: config.ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS,
   refreshTokenTimeToExpireInMS: config.REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS,
   twoFALoginTokenTimeToExpireInMS:
     config.TWO_FA_LOGIN_TOKEN_TIME_TO_EXPIRE_IN_MS,
   maxFileSizeInBytes: config.MAX_FILE_SIZE_IN_BYTES,
   imagePath: config.IMAGE_PATH,
-  googleOauth2ClientId: config.GOOGLE_OAUTH2_CLIENT_ID,
-  googleOauth2ClientSecret: config.GOOGLE_OAUTH2_CLIENT_SECRET,
   googleOauth2RedirectPath: config.GOOGLE_OAUTH2_REDIRECT_PATH,
   googleOauth2CallbackRoute: config.GOOGLE_OAUTH2_CALLBACK_ROUTE,
   googleOauth2CallbackUrl: config.GOOGLE_OAUTH2_CALLBACK_URL,

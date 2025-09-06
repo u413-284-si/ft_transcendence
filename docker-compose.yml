@@ -7,13 +7,36 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      NODE_ENV: production
-      PORT: 4001
+    - NODE_ENV=${NODE_ENV}
+    - PORT=${APP_PORT}
+    - LOG_LEVEL=${LOG_LEVEL}
+    - ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS=${ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS}
+    - REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS=${REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS}
+    - TWO_FA_LOGIN_TOKEN_TIME_TO_EXPIRE_IN_MS=${TWO_FA_LOGIN_TOKEN_TIME_TO_EXPIRE_IN_MS}
+    - MAX_FILE_SIZE_IN_BYTES=${MAX_FILE_SIZE_IN_BYTES}
+    - IMAGE_PATH=${IMAGE_PATH}
+    - GOOGLE_OAUTH2_REDIRECT_PATH=${GOOGLE_OAUTH2_REDIRECT_PATH}
+    - GOOGLE_OAUTH2_CALLBACK_ROUTE=${GOOGLE_OAUTH2_CALLBACK_ROUTE}
+    - GOOGLE_OAUTH2_CALLBACK_URL=${GOOGLE_OAUTH2_CALLBACK_URL}
+    - STATIC_RATE_LIMIT_MAX=${STATIC_RATE_LIMIT_MAX}
+    - STATIC_RATE_LIMIT_TIME_IN_MS=${STATIC_RATE_LIMIT_TIME_IN_MS}
+    - API_RATE_LIMIT_MAX=${API_RATE_LIMIT_MAX}
+    - API_RATE_LIMIT_TIME_IN_MS=${API_RATE_LIMIT_TIME_IN_MS}
+    - AUTH_RATE_LIMIT_MAX=${AUTH_RATE_LIMIT_MAX}
+    - AUTH_RATE_LIMIT_TIME_IN_MS=${AUTH_RATE_LIMIT_TIME_IN_MS}
+    - VAULT_ADDR=${VAULT_ADDR}
+    secrets:
+      - vault_ca
     restart: always
     volumes:
       - db-data:/app/db
+      - vault-secrets-app:/app/secrets:ro
+    depends_on:
+      vault:
+        condition: service_healthy
     networks:
       - pong-network
+
   waf:
     build:
       dockerfile: ./waf/Dockerfile
@@ -21,39 +44,149 @@ services:
     init: true
     security_opt:
       - no-new-privileges:true
-    secrets:
-      - site_key
-      - site_cert
     ports:
       - "8080:8080"
       - "8443:8443"
     restart: always
     environment:
       # nginx settings
-      BACKEND: http://app:4001
-      PORT: 8080
-      SSL_PORT: 8443
-      NGINX_ALWAYS_TLS_REDIRECT: on
-      SSL_CERT: /etc/nginx/conf/self-signed.crt
-      SSL_CERT_KEY: /etc/nginx/conf/self-signed.key
+      - BACKEND=${APP_ADDR}
+      - PORT=${NGINX_PORT}
+      - SSL_PORT=${NGINX_SSL_PORT}
+      - NGINX_ALWAYS_TLS_REDIRECT=${NGINX_ALWAYS_TLS_REDIRECT}
+      - SSL_CERT=${NGINX_SSL_CERT}
+      - SSL_CERT_KEY=${NGINX_SSL_CERT_KEY}
       # modsecurity settings
-      MODSEC_RULE_ENGINE: On
-      MODSEC_DEBUG_LOGLEVEL: 3 # errors, warnings, and notices
+      - MODSEC_RULE_ENGINE=${MODSEC_RULE_ENGINE}
+      - MODSEC_DEBUG_LOGLEVEL=${MODSEC_DEBUG_LOGLEVEL} # errors, warnings, and notices
       # CRS settings
-      BLOCKING_PARANOIA: 2
+      - BLOCKING_PARANOIA=${BLOCKING_PARANOIA}
+    volumes:
+      - certs:/etc/nginx/certs:ro
     depends_on:
-      - app
+      app:
+        condition: service_started
+      vault-agent:
+        condition: service_healthy
     networks:
       - pong-network
+
+  vault:
+    build:
+      dockerfile: ./vault/Dockerfile
+    container_name: vault
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_CACERT=${VAULT_CACERT}
+      - SECRETS_DIR=${SECRETS_DIR}
+      - VAULT_UNSEAL_DIR=${VAULT_UNSEAL_DIR}
+      - VAULT_AUTH_DIR=${VAULT_AUTH_DIR}
+      - VAULT_PKI_DIR=${VAULT_PKI_DIR}
+      - NGINX_AUTH_DIR=${NGINX_AUTH_DIR}
+      - APP_AUTH_DIR=${APP_AUTH_DIR}
+      - GOOGLE_OAUTH2_ID=${GOOGLE_OAUTH2_ID}
+      - GOOGLE_OAUTH2_SECRET=${GOOGLE_OAUTH2_SECRET}
+    secrets:
+      - vault_cert
+      - vault_key
+      - vault_ca
+    configs:
+      - source: vault_config
+        target: /vault/config/vault.hcl
+      - source: policy_setup
+        target: /vault/policies/setup-policy.hcl
+      - source: policy_app
+        target: /vault/policies/app-policy.hcl
+      - source: policy_nginx
+        target: /vault/policies/nginx-policy.hcl
+      - source: policy_healthcheck
+        target: /vault/policies/healthcheck-policy.hcl
+    restart: always
+    volumes:
+      - vault-data:/vault/data
+      - vault-secrets-unseal:/vault/secrets/unseal
+      - vault-secrets-auth:/vault/secrets/auth
+      - vault-secrets-nginx:/vault/secrets/nginx
+      - vault-secrets-app:/vault/secrets/app
+    networks:
+      - pong-network
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
+  vault-agent:
+    image: hashicorp/vault:1.20.2
+    container_name: vault-agent
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+    secrets:
+      - vault_ca
+    configs:
+      - source: vault_agent_config
+        target: /vault/config/agent.hcl
+      - source: template_cert
+        target: /vault/templates/cert.ctmpl
+      - source: template_key
+        target: /vault/templates/key.ctmpl
+    restart: always
+    volumes:
+      - vault-secrets-nginx:/vault/secrets/:ro
+      - certs:/vault/certs
+    command: sh -c "chown -R vault:vault /vault/certs &&
+      exec su-exec vault:vault vault agent -config=/vault/config/agent.hcl
+      "
+    depends_on:
+      vault:
+        condition: service_healthy
+    networks:
+      - pong-network
+    healthcheck:
+      test: ["CMD", "test", "-f", "/vault/certs/fullchain.pem"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
 
 networks:
   pong-network:
 
 volumes:
+  certs:
   db-data:
+  vault-data:
+  vault-secrets-unseal:
+  vault-secrets-auth:
+  vault-secrets-nginx:
+  vault-secrets-app:
 
 secrets:
-  site_key:
-    file: secrets/site.key
-  site_cert:
-    file: secrets/site.crt
+  vault_cert:
+    file: ./certs/vault-certs/vault.crt
+  vault_key:
+    file: ./certs/vault-certs/vault.key
+  vault_ca:
+    file: ./certs/vault-certs/root-ca.crt
+
+configs:
+  vault_config:
+    file: ./vault/config/vault.hcl
+  policy_setup:
+    file: ./vault/policies/setup-policy.hcl
+  policy_app:
+    file: ./vault/policies/app-policy.hcl
+  policy_nginx:
+    file: ./vault/policies/nginx-policy.hcl
+  policy_healthcheck:
+    file: ./vault/policies/healthcheck-policy.hcl
+  vault_agent_config:
+    file: ./vault-agent/config/agent.hcl
+  template_cert:
+    file: ./vault-agent/templates/cert.ctmpl
+  template_key:
+    file: ./vault-agent/templates/key.ctmpl

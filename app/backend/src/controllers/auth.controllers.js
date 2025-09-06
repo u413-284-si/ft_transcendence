@@ -118,7 +118,7 @@ export async function googleOauth2LoginHandler(request, reply) {
         path: "/login",
         maxAge: 10
       })
-      .redirect("http://localhost:4000/login");
+      .redirect("https://localhost:8443");
   }
 
   const payload = await getTokenData(googleUser.email, "email");
@@ -127,7 +127,7 @@ export async function googleOauth2LoginHandler(request, reply) {
 
   return reply
     .setAuthCookies(accessToken, refreshToken)
-    .redirect("http://localhost:4000/home");
+    .redirect("https://localhost:8443");
 }
 
 export async function checkRefreshTokenStatusHandler(request, reply) {
