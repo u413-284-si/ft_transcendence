@@ -112,7 +112,10 @@ export class AuthManager {
           toaster.error(i18next.t("toast.invalidUsernameOrPW"));
           return false;
         } else if (apiResponseUserLogin.status === 404) {
-          toaster.error(i18next.t("toast.invalidUsernameOrPW"));
+          toaster.error(i18next.t("toast.emailOrUsernameNotExist"));
+          return false;
+        } else if (apiResponseUserLogin.status === 409) {
+          toaster.error(i18next.t("toast.emailExists"));
           return false;
         } else {
           throw new ApiError(apiResponseUserLogin);
