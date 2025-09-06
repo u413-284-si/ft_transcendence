@@ -5,11 +5,11 @@ import { Button } from "../components/Button.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { escapeHTML, getById } from "../utility.js";
 import { auth } from "../AuthManager.js";
-import { uploadAvatar } from "../services/userServices.js";
+import { deleteUserAvatar, uploadAvatar } from "../services/userServices.js";
 import {
   validateUsername,
   validateEmail,
-  //FIXME: validatePassword,
+  validatePassword,
   validateConfirmPassword,
   validateImageFile,
   markInvalid,
@@ -29,6 +29,7 @@ export default class ProfileView extends AbstractView {
   private passwordFormEl!: HTMLFormElement;
   private avatarInputEl!: HTMLInputElement;
   private fileLabelEl!: HTMLInputElement;
+  private deleteAvatarBtn!: HTMLButtonElement;
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
   constructor() {
@@ -144,6 +145,15 @@ export default class ProfileView extends AbstractView {
                   })
                 ]
               })}
+              ${Button({
+                text: i18next.t("profileView.deleteAvatar"),
+                id: "delete-avatar",
+                variant: "danger",
+                size: "md",
+                type: "button",
+                disabled: auth.getUser().avatar ? false : true,
+                className: `mt-2 self-start ${auth.getUser().avatar ? "" : "disabled:border-neon-bordeaux disabled:text-grey/50"}`
+              })}
             </div>
           </div>
 
@@ -200,6 +210,8 @@ export default class ProfileView extends AbstractView {
       this.uploadAvatar(event)
     );
 
+    this.deleteAvatarBtn.addEventListener("click", () => this.deleteAvatar());
+
     this.avatarInputEl.addEventListener("change", () => this.changeFileLabel());
 
     if (this.hasLocalAuth) {
@@ -220,6 +232,7 @@ export default class ProfileView extends AbstractView {
     this.passwordFormEl = getById("password-form");
     this.avatarInputEl = getById("avatar-input");
     this.fileLabelEl = getById("avatar-input-file-label");
+    this.deleteAvatarBtn = getById("delete-avatar");
     this.addListeners();
   }
 
@@ -320,6 +333,17 @@ export default class ProfileView extends AbstractView {
     }
   }
 
+  private async deleteAvatar() {
+    try {
+      if (!confirm(i18next.t("profileView.deleteAvatarConfirm"))) return;
+      getDataOrThrow(await deleteUserAvatar());
+      toaster.success(i18next.t("toast.avatarDeleteSuccess"));
+    } catch (err) {
+      console.error("Failed to delete avatar:", err);
+      toaster.error(i18next.t("toast.avatarDeleteFailed"));
+    }
+  }
+
   private changeFileLabel(): void {
     const files = this.avatarInputEl?.files;
     if (!files || files.length === 0) {
@@ -336,32 +360,32 @@ export default class ProfileView extends AbstractView {
     const currentPasswordEl = getById<HTMLInputElement>(
       "current-password-input"
     );
-    // FIXME: activate when pw policy active
-    // const currentPasswordErrorEl = getById<HTMLSpanElement>("current-password-error");
+    const currentPasswordErrorEl = getById<HTMLSpanElement>(
+      "current-password-error"
+    );
     const newPasswordEl = getById<HTMLInputElement>("new-password-input");
-    // FIXME: activate when pw policy active
-    // const newPasswordErrorEl = getById<HTMLSpanElement>("new-password-error");
+    const newPasswordErrorEl = getById<HTMLSpanElement>("new-password-error");
     const confirmPasswordEl = getById<HTMLInputElement>(
       "confirm-new-password-input"
     );
     const confirmPasswordErrorEl = getById<HTMLSpanElement>("confirm-error");
 
-    if (
-      !validateConfirmPassword(
-        newPasswordEl,
-        confirmPasswordEl,
-        confirmPasswordErrorEl
-      )
-    ) {
+    const isValidCurPassword = validatePassword(
+      currentPasswordEl,
+      currentPasswordErrorEl
+    );
+    const isValidNewPassword = validatePassword(
+      newPasswordEl,
+      newPasswordErrorEl
+    );
+    const isValidConfirmPassword = validateConfirmPassword(
+      newPasswordEl,
+      confirmPasswordEl,
+      confirmPasswordErrorEl
+    );
+    if (!isValidCurPassword || !isValidNewPassword || !isValidConfirmPassword) {
       return;
     }
-    // FIXME: activate when pw policy active
-    // if (
-    //   !validatePassword(currentPasswordEl, currentPasswordErrorEl) ||
-    //   !validatePassword(newPasswordEl, newPasswordErrorEl)
-    // ) {
-    //   return;
-    // }
 
     try {
       getDataOrThrow(

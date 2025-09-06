@@ -11,7 +11,12 @@ import {
   removeTwoFA,
   verifyTwoFACodeAndGetBackupCodes
 } from "../services/authServices.js";
-import { clearInvalid, markInvalid, validateTwoFACode } from "../validate.js";
+import {
+  clearInvalid,
+  markInvalid,
+  validatePassword,
+  validateTwoFACode
+} from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { router } from "../routing/Router.js";
 import { Link } from "../components/Link.js";
@@ -19,11 +24,12 @@ import { Table } from "../components/Table.js";
 import { Form } from "../components/Form.js";
 import { Button } from "../components/Button.js";
 import { LanguageSwitcher } from "../components/LanguageSwitcher.js";
-import { patchUser } from "../services/userServices.js";
+import { deleteUser, patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { User, Language } from "../types/User.js";
 import { getAllBySelector, getById, getBySelector } from "../utility.js";
+import { Header2 } from "../components/Header2.js";
 
 export default class SettingsView extends AbstractView {
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
@@ -48,6 +54,8 @@ export default class SettingsView extends AbstractView {
   private preferredLanguageFormEl!: HTMLFormElement;
   private preferredLanguageButtonEl!: HTMLElement;
   private preferredLanguageOptionsEl!: HTMLElement;
+
+  private deleteProfileButtonEl!: HTMLButtonElement;
 
   constructor() {
     super();
@@ -230,6 +238,18 @@ export default class SettingsView extends AbstractView {
             })
           ]
         })}
+        ${Header2({
+          text: i18next.t("settingsView.dangerZone"),
+          variant: "error",
+          className: "mt-8 mb-4"
+        })}
+        ${Button({
+          text: i18next.t("settingsView.deleteProfile"),
+          id: "delete-profile",
+          variant: "danger",
+          size: "md",
+          type: "button"
+        })}
       </div>
     `;
   }
@@ -292,6 +312,10 @@ export default class SettingsView extends AbstractView {
       });
     });
 
+    this.deleteProfileButtonEl.addEventListener("click", () => {
+      this.deleteProfile();
+    });
+
     document.addEventListener("click", this.onDocumentClick);
   }
 
@@ -326,6 +350,8 @@ export default class SettingsView extends AbstractView {
     this.preferredLanguageButtonEl = getById("preferred-language-button");
     this.preferredLanguageOptionsEl = getById("preferred-language-options");
     if (this.hasLocalAuth) this.initTwoFAElements();
+    this.deleteProfileButtonEl = getById("delete-profile");
+
     this.addListeners();
   }
 
@@ -422,9 +448,13 @@ export default class SettingsView extends AbstractView {
     try {
       event.preventDefault();
 
-      // FIXME: activate when password policy is applied
-      // if (!validatePassword(this.twoFAPasswordInputEl, this.twoFAPasswordInputErrorEl))
-      //   return;
+      if (
+        !validatePassword(
+          this.twoFAPasswordInputEl,
+          this.twoFAPasswordInputErrorEl
+        )
+      )
+        return;
 
       const apiResponse = await generateTwoFAQRcode(
         this.twoFAPasswordInputEl.value
@@ -458,9 +488,13 @@ export default class SettingsView extends AbstractView {
     try {
       event.preventDefault();
 
-      // FIXME: activate when password policy is applied
-      // if (!validatePassword(twoFAPasswordInputEl, twoFAPasswordInputErrorEl))
-      //   return;
+      if (
+        !validatePassword(
+          this.twoFAPasswordInputEl,
+          this.twoFAPasswordInputErrorEl
+        )
+      )
+        return;
       const apiResponse = await removeTwoFA(this.twoFAPasswordInputEl.value);
       this.twoFAPasswordInputEl.value = "";
       if (!apiResponse.success) {
@@ -485,9 +519,13 @@ export default class SettingsView extends AbstractView {
   private async generateAndDisplayBackupCodes(event: Event): Promise<void> {
     try {
       event.preventDefault();
-      // // FIXME: activate when password policy is applied
-      // // if (!validatePassword(this.twoFAPasswordInputEl, this.twoFAPasswordInputErrorEl))
-      // //   return;
+      if (
+        !validatePassword(
+          this.twoFAPasswordInputEl,
+          this.twoFAPasswordInputErrorEl
+        )
+      )
+        return;
 
       const apiResponse = await generateBackupCodes(
         this.twoFAPasswordInputEl.value
@@ -507,7 +545,7 @@ export default class SettingsView extends AbstractView {
       }
       this.fillBackupCodesTable(apiResponse.data.backupCodes);
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
-      this.twoFABackupCodesModalEl.close();
+      this.twoFAPasswordModalEl.close();
       this.twoFABackupCodesModalEl.showModal();
     } catch (error) {
       router.handleError("Error in generateAndDisplayBackupCodes()", error);
@@ -589,5 +627,17 @@ export default class SettingsView extends AbstractView {
     this.twoFAModalEl.close();
     this.twoFAPasswordModalEl.showModal();
     this.twoFAPasswordInputEl.focus();
+  }
+
+  private async deleteProfile() {
+    try {
+      if (!confirm(i18next.t("settingsView.deleteProfileConfirm"))) return;
+      getDataOrThrow(await deleteUser());
+      auth.logoutOnProfileDeletion();
+      toaster.success(i18next.t("toast.profileDeleteSuccess"));
+    } catch (err) {
+      console.error("Failed to delete profile:", err);
+      toaster.error(i18next.t("toast.profileDeleteFailed"));
+    }
   }
 }

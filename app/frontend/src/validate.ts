@@ -283,7 +283,7 @@ export async function validateTwoFACode(
   return true;
 }
 
-export async function validatTwoFABackupCode(
+export async function validateTwoFABackupCode(
   inputEl: HTMLInputElement,
   errorEl: HTMLSpanElement
 ): Promise<boolean> {

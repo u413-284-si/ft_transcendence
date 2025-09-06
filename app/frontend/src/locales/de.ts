@@ -231,6 +231,8 @@ const de: TranslationShape = {
       changePassword: "Ändere dein Passwort.",
       chooseFile: "Wähle ein Bild für deinen Avatar",
       currentPassword: "Aktuelles Passwort",
+      deleteAvatar: "Lösche deinen Avatar",
+      deleteAvatarConfirm: "Möchtest du deinen Avatar wirklich löschen?",
       newPassword: "Neues Passwort",
       noFileSelected: "Keine Datei ausgewählt",
       saveChanges: "Änderungen speichern",
@@ -259,8 +261,11 @@ const de: TranslationShape = {
       settings: "Lege hier deine Einstellungen und Präferenzen fest.",
       preferredLanguage: "Wähle dein bevorzugte Sprache aus.",
       saveLanguage: "Sprache speichern",
+      dangerZone: "Gefahrenbereich",
       displayTwoFASetup: "2FA Einstellungen anzeigen",
       deactivateTwoFASetup: "2FA deaktivieren",
+      deleteProfile: "Lösche dein Profil",
+      deleteProfileConfirm: "Möchtest du dein Profile wirklich löschen?",
       editTwoFASetup: "2‑Faktor-Authentifizierung (2FA) bearbeiten",
       twoFASetup: "2FA Einstellungen",
       twoFAInfo: [
@@ -313,6 +318,9 @@ const de: TranslationShape = {
 
     toast: {
       acceptedFriendRequest: "Freundschaftsanfrage angenommen von ",
+      avatarDeleteFailed:
+        "Avatar konnte nicht gelöscht werden. Bitte versuche es erneut.",
+      avatarDeleteSuccess: "Avatar erfolgreich gelöscht!",
       avatarUploadFailed:
         "Avatar konnte nicht hochgeladen werden. Bitte versuche es erneut.",
       avatarUploadedSuccess: "Avatar erfolgreich hochgeladen!",
@@ -343,6 +351,9 @@ const de: TranslationShape = {
       tabError: "Der Tab konnte nicht initialisiert werden.",
       twoFASetupSuccess: "2FA erfolgreich aktiviert!",
       twoFARemoveSuccess: "2FA erfolgreich deaktiviert!",
+      profileDeleteFailed:
+        "Profil konnte nicht gelöscht werden. Bitte versuche es erneut.",
+      profileDeleteSuccess: "Profil erfolgreich gelöscht!",
       profileUpdateFailed:
         "Profil konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       profileUpdatedSuccess: "Profil erfolgreich aktualisiert!",

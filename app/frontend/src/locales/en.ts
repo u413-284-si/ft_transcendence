@@ -219,6 +219,8 @@ const en = {
       changePassword: "Change your password.",
       chooseFile: "Choose an image file for your avatar",
       currentPassword: "Current Password",
+      deleteAvatar: "Delete your avatar",
+      deleteAvatarConfirm: "Are you sure you want to delete your avatar?",
       newPassword: "New Password",
       noFileSelected: "No file selected",
       saveChanges: "Save Changes",
@@ -247,8 +249,11 @@ const en = {
       settings: "Set your preferences and settings here.",
       preferredLanguage: "Select your preferred language.",
       saveLanguage: "Save Language",
+      dangerZone: "Danger Zone",
       displayTwoFASetup: "Display 2FA Setup",
       deactivateTwoFASetup: "Deactivate 2FA",
+      deleteProfile: "Delete your profile",
+      deleteProfileConfirm: "Are you sure you want to delete your profile?",
       editTwoFASetup: "Edit your 2FA setup",
       twoFASetup: "2FA Setup",
       twoFAInfo: [
@@ -300,6 +305,8 @@ const en = {
 
     toast: {
       acceptedFriendRequest: "Friend request accepted by ",
+      avatarDeleteFailed: "Avatar deletion failed. Please try again.",
+      avatarDeleteSuccess: "Avatar deleted successfully!",
       avatarUploadFailed: "Avatar upload failed. Please try again.",
       avatarUploadedSuccess: "Avatar uploaded successfully!",
       chartCannotRemoveYourself: "You cannot remove yourself",
@@ -326,6 +333,8 @@ const en = {
       passwordUpdatedSuccess: "Password updated successfully!",
       twoFASetupSuccess: "2FA setup successfully!",
       twoFARemoveSuccess: "2FA deactivated successfully!",
+      profileDeleteFailed: "Failed to delete your profile. Please try again.",
+      profileDeleteSuccess: "Profile deleted successfully!",
       profileUpdateFailed: "Failed to update profile. Please try again.",
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess: "Successfully registered {{username}}!",

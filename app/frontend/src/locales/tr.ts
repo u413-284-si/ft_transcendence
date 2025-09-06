@@ -221,6 +221,8 @@ const tr: TranslationShape = {
       changePassword: "Update your access code.",
       chooseFile: "Select image file for avatar override",
       currentPassword: "Current Access Code",
+      deleteAvatar: "Delete avatar",
+      deleteAvatarConfirm: "CONFIRM AVATAR DELETION",
       newPassword: "New Access Code",
       noFileSelected: "No file detected",
       saveChanges: "COMMIT CHANGES",
@@ -249,8 +251,11 @@ const tr: TranslationShape = {
       settings: "Configure your system parameters.",
       preferredLanguage: "Select interface language protocol.",
       saveLanguage: "Save language preference",
+      dangerZone: "DEREZZ Zone",
       displayTwoFASetup: "Display cipher configuration",
       deactivateTwoFASetup: "Deactivate cipher configuration",
+      deleteProfile: "Delete node",
+      deleteProfileConfirm: "CONFIRM NODE DELETION",
       editTwoFASetup: "Edit your cipher configuration",
       twoFASetup: "Cipher Configuration",
       twoFAInfo: [
@@ -302,6 +307,8 @@ const tr: TranslationShape = {
 
     toast: {
       acceptedFriendRequest: "Link request accepted by ",
+      avatarDeleteFailed: "Avatar deletion interrupted. Reattempt required.",
+      avatarDeleteSuccess: "Avatar successfully removed!",
       avatarUploadFailed: "Avatar upload interrupted. Reattempt required.",
       avatarUploadedSuccess: "Avatar successfully embedded!",
       chartCannotRemoveYourself: "Self-removal not permitted.",
@@ -329,6 +336,8 @@ const tr: TranslationShape = {
       tabError: "Tab failed to initialize within the Grid.",
       twoFASetupSuccess: "Cipher activated successfully!",
       twoFARemoveSuccess: "Cipher deactivated successfully!",
+      profileDeleteFailed: "Profile deletion failed. Retry advised.",
+      profileDeleteSuccess: "Profile deleted successfully!",
       profileUpdateFailed: "Profile update failed. Retry advised.",
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess:

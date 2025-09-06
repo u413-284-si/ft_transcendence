@@ -219,6 +219,8 @@ const fr: TranslationShape = {
       changePassword: "Modifiez votre mot de passe.",
       chooseFile: "Choisissez un fichier image",
       currentPassword: "Mot de passe actuel",
+      deleteAvatar: "Supprimez votre avatar",
+      deleteAvatarConfirm: "Voulez vous vraiment supprimer votre avatar?",
       newPassword: "Nouveau mot de passe",
       noFileSelected: "Aucun fichier sélectionné",
       saveChanges: "Enregistrer",
@@ -244,9 +246,12 @@ const fr: TranslationShape = {
       settings: "Configurez vos préférences et paramètres ici.",
       preferredLanguage: "Choisissez votre langue préférée.",
       saveLanguage: "Enregistrer la langue",
+      dangerZone: "Zone dangereuse",
       displayTwoFASetup:
         "Afficher la configuration de l’authentification à deux facteurs",
       deactivateTwoFASetup: "Désactiver l’authentification à deux facteurs",
+      deleteProfile: "Supprimez votre profil",
+      deleteProfileConfirm: "Voulez vous vraiment supprimer votre profil?",
       editTwoFASetup:
         "Modifier la configuration de l’authentification à deux facteurs",
       twoFASetup: "Paramètres de l’authentification à deux facteurs",
@@ -298,6 +303,8 @@ const fr: TranslationShape = {
     },
     toast: {
       acceptedFriendRequest: "Demande d’ami acceptée par ",
+      avatarDeleteFailed: "Échec d'effacement de l’avatar. Veuillez réessayer.",
+      avatarDeleteSuccess: "Avatar supprimé avec succès!",
       avatarUploadFailed:
         "Échec du téléchargement de l’avatar. Veuillez réessayer.",
       avatarUploadedSuccess: "Avatar téléchargé avec succès !",
@@ -325,14 +332,17 @@ const fr: TranslationShape = {
       passwordUpdateFailed:
         "Échec de la mise à jour du mot de passe. Veuillez réessayer.",
       passwordUpdatedSuccess: "Mot de passe mis à jour avec succès !",
+      profileDeleteFailed:
+        "Échec de l' effacement du profil. Veuillez réessayer.",
+      profileDeleteSuccess: "Profil supprimé avec succès !",
       profileUpdateFailed:
         "Échec de la mise à jour du profil. Veuillez réessayer.",
+      profileUpdatedSuccess: "Profil mis à jour avec succès !",
       tabError: "L'onglet n'a pas pu s'initialiser.",
       twoFASetupSuccess:
         "Configuration de l’authentification à deux facteurs réussie !",
       twoFARemoveSuccess:
         "Désactivation de l’authentification à deux facteurs réussie !",
-      profileUpdatedSuccess: "Profil mis à jour avec succès !",
       registrationSuccess: "Inscription de {{username}} réussie !",
       sendSuccess: "Demande d’ami envoyée avec succès à {{username}}",
       terminatedFriendship: "Fin de la relation d’amitié avec ",

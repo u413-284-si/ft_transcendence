@@ -19,13 +19,12 @@ const commonDefinitionsSchema = {
       minimum: 1,
       description: "The unique identifier for the entity"
     },
-    // FIXME
     password: {
       type: "string",
-      //   minLength: 14,
-      //   maxLength: 30,
-      //   pattern:
-      //     "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$",
+      minLength: 10,
+      maxLength: 64,
+      pattern:
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*[0-9])[A-Za-z0-9@$!%*?&]{10,64}$",
       description:
         "Password must be 10-64 characters long and must contain at least one " +
         "number, one uppercase and one lowercase letter and one of the " +

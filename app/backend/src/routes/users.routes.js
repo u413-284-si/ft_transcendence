@@ -27,7 +27,7 @@ export default async function userRoutes(fastify) {
 
   fastify.patch("/me", optionsPatchUser, patchUserHandler);
 
-  fastify.delete("/:id", optionsDeleteUser, deleteUserHandler); // FIXME: implement deletion?
+  fastify.delete("/me", optionsDeleteUser, deleteUserHandler);
 
   fastify.get(
     "/:username/matches",
@@ -40,7 +40,7 @@ export default async function userRoutes(fastify) {
   fastify.delete(
     "/me/avatar",
     optionsDeleteUserAvatar,
-    deleteUserAvatarHandler // FIXME: implement deletion?
+    deleteUserAvatarHandler
   );
 
   fastify.get(
@@ -118,7 +118,6 @@ const optionsPatchUser = {
 const optionsDeleteUser = {
   onRequest: [authorizeUserAccess],
   schema: {
-    params: { $ref: "idSchema" },
     response: {
       200: { $ref: "userResponseSchema" },
       ...errorResponses

@@ -223,6 +223,8 @@ const pi: TranslationShape = {
       changePassword: "Swap yer secret.",
       chooseFile: "Pick an image fer yer pirate flag",
       currentPassword: "Old Code",
+      deleteAvatar: "Burn yer Jolly Roger",
+      deleteAvatarConfirm: "Ye sure ye want to burn yer Jolly Roger?",
       newPassword: "New Secret Phrase",
       noFileSelected: "No treasure map selected",
       saveChanges: "Stash Yer Changes",
@@ -251,8 +253,12 @@ const pi: TranslationShape = {
       settings: "Change yer sails and adjust the wind here.",
       preferredLanguage: "Choose yer tongue, matey.",
       saveLanguage: "Stash yer tongue",
+      dangerZone: "Beware! Davy Jones' Locker Awaits",
       displayTwoFASetup: "Scuttle the Secret Digits",
       deactivateTwoFASetup: "2FA deaktivieren",
+      deleteProfile: "Send yer profile to Davy Jones",
+      deleteProfileConfirm:
+        "Ye sure ye want to send yer profile to Davy Jones?",
       editTwoFASetup: "Tweak yer secret digits riggin’",
       twoFASetup: "Riggin’ the Secret Digits",
       twoFAInfo: [
@@ -305,6 +311,8 @@ const pi: TranslationShape = {
 
     toast: {
       acceptedFriendRequest: "Parley accepted by ",
+      avatarDeleteFailed: "Couldn’t burn yer flag – try again!",
+      avatarDeleteSuccess: "Yer flag be burnin’ high now!",
       avatarUploadFailed: "Couldn’t hoist yer flag – try again!",
       avatarUploadedSuccess: "Yer colors be flyin’ high now!",
       chartCannotRemoveYourself: "Ye can't be tossin' yerself.",
@@ -334,7 +342,11 @@ const pi: TranslationShape = {
       tabError: "Arrr! This here tab be refusin' to set sail!",
       twoFASetupSuccess: "Secret digits be rigged ‘n ready!",
       twoFARemoveSuccess: "Secret digits be scuttled! Ye be sailin’ free!",
-      profileUpdateFailed: "Profile be cursed – try again later!",
+      profileDeleteFailed:
+        "The sea refused the sacrifice — yer profile remains",
+      profileDeleteSuccess:
+        "The deed be done — ye profile sleeps wit' the fishes!",
+      profileUpdateFailed: "Profile be cursed - try again later!",
       profileUpdatedSuccess: "Profile polished like a cutlass!",
       registrationSuccess: "You be aboard, sailor {{username}}!",
       sendSuccess: "Parley sent to the high seas to {{username}}!",
