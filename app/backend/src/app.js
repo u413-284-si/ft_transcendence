@@ -27,49 +27,53 @@ import { userStatsSchemas } from "./schema/user_stats.schema.js";
 import { friendRequestSchemas } from "./schema/friend_request.schema.js";
 import { dashboardSchemas } from "./schema/dashboard.schema.js";
 
-async function getSecrets(roleId, secretId) {
-  const status = await vault.healthCheck();
-  if (status.sealed) throw new Error("Vault is sealed");
-
-  const loginResponse = await vault.loginWithAppRole(
-    roleId,
-    secretId,
-    "auth/approle"
-  );
-
-  const jwtSecrets = await vault.readKVSecret(
-    loginResponse.client_token,
-    "jwt"
-  );
-  const googleId = await vault.readKVSecret(
-    loginResponse.client_token,
-    "google_id"
-  );
-  const googleSecret = await vault.readKVSecret(
-    loginResponse.client_token,
-    "google_secret"
-  );
-
-  return { jwtSecrets, googleId, googleSecret };
-}
-
-const vault = new Vault({
-  https: true,
-  cacert: "/run/secrets/vault_ca",
-  baseUrl: `${env.vaultAddr}/v1`,
-  rootPath: "secret",
-  timeout: 1000,
-  proxy: false
-});
-const roleId = fs.readFileSync("/app/secrets/app-role-id", "utf8").trim();
-const secretId = fs.readFileSync("/app/secrets/app-secret-id", "utf8").trim();
-
+let weWantVault = false;
 let secrets;
-try {
-  secrets = await getSecrets(roleId, secretId);
-} catch (err) {
-  console.error("❌ Failed to initialize Vault:", err);
-  process.exit(1);
+
+if (weWantVault) {
+  async function getSecrets(roleId, secretId) {
+    const status = await vault.healthCheck();
+    if (status.sealed) throw new Error("Vault is sealed");
+
+    const loginResponse = await vault.loginWithAppRole(
+      roleId,
+      secretId,
+      "auth/approle"
+    );
+
+    const jwtSecrets = await vault.readKVSecret(
+      loginResponse.client_token,
+      "jwt"
+    );
+    const googleId = await vault.readKVSecret(
+      loginResponse.client_token,
+      "google_id"
+    );
+    const googleSecret = await vault.readKVSecret(
+      loginResponse.client_token,
+      "google_secret"
+    );
+
+    return { jwtSecrets, googleId, googleSecret };
+  }
+
+  const vault = new Vault({
+    https: true,
+    cacert: "/run/secrets/vault_ca",
+    baseUrl: `${env.vaultAddr}/v1`,
+    rootPath: "secret",
+    timeout: 1000,
+    proxy: false
+  });
+  const roleId = fs.readFileSync("/app/secrets/app-role-id", "utf8").trim();
+  const secretId = fs.readFileSync("/app/secrets/app-secret-id", "utf8").trim();
+
+  try {
+    secrets = await getSecrets(roleId, secretId);
+  } catch (err) {
+    console.error("❌ Failed to initialize Vault:", err);
+    process.exit(1);
+  }
 }
 
 const fastify = Fastify({
@@ -121,7 +125,7 @@ await fastify.register(fastifyFormbody);
 await fastify.register(fastifyCookie);
 await fastify.register(jwt, {
   namespace: "accessToken",
-  secret: secrets.jwtSecrets.data.access_token_secret,
+  secret: weWantVault ? secrets.jwtSecrets.data.access_token_secret : "access",
   jwtVerify: "accessTokenVerify",
   jwtSign: "accessTokenSign",
   jwtDecode: "accessTokenDecode",
@@ -133,7 +137,9 @@ await fastify.register(jwt, {
 });
 await fastify.register(jwt, {
   namespace: "refreshToken",
-  secret: secrets.jwtSecrets.data.refresh_token_secret,
+  secret: weWantVault
+    ? secrets.jwtSecrets.data.refresh_token_secret
+    : "refresh",
   jwtVerify: "refreshTokenVerify",
   jwtSign: "refreshTokenSign",
   sign: { expiresIn: env.refreshTokenTimeToExpireInMS },
@@ -144,7 +150,9 @@ await fastify.register(jwt, {
 });
 await fastify.register(jwt, {
   namespace: "twoFALoginToken",
-  secret: secrets.jwtSecrets.data.two_fa_login_token_secret,
+  secret: weWantVault
+    ? secrets.jwtSecrets.data.two_fa_login_token_secret
+    : "2fa",
   jwtVerify: "twoFALoginTokenVerify",
   jwtSign: "twoFALoginTokenSign",
   sign: { expiresIn: env.twoFALoginTokenTimeToExpireInMS },
@@ -164,8 +172,10 @@ await fastify.register(oAuth2, {
   scope: ["email", "profile"],
   credentials: {
     client: {
-      id: secrets.googleId.data.google_oauth2_client_id,
-      secret: secrets.googleSecret.data.google_oauth2_client_secret
+      id: weWantVault ? secrets.googleId.data.google_oauth2_client_id : "myId",
+      secret: weWantVault
+        ? secrets.googleSecret.data.google_oauth2_client_secret
+        : "secretboi"
     }
   },
   startRedirectPath: env.googleOauth2RedirectPath,

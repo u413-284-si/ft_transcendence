@@ -317,8 +317,10 @@ const fr: TranslationShape = {
         "Erreur lors de la réception d'une demande d'ami.",
       friendRequestSendError: "Erreur lors de l'envoi de la demande d'ami.",
       emailExists: "L’adresse e‑mail existe déjà",
-      emailOrUsernameExists: "L’e‑mail ou le nom d’utilisateur existe déjà",
+      emailOrUsernameExists: "L'e-mail ou le nom d'utilisateur existe déjà",
+      emailOrUsernameNotExist: "L'e-mail ou le nom d'utilisateur n'existe pas",
       invalidUsernameOrPW: "Nom d’utilisateur ou mot de passe invalide",
+      invalidToken: "Token non valide",
       logoutError: "Erreur lors de la déconnexion. Veuillez réessayer.",
       passwordUpdateFailed:
         "Échec de la mise à jour du mot de passe. Veuillez réessayer.",

@@ -82,6 +82,7 @@ export class AuthManager {
         return;
       } else if (refreshToken.status === "invalid") {
         console.warn("Invalid refresh token found.");
+        toaster.warn(i18next.t("toast.invalidToken"));
         await this.notify();
         return;
       }
@@ -107,6 +108,9 @@ export class AuthManager {
       const apiResponseUserLogin = await userLogin(username, password);
       if (!apiResponseUserLogin.success) {
         if (apiResponseUserLogin.status === 401) {
+          toaster.error(i18next.t("toast.invalidUsernameOrPW"));
+          return false;
+        } else if (apiResponseUserLogin.status === 404) {
           toaster.error(i18next.t("toast.invalidUsernameOrPW"));
           return false;
         } else {

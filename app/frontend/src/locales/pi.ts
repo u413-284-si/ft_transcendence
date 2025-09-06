@@ -324,8 +324,10 @@ const pi: TranslationShape = {
       friendRequestSendError: "Trouble while sendin' yer parley request!",
       emailExists: "That bottle's already adrift",
       emailOrUsernameExists: "That name or bottle already has a captain",
+      emailOrUsernameNotExist: "That name or bottle not yet be sailin'",
       logoutError: "Couldn’t abandon ship – try again!",
       invalidUsernameOrPW: "Yer name or code be wrong, matey!",
+      invalidToken: "Yer token be counterfeit!",
       passwordUpdateFailed:
         "Couldn’t set yer new passphrase. Try again or be cursed!",
       passwordUpdatedSuccess: "Secret code changed! Keep it close!",

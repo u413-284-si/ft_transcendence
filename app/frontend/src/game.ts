@@ -72,7 +72,7 @@ function initGameState(
     type2: type2,
     player1Score: 0,
     player2Score: 0,
-    winningScore: 10, // FIXME: needs to be a higher value
+    winningScore: 5,
     canvasHeight: canvas.height,
     canvasWidth: canvas.width,
     ballX: 0,
