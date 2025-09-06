@@ -13,7 +13,7 @@
     "watch-frontend": "nodemon --watch ./app/frontend/src --ext ts --exec \"npm run style && npm run build && npm run start\"",
     "watch-backend": "nodemon --watch ./app/backend/src --ext js --exec \"npm run start\"",
     "watch": "nodemon --watch ./app/frontend/src --watch ./app/backend/src  --ext ts,js --exec \"npm run style && npm run build && npm run start\"",
-    "db:init": "npx prisma migrate dev",
+    "db:init": "npx prisma migrate dev --name initial",
     "db:seed": "prisma db seed",
     "db:reset": "prisma migrate reset",
     "dev": "npm run db:init && npm run watch",
