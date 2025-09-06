@@ -60,11 +60,6 @@ export async function getUserStats(userId) {
   return assembleUserStats(userStats);
 }
 
-export async function deleteAllUserStats() {
-  const userStats = await prisma.userStats.deleteMany();
-  return userStats;
-}
-
 function assembleUserStats({
   matchesPlayed,
   matchesWon,
