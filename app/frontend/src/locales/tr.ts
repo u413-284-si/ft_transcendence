@@ -322,6 +322,7 @@ const tr: TranslationShape = {
       declinedFriendRequest: "Link request declined by ",
       deletedFriendRequest: "Link request deleted by ",
       emailExists: "Data address already exists in network",
+      emailExistsWithGoogle: "Access conflict: Email registered via Google. Initiate Google sign-in protocol.",
       emailOrUsernameExists: "Data address or User ID already exists",
       emailOrUsernameNotExist: "Data address or User ID not existent",
       friendAdded: "Link established with {{username}}!",

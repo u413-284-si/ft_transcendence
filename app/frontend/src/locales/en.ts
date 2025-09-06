@@ -324,6 +324,7 @@ const en = {
       friendRequestEventError: "Error while receiving a friend request.",
       friendRequestSendError: "Error while sending friend request.",
       emailExists: "The email address already exists",
+      emailExistsWithGoogle: "Email already used with Google. Sign in via Google.",
       emailOrUsernameExists: "The email or username already exists",
       emailOrUsernameNotExist: "The email or username does not exist",
       invalidUsernameOrPW: "Invalid username or password",

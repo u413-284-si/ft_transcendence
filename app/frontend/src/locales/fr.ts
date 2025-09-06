@@ -324,6 +324,7 @@ const fr: TranslationShape = {
         "Erreur lors de la réception d'une demande d'ami.",
       friendRequestSendError: "Erreur lors de l'envoi de la demande d'ami.",
       emailExists: "L’adresse e‑mail existe déjà",
+      emailExistsWithGoogle: "Cet e-mail est déjà utilisé avec Google. Connectez-vous via Google.",
       emailOrUsernameExists: "L'e-mail ou le nom d'utilisateur existe déjà",
       emailOrUsernameNotExist: "L'e-mail ou le nom d'utilisateur n'existe pas",
       invalidUsernameOrPW: "Nom d’utilisateur ou mot de passe invalide",
