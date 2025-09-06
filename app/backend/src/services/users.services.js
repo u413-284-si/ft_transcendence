@@ -76,11 +76,6 @@ export async function getUser(id) {
   return user;
 }
 
-export async function getAllUsers() {
-  const users = await prisma.user.findMany({ select: userSelect });
-  return users;
-}
-
 export async function updateUser(id, updateData) {
   const updatedUser = await prisma.user.update({
     where: {

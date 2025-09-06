@@ -7,15 +7,6 @@ import {
   DashboardTournaments
 } from "../types/DataSeries.js";
 
-export async function getUserStats(): Promise<ApiResponse<UserStats>> {
-  const url = `/api/users/me/user-stats`;
-
-  return apiFetch<UserStats>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
 export async function getUserStatsByUsername(
   username: string
 ): Promise<ApiResponse<UserStats[]>> {

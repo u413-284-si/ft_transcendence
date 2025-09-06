@@ -2,11 +2,8 @@ import { authorizeUserAccess } from "../middleware/auth.js";
 import {
   createUserHandler,
   getUserHandler,
-  getAllUsersHandler,
-  updateUserHandler,
   deleteUserHandler,
   patchUserHandler,
-  getUserStatsHandler,
   getAllUserFriendRequestsHandler,
   searchUserHandler,
   createUserAvatarHandler,
@@ -28,13 +25,9 @@ export default async function userRoutes(fastify) {
 
   fastify.get("/me", optionsGetUser, getUserHandler);
 
-  fastify.get("/", optionsGetAllUsers, getAllUsersHandler);
-
-  fastify.put("/:id", optionsUpdateUser, updateUserHandler);
-
   fastify.patch("/me", optionsPatchUser, patchUserHandler);
 
-  fastify.delete("/:id", optionsDeleteUser, deleteUserHandler);
+  fastify.delete("/:id", optionsDeleteUser, deleteUserHandler); // FIXME: implement deletion?
 
   fastify.get(
     "/:username/matches",
@@ -42,14 +35,12 @@ export default async function userRoutes(fastify) {
     getUserMatchesByUsernameHandler
   );
 
-  fastify.get("/me/user-stats", optionsGetUserStats, getUserStatsHandler);
-
   fastify.post("/me/avatar", optionsCreateUserAvatar, createUserAvatarHandler);
 
   fastify.delete(
     "/me/avatar",
     optionsDeleteUserAvatar,
-    deleteUserAvatarHandler
+    deleteUserAvatarHandler // FIXME: implement deletion?
   );
 
   fastify.get(
@@ -113,26 +104,6 @@ const optionsGetUser = {
   }
 };
 
-const optionsGetAllUsers = {
-  schema: {
-    response: {
-      200: { $ref: "userArrayResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsUpdateUser = {
-  schema: {
-    params: { $ref: "idSchema" },
-    body: { $ref: "updateUserSchema" },
-    response: {
-      200: { $ref: "userResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
 const optionsPatchUser = {
   onRequest: [authorizeUserAccess],
   schema: {
@@ -145,6 +116,7 @@ const optionsPatchUser = {
 };
 
 const optionsDeleteUser = {
+  onRequest: [authorizeUserAccess],
   schema: {
     params: { $ref: "idSchema" },
     response: {
@@ -167,16 +139,6 @@ const optionsGetUserMatchesByUsername = {
     },
     response: {
       200: { $ref: "matchArrayResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetUserStats = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      200: { $ref: "userStatsResponseSchema" },
       ...errorResponses
     }
   }

@@ -1,6 +1,5 @@
 import {
   getAllUserStatsHandler,
-  deleteAllUserStatsHandler,
   getDashboardMatchesByUsernameHandler,
   getDashboardTournamentsByUsernameHandler,
   getDashboardFriendsHandler
@@ -10,8 +9,6 @@ import { errorResponses } from "../utils/error.js";
 
 export default async function userstatsRoutes(fastify) {
   fastify.get("/", optionsGetAllUserStats, getAllUserStatsHandler);
-
-  fastify.delete("/", optionsDeleteAllUserStats, deleteAllUserStatsHandler);
 
   fastify.get(
     "/:username/dashboard-matches",
@@ -46,14 +43,6 @@ const optionsGetAllUserStats = {
     },
     response: {
       200: { $ref: "userStatsArrayResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsDeleteAllUserStats = {
-  schema: {
-    response: {
       ...errorResponses
     }
   }

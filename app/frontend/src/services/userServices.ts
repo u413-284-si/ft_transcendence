@@ -70,17 +70,6 @@ export async function getUserByUsername(
   });
 }
 
-export async function getUserByEmail(
-  email: string
-): Promise<ApiResponse<User | null>> {
-  const url = `/api/users/search?email=${encodeURIComponent(email)}`;
-
-  return apiFetch<User | null>(url, {
-    method: "GET",
-    credentials: "same-origin"
-  });
-}
-
 export async function getUserPlayedMatchesByUsername(
   username: string,
   limit = 10,

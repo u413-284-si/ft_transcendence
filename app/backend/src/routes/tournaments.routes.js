@@ -1,9 +1,6 @@
 import {
   createTournamentHandler,
-  getAllTournamentsHandler,
-  getTournamentHandler,
   patchTournamentHandler,
-  deleteAllTournamentsHandler,
   deleteTournamentHandler,
   patchTournamentMatchHandler
 } from "../controllers/tournaments.controllers.js";
@@ -13,10 +10,6 @@ import { errorResponses } from "../utils/error.js";
 export default async function tournamentRoutes(fastify) {
   fastify.post("/", optionsCreateTournament, createTournamentHandler);
 
-  fastify.get("/", getAllTournamentsHandler);
-
-  fastify.get("/:id", optionsGetTournament, getTournamentHandler);
-
   fastify.patch("/:id", optionsPatchTournament, patchTournamentHandler);
 
   fastify.patch(
@@ -24,8 +17,6 @@ export default async function tournamentRoutes(fastify) {
     optionsPatchTournamentMatch,
     patchTournamentMatchHandler
   );
-
-  fastify.delete("/", optionsDeleteAllTournaments, deleteAllTournamentsHandler);
 
   fastify.delete("/:id", optionsDeleteTournament, deleteTournamentHandler);
 }
@@ -36,16 +27,6 @@ const optionsCreateTournament = {
     body: { $ref: "createTournamentSchema" },
     response: {
       201: { $ref: "tournamentResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetTournament = {
-  schema: {
-    params: { $ref: "idSchema" },
-    response: {
-      200: { $ref: "tournamentResponseSchema" },
       ...errorResponses
     }
   }
@@ -87,14 +68,6 @@ const optionsDeleteTournament = {
     params: { $ref: "idSchema" },
     response: {
       200: { $ref: "tournamentResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsDeleteAllTournaments = {
-  schema: {
-    response: {
       ...errorResponses
     }
   }

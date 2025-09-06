@@ -1,7 +1,6 @@
 import {
   createUser,
   getUser,
-  getAllUsers,
   updateUser,
   deleteUser,
   getUserAvatar,
@@ -12,7 +11,6 @@ import {
   getUserAuthProvider,
   flattenUser
 } from "../services/users.services.js";
-import { getUserStats } from "../services/user_stats.services.js";
 import {
   getUserMatches,
   getUserMatchesCount
@@ -53,26 +51,6 @@ export async function getUserHandler(request, reply) {
   const userId = request.user.id;
   const user = await getUser(userId);
   const data = flattenUser(user);
-  return reply
-    .code(200)
-    .send({ message: createResponseMessage(request.action, true), data: data });
-}
-
-export async function getAllUsersHandler(request, reply) {
-  request.action = "Get all users";
-  const data = await getAllUsers();
-  const count = data.length;
-  return reply.code(200).send({
-    message: createResponseMessage(request.action, true),
-    count: count,
-    data: data
-  });
-}
-
-export async function updateUserHandler(request, reply) {
-  request.action = "Update user";
-  const userId = request.params.id;
-  const data = await updateUser(userId, request.body);
   return reply
     .code(200)
     .send({ message: createResponseMessage(request.action, true), data: data });
@@ -137,15 +115,6 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
     message: createResponseMessage(request.action, true),
     data: { items: matches, total }
   });
-}
-
-export async function getUserStatsHandler(request, reply) {
-  request.action = "Get user stats";
-  const userId = request.user.id;
-  const data = await getUserStats(userId);
-  return reply
-    .code(200)
-    .send({ message: createResponseMessage(request.action, true), data: data });
 }
 
 export async function getUserTournamentsByUsernameHandler(request, reply) {

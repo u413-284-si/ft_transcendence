@@ -4,10 +4,7 @@ import {
   getDashboardTournamentsData
 } from "../services/dashboard.services.js";
 import { getFriendId } from "../services/friends.services.js";
-import {
-  getAllUserStats,
-  deleteAllUserStats
-} from "../services/user_stats.services.js";
+import { getAllUserStats } from "../services/user_stats.services.js";
 import { httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
@@ -25,14 +22,6 @@ export async function getAllUserStatsHandler(request, reply) {
     count: count,
     data: data
   });
-}
-
-export async function deleteAllUserStatsHandler(request, reply) {
-  request.action = "Delete all user stats";
-  const data = await deleteAllUserStats();
-  return reply
-    .code(200)
-    .send({ message: createResponseMessage(request.action, true), data: data });
 }
 
 export async function getDashboardMatchesByUsernameHandler(request, reply) {
