@@ -11,7 +11,12 @@ import {
   removeTwoFA,
   verifyTwoFACodeAndGetBackupCodes
 } from "../services/authServices.js";
-import { clearInvalid, markInvalid, validateTwoFACode } from "../validate.js";
+import {
+  clearInvalid,
+  markInvalid,
+  validatePassword,
+  validateTwoFACode
+} from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { router } from "../routing/Router.js";
 import { Link } from "../components/Link.js";
@@ -422,9 +427,13 @@ export default class SettingsView extends AbstractView {
     try {
       event.preventDefault();
 
-      // FIXME: activate when password policy is applied
-      // if (!validatePassword(this.twoFAPasswordInputEl, this.twoFAPasswordInputErrorEl))
-      //   return;
+      if (
+        !validatePassword(
+          this.twoFAPasswordInputEl,
+          this.twoFAPasswordInputErrorEl
+        )
+      )
+        return;
 
       const apiResponse = await generateTwoFAQRcode(
         this.twoFAPasswordInputEl.value
@@ -458,9 +467,13 @@ export default class SettingsView extends AbstractView {
     try {
       event.preventDefault();
 
-      // FIXME: activate when password policy is applied
-      // if (!validatePassword(twoFAPasswordInputEl, twoFAPasswordInputErrorEl))
-      //   return;
+      if (
+        !validatePassword(
+          this.twoFAPasswordInputEl,
+          this.twoFAPasswordInputErrorEl
+        )
+      )
+        return;
       const apiResponse = await removeTwoFA(this.twoFAPasswordInputEl.value);
       this.twoFAPasswordInputEl.value = "";
       if (!apiResponse.success) {
@@ -485,9 +498,13 @@ export default class SettingsView extends AbstractView {
   private async generateAndDisplayBackupCodes(event: Event): Promise<void> {
     try {
       event.preventDefault();
-      // // FIXME: activate when password policy is applied
-      // // if (!validatePassword(this.twoFAPasswordInputEl, this.twoFAPasswordInputErrorEl))
-      // //   return;
+      if (
+        !validatePassword(
+          this.twoFAPasswordInputEl,
+          this.twoFAPasswordInputErrorEl
+        )
+      )
+        return;
 
       const apiResponse = await generateBackupCodes(
         this.twoFAPasswordInputEl.value

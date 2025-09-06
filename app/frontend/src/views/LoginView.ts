@@ -1,7 +1,5 @@
 import AbstractView from "./AbstractView.js";
-// FIXME: activate when password policy is applied
-//import { validatePassword, validateUsernameOrEmail } from "../validate.js";
-import { validateUsernameOrEmail } from "../validate.js";
+import { validatePassword, validateUsernameOrEmail } from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
 import { addTogglePasswordListener, Input } from "../components/Input.js";
@@ -89,14 +87,12 @@ export default class LoginView extends AbstractView {
     const userEl = getById<HTMLInputElement>("usernameOrEmail");
     const userErrorEl = getById<HTMLElement>("usernameOrEmail-error");
     const passwordEl = getById<HTMLInputElement>("password");
-    // FIXME: activate when password policy is applied
-    // const passwordErrorEl = getById<HTMLElement>(
-    //   "password-error"
-    // ) as HTMLElement;
+    const passwordErrorEl = getById<HTMLElement>(
+      "password-error"
+    ) as HTMLElement;
 
     if (!validateUsernameOrEmail(userEl, userErrorEl)) return;
-    // FIXME: activate when password policy is applied
-    // if (!validatePassword(passwordEl, passwordErrorEl)) return;
+    if (!validatePassword(passwordEl, passwordErrorEl)) return;
 
     const isAllowed = await auth.login(userEl.value, passwordEl.value);
     userEl.value = "";

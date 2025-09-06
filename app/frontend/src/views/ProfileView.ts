@@ -9,7 +9,7 @@ import { uploadAvatar } from "../services/userServices.js";
 import {
   validateUsername,
   validateEmail,
-  //FIXME: validatePassword,
+  validatePassword,
   validateConfirmPassword,
   validateImageFile,
   markInvalid,
@@ -336,11 +336,11 @@ export default class ProfileView extends AbstractView {
     const currentPasswordEl = getById<HTMLInputElement>(
       "current-password-input"
     );
-    // FIXME: activate when pw policy active
-    // const currentPasswordErrorEl = getById<HTMLSpanElement>("current-password-error");
+    const currentPasswordErrorEl = getById<HTMLSpanElement>(
+      "current-password-error"
+    );
     const newPasswordEl = getById<HTMLInputElement>("new-password-input");
-    // FIXME: activate when pw policy active
-    // const newPasswordErrorEl = getById<HTMLSpanElement>("new-password-error");
+    const newPasswordErrorEl = getById<HTMLSpanElement>("new-password-error");
     const confirmPasswordEl = getById<HTMLInputElement>(
       "confirm-new-password-input"
     );
@@ -355,13 +355,12 @@ export default class ProfileView extends AbstractView {
     ) {
       return;
     }
-    // FIXME: activate when pw policy active
-    // if (
-    //   !validatePassword(currentPasswordEl, currentPasswordErrorEl) ||
-    //   !validatePassword(newPasswordEl, newPasswordErrorEl)
-    // ) {
-    //   return;
-    // }
+    if (
+      !validatePassword(currentPasswordEl, currentPasswordErrorEl) ||
+      !validatePassword(newPasswordEl, newPasswordErrorEl)
+    ) {
+      return;
+    }
 
     try {
       getDataOrThrow(

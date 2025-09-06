@@ -1,10 +1,5 @@
 import AbstractView from "./AbstractView.js";
-// FIXME: activate when password policy is applied
-//import { validatePassword, validateUsernameOrEmail } from "../validate.js";
-import {
-  markInvalid,
-  validatTwoFABackupCode as validateTwoFABackupCode
-} from "../validate.js";
+import { markInvalid, validateTwoFABackupCode } from "../validate.js";
 import { auth } from "../AuthManager.js";
 import { router } from "../routing/Router.js";
 import { Input } from "../components/Input.js";
