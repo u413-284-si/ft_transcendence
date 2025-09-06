@@ -57,15 +57,6 @@ export async function getUserHandler(request, reply) {
     .send({ message: createResponseMessage(request.action, true), data: data });
 }
 
-export async function updateUserHandler(request, reply) {
-  request.action = "Update user";
-  const userId = request.params.id;
-  const data = await updateUser(userId, request.body);
-  return reply
-    .code(200)
-    .send({ message: createResponseMessage(request.action, true), data: data });
-}
-
 export async function patchUserHandler(request, reply) {
   request.action = "Patch user";
   const userId = request.user.id;
