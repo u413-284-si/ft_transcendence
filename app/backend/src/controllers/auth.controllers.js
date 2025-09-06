@@ -159,12 +159,16 @@ export async function checkRefreshTokenStatusHandler(request, reply) {
     });
   } catch (err) {
     let status = "undefined";
+    if (!err.code) {
+      throw err;
+    }
     if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
       status = "expired";
     } else if (
       err.code === "FST_JWT_AUTHORIZATION_TOKEN_INVALID" ||
       err.code === "FST_JWT_AUTHORIZATION_TOKEN_UNTRUSTED" ||
-      err.code === "FAST_JWT_MISSING_SIGNATURE"
+      err.code === "FAST_JWT_MISSING_SIGNATURE" ||
+      err.code === "P2025"
     ) {
       status = "invalid";
       reply.clearAuthCookies();
