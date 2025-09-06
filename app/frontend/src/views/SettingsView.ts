@@ -524,7 +524,7 @@ export default class SettingsView extends AbstractView {
       }
       this.fillBackupCodesTable(apiResponse.data.backupCodes);
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
-      this.twoFABackupCodesModalEl.close();
+      this.twoFAPasswordModalEl.close();
       this.twoFABackupCodesModalEl.showModal();
     } catch (error) {
       router.handleError("Error in generateAndDisplayBackupCodes()", error);
