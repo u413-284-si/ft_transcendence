@@ -333,6 +333,7 @@ const de: TranslationShape = {
       friendRequestSendError: "Fehler beim Senden der Freundschaftsanfrage.",
       emailExists: "Diese E-Mail-Adresse ist bereits registriert",
       emailOrUsernameExists: "E-Mail oder Benutzername existiert bereits",
+      emailOrUsernameNotExist: "E-Mail oder Benutzername gibt es nicht",
       invalidUsernameOrPW: "Ungültiger Benutzername oder Passwort",
       invalidToken: "Token nicht valide",
       logoutError: "Fehler beim Abmelden. Bitte versuche es erneut.",

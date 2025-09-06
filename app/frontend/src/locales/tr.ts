@@ -316,6 +316,7 @@ const tr: TranslationShape = {
       deletedFriendRequest: "Link request deleted by ",
       emailExists: "Data address already exists in network",
       emailOrUsernameExists: "Data address or User ID already exists",
+      emailOrUsernameNotExist: "Data address or User ID not existent",
       friendAdded: "Link established with {{username}}!",
       friendRequestButtonError: "Error processing link request",
       friendRequestEventError: "Error receiving link request.",
