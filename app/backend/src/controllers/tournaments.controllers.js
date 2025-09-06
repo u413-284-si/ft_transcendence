@@ -1,5 +1,4 @@
 import {
-  getAllTournaments,
   getTournament,
   updateTournament,
   deleteAllTournaments,
@@ -56,17 +55,6 @@ export async function createTournamentHandler(request, reply) {
   return reply
     .code(201)
     .send({ message: createResponseMessage(request.action, true), data: data });
-}
-
-export async function getAllTournamentsHandler(request, reply) {
-  request.action = "Get all tournaments";
-  const data = await getAllTournaments();
-  const count = data.length;
-  return reply.code(200).send({
-    message: createResponseMessage(request.action, true),
-    count,
-    data
-  });
 }
 
 export async function getTournamentHandler(request, reply) {
