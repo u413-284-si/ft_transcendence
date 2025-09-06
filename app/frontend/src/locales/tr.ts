@@ -221,6 +221,8 @@ const tr: TranslationShape = {
       changePassword: "Update your access code.",
       chooseFile: "Select image file for avatar override",
       currentPassword: "Current Access Code",
+      deleteAvatar: "Delete avatar",
+      deleteAvatarConfirm: "CONFIRM AVATAR DELETION",
       newPassword: "New Access Code",
       noFileSelected: "No file detected",
       saveChanges: "COMMIT CHANGES",
@@ -302,6 +304,8 @@ const tr: TranslationShape = {
 
     toast: {
       acceptedFriendRequest: "Link request accepted by ",
+      avatarDeleteFailed: "Avatar deletion interrupted. Reattempt required.",
+      avatarDeleteSuccess: "Avatar successfully removed!",
       avatarUploadFailed: "Avatar upload interrupted. Reattempt required.",
       avatarUploadedSuccess: "Avatar successfully embedded!",
       chartCannotRemoveYourself: "Self-removal not permitted.",

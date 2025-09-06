@@ -219,6 +219,8 @@ const en = {
       changePassword: "Change your password.",
       chooseFile: "Choose an image file for your avatar",
       currentPassword: "Current Password",
+      deleteAvatar: "Delete your avatar",
+      deleteAvatarConfirm: "Are you sure you want to delete your avatar?",
       newPassword: "New Password",
       noFileSelected: "No file selected",
       saveChanges: "Save Changes",
@@ -300,6 +302,8 @@ const en = {
 
     toast: {
       acceptedFriendRequest: "Friend request accepted by ",
+      avatarDeleteFailed: "Avatar deletion failed. Please try again.",
+      avatarDeleteSuccess: "Avatar deleted successfully!",
       avatarUploadFailed: "Avatar upload failed. Please try again.",
       avatarUploadedSuccess: "Avatar uploaded successfully!",
       chartCannotRemoveYourself: "You cannot remove yourself",

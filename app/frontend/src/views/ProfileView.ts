@@ -5,7 +5,7 @@ import { Button } from "../components/Button.js";
 import { Paragraph } from "../components/Paragraph.js";
 import { escapeHTML, getById } from "../utility.js";
 import { auth } from "../AuthManager.js";
-import { uploadAvatar } from "../services/userServices.js";
+import { deleteUserAvatar, uploadAvatar } from "../services/userServices.js";
 import {
   validateUsername,
   validateEmail,
@@ -29,6 +29,7 @@ export default class ProfileView extends AbstractView {
   private passwordFormEl!: HTMLFormElement;
   private avatarInputEl!: HTMLInputElement;
   private fileLabelEl!: HTMLInputElement;
+  private deleteAvatarBtn!: HTMLButtonElement;
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
 
   constructor() {
@@ -144,6 +145,15 @@ export default class ProfileView extends AbstractView {
                   })
                 ]
               })}
+              ${Button({
+                text: i18next.t("profileView.deleteAvatar"),
+                id: "delete-avatar",
+                variant: "danger",
+                size: "md",
+                type: "button",
+                disabled: auth.getUser().avatar ? false : true,
+                className: `mt-2 self-start ${auth.getUser().avatar ? "" : "disabled:border-neon-bordeaux disabled:text-grey/50"}`
+              })}
             </div>
           </div>
 
@@ -200,6 +210,8 @@ export default class ProfileView extends AbstractView {
       this.uploadAvatar(event)
     );
 
+    this.deleteAvatarBtn.addEventListener("click", () => this.deleteAvatar());
+
     this.avatarInputEl.addEventListener("change", () => this.changeFileLabel());
 
     if (this.hasLocalAuth) {
@@ -220,6 +232,7 @@ export default class ProfileView extends AbstractView {
     this.passwordFormEl = getById("password-form");
     this.avatarInputEl = getById("avatar-input");
     this.fileLabelEl = getById("avatar-input-file-label");
+    this.deleteAvatarBtn = getById("delete-avatar");
     this.addListeners();
   }
 
@@ -317,6 +330,17 @@ export default class ProfileView extends AbstractView {
     } catch (err) {
       console.error("Failed to upload avatar:", err);
       toaster.error(i18next.t("toast.avatarUploadFailed"));
+    }
+  }
+
+  private async deleteAvatar() {
+    try {
+      if (!confirm(i18next.t("profileView.deleteAvatarConfirm"))) return;
+      getDataOrThrow(await deleteUserAvatar());
+      toaster.success(i18next.t("toast.avatarDeleteSuccess"));
+    } catch (err) {
+      console.error("Failed to delete avatar:", err);
+      toaster.error(i18next.t("toast.avatarDeleteFailed"));
     }
   }
 

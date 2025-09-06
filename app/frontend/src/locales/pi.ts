@@ -223,6 +223,8 @@ const pi: TranslationShape = {
       changePassword: "Swap yer secret.",
       chooseFile: "Pick an image fer yer pirate flag",
       currentPassword: "Old Code",
+      deleteAvatar: "Burn yer Jolly Roger",
+      deleteAvatarConfirm: "Ye sure ye want to burn yer Jolly Roger?",
       newPassword: "New Secret Phrase",
       noFileSelected: "No treasure map selected",
       saveChanges: "Stash Yer Changes",
@@ -305,6 +307,8 @@ const pi: TranslationShape = {
 
     toast: {
       acceptedFriendRequest: "Parley accepted by ",
+      avatarDeleteFailed: "Couldn’t burn yer flag – try again!",
+      avatarDeleteSuccess: "Yer flag be burnin’ high now!",
       avatarUploadFailed: "Couldn’t hoist yer flag – try again!",
       avatarUploadedSuccess: "Yer colors be flyin’ high now!",
       chartCannotRemoveYourself: "Ye can't be tossin' yerself.",

@@ -219,6 +219,8 @@ const fr: TranslationShape = {
       changePassword: "Modifiez votre mot de passe.",
       chooseFile: "Choisissez un fichier image",
       currentPassword: "Mot de passe actuel",
+      deleteAvatar: "Supprimez votre avatar",
+      deleteAvatarConfirm: "Voulez vous vraiment supprimer votre avatar?",
       newPassword: "Nouveau mot de passe",
       noFileSelected: "Aucun fichier sélectionné",
       saveChanges: "Enregistrer",
@@ -298,6 +300,8 @@ const fr: TranslationShape = {
     },
     toast: {
       acceptedFriendRequest: "Demande d’ami acceptée par ",
+      avatarDeleteFailed: "Échec d'effacement de l’avatar. Veuillez réessayer.",
+      avatarDeleteSuccess: "Avatar supprimé avec succès!",
       avatarUploadFailed:
         "Échec du téléchargement de l’avatar. Veuillez réessayer.",
       avatarUploadedSuccess: "Avatar téléchargé avec succès !",

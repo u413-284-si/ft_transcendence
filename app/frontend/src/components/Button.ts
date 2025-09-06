@@ -4,16 +4,17 @@ export type ButtonOptions = {
   variant?: "default" | "active" | "danger" | "google";
   size?: "sm" | "md" | "lg" | "empty";
   type?: "button" | "submit";
+  disabled?: boolean;
   className?: string;
 };
 
 const buttonVariants: Record<string, string> = {
   default:
-    "border border-neon-cyan text-white hover:shadow-neon-cyan hover:bg-neon-cyan transition-all duration-500 ease-in-out",
+    "border border-neon-cyan text-white enabled:hover:shadow-neon-cyan enabled:hover:bg-neon-cyan transition-all duration-500 ease-in-out",
   active:
-    "border border-neon-green text-white hover:shadow-neon-green hover:bg-neon-green transition-all duration-500 ease-in-out",
+    "border border-neon-green text-white enabled:hover:shadow-neon-green enabled:hover:bg-neon-green transition-all duration-500 ease-in-out",
   danger:
-    "border border-neon-red text-white hover:shadow-neon-red hover:bg-neon-red transition-all duration-500 ease-in-out",
+    "border border-neon-red text-white enabled:hover:shadow-neon-red enabled:hover:bg-neon-red transition-all duration-500 ease-in-out",
   google:
     "hover:shadow-neon-cyan hover:bg-neon-cyan transition-all duration-500 ease-in-out"
 };
@@ -31,6 +32,7 @@ export function Button({
   variant = "default",
   size = "md",
   type = "button",
+  disabled = false,
   className = ""
 }: ButtonOptions): string {
   if (variant === "google") {
@@ -44,7 +46,8 @@ export function Button({
     className
   ].join(" ");
   const idAttr = id ? ` id="${id}"` : "";
-  return /* HTML */ `<button${idAttr} type="${type}" class="${classes}">${text}</button>`;
+  const disabledAttr = disabled ? ` disabled=""` : "";
+  return /* HTML */ `<button${idAttr}${disabledAttr} type="${type}" class="${classes}">${text}</button>`;
 }
 
 function googleSVG(): string {
