@@ -161,7 +161,8 @@ export default class Register extends AbstractView {
       );
       router.navigate("/login", false);
     } catch (error) {
-      router.handleError("validateAndRegisterUser()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      console.error("Error in validateAndRegisterUser():", error);
     }
   }
 }

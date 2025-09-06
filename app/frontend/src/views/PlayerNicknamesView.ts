@@ -19,6 +19,7 @@ import { TournamentSize } from "../types/ITournament.js";
 import type { PlayerType } from "../types/IMatch.js";
 import { List } from "../components/List.js";
 import { Header2 } from "../components/Header2.js";
+import { toaster } from "../Toaster.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -117,7 +118,8 @@ export default class PlayerNicknamesView extends AbstractView {
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.switchView(matchAnnouncementView);
     } catch (error) {
-      router.handleError("Error creating tournament", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      console.error("Error in validateAndStartTournament():", error);
     }
   }
 

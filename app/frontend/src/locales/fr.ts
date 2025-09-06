@@ -328,6 +328,7 @@ const fr: TranslationShape = {
       emailOrUsernameNotExist: "L'e-mail ou le nom d'utilisateur n'existe pas",
       invalidUsernameOrPW: "Nom d’utilisateur ou mot de passe invalide",
       invalidToken: "Token non valide",
+      loginError: "Erreur lors de la connexion. Veuillez réessayer.",
       logoutError: "Erreur lors de la déconnexion. Veuillez réessayer.",
       passwordUpdateFailed:
         "Échec de la mise à jour du mot de passe. Veuillez réessayer.",
@@ -343,8 +344,15 @@ const fr: TranslationShape = {
         "Configuration de l’authentification à deux facteurs réussie !",
       twoFARemoveSuccess:
         "Désactivation de l’authentification à deux facteurs réussie !",
+      tournamentAbortFailed:
+        "Le tournoi n'a pas pu être annulé. Veuillez réessayer.",
+      tournamentAbortSuccess: "Tournoi annulé avec succès",
+      tournamentFinishFailed:
+        "Le tournoi n'a pas pu être terminé. Veuillez réessayer.",
+      tournamentFinishSuccess: "Tournoi terminé avec succès !",
       registrationSuccess: "Inscription de {{username}} réussie !",
       sendSuccess: "Demande d’ami envoyée avec succès à {{username}}",
+      somethingWentWrong: "Quelque chose s'est mal passé",
       terminatedFriendship: "Fin de la relation d’amitié avec ",
       tokenRefreshFailed:
         "Échec du rafraîchissement du jeton. Veuillez réessayer.",

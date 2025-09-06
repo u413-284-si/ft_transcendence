@@ -7,6 +7,7 @@ import NewGameView from "./NewGameView.js";
 import { Tournament } from "../Tournament.js";
 import { PlayedAs, PlayerType } from "../types/IMatch.js";
 import { getById } from "../utility.js";
+import { toaster } from "../Toaster.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -117,7 +118,8 @@ export class GameView extends AbstractView {
       }
       router.switchView(view);
     } catch (error) {
-      router.handleError("Error in handleGame()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      console.error("Error in handleGame():", error);
     }
   }
 

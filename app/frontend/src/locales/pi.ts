@@ -333,6 +333,7 @@ const pi: TranslationShape = {
       emailExists: "That bottle's already adrift",
       emailOrUsernameExists: "That name or bottle already has a captain",
       emailOrUsernameNotExist: "That name or bottle not yet be sailin'",
+      loginError: "Couldn't board ship - try again!",
       logoutError: "Couldn’t abandon ship – try again!",
       invalidUsernameOrPW: "Yer name or code be wrong, matey!",
       invalidToken: "Yer token be counterfeit!",
@@ -342,6 +343,13 @@ const pi: TranslationShape = {
       tabError: "Arrr! This here tab be refusin' to set sail!",
       twoFASetupSuccess: "Secret digits be rigged ‘n ready!",
       twoFARemoveSuccess: "Secret digits be scuttled! Ye be sailin’ free!",
+      tournamentAbortFailed:
+        "Arrr! The tourney wouldn't be scuttled. Try again, ye scallywag!",
+      tournamentAbortSuccess: "The tourney be sunk an' done fer!",
+      tournamentFinishFailed:
+        "Arrr! The tourney won't end fer some cursed reason. Try again, matey!",
+      tournamentFinishSuccess: "The tourney be done an' dusted, savvy!",
+
       profileDeleteFailed:
         "The sea refused the sacrifice — yer profile remains",
       profileDeleteSuccess:
@@ -350,6 +358,7 @@ const pi: TranslationShape = {
       profileUpdatedSuccess: "Profile polished like a cutlass!",
       registrationSuccess: "You be aboard, sailor {{username}}!",
       sendSuccess: "Parley sent to the high seas to {{username}}!",
+      somethingWentWrong: "Arrr, somethin' went off course!",
       terminatedFriendship: "Ye cut ties with ",
       tokenRefreshFailed: "Couldn’t refresh yer token – try again!",
       userAcceptedFriendRequest:
