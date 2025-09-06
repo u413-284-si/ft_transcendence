@@ -40,7 +40,7 @@ export default async function userRoutes(fastify) {
   fastify.delete(
     "/me/avatar",
     optionsDeleteUserAvatar,
-    deleteUserAvatarHandler
+    deleteUserAvatarHandler // FIXME: implement deletion?
   );
 
   fastify.get(
