@@ -116,6 +116,7 @@ const optionsPatchUser = {
 };
 
 const optionsDeleteUser = {
+  onRequest: [authorizeUserAccess],
   schema: {
     params: { $ref: "idSchema" },
     response: {
