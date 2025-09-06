@@ -1,11 +1,7 @@
 import fastifyRateLimit from "@fastify/rate-limit";
 import env from "../config/env.js";
 import authRoutes from "../routes/auth.routes.js";
-import {
-  clearAuthCookies,
-  setAuthCookies,
-  setTwoFACookie
-} from "../services/auth.services.js";
+import { setAuthCookies, setTwoFACookie } from "../services/auth.services.js";
 
 export default async function authModule(fastify) {
   await fastify.register(fastifyRateLimit, {

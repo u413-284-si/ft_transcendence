@@ -22,7 +22,6 @@ import {
 import { httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import {
-  clearAuthCookies,
   createHash,
   getPasswordHash,
   updatePassword,
