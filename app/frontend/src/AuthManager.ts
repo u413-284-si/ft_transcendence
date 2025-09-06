@@ -115,7 +115,7 @@ export class AuthManager {
           toaster.error(i18next.t("toast.emailOrUsernameNotExist"));
           return false;
         } else if (apiResponseUserLogin.status === 409) {
-          toaster.error(i18next.t("toast.emailExists"));
+          toaster.error(i18next.t("toast.emailExistsWithGoogle"));
           return false;
         } else {
           throw new ApiError(apiResponseUserLogin);

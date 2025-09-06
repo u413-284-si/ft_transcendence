@@ -331,6 +331,7 @@ const pi: TranslationShape = {
         "Trouble while receivin' a parley request signal!",
       friendRequestSendError: "Trouble while sendin' yer parley request!",
       emailExists: "That bottle's already adrift",
+      emailExistsWithGoogle: "Arrr! This bottle be already claimed by Google. Log in with yer Google account, matey!",
       emailOrUsernameExists: "That name or bottle already has a captain",
       emailOrUsernameNotExist: "That name or bottle not yet be sailin'",
       loginError: "Couldn't board ship - try again!",
