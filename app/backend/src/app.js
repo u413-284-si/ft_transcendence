@@ -27,11 +27,10 @@ import { userStatsSchemas } from "./schema/user_stats.schema.js";
 import { friendRequestSchemas } from "./schema/friend_request.schema.js";
 import { dashboardSchemas } from "./schema/dashboard.schema.js";
 
-boolean weWantVault = false;
+let weWantVault = false;
 let secrets;
 
-if (weWantVault)
-{
+if (weWantVault) {
   async function getSecrets(roleId, secretId) {
     const status = await vault.healthCheck();
     if (status.sealed) throw new Error("Vault is sealed");
@@ -138,7 +137,9 @@ await fastify.register(jwt, {
 });
 await fastify.register(jwt, {
   namespace: "refreshToken",
-  secret: weWantVault ? secrets.jwtSecrets.data.refresh_token_secret : "refresh",
+  secret: weWantVault
+    ? secrets.jwtSecrets.data.refresh_token_secret
+    : "refresh",
   jwtVerify: "refreshTokenVerify",
   jwtSign: "refreshTokenSign",
   sign: { expiresIn: env.refreshTokenTimeToExpireInMS },
@@ -149,7 +150,9 @@ await fastify.register(jwt, {
 });
 await fastify.register(jwt, {
   namespace: "twoFALoginToken",
-  secret: weWantVault ? secrets.jwtSecrets.data.two_fa_login_token_secret : "2fa",
+  secret: weWantVault
+    ? secrets.jwtSecrets.data.two_fa_login_token_secret
+    : "2fa",
   jwtVerify: "twoFALoginTokenVerify",
   jwtSign: "twoFALoginTokenSign",
   sign: { expiresIn: env.twoFALoginTokenTimeToExpireInMS },
@@ -170,7 +173,9 @@ await fastify.register(oAuth2, {
   credentials: {
     client: {
       id: weWantVault ? secrets.googleId.data.google_oauth2_client_id : "myId",
-      secret: weWantVault ? secrets.googleSecret.data.google_oauth2_client_secret : "secretboi"
+      secret: weWantVault
+        ? secrets.googleSecret.data.google_oauth2_client_secret
+        : "secretboi"
     }
   },
   startRedirectPath: env.googleOauth2RedirectPath,
