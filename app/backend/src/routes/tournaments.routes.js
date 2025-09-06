@@ -1,6 +1,5 @@
 import {
   createTournamentHandler,
-  getTournamentHandler,
   patchTournamentHandler,
   deleteAllTournamentsHandler,
   deleteTournamentHandler,
@@ -11,8 +10,6 @@ import { errorResponses } from "../utils/error.js";
 
 export default async function tournamentRoutes(fastify) {
   fastify.post("/", optionsCreateTournament, createTournamentHandler);
-
-  fastify.get("/:id", optionsGetTournament, getTournamentHandler);
 
   fastify.patch("/:id", optionsPatchTournament, patchTournamentHandler);
 
@@ -33,16 +30,6 @@ const optionsCreateTournament = {
     body: { $ref: "createTournamentSchema" },
     response: {
       201: { $ref: "tournamentResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetTournament = {
-  schema: {
-    params: { $ref: "idSchema" },
-    response: {
-      200: { $ref: "tournamentResponseSchema" },
       ...errorResponses
     }
   }
