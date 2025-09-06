@@ -17,7 +17,7 @@ datasource db {
 model User {
     id         Int      @id @default(autoincrement())
     username   String   @unique
-    email      String?  @unique
+    email      String  @unique
     avatar     String?
     language   Language @default(en)
     dateJoined DateTime @default(now())
