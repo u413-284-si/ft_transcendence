@@ -1,12 +1,7 @@
 **/Dockerfile
 **/.dockerignore
 node_modules
-secrets
-.devcontainer
-.github
-.husky
-.vscode
+certs
 docker-compose.yml
-eslint.config.js
 Makefile
 README.md
