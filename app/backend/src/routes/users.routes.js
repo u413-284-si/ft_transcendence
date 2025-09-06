@@ -2,7 +2,6 @@ import { authorizeUserAccess } from "../middleware/auth.js";
 import {
   createUserHandler,
   getUserHandler,
-  getAllUsersHandler,
   updateUserHandler,
   deleteUserHandler,
   patchUserHandler,
@@ -27,8 +26,6 @@ export default async function userRoutes(fastify) {
   fastify.post("/", optionsCreateUser, createUserHandler);
 
   fastify.get("/me", optionsGetUser, getUserHandler);
-
-  fastify.get("/", optionsGetAllUsers, getAllUsersHandler);
 
   fastify.put("/:id", optionsUpdateUser, updateUserHandler);
 
@@ -108,15 +105,6 @@ const optionsGetUser = {
   schema: {
     response: {
       200: { $ref: "userResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetAllUsers = {
-  schema: {
-    response: {
-      200: { $ref: "userArrayResponseSchema" },
       ...errorResponses
     }
   }

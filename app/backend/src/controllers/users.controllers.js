@@ -1,7 +1,6 @@
 import {
   createUser,
   getUser,
-  getAllUsers,
   updateUser,
   deleteUser,
   getUserAvatar,
@@ -56,17 +55,6 @@ export async function getUserHandler(request, reply) {
   return reply
     .code(200)
     .send({ message: createResponseMessage(request.action, true), data: data });
-}
-
-export async function getAllUsersHandler(request, reply) {
-  request.action = "Get all users";
-  const data = await getAllUsers();
-  const count = data.length;
-  return reply.code(200).send({
-    message: createResponseMessage(request.action, true),
-    count: count,
-    data: data
-  });
 }
 
 export async function updateUserHandler(request, reply) {
