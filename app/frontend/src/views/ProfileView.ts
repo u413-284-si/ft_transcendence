@@ -346,19 +346,20 @@ export default class ProfileView extends AbstractView {
     );
     const confirmPasswordErrorEl = getById<HTMLSpanElement>("confirm-error");
 
-    if (
-      !validateConfirmPassword(
-        newPasswordEl,
-        confirmPasswordEl,
-        confirmPasswordErrorEl
-      )
-    ) {
-      return;
-    }
-    if (
-      !validatePassword(currentPasswordEl, currentPasswordErrorEl) ||
-      !validatePassword(newPasswordEl, newPasswordErrorEl)
-    ) {
+    const isValidCurPassword = validatePassword(
+      currentPasswordEl,
+      currentPasswordErrorEl
+    );
+    const isValidNewPassword = validatePassword(
+      newPasswordEl,
+      newPasswordErrorEl
+    );
+    const isValidConfirmPassword = validateConfirmPassword(
+      newPasswordEl,
+      confirmPasswordEl,
+      confirmPasswordErrorEl
+    );
+    if (!isValidCurPassword || !isValidNewPassword || !isValidConfirmPassword) {
       return;
     }
 
