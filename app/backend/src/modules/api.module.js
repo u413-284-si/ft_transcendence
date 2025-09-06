@@ -6,6 +6,7 @@ import userstatsRoutes from "../routes/user_stats.routes.js";
 import userRoutes from "../routes/users.routes.js";
 import env from "../config/env.js";
 import { handleError } from "../utils/error.js";
+import { clearAuthCookies } from "../services/auth.services.js";
 
 export default async function apiModule(fastify) {
   await fastify.register(fastifyRateLimit, {
@@ -29,6 +30,7 @@ export default async function apiModule(fastify) {
   });
 
   fastify.decorateRequest("action", "Unknown action");
+  fastify.decorateReply("clearAuthCookies", clearAuthCookies);
   fastify.setErrorHandler(handleError);
   await fastify.register(authModule);
 

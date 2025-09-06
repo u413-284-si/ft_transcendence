@@ -166,6 +166,10 @@ export class AuthManager {
     }
   }
 
+  public async logoutOnProfileDeletion() {
+    await this.updateAuthState(null);
+  }
+
   public async clearTokenOnError(): Promise<void> {
     if (this.authenticated) {
       console.error("Could not verify user");

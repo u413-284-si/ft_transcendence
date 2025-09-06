@@ -633,6 +633,7 @@ export default class SettingsView extends AbstractView {
     try {
       if (!confirm(i18next.t("settingsView.deleteProfileConfirm"))) return;
       getDataOrThrow(await deleteUser());
+      auth.logoutOnProfileDeletion();
       toaster.success(i18next.t("toast.profileDeleteSuccess"));
     } catch (err) {
       console.error("Failed to delete profile:", err);

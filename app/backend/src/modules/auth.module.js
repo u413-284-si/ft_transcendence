@@ -30,6 +30,5 @@ export default async function authModule(fastify) {
 
   await fastify.register(authRoutes, { prefix: "/auth" });
   fastify.decorateReply("setAuthCookies", setAuthCookies);
-  fastify.decorateReply("clearAuthCookies", clearAuthCookies);
   fastify.decorateReply("setTwoFACookie", setTwoFACookie);
 }

@@ -22,6 +22,7 @@ import {
 import { httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import {
+  clearAuthCookies,
   createHash,
   getPasswordHash,
   updatePassword,
@@ -78,9 +79,11 @@ export async function patchUserHandler(request, reply) {
 
 export async function deleteUserHandler(request, reply) {
   request.action = "Delete user";
-  const userId = request.params.id;
+  const userId = request.user.id;
   const data = await deleteUser(userId);
+
   return reply
+    .clearAuthCookies()
     .code(200)
     .send({ message: createResponseMessage(request.action, true), data: data });
 }
