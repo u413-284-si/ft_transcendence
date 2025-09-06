@@ -115,7 +115,7 @@ export async function googleOauth2LoginHandler(request, reply) {
     return reply
       .setCookie("authProviderConflict", "GOOGLE", {
         secure: true,
-        path: "/login",
+        path: "/",
         maxAge: 10
       })
       .redirect("https://localhost:8443");
