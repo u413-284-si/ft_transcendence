@@ -319,6 +319,7 @@ const en = {
       emailExists: "The email address already exists",
       emailOrUsernameExists: "The email or username already exists",
       invalidUsernameOrPW: "Invalid username or password",
+      invalidToken: "Token invalid",
       logoutError: "Error logging out. Please try again.",
       passwordUpdateFailed: "Failed to update password. Please try again.",
       passwordUpdatedSuccess: "Password updated successfully!",

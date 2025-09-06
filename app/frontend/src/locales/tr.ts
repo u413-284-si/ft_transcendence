@@ -322,6 +322,7 @@ const tr: TranslationShape = {
       friendRequestSendError: "Error transmitting link request.",
       invalidUsernameOrPW: "Invalid User ID or access code",
       logoutError: "Logout failed. Reattempt required.",
+      invalidToken: "Token invalid",
       passwordUpdateFailed: "Access code update failed. Retry advised.",
       passwordUpdatedSuccess: "Access code updated successfully!",
       tabError: "Tab failed to initialize within the Grid.",

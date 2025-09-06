@@ -82,6 +82,7 @@ export class AuthManager {
         return;
       } else if (refreshToken.status === "invalid") {
         console.warn("Invalid refresh token found.");
+        toaster.warn(i18next.t("toast.invalidToken"));
         await this.notify();
         return;
       }

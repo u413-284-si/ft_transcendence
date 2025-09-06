@@ -326,6 +326,7 @@ const pi: TranslationShape = {
       emailOrUsernameExists: "That name or bottle already has a captain",
       logoutError: "Couldn’t abandon ship – try again!",
       invalidUsernameOrPW: "Yer name or code be wrong, matey!",
+      invalidToken: "Yer token be counterfeit!",
       passwordUpdateFailed:
         "Couldn’t set yer new passphrase. Try again or be cursed!",
       passwordUpdatedSuccess: "Secret code changed! Keep it close!",

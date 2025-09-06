@@ -334,6 +334,7 @@ const de: TranslationShape = {
       emailExists: "Diese E-Mail-Adresse ist bereits registriert",
       emailOrUsernameExists: "E-Mail oder Benutzername existiert bereits",
       invalidUsernameOrPW: "Ungültiger Benutzername oder Passwort",
+      invalidToken: "Token nicht valide",
       logoutError: "Fehler beim Abmelden. Bitte versuche es erneut.",
       passwordUpdateFailed:
         "Passwort konnte nicht aktualisiert werden. Bitte versuche es erneut.",
