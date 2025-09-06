@@ -18,7 +18,6 @@ import {
   validateTwoFACode
 } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
-import { router } from "../routing/Router.js";
 import { Link } from "../components/Link.js";
 import { Table } from "../components/Table.js";
 import { Form } from "../components/Form.js";
@@ -430,7 +429,8 @@ export default class SettingsView extends AbstractView {
         this.displayTwoFAPasswordModal("remove");
       }
     } catch (error) {
-      router.handleError("Error in callTwoFAFormAction()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      console.error("Error in callTwoFAFormAction():", error);
     }
   }
 
@@ -480,7 +480,8 @@ export default class SettingsView extends AbstractView {
       this.twoFAModalEl.showModal();
       if (!this.hasTwoFA()) this.twoFACodeInputEl.focus();
     } catch (error) {
-      router.handleError("Error in displayTwoFASetup()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      console.error("Error in displayTwoFASetup():", error);
     }
   }
 
@@ -512,7 +513,8 @@ export default class SettingsView extends AbstractView {
 
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
     } catch (error) {
-      router.handleError("Error in removeTwoFA()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      console.error("Error in removeTwoFA():", error);
     }
   }
 
@@ -548,7 +550,8 @@ export default class SettingsView extends AbstractView {
       this.twoFAPasswordModalEl.close();
       this.twoFABackupCodesModalEl.showModal();
     } catch (error) {
-      router.handleError("Error in generateAndDisplayBackupCodes()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      console.error("Error in generateAndDisplayBackupCodes():", error);
     }
   }
 

@@ -328,6 +328,7 @@ const en = {
       emailOrUsernameNotExist: "The email or username does not exist",
       invalidUsernameOrPW: "Invalid username or password",
       invalidToken: "Token invalid",
+      loginError: "Error logging in. Please try again.",
       logoutError: "Error logging out. Please try again.",
       passwordUpdateFailed: "Failed to update password. Please try again.",
       passwordUpdatedSuccess: "Password updated successfully!",
@@ -339,6 +340,13 @@ const en = {
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess: "Successfully registered {{username}}!",
       sendSuccess: "Friend request sent to {{username}}",
+      somethingWentWrong: "Something went wrong",
+      tournamentAbortFailed:
+        "Failed to abort the tournament. Please try again.",
+      tournamentAbortSuccess: "Tournament aborted successfully!",
+      tournamentFinishFailed:
+        "Failed to set the tournament as finished. Please try again.",
+      tournamentFinishSuccess: "Tournament set as finished successfully!",
       tabError: "The tab failed to initialize.",
       terminatedFriendship: "Friendship terminated with ",
       tokenRefreshFailed: "Token refresh failed. Please try again.",

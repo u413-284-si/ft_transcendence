@@ -344,6 +344,7 @@ const de: TranslationShape = {
       emailOrUsernameNotExist: "E-Mail oder Benutzername gibt es nicht",
       invalidUsernameOrPW: "Ungültiger Benutzername oder Passwort",
       invalidToken: "Token nicht valide",
+      loginError: "Fehler beim Anmelden. Bitte versuche es erneut",
       logoutError: "Fehler beim Abmelden. Bitte versuche es erneut.",
       passwordUpdateFailed:
         "Passwort konnte nicht aktualisiert werden. Bitte versuche es erneut.",
@@ -351,6 +352,12 @@ const de: TranslationShape = {
       tabError: "Der Tab konnte nicht initialisiert werden.",
       twoFASetupSuccess: "2FA erfolgreich aktiviert!",
       twoFARemoveSuccess: "2FA erfolgreich deaktiviert!",
+      tournamentAbortFailed:
+        "Turnier konnte nicht abgebrochen werden. Bitte versuche es erneut.",
+      tournamentAbortSuccess: "Tunier erfolgreich abgebrochen",
+      tournamentFinishFailed:
+        "Turnier konnte nicht beendet werden. Bitte versuche es erneut.",
+      tournamentFinishSuccess: "Tunier erfolgreich beendet!",
       profileDeleteFailed:
         "Profil konnte nicht gelöscht werden. Bitte versuche es erneut.",
       profileDeleteSuccess: "Profil erfolgreich gelöscht!",
@@ -359,6 +366,7 @@ const de: TranslationShape = {
       profileUpdatedSuccess: "Profil erfolgreich aktualisiert!",
       registrationSuccess: "Registrierung von {{username}} erfolgreich!",
       sendSuccess: "Anfrage erfolgreich an {{username}} gesendet",
+      somethingWentWrong: "Etwas ist schief gelaufen",
       terminatedFriendship: "Freundschaft beendet mit ",
       tokenRefreshFailed:
         "Token-Aktualisierung fehlgeschlagen. Bitte erneut versuchen.",
