@@ -91,7 +91,8 @@ export class AuthManager {
       await this.updateAuthState(user);
     } catch (error) {
       await this.notify();
-      router.handleError("Error in AuthManager.initialize():", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      console.error("Error in AuthManager.initialize():", error);
     }
   }
 
@@ -128,7 +129,8 @@ export class AuthManager {
       await this.updateAuthState(user);
       return true;
     } catch (error) {
-      router.handleError("Login error", error);
+      toaster.error(i18next.t("toast.loginError"));
+      console.error("Error in AuthManager.login():", error);
       return false;
     }
   }
@@ -139,7 +141,8 @@ export class AuthManager {
       await this.updateAuthState(user);
       return true;
     } catch (error) {
-      router.handleError("Login error", error);
+      toaster.error(i18next.t("toast.loginError"));
+      console.error("Error in AuthManager.loginAfterTwoFA():", error);
       return false;
     }
   }
@@ -268,7 +271,11 @@ export class AuthManager {
         router.reload();
       } catch (error) {
         await this.updateAuthState(null);
-        router.handleError("Failed to update auth state", error);
+        toaster.error(i18next.t("toast.somethingWentWrong"));
+        console.error(
+          "Error in AuthManager.registerLocalStorageListener():",
+          error
+        );
       }
     });
   }

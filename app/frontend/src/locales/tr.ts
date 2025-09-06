@@ -329,6 +329,7 @@ const tr: TranslationShape = {
       friendRequestEventError: "Error receiving link request.",
       friendRequestSendError: "Error transmitting link request.",
       invalidUsernameOrPW: "Invalid User ID or access code",
+      loginError: "Login failed. Reattempt required.",
       logoutError: "Logout failed. Reattempt required.",
       invalidToken: "Token invalid",
       passwordUpdateFailed: "Access code update failed. Retry advised.",
@@ -336,6 +337,13 @@ const tr: TranslationShape = {
       tabError: "Tab failed to initialize within the Grid.",
       twoFASetupSuccess: "Cipher activated successfully!",
       twoFARemoveSuccess: "Cipher deactivated successfully!",
+      tournamentAbortFailed:
+        "Abort sequence failed. Grid anomaly detected. Retry advised.",
+      tournamentAbortSuccess: "Abort sequence completed. Tournament derezzed.",
+      tournamentFinishFailed:
+        "Termination sequence failed. Grid anomaly detected. Retry advised.",
+      tournamentFinishSuccess:
+        "Termination sequence complete. Tournament derezzed.",
       profileDeleteFailed: "Profile deletion failed. Retry advised.",
       profileDeleteSuccess: "Profile deleted successfully!",
       profileUpdateFailed: "Profile update failed. Retry advised.",
@@ -343,6 +351,7 @@ const tr: TranslationShape = {
       registrationSuccess:
         "Access node registration successful for {{username}}!",
       sendSuccess: "Link request successfully transmitted to {{username}}",
+      somethingWentWrong: "System anomaly detected",
       terminatedFriendship: "Connection terminated with ",
       tokenRefreshFailed: "Token refresh failed. Reattempt required.",
       userAcceptedFriendRequest:

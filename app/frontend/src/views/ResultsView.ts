@@ -11,6 +11,7 @@ import { getDataOrThrow } from "../services/api.js";
 import { Card } from "../components/Card.js";
 import { Header3 } from "../components/Header3.js";
 import { formatPlayerName } from "../components/NicknameInput.js";
+import { toaster } from "../Toaster.js";
 
 export default class ResultsView extends AbstractView {
   constructor(private tournament: Tournament) {
@@ -96,9 +97,11 @@ export default class ResultsView extends AbstractView {
   private async setFinished() {
     try {
       getDataOrThrow(await setTournamentFinished(this.tournament.getId()));
+      toaster.success(i18next.t("toast.tournamentFinishSuccess"));
       router.reload();
     } catch (error) {
-      router.handleError("Error setting tournament as finished", error);
+      toaster.error(i18next.t("toast.tournamentFinishFailed"));
+      console.error("Error in setFinished():", error);
     }
   }
 

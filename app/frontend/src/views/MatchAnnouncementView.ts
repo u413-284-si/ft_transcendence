@@ -17,6 +17,7 @@ import { Details } from "../components/Details.js";
 import ResultsView from "./ResultsView.js";
 import { formatPlayerName } from "../components/NicknameInput.js";
 import { GameView } from "./GameView.js";
+import { toaster } from "../Toaster.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -166,9 +167,11 @@ export default class MatchAnnouncementView extends AbstractView {
       if (!confirm(i18next.t("newTournamentView.confirmAbortTournament")))
         return;
       getDataOrThrow(await deleteTournament(this.tournament.getId()));
+      toaster.success(i18next.t("toast.tournamentAbortSuccess"));
       router.reload();
     } catch (error) {
-      router.handleError("Error while deleting tournament", error);
+      toaster.error(i18next.t("toast.tournamentAbortFailed"));
+      console.error("Error in abortTournament():", error);
     }
   }
 
