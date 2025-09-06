@@ -1,6 +1,5 @@
 import {
   updateTournament,
-  deleteAllTournaments,
   deleteTournament,
   getUserTournaments
 } from "../services/tournaments.services.js";
@@ -133,14 +132,6 @@ export async function patchTournamentMatchHandler(request, reply) {
 
   return reply
     .code(201)
-    .send({ message: createResponseMessage(request.action, true), data: data });
-}
-
-export async function deleteAllTournamentsHandler(request, reply) {
-  request.action = "Delete all tournaments";
-  const data = await deleteAllTournaments();
-  return reply
-    .code(200)
     .send({ message: createResponseMessage(request.action, true), data: data });
 }
 

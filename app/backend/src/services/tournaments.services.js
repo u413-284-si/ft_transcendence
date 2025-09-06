@@ -57,11 +57,6 @@ export async function updateTournament(id, userId, updateData) {
   return updatedTournament;
 }
 
-export async function deleteAllTournaments() {
-  const tournaments = await prisma.tournament.deleteMany();
-  return tournaments;
-}
-
 export async function deleteTournament(id, userId) {
   const tournament = await prisma.tournament.delete({
     where: {
