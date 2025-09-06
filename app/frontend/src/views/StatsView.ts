@@ -1,8 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import {
-  getUserStats,
-  getUserStatsByUsername
-} from "../services/userStatsServices.js";
+import { getUserStatsByUsername } from "../services/userStatsServices.js";
 import { getUserByUsername } from "../services/userServices.js";
 import { escapeHTML, getAllBySelector, getById } from "../utility.js";
 import { auth } from "../AuthManager.js";
@@ -145,10 +142,6 @@ export default class StatsView extends AbstractView {
   }
 
   async fetchData() {
-    if (this.viewType === "self") {
-      this.userStats = getDataOrThrow(await getUserStats());
-      return;
-    }
     const userStatsArray = getDataOrThrow(
       await getUserStatsByUsername(this.username)
     );

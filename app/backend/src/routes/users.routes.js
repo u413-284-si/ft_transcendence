@@ -4,7 +4,6 @@ import {
   getUserHandler,
   deleteUserHandler,
   patchUserHandler,
-  getUserStatsHandler,
   getAllUserFriendRequestsHandler,
   searchUserHandler,
   createUserAvatarHandler,
@@ -35,8 +34,6 @@ export default async function userRoutes(fastify) {
     optionsGetUserMatchesByUsername,
     getUserMatchesByUsernameHandler
   );
-
-  fastify.get("/me/user-stats", optionsGetUserStats, getUserStatsHandler);
 
   fastify.post("/me/avatar", optionsCreateUserAvatar, createUserAvatarHandler);
 
@@ -141,16 +138,6 @@ const optionsGetUserMatchesByUsername = {
     },
     response: {
       200: { $ref: "matchArrayResponseSchema" },
-      ...errorResponses
-    }
-  }
-};
-
-const optionsGetUserStats = {
-  onRequest: [authorizeUserAccess],
-  schema: {
-    response: {
-      200: { $ref: "userStatsResponseSchema" },
       ...errorResponses
     }
   }
