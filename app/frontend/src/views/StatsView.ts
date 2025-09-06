@@ -104,8 +104,10 @@ export default class StatsView extends AbstractView {
     await this.fetchData();
     this.initTabs();
     this.updateHTML();
-    await this.showTab("tab-matches");
-    this.addListeners();
+    if (this.viewType != "public") {
+      await this.showTab("tab-matches");
+      this.addListeners();
+    }
   }
 
   private initTabs() {
