@@ -28,7 +28,7 @@ export default async function userRoutes(fastify) {
 
   fastify.patch("/me", optionsPatchUser, patchUserHandler);
 
-  fastify.delete("/:id", optionsDeleteUser, deleteUserHandler);
+  fastify.delete("/:id", optionsDeleteUser, deleteUserHandler); // FIXME: implement deletion?
 
   fastify.get(
     "/:username/matches",
