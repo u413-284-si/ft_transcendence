@@ -17,7 +17,6 @@
     "db:seed": "prisma db seed",
     "db:reset": "prisma migrate reset",
     "dev": "npm run db:init && npm run watch",
-    "prepare": "husky",
     "copy:vendor": "node scripts/copy-ext-files.js"
   },
   "repository": {
@@ -81,20 +80,7 @@
     "typescript-eslint": "^8.29.0"
   },
   "prisma": {
-    "schema": "./app/backend/prisma/schema.prisma",
-    "seed": "ts-node ./app/backend/prisma/seed.ts"
-  },
-  "prettier": {
-    "singleQuote": false,
-    "semi": true,
-    "trailingComma": "none",
-    "tabWidth": 2,
-    "printWidth": 80,
-    "arrowParens": "always",
-    "bracketSpacing": true,
-    "endOfLine": "lf"
-  },
-  "lint-staged": {
-    "*.{js,ts, json}": "prettier --write"
+    "schema": "./app/backend/prisma/schema.prisma"
   }
+
 }
