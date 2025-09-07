@@ -45,7 +45,7 @@ help:
 
 # Builds, (re)creates, starts, and attaches to containers for a service.
 .PHONY: up
-up: check-env vault-certs
+up: check-env
 	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d
 
 .PHONY: check-env
@@ -56,10 +56,6 @@ check-env:
 	else \
 		echo "✅ .env already exists, skipping"; \
 	fi
-
-.PHONY: vault-certs
-vault-certs:
-	$(SILENT)bash $(DIR_SCRIPTS)/generate-vault-certs.sh
 
 # Watches for changes in files and rebuilds containers
 PHONY: watch

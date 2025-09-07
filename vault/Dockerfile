@@ -12,11 +12,14 @@ RUN apk add --no-cache \
 
 COPY ./vault/tools/entry-point.sh /usr/local/bin/
 
+COPY ./vault/tools/generate-vault-certs.sh /usr/local/bin/
+
 COPY ./vault/tools/setup-ssl-ca.sh /usr/local/bin/
 
 COPY ./vault/tools/healthcheck.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/entry-point.sh \
+             /usr/local/bin/generate-vault-certs.sh \
              /usr/local/bin/setup-ssl-ca.sh \
              /usr/local/bin/healthcheck.sh
 

@@ -3,6 +3,3 @@ db/
 
 # Environments
 .env
-
-# SSL Certs
-certs/
