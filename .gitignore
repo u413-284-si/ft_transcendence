@@ -180,6 +180,3 @@ ext/
 
 # secret stuff
 secrets/
-
-# SSL Certs
-certs/

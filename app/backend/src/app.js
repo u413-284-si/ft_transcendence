@@ -59,7 +59,7 @@ if (weWantVault) {
 
   const vault = new Vault({
     https: true,
-    cacert: "/run/secrets/vault_ca",
+    cacert: "/app/secrets/root-ca.crt",
     baseUrl: `${env.vaultAddr}/v1`,
     rootPath: "secret",
     timeout: 1000,

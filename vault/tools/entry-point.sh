@@ -20,10 +20,20 @@ log() {
 }
 
 create_dirs() {
-    mkdir -p "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR""$NGINX_AUTH_DIR" "$APP_AUTH_DIR"
-    chmod 750 "$SECRETS_DIR" "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR" "$NGINX_AUTH_DIR" "$APP_AUTH_DIR"
+    mkdir -p "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR""$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR"
+    chmod 750 "$SECRETS_DIR" "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR" "$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR"
     chown -R vault:vault "$SECRETS_DIR" /vault/data
     log "➡️" "Directories created and permissions set"
+}
+
+setup_vault_certs() {
+    log "➡️" "Creating certificate setup script for vault..."
+    /usr/local/bin/generate-vault-certs.sh || {
+        log "❌" "Failed to generate vault certificates"
+        kill $VAULT_PID
+        exit 1
+    }
+    log "✅" "SSL certificates for vault set up"
 }
 
 run_vault() {
@@ -218,6 +228,7 @@ cleanup_sensitive_vars() {
 
 log "➡️" "Running initial setup..."
 create_dirs
+setup_vault_certs
 run_vault "$@"
 wait_for_vault
 initialize_vault
