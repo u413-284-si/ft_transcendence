@@ -111,6 +111,7 @@ services:
       - vault-secrets-auth:/vault/secrets/auth
       - vault-secrets-nginx:/vault/secrets/nginx
       - vault-secrets-app:/vault/secrets/app
+      - vault-secrets-pki:/vault/secrets/pki
     networks:
       - pong-network
     healthcheck:
@@ -160,6 +161,7 @@ volumes:
   vault-secrets-auth:
   vault-secrets-nginx:
   vault-secrets-app:
+  vault-secrets-pki:
 
 configs:
   vault_config:
