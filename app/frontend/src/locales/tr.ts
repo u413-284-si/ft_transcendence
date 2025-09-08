@@ -306,7 +306,6 @@ const tr: TranslationShape = {
     },
 
     toast: {
-      acceptedFriendRequest: "Link request accepted by ",
       avatarDeleteFailed: "Avatar deletion interrupted. Reattempt required.",
       avatarDeleteSuccess: "Avatar successfully removed!",
       avatarUploadFailed: "Avatar upload interrupted. Reattempt required.",
@@ -319,16 +318,14 @@ const tr: TranslationShape = {
       connectionReestablished: "Signal reestablished",
       connectionUnavailable:
         "Reconnection failed. System halted until manual reboot.",
-      declinedFriendRequest: "Link request declined by ",
-      deletedFriendRequest: "Link request deleted by ",
       emailExists: "Data address already exists in network",
-      emailExistsWithGoogle: "Access conflict: Email registered via Google. Initiate Google sign-in protocol.",
+      emailExistsWithGoogle:
+        "Access conflict: Email registered via Google. Initiate Google sign-in protocol.",
       emailOrUsernameExists: "Data address or User ID already exists",
       emailOrUsernameNotExist: "Data address or User ID not existent",
-      friendAdded: "Link established with {{username}}!",
+      friendAdded: "Link established with <strong>{{username}}</strong>",
       friendRequestButtonError: "Error processing link request",
       friendRequestEventError: "Error receiving link request.",
-      friendRequestSendError: "Error transmitting link request.",
       invalidUsernameOrPW: "Invalid User ID or access code",
       loginError: "Login failed. Reattempt required.",
       logoutError: "Logout failed. Reattempt required.",
@@ -351,20 +348,26 @@ const tr: TranslationShape = {
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess:
         "Access node registration successful for {{username}}!",
-      sendSuccess: "Link request successfully transmitted to {{username}}",
       somethingWentWrong: "System anomaly detected",
-      terminatedFriendship: "Connection terminated with ",
       tokenRefreshFailed: "Token refresh failed. Reattempt required.",
-      userAcceptedFriendRequest:
-        "Link request from <strong>{{username}}</strong> accepted",
-      userDeclinedFriendRequest:
-        "Link request from <strong>{{username}}</strong> rejected",
-      userRescindedFriendRequest:
-        "Link request from <strong>{{username}}</strong> withdrawn",
-      userRemovedFriend:
+      userAcceptedFriendRequest: "Accepted link request of ",
+      userDeclinedFriendRequest: "Declined link request of ",
+      userRescindedFriendRequest: "Deleted link request to ",
+      userRemovedFriendship: "Connection terminated with ",
+      userSendFriendRequestSuccess:
+        "Link request successfully transmitted to <strong>{{username}}</strong>",
+      userSendRequestFailed: "Error transmitting link request.",
+      friendAcceptedFriendRequest:
+        "<strong>{{username}}</strong> accepted link request",
+      friendDeclinedFriendRequest:
+        "<strong>{{username}}</strong> rejected link request",
+      friendRescindedFriendRequest:
+        "<strong>{{username}}</strong> withdrew link request",
+      friendRemovedFriend:
         "<strong>{{username}}</strong> disconnected from network",
-      userSentFriendRequest: "Link request from <strong>{{username}}</strong>",
-      userStatus: "{{username}} status: {{status}}",
+      friendSentFriendRequest:
+        "<strong>{{username}}</strong> sent link request",
+      userStatus: "<strong>{{username}}</strong> status: {{status}}",
       userVerificationError:
         "An error occurred while verifying the user:<br>Redirecting to login.",
       validateTournamentNameError: "Error verifying tournament ID."

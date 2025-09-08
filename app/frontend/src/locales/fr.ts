@@ -302,7 +302,6 @@ const fr: TranslationShape = {
       winstreakMax: "Max-Série"
     },
     toast: {
-      acceptedFriendRequest: "Demande d’ami acceptée par ",
       avatarDeleteFailed: "Échec d'effacement de l’avatar. Veuillez réessayer.",
       avatarDeleteSuccess: "Avatar supprimé avec succès!",
       avatarUploadFailed:
@@ -316,15 +315,13 @@ const fr: TranslationShape = {
       connectionLost:
         "Connexion perdue – nouvelle tentative dans {{delay}} secondes… (Tentative {{attempt}} sur {{maxAttempts}})",
       connectionReestablished: "Connexion rétablie",
-      declinedFriendRequest: "Demande d’ami refusée par ",
-      deletedFriendRequest: "Demande d’ami supprimée par ",
-      friendAdded: "Ami {{username}} ajouté !",
+      friendAdded: "Ami <strong>{{username}}</strong> ajouté",
       friendRequestButtonError: "Erreur lors du traitement de la demande d'ami",
       friendRequestEventError:
         "Erreur lors de la réception d'une demande d'ami.",
-      friendRequestSendError: "Erreur lors de l'envoi de la demande d'ami.",
       emailExists: "L’adresse e‑mail existe déjà",
-      emailExistsWithGoogle: "Cet e-mail est déjà utilisé avec Google. Connectez-vous via Google.",
+      emailExistsWithGoogle:
+        "Cet e-mail est déjà utilisé avec Google. Connectez-vous via Google.",
       emailOrUsernameExists: "L'e-mail ou le nom d'utilisateur existe déjà",
       emailOrUsernameNotExist: "L'e-mail ou le nom d'utilisateur n'existe pas",
       invalidUsernameOrPW: "Nom d’utilisateur ou mot de passe invalide",
@@ -352,21 +349,27 @@ const fr: TranslationShape = {
         "Le tournoi n'a pas pu être terminé. Veuillez réessayer.",
       tournamentFinishSuccess: "Tournoi terminé avec succès !",
       registrationSuccess: "Inscription de {{username}} réussie !",
-      sendSuccess: "Demande d’ami envoyée avec succès à {{username}}",
       somethingWentWrong: "Quelque chose s'est mal passé",
-      terminatedFriendship: "Fin de la relation d’amitié avec ",
       tokenRefreshFailed:
         "Échec du rafraîchissement du jeton. Veuillez réessayer.",
-      userAcceptedFriendRequest:
-        "Demande d’ami de <strong>{{username}}</strong> acceptée",
-      userDeclinedFriendRequest:
-        "Demande d’ami de <strong>{{username}}</strong> refusée",
-      userRescindedFriendRequest:
-        "Demande d’ami de <strong>{{username}}</strong> annulée",
-      userRemovedFriend:
-        "<strong>{{username}}</strong> a été supprimé de vos amis",
-      userSentFriendRequest: "Demande d’ami de <strong>{{username}}</strong>",
-      userStatus: "{{username}} est {{status}}",
+      userAcceptedFriendRequest: "Acceptée - demande d'ami de ",
+      userDeclinedFriendRequest: "Refusée - demande d'ami de ",
+      userRescindedFriendRequest: "Annulée - demande d'ami de ",
+      userRemovedFriendship: "Fin de la relation d'amitié avec ",
+      userSendFriendRequestSuccess:
+        "Demande d'ami envoyée avec succès à <strong>{{username}}</strong>",
+      userSendRequestFailed: "Erreur lors de l'envoi de la demande d'ami.",
+      friendAcceptedFriendRequest:
+        "<strong>{{username}}</strong> a accepté votre demande d'ami",
+      friendDeclinedFriendRequest:
+        "<strong>{{username}}</strong> a refusé votre demande d'ami",
+      friendRescindedFriendRequest:
+        "<strong>{{username}}</strong> a annulé sa demande d'ami",
+      friendRemovedFriend:
+        "<strong>{{username}}</strong> ne veut plus être ami avec vous",
+      friendSentFriendRequest:
+        "<strong>{{username}}</strong> vous a envoyé une demande d'ami",
+      userStatus: "<strong>{{username}}</strong> est {{status}}",
       userVerificationError:
         "Une erreur s’est produite lors de la vérification de l’utilisateur :<br>Redirection vers la page de connexion.",
       validateTournamentNameError:

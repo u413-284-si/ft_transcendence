@@ -317,7 +317,6 @@ const de: TranslationShape = {
     },
 
     toast: {
-      acceptedFriendRequest: "Freundschaftsanfrage angenommen von ",
       avatarDeleteFailed:
         "Avatar konnte nicht gelöscht werden. Bitte versuche es erneut.",
       avatarDeleteSuccess: "Avatar erfolgreich gelöscht!",
@@ -332,15 +331,13 @@ const de: TranslationShape = {
       connectionReestablished: "Verbindung wiederhergestellt",
       connectionUnavailable:
         "Verbindung nicht wiederherstellbar. Versuche gestoppt bis Seite neu geladen wird.",
-      declinedFriendRequest: "Freundschaftsanfrage abgelehnt von ",
-      deletedFriendRequest: "Freundschaftsanfrage gelöscht von ",
-      friendAdded: "Freund {{username}} hinzugefügt!",
+      friendAdded: "Freund <strong>{{username}}</strong> hinzugefügt",
       friendRequestButtonError:
         "Fehler beim Verarbeiten der Freundschaftsanfrage",
       friendRequestEventError: "Fehler beim Empfang der Freundschaftsanfrage.",
-      friendRequestSendError: "Fehler beim Senden der Freundschaftsanfrage.",
       emailExists: "Diese E-Mail-Adresse ist bereits registriert",
-      emailExistsWithGoogle: "E-Mail wird bereits mit Google verwendet. Bitte melde dich über Google an.",
+      emailExistsWithGoogle:
+        "E-Mail wird bereits mit Google verwendet. Bitte melde dich über Google an.",
       emailOrUsernameExists: "E-Mail oder Benutzername existiert bereits",
       emailOrUsernameNotExist: "E-Mail oder Benutzername gibt es nicht",
       invalidUsernameOrPW: "Ungültiger Benutzername oder Passwort",
@@ -366,21 +363,27 @@ const de: TranslationShape = {
         "Profil konnte nicht aktualisiert werden. Bitte versuche es erneut.",
       profileUpdatedSuccess: "Profil erfolgreich aktualisiert!",
       registrationSuccess: "Registrierung von {{username}} erfolgreich!",
-      sendSuccess: "Anfrage erfolgreich an {{username}} gesendet",
       somethingWentWrong: "Etwas ist schief gelaufen",
-      terminatedFriendship: "Freundschaft beendet mit ",
       tokenRefreshFailed:
         "Token-Aktualisierung fehlgeschlagen. Bitte erneut versuchen.",
-      userAcceptedFriendRequest:
-        "Anfrage von <strong>{{username}}</strong> angenommen",
-      userDeclinedFriendRequest:
-        "Anfrage von <strong>{{username}}</strong> abgelehnt",
-      userRescindedFriendRequest:
-        "Anfrage von <strong>{{username}}</strong> zurückgezogen",
-      userRemovedFriend:
-        "<strong>{{username}}</strong> wurde aus deiner Freundesliste entfernt",
-      userSentFriendRequest: "Anfrage von <strong>{{username}}</strong>",
-      userStatus: "{{username}} ist {{status}}",
+      userAcceptedFriendRequest: "Angenommen - Freundschafsanfrage von ",
+      userDeclinedFriendRequest: "Abgelehnt - Freundschaftsanfrage von ",
+      userRescindedFriendRequest: "Zurückgezogen - Freundschaftsanfrage von ",
+      userRemovedFriendship: "Freundschaft beendet mit ",
+      userSendFriendRequestSuccess:
+        "Anfrage erfolgreich an <strong>{{username}}</strong> gesendet",
+      userSendRequestFailed: "Fehler beim Senden der Freundschaftsanfrage.",
+      friendAcceptedFriendRequest:
+        "<strong>{{username}}</strong> hat deine Anfrage angenommen",
+      friendDeclinedFriendRequest:
+        "<strong>{{username}}</strong> hat deine Anfrage abgelehnt",
+      friendRescindedFriendRequest:
+        "<strong>{{username}}</strong> hat seine Anfrage zurückgezogen",
+      friendRemovedFriend:
+        "<strong>{{username}}</strong> möchte nicht mehr dein Freund sein",
+      friendSentFriendRequest:
+        "<strong>{{username}}</strong> hat dir eine Freundschaftsanfrage gesendet",
+      userStatus: "<strong>{{username}}</strong> ist {{status}}",
       userVerificationError:
         "Fehler bei der Benutzerverifizierung:<br>Weiterleitung zur Anmeldung.",
       validateTournamentNameError:

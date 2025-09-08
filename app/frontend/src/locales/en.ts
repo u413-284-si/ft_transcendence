@@ -304,7 +304,6 @@ const en = {
     },
 
     toast: {
-      acceptedFriendRequest: "Friend request accepted by ",
       avatarDeleteFailed: "Avatar deletion failed. Please try again.",
       avatarDeleteSuccess: "Avatar deleted successfully!",
       avatarUploadFailed: "Avatar upload failed. Please try again.",
@@ -317,14 +316,12 @@ const en = {
       connectionReestablished: "Connection reestablished",
       connectionUnavailable:
         "Unable to reconnect. Attempts stopped until refresh.",
-      declinedFriendRequest: "Friend request declined by ",
-      deletedFriendRequest: "Friend request deleted by ",
-      friendAdded: "Friend request accepted by {{username}} !",
+      friendAdded: "Added friend <strong>{{username}}</strong>",
       friendRequestButtonError: "Error processing friend request",
       friendRequestEventError: "Error while receiving a friend request.",
-      friendRequestSendError: "Error while sending friend request.",
       emailExists: "The email address already exists",
-      emailExistsWithGoogle: "Email already used with Google. Sign in via Google.",
+      emailExistsWithGoogle:
+        "Email already used with Google. Sign in via Google.",
       emailOrUsernameExists: "The email or username already exists",
       emailOrUsernameNotExist: "The email or username does not exist",
       invalidUsernameOrPW: "Invalid username or password",
@@ -340,7 +337,6 @@ const en = {
       profileUpdateFailed: "Failed to update profile. Please try again.",
       profileUpdatedSuccess: "Profile updated successfully!",
       registrationSuccess: "Successfully registered {{username}}!",
-      sendSuccess: "Friend request sent to {{username}}",
       somethingWentWrong: "Something went wrong",
       tournamentAbortFailed:
         "Failed to abort the tournament. Please try again.",
@@ -349,19 +345,25 @@ const en = {
         "Failed to set the tournament as finished. Please try again.",
       tournamentFinishSuccess: "Tournament set as finished successfully!",
       tabError: "The tab failed to initialize.",
-      terminatedFriendship: "Friendship terminated with ",
       tokenRefreshFailed: "Token refresh failed. Please try again.",
-      userAcceptedFriendRequest:
-        "Friend request from <strong>{{username}}</strong> accepted",
-      userDeclinedFriendRequest:
-        "Friend request from <strong>{{username}}</strong> declined",
-      userRescindedFriendRequest:
-        "Friend request from <strong>{{username}}</strong> rescinded",
-      userRemovedFriend:
-        "<strong>{{username}}</strong> has been removed from your friends",
-      userSentFriendRequest:
-        "Friend request from <strong>{{username}}</strong>",
-      userStatus: "{{username}} is {{status}}",
+      userAcceptedFriendRequest: "Accepted friend request from ",
+      userDeclinedFriendRequest: "Declined friend request from ",
+      userRescindedFriendRequest: "Rescinded friend request to  ",
+      userRemovedFriendship: "Friendship terminated with ",
+      userSendFriendRequestSuccess:
+        "Friend request sent to <strong>{{username}}</strong>",
+      userSendRequestFailed: "Error while sending friend request.",
+      friendAcceptedFriendRequest:
+        "<strong>{{username}}</strong> accepted the friend request",
+      friendDeclinedFriendRequest:
+        "<strong>{{username}}</strong> declined the friend request",
+      friendRescindedFriendRequest:
+        "<strong>{{username}}</strong> rescinded the friend request",
+      friendRemovedFriend:
+        "<strong>{{username}}</strong> doesn't want to be friends anymore",
+      friendSentFriendRequest:
+        "<strong>{{username}}</strong> sent you a friend request",
+      userStatus: "<strong>{{username}}</strong> is {{status}}",
       userVerificationError:
         "An error occurred while verifying the user:<br>Redirecting to login.",
       validateTournamentNameError:
