@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { Tournament } from "../Tournament.js";
-import { escapeHTML } from "../utility.js";
+import { disableButton, escapeHTML, getById } from "../utility.js";
 import { setTournamentFinished } from "../services/tournamentService.js";
 import { router } from "../routing/Router.js";
 import { Header1 } from "../components/Header1.js";
@@ -14,6 +14,8 @@ import { formatPlayerName } from "../components/NicknameInput.js";
 import { toaster } from "../Toaster.js";
 
 export default class ResultsView extends AbstractView {
+  private finishButton!: HTMLButtonElement;
+
   constructor(private tournament: Tournament) {
     super();
     this.setTitle();
@@ -84,18 +86,18 @@ export default class ResultsView extends AbstractView {
   }
 
   protected addListeners(): void {
-    document
-      .getElementById("finish-btn")!
-      .addEventListener("click", () => this.setFinished());
+    this.finishButton.addEventListener("click", () => this.setFinished());
   }
 
   async render() {
     this.updateHTML();
+    this.finishButton = getById("finish-btn");
     this.addListeners();
   }
 
   private async setFinished() {
     try {
+      disableButton(this.finishButton);
       getDataOrThrow(await setTournamentFinished(this.tournament.getId()));
       toaster.success(i18next.t("toast.tournamentFinishSuccess"));
       router.reload();
