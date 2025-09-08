@@ -20,6 +20,10 @@ const schema = {
       type: "number",
       default: 4000
     },
+    DOMAIN_NAME: {
+      type: "string",
+      default: "https://localhost:8443"
+    },
     LOG_LEVEL: {
       type: "string",
       default: "info",
@@ -113,6 +117,7 @@ const config = envSchema({
 
 const envConfig = {
   port: config.PORT,
+  domainName: config.DOMAIN_NAME,
   logLevel: config.LOG_LEVEL,
   nodeEnv: config.NODE_ENV,
   vaultAddr: config.VAULT_ADDR,
