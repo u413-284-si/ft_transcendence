@@ -138,6 +138,7 @@ export class Router {
       return;
     }
     try {
+      this.currentView.unmount?.();
       await this.currentView.render();
       this.currentView.setTitle();
       this.notifyRouteChange("view");
