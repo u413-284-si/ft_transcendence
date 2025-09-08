@@ -328,6 +328,11 @@ export default class SettingsView extends AbstractView {
     this.twoFAPasswordInputErrorEl = getById("two-fa-password-input-error");
     this.twoFAQRCodeEl = getById("two-fa-qr-code");
 
+    this.twoFABackupCodesModalEl = getById("two-fa-backup-codes-modal");
+    this.twoFABackupCodesTableEl = getById("two-fa-backup-codes-table");
+    this.twoFADownloadBackupCodesLinkEl = getById(
+      "two-fa-download-backup-codes-link"
+    );
     if (!this.hasTwoFA()) {
       this.twoFACodeInputEl = getById("two-fa-code-input");
       this.twoFACodeInputErrorEl = getById("two-fa-code-input-error");
@@ -335,11 +340,6 @@ export default class SettingsView extends AbstractView {
       this.twoFAGenerateBackupCodesButtonEl = getById(
         "two-fa-generate-backup-codes"
       );
-      this.twoFABackupCodesTableEl = getById("two-fa-backup-codes-table");
-      this.twoFADownloadBackupCodesLinkEl = getById(
-        "two-fa-download-backup-codes-link"
-      );
-      this.twoFABackupCodesModalEl = getById("two-fa-backup-codes-modal");
     }
   }
 
@@ -596,8 +596,10 @@ export default class SettingsView extends AbstractView {
   }
 
   private clearTwoFACode(): void {
-    this.twoFACodeInputEl.value = "";
-    clearInvalid(this.twoFACodeInputEl, this.twoFACodeInputErrorEl);
+    if (!this.hasTwoFA()) {
+      this.twoFACodeInputEl.value = "";
+      clearInvalid(this.twoFACodeInputEl, this.twoFACodeInputErrorEl);
+    }
   }
 
   private clearTwoFASetupData(): void {
