@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import env from "../config/env.js";
 import { fileTypeFromBuffer } from "file-type";
-import { randAdjective, randWord, randSequence } from "@ngneat/falso";
+import { randAdjective, randWord, randSequence, randUuid } from "@ngneat/falso";
 
 const tokenSelect = {
   id: true,
@@ -126,7 +126,8 @@ export async function createUserAvatar(id, buffer) {
     throw new Error();
   }
   const correctExt = `.${fileType.ext}`;
-  const newFileName = `user-${id}${correctExt}`;
+  const uuid = randUuid();
+  const newFileName = `${uuid}${correctExt}`;
   const uploadDir = path.resolve(env.imagePath);
 
   await fs.promises.mkdir(uploadDir, { recursive: true });
