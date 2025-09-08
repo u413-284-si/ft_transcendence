@@ -27,7 +27,12 @@ import { deleteUser, patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { User, Language } from "../types/User.js";
-import { getAllBySelector, getById, getBySelector } from "../utility.js";
+import {
+  disableButton,
+  getAllBySelector,
+  getById,
+  getBySelector
+} from "../utility.js";
 import { Header2 } from "../components/Header2.js";
 
 export default class SettingsView extends AbstractView {
@@ -397,7 +402,7 @@ export default class SettingsView extends AbstractView {
     try {
       event.preventDefault();
       if (!this.hasTwoFA()) {
-        this.twoFASubmitButton.disabled = true;
+        disableButton(this.twoFASubmitButton);
         const isTwoFACodeValid = await validateTwoFACode(
           this.twoFACodeInputEl,
           this.twoFACodeInputErrorEl
@@ -429,7 +434,6 @@ export default class SettingsView extends AbstractView {
         this.setupBackupCodesLink(backupCodes);
         this.twoFAModalEl.close();
         this.twoFABackupCodesModalEl.showModal();
-        this.twoFASubmitButton.disabled = false;
       } else {
         this.twoFAModalEl.close();
         this.displayTwoFAPasswordModal("remove");
@@ -453,7 +457,7 @@ export default class SettingsView extends AbstractView {
   private async displayTwoFASetup(event: Event): Promise<void> {
     try {
       event.preventDefault();
-      this.twoFAPasswortSubmitButton.disabled = true;
+      disableButton(this.twoFAPasswortSubmitButton);
       if (
         !validatePassword(
           this.twoFAPasswordInputEl,
@@ -485,7 +489,6 @@ export default class SettingsView extends AbstractView {
       this.twoFAPasswordModalEl.close();
       this.twoFAModalEl.showModal();
       if (!this.hasTwoFA()) this.twoFACodeInputEl.focus();
-      this.twoFAPasswortSubmitButton.disabled = false;
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
       console.error("Error in displayTwoFASetup():", error);
@@ -495,7 +498,7 @@ export default class SettingsView extends AbstractView {
   private async removeTwoFA(event: Event): Promise<void> {
     try {
       event.preventDefault();
-      this.twoFAPasswortSubmitButton.disabled = true;
+      disableButton(this.twoFAPasswortSubmitButton);
       if (
         !validatePassword(
           this.twoFAPasswordInputEl,
@@ -519,7 +522,6 @@ export default class SettingsView extends AbstractView {
       }
 
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
-      this.twoFAPasswortSubmitButton.disabled = false;
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
       console.error("Error in removeTwoFA():", error);
@@ -529,7 +531,7 @@ export default class SettingsView extends AbstractView {
   private async generateAndDisplayBackupCodes(event: Event): Promise<void> {
     try {
       event.preventDefault();
-      this.twoFAPasswortSubmitButton.disabled = true;
+      disableButton(this.twoFAPasswortSubmitButton);
       if (
         !validatePassword(
           this.twoFAPasswordInputEl,
@@ -558,7 +560,6 @@ export default class SettingsView extends AbstractView {
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
       this.twoFAPasswordModalEl.close();
       this.twoFABackupCodesModalEl.showModal();
-      this.twoFAPasswortSubmitButton.disabled = false;
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
       console.error("Error in generateAndDisplayBackupCodes():", error);
