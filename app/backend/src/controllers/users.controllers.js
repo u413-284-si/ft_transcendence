@@ -27,10 +27,7 @@ import {
   updatePassword,
   verifyHash
 } from "../services/auth.services.js";
-import {
-  getAllUserFriendRequests,
-  getFriendId
-} from "../services/friends.services.js";
+import { getAllUserFriendRequests } from "../services/friends.services.js";
 import { fileTypeFromBuffer } from "file-type";
 import { notifyProfileChange } from "../services/events/sse.services.js";
 
@@ -90,7 +87,7 @@ export async function deleteUserHandler(request, reply) {
 export async function getUserMatchesByUsernameHandler(request, reply) {
   request.action = "Get user matches by username";
   const userId = request.user.id;
-  
+
   const filter = {
     playedAs: request.query.playedAs,
     limit: request.query.limit,
