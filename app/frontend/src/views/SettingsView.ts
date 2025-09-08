@@ -38,10 +38,12 @@ export default class SettingsView extends AbstractView {
   private twoFASetupButtonEl!: HTMLButtonElement;
   private twoFAModalEl!: HTMLDialogElement;
   private twoFAFormEl!: HTMLFormElement;
+  private twoFASubmitButton!: HTMLButtonElement;
   private twoFACodeInputEl!: HTMLInputElement;
   private twoFACodeInputErrorEl!: HTMLElement;
   private twoFAPasswordModalEl!: HTMLDialogElement;
   private twoFAPasswordFormEl!: HTMLFormElement;
+  private twoFAPasswortSubmitButton!: HTMLButtonElement;
   private twoFAPasswordInputEl!: HTMLInputElement;
   private twoFAPasswordInputErrorEl!: HTMLElement;
   private twoFAGenerateBackupCodesButtonEl!: HTMLButtonElement;
@@ -324,6 +326,7 @@ export default class SettingsView extends AbstractView {
     this.twoFAFormEl = getById("two-fa-form");
     this.twoFAPasswordModalEl = getById("two-fa-password-modal");
     this.twoFAPasswordFormEl = getById("two-fa-password-form");
+    this.twoFAPasswortSubmitButton = getById("two-fa-submit-password");
     this.twoFAPasswordInputEl = getById("two-fa-password-input");
     this.twoFAPasswordInputErrorEl = getById("two-fa-password-input-error");
     this.twoFAQRCodeEl = getById("two-fa-qr-code");
@@ -334,6 +337,7 @@ export default class SettingsView extends AbstractView {
       "two-fa-download-backup-codes-link"
     );
     if (!this.hasTwoFA()) {
+      this.twoFASubmitButton = getById("two-fa-submit");
       this.twoFACodeInputEl = getById("two-fa-code-input");
       this.twoFACodeInputErrorEl = getById("two-fa-code-input-error");
     } else {
@@ -393,6 +397,7 @@ export default class SettingsView extends AbstractView {
     try {
       event.preventDefault();
       if (!this.hasTwoFA()) {
+        this.twoFASubmitButton.disabled = true;
         const isTwoFACodeValid = await validateTwoFACode(
           this.twoFACodeInputEl,
           this.twoFACodeInputErrorEl
@@ -424,6 +429,7 @@ export default class SettingsView extends AbstractView {
         this.setupBackupCodesLink(backupCodes);
         this.twoFAModalEl.close();
         this.twoFABackupCodesModalEl.showModal();
+        this.twoFASubmitButton.disabled = false;
       } else {
         this.twoFAModalEl.close();
         this.displayTwoFAPasswordModal("remove");
@@ -447,7 +453,7 @@ export default class SettingsView extends AbstractView {
   private async displayTwoFASetup(event: Event): Promise<void> {
     try {
       event.preventDefault();
-
+      this.twoFAPasswortSubmitButton.disabled = true;
       if (
         !validatePassword(
           this.twoFAPasswordInputEl,
@@ -479,6 +485,7 @@ export default class SettingsView extends AbstractView {
       this.twoFAPasswordModalEl.close();
       this.twoFAModalEl.showModal();
       if (!this.hasTwoFA()) this.twoFACodeInputEl.focus();
+      this.twoFAPasswortSubmitButton.disabled = false;
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
       console.error("Error in displayTwoFASetup():", error);
@@ -488,7 +495,7 @@ export default class SettingsView extends AbstractView {
   private async removeTwoFA(event: Event): Promise<void> {
     try {
       event.preventDefault();
-
+      this.twoFAPasswortSubmitButton.disabled = true;
       if (
         !validatePassword(
           this.twoFAPasswordInputEl,
@@ -512,6 +519,7 @@ export default class SettingsView extends AbstractView {
       }
 
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
+      this.twoFAPasswortSubmitButton.disabled = false;
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
       console.error("Error in removeTwoFA():", error);
@@ -521,6 +529,7 @@ export default class SettingsView extends AbstractView {
   private async generateAndDisplayBackupCodes(event: Event): Promise<void> {
     try {
       event.preventDefault();
+      this.twoFAPasswortSubmitButton.disabled = true;
       if (
         !validatePassword(
           this.twoFAPasswordInputEl,
@@ -549,6 +558,7 @@ export default class SettingsView extends AbstractView {
       this.setupBackupCodesLink(apiResponse.data.backupCodes);
       this.twoFAPasswordModalEl.close();
       this.twoFABackupCodesModalEl.showModal();
+      this.twoFAPasswortSubmitButton.disabled = false;
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
       console.error("Error in generateAndDisplayBackupCodes():", error);
