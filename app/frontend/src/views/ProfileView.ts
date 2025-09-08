@@ -229,7 +229,9 @@ export default class ProfileView extends AbstractView {
     this.updateHTML();
     this.avatarFormEl = getById("avatar-upload-form");
     this.profileFormEl = getById("profile-form");
-    this.passwordFormEl = getById("password-form");
+    if (this.hasLocalAuth) {
+      this.passwordFormEl = getById("password-form");
+    }
     this.avatarInputEl = getById("avatar-input");
     this.fileLabelEl = getById("avatar-input-file-label");
     this.deleteAvatarBtn = getById("delete-avatar");
