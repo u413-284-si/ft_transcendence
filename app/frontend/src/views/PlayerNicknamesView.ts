@@ -63,7 +63,7 @@ export default class PlayerNicknamesView extends AbstractView {
             type: "submit"
           })
         ],
-        id: "nicknames-form"
+        id: "player-nicknames-form"
       })}
     `;
   }
@@ -77,7 +77,7 @@ export default class PlayerNicknamesView extends AbstractView {
 
   async render() {
     this.updateHTML();
-    this.formEl = getById("nicknames-form");
+    this.formEl = getById("player-nicknames-form");
     this.addListeners();
   }
 
