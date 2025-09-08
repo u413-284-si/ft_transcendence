@@ -229,5 +229,7 @@ export default class StatsView extends AbstractView {
         tab.destroyCharts();
       }
     }
+    this.tabs = {};
+    this.currentTabId = undefined;
   }
 }
