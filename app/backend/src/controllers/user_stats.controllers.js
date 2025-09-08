@@ -26,21 +26,7 @@ export async function getAllUserStatsHandler(request, reply) {
 
 export async function getDashboardMatchesByUsernameHandler(request, reply) {
   request.action = "Get dashboard matches by username";
-  let userId = request.user.id;
-  const username = request.user.username;
-  const { paramUsername } = request.params;
-  if (username !== paramUsername) {
-    const friendId = await getFriendId(userId, paramUsername);
-    if (!friendId) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(request.action, false),
-        "You need to be friends"
-      );
-    }
-    userId = friendId;
-  }
+  const userId = request.user.id;
 
   const data = await getDashboardMatchesData(userId);
 
@@ -52,22 +38,8 @@ export async function getDashboardMatchesByUsernameHandler(request, reply) {
 
 export async function getDashboardTournamentsByUsernameHandler(request, reply) {
   request.action = "Get dashboard tournaments by username";
-  let userId = request.user.id;
-  const username = request.user.username;
-  const { paramUsername } = request.params;
-  if (username !== paramUsername) {
-    const friendId = await getFriendId(userId, paramUsername);
-    if (!friendId) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(request.action, false),
-        "You need to be friends"
-      );
-    }
-    userId = friendId;
-  }
-
+  const userId = request.user.id;
+  
   const data = await getDashboardTournamentsData(userId);
 
   return reply.code(200).send({

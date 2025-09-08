@@ -19,7 +19,7 @@ import {
   deleteFriendRequestHandler,
   updateFriendRequestHandler
 } from "../controllers/friend_request.controllers.js";
-import { setUserName } from "../middleware/user.js";
+import { isSelfOrFriend, setUserName } from "../middleware/user.js";
 
 export default async function userRoutes(fastify) {
   fastify.post("/", optionsCreateUser, createUserHandler);
@@ -127,7 +127,7 @@ const optionsDeleteUser = {
 };
 
 const optionsGetUserMatchesByUsername = {
-  onRequest: [authorizeUserAccess, setUserName],
+  onRequest: [authorizeUserAccess, setUserName, isSelfOrFriend],
   schema: {
     querystring: { $ref: "querystringMatchSchema" },
     params: {
@@ -145,7 +145,7 @@ const optionsGetUserMatchesByUsername = {
 };
 
 const optionsGetUserTournamentsByUsername = {
-  onRequest: [authorizeUserAccess, setUserName],
+  onRequest: [authorizeUserAccess, setUserName, isSelfOrFriend],
   schema: {
     querystring: { $ref: "querystringTournamentSchema" },
     params: {
