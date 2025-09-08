@@ -13,6 +13,7 @@ import { createResponseMessage } from "../utils/response.js";
 export async function createFriendRequestHandler(request, reply) {
   request.action = "Create friend request";
   const userId = request.user.id;
+  const username = request.user.username;
   const friendId = request.body.id;
 
   if (userId === friendId) {
@@ -50,12 +51,7 @@ export async function createFriendRequestHandler(request, reply) {
       userId,
       "ACCEPTED"
     );
-    notifyFriendRequestEvent(
-      data.friendId,
-      data.id,
-      request.user.username,
-      "ACCEPTED"
-    );
+    notifyFriendRequestEvent(data.friendId, data.id, username, "ACCEPTED");
     return reply.code(200).send({
       message: createResponseMessage(request.action, true),
       data: data
@@ -64,7 +60,7 @@ export async function createFriendRequestHandler(request, reply) {
 
   const data = await createFriendRequest(userId, friendId);
 
-  notifyFriendRequestEvent(friendId, data.id, request.user.username, "PENDING");
+  notifyFriendRequestEvent(friendId, data.id, username, "PENDING");
 
   return reply
     .code(201)
@@ -74,6 +70,7 @@ export async function createFriendRequestHandler(request, reply) {
 export async function updateFriendRequestHandler(request, reply) {
   request.action = "Update friend request";
   const userId = request.user.id;
+  const username = request.user.username;
   const requestId = request.params.id;
   const { status } = request.body;
 
@@ -99,12 +96,7 @@ export async function updateFriendRequestHandler(request, reply) {
 
   const data = await updateFriendRequest(requestId, userId, status);
 
-  notifyFriendRequestEvent(
-    data.friendId,
-    data.id,
-    request.user.username,
-    status
-  );
+  notifyFriendRequestEvent(data.friendId, data.id, username, status);
 
   return reply
     .code(200)
@@ -114,12 +106,13 @@ export async function updateFriendRequestHandler(request, reply) {
 export async function deleteFriendRequestHandler(request, reply) {
   request.action = "Delete friend request";
   const userId = request.user.id;
+  const username = request.user.username;
   const requestId = request.params.id;
   const data = await deleteFriendRequest(requestId, userId);
   notifyFriendRequestEvent(
     data.friendId,
     data.id,
-    request.user.username,
+    username,
     data.status === "ACCEPTED"
       ? "DELETED"
       : data.sender

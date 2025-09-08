@@ -255,10 +255,11 @@ export async function twoFAQRCodeHandler(request, reply) {
 export async function enableTwoFAHandler(request, reply) {
   request.action = "Enable 2FA";
   const userId = request.user.id;
+  const username = request.user.username;
 
   const { code } = request.body;
   const secret = await getTwoFASecret(userId);
-  const twoFA = generateTwoFA(request.user.username, secret);
+  const twoFA = generateTwoFA(username, secret);
   if (!verifyTwoFACode(twoFA, code)) {
     return httpError(
       reply,
@@ -352,7 +353,7 @@ export async function twoFALoginVerifyHandler(request, reply) {
 
   const { code } = request.body;
   const secret = await getTwoFASecret(userId);
-  const twoFA = generateTwoFA(request.user.username, secret);
+  const twoFA = generateTwoFA(username, secret);
   if (!verifyTwoFACode(twoFA, code)) {
     return httpError(
       reply,
