@@ -157,13 +157,19 @@ export class Tournament {
           player2Text = formatPlayerName(player2Text, match.player2Type);
         }
 
+        let winnerText = "";
+        if (match.winner) {
+          const isP1Winner = match.winner == match.player1Nickname;
+          winnerText = isP1Winner ? player1Text : player2Text;
+        }
+
         return {
           matchId: match.matchNumber,
           player1Text,
           player2Text,
           isPlayed,
           isNext,
-          winner: match.winner
+          winner: winnerText
         };
       });
 
@@ -220,10 +226,10 @@ export class Tournament {
 
             <!-- Player 2 -->
             <div class="flex items-center gap-2 w-[150px]">
+              ${match.winner === match.player2Text ? "🏆" : ""}
               <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis w-full" title="${match.player2Text}">
                 ${match.player2Text}
               </span>
-              ${match.winner === match.player2Text ? "🏆" : ""}
             </div>
           </div>
         </div>
