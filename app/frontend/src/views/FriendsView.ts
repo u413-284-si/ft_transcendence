@@ -253,7 +253,10 @@ export default class FriendsView extends AbstractView {
               }
             }
 
-            toaster.success(`${toastMessage} ${username}`, toastIcon);
+            toaster.success(
+              `${toastMessage} <strong>${username}</strong>`,
+              toastIcon
+            );
           } catch (error) {
             console.error(error);
             toaster.error(i18next.t("toast.friendRequestButtonError"));
@@ -274,7 +277,7 @@ export default class FriendsView extends AbstractView {
           i18next.t("friendsView.confirmRemoveFriend"),
           ["friend"],
           this.handleDeleteButton,
-          i18next.t("toast.terminatedFriendship"),
+          i18next.t("toast.userRemovedFriendship"),
           "💀"
         );
         break;
@@ -285,7 +288,7 @@ export default class FriendsView extends AbstractView {
           null,
           ["incoming", "friend"],
           this.handleAcceptButton,
-          i18next.t("toast.acceptedFriendRequest"),
+          i18next.t("toast.userAcceptedFriendRequest"),
           "❤️"
         );
         this.addButtonListeners(
@@ -293,7 +296,7 @@ export default class FriendsView extends AbstractView {
           i18next.t("friendsView.confirmDeclineRequest"),
           ["incoming"],
           this.handleDeleteButton,
-          i18next.t("toast.declinedFriendRequest"),
+          i18next.t("toast.userDeclinedFriendRequest"),
           "💔"
         );
         break;
@@ -304,7 +307,7 @@ export default class FriendsView extends AbstractView {
           i18next.t("friendsView.confirmDeleteRequest"),
           ["outgoing"],
           this.handleDeleteButton,
-          i18next.t("toast.deletedFriendRequest"),
+          i18next.t("toast.userRescindedFriendRequest"),
           "💔"
         );
         break;
@@ -400,7 +403,11 @@ export default class FriendsView extends AbstractView {
       inputEl.value = "";
       this.refreshRequestList("outgoing");
       if (request.status === "PENDING") {
-        toaster.success(i18next.t("toast.sendSuccess", { username: username }));
+        toaster.success(
+          i18next.t("toast.userSendFriendRequestSuccess", {
+            username: username
+          })
+        );
       } else if (request.status === "ACCEPTED") {
         toaster.success(
           i18next.t("toast.friendAdded", { username: username }),
@@ -411,7 +418,7 @@ export default class FriendsView extends AbstractView {
       }
     } catch (error) {
       console.error("Failed to send friend request:", error);
-      toaster.error(i18next.t("toast.friendRequestSendError"));
+      toaster.error(i18next.t("toast.userSendRequestFailed"));
     }
   };
 

@@ -81,29 +81,31 @@ export function openSSEConnection() {
       };
       switch (status) {
         case "PENDING":
-          toaster.info(i18next.t("toast.userSentFriendRequest", { username }));
+          toaster.info(
+            i18next.t("toast.friendSentFriendRequest", { username })
+          );
           break;
         case "ACCEPTED":
           toaster.info(
-            i18next.t("toast.userAcceptedFriendRequest", { username }),
+            i18next.t("toast.friendAcceptedFriendRequest", { username }),
             "❤️"
           );
           break;
         case "DECLINED":
           toaster.info(
-            i18next.t("toast.userDeclinedFriendRequest", { username }),
+            i18next.t("toast.friendDeclinedFriendRequest", { username }),
             "💔"
           );
           break;
         case "RESCINDED":
           toaster.info(
-            i18next.t("toast.userRescindedFriendRequest", { username }),
+            i18next.t("toast.friendRescindedFriendRequest", { username }),
             "💔"
           );
           break;
         case "DELETED":
           toaster.info(
-            i18next.t("toast.userRemovedFriend", { username }),
+            i18next.t("toast.friendRemovedFriend", { username }),
             "💀"
           );
           break;

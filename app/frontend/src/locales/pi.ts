@@ -310,7 +310,6 @@ const pi: TranslationShape = {
     },
 
     toast: {
-      acceptedFriendRequest: "Parley accepted by ",
       avatarDeleteFailed: "Couldn’t burn yer flag – try again!",
       avatarDeleteSuccess: "Yer flag be burnin’ high now!",
       avatarUploadFailed: "Couldn’t hoist yer flag – try again!",
@@ -323,15 +322,13 @@ const pi: TranslationShape = {
       connectionReestablished: "Riggings reattached!",
       connectionUnavailable:
         "No more wind in the sails – retries stopped ‘til refresh!",
-      declinedFriendRequest: "Parley declined by ",
-      deletedFriendRequest: "Parley request sunk by ",
-      friendAdded: "New crewmate {{username}} aboard!",
+      friendAdded: "New crewmate <strong>{{username}}</strong> aboard!",
       friendRequestButtonError: "Error with yer parley request",
       friendRequestEventError:
         "Trouble while receivin' a parley request signal!",
-      friendRequestSendError: "Trouble while sendin' yer parley request!",
       emailExists: "That bottle's already adrift",
-      emailExistsWithGoogle: "Arrr! This bottle be already claimed by Google. Log in with yer Google account, matey!",
+      emailExistsWithGoogle:
+        "Arrr! This bottle be already claimed by Google. Log in with yer Google account, matey!",
       emailOrUsernameExists: "That name or bottle already has a captain",
       emailOrUsernameNotExist: "That name or bottle not yet be sailin'",
       loginError: "Couldn't board ship - try again!",
@@ -358,20 +355,25 @@ const pi: TranslationShape = {
       profileUpdateFailed: "Profile be cursed - try again later!",
       profileUpdatedSuccess: "Profile polished like a cutlass!",
       registrationSuccess: "You be aboard, sailor {{username}}!",
-      sendSuccess: "Parley sent to the high seas to {{username}}!",
       somethingWentWrong: "Arrr, somethin' went off course!",
-      terminatedFriendship: "Ye cut ties with ",
       tokenRefreshFailed: "Couldn’t refresh yer token – try again!",
-      userAcceptedFriendRequest:
-        "Parley with <strong>{{username}}</strong> accepted",
-      userDeclinedFriendRequest:
-        "Parley from <strong>{{username}}</strong> declined",
-      userRescindedFriendRequest:
-        "Parley from <strong>{{username}}</strong> withdrawn",
-      userRemovedFriend:
-        "<strong>{{username}}</strong> be tossed from yer crew",
-      userSentFriendRequest: "Parley from <strong>{{username}}</strong>",
-      userStatus: "{{username}} be {{status}}",
+      userAcceptedFriendRequest: "Accepted parley of ",
+      userDeclinedFriendRequest: "Declined parley of ",
+      userRescindedFriendRequest: "Sunk parley request to ",
+      userRemovedFriendship: "Ye cut ties with ",
+      userSendFriendRequestSuccess:
+        "Parley sent to the high seas to <strong>{{username}}</strong>!",
+      userSendRequestFailed: "Trouble while sendin' yer parley request!",
+      friendAcceptedFriendRequest:
+        "<strong>{{username}}</strong> accepted the parley",
+      friendDeclinedFriendRequest:
+        "<strong>{{username}}</strong> declined the parley",
+      friendRescindedFriendRequest:
+        "<strong>{{username}}</strong> withdrew parley request",
+      friendRemovedFriend:
+        "<strong>{{username}}</strong> tossed ya from his crew",
+      friendSentFriendRequest: "<strong>{{username}}</strong> wants a parley",
+      userStatus: "<strong>{{username}}</strong> be {{status}}",
       userVerificationError:
         "Yer pirate pass be faulty:<br>Back to the login docks.",
       validateTournamentNameError:
