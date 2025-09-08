@@ -63,6 +63,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   auth.onChange(async (isAuth) => {
     console.info("Auth change listener: layout update.");
     if (isAuth) {
+      const sidebar = document.getElementById("drawer-sidebar");
+      if (sidebar) {
+        sidebar.remove();
+      }
       layout.update("auth");
       await router.refresh();
     } else {
