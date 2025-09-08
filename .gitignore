@@ -180,3 +180,6 @@ ext/
 
 # secret stuff
 secrets/
+
+# Prisma migrations
+app/backend/prisma/migrations
