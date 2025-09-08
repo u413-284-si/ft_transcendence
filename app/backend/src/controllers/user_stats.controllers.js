@@ -3,9 +3,7 @@ import {
   getDashboardMatchesData,
   getDashboardTournamentsData
 } from "../services/dashboard.services.js";
-import { getFriendId } from "../services/friends.services.js";
 import { getAllUserStats } from "../services/user_stats.services.js";
-import { httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
 export async function getAllUserStatsHandler(request, reply) {
@@ -39,7 +37,7 @@ export async function getDashboardMatchesByUsernameHandler(request, reply) {
 export async function getDashboardTournamentsByUsernameHandler(request, reply) {
   request.action = "Get dashboard tournaments by username";
   const userId = request.user.id;
-  
+
   const data = await getDashboardTournamentsData(userId);
 
   return reply.code(200).send({
