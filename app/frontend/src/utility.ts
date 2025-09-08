@@ -56,3 +56,8 @@ export function getCSSColorWithAlpha(varName: string, alpha: number) {
   const color = getCSSVar(varName);
   return color.includes("/") ? color : color.replace(")", ` / ${alpha})`);
 }
+
+export function disableButton(button: HTMLButtonElement) {
+  button.disabled = true;
+  setTimeout(() => (button.disabled = false), 250);
+}
