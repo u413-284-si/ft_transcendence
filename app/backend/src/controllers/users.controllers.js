@@ -90,9 +90,10 @@ export async function deleteUserHandler(request, reply) {
 export async function getUserMatchesByUsernameHandler(request, reply) {
   request.action = "Get user matches by username";
   let userId = request.user.id;
-  const { username } = request.params;
-  if (username !== request.user.username) {
-    const friendId = await getFriendId(userId, username);
+  const username = request.user.username;
+  const { paramUsername } = request.params;
+  if (username !== paramUsername) {
+    const friendId = await getFriendId(userId, paramUsername);
     if (!friendId) {
       return httpError(
         reply,
@@ -122,9 +123,10 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
 export async function getUserTournamentsByUsernameHandler(request, reply) {
   request.action = "Get user tournaments by username";
   let userId = request.user.id;
-  const { username } = request.params;
-  if (username !== request.user.username) {
-    const friendId = await getFriendId(userId, username);
+  const username = request.user.username;
+  const { paramUsername } = request.params;
+  if (username !== paramUsername) {
+    const friendId = await getFriendId(userId, paramUsername);
     if (!friendId) {
       return httpError(
         reply,

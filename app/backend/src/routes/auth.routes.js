@@ -18,6 +18,7 @@ import {
   ensureLocalAuthProvider
 } from "../middleware/auth.js";
 import env from "../config/env.js";
+import { setUserName } from "../middleware/user.js";
 
 export default async function authRoutes(fastify) {
   fastify.post("/login", optionsloginUser, loginUserHandler);
@@ -87,7 +88,7 @@ const optionsAuthUserRefresh = {
 };
 
 const optionsLogoutUser = {
-  onRequest: [authorizeUserAccess],
+  onRequest: [authorizeUserAccess, setUserName],
   schema: {
     response: {
       200: { $ref: "logoutUserResponseSchema" },
@@ -105,7 +106,7 @@ const optionsGoogleOauth2Login = {
 };
 
 const optionsTwoFAQRCode = {
-  onRequest: [authorizeUserAccess, ensureLocalAuthProvider],
+  onRequest: [authorizeUserAccess, ensureLocalAuthProvider, setUserName],
   schema: {
     response: {
       ...errorResponses
@@ -114,7 +115,7 @@ const optionsTwoFAQRCode = {
 };
 
 const optionsEnableTwoFA = {
-  onRequest: [authorizeUserAccess, ensureLocalAuthProvider],
+  onRequest: [authorizeUserAccess, ensureLocalAuthProvider, setUserName],
   schema: {
     body: { $ref: "twoFACodeSchema" },
     response: {
@@ -124,7 +125,7 @@ const optionsEnableTwoFA = {
 };
 
 const optionsTwoFALoginVerify = {
-  onRequest: [authorizeUserTwoFALogin, ensureLocalAuthProvider],
+  onRequest: [authorizeUserTwoFALogin, ensureLocalAuthProvider, setUserName],
   schema: {
     body: { $ref: "twoFACodeSchema" },
     response: {
@@ -155,7 +156,7 @@ const optionsTwoFABackupCodes = {
 };
 
 const optionsTwoFABackupCodesVerify = {
-  onRequest: [authorizeUserTwoFALogin, ensureLocalAuthProvider],
+  onRequest: [authorizeUserTwoFALogin, ensureLocalAuthProvider, setUserName],
   schema: {
     body: { $ref: "twoFABackupCodeSchema" },
     response: {
