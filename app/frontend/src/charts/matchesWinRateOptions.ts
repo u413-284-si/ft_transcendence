@@ -52,7 +52,10 @@ export function buildMatchesWinRateOptions(
       labels: {
         style: { colors: chartColors.white },
         formatter: (val: number) => `${val}%`
-      }
+      },
+      forceNiceScale: true,
+      min: 0,
+      max: 100
     }
   };
   return options;
