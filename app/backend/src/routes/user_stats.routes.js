@@ -5,7 +5,7 @@ import {
   getDashboardFriendsHandler
 } from "../controllers/user_stats.controllers.js";
 import { authorizeUserAccess } from "../middleware/auth.js";
-import { setUserName } from "../middleware/user.js";
+import { isSelfOrFriend, setUserName } from "../middleware/user.js";
 import { errorResponses } from "../utils/error.js";
 
 export default async function userstatsRoutes(fastify) {
@@ -50,7 +50,7 @@ const optionsGetAllUserStats = {
 };
 
 const optionsGetDashboardMatchesByUsername = {
-  onRequest: [authorizeUserAccess, setUserName],
+  onRequest: [authorizeUserAccess, setUserName, isSelfOrFriend],
   schema: {
     params: {
       type: "object",
@@ -67,7 +67,7 @@ const optionsGetDashboardMatchesByUsername = {
 };
 
 const optionsGetDashboardTournamentsByUsername = {
-  onRequest: [authorizeUserAccess, setUserName],
+  onRequest: [authorizeUserAccess, setUserName, isSelfOrFriend],
   schema: {
     params: {
       type: "object",

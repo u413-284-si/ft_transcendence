@@ -89,21 +89,8 @@ export async function deleteUserHandler(request, reply) {
 
 export async function getUserMatchesByUsernameHandler(request, reply) {
   request.action = "Get user matches by username";
-  let userId = request.user.id;
-  const username = request.user.username;
-  const { paramUsername } = request.params;
-  if (username !== paramUsername) {
-    const friendId = await getFriendId(userId, paramUsername);
-    if (!friendId) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(request.action, false),
-        "You need to be friends"
-      );
-    }
-    userId = friendId;
-  }
+  const userId = request.user.id;
+  
   const filter = {
     playedAs: request.query.playedAs,
     limit: request.query.limit,
@@ -122,21 +109,8 @@ export async function getUserMatchesByUsernameHandler(request, reply) {
 
 export async function getUserTournamentsByUsernameHandler(request, reply) {
   request.action = "Get user tournaments by username";
-  let userId = request.user.id;
-  const username = request.user.username;
-  const { paramUsername } = request.params;
-  if (username !== paramUsername) {
-    const friendId = await getFriendId(userId, paramUsername);
-    if (!friendId) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(request.action, false),
-        "You need to be friends"
-      );
-    }
-    userId = friendId;
-  }
+  const userId = request.user.id;
+
   const filter = {
     name: request.query.name,
     isFinished: request.query.isFinished,
