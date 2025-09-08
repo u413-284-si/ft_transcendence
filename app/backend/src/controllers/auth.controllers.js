@@ -29,6 +29,7 @@ import { httpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
 import { notifyProfileChange } from "../services/events/sse.services.js";
+import env from "../config/env.js";
 
 export async function loginUserHandler(request, reply) {
   request.action = "Login user";
@@ -118,7 +119,7 @@ export async function googleOauth2LoginHandler(request, reply) {
         path: "/",
         maxAge: 10
       })
-      .redirect("https://localhost:8443");
+      .redirect(env.domainName);
   }
 
   const payload = await getTokenData(googleUser.email, "email");
@@ -127,7 +128,7 @@ export async function googleOauth2LoginHandler(request, reply) {
 
   return reply
     .setAuthCookies(accessToken, refreshToken)
-    .redirect("https://localhost:8443");
+    .redirect(env.domainName);
 }
 
 export async function checkRefreshTokenStatusHandler(request, reply) {
