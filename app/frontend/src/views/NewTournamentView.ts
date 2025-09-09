@@ -20,6 +20,7 @@ import { auth } from "../AuthManager.js";
 import { getById, getBySelector } from "../utility.js";
 import { List } from "../components/List.js";
 import { Card } from "../components/Card.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -105,7 +106,7 @@ export default class NewTournamentView extends AbstractView {
       })
     );
     if (tournamentsPage.items.length === 0) {
-      console.log("No active tournament found");
+      viewLogger.debug("No active tournament found");
       this.updateHTML();
       this.formEl = getById("tournament-form");
       this.addListeners();
@@ -154,7 +155,7 @@ export default class NewTournamentView extends AbstractView {
     }
 
     const playerNum = parseInt(playersSelected.value);
-    console.log(
+    viewLogger.debug(
       `Tournament "${tournamentNameEl.value}" started with ${playerNum} players`
     );
 

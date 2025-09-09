@@ -12,6 +12,7 @@ import { Card } from "../components/Card.js";
 import { Header3 } from "../components/Header3.js";
 import { formatPlayerName } from "../components/NicknameInput.js";
 import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class ResultsView extends AbstractView {
   private finishButton!: HTMLButtonElement;
@@ -102,7 +103,7 @@ export default class ResultsView extends AbstractView {
       router.reload();
     } catch (error) {
       toaster.error(i18next.t("toast.tournamentFinishFailed"));
-      console.error("Error in setFinished():", error);
+      viewLogger.error("Error in setFinished():", error);
     }
   }
 

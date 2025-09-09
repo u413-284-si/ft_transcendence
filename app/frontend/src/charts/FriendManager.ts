@@ -1,3 +1,4 @@
+import { appLogger } from "../logging/config.js";
 import { DashboardFriends, FriendStatsSeries } from "../types/DataSeries.js";
 import { friendsColors } from "./chartUtils.js";
 
@@ -39,7 +40,7 @@ export class FriendManager {
   private getColor(friend: string): string {
     const index = this.friendColorMap.get(friend);
     if (index === undefined) {
-      console.error(`No color for ${friend}`);
+      appLogger.error(`No color for ${friend}`);
       return "grey";
     }
     return this.colors[index];
@@ -88,7 +89,7 @@ export class FriendManager {
   getBtnClassesSelected(friend: string): string {
     const index = this.friendColorMap.get(friend);
     if (index === undefined) {
-      console.error(`No classes for ${friend}`);
+      appLogger.error(`No classes for ${friend}`);
       return "grey";
     }
     return `${btnBaseClasses} ${btnSelected[index]}`;

@@ -18,6 +18,7 @@ import en from "./locales/en.js";
 import fr from "./locales/fr.js";
 import pi from "./locales/pi.js";
 import tr from "./locales/tr.js";
+import { appLogger, setGlobalLogLevel } from "./logging/config.js";
 
 router
   .addRoute("/login", { view: Login, guard: guestOnlyGuard })
@@ -43,6 +44,8 @@ router
   .addRouteChangeListener(updateUI);
 
 document.addEventListener("DOMContentLoaded", async () => {
+  setGlobalLogLevel("silent");
+
   const preferredLang = localStorage.getItem(
     "preferredLanguage"
   ) as Language | null;
@@ -61,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   auth.onChange(async (isAuth) => {
-    console.info("Auth change listener: layout update.");
+    appLogger.info("Auth change listener: layout update.");
     if (isAuth) {
       const sidebar = document.getElementById("drawer-sidebar");
       if (sidebar) {
