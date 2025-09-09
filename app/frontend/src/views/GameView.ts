@@ -8,6 +8,7 @@ import { Tournament } from "../Tournament.js";
 import { PlayedAs, PlayerType } from "../types/IMatch.js";
 import { getById } from "../utility.js";
 import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -87,7 +88,7 @@ export class GameView extends AbstractView {
   };
 
   unmount(): void {
-    console.log("Cleaning up GameView");
+    viewLogger.debug("Cleaning up GameView");
     this.toggleLangSwitcher();
     setIsAborted(true);
     this.controller.abort();
@@ -119,7 +120,7 @@ export class GameView extends AbstractView {
       router.switchView(view);
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
-      console.error("Error in handleGame():", error);
+      viewLogger.error("Error in handleGame():", error);
     }
   }
 
@@ -128,7 +129,7 @@ export class GameView extends AbstractView {
   }
 
   toggleLangSwitcher() {
-    console.log("Toggled Lang switcher");
+    viewLogger.debug("Toggled Lang switcher");
     const button: HTMLButtonElement = getById("lang-switcher-button");
     button.disabled = !button.disabled;
     button.classList.toggle("hidden");

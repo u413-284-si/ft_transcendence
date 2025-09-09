@@ -34,6 +34,7 @@ import {
   getBySelector
 } from "../utility.js";
 import { Header2 } from "../components/Header2.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class SettingsView extends AbstractView {
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
@@ -389,7 +390,7 @@ export default class SettingsView extends AbstractView {
       getDataOrThrow(await patchUser(updatedUser));
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
     } catch (err) {
-      console.error("Failed to update preferred language:", err);
+      viewLogger.error("Failed to update preferred language:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
     }
   }
@@ -440,7 +441,7 @@ export default class SettingsView extends AbstractView {
       }
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
-      console.error("Error in callTwoFAFormAction():", error);
+      viewLogger.error("Error in callTwoFAFormAction():", error);
     }
   }
 
@@ -491,7 +492,7 @@ export default class SettingsView extends AbstractView {
       if (!this.hasTwoFA()) this.twoFACodeInputEl.focus();
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
-      console.error("Error in displayTwoFASetup():", error);
+      viewLogger.error("Error in displayTwoFASetup():", error);
     }
   }
 
@@ -524,7 +525,7 @@ export default class SettingsView extends AbstractView {
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
-      console.error("Error in removeTwoFA():", error);
+      viewLogger.error("Error in removeTwoFA():", error);
     }
   }
 
@@ -562,7 +563,7 @@ export default class SettingsView extends AbstractView {
       this.twoFABackupCodesModalEl.showModal();
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
-      console.error("Error in generateAndDisplayBackupCodes():", error);
+      viewLogger.error("Error in generateAndDisplayBackupCodes():", error);
     }
   }
 
@@ -652,7 +653,7 @@ export default class SettingsView extends AbstractView {
       auth.logoutOnProfileDeletion();
       toaster.success(i18next.t("toast.profileDeleteSuccess"));
     } catch (err) {
-      console.error("Failed to delete profile:", err);
+      viewLogger.error("Failed to delete profile:", err);
       toaster.error(i18next.t("toast.profileDeleteFailed"));
     }
   }

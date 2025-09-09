@@ -14,6 +14,7 @@ import { Input, addTogglePasswordListener } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class Register extends AbstractView {
   constructor() {
@@ -162,7 +163,7 @@ export default class Register extends AbstractView {
       router.navigate("/login", false);
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
-      console.error("Error in validateAndRegisterUser():", error);
+      viewLogger.error("Error in validateAndRegisterUser():", error);
     }
   }
 }

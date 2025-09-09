@@ -1,3 +1,5 @@
+import { appLogger } from "./logging/config.js";
+
 export function escapeHTML(input: string | undefined | null): string {
   if (input === null || input === undefined) return "";
   return String(input)
@@ -21,7 +23,7 @@ export function getBySelector<T extends HTMLElement>(
 ): T {
   const el = root.querySelector<T>(selector);
   if (!el) {
-    console.error(`Element "${selector}" not found`);
+    appLogger.error(`Element "${selector}" not found`);
     throw new Error(i18next.t("error.unexpected"));
   }
   return el;
@@ -40,7 +42,7 @@ export function getAllBySelector<T extends HTMLElement>(
 ): T[] {
   const elements = root.querySelectorAll<T>(selector);
   if (elements.length === 0 && strict) {
-    console.error(`No elements match selector "${selector}"`);
+    appLogger.error(`No elements match selector "${selector}"`);
     throw new Error(i18next.t("error.unexpected"));
   }
   return Array.from(elements);

@@ -30,6 +30,7 @@ import { Header2 } from "../components/Header2.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { Header3 } from "../components/Header3.js";
+import { viewLogger } from "../logging/config.js";
 
 type RequestListType = "friend" | "incoming" | "outgoing";
 
@@ -258,7 +259,7 @@ export default class FriendsView extends AbstractView {
               toastIcon
             );
           } catch (error) {
-            console.error(error);
+            viewLogger.error(error);
             toaster.error(i18next.t("toast.friendRequestButtonError"));
           }
         },
@@ -417,13 +418,13 @@ export default class FriendsView extends AbstractView {
         this.refreshRequestList("friend");
       }
     } catch (error) {
-      console.error("Failed to send friend request:", error);
+      viewLogger.error("Failed to send friend request:", error);
       toaster.error(i18next.t("toast.userSendRequestFailed"));
     }
   };
 
   unmount(): void {
-    console.log("Cleaning up FriendsView");
+    viewLogger.debug("Cleaning up FriendsView");
     this.controller.abort();
   }
 
@@ -496,7 +497,7 @@ export default class FriendsView extends AbstractView {
         }
       }
     } catch (error) {
-      console.error(error);
+      viewLogger.error(error);
       toaster.error(i18next.t("toast.friendRequestEventError"));
     }
   };

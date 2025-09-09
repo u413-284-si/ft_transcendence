@@ -1,3 +1,4 @@
+import { appLogger } from "./logging/config.js";
 import { Language } from "./types/User";
 
 export function formatDate(
@@ -23,7 +24,7 @@ export function formatDate(
     const formatter = new Intl.DateTimeFormat(lang, options);
     return formatter.format(dateObj);
   } catch (err) {
-    console.warn(
+    appLogger.warn(
       `Intl.DateTimeFormat error with lang "${lang}" → falling back to "en"`,
       err
     );

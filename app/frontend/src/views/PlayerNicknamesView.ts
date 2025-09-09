@@ -20,6 +20,7 @@ import type { PlayerType } from "../types/IMatch.js";
 import { List } from "../components/List.js";
 import { Header2 } from "../components/Header2.js";
 import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -119,7 +120,7 @@ export default class PlayerNicknamesView extends AbstractView {
       router.switchView(matchAnnouncementView);
     } catch (error) {
       toaster.error(i18next.t("toast.somethingWentWrong"));
-      console.error("Error in validateAndStartTournament():", error);
+      viewLogger.error("Error in validateAndStartTournament():", error);
     }
   }
 

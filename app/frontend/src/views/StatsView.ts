@@ -20,6 +20,7 @@ import { MatchesTab } from "./tabs/MatchesTab.js";
 import { TournamentsTab } from "./tabs/TournamentsTab.js";
 import { FriendsTab } from "./tabs/FriendsTab.js";
 import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
@@ -164,7 +165,7 @@ export default class StatsView extends AbstractView {
 
       await this.tabs[tabId].onShow();
     } catch (error) {
-      console.error(`Error while showing tab ${this.currentTabId}`, error);
+      viewLogger.error(`Error while showing tab ${this.currentTabId}`, error);
       toaster.error(i18next.t("toast.tabError"));
     }
   }
@@ -222,7 +223,7 @@ export default class StatsView extends AbstractView {
   }
 
   unmount(): void {
-    console.log("Cleaning up StatsView");
+    viewLogger.debug("Cleaning up StatsView");
     for (const tabId in this.tabs) {
       const tab = this.tabs[tabId];
       if (tab) {

@@ -1,3 +1,4 @@
+import { sseLogger } from "../logging/config.js";
 import { toaster } from "../Toaster.js";
 import {
   FriendRequestEvent,
@@ -20,7 +21,7 @@ export function openSSEConnection() {
   });
 
   eventSource.onopen = () => {
-    console.log("Connected to online status SSE");
+    sseLogger.debug("Connected to server");
     reconnectAttempts = 0;
 
     if (isFirstConnection) {
@@ -31,11 +32,11 @@ export function openSSEConnection() {
   };
 
   eventSource.addEventListener("heartbeatEvent", (event: MessageEvent) => {
-    console.log("SSE message:", event.data);
+    sseLogger.debug("heartbeatEvent:", event.data);
   });
 
   eventSource.addEventListener("profileChangeEvent", (event: MessageEvent) => {
-    console.log("SSE message:", event.data);
+    sseLogger.debug("profileChangeEvent:", event.data);
     try {
       const { update } = JSON.parse(event.data);
       const detail: ProfileChangeEvent["detail"] = {
@@ -45,14 +46,14 @@ export function openSSEConnection() {
         new CustomEvent("app:ProfileChangeEvent", { detail })
       );
     } catch (e) {
-      console.error("Failed to parse SSE message", e);
+      sseLogger.error("Failed to parse message", e);
     }
   });
 
   eventSource.addEventListener(
     "FriendStatusChangeEvent",
     (event: MessageEvent) => {
-      console.log("SSE message:", event.data);
+      sseLogger.debug("FriendStatusChangeEvent:", event.data);
       try {
         const { requestId, username, status } = JSON.parse(event.data);
         const detail: FriendStatusChangeEvent["detail"] = {
@@ -65,13 +66,13 @@ export function openSSEConnection() {
           new CustomEvent("app:FriendStatusChangeEvent", { detail })
         );
       } catch (e) {
-        console.error("Failed to parse SSE message", e);
+        sseLogger.error("Failed to parse SSE message", e);
       }
     }
   );
 
   eventSource.addEventListener("FriendRequestEvent", (event: MessageEvent) => {
-    console.log("📨 SSE message:", event.data);
+    sseLogger.debug("FriendRequestEvent:", event.data);
     try {
       const { requestId, username, status } = JSON.parse(event.data);
       const detail: FriendRequestEvent["detail"] = {
@@ -114,18 +115,18 @@ export function openSSEConnection() {
         new CustomEvent("app:FriendRequestEvent", { detail })
       );
     } catch (e) {
-      console.error("Failed to parse SSE message", e);
+      sseLogger.error("Failed to parse message", e);
     }
   });
 
   eventSource.onerror = (error) => {
-    console.error("SSE error:", error);
+    sseLogger.error("onerror triggered:", error);
     closeSSEConnection();
     const reconnectDelayInS = reconnectDelayInMS / 1000;
 
     if (reconnectAttempts < maxReconnectAttempts) {
       reconnectAttempts++;
-      console.log(
+      sseLogger.debug(
         `Reconnecting in ${reconnectDelayInS} seconds... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`
       );
       toaster.warn(
@@ -140,7 +141,7 @@ export function openSSEConnection() {
         openSSEConnection();
       }, reconnectDelayInMS);
     } else {
-      console.error("Max reconnect attempts reached. Not trying again.");
+      sseLogger.error("Max reconnect attempts reached. Not trying again.");
       toaster.error(i18next.t("toast.connectionUnavailable"));
     }
   };
@@ -150,7 +151,7 @@ export function closeSSEConnection(resetFirstConnection = false) {
   if (eventSource) {
     eventSource.close();
     eventSource = null;
-    console.log("Disconnected from online status SSE");
+    sseLogger.debug("Disconnected from server");
   }
   if (reconnectTimeoutID) {
     clearTimeout(reconnectTimeoutID);
@@ -158,6 +159,6 @@ export function closeSSEConnection(resetFirstConnection = false) {
   }
   if (resetFirstConnection) {
     isFirstConnection = true;
-    console.log("isFirstConnection has been reset");
+    sseLogger.debug("isFirstConnection has been reset");
   }
 }

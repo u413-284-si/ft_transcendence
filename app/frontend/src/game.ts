@@ -9,6 +9,7 @@ import { PlayedAs, PlayerType } from "./types/IMatch.js";
 import { getDataOrThrow } from "./services/api.js";
 import { tryCreateAIPlayer } from "./AIPlayer.js";
 import { getById } from "./utility.js";
+import { gameLogger } from "./logging/config.js";
 
 let isAborted: boolean = false;
 
@@ -118,19 +119,19 @@ function runGameLoop(
 
       let frameTime = (currentTimestamp - lastTimestamp) / 1000;
       if (frameTime <= 0) {
-        console.log("Frametime is 0 - skipping");
+        gameLogger.debug("Frametime is 0 - skipping");
         requestAnimationFrame(gameLoop);
         return;
       }
       if (frameTime > 0.25) {
-        console.log("Frametime too high - clamp to 0.25");
+        gameLogger.debug("Frametime too high - clamp to 0.25");
         frameTime = 0.25;
       }
       lastTimestamp = currentTimestamp;
       accumulator += frameTime;
 
       const fps = calculateFPS(frameTime);
-      console.log(`FPS: ${fps}`);
+      gameLogger.debug(`FPS: ${fps}`);
 
       while (accumulator >= step) {
         snapshot = makeSnapshot(gameState);

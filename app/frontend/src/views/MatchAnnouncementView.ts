@@ -18,6 +18,7 @@ import ResultsView from "./ResultsView.js";
 import { formatPlayerName } from "../components/NicknameInput.js";
 import { GameView } from "./GameView.js";
 import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -147,7 +148,7 @@ export default class MatchAnnouncementView extends AbstractView {
   }
 
   private callGameView() {
-    console.log(
+    viewLogger.debug(
       `Match ${this.matchNumber} started: ${this.player1} vs ${this.player2}`
     );
 
@@ -171,7 +172,7 @@ export default class MatchAnnouncementView extends AbstractView {
       router.reload();
     } catch (error) {
       toaster.error(i18next.t("toast.tournamentAbortFailed"));
-      console.error("Error in abortTournament():", error);
+      viewLogger.error("Error in abortTournament():", error);
     }
   }
 
