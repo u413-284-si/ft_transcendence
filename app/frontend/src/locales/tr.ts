@@ -67,6 +67,7 @@ const tr: TranslationShape = {
       logout: "Log off",
       lost: "Disconnected",
       match: "Session {{matchId}}",
+      matchWinner: "Session {{matchId}} survivor",
       offline: "Offline",
       online: "Online",
       password: "Access code",
@@ -80,7 +81,6 @@ const tr: TranslationShape = {
       username: "User ID",
       userNotFound: "User node not found.",
       welcome: "WELCOME",
-      winnerMatch: "Winning session {{matchId}}",
       won: "VICTORY"
     },
 
