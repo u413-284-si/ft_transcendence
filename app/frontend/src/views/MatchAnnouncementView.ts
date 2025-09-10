@@ -131,7 +131,7 @@ export default class MatchAnnouncementView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     const startMatchBtn = getById("start-match-btn");
     startMatchBtn.addEventListener("click", () => this.callGameView());
     const abortTournamentBtn = getById("abort-tournament-btn");
@@ -140,11 +140,6 @@ export default class MatchAnnouncementView extends AbstractView {
       const button = getById("skip-match");
       button.addEventListener("click", () => this.handleSkipButton());
     }
-  }
-
-  async render() {
-    this.updateHTML();
-    this.addListeners();
   }
 
   private callGameView() {

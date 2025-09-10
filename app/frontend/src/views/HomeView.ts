@@ -86,10 +86,6 @@ export default class HomeView extends AbstractView {
     `;
   }
 
-  async render() {
-    this.updateHTML();
-  }
-
   getName(): string {
     return i18next.t("homeView.title");
   }

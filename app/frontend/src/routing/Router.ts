@@ -141,7 +141,6 @@ export class Router {
       return;
     }
     try {
-      this.currentView.unmount?.();
       await this.currentView.render();
       this.currentView.setTitle();
       this.notifyRouteChange("view");
@@ -231,7 +230,7 @@ export class Router {
       this.currentView.unmount?.();
     }
     this.currentView = view;
-    await view.render();
+    await view.mount();
   }
 
   getCurrentView(): AbstractView | null {

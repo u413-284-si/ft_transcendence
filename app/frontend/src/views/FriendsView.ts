@@ -47,10 +47,9 @@ export default class FriendsView extends AbstractView {
     return i18next.t("friendsView.title");
   }
 
-  async render(): Promise<void> {
+  override async mount(): Promise<void> {
     this.friendRequests = getDataOrThrow(await getUserFriendRequests());
-    this.updateHTML();
-    this.addListeners();
+    super.render();
   }
 
   private refreshRequestList(type: RequestListType): void {
@@ -196,7 +195,7 @@ export default class FriendsView extends AbstractView {
   `;
   }
 
-  protected addListeners(): void {
+  protected override addListeners(): void {
     window.addEventListener(
       "app:FriendStatusChangeEvent",
       this.handleFriendStatusChange,

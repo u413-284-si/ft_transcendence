@@ -85,14 +85,12 @@ export default class ResultsView extends AbstractView {
     `;
   }
 
-  protected addListeners(): void {
+  protected override addListeners(): void {
     this.finishButton.addEventListener("click", () => this.setFinished());
   }
 
-  async render() {
-    this.updateHTML();
+  protected override cacheNodes(): void {
     this.finishButton = getById("finish-btn");
-    this.addListeners();
   }
 
   private async setFinished() {
