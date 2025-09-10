@@ -188,8 +188,12 @@ export class Tournament {
     for (const { round, matches } of layout.rounds) {
       const roundSpacing = this.getRoundSpacing(round);
 
+      const isCurrentRound = matches.some((m) => m.isNext);
+
+      const roundWidth = isCurrentRound ? "min-w-sm max-w-md" : "w-sm";
+
       html += `
-      <div class="flex-1 flex flex-col">
+      <div class="flex flex-col ${roundWidth}">
         <h3 class="text-center font-extrabold tracking-widest text-neon-cyan border-b-2 border-neon-cyan pb-2 mb-6 uppercase text-base md:text-lg">
           ${i18next.t("global.round", { round: round })}
         </h3>
@@ -204,30 +208,32 @@ export class Tournament {
             ? "bg-black ring-2 ring-neon-cyan"
             : "bg-emerald-light";
 
-        const borderGlow = match.isNext ? "shadow-neon-cyan" : "shadow-inner";
+        const borderGlow = match.isNext
+          ? "shadow-neon-cyan animate-glow-border-cyan"
+          : "shadow-inner";
 
         const textColor = match.isPlayed ? "text-teal" : "text-neon-cyan";
 
         html += `
-        <div class="${cardBg} ${textColor} p-4 rounded-lg ${borderGlow} text-xs md:text-sm transition-all duration-300 ease-in-out">
+        <div class="${cardBg} ${textColor} p-4 rounded-lg ${borderGlow} text-sm">
           <h4 class="font-bold text-center text-sm md:text-base mb-3 uppercase tracking-wide">${i18next.t("global.match", { matchId: match.matchId })}</h4>
-          <div class="flex justify-center items-center gap-3 md:gap-4 text-sm md:text-base font-semibold">
+          <div class="flex justify-center items-center gap-2 text-md font-semibold w-full">
 
             <!-- Player 1 -->
-            <div class="flex items-center gap-2 w-[150px]">
+            <div class="flex items-center gap-2 justify-center flex-1 min-w-0">
               ${match.winner === match.player1Text ? "🏆" : ""}
-              <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis w-full" title="${match.player1Text}">
+              <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis" title="${match.player1Text}">
                 ${match.player1Text}
               </span>
             </div>
 
             <!-- Separator -->
-            <span class="font-light">VS</span>
+            <span class="font-light px-2">VS</span>
 
             <!-- Player 2 -->
-            <div class="flex items-center gap-2 w-[150px]">
+            <div class="flex items-center gap-2 justify-center flex-1 min-w-0">
               ${match.winner === match.player2Text ? "🏆" : ""}
-              <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis w-full" title="${match.player2Text}">
+              <span class="truncate block overflow-hidden whitespace-nowrap text-ellipsis" title="${match.player2Text}">
                 ${match.player2Text}
               </span>
             </div>
