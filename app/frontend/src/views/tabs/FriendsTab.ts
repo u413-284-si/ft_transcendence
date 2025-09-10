@@ -72,12 +72,12 @@ export class FriendsTab extends AbstractTab {
 
   override async onShow(): Promise<void> {
     await super.onShow();
+    this.renderFriendSelector(this.dashboard!.matchStats);
   }
 
   async initData(): Promise<void> {
     this.dashboard = getDataOrThrow(await getUserDashboardFriends());
     this.populateChartOptions();
-    this.renderFriendSelector(this.dashboard!.matchStats);
   }
 
   override onHide(): void {
@@ -105,6 +105,8 @@ export class FriendsTab extends AbstractTab {
       return;
     }
     const container = getById<HTMLDivElement>("friend-selector");
+    container.innerHTML = "";
+
     const selectedFriends = this.friendManager.getSelectedFriends();
 
     friends.forEach((friend) => {
