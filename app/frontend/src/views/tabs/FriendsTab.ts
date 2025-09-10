@@ -5,7 +5,7 @@ import { buildFriendsWinRateOptions } from "../../charts/friendsWinRateOptions.j
 import { buildFriendsWinstreakOptions } from "../../charts/friendsWinStreakOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
-import { appLogger } from "../../logging/config.js";
+import { viewLogger } from "../../logging/config.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserDashboardFriends } from "../../services/userStatsServices.js";
 import { toaster } from "../../Toaster.js";
@@ -101,7 +101,7 @@ export class FriendsTab extends AbstractTab {
 
   renderFriendSelector(friends: FriendStatsSeries) {
     if (!friends || friends.length === 0) {
-      appLogger.warn("No friends to display");
+      viewLogger.warn("No friends to display");
       return;
     }
     const container = getById<HTMLDivElement>("friend-selector");
