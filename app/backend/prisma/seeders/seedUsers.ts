@@ -12,7 +12,7 @@ export async function seedUsers(count = 10) {
 
   const adminUsername = "admin";
   const adminEmail = "admin@example.com";
-  const adminPassword = await createHash("123");
+  const adminPassword = await createHash("1234567890?As");
   const authProvider = "LOCAL";
 
   const adminUser: User = await createUser(
