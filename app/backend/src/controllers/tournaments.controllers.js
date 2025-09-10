@@ -4,7 +4,7 @@ import {
   getUserTournaments
 } from "../services/tournaments.services.js";
 import { createResponseMessage } from "../utils/response.js";
-import { httpError } from "../utils/error.js";
+import { HttpError } from "../utils/error.js";
 import {
   transactionTournament,
   transactionUpdateBracket
@@ -18,28 +18,13 @@ export async function createTournamentHandler(request, reply) {
     request.body;
 
   if (nicknames.length !== maxPlayers || playerTypes.length !== maxPlayers) {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "Nicknames and playertypes must match maxPlayers"
-    );
+    throw new HttpError(400, "Nicknames and playertypes must match maxPlayers");
   }
   if (!nicknames.includes(userNickname)) {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "Nicknames must contain userNickname."
-    );
+    throw new HttpError(400, "Nicknames must contain userNickname.");
   }
   if (playerTypes[nicknames.indexOf(userNickname)] !== "HUMAN") {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "Player type for user must be HUMAN."
-    );
+    throw new HttpError(400, "Player type for user must be HUMAN.");
   }
 
   const data = await transactionTournament(
@@ -77,23 +62,13 @@ export async function patchTournamentMatchHandler(request, reply) {
     tournamentId
   });
   if (tournaments.length === 0) {
-    return httpError(
-      reply,
-      404,
-      createResponseMessage(request.action, false),
-      "No record was found for an update."
-    );
+    throw new HttpError(404, "No record was found for an update.");
   }
   const tournament = tournaments[0];
 
   const bracketMatch = await getBracketMatch(tournamentId, matchNumber);
   if (bracketMatch.winner) {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "This bracket match already has a winner."
-    );
+    throw new HttpError(400, "This bracket match already has a winner.");
   }
 
   if (player1Score > player2Score) {
@@ -101,12 +76,7 @@ export async function patchTournamentMatchHandler(request, reply) {
   } else if (player2Score > player1Score) {
     bracketMatch.winner = bracketMatch.player2Nickname;
   } else {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "Match cannot end in a draw"
-    );
+    throw new HttpError(400, "Match cannot end in a draw");
   }
 
   const playedAs =

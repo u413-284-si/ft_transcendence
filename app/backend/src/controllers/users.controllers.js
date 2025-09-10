@@ -20,7 +20,7 @@ import {
   getUserTournaments,
   getUserTournamentsCount
 } from "../services/tournaments.services.js";
-import { httpError } from "../utils/error.js";
+import { HttpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import {
   createHash,
@@ -58,12 +58,7 @@ export async function patchUserHandler(request, reply) {
   const userId = request.user.id;
 
   if (request.body.email && (await getUserAuthProvider(userId)) !== "LOCAL") {
-    return httpError(
-      reply,
-      403,
-      createResponseMessage(request.action, false),
-      "Email can not be changed. User uses Google auth provider"
-    );
+    throw new HttpError(403, "Can't change email: non-local auth provider");
   }
 
   const data = await updateUser(userId, request.body);
@@ -156,22 +151,12 @@ export async function createUserAvatarHandler(request, reply) {
   }
 
   if (!avatar) {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "Avatar file missing"
-    );
+    throw new HttpError(400, "Avatar file missing");
   }
 
   const fileBuffer = await avatar.toBuffer();
   if (!fileBuffer || fileBuffer.length === 0) {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "Avatar file is empty"
-    );
+    throw new HttpError(400, "Avatar file is empty");
   }
 
   const fileType = await validateImageFile(fileBuffer);
@@ -196,12 +181,7 @@ export async function deleteUserAvatarHandler(request, reply) {
   const userId = request.user.id;
   const currentAvatarUrl = await getUserAvatar(userId);
   if (!currentAvatarUrl) {
-    return httpError(
-      reply,
-      404,
-      createResponseMessage(request.action, false),
-      "No avatar found for user"
-    );
+    throw new HttpError(404, "No avatar found for user");
   }
   await deleteUserAvatar(currentAvatarUrl);
 
@@ -235,24 +215,14 @@ export async function updateUserPasswordHandler(request, reply) {
   const userId = request.user.id;
 
   if ((await getUserAuthProvider(userId)) !== "LOCAL") {
-    return httpError(
-      reply,
-      403,
-      createResponseMessage(request.action, false),
-      "Password can not be changed. User uses Google auth provider"
-    );
+    throw new HttpError(403, "Can't change password: non-local auth provider");
   }
 
   const { currentPassword, newPassword } = request.body;
 
   const hashedPassword = await getPasswordHash(userId);
   if (!(await verifyHash(hashedPassword, currentPassword))) {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "Current password is incorrect"
-    );
+    throw new HttpError(400, "Current password is incorrect");
   }
 
   // Hash the new password
