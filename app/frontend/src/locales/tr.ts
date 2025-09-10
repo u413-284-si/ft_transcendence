@@ -343,6 +343,8 @@ const tr: TranslationShape = {
         "<strong>{{username}}</strong> withdrew link request",
       friendSentFriendRequest:
         "<strong>{{username}}</strong> sent link request",
+      gameSaveSuccess: "Game successfully stored in system.",
+      gameSaveFailed: "System failed to store the game.",
       invalidToken: "Token invalid",
       invalidUsernameOrPW: "Invalid User ID or access code",
       loginError: "Login failed. Reattempt required.",

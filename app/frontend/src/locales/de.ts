@@ -357,6 +357,8 @@ const de: TranslationShape = {
         "<strong>{{username}}</strong> hat seine Anfrage zurückgezogen",
       friendSentFriendRequest:
         "<strong>{{username}}</strong> hat dir eine Freundschaftsanfrage gesendet",
+      gameSaveSuccess: "Spiel erfolgreich gespeichert",
+      gameSaveFailed: "Spiel konnte nicht gespeichert werden",
       invalidToken: "Token nicht valide",
       invalidUsernameOrPW: "Ungültiger Benutzername oder Passwort",
       loginError: "Fehler beim Anmelden. Bitte versuche es erneut",

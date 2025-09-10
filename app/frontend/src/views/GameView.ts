@@ -7,7 +7,6 @@ import NewGameView from "./NewGameView.js";
 import { Tournament } from "../Tournament.js";
 import { PlayedAs, PlayerType } from "../types/IMatch.js";
 import { getById } from "../utility.js";
-import { toaster } from "../Toaster.js";
 import { viewLogger } from "../logging/config.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
@@ -94,33 +93,29 @@ export class GameView extends AbstractView {
   }
 
   async handleGame(): Promise<void> {
-    try {
-      await startGame(
-        this.nickname1,
-        this.nickname2,
-        this.type1,
-        this.type2,
-        this.userRole,
-        this.tournament,
-        this.keys
-      );
-      if (getIsAborted()) return;
+    await startGame(
+      this.nickname1,
+      this.nickname2,
+      this.type1,
+      this.type2,
+      this.userRole,
+      this.tournament,
+      this.keys
+    );
+    if (getIsAborted()) return;
 
-      let view;
-      if (!this.tournament) {
-        view = new NewGameView();
+    let view;
+    if (!this.tournament) {
+      view = new NewGameView();
+    } else {
+      if (this.tournament.getNextMatchToPlay()) {
+        view = new MatchAnnouncement(this.tournament);
       } else {
-        if (this.tournament.getNextMatchToPlay()) {
-          view = new MatchAnnouncement(this.tournament);
-        } else {
-          view = new ResultsView(this.tournament);
-        }
+        view = new ResultsView(this.tournament);
       }
-      router.switchView(view);
-    } catch (error) {
-      toaster.error(i18next.t("toast.somethingWentWrong"));
-      viewLogger.error("Error in handleGame():", error);
     }
+
+    this.addEnterListenerForNavigation(view);
   }
 
   getName(): string {
@@ -132,5 +127,17 @@ export class GameView extends AbstractView {
     const button: HTMLButtonElement = getById("lang-switcher-button");
     button.disabled = !button.disabled;
     button.classList.toggle("hidden");
+  }
+
+  private addEnterListenerForNavigation(viewToSwitch: AbstractView) {
+    const onEnter = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        router.switchView(viewToSwitch);
+      }
+    };
+
+    document.addEventListener("keydown", onEnter, {
+      signal: this.controller.signal
+    });
   }
 }

@@ -342,6 +342,8 @@ const fr: TranslationShape = {
         "<strong>{{username}}</strong> a annulé sa demande d'ami",
       friendSentFriendRequest:
         "<strong>{{username}}</strong> vous a envoyé une demande d'ami",
+      gameSaveSuccess: "Jeu enregistré avec succès",
+      gameSaveFailed: "Impossible d'enregistrer le jeu",
       invalidToken: "Token non valide",
       invalidUsernameOrPW: "Nom d'utilisateur ou mot de passe invalide",
       loginError: "Erreur lors de la connexion. Veuillez réessayer.",

@@ -10,6 +10,7 @@ import { getDataOrThrow } from "./services/api.js";
 import { tryCreateAIPlayer } from "./AIPlayer.js";
 import { getById } from "./utility.js";
 import { gameLogger } from "./logging/config.js";
+import { toaster } from "./Toaster.js";
 
 let isAborted: boolean = false;
 
@@ -219,48 +220,40 @@ async function endGame(
   tournament: Tournament | null,
   userRole: PlayedAs
 ) {
-  if (tournament) {
-    const matchNumber = tournament.getNextMatchToPlay()!.matchNumber;
-    const winner =
-      gameState.player1Score > gameState.player2Score
-        ? gameState.player1
-        : gameState.player2;
-    tournament.updateBracketWithResult(matchNumber, winner);
-    getDataOrThrow(
-      await updateTournamentBracket({
-        tournamentId: tournament.getId(),
-        matchNumber,
-        player1Score: gameState.player1Score,
-        player2Score: gameState.player2Score
-      })
-    );
-  } else {
-    getDataOrThrow(
-      await createMatch({
-        playedAs: userRole,
-        player1Nickname: gameState.player1,
-        player2Nickname: gameState.player2,
-        player1Score: gameState.player1Score,
-        player2Score: gameState.player2Score,
-        player1Type: gameState.type1,
-        player2Type: gameState.type2
-      })
-    );
-  }
-
-  await waitForEnterKey();
-}
-
-function waitForEnterKey(): Promise<void> {
-  return new Promise((resolve) => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Enter") {
-        document.removeEventListener("keydown", onKeyDown);
-        resolve();
-      }
+  try {
+    if (tournament) {
+      const matchNumber = tournament.getNextMatchToPlay()!.matchNumber;
+      const winner =
+        gameState.player1Score > gameState.player2Score
+          ? gameState.player1
+          : gameState.player2;
+      tournament.updateBracketWithResult(matchNumber, winner);
+      getDataOrThrow(
+        await updateTournamentBracket({
+          tournamentId: tournament.getId(),
+          matchNumber,
+          player1Score: gameState.player1Score,
+          player2Score: gameState.player2Score
+        })
+      );
+    } else {
+      getDataOrThrow(
+        await createMatch({
+          playedAs: userRole,
+          player1Nickname: gameState.player1,
+          player2Nickname: gameState.player2,
+          player1Score: gameState.player1Score,
+          player2Score: gameState.player2Score,
+          player1Type: gameState.type1,
+          player2Type: gameState.type2
+        })
+      );
     }
-    document.addEventListener("keydown", onKeyDown);
-  });
+    toaster.success(i18next.t("toast.gameSaveSuccess"));
+  } catch (error) {
+    toaster.error(i18next.t("toast.gameSaveFailed"));
+    gameLogger.error("Error in handleGame():", error);
+  }
 }
 
 function handlePaddleCollision(
