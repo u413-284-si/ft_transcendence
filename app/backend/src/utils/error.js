@@ -26,7 +26,7 @@ export function handleError(err, request, reply) {
     error: err
   });
   let code = 500;
-  let cause = "Internal Server Error";
+  let cause = err.message || "Internal Server Error";
   if (reply.raw.headersSent) {
     reply.raw.end();
     return;
@@ -35,16 +35,13 @@ export function handleError(err, request, reply) {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     code = convertPrismaError(err.code);
     cause = err.meta.cause;
-  } else if (err.statusCode && err.statusCode === 429) {
-    code = 429;
-    cause = err.message;
+  } else if (err.statusCode) {
+    code = err.statusCode;
   } else if (err.code && err.code.startsWith("FST_JWT")) {
     code = err.statusCode;
-    cause = err.message;
   } else if (err.validation) {
     request.action = `Validation error in context ${err.validationContext}`;
     code = err.statusCode;
-    cause = err.message;
   }
   return httpError(
     reply,
