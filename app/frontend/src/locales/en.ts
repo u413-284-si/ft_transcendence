@@ -341,6 +341,8 @@ const en = {
         "<strong>{{username}}</strong> rescinded the friend request",
       friendSentFriendRequest:
         "<strong>{{username}}</strong> sent you a friend request",
+      gameSaveSuccess: "Game saved successfully",
+      gameSaveFailed: "Could not save game",
       invalidToken: "Token invalid",
       invalidUsernameOrPW: "Invalid username or password",
       loginError: "Error logging in. Please try again.",

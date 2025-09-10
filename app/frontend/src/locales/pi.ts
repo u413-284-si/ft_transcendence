@@ -347,6 +347,8 @@ const pi: TranslationShape = {
       friendRescindedFriendRequest:
         "<strong>{{username}}</strong> withdrew parley request",
       friendSentFriendRequest: "<strong>{{username}}</strong> wants a parley",
+      gameSaveSuccess: "Game be stashed safe, arrr!",
+      gameSaveFailed: "Couldn't stash the game, ye scallywag!",
       invalidToken: "Yer token be counterfeit!",
       invalidUsernameOrPW: "Yer name or code be wrong, matey!",
       loginError: "Couldn't board ship - try again!",
