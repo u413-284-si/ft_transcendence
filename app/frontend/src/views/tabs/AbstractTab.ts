@@ -1,5 +1,5 @@
 import { renderChart } from "../../charts/chartUtils.js";
-import { appLogger } from "../../logging/config.js";
+import { viewLogger } from "../../logging/config.js";
 import { toaster } from "../../Toaster.js";
 
 export abstract class AbstractTab {
@@ -21,7 +21,7 @@ export abstract class AbstractTab {
       try {
         this.charts[chartId].updateOptions(this.chartOptions[chartId]);
       } catch (error) {
-        appLogger.error(`Chart ${chartId} failed to update`, error);
+        viewLogger.error(`Chart ${chartId} failed to update`, error);
         toaster.error(i18next.t("toast.chartError"));
       }
     }
@@ -39,7 +39,7 @@ export abstract class AbstractTab {
           try {
             this.charts[chartId] = await renderChart(chartId, options);
           } catch (error) {
-            appLogger.error(`Chart ${chartId} failed to initialize`, error);
+            viewLogger.error(`Chart ${chartId} failed to initialize`, error);
             toaster.error(i18next.t("toast.chartError"));
           }
         }
@@ -66,7 +66,7 @@ export abstract class AbstractTab {
         try {
           chart.destroy();
         } catch (error) {
-          appLogger.error(`Chart ${chartId} failed to destroy`, error);
+          viewLogger.error(`Chart ${chartId} failed to destroy`, error);
           toaster.error(i18next.t("toast.chartError"));
         }
       }
