@@ -137,7 +137,7 @@ export class Tournament {
         let player1Text =
           match.player1Nickname ??
           (matchSlots?.slot1
-            ? i18next.t("global.winnerMatch", {
+            ? i18next.t("global.matchWinner", {
                 matchId: matchSlots.slot1.matchNumber
               })
             : i18next.t("global.toBeDefined"));
@@ -145,7 +145,7 @@ export class Tournament {
         let player2Text =
           match.player2Nickname ??
           (matchSlots?.slot2
-            ? i18next.t("global.winnerMatch", {
+            ? i18next.t("global.matchWinner", {
                 matchId: matchSlots.slot2.matchNumber
               })
             : i18next.t("global.toBeDefined"));

@@ -69,6 +69,7 @@ const pi: TranslationShape = {
       logout: "Abandon Ship",
       lost: "Overboard!",
       match: "Battle {{matchId}}",
+      matchWinner: "Skirmish {{matchId}} plunderer",
       offline: "Adrift",
       online: "Ahoy!",
       password: "Secret Code",
@@ -82,7 +83,6 @@ const pi: TranslationShape = {
       username: "Pirate Name",
       userNotFound: "No such matey found.",
       welcome: "Ahoy there!",
-      winnerMatch: "Victor o’ match {{matchId}}",
       won: "Victory!"
     },
 

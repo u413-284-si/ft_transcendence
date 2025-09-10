@@ -66,6 +66,7 @@ const en = {
       logout: "Logout",
       lost: "Lost",
       match: "Match {{matchId}}",
+      matchWinner: "Match {{matchId}} winner",
       offline: "Offline",
       online: "Online",
       password: "Password",
@@ -79,7 +80,6 @@ const en = {
       username: "Username",
       userNotFound: "User not found.",
       welcome: "Welcome",
-      winnerMatch: "Winning match {{matchId}}",
       won: "Won"
     },
 

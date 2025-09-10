@@ -64,6 +64,7 @@ const fr: TranslationShape = {
       logout: "Déconnexion",
       lost: "Perdu",
       match: "Match {{matchId}}",
+      matchWinner: "Match {{matchId}} gagnant",
       offline: "Hors ligne",
       online: "En ligne",
       password: "Mot de passe",
@@ -77,7 +78,6 @@ const fr: TranslationShape = {
       username: "Nom d’utilisateur",
       userNotFound: "Utilisateur non trouvé.",
       welcome: "Bienvenue",
-      winnerMatch: "Match gagnant {{matchId}}",
       won: "Gagné"
     },
 
