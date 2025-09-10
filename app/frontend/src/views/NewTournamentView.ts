@@ -30,6 +30,28 @@ export default class NewTournamentView extends AbstractView {
     this.setTitle();
   }
 
+  override async mount(): Promise<void> {
+    const tournamentsPage = getDataOrThrow(
+      await getUserTournaments({
+        username: auth.getUser().username,
+        isFinished: false
+      })
+    );
+    if (tournamentsPage.items.length === 0) {
+      viewLogger.debug("No active tournament found");
+      super.render();
+      return;
+    }
+    const activeTournament = tournamentsPage.items[0];
+    const tournament = new Tournament(activeTournament);
+    if (tournament.getNextMatchToPlay()) {
+      router.switchView(new MatchAnnouncement(tournament));
+    } else {
+      router.switchView(new ResultsView(tournament));
+    }
+    return;
+  }
+
   createHTML() {
     return /* HTML */ `
       ${Form({
@@ -92,34 +114,14 @@ export default class NewTournamentView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndRequestNicknames(event)
     );
   }
 
-  async render() {
-    const tournamentsPage = getDataOrThrow(
-      await getUserTournaments({
-        username: auth.getUser().username,
-        isFinished: false
-      })
-    );
-    if (tournamentsPage.items.length === 0) {
-      viewLogger.debug("No active tournament found");
-      this.updateHTML();
-      this.formEl = getById("tournament-form");
-      this.addListeners();
-      return;
-    }
-    const activeTournament = tournamentsPage.items[0];
-    const tournament = new Tournament(activeTournament);
-    if (tournament.getNextMatchToPlay()) {
-      router.switchView(new MatchAnnouncement(tournament));
-    } else {
-      router.switchView(new ResultsView(tournament));
-    }
-    return;
+  protected override cacheNodes(): void {
+    this.formEl = getById("tournament-form");
   }
 
   async validateAndRequestNicknames(event: Event) {

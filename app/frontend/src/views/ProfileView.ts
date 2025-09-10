@@ -202,7 +202,7 @@ export default class ProfileView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     this.profileFormEl.addEventListener("submit", (event) =>
       this.validateUserDataAndUpdate(event)
     );
@@ -226,8 +226,7 @@ export default class ProfileView extends AbstractView {
     }
   }
 
-  async render(): Promise<void> {
-    this.updateHTML();
+  protected override cacheNodes(): void {
     this.avatarFormEl = getById("avatar-upload-form");
     this.profileFormEl = getById("profile-form");
     if (this.hasLocalAuth) {
@@ -236,7 +235,6 @@ export default class ProfileView extends AbstractView {
     this.avatarInputEl = getById("avatar-input");
     this.fileLabelEl = getById("avatar-input-file-label");
     this.deleteAvatarBtn = getById("delete-avatar");
-    this.addListeners();
   }
 
   private async validateUserDataAndUpdate(event: Event) {

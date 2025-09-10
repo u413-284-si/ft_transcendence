@@ -84,7 +84,7 @@ export default class Register extends AbstractView {
     `;
   }
 
-  protected addListeners(): void {
+  protected override addListeners(): void {
     document
       .getElementById("register-form")
       ?.addEventListener("submit", (event) =>
@@ -93,11 +93,6 @@ export default class Register extends AbstractView {
 
     addTogglePasswordListener("password");
     addTogglePasswordListener("confirm");
-  }
-
-  async render() {
-    this.updateHTML();
-    this.addListeners();
   }
 
   getName(): string {

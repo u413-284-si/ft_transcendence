@@ -261,7 +261,7 @@ export default class SettingsView extends AbstractView {
     `;
   }
 
-  protected addListeners(): void {
+  protected override addListeners(): void {
     if (this.hasLocalAuth) {
       this.twoFASetupButtonEl.addEventListener("click", () =>
         this.displayTwoFAPasswordModal("setup")
@@ -353,15 +353,12 @@ export default class SettingsView extends AbstractView {
     }
   }
 
-  async render(): Promise<void> {
-    this.updateHTML();
+  protected override cacheNodes(): void {
     this.preferredLanguageFormEl = getById("preferred-language-form");
     this.preferredLanguageButtonEl = getById("preferred-language-button");
     this.preferredLanguageOptionsEl = getById("preferred-language-options");
     if (this.hasLocalAuth) this.initTwoFAElements();
     this.deleteProfileButtonEl = getById("delete-profile");
-
-    this.addListeners();
   }
 
   private onDocumentClick = (event: MouseEvent) => {

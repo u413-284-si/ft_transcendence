@@ -69,17 +69,15 @@ export default class PlayerNicknamesView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartTournament(event)
     );
     initNicknameInputListeners();
   }
 
-  async render() {
-    this.updateHTML();
+  protected override cacheNodes(): void {
     this.formEl = getById("player-nicknames-form");
-    this.addListeners();
   }
 
   private async validateAndStartTournament(event: Event) {

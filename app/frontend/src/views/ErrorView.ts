@@ -51,16 +51,11 @@ export default class ErrorView extends AbstractView {
     `;
   }
 
-  protected addListeners(): void {
+  protected override addListeners(): void {
     const reloadBtn = getById<HTMLButtonElement>("reload-btn");
     reloadBtn.addEventListener("click", () => {
       router.reload();
     });
-  }
-
-  async render() {
-    this.updateHTML();
-    this.addListeners();
   }
 
   getName(): string {

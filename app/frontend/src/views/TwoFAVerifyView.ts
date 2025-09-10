@@ -49,7 +49,7 @@ export default class TwoFAVerifyView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     document
       .getElementById("two-fa-verify-form")
       ?.addEventListener("submit", (event) => this.verifyTwoFA(event));
@@ -58,11 +58,6 @@ export default class TwoFAVerifyView extends AbstractView {
       ?.addEventListener("click", () =>
         router.switchView(new TwoFABackupCodeVerifyView())
       );
-  }
-
-  async render() {
-    this.updateHTML();
-    this.addListeners();
   }
 
   getName(): string {

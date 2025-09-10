@@ -33,6 +33,12 @@ export class GameView extends AbstractView {
     this.setTitle();
   }
 
+  override async mount(): Promise<void> {
+    super.render();
+    this.toggleLangSwitcher();
+    this.handleGame();
+  }
+
   createHTML() {
     return /* HTML */ `
       <canvas
@@ -44,14 +50,7 @@ export class GameView extends AbstractView {
     `;
   }
 
-  async render() {
-    this.updateHTML();
-    this.toggleLangSwitcher();
-    this.addListeners();
-    this.handleGame();
-  }
-
-  protected addListeners() {
+  protected override addListeners() {
     document.addEventListener("keydown", this.onKeyDown, {
       signal: this.controller.signal
     });

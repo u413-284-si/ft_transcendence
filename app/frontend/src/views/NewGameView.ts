@@ -54,17 +54,15 @@ export default class NewGameView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartGame(event)
     );
     initNicknameInputListeners();
   }
 
-  async render() {
-    this.updateHTML();
+  protected override cacheNodes(): void {
     this.formEl = getById("register-form");
-    this.addListeners();
   }
 
   validateAndStartGame(event: Event) {
