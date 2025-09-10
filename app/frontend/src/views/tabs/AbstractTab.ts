@@ -11,11 +11,11 @@ export abstract class AbstractTab {
   abstract getHTML(): string;
 
   async onShow(): Promise<void> {
+    await this.initCharts();
+
     if (!this.isInit) {
       await this.init();
     }
-
-    await this.initCharts();
 
     for (const chartId in this.chartOptions) {
       try {
@@ -33,19 +33,20 @@ export abstract class AbstractTab {
   }
 
   async initCharts(): Promise<void> {
-    for (const chartId in this.chartBaseOptions) {
-      if (!this.charts[chartId]) {
-        try {
-          this.charts[chartId] = await renderChart(
-            chartId,
-            this.chartBaseOptions[chartId]
-          );
-        } catch (error) {
-          appLogger.error(`Chart ${chartId} failed to initialize`, error);
-          toaster.error(i18next.t("toast.chartError"));
+    const chartPromises = Object.entries(this.chartBaseOptions).map(
+      async ([chartId, options]) => {
+        if (!this.charts[chartId]) {
+          try {
+            this.charts[chartId] = await renderChart(chartId, options);
+          } catch (error) {
+            appLogger.error(`Chart ${chartId} failed to initialize`, error);
+            toaster.error(i18next.t("toast.chartError"));
+          }
         }
       }
-    }
+    );
+
+    await Promise.all(chartPromises);
   }
 
   abstract initData(): Promise<void>;
