@@ -1,7 +1,6 @@
 import { getFriendId } from "../services/friends.services.js";
 import { getTokenData } from "../services/users.services.js";
-import { httpError } from "../utils/error.js";
-import { createResponseMessage } from "../utils/response.js";
+import { HttpError } from "../utils/error.js";
 
 export async function setUserName(request) {
   request.action = "Set username from id";
@@ -11,7 +10,7 @@ export async function setUserName(request) {
   request.user.username = username;
 }
 
-export async function isSelfOrFriend(request, reply) {
+export async function isSelfOrFriend(request) {
   request.action = "Check if self or friend";
   let userId = request.user.id;
   const username = request.user.username;
@@ -19,12 +18,7 @@ export async function isSelfOrFriend(request, reply) {
   if (username !== paramUsername) {
     const friendId = await getFriendId(userId, paramUsername);
     if (!friendId) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(request.action, false),
-        "You need to be friends"
-      );
+      throw new HttpError(401, "You need to be friends");
     }
     userId = friendId;
   }

@@ -1,5 +1,4 @@
-import { createResponseMessage } from "../utils/response.js";
-import { httpError } from "../utils/error.js";
+import { HttpError } from "../utils/error.js";
 import { getUserAuthProvider } from "../services/users.services.js";
 
 export async function authorizeUserAccess(request) {
@@ -12,17 +11,15 @@ export async function authorizeUserTwoFALogin(request) {
   await request.twoFALoginTokenVerify();
 }
 
-export async function ensureLocalAuthProvider(request, reply) {
+export async function ensureLocalAuthProvider(request) {
   request.action = "Ensure local auth provider";
   const userId = request.user.id;
   const provider = await getUserAuthProvider(userId);
 
   if (provider !== "LOCAL") {
-    return httpError(
-      reply,
+    throw new HttpError(
       403,
-      createResponseMessage(request.action, false),
-      `2FA operation can not be performed. User uses ${provider} auth provider`
+      `Operation can not be performed: uses ${provider} auth provider`
     );
   }
 }
