@@ -10,7 +10,7 @@ import { clearInvalid } from "../validate.js";
 export function NicknameInput(players: number, username: string): string {
   let nicknameInputs = "";
   for (let i = 1; i <= players; i++) {
-    const isChecked = i === 1 ? true : false;
+    const isChecked = i === 1;
 
     nicknameInputs += /* HTML */ `
       ${Card({
@@ -67,7 +67,7 @@ export function NicknameInput(players: number, username: string): string {
   return nicknameInputs;
 }
 
-export function initNicknameInputListeners(): void {
+export function initNicknameInputListeners(username: string): void {
   const radios = getAllBySelector<HTMLInputElement>('input[name="userChoice"]');
   const checkboxes = getAllBySelector<HTMLInputElement>(
     'input[type="checkbox"][id^="ai-"]'
@@ -76,10 +76,12 @@ export function initNicknameInputListeners(): void {
     'select[id^="select-ai-strength-"]'
   );
 
+  updateSlotUI(username, 0);
+
   radios.forEach((radio) => {
     radio.addEventListener("change", () => {
       for (let i = 0; i < radios.length; i++) {
-        updateSlotUI(i);
+        updateSlotUI(username, i);
       }
       clearInvalidInputs();
     });
@@ -87,14 +89,14 @@ export function initNicknameInputListeners(): void {
 
   checkboxes.forEach((checkbox, index) => {
     checkbox.addEventListener("change", () => {
-      updateSlotUI(index);
+      updateSlotUI(username, index);
       clearInvalidInputs();
     });
   });
 
   strengthSelects.forEach((select, index) => {
     select.addEventListener("change", () => {
-      updateSlotUI(index);
+      updateSlotUI(username, index);
       clearInvalidInputs();
     });
   });
@@ -110,7 +112,7 @@ function makeAIName(strength: string, slot: number): string {
   return `${baseName}-P${slot}`;
 }
 
-function updateSlotUI(index: number): void {
+function updateSlotUI(username: string, index: number): void {
   const radio = getById<HTMLInputElement>(`choice-${index + 1}`);
   const checkbox = getById<HTMLInputElement>(`ai-${index + 1}`);
   const strengthDiv = getById<HTMLDivElement>(`ai-strength-${index + 1}`);
@@ -124,7 +126,7 @@ function updateSlotUI(index: number): void {
     checkbox.disabled = true;
     strengthDiv.classList.add("hidden");
     nicknameInput.disabled = false;
-    nicknameInput.value = "";
+    nicknameInput.value = username;
   } else {
     checkbox.disabled = false;
 

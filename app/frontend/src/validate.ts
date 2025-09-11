@@ -1,3 +1,4 @@
+import { appLogger } from "./logging/config.js";
 import { getDataOrThrow } from "./services/api.js";
 import { getUserTournaments } from "./services/tournamentService.js";
 import { toaster } from "./Toaster.js";
@@ -120,7 +121,7 @@ export async function isTournamentNameAvailable(
     );
     return false;
   } catch (error) {
-    console.error("Error fetching tournaments:", error);
+    appLogger.error("Error fetching tournaments:", error);
     toaster.error(i18next.t("toast.validateTournamentNameError"));
     return false;
   }

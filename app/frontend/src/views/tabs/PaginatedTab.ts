@@ -3,6 +3,7 @@ import { Paginator } from "../../Paginator.js";
 import { FetchPageResult } from "../../types/FetchPageResult.js";
 import { toaster } from "../../Toaster.js";
 import { getById } from "../../utility.js";
+import { viewLogger } from "../../logging/config.js";
 
 export abstract class PaginatedTab<T> extends AbstractTab {
   protected paginator: Paginator<T>;
@@ -61,7 +62,7 @@ export abstract class PaginatedTab<T> extends AbstractTab {
       this.updateTable(items);
       this.updatePaginationControls();
     } catch (err) {
-      console.error("Failed to load page:", err);
+      viewLogger.error("Failed to load page:", err);
       toaster.error("Failed to fetch data");
     }
   }

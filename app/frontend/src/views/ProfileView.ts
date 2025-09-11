@@ -22,6 +22,7 @@ import { toaster } from "../Toaster.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
 import { TextBox } from "../components/TextBox.js";
 import { Header1 } from "../components/Header1.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class ProfileView extends AbstractView {
   private avatarFormEl!: HTMLFormElement;
@@ -201,7 +202,7 @@ export default class ProfileView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     this.profileFormEl.addEventListener("submit", (event) =>
       this.validateUserDataAndUpdate(event)
     );
@@ -225,15 +226,15 @@ export default class ProfileView extends AbstractView {
     }
   }
 
-  async render(): Promise<void> {
-    this.updateHTML();
+  protected override cacheNodes(): void {
     this.avatarFormEl = getById("avatar-upload-form");
     this.profileFormEl = getById("profile-form");
-    this.passwordFormEl = getById("password-form");
+    if (this.hasLocalAuth) {
+      this.passwordFormEl = getById("password-form");
+    }
     this.avatarInputEl = getById("avatar-input");
     this.fileLabelEl = getById("avatar-input-file-label");
     this.deleteAvatarBtn = getById("delete-avatar");
-    this.addListeners();
   }
 
   private async validateUserDataAndUpdate(event: Event) {
@@ -309,7 +310,7 @@ export default class ProfileView extends AbstractView {
       }
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
     } catch (err) {
-      console.error("Failed to update profile:", err);
+      viewLogger.error("Failed to update profile:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
     }
   }
@@ -328,7 +329,7 @@ export default class ProfileView extends AbstractView {
       getDataOrThrow(await uploadAvatar(formData));
       toaster.success(i18next.t("toast.avatarUploadedSuccess"));
     } catch (err) {
-      console.error("Failed to upload avatar:", err);
+      viewLogger.error("Failed to upload avatar:", err);
       toaster.error(i18next.t("toast.avatarUploadFailed"));
     }
   }
@@ -339,7 +340,7 @@ export default class ProfileView extends AbstractView {
       getDataOrThrow(await deleteUserAvatar());
       toaster.success(i18next.t("toast.avatarDeleteSuccess"));
     } catch (err) {
-      console.error("Failed to delete avatar:", err);
+      viewLogger.error("Failed to delete avatar:", err);
       toaster.error(i18next.t("toast.avatarDeleteFailed"));
     }
   }
@@ -396,7 +397,7 @@ export default class ProfileView extends AbstractView {
       newPasswordEl.value = "";
       confirmPasswordEl.value = "";
     } catch (err) {
-      console.error("Failed to update password:", err);
+      viewLogger.error("Failed to update password:", err);
       toaster.error(i18next.t("toast.passwordUpdateFailed"));
     }
   }

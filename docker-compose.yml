@@ -9,6 +9,7 @@ services:
     environment:
     - NODE_ENV=${NODE_ENV}
     - PORT=${APP_PORT}
+    - DOMAIN_NAME=${DOMAIN_NAME}
     - LOG_LEVEL=${LOG_LEVEL}
     - ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS=${ACCESS_TOKEN_TIME_TO_EXPIRE_IN_MS}
     - REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS=${REFRESH_TOKEN_TIME_TO_EXPIRE_IN_MS}
@@ -25,12 +26,11 @@ services:
     - AUTH_RATE_LIMIT_MAX=${AUTH_RATE_LIMIT_MAX}
     - AUTH_RATE_LIMIT_TIME_IN_MS=${AUTH_RATE_LIMIT_TIME_IN_MS}
     - VAULT_ADDR=${VAULT_ADDR}
-    secrets:
-      - vault_ca
     restart: always
     volumes:
       - db-data:/app/db
       - vault-secrets-app:/app/secrets:ro
+      - images_data:/app/frontend/public/images
     depends_on:
       vault:
         condition: service_healthy
@@ -82,6 +82,9 @@ services:
       - "8200:8200"
     environment:
       - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_CERTS_DIR=${VAULT_CERTS_DIR}
+      - CA_DIR=${CA_DIR}
+      - VAULT_DIR=${VAULT_DIR}
       - VAULT_CACERT=${VAULT_CACERT}
       - SECRETS_DIR=${SECRETS_DIR}
       - VAULT_UNSEAL_DIR=${VAULT_UNSEAL_DIR}
@@ -91,10 +94,6 @@ services:
       - APP_AUTH_DIR=${APP_AUTH_DIR}
       - GOOGLE_OAUTH2_ID=${GOOGLE_OAUTH2_ID}
       - GOOGLE_OAUTH2_SECRET=${GOOGLE_OAUTH2_SECRET}
-    secrets:
-      - vault_cert
-      - vault_key
-      - vault_ca
     configs:
       - source: vault_config
         target: /vault/config/vault.hcl
@@ -113,6 +112,7 @@ services:
       - vault-secrets-auth:/vault/secrets/auth
       - vault-secrets-nginx:/vault/secrets/nginx
       - vault-secrets-app:/vault/secrets/app
+      - vault-secrets-pki:/vault/secrets/pki
     networks:
       - pong-network
     healthcheck:
@@ -126,8 +126,6 @@ services:
     container_name: vault-agent
     environment:
       - VAULT_ADDR=${VAULT_ADDR}
-    secrets:
-      - vault_ca
     configs:
       - source: vault_agent_config
         target: /vault/config/agent.hcl
@@ -164,14 +162,8 @@ volumes:
   vault-secrets-auth:
   vault-secrets-nginx:
   vault-secrets-app:
-
-secrets:
-  vault_cert:
-    file: ./certs/vault-certs/vault.crt
-  vault_key:
-    file: ./certs/vault-certs/vault.key
-  vault_ca:
-    file: ./certs/vault-certs/root-ca.crt
+  vault-secrets-pki:
+  images_data:
 
 configs:
   vault_config:

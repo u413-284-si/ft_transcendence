@@ -62,7 +62,7 @@ export default class LoginView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     document
       .getElementById("login-form")
       ?.addEventListener("submit", (event) => this.validateAndLoginUser(event));
@@ -71,11 +71,6 @@ export default class LoginView extends AbstractView {
     document
       .getElementById("google-login")
       ?.addEventListener("click", () => auth.loginWithGoogle());
-  }
-
-  async render() {
-    this.updateHTML();
-    this.addListeners();
   }
 
   getName(): string {

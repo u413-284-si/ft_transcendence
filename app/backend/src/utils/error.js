@@ -3,8 +3,16 @@ import { convertPrismaError } from "../prisma/prismaError.js";
 import { createResponseMessage } from "../utils/response.js";
 import { Prisma } from "@prisma/client";
 
-export function httpError(reply, code, message, cause) {
-  reply.code(code).send({ message, cause });
+export class HttpError extends Error {
+  constructor(statusCode, message) {
+    super(message);
+    this.name = this.constructor.name;
+    this.statusCode = statusCode;
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+  }
 }
 
 export const errorResponses = {
@@ -17,39 +25,33 @@ export const errorResponses = {
 };
 
 export function handleError(err, request, reply) {
-  request.log.error({
+  request.log.error(err, {
     action: request.action,
     method: request.method,
     url: request.url,
     params: request.params,
-    query: request.query,
-    error: err
+    query: request.query
   });
-  let code = 500;
-  let cause = "Internal Server Error";
+
+  // special case for SSE if headers were already sent
   if (reply.raw.headersSent) {
     reply.raw.end();
     return;
   }
 
+  let code = err.statusCode || 500;
+  let cause = err.message || "Internal Server Error";
+
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     code = convertPrismaError(err.code);
     cause = err.meta.cause;
   } else if (err.statusCode && err.statusCode === 429) {
-    code = 429;
-    cause = err.message;
-  } else if (err.code && err.code.startsWith("FST_JWT")) {
-    code = err.statusCode;
-    cause = err.message;
+    request.action = `Rate limit check`;
   } else if (err.validation) {
     request.action = `Validation error in context ${err.validationContext}`;
-    code = err.statusCode;
-    cause = err.message;
   }
-  return httpError(
-    reply,
-    code,
-    createResponseMessage(request.action, false),
-    cause
-  );
+
+  reply
+    .code(code)
+    .send({ message: createResponseMessage(request.action, false), cause });
 }

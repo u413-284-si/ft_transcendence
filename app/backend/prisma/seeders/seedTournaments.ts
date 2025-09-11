@@ -120,7 +120,6 @@ export async function seedSingleTournament(userId: number, winRate = 0.5) {
           : "NONE";
 
     const hasUserWon = winner === tournamentDTO.userNickname;
-    console.dir(nextMatch);
     await transactionUpdateBracket(
       userId,
       player1Score,

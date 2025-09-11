@@ -70,7 +70,8 @@ export function buildMatchesScoreDiffOptions(
         text: name,
         style: { color: chartColors.white }
       },
-      labels: { style: { colors: chartColors.white } }
+      labels: { style: { colors: chartColors.white } },
+      forceNiceScale: true
     }
   };
   return options;

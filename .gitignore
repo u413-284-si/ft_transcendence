@@ -181,5 +181,5 @@ ext/
 # secret stuff
 secrets/
 
-# SSL Certs
-certs/
+# Prisma migrations
+app/backend/prisma/migrations

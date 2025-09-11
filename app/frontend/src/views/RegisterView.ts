@@ -14,6 +14,7 @@ import { Input, addTogglePasswordListener } from "../components/Input.js";
 import { Button } from "../components/Button.js";
 import { Form } from "../components/Form.js";
 import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class Register extends AbstractView {
   constructor() {
@@ -83,7 +84,7 @@ export default class Register extends AbstractView {
     `;
   }
 
-  protected addListeners(): void {
+  protected override addListeners(): void {
     document
       .getElementById("register-form")
       ?.addEventListener("submit", (event) =>
@@ -92,11 +93,6 @@ export default class Register extends AbstractView {
 
     addTogglePasswordListener("password");
     addTogglePasswordListener("confirm");
-  }
-
-  async render() {
-    this.updateHTML();
-    this.addListeners();
   }
 
   getName(): string {
@@ -161,7 +157,8 @@ export default class Register extends AbstractView {
       );
       router.navigate("/login", false);
     } catch (error) {
-      router.handleError("validateAndRegisterUser()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      viewLogger.error("Error in validateAndRegisterUser():", error);
     }
   }
 }

@@ -1,6 +1,6 @@
 vault {
   address = "https://vault:8200"
-  ca_cert = "/run/secrets/vault_ca"
+  ca_cert = "/vault/secrets/root-ca.crt"
 }
 
 auto_auth {

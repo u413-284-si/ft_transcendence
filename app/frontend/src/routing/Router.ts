@@ -10,6 +10,7 @@ import {
 import ErrorView from "../views/ErrorView.js";
 import { closeSSEConnection } from "../services/serverSentEventsServices.js";
 import { ApiError } from "../services/api.js";
+import { routerLogger } from "../logging/config.js";
 
 export class Router {
   private static instance: Router;
@@ -73,15 +74,17 @@ export class Router {
     try {
       path = this.normalizePath(path);
       if (this.currentPath === path && push) {
-        console.log(`Already on path ${path}`);
+        routerLogger.debug(`Already on path ${path}`);
         return;
       }
 
-      console.log(`Try to navigate to ${path} from ${this.currentPath}`);
+      routerLogger.debug(`Try to navigate to ${path} from ${this.currentPath}`);
 
       const route = this.routes.find((r) => r.regex.test(path));
       if (!route) {
-        console.warn(`No route found for path: ${path}. Navigate to /home`);
+        routerLogger.warn(
+          `No route found for path: ${path}. Navigate to /home`
+        );
         await this.navigate("/home", false);
         return;
       }
@@ -98,10 +101,10 @@ export class Router {
       }
 
       if (push) {
-        console.log(`Push state for ${path}`);
+        routerLogger.debug(`Push state for ${path}`);
         history.pushState({}, "", path);
       } else {
-        console.log(`Replace state for ${path}`);
+        routerLogger.debug(`Replace state for ${path}`);
         history.replaceState({}, "", path);
       }
       this.previousPath = this.currentPath;
@@ -118,7 +121,7 @@ export class Router {
 
   async switchView(view: AbstractView): Promise<void> {
     try {
-      console.log(
+      routerLogger.debug(
         `Try to switch view from ${this.currentView?.getName()} to ${view.getName()}`
       );
       await this.setView(view);
@@ -140,6 +143,7 @@ export class Router {
     try {
       await this.currentView.render();
       this.currentView.setTitle();
+      this.notifyRouteChange("view");
     } catch (error) {
       this.handleError("Error in refresh()", error);
     }
@@ -149,7 +153,7 @@ export class Router {
     if (error instanceof ApiError && error.status === 401) {
       return;
     }
-    console.error(message, error);
+    routerLogger.error(message, error);
     const view = new ErrorView(error);
     await this.setView(view);
   }
@@ -178,7 +182,7 @@ export class Router {
 
   private handlePopState = async () => {
     const targetPath = window.location.pathname;
-    console.log(`Popstate triggered: ${targetPath}`);
+    routerLogger.debug(`Popstate triggered: ${targetPath}`);
     this.navigate(targetPath, false);
   };
 
@@ -195,28 +199,28 @@ export class Router {
   };
 
   private handleBeforeUnload = () => {
-    console.log(`BeforeUnload triggered`);
+    routerLogger.debug(`BeforeUnload triggered`);
     closeSSEConnection(true);
   };
 
   private async evaluateGuard(guard: RouteGuard): Promise<boolean> {
     try {
       const result = guard();
-      console.log(`Route guard result: ${result}`);
+      routerLogger.debug(`Route guard result: ${result}`);
 
       if (result === false) {
-        console.warn("Route blocked by guard.");
+        routerLogger.warn("Route blocked by guard.");
         return false;
       }
 
       if (typeof result === "string") {
-        console.warn(`Redirecting due to guard → ${result}`);
+        routerLogger.warn(`Redirecting due to guard → ${result}`);
         await this.navigate(result, false);
         return false;
       }
       return true;
     } catch (error) {
-      console.error("Error during guard evaluation:", error);
+      routerLogger.error("Error during guard evaluation:", error);
       return false;
     }
   }
@@ -226,7 +230,7 @@ export class Router {
       this.currentView.unmount?.();
     }
     this.currentView = view;
-    await view.render();
+    await view.mount();
   }
 
   getCurrentView(): AbstractView | null {

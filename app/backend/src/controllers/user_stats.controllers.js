@@ -3,9 +3,7 @@ import {
   getDashboardMatchesData,
   getDashboardTournamentsData
 } from "../services/dashboard.services.js";
-import { getFriendId } from "../services/friends.services.js";
 import { getAllUserStats } from "../services/user_stats.services.js";
-import { httpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
 export async function getAllUserStatsHandler(request, reply) {
@@ -26,20 +24,7 @@ export async function getAllUserStatsHandler(request, reply) {
 
 export async function getDashboardMatchesByUsernameHandler(request, reply) {
   request.action = "Get dashboard matches by username";
-  let userId = request.user.id;
-  const { username } = request.params;
-  if (username !== request.user.username) {
-    const friendId = await getFriendId(userId, username);
-    if (!friendId) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(request.action, false),
-        "You need to be friends"
-      );
-    }
-    userId = friendId;
-  }
+  const userId = request.user.id;
 
   const data = await getDashboardMatchesData(userId);
 
@@ -51,20 +36,7 @@ export async function getDashboardMatchesByUsernameHandler(request, reply) {
 
 export async function getDashboardTournamentsByUsernameHandler(request, reply) {
   request.action = "Get dashboard tournaments by username";
-  let userId = request.user.id;
-  const { username } = request.params;
-  if (username !== request.user.username) {
-    const friendId = await getFriendId(userId, username);
-    if (!friendId) {
-      return httpError(
-        reply,
-        401,
-        createResponseMessage(request.action, false),
-        "You need to be friends"
-      );
-    }
-    userId = friendId;
-  }
+  const userId = request.user.id;
 
   const data = await getDashboardTournamentsData(userId);
 

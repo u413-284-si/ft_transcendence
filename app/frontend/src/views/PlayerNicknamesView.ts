@@ -19,9 +19,12 @@ import { TournamentSize } from "../types/ITournament.js";
 import type { PlayerType } from "../types/IMatch.js";
 import { List } from "../components/List.js";
 import { Header2 } from "../components/Header2.js";
+import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
+  private username: string = escapeHTML(auth.getUser().username);
 
   constructor(
     private numberOfPlayers: number,
@@ -47,14 +50,14 @@ export default class PlayerNicknamesView extends AbstractView {
         children: [
           i18next.t("newGameView.enterNickname"),
           i18next.t("newGameView.selectPlayer", {
-            username: escapeHTML(auth.getUser().username)
+            username: this.username
           }),
           i18next.t("playerNicknamesView.aiOptions")
         ]
       })}
       ${Form({
         children: [
-          NicknameInput(this.numberOfPlayers, auth.getUser().username),
+          NicknameInput(this.numberOfPlayers, this.username),
           Button({
             text: i18next.t("playerNicknamesView.submitNicknames"),
             variant: "default",
@@ -62,22 +65,20 @@ export default class PlayerNicknamesView extends AbstractView {
             type: "submit"
           })
         ],
-        id: "nicknames-form"
+        id: "player-nicknames-form"
       })}
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartTournament(event)
     );
-    initNicknameInputListeners();
+    initNicknameInputListeners(this.username);
   }
 
-  async render() {
-    this.updateHTML();
-    this.formEl = getById("nicknames-form");
-    this.addListeners();
+  protected override cacheNodes(): void {
+    this.formEl = getById("player-nicknames-form");
   }
 
   private async validateAndStartTournament(event: Event) {
@@ -117,7 +118,8 @@ export default class PlayerNicknamesView extends AbstractView {
       const matchAnnouncementView = new MatchAnnouncement(tournament);
       router.switchView(matchAnnouncementView);
     } catch (error) {
-      router.handleError("Error creating tournament", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      viewLogger.error("Error in validateAndStartTournament():", error);
     }
   }
 

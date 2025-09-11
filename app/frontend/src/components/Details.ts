@@ -20,7 +20,7 @@ export function Details({
       ${open ? "open" : ""}
     >
       <summary
-        class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan"
+        class="flex justify-between items-center cursor-pointer py-2 text-xl font-medium text-neon-cyan focus:outline-none focus-visible:ring-1 focus-visible:ring-neon-cyan focus-visible:ring-offset-2 focus-visible:ring-offset-transparent rounded-lg"
       >
         ${summary}
         <span class="transition-transform group-open:rotate-45 text-neon-cyan">

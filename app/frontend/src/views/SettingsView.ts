@@ -18,7 +18,6 @@ import {
   validateTwoFACode
 } from "../validate.js";
 import { ApiError, getDataOrThrow } from "../services/api.js";
-import { router } from "../routing/Router.js";
 import { Link } from "../components/Link.js";
 import { Table } from "../components/Table.js";
 import { Form } from "../components/Form.js";
@@ -28,8 +27,14 @@ import { deleteUser, patchUser } from "../services/userServices.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { User, Language } from "../types/User.js";
-import { getAllBySelector, getById, getBySelector } from "../utility.js";
+import {
+  disableButton,
+  getAllBySelector,
+  getById,
+  getBySelector
+} from "../utility.js";
 import { Header2 } from "../components/Header2.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class SettingsView extends AbstractView {
   private hasLocalAuth: boolean = auth.getUser().authProvider === "LOCAL";
@@ -39,10 +44,12 @@ export default class SettingsView extends AbstractView {
   private twoFASetupButtonEl!: HTMLButtonElement;
   private twoFAModalEl!: HTMLDialogElement;
   private twoFAFormEl!: HTMLFormElement;
+  private twoFASubmitButton!: HTMLButtonElement;
   private twoFACodeInputEl!: HTMLInputElement;
   private twoFACodeInputErrorEl!: HTMLElement;
   private twoFAPasswordModalEl!: HTMLDialogElement;
   private twoFAPasswordFormEl!: HTMLFormElement;
+  private twoFAPasswortSubmitButton!: HTMLButtonElement;
   private twoFAPasswordInputEl!: HTMLInputElement;
   private twoFAPasswordInputErrorEl!: HTMLElement;
   private twoFAGenerateBackupCodesButtonEl!: HTMLButtonElement;
@@ -254,7 +261,7 @@ export default class SettingsView extends AbstractView {
     `;
   }
 
-  protected addListeners(): void {
+  protected override addListeners(): void {
     if (this.hasLocalAuth) {
       this.twoFASetupButtonEl.addEventListener("click", () =>
         this.displayTwoFAPasswordModal("setup")
@@ -325,34 +332,33 @@ export default class SettingsView extends AbstractView {
     this.twoFAFormEl = getById("two-fa-form");
     this.twoFAPasswordModalEl = getById("two-fa-password-modal");
     this.twoFAPasswordFormEl = getById("two-fa-password-form");
+    this.twoFAPasswortSubmitButton = getById("two-fa-submit-password");
     this.twoFAPasswordInputEl = getById("two-fa-password-input");
     this.twoFAPasswordInputErrorEl = getById("two-fa-password-input-error");
     this.twoFAQRCodeEl = getById("two-fa-qr-code");
 
+    this.twoFABackupCodesModalEl = getById("two-fa-backup-codes-modal");
+    this.twoFABackupCodesTableEl = getById("two-fa-backup-codes-table");
+    this.twoFADownloadBackupCodesLinkEl = getById(
+      "two-fa-download-backup-codes-link"
+    );
     if (!this.hasTwoFA()) {
+      this.twoFASubmitButton = getById("two-fa-submit");
       this.twoFACodeInputEl = getById("two-fa-code-input");
       this.twoFACodeInputErrorEl = getById("two-fa-code-input-error");
     } else {
       this.twoFAGenerateBackupCodesButtonEl = getById(
         "two-fa-generate-backup-codes"
       );
-      this.twoFABackupCodesTableEl = getById("two-fa-backup-codes-table");
-      this.twoFADownloadBackupCodesLinkEl = getById(
-        "two-fa-download-backup-codes-link"
-      );
-      this.twoFABackupCodesModalEl = getById("two-fa-backup-codes-modal");
     }
   }
 
-  async render(): Promise<void> {
-    this.updateHTML();
+  protected override cacheNodes(): void {
     this.preferredLanguageFormEl = getById("preferred-language-form");
     this.preferredLanguageButtonEl = getById("preferred-language-button");
     this.preferredLanguageOptionsEl = getById("preferred-language-options");
     if (this.hasLocalAuth) this.initTwoFAElements();
     this.deleteProfileButtonEl = getById("delete-profile");
-
-    this.addListeners();
   }
 
   private onDocumentClick = (event: MouseEvent) => {
@@ -381,7 +387,7 @@ export default class SettingsView extends AbstractView {
       getDataOrThrow(await patchUser(updatedUser));
       toaster.success(i18next.t("toast.profileUpdatedSuccess"));
     } catch (err) {
-      console.error("Failed to update preferred language:", err);
+      viewLogger.error("Failed to update preferred language:", err);
       toaster.error(i18next.t("toast.profileUpdateFailed"));
     }
   }
@@ -394,6 +400,7 @@ export default class SettingsView extends AbstractView {
     try {
       event.preventDefault();
       if (!this.hasTwoFA()) {
+        disableButton(this.twoFASubmitButton);
         const isTwoFACodeValid = await validateTwoFACode(
           this.twoFACodeInputEl,
           this.twoFACodeInputErrorEl
@@ -430,7 +437,8 @@ export default class SettingsView extends AbstractView {
         this.displayTwoFAPasswordModal("remove");
       }
     } catch (error) {
-      router.handleError("Error in callTwoFAFormAction()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      viewLogger.error("Error in callTwoFAFormAction():", error);
     }
   }
 
@@ -447,7 +455,7 @@ export default class SettingsView extends AbstractView {
   private async displayTwoFASetup(event: Event): Promise<void> {
     try {
       event.preventDefault();
-
+      disableButton(this.twoFAPasswortSubmitButton);
       if (
         !validatePassword(
           this.twoFAPasswordInputEl,
@@ -480,14 +488,15 @@ export default class SettingsView extends AbstractView {
       this.twoFAModalEl.showModal();
       if (!this.hasTwoFA()) this.twoFACodeInputEl.focus();
     } catch (error) {
-      router.handleError("Error in displayTwoFASetup()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      viewLogger.error("Error in displayTwoFASetup():", error);
     }
   }
 
   private async removeTwoFA(event: Event): Promise<void> {
     try {
       event.preventDefault();
-
+      disableButton(this.twoFAPasswortSubmitButton);
       if (
         !validatePassword(
           this.twoFAPasswordInputEl,
@@ -512,13 +521,15 @@ export default class SettingsView extends AbstractView {
 
       toaster.success(i18next.t("toast.twoFARemoveSuccess"));
     } catch (error) {
-      router.handleError("Error in removeTwoFA()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      viewLogger.error("Error in removeTwoFA():", error);
     }
   }
 
   private async generateAndDisplayBackupCodes(event: Event): Promise<void> {
     try {
       event.preventDefault();
+      disableButton(this.twoFAPasswortSubmitButton);
       if (
         !validatePassword(
           this.twoFAPasswordInputEl,
@@ -548,7 +559,8 @@ export default class SettingsView extends AbstractView {
       this.twoFAPasswordModalEl.close();
       this.twoFABackupCodesModalEl.showModal();
     } catch (error) {
-      router.handleError("Error in generateAndDisplayBackupCodes()", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      viewLogger.error("Error in generateAndDisplayBackupCodes():", error);
     }
   }
 
@@ -593,8 +605,10 @@ export default class SettingsView extends AbstractView {
   }
 
   private clearTwoFACode(): void {
-    this.twoFACodeInputEl.value = "";
-    clearInvalid(this.twoFACodeInputEl, this.twoFACodeInputErrorEl);
+    if (!this.hasTwoFA()) {
+      this.twoFACodeInputEl.value = "";
+      clearInvalid(this.twoFACodeInputEl, this.twoFACodeInputErrorEl);
+    }
   }
 
   private clearTwoFASetupData(): void {
@@ -636,7 +650,7 @@ export default class SettingsView extends AbstractView {
       auth.logoutOnProfileDeletion();
       toaster.success(i18next.t("toast.profileDeleteSuccess"));
     } catch (err) {
-      console.error("Failed to delete profile:", err);
+      viewLogger.error("Failed to delete profile:", err);
       toaster.error(i18next.t("toast.profileDeleteFailed"));
     }
   }

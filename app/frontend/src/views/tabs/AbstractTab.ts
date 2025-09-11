@@ -1,4 +1,5 @@
 import { renderChart } from "../../charts/chartUtils.js";
+import { viewLogger } from "../../logging/config.js";
 import { toaster } from "../../Toaster.js";
 
 export abstract class AbstractTab {
@@ -10,37 +11,42 @@ export abstract class AbstractTab {
   abstract getHTML(): string;
 
   async onShow(): Promise<void> {
+    await this.initCharts();
+
     if (!this.isInit) {
       await this.init();
     }
+
     for (const chartId in this.chartOptions) {
       try {
         this.charts[chartId].updateOptions(this.chartOptions[chartId]);
       } catch (error) {
-        console.error(`Chart ${chartId} failed to update`, error);
+        viewLogger.error(`Chart ${chartId} failed to update`, error);
         toaster.error(i18next.t("toast.chartError"));
       }
     }
   }
 
   async init(): Promise<void> {
-    await this.initCharts();
     await this.initData();
     this.isInit = true;
   }
 
   async initCharts(): Promise<void> {
-    for (const chartId in this.chartBaseOptions) {
-      try {
-        this.charts[chartId] = await renderChart(
-          chartId,
-          this.chartBaseOptions[chartId]
-        );
-      } catch (error) {
-        console.error(`Chart ${chartId} failed to initialize`, error);
-        toaster.error(i18next.t("toast.chartError"));
+    const chartPromises = Object.entries(this.chartBaseOptions).map(
+      async ([chartId, options]) => {
+        if (!this.charts[chartId]) {
+          try {
+            this.charts[chartId] = await renderChart(chartId, options);
+          } catch (error) {
+            viewLogger.error(`Chart ${chartId} failed to initialize`, error);
+            toaster.error(i18next.t("toast.chartError"));
+          }
+        }
       }
-    }
+    );
+
+    await Promise.all(chartPromises);
   }
 
   abstract initData(): Promise<void>;
@@ -60,7 +66,7 @@ export abstract class AbstractTab {
         try {
           chart.destroy();
         } catch (error) {
-          console.error(`Chart ${chartId} failed to destroy`, error);
+          viewLogger.error(`Chart ${chartId} failed to destroy`, error);
           toaster.error(i18next.t("toast.chartError"));
         }
       }

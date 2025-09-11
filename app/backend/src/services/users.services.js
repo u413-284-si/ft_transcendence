@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import env from "../config/env.js";
 import { fileTypeFromBuffer } from "file-type";
-import { randAdjective, randWord, randSequence } from "@ngneat/falso";
+import { randAdjective, randWord, randSequence, randUuid } from "@ngneat/falso";
 
 const tokenSelect = {
   id: true,
@@ -119,14 +119,24 @@ export async function getUserAvatar(id) {
   return user.avatar;
 }
 
-export async function createUserAvatar(id, buffer) {
+export async function validateImageFile(buffer) {
+  const allowedMimeTypes = ["image/png", "image/jpeg", "image/webp"];
+
   const fileType = await fileTypeFromBuffer(buffer);
-  if (!fileType) {
-    console.error("No image file type detected");
-    throw new Error();
+  if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
+    const error = new Error(
+      `Invalid image file type: ${fileType ? fileType.mime : "unknown"}`
+    );
+    error.statusCode = 400;
+    throw error;
   }
+  return fileType;
+}
+
+export async function createAvatarFile(buffer, fileType) {
   const correctExt = `.${fileType.ext}`;
-  const newFileName = `user-${id}${correctExt}`;
+  const uuid = randUuid();
+  const newFileName = `${uuid}${correctExt}`;
   const uploadDir = path.resolve(env.imagePath);
 
   await fs.promises.mkdir(uploadDir, { recursive: true });
@@ -135,24 +145,28 @@ export async function createUserAvatar(id, buffer) {
   return newFileName;
 }
 
-export async function deleteUserAvatar(currentAvatarUrl) {
+export async function deleteUserAvatar(currentAvatarUrl, logger) {
   const uploadDir = path.resolve(env.imagePath);
   const previousPath = path.join(uploadDir, path.basename(currentAvatarUrl));
   try {
     await fs.promises.unlink(previousPath);
   } catch (err) {
-    if (err.code !== "ENOENT") {
-      console.error("Error deleting avatar file:", err);
-      throw err;
+    if (err.code === "ENOENT") {
+      if (logger) {
+        logger.warn(
+          `Avatar file not found at path: ${previousPath}, nothing to delete.`
+        );
+      }
+      return;
     }
-    console.warn("Avatar file not found, nothing to delete.");
+    throw err;
   }
 }
 
 export async function getUserByUsername(username) {
   const user = await prisma.user.findUnique({
     where: { username },
-    select: { id: true, username: true, dateJoined: true }
+    select: { id: true, username: true, dateJoined: true, avatar: true }
   });
   return user;
 }

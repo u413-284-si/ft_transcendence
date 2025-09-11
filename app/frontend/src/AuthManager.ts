@@ -16,6 +16,7 @@ import { getCookieValueByName } from "./utility.js";
 import { router } from "./routing/Router.js";
 import TwoFAVerifyView from "./views/TwoFAVerifyView.js";
 import { ProfileChangeEvent } from "./types/ServerSentEvents.js";
+import { authLogger } from "./logging/config.js";
 
 type AuthChangeCallback = (authenticated: boolean) => Promise<void>;
 
@@ -41,34 +42,34 @@ export class AuthManager {
 
   private async updateAuthState(user: User | null): Promise<void> {
     if (user) {
-      console.log("Log in user...");
+      authLogger.debug("Log in user...");
       this.authenticated = true;
       this.user = user;
       localStorage.setItem("authState", JSON.stringify({ id: user.id }));
       this.registerActivityListeners();
       this.registerProfileChangeListener();
       openSSEConnection();
-      console.log("User logged in.");
+      authLogger.debug("User logged in.");
     } else {
-      console.log("Log out user...");
+      authLogger.debug("Log out user...");
       this.authenticated = false;
       this.user = null;
       localStorage.removeItem("authState");
       this.removeActivityListeners();
       this.removeProfileChangeListener();
       closeSSEConnection(true);
-      console.log("User logged out.");
+      authLogger.debug("User logged out.");
     }
     await this.notify();
   }
 
   public async initialize(): Promise<void> {
-    console.info("Initializing auth manager");
+    authLogger.info("Initializing auth manager");
     try {
       this.registerLocalStorageListener();
 
       if (getCookieValueByName("authProviderConflict") === "GOOGLE") {
-        console.info("Found authProviderConfilct cookie");
+        authLogger.info("Found authProviderConfilct cookie");
         toaster.error(i18next.t("toast.emailExists"));
         document.cookie =
           "authProviderConflict=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/login;";
@@ -77,11 +78,11 @@ export class AuthManager {
       }
       const refreshToken = getDataOrThrow(await checkRefreshTokenStatus());
       if (refreshToken.status === "none" || refreshToken.status === "expired") {
-        console.info("No valid refresh token found.");
+        authLogger.info("No valid refresh token found.");
         await this.notify();
         return;
       } else if (refreshToken.status === "invalid") {
-        console.warn("Invalid refresh token found.");
+        authLogger.warn("Invalid refresh token found.");
         toaster.warn(i18next.t("toast.invalidToken"));
         await this.notify();
         return;
@@ -91,7 +92,8 @@ export class AuthManager {
       await this.updateAuthState(user);
     } catch (error) {
       await this.notify();
-      router.handleError("Error in AuthManager.initialize():", error);
+      toaster.error(i18next.t("toast.somethingWentWrong"));
+      authLogger.error("Error in AuthManager.initialize():", error);
     }
   }
 
@@ -99,7 +101,7 @@ export class AuthManager {
     const user = getDataOrThrow(await getUserProfile());
     await i18next.changeLanguage(user.language);
     localStorage.setItem("preferredLanguage", user.language);
-    console.info(`Language switched to ${user.language}`);
+    authLogger.info(`Language switched to ${user.language}`);
     return user;
   }
 
@@ -111,7 +113,10 @@ export class AuthManager {
           toaster.error(i18next.t("toast.invalidUsernameOrPW"));
           return false;
         } else if (apiResponseUserLogin.status === 404) {
-          toaster.error(i18next.t("toast.invalidUsernameOrPW"));
+          toaster.error(i18next.t("toast.emailOrUsernameNotExist"));
+          return false;
+        } else if (apiResponseUserLogin.status === 409) {
+          toaster.error(i18next.t("toast.emailExistsWithGoogle"));
           return false;
         } else {
           throw new ApiError(apiResponseUserLogin);
@@ -128,7 +133,8 @@ export class AuthManager {
       await this.updateAuthState(user);
       return true;
     } catch (error) {
-      router.handleError("Login error", error);
+      toaster.error(i18next.t("toast.loginError"));
+      authLogger.error("Error in AuthManager.login():", error);
       return false;
     }
   }
@@ -139,7 +145,8 @@ export class AuthManager {
       await this.updateAuthState(user);
       return true;
     } catch (error) {
-      router.handleError("Login error", error);
+      toaster.error(i18next.t("toast.loginError"));
+      authLogger.error("Error in AuthManager.loginAfterTwoFA():", error);
       return false;
     }
   }
@@ -153,7 +160,7 @@ export class AuthManager {
       const apiResponse = await userLogout();
       if (!apiResponse.success) {
         if (apiResponse.status === 401) {
-          console.warn("No auth cookies set");
+          authLogger.warn("No auth cookies set");
         } else {
           throw new ApiError(apiResponse);
         }
@@ -161,7 +168,7 @@ export class AuthManager {
 
       await this.updateAuthState(null);
     } catch (error) {
-      console.error("Error while logout()", error);
+      authLogger.error("Error while logout()", error);
       toaster.error(i18next.t("toast.logoutError"));
     }
   }
@@ -172,7 +179,7 @@ export class AuthManager {
 
   public async clearTokenOnError(): Promise<void> {
     if (this.authenticated) {
-      console.error("Could not verify user");
+      authLogger.error("Could not verify user");
       toaster.error(i18next.t("toast.userVerificationError"));
       await this.updateAuthState(null);
     }
@@ -193,11 +200,11 @@ export class AuthManager {
 
   public async updateUser(update: Partial<User>): Promise<void> {
     if (!this.user) {
-      console.log("User not authenticated. Cannot update user.");
+      authLogger.debug("User not authenticated. Cannot update user.");
       return;
     }
     if (Object.keys(update).length === 0) {
-      console.log("No update data provided.");
+      authLogger.debug("No update data provided.");
       return;
     }
 
@@ -214,7 +221,7 @@ export class AuthManager {
 
   public async updateLanguage(lang: Language): Promise<void> {
     await i18next.changeLanguage(lang);
-    console.info(`Language switched to ${lang}`);
+    authLogger.info(`Language switched to ${lang}`);
     localStorage.setItem("preferredLanguage", lang);
     await this.notify();
   }
@@ -228,7 +235,7 @@ export class AuthManager {
   private startInactivityTimer = (): void => {
     if (this.idleTimeout) clearTimeout(this.idleTimeout);
     this.idleTimeout = setTimeout(() => {
-      console.warn("User inactive. Logging out.");
+      authLogger.warn("User inactive. Logging out.");
       this.logout();
     }, this.inactivityMs);
   };
@@ -255,10 +262,10 @@ export class AuthManager {
   private registerLocalStorageListener(): void {
     window.addEventListener("storage", async (event) => {
       if (event.key !== "authState") return;
-      console.warn("Storage listener fired");
+      authLogger.warn("Storage listener fired");
 
       if (!event.newValue) {
-        console.log("authState cleared");
+        authLogger.debug("authState cleared");
         await this.updateAuthState(null);
         return;
       }
@@ -268,20 +275,24 @@ export class AuthManager {
         router.reload();
       } catch (error) {
         await this.updateAuthState(null);
-        router.handleError("Failed to update auth state", error);
+        toaster.error(i18next.t("toast.somethingWentWrong"));
+        authLogger.error(
+          "Error in AuthManager.registerLocalStorageListener():",
+          error
+        );
       }
     });
   }
 
   private profileChangeListener = async (event: Event) => {
-    console.log("Profile change event");
+    authLogger.debug("Profile change event");
 
     const { update } = (event as ProfileChangeEvent).detail;
     if (!this.user) {
-      console.warn("User is not set");
+      authLogger.warn("User is not set");
       return;
     }
-    console.log("Applying partial profile update:", update);
+    authLogger.debug("Applying partial profile update:", update);
     this.updateUser(update);
   };
 

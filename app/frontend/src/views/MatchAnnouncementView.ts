@@ -17,6 +17,8 @@ import { Details } from "../components/Details.js";
 import ResultsView from "./ResultsView.js";
 import { formatPlayerName } from "../components/NicknameInput.js";
 import { GameView } from "./GameView.js";
+import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class MatchAnnouncementView extends AbstractView {
   private player1: string;
@@ -129,7 +131,7 @@ export default class MatchAnnouncementView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     const startMatchBtn = getById("start-match-btn");
     startMatchBtn.addEventListener("click", () => this.callGameView());
     const abortTournamentBtn = getById("abort-tournament-btn");
@@ -140,13 +142,8 @@ export default class MatchAnnouncementView extends AbstractView {
     }
   }
 
-  async render() {
-    this.updateHTML();
-    this.addListeners();
-  }
-
   private callGameView() {
-    console.log(
+    viewLogger.debug(
       `Match ${this.matchNumber} started: ${this.player1} vs ${this.player2}`
     );
 
@@ -166,9 +163,11 @@ export default class MatchAnnouncementView extends AbstractView {
       if (!confirm(i18next.t("newTournamentView.confirmAbortTournament")))
         return;
       getDataOrThrow(await deleteTournament(this.tournament.getId()));
+      toaster.success(i18next.t("toast.tournamentAbortSuccess"));
       router.reload();
     } catch (error) {
-      router.handleError("Error while deleting tournament", error);
+      toaster.error(i18next.t("toast.tournamentAbortFailed"));
+      viewLogger.error("Error in abortTournament():", error);
     }
   }
 

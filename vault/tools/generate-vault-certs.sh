@@ -1,10 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-BASE_DIR="./certs"
-CA_DIR="${BASE_DIR}/ca"
-VAULT_DIR="${BASE_DIR}/vault-certs"
-
 mkdir -p "${CA_DIR}" "${VAULT_DIR}"
 
 # Step 1: Generate root CA (only once!)
@@ -59,7 +55,8 @@ else
   echo "ℹ️ Vault cert already exists"
 fi
 
-# Copy CA cert for Vault and agents
-cp "${CA_DIR}/root-ca.crt" "${VAULT_DIR}/root-ca.crt"
+# Copy CA cert for agents
+cp "${CA_DIR}/root-ca.crt" "${NGINX_AUTH_DIR}/root-ca.crt"
+cp "${CA_DIR}/root-ca.crt" "${APP_AUTH_DIR}/root-ca.crt"
 
 echo "📦 Done. Vault certs in ${VAULT_DIR}, root CA in ${CA_DIR}"

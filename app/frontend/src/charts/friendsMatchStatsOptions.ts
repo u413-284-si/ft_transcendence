@@ -38,7 +38,8 @@ export function buildFriendsMatchStatsOptions(
       title: {
         text: i18next.t("statsView.matches"),
         style: { color: chartColors.white }
-      }
+      },
+      forceNiceScale: true
     }
   };
 }

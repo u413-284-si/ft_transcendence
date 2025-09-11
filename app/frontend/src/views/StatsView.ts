@@ -20,7 +20,9 @@ import { MatchesTab } from "./tabs/MatchesTab.js";
 import { TournamentsTab } from "./tabs/TournamentsTab.js";
 import { FriendsTab } from "./tabs/FriendsTab.js";
 import { toaster } from "../Toaster.js";
+import { viewLogger } from "../logging/config.js";
 
+type TabId = "tab-matches" | "tab-tournaments" | "tab-friends";
 export default class StatsView extends AbstractView {
   private viewType: "self" | "friend" | "public" = "public";
   private username = escapeHTML(router.getParams().username);
@@ -28,7 +30,7 @@ export default class StatsView extends AbstractView {
   private userStats: UserStats | null = null;
   private friendRequest: FriendRequest | null = null;
   private tabs: Record<string, AbstractTab> = {};
-  private currentTabId?: string;
+  private currentTabId: TabId = "tab-matches";
 
   constructor() {
     super();
@@ -96,14 +98,18 @@ export default class StatsView extends AbstractView {
     `;
   }
 
-  async render() {
+  override async mount() {
     await this.setViewType();
     await this.fetchData();
     this.initTabs();
-    this.updateHTML();
+    this.render();
+  }
+
+  override render(): void {
+    this.destroyChartsInTabs();
+    super.render();
     if (this.viewType != "public") {
-      await this.showTab("tab-matches");
-      this.addListeners();
+      this.showTab(this.currentTabId);
     }
   }
 
@@ -150,21 +156,21 @@ export default class StatsView extends AbstractView {
     this.userStats = userStatsArray[0];
   }
 
-  async showTab(tabId: string) {
+  async showTab(tabId: TabId) {
     try {
       if (this.currentTabId) {
         this.tabs[this.currentTabId].onHide();
         const container = getById<HTMLDivElement>(this.currentTabId);
-        container.classList.toggle("hidden");
+        container.classList.add("hidden");
       }
 
       this.currentTabId = tabId;
       const container = getById<HTMLDivElement>(this.currentTabId);
-      container.classList.toggle("hidden");
+      container.classList.remove("hidden");
 
       await this.tabs[tabId].onShow();
     } catch (error) {
-      console.error(`Error while showing tab ${this.currentTabId}`, error);
+      viewLogger.error(`Error while showing tab ${this.currentTabId}`, error);
       toaster.error(i18next.t("toast.tabError"));
     }
   }
@@ -187,16 +193,18 @@ export default class StatsView extends AbstractView {
         ${TabButton({
           text: i18next.t("statsView.matches"),
           tabId: "tab-matches",
-          isActive: true
+          isActive: this.currentTabId === "tab-matches"
         })}
         ${TabButton({
           text: i18next.t("statsView.tournaments"),
-          tabId: "tab-tournaments"
+          tabId: "tab-tournaments",
+          isActive: this.currentTabId === "tab-tournaments"
         })}
         ${this.viewType === "self"
           ? TabButton({
               text: i18next.t("statsView.friends"),
-              tabId: "tab-friends"
+              tabId: "tab-friends",
+              isActive: this.currentTabId === "tab-friends"
             })
           : ""}
       </div>
@@ -204,12 +212,14 @@ export default class StatsView extends AbstractView {
     `;
   }
 
-  protected addListeners(): void {
-    const buttons = getAllBySelector<HTMLButtonElement>(".tab-button");
+  protected override addListeners(): void {
+    const buttons = getAllBySelector<HTMLButtonElement>(".tab-button", {
+      strict: false
+    });
 
     buttons.forEach((button) => {
       button.addEventListener("click", async () => {
-        const tabId = button.dataset.tab!;
+        const tabId = button.dataset.tab as TabId;
         await this.showTab(tabId);
 
         buttons.forEach((btn) => {
@@ -221,13 +231,18 @@ export default class StatsView extends AbstractView {
     });
   }
 
-  unmount(): void {
-    console.log("Cleaning up StatsView");
+  private destroyChartsInTabs() {
     for (const tabId in this.tabs) {
       const tab = this.tabs[tabId];
       if (tab) {
         tab.destroyCharts();
       }
     }
+  }
+
+  unmount(): void {
+    viewLogger.debug("Cleaning up StatsView");
+    this.destroyChartsInTabs();
+    this.tabs = {};
   }
 }

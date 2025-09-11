@@ -2,6 +2,25 @@ import { TranslationShape } from "./en.js";
 
 const de: TranslationShape = {
   translation: {
+    chart: {
+      activity: "Aktivität",
+      current: "Aktuell",
+      loss: "Niederlage",
+      numPlayers: "{{num}} Spieler",
+      played: "Gespielte Turniere{{range}}",
+      progress: "Fortschritt ({{num}} Spieler)",
+      progression: "Siegquote{{range}}",
+      rangeLastDays: " (Letzten {{count}} Tage)",
+      rangeLastMatches: " (Letzten {{count}} Spiele)",
+      reachedThisStage: "Diese Stufe erreicht",
+      scoreDiff: "Punktedifferenz{{range}}",
+      scores: "Punkte{{range}}",
+      selectUpTo: "Wähle bis zu 3 Freunde aus",
+      summary: "Übersicht",
+      win: "Sieg",
+      winLoss: "Siege vs Niederlagen{{range}}"
+    },
+
     error: {
       invalidDynamicRoutePattern:
         "Ungültiges dynamisches Routenmuster: {{pattern}}",
@@ -25,8 +44,8 @@ const de: TranslationShape = {
     errorView: {
       details: "Details: {{cause}}",
       errorStatus: "⚠️ Fehler {{status}}",
-      title: "Fehler",
-      reload: "Neu laden"
+      reload: "Neu laden",
+      title: "Fehler"
     },
 
     friendListItem: {
@@ -44,13 +63,13 @@ const de: TranslationShape = {
       confirmRemoveFriend: "Möchtest du diesen Freund wirklich entfernen?",
       exactUsername: "Exakter Benutzername",
       friendRequests: "Freundschaftsanfragen",
-      title: "Freunde",
       incomingRequests: "Eingehende Anfragen",
       noFriends: "Du hast noch keine Freunde",
       noIncoming: "Keine eingehenden Anfragen",
       noOutgoing: "Keine ausgehenden Anfragen",
       outgoingRequests: "Ausgehende Anfragen",
       sendFriendRequest: "Freundschaftsanfrage senden",
+      title: "Freunde",
       yourFriends: "Deine Freunde"
     },
 
@@ -60,7 +79,6 @@ const de: TranslationShape = {
 
     global: {
       avatar: "Avatar",
-      submit: "Bestätigen",
       confirmNewPassword: "Neues Passwort bestätigen",
       continue: "ENTER drücken, um fortzufahren",
       editProfile: "Profil bearbeiten",
@@ -69,50 +87,51 @@ const de: TranslationShape = {
       logout: "Abmelden",
       lost: "Verloren",
       match: "Spiel {{matchId}}",
+      matchWinner: "Spiel {{matchId}} Sieger",
       offline: "Offline",
       online: "Online",
       password: "Passwort",
-      twoFACode: "2FA-Code",
-      pongGame: "Pong-Spiel",
       player: "Spieler",
       playerWins: "{{player}} gewinnt",
+      pongGame: "Pong-Spiel",
       round: "Runde {{round}}",
+      submit: "Bestätigen",
       toBeDefined: "Noch nicht definiert",
       tournament: "Turnier: <strong>{{tournamentName}}</strong>",
+      twoFACode: "2FA-Code",
       username: "Benutzername",
       userNotFound: "Benutzer nicht gefunden.",
       welcome: "Willkommen",
-      winnerMatch: "Sieg im Spiel {{matchId}}",
       won: "Gewonnen"
     },
 
     homeView: {
-      helloUser: "Hallo {{username}}!",
-      tagline: "Enter the Grid. Master the Pong.",
-      title: "Startseite",
+      faqControlsLeftPaddle: "Linken Schläger bewegen: W / S",
+      faqControlsRightPaddle: "Rechten Schläger bewegen: Pfeiltasten ↑ ↓",
+      faqControlsTitle: "Steuerung",
 
-      faqTitle: "FAQ",
-      faqGameModesTitle: "Spielmodi",
+      faqExtrasText:
+        "Pong ist eines der ersten Videospiele überhaupt: einfach, zeitlos und süchtig machend. Inspiriert vom Blockbuster TRON, wird hier der Klassiker in einem neonbeleuchteten Stil neu interpretiert.",
+      faqExtrasTitle: "Hintergrundinfos",
       faqGameModesSingle:
         "Einzelspiel: Ein schnelles Match gegen die KI oder einen Freund.",
+      faqGameModesTitle: "Spielmodi",
+
       faqGameModesTournament:
         "Turnier: Spiele mehrere Runden, bis ein Champion übrig bleibt.",
-
-      faqControlsTitle: "Steuerung",
-      faqControlsRightPaddle: "Rechten Schläger bewegen: Pfeiltasten ↑ ↓",
-      faqControlsLeftPaddle: "Linken Schläger bewegen: W / S",
-
-      faqTipsTitle: "Tipps",
       faqTips1:
         "Antizipiere den Pfad des Balls voraus, statt ihm hinterherzulaufen.",
       faqTips2:
         "Treffe den Ball mit den Kanten des Schlägers, um den Winkel zu verändern.",
+
       faqTips3:
         "Sei vorsichtig! Jeder Schlägerkontakt erhöht die Geschwindigkeit des Balls.",
+      faqTipsTitle: "Tipps",
+      faqTitle: "FAQ",
+      helloUser: "Hallo {{username}}!",
 
-      faqExtrasTitle: "Hintergrundinfos",
-      faqExtrasText:
-        "Pong ist eines der ersten Videospiele überhaupt: einfach, zeitlos und süchtig machend. Inspiriert vom Blockbuster TRON, wird hier der Klassiker in einem neonbeleuchteten Stil neu interpretiert."
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Startseite"
     },
 
     invalid: {
@@ -134,22 +153,22 @@ const de: TranslationShape = {
       nicknameFormat:
         "Spitzname muss 3 bis 20 Zeichen haben und darf Buchstaben, Zahlen oder folgende Sonderzeichen enthalten: -!?_$.",
       nicknameUniqueness: "Spitzname muss eindeutig sein.",
+      passwordConfirmation: "Passwörter stimmen nicht überein.",
+      passwordConfirmationEmpty: "Bitte wiederhole dein Passwort",
       passwordEmpty: "Passwort darf nicht leer sein.",
       passwordFormat:
         "Passwort muss 10 bis 64 Zeichen enthalten und mindestens eine Zahl, einen Groß- und Kleinbuchstaben sowie ein Sonderzeichen: @$!%*?&",
-      passwordConfirmationEmpty: "Bitte wiederhole dein Passwort",
-      passwordConfirmation: "Passwörter stimmen nicht überein.",
-      twoFACode: "2FA-Code ist falsch.",
-      twoFACodeEmpty: "2FA-Code darf nicht leer sein.",
-      twoFACodeFormat: "2FA-Code muss eine sechsstellige Zahl sein.",
-      twoFABackupCode: "Backup-Code ist falsch.",
-      twoFABackupCodeEmpty: "Backup-Code darf nicht leer sein.",
-      twoFABackupCodeFormat: "Backup-Code muss eine achtstellige Zahl sein.",
       playerSelection: "Bitte Anzahl der Spieler auswählen.",
       tournamentNameEmpty: "Turniername darf nicht leer sein.",
       tournamentNameFormat:
         "Turniername muss 3 bis 20 Zeichen enthalten und darf Buchstaben, Zahlen oder folgende Sonderzeichen enthalten: -!?_$.",
       tournamentNameUniqueness: "Turniername muss eindeutig sein.",
+      twoFABackupCode: "Backup-Code ist falsch.",
+      twoFABackupCodeEmpty: "Backup-Code darf nicht leer sein.",
+      twoFABackupCodeFormat: "Backup-Code muss eine achtstellige Zahl sein.",
+      twoFACode: "2FA-Code ist falsch.",
+      twoFACodeEmpty: "2FA-Code darf nicht leer sein.",
+      twoFACodeFormat: "2FA-Code muss eine sechsstellige Zahl sein.",
       usernameEmpty: "Benutzername darf nicht leer sein.",
       usernameFormat:
         "Benutzername muss 3 bis 20 Zeichen enthalten und darf Buchstaben, Zahlen oder folgende Sonderzeichen enthalten: -!?_$.",
@@ -161,74 +180,62 @@ const de: TranslationShape = {
       usernameOrEmail: "Nutzername oder Mail-Adresse"
     },
 
-    twoFAVerifyView: {
-      title: "2FA-Code Verifizierung",
-      enterTwoFACode: "Gib den 2FA-Code ein:",
-      useBackupCode: "Backup-Code verwenden"
-    },
-
-    twoFABackupCodeVerifyView: {
-      title: "Backup-Code Verifizierung",
-      twoFABackupCode: "Backup-Code",
-      enterTwoFABackupCode: "Gib den Backup-Code ein:"
-    },
-
     matchAnnouncementView: {
       abortTournament: "Turnier abbrechen",
       nextMatch: "Nächstes Spiel",
-      title: "Nächstes Spiel!",
       roundMatch: "Runde {{round}} - Spiel {{match}}",
-      startMatch: "Spiel starten",
       skipMatch: "Spiel überspringen",
-      spectateMatch: "Spiel beobachten"
+      spectateMatch: "Spiel beobachten",
+      startMatch: "Spiel starten",
+      title: "Nächstes Spiel!"
     },
 
     newGameView: {
-      title: "Neues Spiel",
+      aiOption: "Optional: KI aktivieren, um den anderen Spieler zu steuern.",
       enterNickname: "Gib für jeden Spieler einen Spitznamen ein.",
       selectPlayer: "Wähle, welcher Spieler von {{username}} gesteuert wird.",
-      aiOption: "Optional: KI aktivieren, um den anderen Spieler zu steuern.",
-      startGame: "Spiel starten"
+      startGame: "Spiel starten",
+      title: "Neues Spiel"
     },
 
     newTournamentView: {
       confirmAbortTournament: "Möchtest du das Turnier wirklich abbrechen?",
       enterTournamentName: "Gib den Turniernamen ein",
-      selectNumberPlayers: "Wähle die Anzahl der Spieler",
-      title: "Neues Turnier",
       numberOfPlayers: "Anzahl der Spieler",
+      players16: "16 Spieler",
       players4: "4 Spieler",
       players8: "8 Spieler",
-      players16: "16 Spieler",
+      selectNumberPlayers: "Wähle die Anzahl der Spieler",
       startTournament: "Turnier starten",
+      title: "Neues Turnier",
       tournamentName: "Turniername"
     },
 
     nicknameInput: {
-      enterYourNickname: "Gib deinen Spitznamen ein",
-      playerChoice: "{{username}} spielt als Spieler {{i}}",
-      playerNickname: "Spitzname von Spieler {{i}}",
       aiPlayer: "KI-Spieler",
       aiStrength: "KI-Stärke",
       aiStrengthEasy: "Leicht",
+      aiStrengthHard: "Schwer",
       aiStrengthMedium: "Mittel",
-      aiStrengthHard: "Schwer"
+      enterYourNickname: "Gib deinen Spitznamen ein",
+      playerChoice: "{{username}} spielt als Spieler {{i}}",
+      playerNickname: "Spitzname von Spieler {{i}}"
     },
 
     playerNicknamesView: {
-      enterPlayerNicknames: "Gib die Spitznamen der Spieler ein",
-      title: "Spieler-Spitznamen",
       aiOptions:
         "Optional: KI aktivieren, um einen oder mehrere Spieler steuern zu lassen.",
-      submitNicknames: "Spitznamen bestätigen"
+      enterPlayerNicknames: "Gib die Spitznamen der Spieler ein",
+      submitNicknames: "Spitznamen bestätigen",
+      title: "Spieler-Spitznamen"
     },
 
     profileView: {
       cannotChangeEmailOrPW:
         "Du kannst deine E-Mail-Adresse oder dein Passwort nicht ändern.",
       changeAvatar: "Ändere deinen Avatar.",
-      changePasswordButton: "Passwort ändern",
       changePassword: "Ändere dein Passwort.",
+      changePasswordButton: "Passwort ändern",
       chooseFile: "Wähle ein Bild für deinen Avatar",
       currentPassword: "Aktuelles Passwort",
       deleteAvatar: "Lösche deinen Avatar",
@@ -237,9 +244,9 @@ const de: TranslationShape = {
       noFileSelected: "Keine Datei ausgewählt",
       saveChanges: "Änderungen speichern",
       signedInWithGoogle: "Mit Google angemeldet",
+      title: "Dein Profil",
       updateProfile: "Aktualisiere dein Profil.",
-      uploadYourAvatar: "Lade deinen Avatar hoch",
-      title: "Dein Profil"
+      uploadYourAvatar: "Lade deinen Avatar hoch"
     },
 
     registerView: {
@@ -257,37 +264,37 @@ const de: TranslationShape = {
     },
 
     settingsView: {
-      title: "Einstellungen",
-      settings: "Lege hier deine Einstellungen und Präferenzen fest.",
-      preferredLanguage: "Wähle dein bevorzugte Sprache aus.",
-      saveLanguage: "Sprache speichern",
+      activateTwoFA: "Aktivieren",
+      confirmPassword: "Bestätigen",
       dangerZone: "Gefahrenbereich",
-      displayTwoFASetup: "2FA Einstellungen anzeigen",
+      deactivateTwoFA: "Deaktivieren",
       deactivateTwoFASetup: "2FA deaktivieren",
       deleteProfile: "Lösche dein Profil",
       deleteProfileConfirm: "Möchtest du dein Profile wirklich löschen?",
+      displayTwoFASetup: "2FA Einstellungen anzeigen",
       editTwoFASetup: "2‑Faktor-Authentifizierung (2FA) bearbeiten",
-      twoFASetup: "2FA Einstellungen",
-      twoFAInfo: [
-        "Aktiviere 2FA:",
-        "",
-        "Bitte verwende eine Authentifizierungs App",
-        "um den QR-Code unten zu scannen."
-      ],
+      enterTwoFACode: "Gib den 2FA-Code ein:",
+      preferredLanguage: "Wähle dein bevorzugte Sprache aus.",
+      saveLanguage: "Sprache speichern",
+      settings: "Lege hier deine Einstellungen und Präferenzen fest.",
+      title: "Einstellungen",
       twoFAActivated: ["2FA aktiviert"],
       twoFABackupCode: "2FA Backup-Code",
-      enterTwoFACode: "Gib den 2FA-Code ein:",
-      activateTwoFA: "Aktivieren",
-      deactivateTwoFA: "Deaktivieren",
-      twoFAGenerateBackupCodes: "Backup-Codes generieren",
-      confirmPassword: "Bestätigen",
       twoFABackupCodeInfo: [
         "Das sind deine Backup-Codes.",
         "Kopiere diese oder lade sie herunter",
         "",
         "Sie werden nicht nochmal angezeigt"
       ],
-      twoFADownloadBackupCodes: "Herunterladen"
+      twoFADownloadBackupCodes: "Herunterladen",
+      twoFAGenerateBackupCodes: "Backup-Codes generieren",
+      twoFAInfo: [
+        "Aktiviere 2FA:",
+        "",
+        "Bitte verwende eine Authentifizierungs App",
+        "um den QR-Code unten zu scannen."
+      ],
+      twoFASetup: "2FA Einstellungen"
     },
 
     statsView: {
@@ -295,16 +302,16 @@ const de: TranslationShape = {
       date: "Datum",
       details: "Details",
       eliminatedInRound: "Ausgeschieden in Runde {{round}}",
-      friends: "Freunde",
       friendOnly:
         "Du musst befreundet sein, um detaillierte Statistiken zu sehen.",
+      friends: "Freunde",
       joined: "Beigetreten am {{date}}",
       matches: "Spiele",
       matchHistory: "Spielverlauf",
       played: "Gespielt",
       player1: "Spieler 1",
-      player2: "Spieler 2",
       player1Score: "Spieler 1 Punkte",
+      player2: "Spieler 2",
       player2Score: "Spieler 2 Punkte",
       result: "Ergebnis",
       title: "Statistiken",
@@ -317,13 +324,12 @@ const de: TranslationShape = {
     },
 
     toast: {
-      acceptedFriendRequest: "Freundschaftsanfrage angenommen von ",
       avatarDeleteFailed:
         "Avatar konnte nicht gelöscht werden. Bitte versuche es erneut.",
       avatarDeleteSuccess: "Avatar erfolgreich gelöscht!",
+      avatarUploadedSuccess: "Avatar erfolgreich hochgeladen!",
       avatarUploadFailed:
         "Avatar konnte nicht hochgeladen werden. Bitte versuche es erneut.",
-      avatarUploadedSuccess: "Avatar erfolgreich hochgeladen!",
       chartCannotRemoveYourself: "Du kannst dich selbst nicht entfernen.",
       chartCompareMaxThree: "Du kannst höchstens 3 Freunde vergleichen.",
       chartError: "Ein Diagramm konnte nicht initialisiert werden",
@@ -332,69 +338,77 @@ const de: TranslationShape = {
       connectionReestablished: "Verbindung wiederhergestellt",
       connectionUnavailable:
         "Verbindung nicht wiederherstellbar. Versuche gestoppt bis Seite neu geladen wird.",
-      declinedFriendRequest: "Freundschaftsanfrage abgelehnt von ",
-      deletedFriendRequest: "Freundschaftsanfrage gelöscht von ",
-      friendAdded: "Freund {{username}} hinzugefügt!",
+      emailExists: "Diese E-Mail-Adresse ist bereits registriert",
+      emailExistsWithGoogle:
+        "E-Mail wird bereits mit Google verwendet. Bitte melde dich über Google an.",
+      emailOrUsernameExists: "E-Mail oder Benutzername existiert bereits",
+      emailOrUsernameNotExist: "E-Mail oder Benutzername gibt es nicht",
+      friendAcceptedFriendRequest:
+        "<strong>{{username}}</strong> hat deine Anfrage angenommen",
+      friendAdded: "Freund <strong>{{username}}</strong> hinzugefügt",
+      friendDeclinedFriendRequest:
+        "<strong>{{username}}</strong> hat deine Anfrage abgelehnt",
+      friendRemovedFriend:
+        "<strong>{{username}}</strong> möchte nicht mehr dein Freund sein",
       friendRequestButtonError:
         "Fehler beim Verarbeiten der Freundschaftsanfrage",
       friendRequestEventError: "Fehler beim Empfang der Freundschaftsanfrage.",
-      friendRequestSendError: "Fehler beim Senden der Freundschaftsanfrage.",
-      emailExists: "Diese E-Mail-Adresse ist bereits registriert",
-      emailOrUsernameExists: "E-Mail oder Benutzername existiert bereits",
-      emailOrUsernameNotExist: "E-Mail oder Benutzername gibt es nicht",
-      invalidUsernameOrPW: "Ungültiger Benutzername oder Passwort",
+      friendRescindedFriendRequest:
+        "<strong>{{username}}</strong> hat seine Anfrage zurückgezogen",
+      friendSentFriendRequest:
+        "<strong>{{username}}</strong> hat dir eine Freundschaftsanfrage gesendet",
+      gameSaveSuccess: "Spiel erfolgreich gespeichert",
+      gameSaveFailed: "Spiel konnte nicht gespeichert werden",
       invalidToken: "Token nicht valide",
+      invalidUsernameOrPW: "Ungültiger Benutzername oder Passwort",
+      loginError: "Fehler beim Anmelden. Bitte versuche es erneut",
       logoutError: "Fehler beim Abmelden. Bitte versuche es erneut.",
+      passwordUpdatedSuccess: "Passwort erfolgreich aktualisiert!",
       passwordUpdateFailed:
         "Passwort konnte nicht aktualisiert werden. Bitte versuche es erneut.",
-      passwordUpdatedSuccess: "Passwort erfolgreich aktualisiert!",
-      tabError: "Der Tab konnte nicht initialisiert werden.",
-      twoFASetupSuccess: "2FA erfolgreich aktiviert!",
-      twoFARemoveSuccess: "2FA erfolgreich deaktiviert!",
       profileDeleteFailed:
         "Profil konnte nicht gelöscht werden. Bitte versuche es erneut.",
       profileDeleteSuccess: "Profil erfolgreich gelöscht!",
+      profileUpdatedSuccess: "Profil erfolgreich aktualisiert!",
       profileUpdateFailed:
         "Profil konnte nicht aktualisiert werden. Bitte versuche es erneut.",
-      profileUpdatedSuccess: "Profil erfolgreich aktualisiert!",
       registrationSuccess: "Registrierung von {{username}} erfolgreich!",
-      sendSuccess: "Anfrage erfolgreich an {{username}} gesendet",
-      terminatedFriendship: "Freundschaft beendet mit ",
+      somethingWentWrong: "Etwas ist schief gelaufen",
+      tabError: "Der Tab konnte nicht initialisiert werden.",
       tokenRefreshFailed:
         "Token-Aktualisierung fehlgeschlagen. Bitte erneut versuchen.",
-      userAcceptedFriendRequest:
-        "Anfrage von <strong>{{username}}</strong> angenommen",
-      userDeclinedFriendRequest:
-        "Anfrage von <strong>{{username}}</strong> abgelehnt",
-      userRescindedFriendRequest:
-        "Anfrage von <strong>{{username}}</strong> zurückgezogen",
-      userRemovedFriend:
-        "<strong>{{username}}</strong> wurde aus deiner Freundesliste entfernt",
-      userSentFriendRequest: "Anfrage von <strong>{{username}}</strong>",
-      userStatus: "{{username}} ist {{status}}",
+      tournamentAbortFailed:
+        "Turnier konnte nicht abgebrochen werden. Bitte versuche es erneut.",
+      tournamentAbortSuccess: "Tunier erfolgreich abgebrochen",
+      tournamentFinishFailed:
+        "Turnier konnte nicht beendet werden. Bitte versuche es erneut.",
+      tournamentFinishSuccess: "Tunier erfolgreich beendet!",
+      twoFARemoveSuccess: "2FA erfolgreich deaktiviert!",
+      twoFASetupSuccess: "2FA erfolgreich aktiviert!",
+      userAcceptedFriendRequest: "Angenommen - Freundschafsanfrage von ",
+      userDeclinedFriendRequest: "Abgelehnt - Freundschaftsanfrage von ",
+      userRemovedFriendship: "Freundschaft beendet mit ",
+      userRescindedFriendRequest: "Zurückgezogen - Freundschaftsanfrage von ",
+      userSendFriendRequestSuccess:
+        "Anfrage erfolgreich an <strong>{{username}}</strong> gesendet",
+      userSendRequestFailed: "Fehler beim Senden der Freundschaftsanfrage.",
+      userStatus: "<strong>{{username}}</strong> ist {{status}}",
       userVerificationError:
         "Fehler bei der Benutzerverifizierung:<br>Weiterleitung zur Anmeldung.",
       validateTournamentNameError:
         "Fehler bei der Validierung des Turniernamens."
     },
 
-    chart: {
-      activity: "Aktivität",
-      current: "Aktuell",
-      loss: "Niederlage",
-      numPlayers: "{{num}} Spieler",
-      played: "Gespielte Turniere{{range}}",
-      progress: "Fortschritt ({{num}} Spieler)",
-      progression: "Siegquote{{range}}",
-      rangeLastDays: " (Letzten {{count}} Tage)",
-      rangeLastMatches: " (Letzten {{count}} Spiele)",
-      reachedThisStage: "Diese Stufe erreicht",
-      scoreDiff: "Punktedifferenz{{range}}",
-      scores: "Punkte{{range}}",
-      selectUpTo: "Wähle bis zu 3 Freunde aus",
-      summary: "Übersicht",
-      win: "Sieg",
-      winLoss: "Siege vs Niederlagen{{range}}"
+    twoFABackupCodeVerifyView: {
+      enterTwoFABackupCode: "Gib den Backup-Code ein:",
+      title: "Backup-Code Verifizierung",
+      twoFABackupCode: "Backup-Code"
+    },
+
+    twoFAVerifyView: {
+      enterTwoFACode: "Gib den 2FA-Code ein:",
+      title: "2FA-Code Verifizierung",
+      useBackupCode: "Backup-Code verwenden"
     }
   }
 };

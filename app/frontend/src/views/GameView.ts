@@ -7,6 +7,7 @@ import NewGameView from "./NewGameView.js";
 import { Tournament } from "../Tournament.js";
 import { PlayedAs, PlayerType } from "../types/IMatch.js";
 import { getById } from "../utility.js";
+import { viewLogger } from "../logging/config.js";
 
 export type GameKey = "w" | "s" | "ArrowUp" | "ArrowDown";
 
@@ -31,6 +32,12 @@ export class GameView extends AbstractView {
     this.setTitle();
   }
 
+  override async mount(): Promise<void> {
+    super.render();
+    this.toggleLangSwitcher();
+    this.handleGame();
+  }
+
   createHTML() {
     return /* HTML */ `
       <canvas
@@ -42,14 +49,7 @@ export class GameView extends AbstractView {
     `;
   }
 
-  async render() {
-    this.updateHTML();
-    this.toggleLangSwitcher();
-    this.addListeners();
-    this.handleGame();
-  }
-
-  protected addListeners() {
+  protected override addListeners() {
     document.addEventListener("keydown", this.onKeyDown, {
       signal: this.controller.signal
     });
@@ -86,39 +86,36 @@ export class GameView extends AbstractView {
   };
 
   unmount(): void {
-    console.log("Cleaning up GameView");
+    viewLogger.debug("Cleaning up GameView");
     this.toggleLangSwitcher();
     setIsAborted(true);
     this.controller.abort();
   }
 
   async handleGame(): Promise<void> {
-    try {
-      await startGame(
-        this.nickname1,
-        this.nickname2,
-        this.type1,
-        this.type2,
-        this.userRole,
-        this.tournament,
-        this.keys
-      );
-      if (getIsAborted()) return;
+    await startGame(
+      this.nickname1,
+      this.nickname2,
+      this.type1,
+      this.type2,
+      this.userRole,
+      this.tournament,
+      this.keys
+    );
+    if (getIsAborted()) return;
 
-      let view;
-      if (!this.tournament) {
-        view = new NewGameView();
+    let view;
+    if (!this.tournament) {
+      view = new NewGameView();
+    } else {
+      if (this.tournament.getNextMatchToPlay()) {
+        view = new MatchAnnouncement(this.tournament);
       } else {
-        if (this.tournament.getNextMatchToPlay()) {
-          view = new MatchAnnouncement(this.tournament);
-        } else {
-          view = new ResultsView(this.tournament);
-        }
+        view = new ResultsView(this.tournament);
       }
-      router.switchView(view);
-    } catch (error) {
-      router.handleError("Error in handleGame()", error);
     }
+
+    this.addEnterListenerForNavigation(view);
   }
 
   getName(): string {
@@ -126,9 +123,21 @@ export class GameView extends AbstractView {
   }
 
   toggleLangSwitcher() {
-    console.log("Toggled Lang switcher");
+    viewLogger.debug("Toggled Lang switcher");
     const button: HTMLButtonElement = getById("lang-switcher-button");
     button.disabled = !button.disabled;
     button.classList.toggle("hidden");
+  }
+
+  private addEnterListenerForNavigation(viewToSwitch: AbstractView) {
+    const onEnter = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        router.switchView(viewToSwitch);
+      }
+    };
+
+    document.addEventListener("keydown", onEnter, {
+      signal: this.controller.signal
+    });
   }
 }

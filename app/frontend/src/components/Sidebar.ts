@@ -27,7 +27,7 @@ export function Sidebar(
 
   return /* HTML */ `
     <aside
-      class="fixed top-0 right-0 h-full w-75 bg-emerald-dark text-neon-cyan border-l-2 border-emerald-light rounded-l-2xl z-40 shadow-lg transform transition-transform duration-300 translate-x-full focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+      class="fixed top-0 right-0 h-full w-75 bg-emerald-dark text-neon-cyan border-l-2 border-emerald-light rounded-l-2xl z-40 shadow-lg transform transition-transform duration-300 translate-x-full hidden"
       tabindex="-1"
       id="drawer-sidebar"
     >

@@ -35,7 +35,7 @@ export function LanguageSwitcher({
       <button
         id="${buttonId}"
         type="button"
-        class="bg-black w-full text-teal border border-teal rounded hover:bg-emerald transition px-2 py-1 text-sm flex items-center gap-1 focus:outline-none ${sizeClasses}"
+        class="bg-black w-full text-teal border border-teal rounded hover:bg-emerald px-2 py-1 text-sm flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan ${sizeClasses}"
         aria-haspopup="true"
         aria-expanded="false"
       >

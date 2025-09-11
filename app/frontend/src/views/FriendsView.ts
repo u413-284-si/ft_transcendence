@@ -30,6 +30,7 @@ import { Header2 } from "../components/Header2.js";
 import { toaster } from "../Toaster.js";
 import { auth } from "../AuthManager.js";
 import { Header3 } from "../components/Header3.js";
+import { viewLogger } from "../logging/config.js";
 
 type RequestListType = "friend" | "incoming" | "outgoing";
 
@@ -46,10 +47,9 @@ export default class FriendsView extends AbstractView {
     return i18next.t("friendsView.title");
   }
 
-  async render(): Promise<void> {
+  override async mount(): Promise<void> {
     this.friendRequests = getDataOrThrow(await getUserFriendRequests());
-    this.updateHTML();
-    this.addListeners();
+    super.render();
   }
 
   private refreshRequestList(type: RequestListType): void {
@@ -195,7 +195,7 @@ export default class FriendsView extends AbstractView {
   `;
   }
 
-  protected addListeners(): void {
+  protected override addListeners(): void {
     window.addEventListener(
       "app:FriendStatusChangeEvent",
       this.handleFriendStatusChange,
@@ -253,9 +253,12 @@ export default class FriendsView extends AbstractView {
               }
             }
 
-            toaster.success(`${toastMessage} ${username}`, toastIcon);
+            toaster.success(
+              `${toastMessage} <strong>${username}</strong>`,
+              toastIcon
+            );
           } catch (error) {
-            console.error(error);
+            viewLogger.error(error);
             toaster.error(i18next.t("toast.friendRequestButtonError"));
           }
         },
@@ -274,7 +277,7 @@ export default class FriendsView extends AbstractView {
           i18next.t("friendsView.confirmRemoveFriend"),
           ["friend"],
           this.handleDeleteButton,
-          i18next.t("toast.terminatedFriendship"),
+          i18next.t("toast.userRemovedFriendship"),
           "💀"
         );
         break;
@@ -285,7 +288,7 @@ export default class FriendsView extends AbstractView {
           null,
           ["incoming", "friend"],
           this.handleAcceptButton,
-          i18next.t("toast.acceptedFriendRequest"),
+          i18next.t("toast.userAcceptedFriendRequest"),
           "❤️"
         );
         this.addButtonListeners(
@@ -293,7 +296,7 @@ export default class FriendsView extends AbstractView {
           i18next.t("friendsView.confirmDeclineRequest"),
           ["incoming"],
           this.handleDeleteButton,
-          i18next.t("toast.declinedFriendRequest"),
+          i18next.t("toast.userDeclinedFriendRequest"),
           "💔"
         );
         break;
@@ -304,7 +307,7 @@ export default class FriendsView extends AbstractView {
           i18next.t("friendsView.confirmDeleteRequest"),
           ["outgoing"],
           this.handleDeleteButton,
-          i18next.t("toast.deletedFriendRequest"),
+          i18next.t("toast.userRescindedFriendRequest"),
           "💔"
         );
         break;
@@ -400,7 +403,11 @@ export default class FriendsView extends AbstractView {
       inputEl.value = "";
       this.refreshRequestList("outgoing");
       if (request.status === "PENDING") {
-        toaster.success(i18next.t("toast.sendSuccess", { username: username }));
+        toaster.success(
+          i18next.t("toast.userSendFriendRequestSuccess", {
+            username: username
+          })
+        );
       } else if (request.status === "ACCEPTED") {
         toaster.success(
           i18next.t("toast.friendAdded", { username: username }),
@@ -410,13 +417,13 @@ export default class FriendsView extends AbstractView {
         this.refreshRequestList("friend");
       }
     } catch (error) {
-      console.error("Failed to send friend request:", error);
-      toaster.error(i18next.t("toast.friendRequestSendError"));
+      viewLogger.error("Failed to send friend request:", error);
+      toaster.error(i18next.t("toast.userSendRequestFailed"));
     }
   };
 
   unmount(): void {
-    console.log("Cleaning up FriendsView");
+    viewLogger.debug("Cleaning up FriendsView");
     this.controller.abort();
   }
 
@@ -489,7 +496,7 @@ export default class FriendsView extends AbstractView {
         }
       }
     } catch (error) {
-      console.error(error);
+      viewLogger.error(error);
       toaster.error(i18next.t("toast.friendRequestEventError"));
     }
   };

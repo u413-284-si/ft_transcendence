@@ -8,6 +8,16 @@ export default abstract class AbstractView {
     document.title = this.getName();
   }
 
+  async mount(): Promise<void> {
+    this.render();
+  }
+
+  render(): void {
+    this.updateHTML();
+    this.cacheNodes();
+    this.addListeners();
+  }
+
   abstract createHTML(): string;
 
   updateHTML(): void {
@@ -17,9 +27,9 @@ export default abstract class AbstractView {
     container.innerHTML = cleanHTML;
   }
 
-  abstract render(): Promise<void>;
+  protected cacheNodes(): void {}
 
-  protected addListeners?(): void;
+  protected addListeners(): void {}
 
   unmount?(): void;
 

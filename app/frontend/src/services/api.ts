@@ -1,4 +1,5 @@
 import { auth } from "../AuthManager.js";
+import { apiLogger } from "../logging/config.js";
 import { ApiResponse, ApiSuccess, ApiFail } from "../types/IApiResponse.js";
 import { refreshAccessToken } from "./authServices.js";
 
@@ -97,7 +98,7 @@ async function refreshAndRetry<T>(
 }
 
 function createApiSuccess<T>(message: string, data: T): ApiSuccess<T> {
-  console.log({ message, data });
+  apiLogger.debug({ message, data });
   return { success: true, message, data };
 }
 
@@ -106,6 +107,6 @@ function createApiFail(
   status: number,
   cause?: string
 ): ApiFail {
-  console.error({ message, status, cause });
+  apiLogger.error({ message, status, cause });
   return { success: false, message, status, cause };
 }

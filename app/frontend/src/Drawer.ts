@@ -34,6 +34,7 @@ export class Drawer {
   }
 
   public open() {
+    this.drawerEl.classList.remove("hidden");
     this.drawerEl.classList.remove("translate-x-full");
     this.overlayEl.classList.remove("hidden");
     this.drawerEl.focus();
@@ -42,6 +43,7 @@ export class Drawer {
 
   public close() {
     this.drawerEl.classList.add("translate-x-full");
+    this.drawerEl.classList.add("hidden");
     this.overlayEl.classList.add("hidden");
     document.removeEventListener("keydown", this.onKeyDown);
   }

@@ -20,6 +20,7 @@ import { auth } from "../AuthManager.js";
 import { getById, getBySelector } from "../utility.js";
 import { List } from "../components/List.js";
 import { Card } from "../components/Card.js";
+import { viewLogger } from "../logging/config.js";
 
 export default class NewTournamentView extends AbstractView {
   private formEl!: HTMLFormElement;
@@ -27,6 +28,28 @@ export default class NewTournamentView extends AbstractView {
   constructor() {
     super();
     this.setTitle();
+  }
+
+  override async mount(): Promise<void> {
+    const tournamentsPage = getDataOrThrow(
+      await getUserTournaments({
+        username: auth.getUser().username,
+        isFinished: false
+      })
+    );
+    if (tournamentsPage.items.length === 0) {
+      viewLogger.debug("No active tournament found");
+      super.render();
+      return;
+    }
+    const activeTournament = tournamentsPage.items[0];
+    const tournament = new Tournament(activeTournament);
+    if (tournament.getNextMatchToPlay()) {
+      router.switchView(new MatchAnnouncement(tournament));
+    } else {
+      router.switchView(new ResultsView(tournament));
+    }
+    return;
   }
 
   createHTML() {
@@ -91,34 +114,14 @@ export default class NewTournamentView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndRequestNicknames(event)
     );
   }
 
-  async render() {
-    const tournamentsPage = getDataOrThrow(
-      await getUserTournaments({
-        username: auth.getUser().username,
-        isFinished: false
-      })
-    );
-    if (tournamentsPage.items.length === 0) {
-      console.log("No active tournament found");
-      this.updateHTML();
-      this.formEl = getById("tournament-form");
-      this.addListeners();
-      return;
-    }
-    const activeTournament = tournamentsPage.items[0];
-    const tournament = new Tournament(activeTournament);
-    if (tournament.getNextMatchToPlay()) {
-      router.switchView(new MatchAnnouncement(tournament));
-    } else {
-      router.switchView(new ResultsView(tournament));
-    }
-    return;
+  protected override cacheNodes(): void {
+    this.formEl = getById("tournament-form");
   }
 
   async validateAndRequestNicknames(event: Event) {
@@ -154,7 +157,7 @@ export default class NewTournamentView extends AbstractView {
     }
 
     const playerNum = parseInt(playersSelected.value);
-    console.log(
+    viewLogger.debug(
       `Tournament "${tournamentNameEl.value}" started with ${playerNum} players`
     );
 
