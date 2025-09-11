@@ -1,5 +1,4 @@
 # Variables
-DOCKER_COMPOSE_FILE = docker-compose.yml
 PROJECT_NAME = ft_transcendence
 VERBOSE = 0
 
@@ -46,7 +45,7 @@ help:
 # Builds, (re)creates, starts, and attaches to containers for a service.
 .PHONY: up
 up: check-env
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d
+	$(SILENT)docker compose -p $(PROJECT_NAME) up -d
 
 .PHONY: check-env
 check-env:
@@ -60,56 +59,56 @@ check-env:
 # Watches for changes in files and rebuilds containers
 PHONY: watch
 watch:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up --watch
+	$(SILENT)docker compose -p $(PROJECT_NAME) up --watch
 
 # Stops containers and removes containers, networks, volumes, and images created by up
 .PHONY: down
 down:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) down
+	$(SILENT)docker compose -p $(PROJECT_NAME) down
 
 # Services are built once and then tagged
 .PHONY: build
 build:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build
+	$(SILENT)docker compose -p $(PROJECT_NAME) build
 
 # Services are built once and then tagged without cache
 .PHONY: buildnc
 buildnc:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) build  --no-cache
+	$(SILENT)docker compose -p $(PROJECT_NAME) build  --no-cache
 
 # Starts existing containers for a service
 .PHONY: start
 start:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) start
+	$(SILENT)docker compose -p $(PROJECT_NAME) start
 
 # Stop the containers
 .PHONY: stop
 stop:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) stop
+	$(SILENT)docker compose -p $(PROJECT_NAME) stop
 
 # View output from the services
 .PHONY: logs
 logs:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) logs -f
+	$(SILENT)docker compose -p $(PROJECT_NAME) logs -f
 
 # List the services
 .PHONY: ps
 ps:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) ps
+	$(SILENT)docker compose -p $(PROJECT_NAME) ps
 
 # Remove stopped containers, networks, and volumes
 .PHONY: clean
 clean:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) down -v --remove-orphans --rmi all
+	$(SILENT)docker compose -p $(PROJECT_NAME) down -v --remove-orphans --rmi all
 
 # Restart the services
 .PHONY: restart
 restart:
-	$(SILENT)docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) restart
+	$(SILENT)docker compose -p $(PROJECT_NAME) restart
 
 # Execute a command in a running service container
 .PHONY: exec
 exec:
 	@read -p "Service name: " service; \
 	read -p "Command: " cmd; \
-	docker compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) exec $$service $$cmd
+	docker compose -p $(PROJECT_NAME) exec $$service $$cmd
