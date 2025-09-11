@@ -30,7 +30,7 @@ export function Select({
       <select
         id="select-${id}"
         name="${name}"
-        class="mt-1 block w-full rounded-lg px-2 py-1 bg-black text-white border border-teal"
+        class="mt-1 block w-full rounded-lg px-2 py-1 bg-black text-white border border-teal focus:outline-none focus:ring-2 focus:ring-neon-cyan"
       >
         ${options
           .map(

@@ -120,7 +120,7 @@ function getToggleButtonHTML(id: string): string {
     <button
       type="button"
       id="${id}-toggle"
-      class="absolute right-2 p-2 text-teal hover:text-white"
+      class="absolute right-2 p-2 text-teal hover:text-white focus:outline-none focus:ring-2 focus:ring-neon-cyan rounded-md"
       aria-label="Toggle password visibility"
     >
       <span id="${id}-show-eye">${getEyeIconHTML("show")}</span>
