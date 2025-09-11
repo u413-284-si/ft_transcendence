@@ -26,7 +26,7 @@ export function Checkbox({
         value="${value}"
         ${checked ? "checked" : ""}
         ${disabled ? "disabled" : ""}
-        class="accent-neon-cyan focus:outline-none focus-visible:ring-2 focus-visible:ring-teal"
+        class="accent-neon-cyan focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
       />
       <label for="${id}" class="text-white text-md">${label}</label>
     </div>
