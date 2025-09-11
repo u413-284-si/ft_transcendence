@@ -17,6 +17,7 @@ import { List } from "../components/List.js";
 
 export default class NewGameView extends AbstractView {
   private formEl!: HTMLFormElement;
+  private username: string = escapeHTML(auth.getUser().username);
 
   constructor() {
     super();
@@ -36,12 +37,12 @@ export default class NewGameView extends AbstractView {
             children: [
               i18next.t("newGameView.enterNickname"),
               i18next.t("newGameView.selectPlayer", {
-                username: escapeHTML(auth.getUser().username)
+                username: this.username
               }),
               i18next.t("newGameView.aiOption")
             ]
           }),
-          NicknameInput(2, auth.getUser().username),
+          NicknameInput(2, this.username),
           Button({
             text: i18next.t("newGameView.startGame"),
             variant: "default",
@@ -58,7 +59,7 @@ export default class NewGameView extends AbstractView {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartGame(event)
     );
-    initNicknameInputListeners();
+    initNicknameInputListeners(this.username);
   }
 
   protected override cacheNodes(): void {

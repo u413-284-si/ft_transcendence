@@ -24,6 +24,7 @@ import { viewLogger } from "../logging/config.js";
 
 export default class PlayerNicknamesView extends AbstractView {
   private formEl!: HTMLFormElement;
+  private username: string = escapeHTML(auth.getUser().username);
 
   constructor(
     private numberOfPlayers: number,
@@ -49,14 +50,14 @@ export default class PlayerNicknamesView extends AbstractView {
         children: [
           i18next.t("newGameView.enterNickname"),
           i18next.t("newGameView.selectPlayer", {
-            username: escapeHTML(auth.getUser().username)
+            username: this.username
           }),
           i18next.t("playerNicknamesView.aiOptions")
         ]
       })}
       ${Form({
         children: [
-          NicknameInput(this.numberOfPlayers, auth.getUser().username),
+          NicknameInput(this.numberOfPlayers, this.username),
           Button({
             text: i18next.t("playerNicknamesView.submitNicknames"),
             variant: "default",
@@ -73,7 +74,7 @@ export default class PlayerNicknamesView extends AbstractView {
     this.formEl.addEventListener("submit", (event) =>
       this.validateAndStartTournament(event)
     );
-    initNicknameInputListeners();
+    initNicknameInputListeners(this.username);
   }
 
   protected override cacheNodes(): void {
