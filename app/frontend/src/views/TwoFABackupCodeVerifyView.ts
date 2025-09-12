@@ -43,15 +43,10 @@ export default class TwoFABackupCodeVerifyView extends AbstractView {
     `;
   }
 
-  protected addListeners() {
+  protected override addListeners() {
     document
       .getElementById("two-fa-verify-backup-code-form")
       ?.addEventListener("submit", (event) => this.verifTwoFABackupCode(event));
-  }
-
-  async render() {
-    this.updateHTML();
-    this.addListeners();
   }
 
   getName(): string {

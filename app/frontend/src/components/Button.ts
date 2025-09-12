@@ -10,13 +10,12 @@ export type ButtonOptions = {
 
 const buttonVariants: Record<string, string> = {
   default:
-    "border border-neon-cyan text-white enabled:hover:shadow-neon-cyan enabled:hover:bg-neon-cyan transition-all duration-500 ease-in-out",
+    "border border-neon-cyan text-white enabled:hover:shadow-neon-cyan enabled:hover:bg-neon-cyan",
   active:
-    "border border-neon-green text-white enabled:hover:shadow-neon-green enabled:hover:bg-neon-green transition-all duration-500 ease-in-out",
+    "border border-neon-green text-white enabled:hover:shadow-neon-green enabled:hover:bg-neon-green",
   danger:
-    "border border-neon-red text-white enabled:hover:shadow-neon-red enabled:hover:bg-neon-red transition-all duration-500 ease-in-out",
-  google:
-    "hover:shadow-neon-cyan hover:bg-neon-cyan transition-all duration-500 ease-in-out"
+    "border border-neon-red text-white enabled:hover:shadow-neon-red enabled:hover:bg-neon-red",
+  google: "hover:shadow-neon-cyan hover:bg-neon-cyan"
 };
 
 const buttonSizes: Record<string, string> = {
@@ -40,7 +39,7 @@ export function Button({
     text = googleSVG();
   }
   const classes = [
-    "inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan uppercase",
+    "inline-flex items-center justify-center rounded-md font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan uppercase transition-all duration-500 ease-in-out focus-visible:transition-none",
     buttonVariants[variant],
     buttonSizes[size],
     className

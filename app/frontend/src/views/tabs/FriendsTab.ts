@@ -5,7 +5,7 @@ import { buildFriendsWinRateOptions } from "../../charts/friendsWinRateOptions.j
 import { buildFriendsWinstreakOptions } from "../../charts/friendsWinStreakOptions.js";
 import { Chart } from "../../components/Chart.js";
 import { Header1 } from "../../components/Header1.js";
-import { appLogger } from "../../logging/config.js";
+import { viewLogger } from "../../logging/config.js";
 import { getDataOrThrow } from "../../services/api.js";
 import { getUserDashboardFriends } from "../../services/userStatsServices.js";
 import { toaster } from "../../Toaster.js";
@@ -72,12 +72,12 @@ export class FriendsTab extends AbstractTab {
 
   override async onShow(): Promise<void> {
     await super.onShow();
+    this.renderFriendSelector(this.dashboard!.matchStats);
   }
 
   async initData(): Promise<void> {
     this.dashboard = getDataOrThrow(await getUserDashboardFriends());
     this.populateChartOptions();
-    this.renderFriendSelector(this.dashboard!.matchStats);
   }
 
   override onHide(): void {
@@ -101,10 +101,12 @@ export class FriendsTab extends AbstractTab {
 
   renderFriendSelector(friends: FriendStatsSeries) {
     if (!friends || friends.length === 0) {
-      appLogger.warn("No friends to display");
+      viewLogger.warn("No friends to display");
       return;
     }
     const container = getById<HTMLDivElement>("friend-selector");
+    container.innerHTML = "";
+
     const selectedFriends = this.friendManager.getSelectedFriends();
 
     friends.forEach((friend) => {

@@ -4,12 +4,13 @@ import {
   updateUser,
   deleteUser,
   getUserAvatar,
-  createUserAvatar,
+  createAvatarFile,
   deleteUserAvatar,
   getUserByUsername,
   getUserByEmail,
   getUserAuthProvider,
-  flattenUser
+  flattenUser,
+  validateImageFile
 } from "../services/users.services.js";
 import {
   getUserMatches,
@@ -19,7 +20,7 @@ import {
   getUserTournaments,
   getUserTournamentsCount
 } from "../services/tournaments.services.js";
-import { httpError } from "../utils/error.js";
+import { HttpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 import {
   createHash,
@@ -28,7 +29,6 @@ import {
   verifyHash
 } from "../services/auth.services.js";
 import { getAllUserFriendRequests } from "../services/friends.services.js";
-import { fileTypeFromBuffer } from "file-type";
 import { notifyProfileChange } from "../services/events/sse.services.js";
 
 export async function createUserHandler(request, reply) {
@@ -58,12 +58,7 @@ export async function patchUserHandler(request, reply) {
   const userId = request.user.id;
 
   if (request.body.email && (await getUserAuthProvider(userId)) !== "LOCAL") {
-    return httpError(
-      reply,
-      403,
-      createResponseMessage(request.action, false),
-      "Email can not be changed. User uses Google auth provider"
-    );
+    throw new HttpError(403, "Can't change email: non-local auth provider");
   }
 
   const data = await updateUser(userId, request.body);
@@ -144,59 +139,41 @@ export async function getAllUserFriendRequestsHandler(request, reply) {
 export async function createUserAvatarHandler(request, reply) {
   request.action = "Create user avatar";
   const userId = request.user.id;
-  const parts = request.parts();
-  for await (const part of parts) {
-    if (part.fieldname === "avatar") {
-      const avatar = part;
-      if (!avatar || !avatar.file) {
-        return httpError(
-          reply,
-          400,
-          createResponseMessage(request.action, false),
-          "Avatar is required"
-        );
-      }
-      // Validate actual file type using file-type
-      const fileBuffer = await avatar.toBuffer();
-      await validateImageFile(fileBuffer);
+  let avatar;
 
-      // Check if the user already has an avatar and delete it
-      const currentAvatarUrl = await getUserAvatar(userId);
-      if (currentAvatarUrl) {
-        await deleteUserAvatar(currentAvatarUrl);
-      }
-
-      // Create new avatar
-      const newFileName = await createUserAvatar(userId, fileBuffer);
-      const avatarUrl = `/images/${newFileName}`;
-      const updatedUser = await updateUser(userId, { avatar: avatarUrl });
-      notifyProfileChange(userId, { update: { avatar: avatarUrl } });
-      return reply.code(201).send({
-        message: createResponseMessage(request.action, true),
-        data: updatedUser
-      });
+  for await (const part of request.parts()) {
+    if (part.file && part.fieldname === "avatar") {
+      avatar = part;
+      break;
+    } else if (part.file) {
+      part.file.resume();
     }
   }
-  // If no avatar field found
-  return httpError(
-    reply,
-    400,
-    createResponseMessage(request.action, false),
-    "Avatar file missing"
-  );
-}
 
-async function validateImageFile(buffer) {
-  const allowedMimeTypes = ["image/png", "image/jpeg", "image/webp"];
-
-  const fileType = await fileTypeFromBuffer(buffer);
-  if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
-    console.error(
-      "Invalid image file type:",
-      fileType ? fileType.mime : "unknown"
-    );
-    throw new Error();
+  if (!avatar) {
+    throw new HttpError(400, "Avatar file missing");
   }
+
+  const fileBuffer = await avatar.toBuffer();
+  if (!fileBuffer || fileBuffer.length === 0) {
+    throw new HttpError(400, "Avatar file is empty");
+  }
+
+  const fileType = await validateImageFile(fileBuffer);
+
+  const currentAvatarUrl = await getUserAvatar(userId);
+  if (currentAvatarUrl) {
+    await deleteUserAvatar(currentAvatarUrl, request.log);
+  }
+
+  const newFileName = await createAvatarFile(fileBuffer, fileType);
+  const avatarUrl = `/images/${newFileName}`;
+  const updatedUser = await updateUser(userId, { avatar: avatarUrl });
+  notifyProfileChange(userId, { update: { avatar: avatarUrl } });
+  return reply.code(201).send({
+    message: createResponseMessage(request.action, true),
+    data: updatedUser
+  });
 }
 
 export async function deleteUserAvatarHandler(request, reply) {
@@ -204,12 +181,7 @@ export async function deleteUserAvatarHandler(request, reply) {
   const userId = request.user.id;
   const currentAvatarUrl = await getUserAvatar(userId);
   if (!currentAvatarUrl) {
-    return httpError(
-      reply,
-      404,
-      createResponseMessage(request.action, false),
-      "No avatar found for user"
-    );
+    throw new HttpError(404, "No avatar found for user");
   }
   await deleteUserAvatar(currentAvatarUrl);
 
@@ -243,24 +215,14 @@ export async function updateUserPasswordHandler(request, reply) {
   const userId = request.user.id;
 
   if ((await getUserAuthProvider(userId)) !== "LOCAL") {
-    return httpError(
-      reply,
-      403,
-      createResponseMessage(request.action, false),
-      "Password can not be changed. User uses Google auth provider"
-    );
+    throw new HttpError(403, "Can't change password: non-local auth provider");
   }
 
   const { currentPassword, newPassword } = request.body;
 
   const hashedPassword = await getPasswordHash(userId);
   if (!(await verifyHash(hashedPassword, currentPassword))) {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "Current password is incorrect"
-    );
+    throw new HttpError(400, "Current password is incorrect");
   }
 
   // Hash the new password

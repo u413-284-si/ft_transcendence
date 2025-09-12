@@ -2,6 +2,25 @@ import { TranslationShape } from "./en.js";
 
 const tr: TranslationShape = {
   translation: {
+    chart: {
+      activity: "Log",
+      current: "Active",
+      loss: "Loss",
+      numPlayers: "({{num}}) Operatives",
+      played: "Tournament Log{{range}}",
+      progress: "Progress {{num}}%",
+      progression: "Winrate Change{{range}}",
+      rangeLastDays: " (Last {{count}} Days)",
+      rangeLastMatches: " (Last {{count}} Matches)",
+      reachedThisStage: "Stage Reached",
+      scoreDiff: "Score Change{{range}}",
+      scores: "Score Log{{range}}",
+      selectUpTo: "Select ≤ 3 nodes",
+      summary: "System Summary",
+      win: "Win",
+      winLoss: "Win/Loss Log{{range}}"
+    },
+
     error: {
       invalidDynamicRoutePattern: "Invalid dynamic route pattern: {{pattern}}",
       matchNotFound: "Session data not found.",
@@ -23,8 +42,8 @@ const tr: TranslationShape = {
     errorView: {
       details: "⚡ Data Stream: {{cause}}",
       errorStatus: "🚨 ERROR CODE {{status}}",
-      title: "SYSTEM ERROR",
-      reload: "REBOOT"
+      reload: "REBOOT",
+      title: "SYSTEM ERROR"
     },
 
     friendListItem: {
@@ -42,13 +61,13 @@ const tr: TranslationShape = {
       confirmRemoveFriend: "Confirm removal of network node?",
       exactUsername: "Exact user ID",
       friendRequests: "Incoming link requests",
-      title: "Network Nodes",
       incomingRequests: "Incoming link signals",
       noFriends: "Network isolated: no connections found",
       noIncoming: "No incoming link signals detected",
       noOutgoing: "No outgoing link signals detected",
       outgoingRequests: "Outgoing link requests",
       sendFriendRequest: "Transmit link request",
+      title: "Network Nodes",
       yourFriends: "Active connections"
     },
 
@@ -58,7 +77,6 @@ const tr: TranslationShape = {
 
     global: {
       avatar: "USER AVATAR",
-      submit: "Transmit",
       confirmNewPassword: "Confirm new access code",
       continue: "Press [ENTER] to proceed",
       editProfile: "Modify your data matrix",
@@ -67,47 +85,48 @@ const tr: TranslationShape = {
       logout: "Log off",
       lost: "Disconnected",
       match: "Session {{matchId}}",
+      matchWinner: "Session {{matchId}} survivor",
       offline: "Offline",
       online: "Online",
       password: "Access code",
-      twoFACode: "Cipher code",
-      pongGame: "PONG GRID",
       player: "Operative",
       playerWins: "Operative {{player}} victorious",
+      pongGame: "PONG GRID",
       round: "Cycle {{round}}",
+      submit: "Transmit",
       toBeDefined: "To be configured",
       tournament: "TOURNAMENT: <strong>{{tournamentName}}</strong>",
+      twoFACode: "Cipher code",
       username: "User ID",
       userNotFound: "User node not found.",
       welcome: "WELCOME",
-      winnerMatch: "Winning session {{matchId}}",
       won: "VICTORY"
     },
 
     homeView: {
-      helloUser: "⚡ Greetings, User {{username}}!",
-      tagline: "Enter the Grid. Master the Pong.",
-      title: "MAINFRAME",
+      faqControlsLeftPaddle: "Move left paddle: W / S",
+      faqControlsRightPaddle: "Move right paddle: Arrow Keys ↑ ↓",
+      faqControlsTitle: "CONTROLS",
 
-      faqTitle: "SYSTEM MANUAL",
-      faqGameModesTitle: "OPERATIVE MODES",
+      faqExtrasText:
+        "Pong is a retro digital construct: timeless, addictive, and inspired by TRON's neon grid. Engage in the neon battle of wits.",
+      faqExtrasTitle: "BACKGROUND DATA",
       faqGameModesSingle:
         "Single Session: Quick match vs AI or another operative.",
+      faqGameModesTitle: "OPERATIVE MODES",
+
       faqGameModesTournament:
         "Tournament: Compete in multiple cycles until one master node remains.",
-
-      faqControlsTitle: "CONTROLS",
-      faqControlsRightPaddle: "Move right paddle: Arrow Keys ↑ ↓",
-      faqControlsLeftPaddle: "Move left paddle: W / S",
-
-      faqTipsTitle: "TACTICAL ADVICE",
       faqTips1: "Predict the balls trajectory instead of chasing it.",
       faqTips2: "Use paddle edges to alter the ball trajectory.",
-      faqTips3: "⚠️ Caution! Each paddle hit accelerates the ball.",
 
-      faqExtrasTitle: "BACKGROUND DATA",
-      faqExtrasText:
-        "Pong is a retro digital construct: timeless, addictive, and inspired by TRON's neon grid. Engage in the neon battle of wits."
+      faqTips3: "⚠️ Caution! Each paddle hit accelerates the ball.",
+      faqTipsTitle: "TACTICAL ADVICE",
+      faqTitle: "SYSTEM MANUAL",
+      helloUser: "⚡ Greetings, User {{username}}!",
+
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "MAINFRAME"
     },
 
     invalid: {
@@ -126,22 +145,22 @@ const tr: TranslationShape = {
       nicknameFormat:
         "Node alias must be 3-20 characters, letters, digits, or -!?_$.",
       nicknameUniqueness: "Node alias must be unique.",
+      passwordConfirmation: "Access code confirmation mismatch.",
+      passwordConfirmationEmpty: "Re-enter your access code",
       passwordEmpty: "Access code cannot be empty.",
       passwordFormat:
         "Access code must be 10-64 chars, include digit, uppercase, lowercase, and special char @$!%*?&",
-      passwordConfirmationEmpty: "Re-enter your access code",
-      passwordConfirmation: "Access code confirmation mismatch.",
-      twoFACode: "Cipher code invalid.",
-      twoFACodeEmpty: "Cipher code field cannot be void.",
-      twoFACodeFormat: "Cipher code must be a 6-digit number.",
-      twoFABackupCode: "Backup cipher invalid.",
-      twoFABackupCodeEmpty: "Backup cipher field cannot be void.",
-      twoFABackupCodeFormat: "Backup cipher must be an 8-digit sequence.",
       playerSelection: "Select number of operatives.",
       tournamentNameEmpty: "Tournament ID cannot be empty.",
       tournamentNameFormat:
         "Tournament ID must be 3-20 chars, letters, digits, or -!?_$.",
       tournamentNameUniqueness: "Tournament ID must be unique.",
+      twoFABackupCode: "Backup cipher invalid.",
+      twoFABackupCodeEmpty: "Backup cipher field cannot be void.",
+      twoFABackupCodeFormat: "Backup cipher must be an 8-digit sequence.",
+      twoFACode: "Cipher code invalid.",
+      twoFACodeEmpty: "Cipher code field cannot be void.",
+      twoFACodeFormat: "Cipher code must be a 6-digit number.",
       usernameEmpty: "User ID cannot be empty.",
       usernameFormat: "User ID must be 3-20 chars, letters, digits, or -!?_$.",
       usernameUniqueness: "User ID must be unique."
@@ -152,73 +171,61 @@ const tr: TranslationShape = {
       usernameOrEmail: "User ID or Data Address"
     },
 
-    twoFAVerifyView: {
-      title: "Cipher code verification",
-      enterTwoFACode: "Input cipher code:",
-      useBackupCode: "Deploy backup cipher"
-    },
-
-    twoFABackupCodeVerifyView: {
-      title: "Backup cipher verification",
-      twoFABackupCode: "Backup cipher",
-      enterTwoFABackupCode: "Input backup cipher:"
-    },
-
     matchAnnouncementView: {
       abortTournament: "Terminate tournament",
       nextMatch: "Next session queued",
-      title: "UPCOMING SESSION",
       roundMatch: "Cycle {{round}} - Session {{match}}",
-      startMatch: "Initiate session",
       skipMatch: "Bypass session",
-      spectateMatch: "Monitor session"
+      spectateMatch: "Monitor session",
+      startMatch: "Initiate session",
+      title: "UPCOMING SESSION"
     },
 
     newGameView: {
-      title: "NEW SESSION",
+      aiOption: "Optional: let the system AI control the other node.",
       enterNickname: "Enter your operative alias code.",
       selectPlayer: "Assign control to operative {{username}}.",
-      aiOption: "Optional: let the system AI control the other node.",
-      startGame: "BEGIN SESSION"
+      startGame: "BEGIN SESSION",
+      title: "NEW SESSION"
     },
 
     newTournamentView: {
       confirmAbortTournament: "Confirm cancellation of tournament sequence?",
       enterTournamentName: "Input tournament designation",
-      selectNumberPlayers: "Assign operative count",
-      title: "NEW TOURNAMENT SEQUENCE",
       numberOfPlayers: "Operatives count",
+      players16: "16 operatives",
       players4: "4 operatives",
       players8: "8 operatives",
-      players16: "16 operatives",
+      selectNumberPlayers: "Assign operative count",
       startTournament: "LAUNCH TOURNAMENT",
+      title: "NEW TOURNAMENT SEQUENCE",
       tournamentName: "Tournament designation"
     },
 
     nicknameInput: {
-      enterYourNickname: "Enter your operative alias",
-      playerChoice: "{{username}} operates as agent {{i}}",
-      playerNickname: "Agent {{i}} alias",
       aiPlayer: "Synthetic Operative",
       aiStrength: "Processing Power",
       aiStrengthEasy: "Low Protocol",
+      aiStrengthHard: "Overclocked Protocol",
       aiStrengthMedium: "Standard Protocol",
-      aiStrengthHard: "Overclocked Protocol"
+      enterYourNickname: "Enter your operative alias",
+      playerChoice: "{{username}} operates as agent {{i}}",
+      playerNickname: "Agent {{i}} alias"
     },
 
     playerNicknamesView: {
-      enterPlayerNicknames: "Input operative aliases",
-      title: "OPERATIVE ALIASES",
       aiOptions: "Optional: let the system AI control one or multiple nodes.",
-      submitNicknames: "TRANSMIT ALIASES"
+      enterPlayerNicknames: "Input operative aliases",
+      submitNicknames: "TRANSMIT ALIASES",
+      title: "OPERATIVE ALIASES"
     },
 
     profileView: {
       cannotChangeEmailOrPW:
         "Data address and access code alterations are locked.",
       changeAvatar: "Override avatar.",
-      changePasswordButton: "MODIFY ACCESS CODE",
       changePassword: "Update your access code.",
+      changePasswordButton: "MODIFY ACCESS CODE",
       chooseFile: "Select image file for avatar override",
       currentPassword: "Current Access Code",
       deleteAvatar: "Delete avatar",
@@ -227,9 +234,9 @@ const tr: TranslationShape = {
       noFileSelected: "No file detected",
       saveChanges: "COMMIT CHANGES",
       signedInWithGoogle: "Connected via Google Network",
+      title: "USER PROFILE",
       updateProfile: "Update your profile matrix.",
-      uploadYourAvatar: "Upload your avatar data",
-      title: "USER PROFILE"
+      uploadYourAvatar: "Upload your avatar data"
     },
 
     registerView: {
@@ -247,37 +254,37 @@ const tr: TranslationShape = {
     },
 
     settingsView: {
-      title: "System Settings",
-      settings: "Configure your system parameters.",
-      preferredLanguage: "Select interface language protocol.",
-      saveLanguage: "Save language preference",
+      activateTwoFA: "Activate",
+      confirmPassword: "Confirm Access Code",
       dangerZone: "DEREZZ Zone",
-      displayTwoFASetup: "Display cipher configuration",
+      deactivateTwoFA: "Deactivate",
       deactivateTwoFASetup: "Deactivate cipher configuration",
       deleteProfile: "Delete node",
       deleteProfileConfirm: "CONFIRM NODE DELETION",
+      displayTwoFASetup: "Display cipher configuration",
       editTwoFASetup: "Edit your cipher configuration",
-      twoFASetup: "Cipher Configuration",
+      enterTwoFACode: "Input cipher code:",
+      preferredLanguage: "Select interface language protocol.",
+      saveLanguage: "Save language preference",
+      settings: "Configure your system parameters.",
+      title: "System Settings",
+      twoFAActivated: ["Cipher Active"],
+      twoFABackupCode: "Backup cipher code",
+      twoFABackupCodeInfo: [
+        "These are your backup cipher codes.",
+        "Copy or download them securely.",
+        "",
+        "They won't be shown again."
+      ],
+      twoFADownloadBackupCodes: "Download",
+      twoFAGenerateBackupCodes: "Generate backup cipher codes",
       twoFAInfo: [
         "Activate Cipher:",
         "",
         "Use an Authenticator App",
         "to scan the QR code below."
       ],
-      twoFAActivated: ["Cipher Active"],
-      twoFABackupCode: "Backup cipher code",
-      enterTwoFACode: "Input cipher code:",
-      activateTwoFA: "Activate",
-      deactivateTwoFA: "Deactivate",
-      twoFAGenerateBackupCodes: "Generate backup cipher codes",
-      confirmPassword: "Confirm Access Code",
-      twoFABackupCodeInfo: [
-        "These are your backup cipher codes.",
-        "Copy or download them securely.",
-        "",
-        "They won’t be shown again."
-      ],
-      twoFADownloadBackupCodes: "Download"
+      twoFASetup: "Cipher Configuration"
     },
 
     statsView: {
@@ -292,8 +299,8 @@ const tr: TranslationShape = {
       matchHistory: "Session Log",
       played: "Engaged",
       player1: "Agent 1",
-      player2: "Agent 2",
       player1Score: "Agent 1 Score",
+      player2: "Agent 2",
       player2Score: "Agent 2 Score",
       result: "Session Outcome",
       title: "Performance Stats",
@@ -308,8 +315,8 @@ const tr: TranslationShape = {
     toast: {
       avatarDeleteFailed: "Avatar deletion interrupted. Reattempt required.",
       avatarDeleteSuccess: "Avatar successfully removed!",
-      avatarUploadFailed: "Avatar upload interrupted. Reattempt required.",
       avatarUploadedSuccess: "Avatar successfully embedded!",
+      avatarUploadFailed: "Avatar upload interrupted. Reattempt required.",
       chartCannotRemoveYourself: "Self-removal not permitted.",
       chartCompareMaxThree: "Data limit: 3 nodes.",
       chartError: "Chart failed to initialize",
@@ -323,18 +330,36 @@ const tr: TranslationShape = {
         "Access conflict: Email registered via Google. Initiate Google sign-in protocol.",
       emailOrUsernameExists: "Data address or User ID already exists",
       emailOrUsernameNotExist: "Data address or User ID not existent",
+      friendAcceptedFriendRequest:
+        "<strong>{{username}}</strong> accepted link request",
       friendAdded: "Link established with <strong>{{username}}</strong>",
+      friendDeclinedFriendRequest:
+        "<strong>{{username}}</strong> rejected link request",
+      friendRemovedFriend:
+        "<strong>{{username}}</strong> disconnected from network",
       friendRequestButtonError: "Error processing link request",
       friendRequestEventError: "Error receiving link request.",
+      friendRescindedFriendRequest:
+        "<strong>{{username}}</strong> withdrew link request",
+      friendSentFriendRequest:
+        "<strong>{{username}}</strong> sent link request",
+      gameSaveSuccess: "Game successfully stored in system.",
+      gameSaveFailed: "System failed to store the game.",
+      invalidToken: "Token invalid",
       invalidUsernameOrPW: "Invalid User ID or access code",
       loginError: "Login failed. Reattempt required.",
       logoutError: "Logout failed. Reattempt required.",
-      invalidToken: "Token invalid",
-      passwordUpdateFailed: "Access code update failed. Retry advised.",
       passwordUpdatedSuccess: "Access code updated successfully!",
+      passwordUpdateFailed: "Access code update failed. Retry advised.",
+      profileDeleteFailed: "Profile deletion failed. Retry advised.",
+      profileDeleteSuccess: "Profile deleted successfully!",
+      profileUpdatedSuccess: "Profile updated successfully!",
+      profileUpdateFailed: "Profile update failed. Retry advised.",
+      registrationSuccess:
+        "Access node registration successful for {{username}}!",
+      somethingWentWrong: "System anomaly detected",
       tabError: "Tab failed to initialize within the Grid.",
-      twoFASetupSuccess: "Cipher activated successfully!",
-      twoFARemoveSuccess: "Cipher deactivated successfully!",
+      tokenRefreshFailed: "Token refresh failed. Reattempt required.",
       tournamentAbortFailed:
         "Abort sequence failed. Grid anomaly detected. Retry advised.",
       tournamentAbortSuccess: "Abort sequence completed. Tournament derezzed.",
@@ -342,54 +367,31 @@ const tr: TranslationShape = {
         "Termination sequence failed. Grid anomaly detected. Retry advised.",
       tournamentFinishSuccess:
         "Termination sequence complete. Tournament derezzed.",
-      profileDeleteFailed: "Profile deletion failed. Retry advised.",
-      profileDeleteSuccess: "Profile deleted successfully!",
-      profileUpdateFailed: "Profile update failed. Retry advised.",
-      profileUpdatedSuccess: "Profile updated successfully!",
-      registrationSuccess:
-        "Access node registration successful for {{username}}!",
-      somethingWentWrong: "System anomaly detected",
-      tokenRefreshFailed: "Token refresh failed. Reattempt required.",
+      twoFARemoveSuccess: "Cipher deactivated successfully!",
+      twoFASetupSuccess: "Cipher activated successfully!",
       userAcceptedFriendRequest: "Accepted link request of ",
       userDeclinedFriendRequest: "Declined link request of ",
-      userRescindedFriendRequest: "Deleted link request to ",
       userRemovedFriendship: "Connection terminated with ",
+      userRescindedFriendRequest: "Deleted link request to ",
       userSendFriendRequestSuccess:
         "Link request successfully transmitted to <strong>{{username}}</strong>",
       userSendRequestFailed: "Error transmitting link request.",
-      friendAcceptedFriendRequest:
-        "<strong>{{username}}</strong> accepted link request",
-      friendDeclinedFriendRequest:
-        "<strong>{{username}}</strong> rejected link request",
-      friendRescindedFriendRequest:
-        "<strong>{{username}}</strong> withdrew link request",
-      friendRemovedFriend:
-        "<strong>{{username}}</strong> disconnected from network",
-      friendSentFriendRequest:
-        "<strong>{{username}}</strong> sent link request",
       userStatus: "<strong>{{username}}</strong> status: {{status}}",
       userVerificationError:
         "An error occurred while verifying the user:<br>Redirecting to login.",
       validateTournamentNameError: "Error verifying tournament ID."
     },
 
-    chart: {
-      activity: "Log",
-      current: "Active",
-      loss: "Loss",
-      numPlayers: "({{num}}) Operatives",
-      played: "Tournament Log{{range}}",
-      progress: "Progress {{num}}%",
-      progression: "Winrate Change{{range}}",
-      rangeLastDays: " (Last {{count}} Days)",
-      rangeLastMatches: " (Last {{count}} Matches)",
-      reachedThisStage: "Stage Reached",
-      scoreDiff: "Score Change{{range}}",
-      scores: "Score Log{{range}}",
-      selectUpTo: "Select ≤ 3 nodes",
-      summary: "System Summary",
-      win: "Win",
-      winLoss: "Win/Loss Log{{range}}"
+    twoFABackupCodeVerifyView: {
+      enterTwoFABackupCode: "Input backup cipher:",
+      title: "Backup cipher verification",
+      twoFABackupCode: "Backup cipher"
+    },
+
+    twoFAVerifyView: {
+      enterTwoFACode: "Input cipher code:",
+      title: "Cipher code verification",
+      useBackupCode: "Deploy backup cipher"
     }
   }
 };

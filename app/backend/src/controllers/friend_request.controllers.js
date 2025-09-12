@@ -7,7 +7,7 @@ import {
   getFriendRequest
 } from "../services/friends.services.js";
 import { getUser } from "../services/users.services.js";
-import { httpError } from "../utils/error.js";
+import { HttpError } from "../utils/error.js";
 import { createResponseMessage } from "../utils/response.js";
 
 export async function createFriendRequestHandler(request, reply) {
@@ -17,12 +17,7 @@ export async function createFriendRequestHandler(request, reply) {
   const friendId = request.body.id;
 
   if (userId === friendId) {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "Can't add yourself as a friend"
-    );
+    throw new HttpError(400, "Can't add yourself as a friend");
   }
 
   // Check friend exists
@@ -32,19 +27,9 @@ export async function createFriendRequestHandler(request, reply) {
 
   if (existingRequest) {
     if (existingRequest.sender) {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(request.action, false),
-        "Friend request already sent."
-      );
+      throw new HttpError(400, "Friend request already sent.");
     } else if (existingRequest.status === "ACCEPTED") {
-      return httpError(
-        reply,
-        400,
-        createResponseMessage(request.action, false),
-        "Already friends"
-      );
+      throw new HttpError(400, "Already friends");
     }
     const data = await updateFriendRequest(
       existingRequest.id,
@@ -77,21 +62,11 @@ export async function updateFriendRequestHandler(request, reply) {
   const friendRequest = await getFriendRequest(requestId, userId);
 
   if (friendRequest.sender) {
-    return httpError(
-      reply,
-      403,
-      createResponseMessage(request.action, false),
-      "Not permitted to perform this action."
-    );
+    throw new HttpError(403, "Not permitted to perform this action.");
   }
 
   if (friendRequest.status !== "PENDING") {
-    return httpError(
-      reply,
-      400,
-      createResponseMessage(request.action, false),
-      "This friend request has already been handled."
-    );
+    throw new HttpError(400, "This friend request has already been handled.");
   }
 
   const data = await updateFriendRequest(requestId, userId, status);

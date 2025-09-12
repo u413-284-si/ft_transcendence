@@ -25,7 +25,7 @@ import {
   isUserNameValid
 } from "../services/users.services.js";
 import { createResponseMessage } from "../utils/response.js";
-import { httpError } from "../utils/error.js";
+import { HttpError } from "../utils/error.js";
 import { createUser, getUserAuthProvider } from "../services/users.services.js";
 import fastify from "../app.js";
 import { notifyProfileChange } from "../services/events/sse.services.js";
@@ -40,23 +40,13 @@ export async function loginUserHandler(request, reply) {
 
   const authProvider = await getUserAuthProvider(payload.id);
   if (authProvider !== "LOCAL") {
-    return httpError(
-      reply,
-      409,
-      createResponseMessage(request.action, false),
-      "User already registered with " + authProvider
-    );
+    throw new HttpError(409, "User already registered with " + authProvider);
   }
 
   const hashedPassword = await getPasswordHash(payload.id);
 
   if (!(await verifyHash(hashedPassword, password))) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(request.action, false),
-      "Wrong credentials"
-    );
+    throw new HttpError(401, "Wrong credentials");
   }
 
   const hasTwoFA = await getTwoFAStatus(payload.id);
@@ -194,12 +184,7 @@ export async function authRefreshHandler(request, reply) {
   const payload = await getTokenData(userId, "id");
 
   if (!(await verifyHash(hashedRefreshToken, token))) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(request.action, false),
-      "Invalid refresh token"
-    );
+    throw new HttpError(401, "Invalid refresh token");
   }
 
   const { accessToken, refreshToken } = await createAuthTokens(reply, payload);
@@ -226,12 +211,7 @@ export async function twoFAQRCodeHandler(request, reply) {
   const hashedPassword = await getPasswordHash(userId);
 
   if (!(await verifyHash(hashedPassword, password))) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(request.action, false),
-      "Wrong credentials"
-    );
+    throw new HttpError(401, "Wrong credentials");
   }
 
   const username = request.user.username;
@@ -261,12 +241,7 @@ export async function enableTwoFAHandler(request, reply) {
   const secret = await getTwoFASecret(userId);
   const twoFA = generateTwoFA(username, secret);
   if (!verifyTwoFACode(twoFA, code)) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(request.action, false),
-      "Invalid 2FA code"
-    );
+    throw new HttpError(401, "Invalid 2FA code");
   }
 
   await updateTwoFAStatus(userId, true);
@@ -288,12 +263,7 @@ export async function twoFABackupCodesHandler(request, reply) {
   const hashedPassword = await getPasswordHash(userId);
 
   if (!(await verifyHash(hashedPassword, password))) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(request.action, false),
-      "Wrong credentials"
-    );
+    throw new HttpError(401, "Wrong credentials");
   }
 
   const newBackupCodes = await updateBackupCodes(userId);
@@ -312,12 +282,7 @@ export async function twoFABackupCodeVerifyHandler(request, reply) {
   const { backupCode } = request.body;
 
   if (!(await verifyBackupCode(userId, backupCode))) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(request.action, false),
-      "Invalid backup code"
-    );
+    throw new HttpError(401, "Invalid backup code");
   }
 
   const payload = { id: userId, username: username };
@@ -355,12 +320,7 @@ export async function twoFALoginVerifyHandler(request, reply) {
   const secret = await getTwoFASecret(userId);
   const twoFA = generateTwoFA(username, secret);
   if (!verifyTwoFACode(twoFA, code)) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(request.action, false),
-      "Invalid 2FA code"
-    );
+    throw new HttpError(401, "Invalid 2FA code");
   }
 
   const payload = { id: userId, username: username };
@@ -408,12 +368,7 @@ export async function twoFARemoveHandler(request, reply) {
   const hashedPassword = await getPasswordHash(userId);
 
   if (!(await verifyHash(hashedPassword, password))) {
-    return httpError(
-      reply,
-      401,
-      createResponseMessage(request.action, false),
-      "Wrong credentials"
-    );
+    throw new HttpError(401, "Wrong credentials");
   }
 
   await updateTwoFAStatus(userId, false);

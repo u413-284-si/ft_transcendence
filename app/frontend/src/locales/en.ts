@@ -1,5 +1,24 @@
 const en = {
   translation: {
+    chart: {
+      activity: "Activity",
+      current: "Current",
+      loss: "Loss",
+      numPlayers: "{{num}}-Players",
+      played: "Tournaments played{{range}}",
+      progress: "Progress ({{num}}-Players)",
+      progression: "Winrate Progression{{range}}",
+      rangeLastDays: " (Last {{count}} Days)",
+      rangeLastMatches: " (Last {{count}} Matches)",
+      reachedThisStage: "Reached this stage",
+      scoreDiff: "Score Difference{{range}}",
+      scores: "Scores{{range}}",
+      selectUpTo: "Select up to 3 friends",
+      summary: "Summary",
+      win: "Win",
+      winLoss: "Wins vs Losses{{range}}"
+    },
+
     error: {
       invalidDynamicRoutePattern: "Invalid dynamic route pattern: {{pattern}}",
       matchNotFound: "Match not found.",
@@ -22,8 +41,8 @@ const en = {
     errorView: {
       details: "Details: {{cause}}",
       errorStatus: "⚠️ Error {{status}}",
-      title: "Error",
-      reload: "Reload"
+      reload: "Reload",
+      title: "Error"
     },
 
     friendListItem: {
@@ -41,13 +60,13 @@ const en = {
       confirmRemoveFriend: "Are you sure you want to remove this friend?",
       exactUsername: "Exact username",
       friendRequests: "Friend requests",
-      title: "Friends",
       incomingRequests: "Incoming friend requests",
       noFriends: "You don't have any friends yet",
       noIncoming: "No incoming friend requests",
       noOutgoing: "No outgoing friend requests",
       outgoingRequests: "Outgoing friend requests",
       sendFriendRequest: "Send friend request",
+      title: "Friends",
       yourFriends: "Your friends"
     },
 
@@ -57,7 +76,6 @@ const en = {
 
     global: {
       avatar: "Avatar",
-      submit: "Submit",
       confirmNewPassword: "Confirm new password",
       continue: "Press ENTER to continue",
       editProfile: "Edit your profile",
@@ -66,45 +84,46 @@ const en = {
       logout: "Logout",
       lost: "Lost",
       match: "Match {{matchId}}",
+      matchWinner: "Match {{matchId}} winner",
       offline: "Offline",
       online: "Online",
       password: "Password",
-      twoFACode: "2FA Code",
-      pongGame: "Pong game",
       player: "Player",
       playerWins: "{{player}} wins",
+      pongGame: "Pong game",
       round: "Round {{round}}",
+      submit: "Submit",
       toBeDefined: "To be defined",
       tournament: "Tournament: <strong>{{tournamentName}}</strong>",
+      twoFACode: "2FA Code",
       username: "Username",
       userNotFound: "User not found.",
       welcome: "Welcome",
-      winnerMatch: "Winning match {{matchId}}",
       won: "Won"
     },
 
     homeView: {
-      helloUser: "Hello {{username}}!",
-      tagline: "Enter the Grid. Master the Pong.",
-      title: "Home",
-      faqTitle: "FAQ",
-      faqGameModesTitle: "Game Modes",
+      faqControlsLeftPaddle: "Move left paddle: W / S",
+      faqControlsRightPaddle: "Move right paddle: Arrow Keys ↑ ↓",
+      faqControlsTitle: "Controls",
+      faqExtrasText:
+        "Pong is one of the first video games ever created—simple, timeless, and addictive. Inspired by TRON's digital grid, this version reimagines the classic in a neon-lit style.",
+      faqExtrasTitle: "Background infos",
       faqGameModesSingle: "Single Game: Quick match against AI or a friend.",
+      faqGameModesTitle: "Game Modes",
+
       faqGameModesTournament:
         "Tournament: Compete in multiple rounds until one champion remains.",
-
-      faqControlsTitle: "Controls",
-      faqControlsRightPaddle: "Move right paddle: Arrow Keys ↑ ↓",
-      faqControlsLeftPaddle: "Move left paddle: W / S",
-
-      faqTipsTitle: "Tips",
       faqTips1: "Predict the ball's path instead of chasing it.",
       faqTips2: "Hit with paddle edges to change the angle strategically.",
-      faqTips3: "Be careful! Each paddle hit increases the speed of the ball.",
 
-      faqExtrasTitle: "Background infos",
-      faqExtrasText:
-        "Pong is one of the first video games ever created—simple, timeless, and addictive. Inspired by TRON's digital grid, this version reimagines the classic in a neon-lit style."
+      faqTips3: "Be careful! Each paddle hit increases the speed of the ball.",
+      faqTipsTitle: "Tips",
+      faqTitle: "FAQ",
+      helloUser: "Hello {{username}}!",
+
+      tagline: "Enter the Grid. Master the Pong.",
+      title: "Home"
     },
 
     invalid: {
@@ -123,22 +142,22 @@ const en = {
       nicknameFormat:
         "Nickname must be 3 to 20 characters and can include letters, digits or the following characters: -!?_$.",
       nicknameUniqueness: "Nickname must be unique.",
+      passwordConfirmation: "Password confirmation does not match.",
+      passwordConfirmationEmpty: "Please re-enter your password",
       passwordEmpty: "Password cannot be empty.",
       passwordFormat:
         "Password must be 10 to 64 characters and include at least one digit, one uppercase and one lowercase letter, and one special character from the set @$!%*?&",
-      passwordConfirmationEmpty: "Please re-enter your password",
-      passwordConfirmation: "Password confirmation does not match.",
-      twoFACode: "2FA code is invald.",
-      twoFACodeEmpty: "2FA code cannot be empty.",
-      twoFACodeFormat: "2FA code must be a 6-digit number.",
-      twoFABackupCode: "2FA backup code is invalid.",
-      twoFABackupCodeEmpty: "2FA backup code cannot be empty.",
-      twoFABackupCodeFormat: "2FA backup code must be a 8-digit number.",
       playerSelection: "Please select the number of players.",
       tournamentNameEmpty: "Tournament name cannot be empty.",
       tournamentNameFormat:
         "Tournament name must be 3 to 20 characters and can contain letters, digits or the following characters: -!?_$.",
       tournamentNameUniqueness: "Tournament name must be unique.",
+      twoFABackupCode: "2FA backup code is invalid.",
+      twoFABackupCodeEmpty: "2FA backup code cannot be empty.",
+      twoFABackupCodeFormat: "2FA backup code must be a 8-digit number.",
+      twoFACode: "2FA code is invald.",
+      twoFACodeEmpty: "2FA code cannot be empty.",
+      twoFACodeFormat: "2FA code must be a 6-digit number.",
       usernameEmpty: "Username cannot be empty.",
       usernameFormat:
         "Username must be 3 to 20 characters and can include letters, digits or the following characters: -!?_$.",
@@ -150,73 +169,61 @@ const en = {
       usernameOrEmail: "Username or email address"
     },
 
-    twoFAVerifyView: {
-      title: "2FA Verification",
-      enterTwoFACode: "Enter your 2FA code:",
-      useBackupCode: "Use backup code"
-    },
-
-    twoFABackupCodeVerifyView: {
-      title: "2FA Backup Code Verification",
-      twoFABackupCode: "2FA Backup Code",
-      enterTwoFABackupCode: "Enter your 2FA backup code:"
-    },
-
     matchAnnouncementView: {
       abortTournament: "Abort Tournament",
       nextMatch: "Next match to play",
-      title: "Next Match!",
       roundMatch: "Round {{round}} - Match {{match}}",
-      startMatch: "Start Match",
       skipMatch: "Skip Match",
-      spectateMatch: "Spectate Match"
+      spectateMatch: "Spectate Match",
+      startMatch: "Start Match",
+      title: "Next Match!"
     },
 
     newGameView: {
-      title: "New Game",
+      aiOption: "Optionally, enable AI to play as the other player.",
       enterNickname: "Enter a nickname for each player.",
       selectPlayer: "Select which player will be controlled by {{username}}.",
-      aiOption: "Optionally, enable AI to play as the other player.",
-      startGame: "Start Game"
+      startGame: "Start Game",
+      title: "New Game"
     },
 
     newTournamentView: {
       confirmAbortTournament: "Do you really want to cancel the tournament?",
       enterTournamentName: "Enter the tournament name",
-      selectNumberPlayers: "Select the number of players",
-      title: "New Tournament",
       numberOfPlayers: "Number of players",
+      players16: "16 players",
       players4: "4 players",
       players8: "8 players",
-      players16: "16 players",
+      selectNumberPlayers: "Select the number of players",
       startTournament: "Start Tournament",
+      title: "New Tournament",
       tournamentName: "Tournament name"
     },
 
     nicknameInput: {
-      enterYourNickname: "Enter your nickname",
-      playerChoice: "{{username}} is playing as player {{i}}",
-      playerNickname: "Player {{i}}'s nickname",
       aiPlayer: "AI Player",
       aiStrength: "AI Strength",
       aiStrengthEasy: "Easy",
+      aiStrengthHard: "Hard",
       aiStrengthMedium: "Medium",
-      aiStrengthHard: "Hard"
+      enterYourNickname: "Enter your nickname",
+      playerChoice: "{{username}} is playing as player {{i}}",
+      playerNickname: "Player {{i}}'s nickname"
     },
 
     playerNicknamesView: {
-      enterPlayerNicknames: "Enter the players' nicknames",
-      title: "Player Nicknames",
       aiOptions: "Optionally, enable AI to play as the other player(s).",
-      submitNicknames: "Submit Nicknames"
+      enterPlayerNicknames: "Enter the players' nicknames",
+      submitNicknames: "Submit Nicknames",
+      title: "Player Nicknames"
     },
 
     profileView: {
       cannotChangeEmailOrPW:
         "You cannot change your email address or password.",
       changeAvatar: "Change your avatar.",
-      changePasswordButton: "Change Password",
       changePassword: "Change your password.",
+      changePasswordButton: "Change Password",
       chooseFile: "Choose an image file for your avatar",
       currentPassword: "Current Password",
       deleteAvatar: "Delete your avatar",
@@ -225,9 +232,9 @@ const en = {
       noFileSelected: "No file selected",
       saveChanges: "Save Changes",
       signedInWithGoogle: "Signed in with Google",
+      title: "Your Profile",
       updateProfile: "Update your profile information.",
-      uploadYourAvatar: "Upload your avatar",
-      title: "Your Profile"
+      uploadYourAvatar: "Upload your avatar"
     },
 
     registerView: {
@@ -245,37 +252,37 @@ const en = {
     },
 
     settingsView: {
-      title: "Settings",
-      settings: "Set your preferences and settings here.",
-      preferredLanguage: "Select your preferred language.",
-      saveLanguage: "Save Language",
+      activateTwoFA: "Activate",
+      confirmPassword: "Confirm",
       dangerZone: "Danger Zone",
-      displayTwoFASetup: "Display 2FA Setup",
+      deactivateTwoFA: "Deactivate",
       deactivateTwoFASetup: "Deactivate 2FA",
       deleteProfile: "Delete your profile",
       deleteProfileConfirm: "Are you sure you want to delete your profile?",
+      displayTwoFASetup: "Display 2FA Setup",
       editTwoFASetup: "Edit your 2FA setup",
-      twoFASetup: "2FA Setup",
-      twoFAInfo: [
-        "Activate 2FA:",
-        "",
-        "please use an authenticator app",
-        "to scan the QR code below."
-      ],
+      enterTwoFACode: "Enter your 2FA code:",
+      preferredLanguage: "Select your preferred language.",
+      saveLanguage: "Save Language",
+      settings: "Set your preferences and settings here.",
+      title: "Settings",
       twoFAActivated: ["2FA activated"],
       twoFABackupCode: "2FA Backup Code",
-      enterTwoFACode: "Enter your 2FA code:",
-      activateTwoFA: "Activate",
-      deactivateTwoFA: "Deactivate",
-      twoFAGenerateBackupCodes: "Generate Backup Codes",
-      confirmPassword: "Confirm",
       twoFABackupCodeInfo: [
         "Those are your backup codes.",
         "Copy or download them.",
         "",
         "They will not be shown again."
       ],
-      twoFADownloadBackupCodes: "Download"
+      twoFADownloadBackupCodes: "Download",
+      twoFAGenerateBackupCodes: "Generate Backup Codes",
+      twoFAInfo: [
+        "Activate 2FA:",
+        "",
+        "please use an authenticator app",
+        "to scan the QR code below."
+      ],
+      twoFASetup: "2FA Setup"
     },
 
     statsView: {
@@ -290,8 +297,8 @@ const en = {
       matchHistory: "Match History",
       played: "Played",
       player1: "Player 1",
-      player2: "Player 2",
       player1Score: "Player 1 Score",
+      player2: "Player 2",
       player2Score: "Player 2 Score",
       result: "Result",
       title: "Statistics",
@@ -306,8 +313,8 @@ const en = {
     toast: {
       avatarDeleteFailed: "Avatar deletion failed. Please try again.",
       avatarDeleteSuccess: "Avatar deleted successfully!",
-      avatarUploadFailed: "Avatar upload failed. Please try again.",
       avatarUploadedSuccess: "Avatar uploaded successfully!",
+      avatarUploadFailed: "Avatar upload failed. Please try again.",
       chartCannotRemoveYourself: "You cannot remove yourself",
       chartCompareMaxThree: "You can compare a maximum of 3 friends.",
       chartError: "A chart failed to initialize",
@@ -316,53 +323,55 @@ const en = {
       connectionReestablished: "Connection reestablished",
       connectionUnavailable:
         "Unable to reconnect. Attempts stopped until refresh.",
-      friendAdded: "Added friend <strong>{{username}}</strong>",
-      friendRequestButtonError: "Error processing friend request",
-      friendRequestEventError: "Error while receiving a friend request.",
       emailExists: "The email address already exists",
       emailExistsWithGoogle:
         "Email already used with Google. Sign in via Google.",
       emailOrUsernameExists: "The email or username already exists",
       emailOrUsernameNotExist: "The email or username does not exist",
-      invalidUsernameOrPW: "Invalid username or password",
+      friendAcceptedFriendRequest:
+        "<strong>{{username}}</strong> accepted the friend request",
+      friendAdded: "Added friend <strong>{{username}}</strong>",
+      friendDeclinedFriendRequest:
+        "<strong>{{username}}</strong> declined the friend request",
+      friendRemovedFriend:
+        "<strong>{{username}}</strong> doesn't want to be friends anymore",
+      friendRequestButtonError: "Error processing friend request",
+      friendRequestEventError: "Error while receiving a friend request.",
+      friendRescindedFriendRequest:
+        "<strong>{{username}}</strong> rescinded the friend request",
+      friendSentFriendRequest:
+        "<strong>{{username}}</strong> sent you a friend request",
+      gameSaveSuccess: "Game saved successfully",
+      gameSaveFailed: "Could not save game",
       invalidToken: "Token invalid",
+      invalidUsernameOrPW: "Invalid username or password",
       loginError: "Error logging in. Please try again.",
       logoutError: "Error logging out. Please try again.",
-      passwordUpdateFailed: "Failed to update password. Please try again.",
       passwordUpdatedSuccess: "Password updated successfully!",
-      twoFASetupSuccess: "2FA setup successfully!",
-      twoFARemoveSuccess: "2FA deactivated successfully!",
+      passwordUpdateFailed: "Failed to update password. Please try again.",
       profileDeleteFailed: "Failed to delete your profile. Please try again.",
       profileDeleteSuccess: "Profile deleted successfully!",
-      profileUpdateFailed: "Failed to update profile. Please try again.",
       profileUpdatedSuccess: "Profile updated successfully!",
+      profileUpdateFailed: "Failed to update profile. Please try again.",
       registrationSuccess: "Successfully registered {{username}}!",
       somethingWentWrong: "Something went wrong",
+      tabError: "The tab failed to initialize.",
+      tokenRefreshFailed: "Token refresh failed. Please try again.",
       tournamentAbortFailed:
         "Failed to abort the tournament. Please try again.",
       tournamentAbortSuccess: "Tournament aborted successfully!",
       tournamentFinishFailed:
         "Failed to set the tournament as finished. Please try again.",
       tournamentFinishSuccess: "Tournament set as finished successfully!",
-      tabError: "The tab failed to initialize.",
-      tokenRefreshFailed: "Token refresh failed. Please try again.",
+      twoFARemoveSuccess: "2FA deactivated successfully!",
+      twoFASetupSuccess: "2FA setup successfully!",
       userAcceptedFriendRequest: "Accepted friend request from ",
       userDeclinedFriendRequest: "Declined friend request from ",
-      userRescindedFriendRequest: "Rescinded friend request to  ",
       userRemovedFriendship: "Friendship terminated with ",
+      userRescindedFriendRequest: "Rescinded friend request to  ",
       userSendFriendRequestSuccess:
         "Friend request sent to <strong>{{username}}</strong>",
       userSendRequestFailed: "Error while sending friend request.",
-      friendAcceptedFriendRequest:
-        "<strong>{{username}}</strong> accepted the friend request",
-      friendDeclinedFriendRequest:
-        "<strong>{{username}}</strong> declined the friend request",
-      friendRescindedFriendRequest:
-        "<strong>{{username}}</strong> rescinded the friend request",
-      friendRemovedFriend:
-        "<strong>{{username}}</strong> doesn't want to be friends anymore",
-      friendSentFriendRequest:
-        "<strong>{{username}}</strong> sent you a friend request",
       userStatus: "<strong>{{username}}</strong> is {{status}}",
       userVerificationError:
         "An error occurred while verifying the user:<br>Redirecting to login.",
@@ -370,23 +379,16 @@ const en = {
         "An error occurred while validating the tournament name."
     },
 
-    chart: {
-      activity: "Activity",
-      current: "Current",
-      loss: "Loss",
-      numPlayers: "{{num}}-Players",
-      played: "Tournaments played{{range}}",
-      progress: "Progress ({{num}}-Players)",
-      progression: "Winrate Progression{{range}}",
-      rangeLastDays: " (Last {{count}} Days)",
-      rangeLastMatches: " (Last {{count}} Matches)",
-      reachedThisStage: "Reached this stage",
-      scoreDiff: "Score Difference{{range}}",
-      scores: "Scores{{range}}",
-      selectUpTo: "Select up to 3 friends",
-      summary: "Summary",
-      win: "Win",
-      winLoss: "Wins vs Losses{{range}}"
+    twoFABackupCodeVerifyView: {
+      enterTwoFABackupCode: "Enter your 2FA backup code:",
+      title: "2FA Backup Code Verification",
+      twoFABackupCode: "2FA Backup Code"
+    },
+
+    twoFAVerifyView: {
+      enterTwoFACode: "Enter your 2FA code:",
+      title: "2FA Verification",
+      useBackupCode: "Use backup code"
     }
   }
 } as const;
