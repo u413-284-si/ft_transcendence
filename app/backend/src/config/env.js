@@ -104,7 +104,18 @@ const schema = {
       type: "number",
       default: 60000, // 1 min
       description: "Duration of the time window for auth routes"
+    },
+    APP_AUTH_DIR: {
+      type: "string",
+      default: "/vault/secrets/app",
+      description: "Location of credentials for vault auth"
+    },
+    VAULT_CA_CERT_DIR: {
+      type: "string",
+      default: "/vault/secrets/certs/ca/cert",
+      description: "Location of ca-cert of vault"
     }
+
   }
 };
 
@@ -135,7 +146,9 @@ const envConfig = {
   apiRateLimitMax: config.API_RATE_LIMIT_MAX,
   apiRateLimitTimeInMS: config.API_RATE_LIMIT_TIME_IN_MS,
   authRateLimitMax: config.AUTH_RATE_LIMIT_MAX,
-  authRateLimitTimeInMS: config.AUTH_RATE_LIMIT_TIME_IN_MS
+  authRateLimitTimeInMS: config.AUTH_RATE_LIMIT_TIME_IN_MS,
+  appAuthDir: config.APP_AUTH_DIR,
+  vaultCACertDir: config.VAULT_CA_CERT_DIR
 };
 
 export default envConfig;

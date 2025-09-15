@@ -21,8 +21,8 @@ log() {
 
 create_dirs() {
     mkdir -p "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR""$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR"
-    chmod 750 "$SECRETS_DIR" "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR" "$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR"
-    chown -R vault:vault "$SECRETS_DIR" /vault/data
+    chmod 750 "$VAULT_SECRETS_DIR" "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR" "$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR"
+    chown -R vault:vault "$VAULT_SECRETS_DIR" /vault/data
     log "➡️" "Directories created and permissions set"
 }
 

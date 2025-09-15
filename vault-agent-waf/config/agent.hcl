@@ -1,13 +1,8 @@
-vault {
-  address = "https://vault:8200"
-  ca_cert = "/vault/secrets/root-ca.crt"
-}
-
 auto_auth {
   method "approle" {
     config = {
-      role_id_file_path   = "/vault/secrets/nginx-role-id"
-      secret_id_file_path = "/vault/secrets/nginx-secret-id"
+      role_id_file_path   = "/vault/secrets/nginx/nginx-role-id"
+      secret_id_file_path = "/vault/secrets/nginx/nginx-secret-id"
       remove_secret_id_file_after_reading = false
     }
   }

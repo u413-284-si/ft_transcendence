@@ -59,14 +59,14 @@ if (weWantVault) {
 
   const vault = new Vault({
     https: true,
-    cacert: "/app/secrets/root-ca.crt",
+    cacert: `${env.vaultCACertDir}/root-ca.crt`,
     baseUrl: `${env.vaultAddr}/v1`,
     rootPath: "secret",
     timeout: 1000,
     proxy: false
   });
-  const roleId = fs.readFileSync("/app/secrets/app-role-id", "utf8").trim();
-  const secretId = fs.readFileSync("/app/secrets/app-secret-id", "utf8").trim();
+  const roleId = fs.readFileSync(`${env.appAuthDir}/app-role-id`, "utf8").trim();
+  const secretId = fs.readFileSync(`${env.appAuthDir}/app-secret-id`, "utf8").trim();
 
   try {
     secrets = await getSecrets(roleId, secretId);

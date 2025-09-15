@@ -26,11 +26,14 @@ services:
     - AUTH_RATE_LIMIT_MAX=${AUTH_RATE_LIMIT_MAX}
     - AUTH_RATE_LIMIT_TIME_IN_MS=${AUTH_RATE_LIMIT_TIME_IN_MS}
     - VAULT_ADDR=${VAULT_ADDR}
+    - VAULT_CA_CERT_DIR=${VAULT_CA_CERT_DIR}
+    - APP_AUTH_DIR=${APP_AUTH_DIR}
     restart: always
     volumes:
       - db-data:/app/db
-      - vault-secrets-app:/app/secrets:ro
-      - images_data:/app/frontend/public/images
+      - vault-secrets-app:${APP_AUTH_DIR}:ro
+      - vault-secrets-ca-cert:${VAULT_CA_CERT_DIR}:ro
+      - images_data:${IMAGE_PATH}
     depends_on:
       vault:
         condition: service_healthy
@@ -82,11 +85,13 @@ services:
       - "8200:8200"
     environment:
       - VAULT_ADDR=${VAULT_ADDR}
-      - VAULT_CERTS_DIR=${VAULT_CERTS_DIR}
-      - CA_DIR=${CA_DIR}
-      - VAULT_DIR=${VAULT_DIR}
       - VAULT_CACERT=${VAULT_CACERT}
-      - SECRETS_DIR=${SECRETS_DIR}
+      - VAULT_CERTS_DIR=${VAULT_CERTS_DIR}
+      - VAULT_CA_DIR=${VAULT_CA_DIR}
+      - VAULT_CA_KEY_DIR=${VAULT_CA_KEY_DIR}
+      - VAULT_CA_CERT_DIR=${VAULT_CA_CERT_DIR}
+      - VAULT_SERVER_DIR=${VAULT_SERVER_DIR}
+      - VAULT_SECRETS_DIR=${VAULT_SECRETS_DIR}
       - VAULT_UNSEAL_DIR=${VAULT_UNSEAL_DIR}
       - VAULT_AUTH_DIR=${VAULT_AUTH_DIR}
       - VAULT_PKI_DIR=${VAULT_PKI_DIR}
@@ -107,12 +112,13 @@ services:
         target: /vault/policies/healthcheck-policy.hcl
     restart: always
     volumes:
-      - vault-data:/vault/data
-      - vault-secrets-unseal:/vault/secrets/unseal
-      - vault-secrets-auth:/vault/secrets/auth
-      - vault-secrets-nginx:/vault/secrets/nginx
-      - vault-secrets-app:/vault/secrets/app
-      - vault-secrets-pki:/vault/secrets/pki
+      - vault-data:${VAULT_DATA_DIR}
+      - vault-secrets-unseal:${VAULT_UNSEAL_DIR}
+      - vault-secrets-auth:${VAULT_AUTH_DIR}
+      - vault-secrets-nginx:${NGINX_AUTH_DIR}
+      - vault-secrets-app:${APP_AUTH_DIR}
+      - vault-secrets-pki:${VAULT_PKI_DIR}
+      - vault-secrets-ca-cert:${VAULT_CA_CERT_DIR}
     networks:
       - pong-network
     healthcheck:
@@ -126,6 +132,7 @@ services:
     container_name: vault-agent-waf
     environment:
       - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_CACERT=${VAULT_CACERT}
     configs:
       - source: vault_agent_waf_config
         target: /vault/config/agent.hcl
@@ -135,7 +142,8 @@ services:
         target: /vault/templates/key.ctmpl
     restart: always
     volumes:
-      - vault-secrets-nginx:/vault/secrets/:ro
+      - vault-secrets-nginx:${NGINX_AUTH_DIR}:ro
+      - vault-secrets-ca-cert:${VAULT_CA_CERT_DIR}:ro
       - certs:/vault/certs
     command: sh -c "chown -R vault:vault /vault/certs &&
       exec su-exec vault:vault vault agent -config=/vault/config/agent.hcl
@@ -163,6 +171,7 @@ volumes:
   vault-secrets-nginx:
   vault-secrets-app:
   vault-secrets-pki:
+  vault-secrets-ca-cert:
   images_data:
 
 configs:
