@@ -66,7 +66,7 @@ services:
     depends_on:
       app:
         condition: service_started
-      vault-agent:
+      vault-agent-waf:
         condition: service_healthy
     networks:
       - pong-network
@@ -121,17 +121,17 @@ services:
       timeout: 2s
       retries: 10
 
-  vault-agent:
+  vault-agent-waf:
     image: hashicorp/vault:1.20.2
-    container_name: vault-agent
+    container_name: vault-agent-waf
     environment:
       - VAULT_ADDR=${VAULT_ADDR}
     configs:
-      - source: vault_agent_config
+      - source: vault_agent_waf_config
         target: /vault/config/agent.hcl
-      - source: template_cert
+      - source: waf_template_cert
         target: /vault/templates/cert.ctmpl
-      - source: template_key
+      - source: waf_template_key
         target: /vault/templates/key.ctmpl
     restart: always
     volumes:
@@ -176,9 +176,9 @@ configs:
     file: ./vault/policies/nginx-policy.hcl
   policy_healthcheck:
     file: ./vault/policies/healthcheck-policy.hcl
-  vault_agent_config:
-    file: ./vault-agent/config/agent.hcl
-  template_cert:
-    file: ./vault-agent/templates/cert.ctmpl
-  template_key:
-    file: ./vault-agent/templates/key.ctmpl
+  vault_agent_waf_config:
+    file: ./vault-agent-waf/config/agent.hcl
+  waf_template_cert:
+    file: ./vault-agent-waf/templates/cert.ctmpl
+  waf_template_key:
+    file: ./vault-agent-waf/templates/key.ctmpl
