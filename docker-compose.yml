@@ -97,6 +97,7 @@ services:
       - VAULT_PKI_DIR=${VAULT_PKI_DIR}
       - NGINX_AUTH_DIR=${NGINX_AUTH_DIR}
       - APP_AUTH_DIR=${APP_AUTH_DIR}
+      - NGROK_AUTH_DIR=${NGROK_AUTH_DIR}
       - GOOGLE_OAUTH2_ID=${GOOGLE_OAUTH2_ID}
       - GOOGLE_OAUTH2_SECRET=${GOOGLE_OAUTH2_SECRET}
     configs:
@@ -110,6 +111,8 @@ services:
         target: /vault/policies/nginx-policy.hcl
       - source: policy_healthcheck
         target: /vault/policies/healthcheck-policy.hcl
+      - source: policy_ngrok
+        target: /vault/policies/ngrok-policy.hcl
     restart: always
     volumes:
       - vault-data:${VAULT_DATA_DIR}
@@ -185,6 +188,8 @@ configs:
     file: ./vault/policies/nginx-policy.hcl
   policy_healthcheck:
     file: ./vault/policies/healthcheck-policy.hcl
+  policy_ngrok:
+    file: ./vault/policies/ngrok-policy.hcl
   vault_agent_waf_config:
     file: ./vault-agent-waf/config/agent.hcl
   waf_template_cert:

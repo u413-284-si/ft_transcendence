@@ -2,18 +2,64 @@ services:
   ngrok:
     image: ngrok/ngrok:latest
     container_name: ngrok
-    restart: always
-    command:
-      - "http"
-      - "--url"
-      - "${DOMAIN_NAME}"
-      - "--basic-auth"
-      - "password:password"
-      - "https://waf:${NGINX_SSL_PORT}"
-    environment:
-      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
     depends_on:
+      vault-agent-ngrok:
+        condition: service_healthy
       waf:
         condition: service_started
+    restart: always
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok/ngrok.yml"
+    volumes:
+      - ngrok-config:/etc/ngrok
     networks:
       - pong-network
+
+  vault-agent-ngrok:
+    image: hashicorp/vault:1.20.2
+    container_name: vault-agent-ngrok
+    environment:
+      - VAULT_ADDR=${VAULT_ADDR}
+      - VAULT_CACERT=${VAULT_CACERT}
+    configs:
+      - source: vault_agent_ngrok_config
+        target: /vault/config/agent.hcl
+      - source: ngrok_template
+        target: /vault/templates/ngrok.yml.ctmpl
+    restart: always
+    volumes:
+      - vault-secrets-ngrok:${NGROK_AUTH_DIR}:ro
+      - vault-secrets-ca-cert:${VAULT_CA_CERT_DIR}:ro
+      - ngrok-config:/etc/ngrok
+    command: sh -c "chown -R vault:vault /etc/ngrok &&
+      exec su-exec vault:vault vault agent -config=/vault/config/agent.hcl"
+    depends_on:
+      vault:
+        condition: service_healthy
+    networks:
+      - pong-network
+    healthcheck:
+      test: ["CMD", "test", "-f", "/etc/ngrok/ngrok.yml"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
+  vault:
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+      - NGROK_DOMAIN=${NGROK_DOMAIN}
+    volumes:
+      - vault-secrets-ngrok:${NGROK_AUTH_DIR}
+
+configs:
+  vault_agent_ngrok_config:
+    file: ./vault-agent-ngrok/config/agent.hcl
+  ngrok_template:
+    file: ./vault-agent-ngrok/templates/ngrok.yml.ctmpl
+
+volumes:
+  ngrok-config:
+  vault-secrets-ngrok:

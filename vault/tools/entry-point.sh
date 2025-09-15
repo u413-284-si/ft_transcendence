@@ -20,8 +20,8 @@ log() {
 }
 
 create_dirs() {
-    mkdir -p "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR""$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR"
-    chmod 750 "$VAULT_SECRETS_DIR" "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR" "$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR"
+    mkdir -p "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR""$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR" "$NGROK_AUTH_DIR"
+    chmod 750 "$VAULT_SECRETS_DIR" "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR" "$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR" "$NGROK_AUTH_DIR"
     chown -R vault:vault "$VAULT_SECRETS_DIR" /vault/data
     log "➡️" "Directories created and permissions set"
 }
@@ -208,6 +208,17 @@ populate_google_secret() {
     fi
 }
 
+populate_ngrok() {
+    if [ -n "$NGROK_AUTHTOKEN" ] && [ -n "$NGROK_DOMAIN" ]; then
+        vault kv put secret/ngrok \
+            authtoken="$NGROK_AUTHTOKEN" \
+            domain="$NGROK_DOMAIN"
+        log "✅" "Ngrok authtoken and domain added to Vault from environment"
+    else
+        log "ℹ️" "Either NGROK_AUTHTOKEN or NGROK_DOMAIN not set, skipping..."
+    fi
+}
+
 setup_ssl_ca() {
     log "➡️" "Running certificate authority setup script..."
     /usr/local/bin/setup-ssl-ca.sh || {
@@ -242,6 +253,7 @@ if [ -f "$VAULT_UNSEAL_DIR/root_token" ]; then
     vault policy write healthcheck-policy /vault/policies/healthcheck-policy.hcl
     vault policy write nginx-policy /vault/policies/nginx-policy.hcl
     vault policy write app-policy /vault/policies/app-policy.hcl
+    vault policy write ngrok-policy /vault/policies/ngrok-policy.hcl
 
     # Enable AppRole if not already
     if ! jq -e '."approle/"' >/dev/null < <(vault auth list -format=json); then
@@ -264,6 +276,7 @@ login_with_approle "$VAULT_AUTH_DIR/setup-role-id" "$VAULT_AUTH_DIR/setup-secret
 create_approle "healthcheck" "healthcheck-policy" "$VAULT_AUTH_DIR"
 create_approle "nginx" "nginx-policy" "$NGINX_AUTH_DIR"
 create_approle "app" "app-policy" "$APP_AUTH_DIR"
+create_approle "ngrok" "ngrok-policy" "$NGROK_AUTH_DIR"
 
 # Enable KV secrets
 enable_kv_secrets
@@ -272,6 +285,7 @@ enable_kv_secrets
 populate_jwt_secret
 populate_google_id
 populate_google_secret
+populate_ngrok
 
 # SSL setup
 setup_ssl_ca

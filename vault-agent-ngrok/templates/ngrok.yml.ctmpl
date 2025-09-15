@@ -1,0 +1,10 @@
+version: 3
+
+agent:
+  authtoken: "{{ with secret "secret/data/ngrok" }}{{ .Data.data.authtoken }}{{ end }}"
+
+endpoints:
+  - name: basic
+    url: "{{ with secret "secret/data/ngrok" }}{{ .Data.data.domain }}{{ end }}"
+    upstream:
+      url: https://waf:8443
