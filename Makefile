@@ -120,6 +120,6 @@ restart:
 # Execute a command in a running service container
 .PHONY: exec
 exec:
-	@read -p "Service name: " service; \
+	$(SILENT)read -p "Service name: " service; \
 	read -p "Command: " cmd; \
-	$(SILENT) $(COMPOSE) exec $$service $$cmd
+	$(COMPOSE) exec $$service $$cmd
