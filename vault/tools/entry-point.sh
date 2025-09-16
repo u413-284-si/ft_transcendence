@@ -191,7 +191,7 @@ populate_jwt_secret() {
 }
 
 populate_google_id() {
-    if [ -n "$GOOGLE_OAUTH2_ID" ]; then
+    if [ -n "${GOOGLE_OAUTH2_ID:-}" ]; then
         vault kv put secret/google_id google_oauth2_client_id="$GOOGLE_OAUTH2_ID"
         log "✅" "Google id added to Vault from environment"
     else
@@ -200,7 +200,7 @@ populate_google_id() {
 }
 
 populate_google_secret() {
-    if [ -n "$GOOGLE_OAUTH2_SECRET" ]; then
+    if [ -n "${GOOGLE_OAUTH2_SECRET:-}" ]; then
         vault kv put secret/google_secret google_oauth2_client_secret="$GOOGLE_OAUTH2_SECRET"
         log "✅" "Google secret added to Vault from environment"
     else
@@ -209,7 +209,7 @@ populate_google_secret() {
 }
 
 populate_ngrok() {
-    if [ -n "$NGROK_AUTHTOKEN" ] && [ -n "$NGROK_DOMAIN" ]; then
+    if [ -n "${NGROK_AUTHTOKEN:-}" ] && [ -n "${NGROK_DOMAIN:-}" ]; then
         vault kv put secret/ngrok \
             authtoken="$NGROK_AUTHTOKEN" \
             domain="$NGROK_DOMAIN"
