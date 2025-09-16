@@ -114,8 +114,12 @@ const schema = {
       type: "string",
       default: "/vault/secrets/certs/ca/cert",
       description: "Location of ca-cert of vault"
+    },
+    USE_VAULT: {
+      type: "boolean",
+      default: true,
+      description: "If secrets are fetched from Vault"
     }
-
   }
 };
 
@@ -148,7 +152,8 @@ const envConfig = {
   authRateLimitMax: config.AUTH_RATE_LIMIT_MAX,
   authRateLimitTimeInMS: config.AUTH_RATE_LIMIT_TIME_IN_MS,
   appAuthDir: config.APP_AUTH_DIR,
-  vaultCACertDir: config.VAULT_CA_CERT_DIR
+  vaultCACertDir: config.VAULT_CA_CERT_DIR,
+  useVault: config.USE_VAULT
 };
 
 export default envConfig;

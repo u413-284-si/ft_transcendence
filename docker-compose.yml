@@ -28,6 +28,7 @@ services:
     - VAULT_ADDR=${VAULT_ADDR}
     - VAULT_CA_CERT_DIR=${VAULT_CA_CERT_DIR}
     - APP_AUTH_DIR=${APP_AUTH_DIR}
+    - USE_VAULT=${USE_VAULT}
     restart: always
     volumes:
       - db-data:/app/db
