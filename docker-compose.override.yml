@@ -24,6 +24,8 @@ services:
     environment:
       - VAULT_ADDR=${VAULT_ADDR}
       - VAULT_CACERT=${VAULT_CACERT}
+      - NGROK_DOMAIN=${NGROK_DOMAIN}
+      - NGINX_SSL_PORT=${NGINX_SSL_PORT}
     configs:
       - source: vault_agent_ngrok_config
         target: /vault/config/agent.hcl
@@ -50,7 +52,6 @@ services:
   vault:
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-      - NGROK_DOMAIN=${NGROK_DOMAIN}
     volumes:
       - vault-secrets-ngrok:${NGROK_AUTH_DIR}
 

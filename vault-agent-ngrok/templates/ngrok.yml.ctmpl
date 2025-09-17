@@ -5,6 +5,6 @@ agent:
 
 endpoints:
   - name: basic
-    url: "{{ with secret "secret/data/ngrok" }}{{ .Data.data.domain }}{{ end }}"
+    url: "{{ env "NGROK_DOMAIN" }}"
     upstream:
-      url: https://waf:8443
+      url: "https://waf:{{ env "NGINX_SSL_PORT" }}"

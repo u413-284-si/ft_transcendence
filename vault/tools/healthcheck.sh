@@ -73,7 +73,7 @@ if [ -n "${GOOGLE_OAUTH2_ID:-}" ] || [ -n "${GOOGLE_OAUTH2_SECRET:-}" ]; then
   fi
 fi
 
-if [ -n "${NGROK_AUTHTOKEN:-}" ] || [ -n "${NGROK_DOMAIN:-}" ]; then
+if [ -n "${NGROK_AUTHTOKEN:-}" ]; then
   if ! vault kv get -mount=secret ngrok >/dev/null 2>&1; then
     echo "❌ ngrok secret missing"
     exit 1

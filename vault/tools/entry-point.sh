@@ -209,13 +209,12 @@ populate_google_secret() {
 }
 
 populate_ngrok() {
-    if [ -n "${NGROK_AUTHTOKEN:-}" ] && [ -n "${NGROK_DOMAIN:-}" ]; then
+    if [ -n "${NGROK_AUTHTOKEN:-}" ]; then
         vault kv put secret/ngrok \
-            authtoken="$NGROK_AUTHTOKEN" \
-            domain="$NGROK_DOMAIN"
-        log "✅" "Ngrok authtoken and domain added to Vault from environment"
+            authtoken="$NGROK_AUTHTOKEN"
+        log "✅" "ngrok authtoken added to Vault from environment"
     else
-        log "ℹ️" "Either NGROK_AUTHTOKEN or NGROK_DOMAIN not set, skipping..."
+        log "ℹ️" "NGROK_AUTHTOKEN not set, skipping..."
     fi
 }
 
