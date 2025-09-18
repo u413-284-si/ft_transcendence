@@ -190,14 +190,21 @@ populate_jwt_secret() {
     log "✅" "JWT secrets added to Vault"
 }
 
-populate_google_oauth2() {
-    if [ -n "${GOOGLE_OAUTH2_ID:-}" ] && [ -n "${GOOGLE_OAUTH2_SECRET:-}" ]; then
-        vault kv put secret/google_oauth2 \
-        id="$GOOGLE_OAUTH2_ID" \
-        secret="$GOOGLE_OAUTH2_SECRET"
-        log "✅" "google id and secret added to Vault from environment"
+populate_google_id() {
+    if [ -n "${GOOGLE_OAUTH2_ID:-}" ]; then
+        vault kv put secret/google_id google_oauth2_client_id="$GOOGLE_OAUTH2_ID"
+        log "✅" "Google id added to Vault from environment"
     else
-        log "ℹ️" "GOOGLE_OAUTH2_ID and/or GOOGLE_OAUTH2_SECRET not set, skipping..."
+        log "ℹ️" "GOOGLE_OAUTH2_ID not set, skipping..."
+    fi
+}
+
+populate_google_secret() {
+    if [ -n "${GOOGLE_OAUTH2_SECRET:-}" ]; then
+        vault kv put secret/google_secret google_oauth2_client_secret="$GOOGLE_OAUTH2_SECRET"
+        log "✅" "Google secret added to Vault from environment"
+    else
+        log "ℹ️" "GOOGLE_OAUTH2_SECRET not set, skipping..."
     fi
 }
 
@@ -275,7 +282,8 @@ enable_kv_secrets
 
 # Populate secrets
 populate_jwt_secret
-populate_google_oauth2
+populate_google_id
+populate_google_secret
 populate_ngrok
 
 # SSL setup

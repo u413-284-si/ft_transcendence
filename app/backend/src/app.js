@@ -120,8 +120,8 @@ await fastify.register(oAuth2, {
   scope: ["email", "profile"],
   credentials: {
     client: {
-      id: secrets.googleOauth2.data.id,
-      secret: secrets.googleOauth2.data.secret
+      id: secrets.googleId.data.google_oauth2_client_id,
+      secret: secrets.googleSecret.data.google_oauth2_client_secret
     }
   },
   startRedirectPath: env.googleOauth2RedirectPath,

@@ -11,10 +11,14 @@ const defaultSecrets = {
       two_fa_login_token_secret: "2fa"
     }
   },
-  googleOauth2: {
+  googleId: {
     data: {
-      id: "myId",
-      secret: "secretboi"
+      google_oauth2_client_id: "myId"
+    }
+  },
+  googleSecret: {
+    data: {
+      google_oauth2_client_secret: "secretboi"
     }
   }
 };
@@ -49,22 +53,16 @@ async function fetchFromVault() {
     loginResponse.client_token,
     "jwt"
   );
+  const googleId = await vault.readKVSecret(
+    loginResponse.client_token,
+    "google_id"
+  );
+  const googleSecret = await vault.readKVSecret(
+    loginResponse.client_token,
+    "google_secret"
+  );
 
-  let googleOauth2 = defaultSecrets.googleOauth2;
-  try {
-    googleOauth2 = await vault.readKVSecret(
-      loginResponse.client_token,
-      "google_oauth2"
-    );
-  } catch (err) {
-    if (err.isVaultError) {
-      console.log(err.vaultHelpMessage);
-    } else {
-      throw err;
-    }
-  }
-
-  return { jwtSecrets, googleOauth2 };
+  return { jwtSecrets, googleId, googleSecret };
 }
 
 export async function getSecrets() {
