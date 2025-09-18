@@ -10,10 +10,7 @@ path "auth/approle/role/app" {
 path "secret/data/jwt" {
   capabilities = ["read"]
 }
-path "secret/data/google_id" {
-  capabilities = ["read"]
-}
-path "secret/data/google_secret" {
+path "secret/data/google_oauth2" {
   capabilities = ["read"]
 }
 path "secret/data/ngrok" {
