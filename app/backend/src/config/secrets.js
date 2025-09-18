@@ -53,16 +53,35 @@ async function fetchFromVault() {
     loginResponse.client_token,
     "jwt"
   );
-  const googleId = await vault.readKVSecret(
+
+  const googleId = await safeReadSecret(
+    vault,
     loginResponse.client_token,
-    "google_id"
+    "google_id",
+    defaultSecrets.googleId
   );
-  const googleSecret = await vault.readKVSecret(
+
+  const googleSecret = await safeReadSecret(
+    vault,
     loginResponse.client_token,
-    "google_secret"
+    "google_secret",
+    defaultSecrets.googleSecret
   );
 
   return { jwtSecrets, googleId, googleSecret };
+}
+
+async function safeReadSecret(vault, token, key, defaultValue) {
+  try {
+    return await vault.readKVSecret(token, key);
+  } catch (err) {
+    if (err.isVaultError) {
+      console.log(`Could not fetch ${key} from vault`);
+      console.log(err.vaultHelpMessage);
+      return defaultValue;
+    }
+    throw err;
+  }
 }
 
 export async function getSecrets() {

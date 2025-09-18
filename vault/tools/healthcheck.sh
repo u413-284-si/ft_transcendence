@@ -61,12 +61,14 @@ if ! vault kv get -mount=secret jwt >/dev/null 2>&1; then
   exit 1
 fi
 
-if [ -n "${GOOGLE_OAUTH2_ID:-}" ] || [ -n "${GOOGLE_OAUTH2_SECRET:-}" ]; then
+if [ -n "${GOOGLE_OAUTH2_ID:-}" ]; then
   if ! vault kv get -mount=secret google_id >/dev/null 2>&1; then
     echo "❌ google id missing"
     exit 1
   fi
+fi
 
+if [ -n "${GOOGLE_OAUTH2_SECRET:-}" ]; then
   if ! vault kv get -mount=secret google_secret >/dev/null 2>&1; then
     echo "❌ google secret missing"
     exit 1
