@@ -14,7 +14,7 @@ HEALTH_TOKEN=$(vault write -format=json auth/approle/login \
     secret_id="$(cat $VAULT_AUTH_DIR/healthcheck-secret-id)" \
     | jq -r '.auth.client_token')
 
-VAULT_TOKEN="$HEALTH_TOKEN"
+export VAULT_TOKEN="$HEALTH_TOKEN"
 
 # 1. Check Vault is unsealed and healthy
 if ! curl -s --cacert "$VAULT_CACERT" "$VAULT_ADDR/v1/sys/health" | jq -e '.sealed == false'; then
@@ -23,13 +23,13 @@ if ! curl -s --cacert "$VAULT_CACERT" "$VAULT_ADDR/v1/sys/health" | jq -e '.seal
 fi
 
 # 2. Verify nginx AppRole
-if ! VAULT_TOKEN="$VAULT_TOKEN" vault read -format=json auth/approle/role/nginx >/dev/null 2>&1; then
+if ! vault read -format=json auth/approle/role/nginx >/dev/null 2>&1; then
   echo "❌ nginx-role missing"
   exit 1
 fi
 
 # 3. Verify app AppRole
-if ! VAULT_TOKEN="$VAULT_TOKEN" vault read -format=json auth/approle/role/app >/dev/null 2>&1; then
+if ! vault read -format=json auth/approle/role/app >/dev/null 2>&1; then
   echo "❌ app-role missing"
   exit 1
 fi
@@ -55,18 +55,31 @@ check_files() {
 check_files "$NGINX_AUTH_DIR" $NGINX_FILES
 check_files "$APP_AUTH_DIR" $APP_FILES
 
-# 5. Check JWT and Google secrets
-if ! VAULT_TOKEN="$VAULT_TOKEN" vault kv get -mount=secret jwt >/dev/null 2>&1; then
+# 5. Check secrets (JWT, google, ngrok)
+if ! vault kv get -mount=secret jwt >/dev/null 2>&1; then
   echo "❌ jwt secret missing"
   exit 1
 fi
-if ! VAULT_TOKEN="$VAULT_TOKEN" vault kv get -mount=secret google_id >/dev/null 2>&1; then
-  echo "❌ google id missing"
-  exit 1
+
+if [ -n "${GOOGLE_OAUTH2_ID:-}" ]; then
+  if ! vault kv get -mount=secret google_id >/dev/null 2>&1; then
+    echo "❌ google id missing"
+    exit 1
+  fi
 fi
-if ! VAULT_TOKEN="$VAULT_TOKEN" vault kv get -mount=secret google_secret >/dev/null 2>&1; then
-  echo "❌ google secret missing"
-  exit 1
+
+if [ -n "${GOOGLE_OAUTH2_SECRET:-}" ]; then
+  if ! vault kv get -mount=secret google_secret >/dev/null 2>&1; then
+    echo "❌ google secret missing"
+    exit 1
+  fi
+fi
+
+if [ -n "${NGROK_AUTHTOKEN:-}" ]; then
+  if ! vault kv get -mount=secret ngrok >/dev/null 2>&1; then
+    echo "❌ ngrok secret missing"
+    exit 1
+  fi
 fi
 
 echo "✅ Vault health OK"

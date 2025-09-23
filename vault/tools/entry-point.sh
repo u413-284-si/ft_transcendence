@@ -20,9 +20,9 @@ log() {
 }
 
 create_dirs() {
-    mkdir -p "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR""$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR"
-    chmod 750 "$SECRETS_DIR" "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR" "$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR"
-    chown -R vault:vault "$SECRETS_DIR" /vault/data
+    mkdir -p "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR""$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR" "$NGROK_AUTH_DIR"
+    chmod 750 "$VAULT_SECRETS_DIR" "$VAULT_UNSEAL_DIR" "$VAULT_AUTH_DIR" "$NGINX_AUTH_DIR" "$APP_AUTH_DIR" "$VAULT_CERTS_DIR" "$NGROK_AUTH_DIR"
+    chown -R vault:vault "$VAULT_SECRETS_DIR" /vault/data
     log "➡️" "Directories created and permissions set"
 }
 
@@ -191,7 +191,7 @@ populate_jwt_secret() {
 }
 
 populate_google_id() {
-    if [ -n "$GOOGLE_OAUTH2_ID" ]; then
+    if [ -n "${GOOGLE_OAUTH2_ID:-}" ]; then
         vault kv put secret/google_id google_oauth2_client_id="$GOOGLE_OAUTH2_ID"
         log "✅" "Google id added to Vault from environment"
     else
@@ -200,11 +200,21 @@ populate_google_id() {
 }
 
 populate_google_secret() {
-    if [ -n "$GOOGLE_OAUTH2_SECRET" ]; then
+    if [ -n "${GOOGLE_OAUTH2_SECRET:-}" ]; then
         vault kv put secret/google_secret google_oauth2_client_secret="$GOOGLE_OAUTH2_SECRET"
         log "✅" "Google secret added to Vault from environment"
     else
         log "ℹ️" "GOOGLE_OAUTH2_SECRET not set, skipping..."
+    fi
+}
+
+populate_ngrok() {
+    if [ -n "${NGROK_AUTHTOKEN:-}" ]; then
+        vault kv put secret/ngrok \
+            authtoken="$NGROK_AUTHTOKEN"
+        log "✅" "ngrok authtoken added to Vault from environment"
+    else
+        log "ℹ️" "NGROK_AUTHTOKEN not set, skipping..."
     fi
 }
 
@@ -242,6 +252,7 @@ if [ -f "$VAULT_UNSEAL_DIR/root_token" ]; then
     vault policy write healthcheck-policy /vault/policies/healthcheck-policy.hcl
     vault policy write nginx-policy /vault/policies/nginx-policy.hcl
     vault policy write app-policy /vault/policies/app-policy.hcl
+    vault policy write ngrok-policy /vault/policies/ngrok-policy.hcl
 
     # Enable AppRole if not already
     if ! jq -e '."approle/"' >/dev/null < <(vault auth list -format=json); then
@@ -264,6 +275,7 @@ login_with_approle "$VAULT_AUTH_DIR/setup-role-id" "$VAULT_AUTH_DIR/setup-secret
 create_approle "healthcheck" "healthcheck-policy" "$VAULT_AUTH_DIR"
 create_approle "nginx" "nginx-policy" "$NGINX_AUTH_DIR"
 create_approle "app" "app-policy" "$APP_AUTH_DIR"
+create_approle "ngrok" "ngrok-policy" "$NGROK_AUTH_DIR"
 
 # Enable KV secrets
 enable_kv_secrets
@@ -272,6 +284,7 @@ enable_kv_secrets
 populate_jwt_secret
 populate_google_id
 populate_google_secret
+populate_ngrok
 
 # SSL setup
 setup_ssl_ca

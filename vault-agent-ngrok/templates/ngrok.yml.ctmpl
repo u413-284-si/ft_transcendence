@@ -1,0 +1,10 @@
+version: 3
+
+agent:
+  authtoken: "{{ with secret "secret/data/ngrok" }}{{ .Data.data.authtoken }}{{ end }}"
+
+endpoints:
+  - name: basic
+    url: "{{ env "NGROK_DOMAIN" }}"
+    upstream:
+      url: "https://waf:{{ env "NGINX_SSL_PORT" }}"

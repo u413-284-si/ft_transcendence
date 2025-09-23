@@ -1,5 +1,7 @@
 # Variables
 PROJECT_NAME = ft_transcendence
+COMPOSE = docker compose -p $(PROJECT_NAME)
+FILES = -f docker-compose.yml
 VERBOSE = 0
 
 # Verbosity
@@ -7,6 +9,11 @@ ifeq ($(VERBOSE),1)
 	SILENT =
 else
 	SILENT = @
+endif
+
+# Use ngrok override
+ifeq ($(USE_NGROK),1)
+    FILES += -f docker-compose.override.yml
 endif
 
 # Colours
@@ -19,7 +26,6 @@ RED := \033[31m
 BLUE := \033[34m
 
 # Directories
-DIR_SECRETS = secrets
 DIR_SCRIPTS = scripts
 
 ######### Targets #########
@@ -29,10 +35,15 @@ DIR_SCRIPTS = scripts
 help:
 	@echo "Usage: make [target]"
 	@echo ""
+	@echo "Variables:"
+	@echo "  VERBOSE    - Set to 1 to show command output"
+	@echo "  USE_NGROK  - Set to 1 to also create ngrok container using compose override file"
+	@echo ""
 	@echo "Targets:"
 	@echo "  up       - Start the services defined in docker-compose.yml"
 	@echo "  down     - Stop and remove the services"
 	@echo "  build    - Build or rebuild the services"
+	@echo "  buildnc  - Same build or rebuild the services"
 	@echo "  start    - Start the services"
 	@echo "  stop     - Stop the services"
 	@echo "  logs     - View output from the services"
@@ -45,7 +56,7 @@ help:
 # Builds, (re)creates, starts, and attaches to containers for a service.
 .PHONY: up
 up: check-env
-	$(SILENT)docker compose -p $(PROJECT_NAME) up -d
+	$(SILENT) $(COMPOSE) $(FILES) up -d
 
 .PHONY: check-env
 check-env:
@@ -59,56 +70,56 @@ check-env:
 # Watches for changes in files and rebuilds containers
 PHONY: watch
 watch:
-	$(SILENT)docker compose -p $(PROJECT_NAME) up --watch
+	$(SILENT) $(COMPOSE) up --watch
 
 # Stops containers and removes containers, networks, volumes, and images created by up
 .PHONY: down
 down:
-	$(SILENT)docker compose -p $(PROJECT_NAME) down
+	$(SILENT) $(COMPOSE) down
 
 # Services are built once and then tagged
 .PHONY: build
 build:
-	$(SILENT)docker compose -p $(PROJECT_NAME) build
+	$(SILENT) $(COMPOSE) build
 
 # Services are built once and then tagged without cache
 .PHONY: buildnc
 buildnc:
-	$(SILENT)docker compose -p $(PROJECT_NAME) build  --no-cache
+	$(SILENT) $(COMPOSE) build  --no-cache
 
 # Starts existing containers for a service
 .PHONY: start
 start:
-	$(SILENT)docker compose -p $(PROJECT_NAME) start
+	$(SILENT) $(COMPOSE) start
 
 # Stop the containers
 .PHONY: stop
 stop:
-	$(SILENT)docker compose -p $(PROJECT_NAME) stop
+	$(SILENT) $(COMPOSE) stop
 
 # View output from the services
 .PHONY: logs
 logs:
-	$(SILENT)docker compose -p $(PROJECT_NAME) logs -f
+	$(SILENT) $(COMPOSE) logs -f
 
 # List the services
 .PHONY: ps
 ps:
-	$(SILENT)docker compose -p $(PROJECT_NAME) ps
+	$(SILENT) $(COMPOSE) ps
 
 # Remove stopped containers, networks, and volumes
 .PHONY: clean
 clean:
-	$(SILENT)docker compose -p $(PROJECT_NAME) down -v --remove-orphans --rmi all
+	$(SILENT) $(COMPOSE) down -v --remove-orphans --rmi all
 
 # Restart the services
 .PHONY: restart
 restart:
-	$(SILENT)docker compose -p $(PROJECT_NAME) restart
+	$(SILENT) $(COMPOSE) restart
 
 # Execute a command in a running service container
 .PHONY: exec
 exec:
-	@read -p "Service name: " service; \
+	$(SILENT)read -p "Service name: " service; \
 	read -p "Command: " cmd; \
-	docker compose -p $(PROJECT_NAME) exec $$service $$cmd
+	$(COMPOSE) exec $$service $$cmd

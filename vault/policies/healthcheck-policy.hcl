@@ -16,3 +16,6 @@ path "secret/data/google_id" {
 path "secret/data/google_secret" {
   capabilities = ["read"]
 }
+path "secret/data/ngrok" {
+  capabilities = ["read"]
+}
