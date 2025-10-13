@@ -15,7 +15,6 @@ Made with ❤️ by
 - [QCHR1581](https://github.com/QCHR1581)
 - [gwolf-011235](https://github.com/gwolf-011235)
 
----
 
 ## Mandatory Part Summary
 
@@ -107,8 +106,6 @@ Made with ❤️ by
 
 </details>
 
----
-
 ## Implemented Modules
 
 The subject requires to implement 7 Major Modules, where 2 Minor Modules count as 1 Major Module.
@@ -199,8 +196,6 @@ We implemented 8 Major Modules.
 
 </details>
 
----
-
 ## Quick Start
 
 If you just want to try out ft_transcendence, all you need is Docker and Docker Compose installed. Clone the repository and run:
@@ -213,7 +208,20 @@ make up
 
 This will start all required services (backend, frontend, Vault, WAF etc.). The app will be available at localhost:8443.
 
----
+## 🎮 App Preview
+
+### 🕹️ Gameplay
+<img src="./docs/screenshots/gameplay.png" alt="Gameplay Screenshot" width="700">
+
+### 🏆 Tournament Bracket
+<img src="./docs/screenshots/tournament_bracket.png" alt="Tournament Bracket" width="700">
+
+### 📊 Dashboard
+<img src="./docs/screenshots/dashboard.png" alt="Dashboard" width="700">
+
+### 👤 Profile View
+<img src="./docs/screenshots/profile_view.png" alt="Profile View" width="700">
+
 
 ## Tech Stack
 
