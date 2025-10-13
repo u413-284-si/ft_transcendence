@@ -2,7 +2,227 @@
 
 ## Project Overview
 
-**ft_transcendence** is a multiplayer Pong game reimagined as a modern single-page application (SPA). It features real-time gameplay, tournaments, friend management, and user authentication (including Google OAuth2 and 2FA). The project is designed for both local development and secure production deployment, leveraging containerization, a WAF, and Vault-managed secrets.
+**ft_transcendence** is the final project of the 42 Common Core. It includes a
+mandatory part and a series of modules on various topics.
+
+At its core it is a multiplayer Pong game reimagined as a modern single-page application (SPA). It features real-time gameplay, tournaments, friend management, and user authentication (including Google OAuth2 and 2FA). The project is leveraging containerization, a WAF, and Vault-managed secrets.
+
+✅ Completed with 110/100 @ Version 18.0
+
+Made with ❤️ by
+
+- [u413-284-si](https://github.com/u413-284-si)
+- [QCHR1581](https://github.com/QCHR1581)
+- [gwolf-011235](https://github.com/gwolf-011235)
+
+---
+
+## Mandatory Part Summary
+
+<details>
+<summary>Click to expand the mandatory part overview</summary>
+
+---
+
+### 1. Core Goal
+
+- Create a **functional Pong website** where users can:
+  - Play a **live Pong match**.
+  - Participate in a **tournament system**.
+  - **Register aliases** before each tournament.
+  - See **matchmaking and next match announcements**.
+
+---
+
+### 2. Technical Constraints
+
+#### Frontend
+
+- Must be a **Single Page Application (SPA)**.
+  - Users can navigate with browser Back/Forward buttons.
+- Written in **TypeScript**.
+- Works correctly on the **latest stable Firefox**.
+- Must **not crash** — no unhandled errors or warnings.
+
+#### Backend
+
+- You may choose:
+  - **No backend** (pure frontend logic), or
+  - **Pure PHP** backend (**no frameworks**).
+    → Frameworks like Fastify are allowed only in later modules.
+
+#### Database
+
+- Not required in the base version.
+- If used, must comply with database module rules (e.g. **SQLite**).
+
+#### Containerization
+
+- Must be **fully Dockerized**:
+  - Run everything with **one command** (e.g. `docker-compose up`).
+  - No manual setup.
+  - On rootless Docker systems:
+    - Use `/goinfre` for images.
+    - Avoid bind mounts (rebuild images instead).
+
+---
+
+### 3. Game Requirements
+
+#### Pong Game
+
+- **Local multiplayer**: Two players on the same keyboard.
+- **Tournament mode**:
+  - Players enter **aliases** before starting.
+  - Aliases reset each tournament.
+  - System handles **matchmaking and announcements**.
+- **Game fairness**:
+  - Equal paddle speed, same physics for all.
+  - AI (if added later) must follow the same rules.
+- **Visuals**:
+  - Must preserve the **minimalist “original Pong” style**.
+  - Enhancements allowed only in optional modules.
+
+#### Libraries
+
+- No libraries that implement Pong or handle all game logic.
+- Allowed: small helper utilities (e.g. math, sound, or animation libs).
+- You must be able to **justify** any external library choice.
+
+---
+
+### 4. Security Requirements
+
+| Requirement                        | Description                                                   |
+| ---------------------------------- | ------------------------------------------------------------- |
+| **Password hashing**               | Hash all stored passwords (e.g. bcrypt, argon2).              |
+| **XSS & SQL Injection Protection** | Sanitize and validate all user input.                         |
+| **HTTPS**                          | Website and WebSocket connections must use HTTPS/WSS.         |
+| **Form validation**                | Validate input on client or server side.                      |
+| **Route protection**               | Secure all API routes and endpoints.                          |
+| **Secrets management**             | Store API keys, passwords, and tokens in `.env` (gitignored). |
+
+---
+
+### Summary Checklist
+
+| Category               | Must Have                                                                          |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| **Frontend**           | TypeScript SPA, no framework (React/Vue/etc.), works in Firefox, no runtime errors |
+| **Game**               | Playable Pong (local multiplayer), fair physics, simple visuals                    |
+| **Tournament**         | Alias registration, matchmaking, match announcements                               |
+| **Security**           | HTTPS, input validation, password hashing, sanitized routes                        |
+| **Containerization**   | Dockerized setup, one-command start                                                |
+| **Backend (optional)** | Pure PHP, unless you add the backend module                                        |
+
+</details>
+
+---
+
+## Implemented Modules
+
+The subject requires to implement 7 Major Modules, where 2 Minor Modules count as 1 Major Module.
+
+We implemented 8 Major Modules.
+
+<details>
+<summary>Click to expand the list of implemented modules</summary>
+
+---
+
+### Major Module — Use a Framework to Build the Backend
+
+- Implemented with **Fastify** (Node.js) as the backend framework.
+- Provides a structured, modular API for game logic, authentication, and user data.
+- All routes are **secured and validated** according to web security best practices.
+
+---
+
+### Minor Module — Use a Framework or Toolkit to Build the Frontend
+
+- Frontend developed in **TypeScript + TailwindCSS**.
+- No frontend framework (React/Vue) — uses **vanilla TypeScript + DOM routing**.
+- Designed as a **Single Page Application (SPA)** with smooth navigation.
+- UI built using custom **modular components**
+
+---
+
+### Minor Module — Use a Database for the Backend
+
+- Backend uses **Prisma ORM** with **SQLite**.
+- Stores:
+  - User data and authentication tokens.
+  - Tournament brackets and match results.
+  - Player and game statistics.
+- Includes **schema validation**.
+
+---
+
+### Major Module — Standard User Management, Authentication, Users Across Tournaments
+
+- Implements full **user registration and login** system.
+- Supports:
+  - Persistent sessions with **JWTs**.
+  - Password hashing using **bcrypt**.
+  - Unique usernames across tournaments.
+- Users can **create tournaments**, track results, add friends and maintain global profiles.
+
+---
+
+### Major Module — Implementing a Remote Authentication
+
+- Integrates **Google OAuth2 login** for remote authentication.
+- Supports both **Google login** and local account creation.
+- Securely handles OAuth callback and token exchange.
+
+---
+
+### Major Module — Introduce an AI Opponent
+
+- Adds an **AI-controlled paddle** as an opponent.
+- Difficulty levels available (Easy, Normal, Hard).
+- AI logic based on **predictive ball trajectory** and **reaction delay**.
+- Allows single-player mode with identical physics to multiplayer.
+
+---
+
+### Minor Module — User and Game Stats Dashboards
+
+- Includes visual **statistics dashboards** for stats such as
+  - Win/loss ratios.
+  - Match history.
+  - Tournament history.
+- Uses **ApexCharts** for chart rendering.
+- Fully integrated into the SPA interface with subtabs for categories (Matches, Tournaments, Friends)
+
+---
+
+### Major Module — WAF/ModSecurity & HashiCorp Vault Integration
+
+- Adds **ModSecurity (WAF)** in front of the Fastify server for additional protection.
+- Hardened configuration to mitigate XSS, CSRF, SQLi, and brute-force attacks.
+- **HashiCorp Vault** used for managing sensitive credentials (JWT secrets, API keys).
+- Secrets loaded dynamically into the backend at runtime.
+
+---
+
+### Major Module — Two-Factor Authentication (2FA) and JWT
+
+- Implements **2FA** using **TOTP** (Time-based One-Time Passwords).
+- Users can enable 2FA for enhanced security.
+- **JWT-based authentication** with access and refresh tokens.
+- Token rotation and expiration management ensure long-term security.
+
+---
+
+### Minor Module — Supports Multiple Languages
+
+- Application supports **multi-language UI** (English, French, German; additionally fun languages Tron and Pirate).
+- Implemented using **i18next** with **Typescript language files**.
+- Language preference stored per user in the database.
+- Text dynamically changes without reloading the page.
+
+</details>
 
 ---
 
@@ -83,14 +303,20 @@
 
 ---
 
-## Usage Instructions
+## Quick Start & Usage
+
+If you just want to try out ft_transcendence, all you need is Docker and Docker Compose installed. Clone the repository and run:
+
+```bash
+git clone https://github.com/u413-284-si/ft_transcendence.git
+cd ft_transcendence
+make up
+```
+
+This will start all required services (backend, frontend, Vault, WAF, etc.) automatically. The app will be available at the configured domain (see `.env.example`).
 
 ### Development
 
-- **Start all services (backend, frontend, Vault, WAF, etc.):**
-  ```bash
-  make up
-  ```
 - **Watch mode (auto-rebuild on changes):**
   ```bash
   make watch
@@ -111,15 +337,15 @@
   make build
   ```
 - **Start services:**
-
   ```bash
   make up
   ```
-
 - **Stop services:**
   ```bash
   make down
   ```
+
+If you want to customize environment variables, database, or secrets, see the configuration section below.
 
 ---
 
@@ -222,3 +448,25 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 - Inspired by the classic Pong game and TRON aesthetics.
 - Built with Fastify, Prisma, Tailwind CSS, and open-source libraries.
+
+---
+
+## Development Container (Dev Container)
+
+This project includes a [VS Code Dev Container](https://containers.dev/) setup for a fully reproducible development environment.
+
+- **Location:** `.devcontainer/` (contains `devcontainer.json` and `Dockerfile`)
+- **Base Image:** Node.js 24 (Debian Bookworm)
+- **Features:**
+  - Zsh shell
+  - Pre-installed VS Code extensions: ESLint, Prettier, Postman, Prisma, Tailwind CSS
+  - Automatic install of dependencies (`npm ci`)
+  - Recommended editor settings (format on save, auto-save, ESLint integration)
+- **Usage:**
+  1. Open the project in VS Code.
+  2. When prompted, "Reopen in Container" to start the dev container.
+  3. All development tools and dependencies will be available inside the container.
+  4. Ports/services can be forwarded as needed for local testing.
+- **Remote User:** The container runs as the `node` user for security.
+
+This setup ensures consistent tooling, code style, and environment for all contributors. For more details, see `.devcontainer/devcontainer.json`.
