@@ -201,6 +201,20 @@ We implemented 8 Major Modules.
 
 ---
 
+## Quick Start
+
+If you just want to try out ft_transcendence, all you need is Docker and Docker Compose installed. Clone the repository and run:
+
+```bash
+git clone https://github.com/u413-284-si/ft_transcendence.git
+cd ft_transcendence
+make up
+```
+
+This will start all required services (backend, frontend, Vault, WAF etc.). The app will be available at localhost:8443.
+
+---
+
 ## Tech Stack
 
 ### Backend
@@ -232,98 +246,6 @@ We implemented 8 Major Modules.
 
 ---
 
-## Installation Guide
-
-### Requirements
-
-- Node.js (v18+ recommended)
-- npm (v9+)
-- Docker & Docker Compose
-- (Optional) ngrok account for tunneling
-
-### Steps
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/u413-284-si/ft_transcendence.git
-   cd ft_transcendence
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-
-   - Copy `.env.example` to `.env` and adjust as needed:
-     ```bash
-     cp .env.example .env
-     ```
-   - Fill in secrets for Google OAuth2, etc.
-
-4. **Initialize the database**
-
-   ```bash
-   npm run db:init
-   npm run db:seed
-   ```
-
-5. **Build frontend assets**
-   ```bash
-   npm run build
-   ```
-
----
-
-## Quick Start & Usage
-
-If you just want to try out ft_transcendence, all you need is Docker and Docker Compose installed. Clone the repository and run:
-
-```bash
-git clone https://github.com/u413-284-si/ft_transcendence.git
-cd ft_transcendence
-make up
-```
-
-This will start all required services (backend, frontend, Vault, WAF, etc.) automatically. The app will be available at the configured domain (see `.env.example`).
-
-### Development
-
-- **Watch mode (auto-rebuild on changes):**
-  ```bash
-  make watch
-  ```
-- **Backend only (auto-restart):**
-  ```bash
-  npm run watch-backend
-  ```
-- **Frontend only (auto-rebuild):**
-  ```bash
-  npm run watch-frontend
-  ```
-
-### Production
-
-- **Build containers:**
-  ```bash
-  make build
-  ```
-- **Start services:**
-  ```bash
-  make up
-  ```
-- **Stop services:**
-  ```bash
-  make down
-  ```
-
-If you want to customize environment variables, database, or secrets, see the configuration section below.
-
----
-
 ## Configuration
 
 - **Environment variables:**
@@ -342,7 +264,40 @@ If you want to customize environment variables, database, or secrets, see the co
 
 ---
 
-## Database
+## Development
+
+### Dev Container
+
+This project includes a [VS Code Dev Container](https://containers.dev/) setup for a fully reproducible development environment.
+
+- **Location:** `.devcontainer/` (contains `devcontainer.json` and `Dockerfile`)
+- **Base Image:** Node.js 24 (Debian Bookworm)
+- **Features:**
+  - Zsh shell
+  - Pre-installed VS Code extensions: ESLint, Prettier, Postman, Prisma, Tailwind CSS
+  - Automatic install of dependencies (`npm ci`)
+  - Recommended editor settings (format on save, auto-save, ESLint integration)
+- **Usage:**
+  1. Open the project in VS Code.
+  2. When prompted, "Reopen in Container" to start the dev container.
+  3. All development tools and dependencies will be available inside the container.
+  4. Ports/services can be forwarded as needed for local testing.
+- **Remote User:** The container can be run as the `node` user when using rootful docker.
+
+This setup ensures consistent tooling, code style, and environment for all contributors. For more details, see `.devcontainer/devcontainer.json`.
+
+### Development Scripts
+
+To make development smoother, this project includes several **watch scripts** powered by [nodemon](https://nodemon.io/).
+They automatically restart or rebuild parts of the app whenever relevant files change.
+
+| Script | Description |
+|--------|--------------|
+| `npm run watch` | Runs both the frontend and backend in watch mode. Use this when working across the entire project. |
+| `npm run watch-frontend` | Watches and rebuilds the **frontend** when files change — ideal for styling and UI development. |
+| `npm run watch-backend` | Watches the **backend** and automatically restarts the Fastify server when backend files change — useful during API or database development. |
+
+### Database
 
 - **Technology:** SQLite (dev), managed via Prisma ORM.
 - **Schema:** See `app/backend/prisma/schema.prisma`.
@@ -359,9 +314,7 @@ If you want to customize environment variables, database, or secrets, see the co
   npm run db:reset
   ```
 
----
-
-## Project Structure
+### Project Structure
 
 ```
 .
@@ -369,15 +322,17 @@ If you want to customize environment variables, database, or secrets, see the co
 │   ├── backend/         # Fastify server, Prisma, API logic
 │   │   ├── prisma/      # Prisma schema, migrations, seeders
 │   │   ├── src/         # Controllers, modules, services, config
+|   ├── db/              # SQLite database
 │   ├── frontend/        # TypeScript SPA, custom components, assets
 │   │   ├── src/         # TS modules, views, routing, localization
 │   │   ├── public/      # Built assets, static files
-├── db/                  # SQLite database (dev)
 ├── scripts/             # Utility scripts (e.g., copy-ext-files.js)
 ├── vault/               # Vault config, policies, tools
+├── vault-agent-ngrok/   # Ngrok vault agent config, templates
+├── vault-agent-waf/     # Waf vault agent config, templates
 ├── waf/                 # Nginx + ModSecurity WAF config
 ├── docker-compose.yml   # Service orchestration
-├── Makefile             # Dev workflows
+├── Makefile             # Docker workflows
 └── .env.example         # Environment variable template
 ```
 
@@ -386,30 +341,7 @@ If you want to customize environment variables, database, or secrets, see the co
 ## Testing
 
 - **No formal test suite.**
-  Manual testing via frontend and API. (Add tests if needed.)
-
----
-
-## Deployment Guide
-
-- **Docker Compose** is used for orchestration.
-- **Vault** and **WAF** are included as services.
-- **ngrok** can be enabled for public tunneling (set `USE_NGROK=1`).
-- **Production tips:**
-  - Set `NODE_ENV=production`
-  - Use secure secrets in Vault
-  - Adjust rate limits and CORS as needed
-
----
-
-## Contributing
-
-- Follow Prettier and ESLint rules (auto-run on commit via Husky/lint-staged).
-- Use clear commit messages and PR descriptions.
-- For new API routes: add controller, schema, and register in `modules/api.module.js`.
-- For new frontend components: add a `.ts` file in `components/`, export a function returning an HTML string.
-- For new languages: add a file in `src/locales/` following the shape of `en.ts`.
-- Open issues or PRs for discussion before large changes.
+  Manual testing via frontend and API (Postman).
 
 ---
 
@@ -418,30 +350,3 @@ If you want to customize environment variables, database, or secrets, see the co
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ---
-
-## Acknowledgments
-
-- Inspired by the classic Pong game and TRON aesthetics.
-- Built with Fastify, Prisma, Tailwind CSS, and open-source libraries.
-
----
-
-## Development Container (Dev Container)
-
-This project includes a [VS Code Dev Container](https://containers.dev/) setup for a fully reproducible development environment.
-
-- **Location:** `.devcontainer/` (contains `devcontainer.json` and `Dockerfile`)
-- **Base Image:** Node.js 24 (Debian Bookworm)
-- **Features:**
-  - Zsh shell
-  - Pre-installed VS Code extensions: ESLint, Prettier, Postman, Prisma, Tailwind CSS
-  - Automatic install of dependencies (`npm ci`)
-  - Recommended editor settings (format on save, auto-save, ESLint integration)
-- **Usage:**
-  1. Open the project in VS Code.
-  2. When prompted, "Reopen in Container" to start the dev container.
-  3. All development tools and dependencies will be available inside the container.
-  4. Ports/services can be forwarded as needed for local testing.
-- **Remote User:** The container runs as the `node` user for security.
-
-This setup ensures consistent tooling, code style, and environment for all contributors. For more details, see `.devcontainer/devcontainer.json`.
