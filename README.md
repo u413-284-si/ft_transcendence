@@ -22,8 +22,6 @@ Made with ❤️ by
 <details>
 <summary>Click to expand the mandatory part overview</summary>
 
----
-
 ### 1. Core Goal
 
 - Create a **functional Pong website** where users can:
@@ -31,8 +29,6 @@ Made with ❤️ by
   - Participate in a **tournament system**.
   - **Register aliases** before each tournament.
   - See **matchmaking and next match announcements**.
-
----
 
 ### 2. Technical Constraints
 
@@ -65,8 +61,6 @@ Made with ❤️ by
     - Use `/goinfre` for images.
     - Avoid bind mounts (rebuild images instead).
 
----
-
 ### 3. Game Requirements
 
 #### Pong Game
@@ -89,8 +83,6 @@ Made with ❤️ by
 - Allowed: small helper utilities (e.g. math, sound, or animation libs).
 - You must be able to **justify** any external library choice.
 
----
-
 ### 4. Security Requirements
 
 | Requirement                        | Description                                                   |
@@ -101,8 +93,6 @@ Made with ❤️ by
 | **Form validation**                | Validate input on client or server side.                      |
 | **Route protection**               | Secure all API routes and endpoints.                          |
 | **Secrets management**             | Store API keys, passwords, and tokens in `.env` (gitignored). |
-
----
 
 ### Summary Checklist
 
@@ -128,26 +118,20 @@ We implemented 8 Major Modules.
 <details>
 <summary>Click to expand the list of implemented modules</summary>
 
----
-
-### Major Module — Use a Framework to Build the Backend
+### Use a Framework to Build the Backend (Major Module)
 
 - Implemented with **Fastify** (Node.js) as the backend framework.
 - Provides a structured, modular API for game logic, authentication, and user data.
 - All routes are **secured and validated** according to web security best practices.
 
----
-
-### Minor Module — Use a Framework or Toolkit to Build the Frontend
+### Use a Framework or Toolkit to Build the Frontend (Minor Module)
 
 - Frontend developed in **TypeScript + TailwindCSS**.
 - No frontend framework (React/Vue) — uses **vanilla TypeScript + DOM routing**.
 - Designed as a **Single Page Application (SPA)** with smooth navigation.
 - UI built using custom **modular components**
 
----
-
-### Minor Module — Use a Database for the Backend
+### Use a Database for the Backend (Minor Module)
 
 - Backend uses **Prisma ORM** with **SQLite**.
 - Stores:
@@ -156,9 +140,7 @@ We implemented 8 Major Modules.
   - Player and game statistics.
 - Includes **schema validation**.
 
----
-
-### Major Module — Standard User Management, Authentication, Users Across Tournaments
+### Standard User Management, Authentication, Users Across Tournaments (Major Module)
 
 - Implements full **user registration and login** system.
 - Supports:
@@ -167,26 +149,20 @@ We implemented 8 Major Modules.
   - Unique usernames across tournaments.
 - Users can **create tournaments**, track results, add friends and maintain global profiles.
 
----
-
-### Major Module — Implementing a Remote Authentication
+### Implementing a Remote Authentication (Major Module)
 
 - Integrates **Google OAuth2 login** for remote authentication.
 - Supports both **Google login** and local account creation.
 - Securely handles OAuth callback and token exchange.
 
----
-
-### Major Module — Introduce an AI Opponent
+### Introduce an AI Opponent (Major Module)
 
 - Adds an **AI-controlled paddle** as an opponent.
 - Difficulty levels available (Easy, Normal, Hard).
 - AI logic based on **predictive ball trajectory** and **reaction delay**.
 - Allows single-player mode with identical physics to multiplayer.
 
----
-
-### Minor Module — User and Game Stats Dashboards
+### User and Game Stats Dashboards (Minor Module)
 
 - Includes visual **statistics dashboards** for stats such as
   - Win/loss ratios.
@@ -195,29 +171,28 @@ We implemented 8 Major Modules.
 - Uses **ApexCharts** for chart rendering.
 - Fully integrated into the SPA interface with subtabs for categories (Matches, Tournaments, Friends)
 
----
-
-### Major Module — WAF/ModSecurity & HashiCorp Vault Integration
+### WAF/ModSecurity & HashiCorp Vault Integration (Major Module)
 
 - Adds **ModSecurity (WAF)** in front of the Fastify server for additional protection.
 - Hardened configuration to mitigate XSS, CSRF, SQLi, and brute-force attacks.
 - **HashiCorp Vault** used for managing sensitive credentials (JWT secrets, API keys).
 - Secrets loaded dynamically into the backend at runtime.
 
----
-
-### Major Module — Two-Factor Authentication (2FA) and JWT
+### Two-Factor Authentication (2FA) and JWT (Major Module)
 
 - Implements **2FA** using **TOTP** (Time-based One-Time Passwords).
 - Users can enable 2FA for enhanced security.
 - **JWT-based authentication** with access and refresh tokens.
 - Token rotation and expiration management ensure long-term security.
 
----
+### Supports Multiple Languages (Minor Module)
 
-### Minor Module — Supports Multiple Languages
-
-- Application supports **multi-language UI** (English, French, German; additionally fun languages Tron and Pirate).
+- Application supports **multi-language UI** with the following languages:
+  - English
+  - French
+  - German
+  - Tron (inspired by film TRON)
+  - Pirate
 - Implemented using **i18next** with **Typescript language files**.
 - Language preference stored per user in the database.
 - Text dynamically changes without reloading the page.
