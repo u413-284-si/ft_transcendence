@@ -18,8 +18,7 @@
     "db:reset": "prisma migrate reset",
     "dev": "npm run db:init && npm run watch",
     "prepare": "husky",
-    "copy:vendor": "node scripts/copy-ext-files.js",
-    "optimize-images": "node scripts/optimize-images.js"
+    "copy:vendor": "node scripts/copy-ext-files.js"
   },
   "repository": {
     "type": "git",
@@ -75,7 +74,6 @@
     "nodemon": "^3.1.9",
     "prettier": "^3.5.3",
     "prisma": "^6.13.0",
-    "sharp": "^0.34.4",
     "tailwindcss": "^4.0.12",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
