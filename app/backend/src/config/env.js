@@ -123,10 +123,11 @@ const schema = {
   }
 };
 
+const projectRoot = path.resolve(__dirname, "../../../..");
 const config = envSchema({
   schema: schema,
   dotenv: {
-    path: path.join(__dirname, "../../.env")
+    path: path.join(projectRoot, ".env")
   }
 });
 
