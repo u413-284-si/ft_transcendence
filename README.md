@@ -15,7 +15,6 @@ Made with ❤️ by
 - [QCHR1581](https://github.com/QCHR1581)
 - [gwolf-011235](https://github.com/gwolf-011235)
 
-
 ## Mandatory Part Summary
 
 <details>
@@ -171,7 +170,7 @@ We implemented 8 Major Modules.
 ### WAF/ModSecurity & HashiCorp Vault Integration (Major Module)
 
 - Adds **ModSecurity (WAF)** in front of the Fastify server for additional protection.
-- Hardened configuration to mitigate XSS, CSRF, SQLi, and brute-force attacks.
+- Hardened configuration via OWASP Core Rule Set to mitigate XSS, CSRF, SQLi, and brute-force attacks.
 - **HashiCorp Vault** used for managing sensitive credentials (JWT secrets, API keys).
 - Secrets loaded dynamically into the backend at runtime.
 
@@ -211,17 +210,20 @@ This will start all required services (backend, frontend, Vault, WAF etc.). The 
 ## 🎮 App Preview
 
 ### 🕹️ Gameplay
+
 <img src="./docs/screenshots/gameplay.png" alt="Gameplay Screenshot" width="700">
 
 ### 🏆 Tournament Bracket
+
 <img src="./docs/screenshots/tournament_bracket.png" alt="Tournament Bracket" width="700">
 
 ### 📊 Dashboard
+
 <img src="./docs/screenshots/dashboard.png" alt="Dashboard" width="700">
 
 ### 👤 Profile View
-<img src="./docs/screenshots/profile_view.png" alt="Profile View" width="700">
 
+<img src="./docs/screenshots/profile_view.png" alt="Profile View" width="700">
 
 ## Tech Stack
 
@@ -299,11 +301,11 @@ This setup ensures consistent tooling, code style, and environment for all contr
 To make development smoother, this project includes several **watch scripts** powered by [nodemon](https://nodemon.io/).
 They automatically restart or rebuild parts of the app whenever relevant files change.
 
-| Script | Description |
-|--------|--------------|
-| `npm run watch` | Runs both the frontend and backend in watch mode. Use this when working across the entire project. |
-| `npm run watch-frontend` | Watches and rebuilds the **frontend** when files change — ideal for styling and UI development. |
-| `npm run watch-backend` | Watches the **backend** and automatically restarts the Fastify server when backend files change — useful during API or database development. |
+| Script                   | Description                                                                                                                                  |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run watch`          | Runs both the frontend and backend in watch mode. Use this when working across the entire project.                                           |
+| `npm run watch-frontend` | Watches and rebuilds the **frontend** when files change — ideal for styling and UI development.                                              |
+| `npm run watch-backend`  | Watches the **backend** and automatically restarts the Fastify server when backend files change — useful during API or database development. |
 
 ### Database
 
@@ -343,13 +345,6 @@ They automatically restart or rebuild parts of the app whenever relevant files c
 ├── Makefile             # Docker workflows
 └── .env.example         # Environment variable template
 ```
-
----
-
-## Testing
-
-- **No formal test suite.**
-  Manual testing via frontend and API (Postman).
 
 ---
 
