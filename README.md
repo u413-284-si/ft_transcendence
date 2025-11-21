@@ -40,10 +40,10 @@ Made with ❤️ by
 
 #### Backend
 
-- You may choose:
+- The choice is given between:
   - **No backend** (pure frontend logic), or
   - **Pure PHP** backend (**no frameworks**).
-    → Frameworks like Fastify are allowed only in later modules.
+    → Frameworks like Fastify are allowed only if optional modules are choosen additionally.
 
 #### Database
 
@@ -101,7 +101,7 @@ Made with ❤️ by
 | **Tournament**         | Alias registration, matchmaking, match announcements                               |
 | **Security**           | HTTPS, input validation, password hashing, sanitized routes                        |
 | **Containerization**   | Dockerized setup, one-command start                                                |
-| **Backend (optional)** | Pure PHP, unless you add the backend module                                        |
+| **Backend**            | None or pure PHP, unless the backend module is added                               |
 
 </details>
 
