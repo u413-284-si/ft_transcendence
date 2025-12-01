@@ -67,11 +67,6 @@ check-env:
 		echo "✅ .env already exists, skipping"; \
 	fi
 
-# Watches for changes in files and rebuilds containers
-PHONY: watch
-watch:
-	$(SILENT) $(COMPOSE) up --watch
-
 # Stops containers and removes containers, networks, volumes, and images created by up
 .PHONY: down
 down:
